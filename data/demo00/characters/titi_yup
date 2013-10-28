@@ -1,0 +1,7 @@
+name = "yup";
+inventory : [ "A0005" ];
+type = "gob";
+map = "test2";
+pos_x = 1;
+pos_y = 2;
+action = [ "add_white", "add_black", "get", "drop_item" , "get_apple", "eat_apple"];

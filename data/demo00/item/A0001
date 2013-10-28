@@ -1,0 +1,4 @@
+name =  "hat";
+sprite =  "hat.png";
+icon = "hat.png";
+description = "a hat";

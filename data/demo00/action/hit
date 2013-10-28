@@ -1,0 +1,3 @@
+text            = "Try to punch";
+icon            = "gray.jpg";
+script		= "hit.lua";

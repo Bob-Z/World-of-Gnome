@@ -1,0 +1,104 @@
+#include <glib.h>
+#include <gio/gio.h>
+#include "../common/common.h"
+#include <gtk/gtk.h>
+#include "win_login.h"
+#include "win_select_avatar.h"
+#include "file.h"
+#include "imageDB.h"
+#include "win_game.h"
+#include "textview.h"
+#include "action.h"
+#include "draw.h"
+
+/* parse_incoming_data
+Return FALSE on error, TRUE if OK */
+gboolean parse_incoming_data(context_t * context, guint32 command, guint32 command_size, gchar * data)
+{
+        gchar * filename = NULL;
+
+	if(context == NULL) {
+		hide_select_avatar_window();
+		hide_game_window();
+		show_login_window();
+	}
+
+        switch(command) {
+                case CMD_LOGIN_OK :
+                        g_message("Received CMD_LOGIN_OK");
+			if(!network_open_data_connection(context)) {
+				return FALSE;
+			}
+			context_set_connected(context, TRUE);
+                        g_message("Successfully connected");
+			hide_login_window();
+			show_select_avatar_window(context);
+			network_request_user_avatar_list(context);
+			g_message("Avatar list requested");
+                        break;
+                case CMD_LOGIN_NOK :
+                        g_message("Received CMD_LOGIN_NOK");
+			context_set_connected(context, FALSE);
+			/* message box */
+			gdk_threads_enter();
+			GtkWidget * dialog;
+			dialog = gtk_message_dialog_new (NULL,
+					GTK_DIALOG_DESTROY_WITH_PARENT,
+					GTK_MESSAGE_ERROR,
+					GTK_BUTTONS_CLOSE,
+					"Authentication failure");
+			gtk_message_dialog_format_secondary_text ( GTK_MESSAGE_DIALOG(dialog), "Check your login and password (they are case sensitive)");
+			gtk_dialog_run (GTK_DIALOG (dialog));
+	                gtk_widget_destroy (dialog);
+			gdk_threads_leave();
+
+                        break;
+                case CMD_SEND_AVATAR :
+                        g_message("Received CMD_SEND_AVATAR");
+			g_message("New avatar : %s", data);
+                        break;
+                case CMD_SEND_FILE :
+                        g_message("Received CMD_SEND_FILE");
+			file_add(data,command_size,&filename);
+
+			/* Special case for image file: try to update the widget data base */
+			/* try to read the file as if it was an image */
+			updated_media = image_DB_update(context,filename);
+			g_free(filename);
+
+			/* Asynchronous update of the select avatar window */
+			update_select_avatar_window(context);
+			/* Asynchronous update of the game window */
+			redraw_window();
+
+			updated_media = FALSE;
+                        break;
+                case CMD_SEND_USER_AVATAR :
+                        g_message("Received CMD_SEND_USER_AVATAR");
+			add_user_avatar(context,data);
+			update_select_avatar_window(context);
+                        break;
+                case CMD_SEND_CONTEXT :
+                        g_message("Received CMD_SEND_CONTEXT");
+			context_add_or_update_from_network_frame(context,data);
+			redraw_window();
+                        break;
+		case CMD_SEND_TEXT :
+                        g_message("Received CMD_SEND_TEXT");
+			textview_add_line(data);
+			break;
+		case CMD_SEND_ENTRY :
+                        g_message("Received CMD_SEND_ENTRY");
+			if( entry_update(data) != -1 ) {
+				redraw_window();
+			}
+			break;
+                default:
+                        g_warning("Unknown request from server");
+			return FALSE;
+			break;
+        }
+
+        return TRUE;
+}
+

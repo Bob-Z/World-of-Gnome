@@ -1,0 +1,3 @@
+text            = "Set a trap on the floor";
+icon            = "gray.jpg";
+script		= "set_trap.lua";

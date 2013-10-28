@@ -1,0 +1,26 @@
+npc = 1;
+name = "glopglop";
+map = "test2";
+type = "gob";
+pos_x = 2;
+pos_y = 2;
+ai = "ai_random.lua";
+
+attribute:
+{
+      life :
+      {
+              min = 0;
+              max = 10;
+              current = 1;
+              previous = 1;
+		on_min = "kill.lua";
+      };
+      agility :
+      {
+              current = 10;
+              previous = 10;
+             on_min = "kill.lua";
+      };
+};
+

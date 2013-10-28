@@ -1,0 +1,4 @@
+name =  "apple";
+sprite =  "apple.png";
+icon = "apple.png";
+description = "an apple";

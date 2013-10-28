@@ -1,0 +1,34 @@
+size_x = 3;
+size_y = 3;
+tile_size_x = 64;
+tile_size_y = 64;
+set = [ "1", "0", "2", "0", "0", "0", "1", "0", "0" ];
+item_list : {
+	A0002 : 
+	{
+	  pos_x = 1;
+	  pos_y = 0;
+	};
+	A0003 : 
+	{
+	  pos_x = 0;
+	  pos_y = 2;
+	};
+};
+
+event_list: {
+        A0000 :
+        {
+                pos_x = 2;
+                pos_y = 0;
+                script = "goto_test.lua";
+
+        };
+        A0001 :
+        {
+                pos_x = 2;
+                pos_y = 0;
+                script = "trap.lua";
+	};
+};
+

@@ -1,0 +1,60 @@
+name = "yop";
+inventory : [ "A0007", "A0008" ];
+type = "human";
+map = "test";
+pos_x = 0;
+pos_y = 1;
+action = [ "add_white", "add_black", "get", "drop_item" , "get_apple", "eat_apple", "remove_life" , "hit", "wear_equip", "remove_equip", "set_trap", "disarm_trap"];
+allowed_tile = "ground";
+
+attribute:
+{
+	life :
+	{
+		min = 0;
+		max = 10;
+		current = 10;
+		previous = 10;
+	#	on_min = action_name;
+	#	on_max = action_name;
+	#	on_up = action_name;
+	#	on_down = action_name;
+	#	step = [ 2, 5, 8];
+	#	on_step = action_name;
+	#	on_step_up = action_name;
+	#	on_step_down = action_name;
+	};
+
+	agility :
+	{
+		min = 0;
+		max = 10;
+		current = 10;
+		previous = 10;
+	#	on_min = action_name;
+	#	on_max = action_name;
+	#	on_up = action_name;
+	#	on_down = action_name;
+	#	step = [ 2, 5, 8];
+	#	on_step = action_name;
+	#	on_step_up = action_name;
+	#	on_step_down = action_name;
+	};
+};
+
+equipment:
+{
+	head :
+	{
+		icon = "apple.png";
+		equipped = "A0009";
+	};
+	right_hand :
+	{
+		name = "right hand";
+	};
+	left_hand :
+	{
+		name = "left hand";
+	};
+};

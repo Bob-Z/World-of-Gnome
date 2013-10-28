@@ -1,0 +1,29 @@
+npc = 1;
+name = "glopglop";
+map = "test";
+type = "gob";
+pos_x = 0;
+pos_y = 8;
+ai = "ai_random.lua";
+aggro_dist = 1;
+aggro_script = "aggro_say_hello.lua";
+attribute : 
+{
+  life : 
+  {
+    min = 0;
+    max = 10;
+    current = 10;
+    previous = 10;
+  };
+  agility : 
+  {
+    current = 10;
+    previous = 10;
+    on_min = "kill.lua";
+  };
+  already_aggro : 
+  {
+    current = 0;
+  };
+};
