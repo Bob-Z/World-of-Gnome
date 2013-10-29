@@ -1,0 +1,3 @@
+text            = "Hit for 1 HP";
+icon            = "gray.jpg";
+script		= "remove_life.lua";

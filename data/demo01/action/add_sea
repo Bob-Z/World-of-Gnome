@@ -1,0 +1,3 @@
+text		= "Flood";
+icon		= "icon_sea.jpg";
+script		= "add_sea.lua";

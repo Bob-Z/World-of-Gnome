@@ -1,0 +1,7 @@
+name = "Fyr";
+inventory = [ ];
+type = "lich";
+map = "map1";
+pos_x = 16;
+pos_y = 16;
+action = [ ];

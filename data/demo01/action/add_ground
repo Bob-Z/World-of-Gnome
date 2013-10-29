@@ -1,0 +1,3 @@
+text		= "Turn into ground";
+icon		= "ground_icon.jpg";
+script		= "add_ground.lua";

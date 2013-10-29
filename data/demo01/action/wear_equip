@@ -1,0 +1,3 @@
+text		= "Wear an equipment";
+icon		= "black.jpg";
+script		= "wear_equip.lua";

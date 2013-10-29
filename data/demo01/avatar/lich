@@ -1,0 +1,9 @@
+marquee         = "marquee_lich.jpg";
+sprite          = "sprite_lich.gif";
+speed           = 500;
+start_map       = "map1";
+start_x         = 16;
+start_y         = 16;
+#default action for this kind of avatar
+#action          = [ "add_ground", "add_sea" ];
+allowed_tile	= "ground";

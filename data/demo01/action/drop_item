@@ -1,0 +1,3 @@
+text            = "Drop an object on the ground";
+icon            = "gray.jpg";
+script		= "drop_item.lua";
