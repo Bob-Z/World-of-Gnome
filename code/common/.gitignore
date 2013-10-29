@@ -15,4 +15,12 @@ Makefile.in
 config.guess
 config.h.in
 config.sub
+config.h
+config.log
+config.status
+stamp-h1
 
+.deps
+*.o
+
+libcommon.a
