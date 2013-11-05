@@ -22,5 +22,6 @@ stamp-h1
 
 .deps
 *.o
+*.swp
 
 libcommon.a
