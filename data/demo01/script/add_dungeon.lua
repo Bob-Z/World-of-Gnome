@@ -7,7 +7,8 @@ if x == -1 or y == -1 then
 end
 
 new_map = map_new(32,32,64,64,"dungeon_wall");
-map_set_tile(new_map,"dungeon_up",16,16);
+tile = "dungeon_up";
+map_set_tile(new_map,tile,16,16);
 
 map = character_get_map(id);
 tile = "dungeon_down";
