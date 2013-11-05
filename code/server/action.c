@@ -283,6 +283,27 @@ static int l_character_set_pos( lua_State* L)
 	return 1;  /* number of results */
 }
 
+static int l_map_new( lua_State* L)
+{
+        gchar * map_name;
+        gint x;
+        gint y;
+	gint tile_x;
+	gint tile_y;
+	const gchar * default_tile;
+        gint res;
+
+        x = luaL_checkint(L, -5);
+        y = luaL_checkint(L, -4);
+        tile_x = luaL_checkint(L, -3);
+        tile_y = luaL_checkint(L, -2);
+	default_tile = luaL_checkstring(L, -1);
+        map_name = map_new(x,y,tile_x,tile_y,(gchar *)default_tile);
+        lua_pushstring(L, map_name);
+	g_free(map_name);
+        return 1;  /* number of results */
+}
+
 static int l_map_set_tile( lua_State* L)
 {
 	const gchar * map;
@@ -649,6 +670,8 @@ void register_lua_functions(context_t * context)
 	lua_pushcfunction(L, l_character_delete);
 	lua_setglobal(L, "character_delete");
 	/* map func */
+	lua_pushcfunction(L, l_map_new);
+	lua_setglobal(L, "map_new");
 	lua_pushcfunction(L, l_map_set_tile);
 	lua_setglobal(L, "map_set_tile");
 	lua_pushcfunction(L, l_map_add_item);

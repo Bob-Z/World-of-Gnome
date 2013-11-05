@@ -20,6 +20,7 @@
 #ifndef MAP_H
 #define MAP_H
 
+gchar * map_new(gint x,gint y, gint tile_x, gint tile_y, gchar * default_tile);
 gchar * map_delete_item(const gchar * map, gint x, gint y);
 gint map_add_item(const gchar * map, const gchar * item, gint x, gint y);
 gboolean map_check_tile(context_t * context,gchar * map,gint x,gint y);
