@@ -4,4 +4,5 @@ type = "lich";
 map = "map1";
 pos_x = 16;
 pos_y = 16;
-action = [ ];
+action = [ "add_dungeon" ];
+allowed_tile = [ "ground" ];
