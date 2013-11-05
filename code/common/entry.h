@@ -22,6 +22,8 @@
 
 #include <glib.h>
 
+gchar * file_new(gchar * table);
+
 int read_int(const gchar * table, const gchar * file, int * res, ...);
 int read_string(const gchar * table, const gchar * file, const gchar ** res, ...);
 int read_list_index(const gchar * table, const gchar * file, const gchar ** res,gint index, ...);
