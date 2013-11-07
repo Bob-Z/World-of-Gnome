@@ -392,8 +392,9 @@ static int l_map_delete_item( lua_State* L)
 	y = luaL_checkint(L, -1);
 	res = map_delete_item(map,x,y);
 	lua_pushstring(L, res);
-	if( res) 
+	if(res) {
 		g_free(res);
+	}
 	return 1;  /* number of results */
 }
 
@@ -403,14 +404,17 @@ static int l_map_add_event( lua_State* L)
 	const gchar * script;
 	gint x;
 	gint y;
-	gint res;
+	gchar *res;
 
 	map = luaL_checkstring(L, -4);
 	script = luaL_checkstring(L, -3);
 	x = luaL_checkint(L, -2);
 	y = luaL_checkint(L, -1);
 	res = map_add_event(map,script,x,y);
-	lua_pushnumber(L, res);
+	lua_pushstring(L, res);
+	if(res) {
+		g_free(res);
+	}
 	return 1;  /* number of results */
 }
 

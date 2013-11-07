@@ -349,11 +349,13 @@ const gchar ** map_get_event(const gchar * map,gint x, gint y)
 	return script;
 }
 
-/******************************************/
-/* Add an event on map at given coordinate */
-/* return -1 if fails                      */
-/******************************************/
-gint map_add_event(const gchar * map, const gchar * script, gint x, gint y )
+/******************************************
+Add an event on map at given coordinate
+ return NULL if fails
+ return the event id is success
+ the return event id must be freed by caller
+***********************************************/
+gchar * map_add_event(const gchar * map, const gchar * script, gint x, gint y )
 {
 	gchar * id;
 
@@ -362,7 +364,7 @@ gint map_add_event(const gchar * map, const gchar * script, gint x, gint y )
 
 	id = get_unused_group(MAP_TABLE,map,MAP_ENTRY_EVENT_LIST,NULL);
 	if(id == NULL) {
-		return -1;
+		return NULL;
 	}
 
 	g_static_mutex_lock(&map_mutex);
@@ -371,31 +373,30 @@ gint map_add_event(const gchar * map, const gchar * script, gint x, gint y )
 		remove_group(MAP_TABLE,map,id,MAP_ENTRY_EVENT_LIST,NULL);
 		g_free(id);
 		g_static_mutex_unlock(&map_mutex);
-		return -1;
+		return NULL;
 	}
 	if (!write_int(MAP_TABLE,map,y,MAP_ENTRY_EVENT_LIST,id,MAP_EVENT_POS_Y, NULL) ) {
 		remove_group(MAP_TABLE,map,id,MAP_ENTRY_EVENT_LIST,NULL);
 		g_free(id);
 		g_static_mutex_unlock(&map_mutex);
-		return -1;
+		return NULL;
 	}
 
 	if (!write_string(MAP_TABLE,map,script,MAP_ENTRY_EVENT_LIST,id,MAP_EVENT_SCRIPT, NULL) ) {
 		remove_group(MAP_TABLE,map,id,MAP_ENTRY_EVENT_LIST,NULL);
 		g_free(id);
 		g_static_mutex_unlock(&map_mutex);
-		return -1;
+		return NULL;
 	}
 
 	g_static_mutex_unlock(&map_mutex);
 
-	g_free(id);
-
 	/* Send network notifications */
 	context_broadcast_file(MAP_TABLE,map,TRUE);
 
-	return 0;
+	return id;
 }
+
 /**********************************************/
 /* Delete an event on map at given coordinate */
 /* return -1 if fails                         */
