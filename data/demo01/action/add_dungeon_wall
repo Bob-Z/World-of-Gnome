@@ -1,0 +1,3 @@
+text		= "Build walls";
+icon		= "tile_dungeon_wall.gif";
+script		= "add_dungeon_wall.lua";
