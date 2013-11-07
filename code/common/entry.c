@@ -1434,6 +1434,41 @@ gboolean copy_config(config_setting_t * source, config_setting_t * dest)
 	return 1;
 }
 
+/*********************/
+/*********************/
+/*********************/
+/* Returns :
+
+TRUE on success, FALSE if an error occurred
+*/
+static int __group_create(const gchar * table, const gchar * file, va_list ap)
+{
+	file_data_t * config;
+
+	config = get_config(table,file);
+	if(config==NULL) {
+		return FALSE;
+	}
+
+	create_tree(config->config,NULL,NULL,NULL,CONFIG_TYPE_GROUP,ap);
+
+	config->config_update = TRUE;
+	return TRUE;
+}
+int group_create(const gchar * table, const gchar * file, ...)
+{
+	int ret;
+	va_list ap;
+
+        g_static_mutex_lock(&file_mutex);
+        va_start(ap, file);
+	ret = __group_create(table, file, ap);
+        va_end(ap);
+        g_static_mutex_unlock(&file_mutex);
+
+	return ret;
+}
+
 static gchar * __copy_group(const gchar * src_table, const gchar * src_file, const gchar * dst_table, const gchar * dst_file, const gchar * group_name, va_list ap) {
         file_data_t * src_config = NULL;
         file_data_t * dst_config = NULL;
