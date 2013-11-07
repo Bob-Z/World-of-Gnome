@@ -418,6 +418,21 @@ static int l_map_add_event( lua_State* L)
 	return 1;  /* number of results */
 }
 
+static int l_map_add_event_param( lua_State* L)
+{
+	const gchar * map;
+	const gchar * event_id;
+	const gchar * param;
+	gint res;
+
+	map = luaL_checkstring(L, -3);
+	event_id = luaL_checkstring(L, -2);
+	param = luaL_checkstring(L, -1);
+	res = map_add_event_param(map,event_id,param);
+	lua_pushnumber(L, res);
+	return 1;  /* number of results */
+}
+
 static int l_map_delete_event( lua_State* L)
 {
 	const gchar * map;
@@ -687,6 +702,8 @@ void register_lua_functions(context_t * context)
 	lua_setglobal(L, "map_get_tile");
 	lua_pushcfunction(L, l_map_add_event);
 	lua_setglobal(L, "map_add_event");
+	lua_pushcfunction(L, l_map_add_event_param);
+	lua_setglobal(L, "map_add_event_param");
 	lua_pushcfunction(L, l_map_delete_event);
 	lua_setglobal(L, "map_delete_event");
 	/* inventory func */

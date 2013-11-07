@@ -99,6 +99,7 @@
 #define MAP_EVENT_POS_X		"pos_x"
 #define MAP_EVENT_POS_Y		"pos_y"
 #define MAP_EVENT_SCRIPT	"script"
+#define MAP_EVENT_PARAM		"param"
 
 /* action data */
 #define ACTION_TABLE		"action"

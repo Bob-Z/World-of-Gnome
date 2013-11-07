@@ -350,7 +350,7 @@ const gchar ** map_get_event(const gchar * map,gint x, gint y)
 }
 
 /******************************************
-Add an event on map at given coordinate
+ Add an event on map at given coordinate
  return NULL if fails
  return the event id is success
  the return event id must be freed by caller
@@ -359,7 +359,7 @@ gchar * map_add_event(const gchar * map, const gchar * script, gint x, gint y )
 {
 	gchar * id;
 
-	/* Make sure the MAP_ENTRY_EVENT_LIST group exist */
+	/* Make sure the MAP_ENTRY_EVENT_LIST group exists */
 	group_create(MAP_TABLE,map,MAP_ENTRY_EVENT_LIST,NULL);
 
 	id = get_unused_group(MAP_TABLE,map,MAP_ENTRY_EVENT_LIST,NULL);
@@ -395,6 +395,18 @@ gchar * map_add_event(const gchar * map, const gchar * script, gint x, gint y )
 	context_broadcast_file(MAP_TABLE,map,TRUE);
 
 	return id;
+}
+
+/******************************************
+ Add a parameter to the given event
+ return 0 if fails
+***********************************************/
+gboolean map_add_event_param(const gchar * map, const gchar * event_id, const gchar * param)
+{
+	/* Make sure the param list exists */
+	list_create(MAP_TABLE,map,MAP_ENTRY_EVENT_LIST,event_id,MAP_EVENT_PARAM,NULL);
+
+	return add_to_list(MAP_TABLE,map,param,MAP_ENTRY_EVENT_LIST,event_id,MAP_EVENT_PARAM,NULL);
 }
 
 /**********************************************/
