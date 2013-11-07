@@ -47,7 +47,7 @@ int remove_group(const gchar * table, const gchar * file, const gchar * group, .
 void file_dump_all_to_disk(void);
 
 gboolean remove_from_list(const gchar * table, const gchar * file, const gchar * to_be_removed, ...);
-
+int list_create(const gchar * table, const gchar * file, ...);
 int group_create(const gchar * table, const gchar * file, ...);
 gchar * copy_group(const gchar * src_table, const gchar * src_file, const gchar * dst_table, const gchar * dst_file, const gchar * group_name, ...);
 gint entry_update(gchar * data);
