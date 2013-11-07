@@ -24,6 +24,7 @@
 #include "common.h"
 
 void network_init(void);
+int network_open_data_connection(context_t * context);
 void network_send_command(context_t * context, guint32 command, gsize count, const gchar *data,gboolean is_data);
 void network_send_avatar_file(context_t * context);
 gboolean network_connect(context_t * context, const gchar * hostname);

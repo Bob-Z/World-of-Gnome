@@ -291,7 +291,6 @@ static int l_map_new( lua_State* L)
 	gint tile_x;
 	gint tile_y;
 	const gchar * default_tile;
-        gint res;
 
         x = luaL_checkint(L, -5);
         y = luaL_checkint(L, -4);
@@ -639,6 +638,8 @@ void register_lua_functions(context_t * context)
 	lua_pushcfunction(L, l_player_get_id);
 	lua_setglobal(L, "player_get_id");
 	/* character func */
+	lua_pushcfunction(L, l_character_get_selected_map);
+	lua_setglobal(L, "character_get_selected_map");
 	lua_pushcfunction(L, l_character_get_selected_map_tile_x);
 	lua_setglobal(L, "character_get_selected_map_tile_x");
 	lua_pushcfunction(L, l_character_get_selected_map_tile_y);
