@@ -55,11 +55,10 @@ gchar * map_new(gint x,gint y, gint tile_x, gint tile_y, gchar * default_tile)
 		return NULL;
 	}
 
-	tile_array=g_malloc0((x*y+1)*sizeof(gchar *));
-	for(i=0;i<x*y;i++) {
+	tile_array=g_malloc0(((x*y)+1)*sizeof(gchar *));
+	for(i=0;i<(x*y);i++) {
 		tile_array[i] = default_tile;
 	}
-	tile_array[i] = NULL;
 	if (!write_list(MAP_TABLE,map_name,tile_array,MAP_KEY_SET, NULL) ) {
 		g_free(map_name);
 		return NULL;
@@ -354,7 +353,7 @@ const gchar ** map_get_event(const gchar * map,gint x, gint y)
 /* Add an event on map at given coordinate */
 /* return -1 if fails                      */
 /******************************************/
-gint map_add_event(const gchar * map, const gchar * script, gint x, gint y)
+gint map_add_event(const gchar * map, const gchar * script, gint x, gint y )
 {
 	gchar * id;
 
