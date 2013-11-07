@@ -357,6 +357,9 @@ gint map_add_event(const gchar * map, const gchar * script, gint x, gint y )
 {
 	gchar * id;
 
+	/* Make sure the MAP_ENTRY_EVENT_LIST group exist */
+	group_create(MAP_TABLE,map,MAP_ENTRY_EVENT_LIST,NULL);
+
 	id = get_unused_group(MAP_TABLE,map,MAP_ENTRY_EVENT_LIST,NULL);
 	if(id == NULL) {
 		return -1;
