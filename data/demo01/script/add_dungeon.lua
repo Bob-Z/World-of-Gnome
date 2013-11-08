@@ -6,15 +6,22 @@ if x == -1 or y == -1 then
 	return
 end
 
+map = character_get_map(id);
+
 new_map = map_new(32,32,64,64,"dungeon_wall");
 tile = "dungeon_up";
 map_set_tile(new_map,tile,16,15);
 tile = "dungeon_ground";
 map_set_tile(new_map,tile,16,16);
+event = map_add_event(new_map,"goto.lua",16,15)
+map_add_event_param(new_map,event,map);
+map_add_event_param(new_map,event,x-1);
+map_add_event_param(new_map,event,y);
 
-map = character_get_map(id);
 tile = "dungeon_down";
 map_set_tile(map,tile,x,y);
+event = map_add_event(map,"goto.lua",x,y)
+map_add_event_param(map,event,new_map);
+map_add_event_param(map,event,16);
+map_add_event_param(map,event,16);
 
-map_add_event(map,"goto_A00000.lua",x,y)
-map_add_event(new_map,"goto_map1.lua",16,15)
