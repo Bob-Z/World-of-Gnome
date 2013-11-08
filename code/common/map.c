@@ -300,19 +300,18 @@ gchar * map_get_tile(const gchar * map,gint x, gint y)
 	return NULL;
 }
 
-/***********************************************/
-/* return an array of script name on map at x,y */
-/* This array MUST be freed by caller  */
-/***********************************************/
+/************************************************
+ return an array of event id on given map at x,y
+ This array MUST be freed by caller
+************************************************/
 const gchar ** map_get_event(const gchar * map,gint x, gint y)
 {
 	gchar ** eventlist = NULL;
+	const gchar ** event_id = NULL;
 	gint i=0;
 	gint mapx;
 	gint mapy;
-	const gchar * s = NULL;
-	const gchar ** script = NULL;
-	int script_num = 0;
+	int event_id_num = 0;
 
 	/* Manage concurrent acces to map files */
 	g_static_mutex_lock(&map_mutex);
@@ -334,19 +333,17 @@ const gchar ** map_get_event(const gchar * map,gint x, gint y)
  		}
 
 		if( x == mapx && y == mapy ) {
-			if( read_string(MAP_TABLE,map,&s,MAP_ENTRY_EVENT_LIST,eventlist[i],MAP_EVENT_SCRIPT,NULL) ) {
-				script_num++;
-				script=g_realloc(script,sizeof(gchar*)*(script_num+1));
-				script[script_num-1] = s;
-				script[script_num] = NULL;
-			}
+			event_id_num++;
+			event_id=g_realloc(event_id,sizeof(gchar*)*(event_id_num+1));
+			event_id[event_id_num-1] = eventlist[i];
+			event_id[event_id_num] = NULL;
 		}
 
 		i++;
 	}
 	g_static_mutex_unlock(&map_mutex);
 
-	return script;
+	return event_id;
 }
 
 /******************************************

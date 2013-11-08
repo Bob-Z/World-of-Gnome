@@ -204,7 +204,9 @@ return -1 if the postion was not set (because tile not allowed or out of bound)
 ******************************************************/
 gint avatar_set_pos(context_t * ctx, gchar * map, gint x, gint y)
 {
-	const gchar ** script;
+	const gchar ** event_id;
+	const gchar * script;
+	gchar ** param;
 	int i;
 	int change_map = 0;
 
@@ -228,16 +230,23 @@ gint avatar_set_pos(context_t * ctx, gchar * map, gint x, gint y)
 			context_request_other_context(ctx);
 		}
 
-		script = map_get_event(map,x,y);
-		
-		if(script) {
-			i = 0;
-			while(script[i]) {
-				action_execute_script(ctx,script[i],NULL);
-				i++;
-			}
+		event_id = map_get_event(map,x,y);
 
-			g_free(script);
+		if(event_id) {
+			i = 0;
+			while(event_id[i]) {
+				param=NULL;
+				if( !read_string(MAP_TABLE,map,&script,MAP_ENTRY_EVENT_LIST,event_id[i],MAP_EVENT_SCRIPT,NULL) ) {
+					i++;
+					continue;
+				}
+				read_list(MAP_TABLE,map,&param,MAP_ENTRY_EVENT_LIST,event_id[i],MAP_EVENT_PARAM,NULL);
+
+				action_execute_script(ctx,script,param);
+
+				i++;
+				g_free(param);
+			}
 		}
 
 		avatar_update_aggro(ctx);
