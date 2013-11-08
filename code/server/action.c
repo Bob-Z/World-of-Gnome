@@ -556,6 +556,21 @@ static int l_map_get_tile( lua_State* L)
 	return 1;  /* number of results */
 }
 
+static int l_map_get_tile_type( lua_State* L)
+{
+	const gchar * map;
+	gint x;
+	gint y;
+	const gchar * res;
+
+	map = luaL_checkstring(L, -3);
+	x = luaL_checkint(L, -2);
+	y = luaL_checkint(L, -1);
+	res = map_get_tile_type(map,x,y);
+	lua_pushstring(L, res);
+	return 1;  /* number of results */
+}
+
 static int l_character_attribute_change( lua_State* L)
 {
 	const gchar * id;
@@ -700,6 +715,8 @@ void register_lua_functions(context_t * context)
 	lua_setglobal(L, "map_delete_item");
 	lua_pushcfunction(L, l_map_get_tile);
 	lua_setglobal(L, "map_get_tile");
+	lua_pushcfunction(L, l_map_get_tile_type);
+	lua_setglobal(L, "map_get_tile_type");
 	lua_pushcfunction(L, l_map_add_event);
 	lua_setglobal(L, "map_add_event");
 	lua_pushcfunction(L, l_map_add_event_param);

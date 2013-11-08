@@ -277,9 +277,10 @@ int map_set_tile(const gchar * map,const gchar * tile,gint x, gint y)
 	return 0;
 }
 
-/*********************************************/
-/* return the name of the tile on map at x,y */
-/*********************************************/
+/********************************************
+ return the name of the tile on map at x,y 
+ return must be freed by caller
+********************************************/
 gchar * map_get_tile(const gchar * map,gint x, gint y)
 {
         gchar ** map_tiles;
@@ -295,6 +296,36 @@ gchar * map_get_tile(const gchar * map,gint x, gint y)
 
 	if( map_tiles[(map_size_x*y)+x] ) {
 		return g_strdup(map_tiles[(map_size_x*y)+x]);
+	}
+
+	return NULL;
+}
+
+/********************************************
+ return the type of the tile on map at x,y 
+********************************************/
+const gchar * map_get_tile_type(const gchar * map,gint x, gint y)
+{
+        gchar ** map_tiles;
+	gint map_size_x;
+	gchar * tile;
+	const gchar * type;
+
+        if(!read_list(MAP_TABLE,map,&map_tiles,MAP_KEY_SET,NULL)) {
+                return NULL;
+        }
+
+	if(!read_int(MAP_TABLE,map,&map_size_x,MAP_KEY_SIZE_X,NULL)) {
+                return NULL;
+        }
+
+	tile = map_tiles[(map_size_x*y)+x];
+	if( tile ) {
+		if(!read_string(TILE_TABLE,tile,&type,TILE_KEY_TYPE,NULL)) {
+			return NULL;
+		}
+
+		return type;
 	}
 
 	return NULL;
