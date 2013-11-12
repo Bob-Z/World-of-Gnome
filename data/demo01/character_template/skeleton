@@ -1,9 +1,10 @@
 marquee		= "marquee_skeleton.jpg";
 sprite		= "sprite_skeleton.gif";
-type		= "skeleton"
+type		= "skeleton";
 map		= "map1";
 pos_x		= 16;
 pos_y		= 16;
 #action		= [ ];
 allowed_tile	= [ "ground" ];
 #inventory	= [ ];  
+ai		= "ai_random.lua";
