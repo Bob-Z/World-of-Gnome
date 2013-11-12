@@ -71,7 +71,7 @@ gchar * map_new(gint x,gint y, gint tile_x, gint tile_y, gchar * default_tile)
 check if context is allowed to go on a tile
 return TRUE if the context is allowed to go to the tile at coord x,y
 *************************************/
-gboolean map_check_tile(context_t * context,gchar * map, gint x,gint y)
+gboolean map_check_tile(gchar * id,gchar * map, gint x,gint y)
 {
         gchar ** map_tiles;
         gchar ** allowed_tile;
@@ -104,7 +104,7 @@ gboolean map_check_tile(context_t * context,gchar * map, gint x,gint y)
         }
 
 	/* try specific allowed tile */
-	if(!read_list(CHARACTER_TABLE,context->id,&allowed_tile,CHARACTER_KEY_ALLOWED_TILE,NULL)) {
+	if(!read_list(CHARACTER_TABLE,id,&allowed_tile,CHARACTER_KEY_ALLOWED_TILE,NULL)) {
 		/* no allowed_type -> this character is allowed on all tile*/
 		g_free(map_tiles);
 		return TRUE;

@@ -240,8 +240,12 @@ gint character_set_pos(context_t * ctx, gchar * map, gint x, gint y)
 	int i;
 	int change_map = 0;
 
+	if(ctx == NULL) {
+		return -1;
+	}
+
 	/* Check if this character is allowed to go to the target tile */
-        if (map_check_tile(ctx,map,x,y) ) {
+        if (map_check_tile(ctx->id,map,x,y) ) {
 
 		if( g_strcmp0(ctx->map,map) ) {
 			change_map = 1;
@@ -285,4 +289,20 @@ gint character_set_pos(context_t * ctx, gchar * map, gint x, gint y)
 	return -1;
 }
 
+/*********************************************************
+ Set NPC to the value passed.
+ If the value is != 0 , the NPC is instanciated
+ return -1 on error
+*********************************************************/
+gint character_set_npc(const gchar * id, gint npc)
+{
+	if(!write_int(CHARACTER_TABLE,id,npc,CHARACTER_KEY_NPC,NULL)){
+		return -1;
+	}
 
+	if(npc) {
+		instantiate_npc(id);
+	}
+
+	return 0;
+}

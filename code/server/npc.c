@@ -84,14 +84,11 @@ static gpointer manage_npc(gpointer data)
 
 	return NULL;
 }
-/**************************
-init non playing character 
+
+/***************************
 ***************************/
-void init_npc(void)
+void instantiate_npc(const gchar * id)
 {
-	GDir * dir;
-	gchar * dirname;
-	const gchar * filename;
 	const gchar * type;
 	const gchar * name;
 	const gchar * map;
@@ -102,6 +99,72 @@ void init_npc(void)
 	gint tile_y;
 	context_t * ctx;
 
+	// check if it's a NPC 
+	if(!read_int(CHARACTER_TABLE,id,&is_npc,CHARACTER_KEY_NPC,NULL)) {
+		return;
+	}
+
+	if( !is_npc) {
+		return;
+	}
+
+	// read data of this npc 
+	if(!read_string(CHARACTER_TABLE,id,&map,CHARACTER_KEY_MAP,NULL)) {
+		return;
+	}
+
+	if(!read_int(CHARACTER_TABLE,id,&x,CHARACTER_KEY_POS_X,NULL)) {
+		return;
+	}
+
+	if(!read_int(CHARACTER_TABLE,id,&y,CHARACTER_KEY_POS_Y,NULL)) {
+		return;
+	}
+
+	if(!read_int(MAP_TABLE,map,&tile_x,MAP_KEY_TILE_SIZE_X,NULL)) {
+		return;
+	}
+
+	if(!read_int(MAP_TABLE,map,&tile_y,MAP_KEY_TILE_SIZE_Y,NULL)) {
+		return;
+	}
+
+	if(!read_string(CHARACTER_TABLE,id,&name,CHARACTER_KEY_NAME,NULL)) {
+		name = "";
+	}
+
+	if(!read_string(CHARACTER_TABLE,id,&type,CHARACTER_KEY_TYPE,NULL)) {
+		return;
+	}
+
+	g_debug("Creating npc %s of type %s in map %s at %d,%d",name,type,map,x,y);
+	ctx = context_new();
+	context_set_username(ctx,"CPU");
+	context_set_character_name(ctx,name);
+	context_set_connected(ctx,1);
+	context_set_map(ctx,map);
+	context_set_type(ctx,type);
+	context_set_pos_x(ctx,x);
+	context_set_pos_y(ctx,y);
+	context_set_tile_x(ctx,tile_x);
+	context_set_tile_y(ctx,tile_y);
+	context_set_id(ctx,id);
+	ctx->cond = g_cond_new();
+	ctx->cond_mutex = g_mutex_new();
+
+	/* start management thread */
+	g_thread_create(manage_npc,(gpointer)ctx,FALSE,NULL);
+
+}
+/**************************
+init non playing character 
+***************************/
+void init_npc(void)
+{
+	GDir * dir;
+	gchar * dirname;
+	const gchar * filename;
+
         // Read all files in npc directory
 	dirname = g_strconcat( g_getenv("HOME"),"/", base_directory, "/", CHARACTER_TABLE,  NULL);
 	dir = g_dir_open(dirname,0,NULL);
@@ -111,61 +174,7 @@ void init_npc(void)
 			continue;
 		}
 
-		// check if it's a NPC 
-		if(!read_int(CHARACTER_TABLE,filename,&is_npc,CHARACTER_KEY_NPC,NULL)) {
-			continue;
-		}
-
-		if( !is_npc) {
-			continue;
-		}
-
-		// read data of this npc 
-		if(!read_string(CHARACTER_TABLE,filename,&map,CHARACTER_KEY_MAP,NULL)) {
-			continue;
-		}
-
-		if(!read_int(CHARACTER_TABLE,filename,&x,CHARACTER_KEY_POS_X,NULL)) {
-			continue;
-		}
-
-		if(!read_int(CHARACTER_TABLE,filename,&y,CHARACTER_KEY_POS_Y,NULL)) {
-			continue;
-		}
-
-		if(!read_int(MAP_TABLE,map,&tile_x,MAP_KEY_TILE_SIZE_X,NULL)) {
-			continue;
-		}
-
-		if(!read_int(MAP_TABLE,map,&tile_y,MAP_KEY_TILE_SIZE_Y,NULL)) {
-			continue;
-		}
-
-		if(!read_string(CHARACTER_TABLE,filename,&name,CHARACTER_KEY_NAME,NULL)) {
-			name = "";
-		}
-
-		if(!read_string(CHARACTER_TABLE,filename,&type,CHARACTER_KEY_TYPE,NULL)) {
-			continue;
-		}
-
-		g_debug("Creating npc %s of type %s in map %s at %d,%d",name,type,map,x,y);
-		ctx = context_new();
-		context_set_username(ctx,"CPU");
-		context_set_character_name(ctx,name);
-		context_set_connected(ctx,1);
-		context_set_map(ctx,map);
-		context_set_type(ctx,type);
-		context_set_pos_x(ctx,x);
-		context_set_pos_y(ctx,y);
-		context_set_tile_x(ctx,tile_x);
-		context_set_tile_y(ctx,tile_y);
-		context_set_id(ctx,filename);
-		ctx->cond = g_cond_new();
-		ctx->cond_mutex = g_mutex_new();
-
-		/* start management thread */
-		g_thread_create(manage_npc,(gpointer)ctx,FALSE,NULL);
+		instantiate_npc(filename);
 	}
 	g_dir_close(dir);
 	g_free(dirname);

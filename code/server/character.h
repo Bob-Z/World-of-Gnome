@@ -23,4 +23,4 @@ gint character_disconnect(const gchar * id);
 gint character_set_pos(context_t * ctx,const gchar * map, gint x, gint y);
 gchar * character_create_from_template(const gchar * template);
 void character_update_aggro(context_t * context);
-
+gint character_set_npc(const gchar * ctx, gint npc);

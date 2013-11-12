@@ -296,6 +296,20 @@ static int l_character_set_pos( lua_State* L)
 	return 1;  /* number of results */
 }
 
+static int l_character_set_npc( lua_State* L)
+{
+	const gchar * id;
+	gint npc;
+	gint res;
+
+	id = luaL_checkstring(L, -2);
+	npc = luaL_checkint(L, -1);
+
+	res = character_set_npc(id,npc);
+	lua_pushnumber(L, res);
+	return 1;  /* number of results */
+}
+
 static int l_map_new( lua_State* L)
 {
         gchar * map_name;
@@ -715,6 +729,8 @@ void register_lua_functions(context_t * context)
 	lua_setglobal(L, "character_get_type");
 	lua_pushcfunction(L, l_character_set_pos);
 	lua_setglobal(L, "character_set_pos");
+	lua_pushcfunction(L, l_character_set_npc);
+	lua_setglobal(L, "character_set_npc");
 	lua_pushcfunction(L, l_character_disconnect);
 	lua_setglobal(L, "character_disconnect");
 	lua_pushcfunction(L, l_character_delete);
