@@ -1,9 +1,0 @@
-character_list = [ "A0000" ];
-A0000 : 
-{
-  name = "glopglop";
-  type = "gob";
-  x = 2;
-  y = 2;
-  motion = [ "random", "200" ];
-};

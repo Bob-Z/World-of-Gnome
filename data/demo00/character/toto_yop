@@ -1,3 +1,5 @@
+marquee         = "marquee.png";
+sprite          = "sprite.png";
 name = "yop";
 inventory : [ "A0007", "A0008" ];
 type = "human";

@@ -1,4 +1,5 @@
-name = "yip";
+marquee		= "marquee.png";
+sprite		= "sprite.png";name = "yip";
 inventory : [ "A0006" ];
 type = "gob";
 map = "test2";
