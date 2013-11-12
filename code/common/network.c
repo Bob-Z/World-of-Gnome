@@ -65,7 +65,7 @@ void network_send_command(context_t * context, guint32 command, gsize count, con
 		stream = context_get_output_stream(context);
 	}
 	if( stream == NULL ) {
-		g_critical("Stream is not initialized yet");
+		/* Probably called by a NPC */
 		return;
 	}
 
