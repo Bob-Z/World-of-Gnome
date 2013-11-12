@@ -1,0 +1,10 @@
+marquee		= "marquee_dolphin.jpg";
+sprite		= "sprite_dolphin.gif";
+type		= "dolphin";
+map		= "map1";
+pos_x		= 0;
+pos_y		= 0;
+#action		= [ ];
+allowed_tile	= [ "sea" ];
+#inventory	= [ ];  
+ai		= "ai_random.lua";

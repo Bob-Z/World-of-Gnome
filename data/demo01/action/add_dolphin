@@ -1,0 +1,3 @@
+text		= "Create a dolphin";
+icon		= "icon_dolphin.png";
+script		= "add_dolphin.lua";
