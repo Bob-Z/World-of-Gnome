@@ -130,6 +130,36 @@ gint character_disconnect( const gchar * id)
 	return 0;
 }
 
+/******************************************************
+ Create a new character based on the specified template
+ return the id of the newly created character
+ the returned string must be freed by caller
+ return NULL if fails
+*******************************************************/
+gchar * character_create_from_template(const gchar * template)
+{
+        gchar * new_name;
+        gchar * templatename;
+        gchar * newfilename;
+        GFile * templatefile;
+        GFile * newfile;
+
+        new_name = file_new(CHARACTER_TABLE);
+
+        templatename = g_strconcat( g_getenv("HOME"),"/", base_directory, "/", CHARACTER_TEMPLATE_TABLE, "/", template,  NULL);
+        templatefile = g_file_new_for_path(templatename);
+
+        newfilename = g_strconcat( g_getenv("HOME"),"/", base_directory, "/", CHARACTER_TABLE, "/", new_name,  NULL);
+        newfile = g_file_new_for_path(newfilename);
+
+        if( g_file_copy(templatefile,newfile, G_FILE_COPY_OVERWRITE,NULL,NULL,NULL,NULL) == FALSE ) {
+                g_free(new_name);
+                return NULL;
+        }
+
+        return new_name;
+}
+
 /*****************************/
 /* Call aggro script for each context in every npc context aggro dist */
 void character_update_aggro(context_t * context)

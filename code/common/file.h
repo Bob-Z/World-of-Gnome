@@ -65,6 +65,9 @@
 #define CHARACTER_KEY_AGGRO_DIST	"aggro_dist"
 #define CHARACTER_KEY_AGGRO_SCRIPT	"aggro_script"
 
+#define CHARACTER_TEMPLATE_TABLE	"character_template"
+
+/* misc data */
 #define CURSOR_SPRITE_FILE 	"cursor.png"
 #define CURSOR_TILE_FILE 	"cursor.png"
 
