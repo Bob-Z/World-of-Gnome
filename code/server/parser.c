@@ -20,7 +20,7 @@
 #include <glib.h>
 #include <gio/gio.h>
 #include "../common/common.h"
-#include "avatar.h"
+#include "character.h"
 #include "action.h"
 #include <string.h>
 
@@ -69,10 +69,10 @@ gboolean parse_incoming_data(context_t * context, guint32 command, guint32 comma
 				context_set_connected(context, TRUE);
 			}
 			break;
-		case CMD_REQ_AVATAR_LIST :
-			g_message("Received CMD_REQ_AVATAR_LIST");
-			avatar_send_list(context);
-			g_message("avatar list sent");
+		case CMD_REQ_CHARACTER_LIST :
+			g_message("Received CMD_REQ_CHARACTER_LIST");
+			character_send_list(context);
+			g_message("character list sent");
 			break;
 		case CMD_REQ_FILE :
 			elements = g_strsplit(data,NETWORK_DELIMITER,0);
@@ -97,10 +97,10 @@ gboolean parse_incoming_data(context_t * context, guint32 command, guint32 comma
 			g_message("File %s sent",elements[0]);
 			g_strfreev(elements);
 			break;
-		case CMD_REQ_USER_AVATAR_LIST :
-			g_message("Received CMD_REQ_USER_AVATAR_LIST");
-			avatar_user_send_list(context);
-			g_message("user %s's avatars list sent",context->user_name);
+		case CMD_REQ_USER_CHARACTER_LIST :
+			g_message("Received CMD_REQ_USER_CHARACTER_LIST");
+			character_user_send_list(context);
+			g_message("user %s's character list sent",context->user_name);
 			break;
 		case CMD_SEND_CONTEXT :
 			if( context->type == NULL ) { /* First time a context send its data */
@@ -112,7 +112,7 @@ gboolean parse_incoming_data(context_t * context, guint32 command, guint32 comma
 				context_update_from_network_frame(context,data);
 			}
 			context_write_to_file(context);
-			g_message("Received CMD_SEND_CONTEXT for %s /%s",context->user_name,context->avatar_name);
+			g_message("Received CMD_SEND_CONTEXT for %s /%s",context->user_name,context->character_name);
 			break;
 		case CMD_SEND_ACTION :
 			g_debug("Received CMD_SEND_ACTION");

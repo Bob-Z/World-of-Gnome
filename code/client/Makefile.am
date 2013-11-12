@@ -1,12 +1,12 @@
 bin_PROGRAMS=wog_client
-wog_client_SOURCES=main.c parser.c win_login.c file.c win_select_avatar.c win_game.c draw.c imageDB.c client.c action.c inventory.c textview.c equipment.c
+wog_client_SOURCES=main.c parser.c win_login.c file.c win_select_character.c win_game.c draw.c imageDB.c client.c action.c inventory.c textview.c equipment.c
 
 wog_client_LDADD=../common/libcommon.a /usr/lib/libconfig.a $(ADD_LIB)
 
 wog_clientdir = $(datadir)/wog/client
-wog_client_DATA = login.glade select_avatar.glade game.glade
+wog_client_DATA = login.glade select_character.glade game.glade
 
-dist_noinst_HEADERS = parser.h win_login.h file.h win_select_avatar.h win_game.h win_game.h imageDB.h action.h inventory.h equipment.h
+dist_noinst_HEADERS = parser.h win_login.h file.h win_select_character.h win_game.h win_game.h imageDB.h action.h inventory.h equipment.h
 
 #  uncomment the following if tools requires the math library
 #tools_LDADD=-lm

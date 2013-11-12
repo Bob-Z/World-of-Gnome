@@ -53,7 +53,7 @@ static void npc_script(context_t * context, gchar * script, gchar ** parameters)
 		}
 	}
 
-        g_message("End AI script for %s(%s)",context->id, context->avatar_name);
+        g_message("End AI script for %s(%s)",context->id, context->character_name);
 
         /* Send connected  = FALSE to other context */
         context_spread(context);
@@ -152,7 +152,7 @@ void init_npc(void)
 		g_debug("Creating npc %s of type %s in map %s at %d,%d",name,type,map,x,y);
 		ctx = context_new();
 		context_set_username(ctx,"CPU");
-		context_set_avatar_name(ctx,name);
+		context_set_character_name(ctx,name);
 		context_set_connected(ctx,1);
 		context_set_map(ctx,map);
 		context_set_type(ctx,type);

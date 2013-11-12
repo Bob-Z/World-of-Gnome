@@ -161,7 +161,7 @@ void win_game_update(context_t * context)
 	//gdk_window_thaw_updates(tile_set->window); /* to avoid flickering */
 
 	if( first_time ) {
-		/* Fill the context of the server, so that it knows which avatar we have selected from the select screen */
+		/* Fill the context of the server, so that it knows which character we have selected from the select screen */
 		network_send_context(context);
 		first_time = FALSE;
 	}
@@ -175,7 +175,7 @@ void show_game_window(context_t * context)
 {
 	gchar title[SMALL_BUF];
 
-	g_snprintf(title,SMALL_BUF,"%s - %s",TITLE_NAME,context->avatar_name);
+	g_snprintf(title,SMALL_BUF,"%s - %s",TITLE_NAME,context->character_name);
 	gtk_window_set_title(GTK_WINDOW(game_window),title);
         gtk_widget_show_all(game_window);
 }
@@ -308,7 +308,7 @@ gboolean win_game_init(context_t * context)
 	if( ! gtk_builder_add_from_file (builder, tmp,NULL)) {
 		g_snprintf(tmp,SMALL_BUF,"%s/wog/client/game.glade",DATADIR);
 		if( ! gtk_builder_add_from_file (builder, tmp,NULL)) {
-			g_print("Error while loading UI file select_avatar.glade\n");
+			g_print("Error while loading UI file select_character.glade\n");
 			gdk_threads_leave();
 			return FALSE;
 		}

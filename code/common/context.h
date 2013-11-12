@@ -43,7 +43,7 @@ typedef struct context {
 	GThreadPool *	send_thread;
 	GMutex		send_mutex;
 
-	gchar *		avatar_name;
+	gchar *		character_name;
 	gchar *		map;	/* map name */
 	gint		map_x;	/* map size */
 	gint		map_y;	/* map size */
@@ -51,7 +51,7 @@ typedef struct context {
 	gint		tile_y; /* size of a tile for the current map */
 	gint		pos_x;	/* player position */
 	gint		pos_y;	/* player position */
-	gchar *		type;	/* avatar's type */
+	gchar *		type;	/* character's type */
 	GtkWidget * 	sprite_image;
 	selection_t 	selection; /* Selected tile or sprite */
 	gchar *		id; /* unique ID of a character (its filename) */
@@ -77,7 +77,7 @@ void context_set_output_stream(context_t * context, GOutputStream * stream);
 GOutputStream * context_get_output_stream(context_t * context);
 void context_set_connection(context_t * context, GSocketConnection * connection);
 GSocketConnection * context_get_connection(context_t * context);
-gboolean context_set_avatar_name(context_t * context, const gchar * name);
+gboolean context_set_character_name(context_t * context, const gchar * name);
 gboolean context_set_map(context_t * context, const gchar * name);
 gboolean context_set_type(context_t * context, const gchar * name);
 void context_set_pos_x(context_t * context, guint pos);

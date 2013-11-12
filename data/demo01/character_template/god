@@ -1,0 +1,9 @@
+marquee         = "marquee_god.jpg";
+sprite          = "sprite_god.gif";
+type		= "god"
+map		= "map1";
+pos_x		= 16;
+pos_y		= 16;
+action		= [ "add_ground", "add_sea" ];
+#allowed_tile	= [ "ground" ];
+#inventory	= [ ];

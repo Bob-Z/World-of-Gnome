@@ -1,0 +1,9 @@
+marquee		= "knight_marquee.jpg";
+sprite		= "knight.gif";
+type		= "human"
+map		= "test";
+pos_x		= 0;
+pos_y		= 0;
+action		= [ "add_white" ];
+allowed_tile	= [ "ground" ];
+#inventory	= [ ];  

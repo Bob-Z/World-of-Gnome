@@ -26,7 +26,7 @@
 #include "action.h"
 
 /*****************************/
-/* Delete the requested item from the avatar's inventory */
+/* Delete the requested item from the character's inventory */
 /* return -1 if fails */
 gint inventory_delete(const gchar * id, const gchar * item)
 {
@@ -36,18 +36,18 @@ gint inventory_delete(const gchar * id, const gchar * item)
 		return -1;
 	}
 
-	if( remove_from_list(CHARACTER_TABLE, context->id, item, AVATAR_KEY_INVENTORY, NULL)) {
+	if( remove_from_list(CHARACTER_TABLE, context->id, item, CHARACTER_KEY_INVENTORY, NULL)) {
 		/* update client */
-		network_send_avatar_file(context);
+		network_send_character_file(context);
 		return 0;
 	}
 
-	network_send_avatar_file(context);
+	network_send_character_file(context);
 	return 0;
 }
 
 /*****************************/
-/* Add the requested item to the avatar's inventory */
+/* Add the requested item to the character's inventory */
 /* return -1 if fails */
 gint inventory_add(const gchar * id, const gchar * item)
 {
@@ -57,16 +57,16 @@ gint inventory_add(const gchar * id, const gchar * item)
                 return -1;
         }
 
-	if(!add_to_list(CHARACTER_TABLE,context->id,item, AVATAR_KEY_INVENTORY, NULL)) {
+	if(!add_to_list(CHARACTER_TABLE,context->id,item, CHARACTER_KEY_INVENTORY, NULL)) {
 		return -1;
 	}
 
-	network_send_avatar_file(context);
+	network_send_character_file(context);
 	return 0;
 }
 
 /*****************************/
-/* Count the number of item whose name is passed in the avatar's inventory */
+/* Count the number of item whose name is passed in the character's inventory */
 /* return -1 if fails, otherwise the number of item */
 gint inventory_count(const gchar * id, const gchar * item_name)
 {
@@ -81,7 +81,7 @@ gint inventory_count(const gchar * id, const gchar * item_name)
                 return -1;
         }
 
-	if(!read_list(CHARACTER_TABLE,context->id,&name_list,AVATAR_KEY_INVENTORY,NULL) ) {
+	if(!read_list(CHARACTER_TABLE,context->id,&name_list,CHARACTER_KEY_INVENTORY,NULL) ) {
 		return -1;
 	}
 
@@ -115,7 +115,7 @@ gchar * inventory_get_by_name(const gchar * id, const gchar * item_name)
                 return NULL;
         }
 
-	if(!read_list(CHARACTER_TABLE,context->id,&name_list,AVATAR_KEY_INVENTORY,NULL) ) {
+	if(!read_list(CHARACTER_TABLE,context->id,&name_list,CHARACTER_KEY_INVENTORY,NULL) ) {
                 return NULL;
         }
 

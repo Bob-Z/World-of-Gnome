@@ -23,26 +23,14 @@
 #define DEFAULT_IMAGE_FILE	"default.jpg"
 
 /* users data */
-#define USERS_TABLE		"users"
+#define USERS_TABLE		"user"
 #define USERS_CHARACTER_LIST    "character_list"
 
 /* password data */
 #define PASSWD_TABLE		"passwd"
 #define PASSWD_KEY_PASSWORD	"password"
 
-/* character data */
-#define CHARACTER_TABLE		"characters"
-
-/* avatar data */
-#define AVATAR_TABLE 		"avatar"
-#define AVATAR_KEY_MARQUEE 	"marquee"
-#define AVATAR_KEY_SPRITE	"sprite"
-#define AVATAR_KEY_TYPE		"type"
-#define AVATAR_KEY_ACTION	"action"
-#define AVATAR_KEY_INVENTORY	"inventory"
-#define AVATAR_KEY_ALLOWED_TILE "allowed_tile"
-
-/* avatar attributes */
+/* attributes */
 #define ATTRIBUTE_GROUP		"attribute"
 #define ATTRIBUTE_CURRENT	"current"
 #define ATTRIBUTE_PREVIOUS	"previous"
@@ -60,13 +48,18 @@
 #define TILE_KEY_TYPE 		"type"
 
 /* character data */
+#define CHARACTER_TABLE		"character"
+#define CHARACTER_KEY_MARQUEE 	"marquee"
+#define CHARACTER_KEY_SPRITE	"sprite"
 #define CHARACTER_KEY_TYPE	"type"
 #define CHARACTER_KEY_MAP	"map"
 #define	CHARACTER_KEY_POS_X	"pos_x"
 #define CHARACTER_KEY_POS_Y	"pos_y"
 #define CHARACTER_KEY_NPC	"npc"
 #define CHARACTER_KEY_NAME	"name"
+#define CHARACTER_KEY_ACTION	"action"
 #define CHARACTER_KEY_ALLOWED_TILE	"allowed_tile"
+#define CHARACTER_KEY_INVENTORY	"inventory"
 #define CHARACTER_KEY_AI	"ai"
 #define CHARACTER_KEY_AI_PARAMS	"ai_params"
 #define CHARACTER_KEY_AGGRO_DIST	"aggro_dist"
@@ -123,7 +116,7 @@
 /* scripts */
 #define SCRIPT_TABLE		"script"
 
-/* avatar equipment */
+/* character equipment */
 #define EQUIPMENT_GROUP		"equipment"
 #define EQUIPMENT_ICON		"icon"
 #define EQUIPMENT_NAME		"name"

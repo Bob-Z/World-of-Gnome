@@ -118,7 +118,7 @@ int file_add(gchar * data,guint32 command_size,gchar ** out_filename)
 	return 0;
 }
 
-/* Remove avatar file to be sure they are always downloaded at start-up time */
+/* Remove character file to be sure they are always downloaded at start-up time */
 /* called by client */
 void file_clean(context_t * context)
 {

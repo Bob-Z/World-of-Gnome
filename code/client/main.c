@@ -22,7 +22,7 @@
 #include "../common/common.h"
 #include <gtk/gtk.h>
 #include "win_login.h"
-#include "win_select_avatar.h"
+#include "win_select_character.h"
 #include "win_game.h"
 #include "imageDB.h"
 #include "file.h"
@@ -72,8 +72,8 @@ int main (int argc, char **argv)
 		return 1;
 	}
 	
-	if( ! win_select_avatar_init(context) ) {
-		g_warning("Unable to initialize the select avatar window, abort");
+	if( ! win_select_character_init(context) ) {
+		g_warning("Unable to initialize the select character window, abort");
 		return 1;
 	}
 

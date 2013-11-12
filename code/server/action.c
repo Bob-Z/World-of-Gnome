@@ -21,7 +21,7 @@
 #include <gtk/gtk.h>
 #include <glib/gprintf.h>
 #include "../common/common.h"
-#include "avatar.h"
+#include "character.h"
 #include "equipment.h"
 #include "inventory.h"
 #include "attribute.h"
@@ -222,7 +222,7 @@ static int l_character_get_name( lua_State* L)
 		g_message("%s: Cannot find context with ID %s",__func__,id);
 		return 0;  /* number of results */
 	}
-	lua_pushstring(L, target->avatar_name);
+	lua_pushstring(L, target->character_name);
 	return 1;  /* number of results */
 }
 
@@ -247,7 +247,7 @@ static int l_character_disconnect( lua_State* L)
 	gint res;
 
 	id = luaL_checkstring(L, -1);
-	res = avatar_disconnect(id);
+	res = character_disconnect(id);
 	lua_pushnumber(L, res);
 	return 1;  /* number of results */
 }
@@ -278,7 +278,7 @@ static int l_character_set_pos( lua_State* L)
 	y = luaL_checkint(L, -1);
 
 	ctx = context_find(id);
-	res = avatar_set_pos(ctx,map,x,y);
+	res = character_set_pos(ctx,map,x,y);
 	lua_pushnumber(L, res);
 	return 1;  /* number of results */
 }
@@ -770,7 +770,7 @@ static void action_chat(context_t * context, const gchar * text)
 {
 	gchar * new_text;
 
-	new_text = g_strconcat(context->avatar_name,": ",text,"\n",NULL);
+	new_text = g_strconcat(context->character_name,": ",text,"\n",NULL);
 	network_broadcast_text(context,new_text);
 	g_free(new_text);
 }

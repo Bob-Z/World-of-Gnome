@@ -29,65 +29,65 @@
 extern context_t * context_list_start;
 
 /*****************************/
-void avatar_send_list(context_t * context)
+void character_send_list(context_t * context)
 {
-	gchar ** avatar_list;
+	gchar ** character_list;
 	gint i = 0;
 
-	if(!read_list(USERS_TABLE, context->user_name,&avatar_list,USERS_CHARACTER_LIST,NULL)) {
+	if(!read_list(USERS_TABLE, context->user_name,&character_list,USERS_CHARACTER_LIST,NULL)) {
 		return;
 	}
 
-	while( avatar_list[i] != NULL ) {
-		network_send_command(context, CMD_SEND_AVATAR, g_utf8_strlen(avatar_list[i],-1)+1, avatar_list[i],FALSE);
+	while( character_list[i] != NULL ) {
+		network_send_command(context, CMD_SEND_CHARACTER, g_utf8_strlen(character_list[i],-1)+1, character_list[i],FALSE);
 		i++;
 	}
 	
-	g_free(avatar_list);
+	g_free(character_list);
 }
 
 /*****************************/
-void avatar_user_send_list(context_t * context)
+void character_user_send_list(context_t * context)
 {
 	gchar * data = NULL;
 	guint data_size = 0;
 	guint string_size = 0;
-	gchar ** avatar_list;
+	gchar ** character_list;
 	const gchar * type;
 	const gchar * name;
 	gint i;
 
-	if(!read_list(USERS_TABLE, context->user_name,&avatar_list,USERS_CHARACTER_LIST,NULL)) {
+	if(!read_list(USERS_TABLE, context->user_name,&character_list,USERS_CHARACTER_LIST,NULL)) {
 		return;
 	}
 
 	i = 0;
 
 	data = g_strdup("");
-	while( avatar_list[i] != NULL ) {
-		if(!read_string(CHARACTER_TABLE, avatar_list[i], &type, CHARACTER_KEY_TYPE,NULL)) {
+	while( character_list[i] != NULL ) {
+		if(!read_string(CHARACTER_TABLE, character_list[i], &type, CHARACTER_KEY_TYPE,NULL)) {
 			i++;
 			continue;
 		}
 
-		if(!read_string(CHARACTER_TABLE, avatar_list[i], &name, CHARACTER_KEY_NAME,NULL)) {
+		if(!read_string(CHARACTER_TABLE, character_list[i], &name, CHARACTER_KEY_NAME,NULL)) {
 			i++;
 			continue;
 		}
 
-		/* add the name of the avatar to the network frame */
-		string_size = g_utf8_strlen(avatar_list[i],-1)+1;
+		/* add the name of the character to the network frame */
+		string_size = g_utf8_strlen(character_list[i],-1)+1;
 		data = g_realloc(data, data_size + string_size);
-		g_memmove(data+data_size,avatar_list[i], string_size);
+		g_memmove(data+data_size,character_list[i], string_size);
 		data_size += string_size;
 
-		/* add the type of the avatar to the network frame */
+		/* add the type of the character to the network frame */
 		string_size = g_utf8_strlen(type,-1)+1;
 		data = g_realloc(data, data_size + string_size);
 		g_memmove(data+data_size, type, string_size);
 		data_size += string_size;
 
-		/* add the type of the avatar to the network frame */
+		/* add the type of the character to the network frame */
 		string_size = g_utf8_strlen(name,-1)+1;
 		data = g_realloc(data, data_size + string_size);
 		g_memmove(data+data_size, name, string_size);
@@ -96,14 +96,14 @@ void avatar_user_send_list(context_t * context)
 		i++;
 	}
 
-	g_free(avatar_list);
+	g_free(character_list);
 
 	/* Mark the end of the list */
 	data = g_realloc(data, data_size + 1);
 	data[data_size] = 0;
 	data_size ++;
 
-	network_send_command(context, CMD_SEND_USER_AVATAR, data_size, data,FALSE);
+	network_send_command(context, CMD_SEND_USER_CHARACTER, data_size, data,FALSE);
 	g_free(data);
 }
 
@@ -111,7 +111,7 @@ void avatar_user_send_list(context_t * context)
 /* disconnect a character */
 /*  if it's a npc, the NPC is deleted */
 /* return -1 if fails */
-gint avatar_disconnect( const gchar * id)
+gint character_disconnect( const gchar * id)
 {
 	context_t * ctx;
 
@@ -132,7 +132,7 @@ gint avatar_disconnect( const gchar * id)
 
 /*****************************/
 /* Call aggro script for each context in every npc context aggro dist */
-void avatar_update_aggro(context_t * context)
+void character_update_aggro(context_t * context)
 {
         context_t * ctx = NULL;
         context_t * ctx2 = NULL;
@@ -202,7 +202,7 @@ void avatar_update_aggro(context_t * context)
 /******************************************************
 return -1 if the postion was not set (because tile not allowed or out of bound)
 ******************************************************/
-gint avatar_set_pos(context_t * ctx, gchar * map, gint x, gint y)
+gint character_set_pos(context_t * ctx, gchar * map, gint x, gint y)
 {
 	const gchar ** event_id;
 	const gchar * script;
@@ -210,7 +210,7 @@ gint avatar_set_pos(context_t * ctx, gchar * map, gint x, gint y)
 	int i;
 	int change_map = 0;
 
-	/* Check if this avatar is allowed to go to the target tile */
+	/* Check if this character is allowed to go to the target tile */
         if (map_check_tile(ctx,map,x,y) ) {
 
 		if( g_strcmp0(ctx->map,map) ) {
@@ -249,7 +249,7 @@ gint avatar_set_pos(context_t * ctx, gchar * map, gint x, gint y)
 			}
 		}
 
-		avatar_update_aggro(ctx);
+		character_update_aggro(ctx);
 		return 0;
         }
 	return -1;

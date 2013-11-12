@@ -95,18 +95,18 @@ void network_login(context_t * context, const gchar * name, const gchar * passwo
 	network_send_command(context, CMD_LOGIN_PASSWORD, g_utf8_strlen(password,-1) + 1, password,FALSE);
 }
 
-/* request avatar list */
-void network_request_avatar_list(context_t * context)
+/* request characters list */
+void network_request_character_list(context_t * context)
 {
-	g_message("Send CMD_REQ_AVATAR_LIST");
-	network_send_command(context, CMD_REQ_AVATAR_LIST, 0, NULL,FALSE);
+	g_message("Send CMD_REQ_CHARACTER_LIST");
+	network_send_command(context, CMD_REQ_CHARACTER_LIST, 0, NULL,FALSE);
 }
 
-/* request a specific user's avatar list */
-void network_request_user_avatar_list(context_t * context)
+/* request a specific user's characters list */
+void network_request_user_character_list(context_t * context)
 {
-	g_message("Send CMD_REQ_USER_AVATAR_LIST");
-	network_send_command(context, CMD_REQ_USER_AVATAR_LIST, g_utf8_strlen(context->user_name,-1)+1, context->user_name,FALSE);
+	g_message("Send CMD_REQ_USER_CHARACTER_LIST");
+	network_send_command(context, CMD_REQ_USER_CHARACTER_LIST, g_utf8_strlen(context->user_name,-1)+1, context->user_name,FALSE);
 }
 
 /* server sends a message to client */
@@ -125,7 +125,7 @@ void network_send_text(const gchar * id, const gchar * string)
                 return;
         }
 
-	g_message("Send CMD_SEND_TEXT :\"%s\" to %s (%s)",string,context->avatar_name,context->user_name);
+	g_message("Send CMD_SEND_TEXT :\"%s\" to %s (%s)",string,context->character_name,context->user_name);
 	network_send_command(context, CMD_SEND_TEXT, g_utf8_strlen(string,-1)+1, string,FALSE);
 }
 
@@ -190,8 +190,8 @@ void network_send_action(context_t * context, gchar * script,...)
 	g_free(frame);
 }
 
-/* Server send the full avatar's file to client */
-void network_send_avatar_file(context_t * context)
+/* Server send the full character's file to client */
+void network_send_character_file(context_t * context)
 {
 	gchar * filename;
 
@@ -334,8 +334,8 @@ void network_send_context(context_t * context)
 	g_memmove(data+data_size, context->user_name, size);
 	data_size += size;
 
-	size = g_utf8_strlen(context->avatar_name,-1)+1;
-	g_memmove(data+data_size, context->avatar_name, size);
+	size = g_utf8_strlen(context->character_name,-1)+1;
+	g_memmove(data+data_size, context->character_name, size);
 	data_size += size;
 
 	size = g_utf8_strlen(context->map,-1)+1;
@@ -834,8 +834,8 @@ void network_send_context_to_context(context_t * dest_ctx, context_t * src_ctx)
         g_memmove(data+data_size, src_ctx->user_name, size);
         data_size += size;
 
-        size = g_utf8_strlen(src_ctx->avatar_name,-1)+1;
-        g_memmove(data+data_size, src_ctx->avatar_name, size);
+        size = g_utf8_strlen(src_ctx->character_name,-1)+1;
+        g_memmove(data+data_size, src_ctx->character_name, size);
         data_size += size;
 
         size = g_utf8_strlen(src_ctx->map,-1)+1;

@@ -72,7 +72,7 @@ gboolean on_motion_over_sprite_event(GtkWidget *widget, GdkEventMotion *event, g
 	if( last_mouse_tile_x != context->pos_x || last_mouse_tile_y != context->pos_y) {
 		last_mouse_tile_x = context->pos_x;
 		last_mouse_tile_y = context->pos_y;
-		string = g_strconcat( context->avatar_name,"\n", context->type, NULL);
+		string = g_strconcat( context->character_name,"\n", context->type, NULL);
 
 		gtk_label_set_text(GTK_LABEL(pointed_label), string);
                 g_free(string);
@@ -118,7 +118,7 @@ void update_selected_character(context_t * context)
 	if( selected != NULL ) {
 		/* Check if the selected character is still on the same map */
 		if( g_strcmp0(selected->map, context->map) == 0 ) {
-			string = g_strconcat( selected->avatar_name,"\n", selected->type, NULL);
+			string = g_strconcat( selected->character_name,"\n", selected->type, NULL);
 			gtk_label_set_text(GTK_LABEL(selected_character_label), string);
 			g_free(string);
 			pixbuf = gtk_image_get_animation( GTK_IMAGE(gtk_bin_get_child(GTK_BIN(selected->sprite_image))) );
@@ -222,7 +222,7 @@ GtkWidget * get_sprite(context_t * context) {
 	GtkWidget * new_event_box = NULL;
 
 	/* compute the sprite file name */
-	if(!read_string(AVATAR_TABLE,context->type,&sprite_name,AVATAR_KEY_SPRITE,NULL)) {
+	if(!read_string(CHARACTER_TABLE,context->id,&sprite_name,CHARACTER_KEY_SPRITE,NULL)) {
 		g_critical("Can't read sprite name for \"%s\" type",context->type);
 		g_assert(1);
 	}

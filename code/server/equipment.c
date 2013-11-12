@@ -26,7 +26,7 @@
 #include "action.h"
 
 /*****************************/
-/* Delete the selected item from the avatar's equipment slot */
+/* Delete the selected item from the character's equipment slot */
 /* return -1 if fails */
 gint equipment_delete(const gchar *id, const gchar * slot)
 {
@@ -38,7 +38,7 @@ gint equipment_delete(const gchar *id, const gchar * slot)
 
 	if( remove_group(CHARACTER_TABLE, context->id, EQUIPMENT_EQUIPPED, EQUIPMENT_GROUP, slot, NULL)) {
 		/* update client */
-		network_send_avatar_file(context);
+		network_send_character_file(context);
 		return 0;
 	}
 
@@ -46,7 +46,7 @@ gint equipment_delete(const gchar *id, const gchar * slot)
 }
 
 /*****************************/
-/* Add the passed item to the avatar's equipment slot */
+/* Add the passed item to the character's equipment slot */
 /* return -1 if fails */
 gint equipment_add(const gchar *id, const gchar * slot, const gchar * item)
 {
@@ -58,7 +58,7 @@ gint equipment_add(const gchar *id, const gchar * slot, const gchar * item)
 
 	if( write_string(CHARACTER_TABLE, context->id, item, EQUIPMENT_GROUP, slot, EQUIPMENT_EQUIPPED, NULL)) {
 		/* update client */
-		network_send_avatar_file(context);
+		network_send_character_file(context);
 		return 0;
 	}
 
@@ -66,7 +66,7 @@ gint equipment_add(const gchar *id, const gchar * slot, const gchar * item)
 }
 
 /*****************************/
-/* Return the name of the item in avatar's specified equipment slot*/
+/* Return the name of the item in character's specified equipment slot*/
 /* return NULL if fails */
 const char * equipment_get_item_id(const gchar *id, const gchar * slot)
 {

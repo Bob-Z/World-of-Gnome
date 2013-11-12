@@ -65,7 +65,7 @@ void update_action_bar(context_t * context, GtkWidget * bar)
 	GtkToolItem * item;
 
         /* Read action list for current user */
-	if(!read_list(CHARACTER_TABLE,context->id,&action_list,AVATAR_KEY_ACTION,NULL)) {
+	if(!read_list(CHARACTER_TABLE,context->id,&action_list,CHARACTER_KEY_ACTION,NULL)) {
 		return;
 	}
 

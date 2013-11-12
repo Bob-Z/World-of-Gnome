@@ -26,13 +26,13 @@
 void network_init(void);
 int network_open_data_connection(context_t * context);
 void network_send_command(context_t * context, guint32 command, gsize count, const gchar *data,gboolean is_data);
-void network_send_avatar_file(context_t * context);
+void network_send_character_file(context_t * context);
 gboolean network_connect(context_t * context, const gchar * hostname);
 void network_login(context_t * context, const gchar * name, const gchar * password);
-void network_request_avatar_list(context_t * context);
-void network_request_avatar_marquee(context_t * context, gchar * avatar_name);
-void network_request_user_avatar_list(context_t * context);
-void network_request_avatar_data(context_t * context);
+void network_request_character_list(context_t * context);
+void network_request_character_marquee(context_t * context, gchar * character_name);
+void network_request_user_character_list(context_t * context);
+void network_request_character_data(context_t * context);
 void network_send_context(context_t * context);
 void network_send_context_to_context(context_t * dest_ctx, context_t * src_ctx);
 void network_send_text(const gchar * id, const gchar * string);

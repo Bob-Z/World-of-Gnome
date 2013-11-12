@@ -104,17 +104,10 @@ gboolean map_check_tile(context_t * context,gchar * map, gint x,gint y)
         }
 
 	/* try specific allowed tile */
-	if(!read_list(CHARACTER_TABLE,context->id,&allowed_tile,AVATAR_KEY_ALLOWED_TILE,NULL)) {
-		allowed_tile = NULL;
-	}
-
-	/* try general avatar allowed tile */
-	if( allowed_tile == NULL ) {
-		if(!read_list(AVATAR_TABLE,context->type,&allowed_tile,AVATAR_KEY_ALLOWED_TILE,NULL)) {
+	if(!read_list(CHARACTER_TABLE,context->id,&allowed_tile,CHARACTER_KEY_ALLOWED_TILE,NULL)) {
 		/* no allowed_type -> this character is allowed on all tile*/
-			g_free(map_tiles);
-			return TRUE;
-		}
+		g_free(map_tiles);
+		return TRUE;
 	}
 
         while( allowed_tile[i] != NULL ) {

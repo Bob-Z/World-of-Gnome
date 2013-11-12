@@ -17,9 +17,9 @@
    Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
-void avatar_send_list(context_t * context);
-void avatar_user_send_list(context_t * context);
-gint avatar_disconnect(const gchar * id);
-gint avatar_set_pos(context_t * ctx,const gchar * map, gint x, gint y);
-void avatar_update_aggro(context_t * context);
+gboolean win_select_character_init(context_t * context);
+void update_select_character_window(context_t * context);
+void show_select_character_window(context_t * context);
+void hide_select_character_window(void);
+void add_user_character(context_t * context, gchar * data);
 

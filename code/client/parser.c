@@ -22,7 +22,7 @@
 #include "../common/common.h"
 #include <gtk/gtk.h>
 #include "win_login.h"
-#include "win_select_avatar.h"
+#include "win_select_character.h"
 #include "file.h"
 #include "imageDB.h"
 #include "win_game.h"
@@ -37,7 +37,7 @@ gboolean parse_incoming_data(context_t * context, guint32 command, guint32 comma
         gchar * filename = NULL;
 
 	if(context == NULL) {
-		hide_select_avatar_window();
+		hide_select_character_window();
 		hide_game_window();
 		show_login_window();
 	}
@@ -51,9 +51,9 @@ gboolean parse_incoming_data(context_t * context, guint32 command, guint32 comma
 			context_set_connected(context, TRUE);
                         g_message("Successfully connected");
 			hide_login_window();
-			show_select_avatar_window(context);
-			network_request_user_avatar_list(context);
-			g_message("Avatar list requested");
+			show_select_character_window(context);
+			network_request_user_character_list(context);
+			g_message("Character list requested");
                         break;
                 case CMD_LOGIN_NOK :
                         g_message("Received CMD_LOGIN_NOK");
@@ -72,9 +72,9 @@ gboolean parse_incoming_data(context_t * context, guint32 command, guint32 comma
 			gdk_threads_leave();
 
                         break;
-                case CMD_SEND_AVATAR :
-                        g_message("Received CMD_SEND_AVATAR");
-			g_message("New avatar : %s", data);
+                case CMD_SEND_CHARACTER :
+                        g_message("Received CMD_SEND_CHARACTER");
+			g_message("New character : %s", data);
                         break;
                 case CMD_SEND_FILE :
                         g_message("Received CMD_SEND_FILE");
@@ -85,17 +85,17 @@ gboolean parse_incoming_data(context_t * context, guint32 command, guint32 comma
 			updated_media = image_DB_update(context,filename);
 			g_free(filename);
 
-			/* Asynchronous update of the select avatar window */
-			update_select_avatar_window(context);
+			/* Asynchronous update of the select character window */
+			update_select_character_window(context);
 			/* Asynchronous update of the game window */
 			redraw_window();
 
 			updated_media = FALSE;
                         break;
-                case CMD_SEND_USER_AVATAR :
-                        g_message("Received CMD_SEND_USER_AVATAR");
-			add_user_avatar(context,data);
-			update_select_avatar_window(context);
+                case CMD_SEND_USER_CHARACTER :
+                        g_message("Received CMD_SEND_USER_CHARACTER");
+			add_user_character(context,data);
+			update_select_character_window(context);
                         break;
                 case CMD_SEND_CONTEXT :
                         g_message("Received CMD_SEND_CONTEXT");

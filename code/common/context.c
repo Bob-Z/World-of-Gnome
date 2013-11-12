@@ -49,7 +49,7 @@ void context_init(context_t * context)
 	context->hostname = NULL;
 	context->send_thread = NULL;
 
-        context->avatar_name = NULL;
+        context->character_name = NULL;
         context->map = NULL;
         context->map_x = -1;
         context->map_y = -1;
@@ -139,8 +139,8 @@ void context_free(context_t * context)
 	g_free(context->hostname);
 	context->hostname = NULL;
 	context->send_thread = NULL;
-	g_free(context->avatar_name);
-	context->avatar_name = NULL;
+	g_free(context->character_name);
+	context->character_name = NULL;
 	g_free(context->map);
 	context->map = NULL;
 	g_free(context->type);
@@ -316,19 +316,19 @@ GSocketConnection * context_get_connection(context_t * context)
 
 	return conn;
 }
-/* context_set_avatar_name
-  Set avatar_name
+/* context_set_character_name
+  Set name
 
   Returns FALSE if error
 */
-gboolean context_set_avatar_name(context_t * context, const gchar * name)
+gboolean context_set_character_name(context_t * context, const gchar * name)
 {
 	int ret = TRUE;
 
 	g_static_mutex_lock (&context_list_mutex);
-	g_free( context->avatar_name );
-	context->avatar_name = g_strdup(name);
-	if( context->avatar_name == NULL ) {
+	g_free( context->character_name );
+	context->character_name = g_strdup(name);
+	if( context->character_name == NULL ) {
 		ret = FALSE;
 	}
 	g_static_mutex_unlock (&context_list_mutex);
@@ -508,7 +508,7 @@ void context_new_VM(context_t * context)
 	g_static_mutex_unlock (&context_list_mutex);
 }
 /*******************************
-Update the memory context by reading the client's avatar data file on disk 
+Update the memory context by reading the client's character data file on disk 
 *******************************/
 gboolean context_update_from_file(context_t * context)
 {
@@ -528,9 +528,9 @@ gboolean context_update_from_file(context_t * context)
 		return FALSE;
 	}
 
-	g_free( context->avatar_name );
-	context->avatar_name = g_strdup(result);
-	if( context->avatar_name == NULL ) {
+	g_free( context->character_name );
+	context->character_name = g_strdup(result);
+	if( context->character_name == NULL ) {
 		g_static_mutex_unlock (&context_list_mutex);
 		return FALSE;
 	}
@@ -634,10 +634,10 @@ gboolean context_update_from_network_frame(context_t * context, gchar * frame)
 
 	data += (g_utf8_strlen(data,-1)+1);
 
-	if( context->avatar_name ) {
-		g_free( context->avatar_name );
+	if( context->character_name ) {
+		g_free( context->character_name );
 	}
-	context->avatar_name = g_strdup(data);
+	context->character_name = g_strdup(data);
 	data += (g_utf8_strlen(data,-1)+1);
 
 	if( context->prev_map ) {
@@ -761,7 +761,7 @@ void context_spread(context_t * context)
 			continue;
 		}
 
-		/* Skip if the player has not selected its avatar (not yet entered in the game)  */
+		/* Skip if the player has not selected its character (not yet entered in the game)  */
 		if( ctx->id == NULL ) {
 			continue;
 		}
@@ -808,7 +808,7 @@ void context_broadcast_text(const gchar * map, const gchar * text)
 				continue;
 			}
 
-			/* Skip if the player has not selected its avatar */
+			/* Skip if the player has not selected its character */
 			if( ctx->id == NULL ) {
 				continue;
 			}
@@ -859,7 +859,7 @@ void context_add_or_update_from_network_frame(context_t * context,gchar * data)
 {
 	context_t * ctx = NULL;
 	gchar * user_name = NULL;
-	gchar * avatar_name = NULL;
+	gchar * name = NULL;
 	gchar * map = NULL;
 	gboolean connected;
 	gint pos_x;
@@ -876,7 +876,7 @@ void context_add_or_update_from_network_frame(context_t * context,gchar * data)
 	user_name = g_strdup(data);
 	data += (g_utf8_strlen(data,-1)+1);
 
-	avatar_name = g_strdup(data);
+	name = g_strdup(data);
 	data += (g_utf8_strlen(data,-1)+1);
 
 	map = g_strdup(data);
@@ -916,7 +916,7 @@ void context_add_or_update_from_network_frame(context_t * context,gchar * data)
 	while( ctx != NULL ) {
 		if( g_strcmp0( id, ctx->id) == 0 ) { 
 			if( connected != FALSE ) {
-				g_message("Updating context %s / %s",user_name,avatar_name);
+				g_message("Updating context %s / %s",user_name,name);
 				/* do not call context_set_* function since we already have the lock */
 				g_free(ctx->map);
 				ctx->map = map;
@@ -934,13 +934,13 @@ void context_add_or_update_from_network_frame(context_t * context,gchar * data)
 				ctx->type = type;
 
 				g_free(user_name);
-				g_free(avatar_name);
+				g_free(name);
 				g_free(id);
 
 				g_static_mutex_unlock (&context_list_mutex);
 			}
 			else {
-				g_message("Deleting context %s / %s",user_name,avatar_name);
+				g_message("Deleting context %s / %s",user_name,name);
 				/* Delete selection if it was selected */
 				if( context->selection.id != NULL ) {
 					if( g_strcmp0(context->selection.id, id) == 0 ) {
@@ -959,10 +959,10 @@ void context_add_or_update_from_network_frame(context_t * context,gchar * data)
 
 	g_static_mutex_unlock (&context_list_mutex);
 
-	g_message("Creating context %s / %s",user_name,avatar_name);
+	g_message("Creating context %s / %s",user_name,name);
 	ctx = context_new();
 	context_set_username(ctx,user_name);
-	context_set_avatar_name(ctx,avatar_name);
+	context_set_character_name(ctx,name);
 	context_set_map(ctx,map);
 	context_set_type(ctx,type);
 	context_set_pos_x(ctx,pos_x);
@@ -974,7 +974,7 @@ void context_add_or_update_from_network_frame(context_t * context,gchar * data)
 	context_set_id(ctx,id);
 	
 	g_free(user_name);
-	g_free(avatar_name);
+	g_free(name);
 	g_free(map);
 	g_free(type);
 }

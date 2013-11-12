@@ -1,0 +1,9 @@
+marquee		= "goblin_marquee.png";
+sprite		= "goblin.gif";
+type		= "gob";
+map		= "test";
+pos_x		= 0;
+pos_y		= 0;
+#action		= [ "action1", "action2" ];
+#allowed_tile	= [ "ground" ];
+#inventory	= [ ];

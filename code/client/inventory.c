@@ -90,7 +90,7 @@ void fill_inventory(context_t * context)
 	gtk_icon_view_set_pixbuf_column(GTK_ICON_VIEW(inventory_list),2);
 
 	/* read data from file */
-	if(!read_list(CHARACTER_TABLE,context->id,&item_list, AVATAR_KEY_INVENTORY,NULL)) {
+	if(!read_list(CHARACTER_TABLE,context->id,&item_list, CHARACTER_KEY_INVENTORY,NULL)) {
 		return;
 	}
 
