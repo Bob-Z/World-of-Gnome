@@ -1,3 +1,5 @@
+marquee		= "goblin_marquee.png";
+sprite		= "goblin.gif";
 name = "yip";
 inventory = [ "A0006" ];
 type = "gob";

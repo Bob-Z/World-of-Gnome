@@ -1,9 +1,11 @@
+marquee		= "goblin_marquee.png";
+sprite		= "goblin.gif";
 npc = 1;
-name = "glipglip";
-map = "test2";
+name = "glopglop";
+map = "test";
 type = "gob";
 pos_x = 0;
-pos_y = 6;
+pos_y = 8;
 ai = "ai_random.lua";
 aggro_dist = 1;
 aggro_script = "aggro_say_hello.lua";
@@ -15,7 +17,6 @@ attribute :
     max = 10;
     current = 10;
     previous = 10;
-    on_min = "kill.lua";
   };
   agility : 
   {

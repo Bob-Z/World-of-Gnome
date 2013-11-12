@@ -1,9 +1,0 @@
-marquee         = "knight_marquee.jpg";
-sprite          = "knight.gif";
-speed           = 500;
-start_map       = "test";
-start_x         = 0;
-start_y         = 0;
-#default action for this kind of avatar
-action          = "add_white";
-allowed_tile	= "ground";
