@@ -1,5 +1,5 @@
-marquee		= "goblin_marquee.png";
-sprite		= "goblin.gif";
+marquee		= "marquee/goblin.png";
+sprite		= "sprite/goblin.gif";
 type		= "gob";
 map		= "test";
 pos_x		= 0;

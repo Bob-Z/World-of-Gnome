@@ -1,2 +1,2 @@
-image	= "tile_dungeon_wall.gif";
+image	= "tile/dungeon_wall.gif";
 type	= "wall";

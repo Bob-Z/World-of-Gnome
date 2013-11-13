@@ -1,5 +1,5 @@
-marquee         = "marquee_god.jpg";
-sprite          = "sprite_god.gif";
+marquee         = "marquee/god.jpg";
+sprite          = "sprite/god.gif";
 name = "Terrus";
 inventory = [ ];
 type = "god";

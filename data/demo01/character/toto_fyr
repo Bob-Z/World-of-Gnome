@@ -1,5 +1,5 @@
-marquee		= "marquee_lich.jpg";
-sprite		= "sprite_lich.gif";
+marquee		= "marquee/lich.jpg";
+sprite		= "sprite/lich.gif";
 name = "Fyr";
 inventory = [ ];
 type = "lich";

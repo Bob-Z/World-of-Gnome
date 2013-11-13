@@ -1,5 +1,5 @@
-marquee		= "marquee_lich.jpg";
-sprite		= "sprite_lich.gif";
+marquee		= "marquee/lich.jpg";
+sprite		= "sprite/lich.gif";
 type		= "lich"
 map		= "map1";
 pos_x		= 16;

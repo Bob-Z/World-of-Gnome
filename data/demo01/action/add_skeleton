@@ -1,3 +1,3 @@
 text		= "Raise a skeleton";
-icon		= "icon_skeleton.jpg";
+icon		= "icon/skeleton.jpg";
 script		= "add_skeleton.lua";

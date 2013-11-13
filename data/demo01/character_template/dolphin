@@ -1,5 +1,5 @@
-marquee		= "marquee_dolphin.jpg";
-sprite		= "sprite_dolphin.gif";
+marquee		= "marquee/dolphin.jpg";
+sprite		= "sprite/dolphin.gif";
 type		= "dolphin";
 map		= "map1";
 pos_x		= 0;
