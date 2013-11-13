@@ -1,0 +1,3 @@
+text		= "Summon a black dragon";
+icon		= "icon_black_dragon.png";
+script		= "add_black_dragon.lua";
