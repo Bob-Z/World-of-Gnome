@@ -109,7 +109,6 @@ void character_user_send_list(context_t * context)
 
 /*****************************/
 /* disconnect a character */
-/*  if it's a npc, the NPC is deleted */
 /* return -1 if fails */
 gint character_disconnect( const gchar * id)
 {
