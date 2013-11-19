@@ -57,6 +57,9 @@ gint inventory_add(const gchar * id, const gchar * item)
                 return -1;
         }
 
+	/* Make sure the CHARACTER_KEY_INVENTORY list exists */
+	list_create(CHARACTER_TABLE,context->id,CHARACTER_KEY_INVENTORY,NULL);
+
 	if(!add_to_list(CHARACTER_TABLE,context->id,item, CHARACTER_KEY_INVENTORY, NULL)) {
 		return -1;
 	}
