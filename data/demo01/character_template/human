@@ -1,9 +1,28 @@
-marquee		= "marquee/marquee.jpg";
+marquee		= "marquee/knight.jpg";
 sprite		= "sprite/knight.gif";
 type		= "human"
 map		= "map1";
 pos_x		= 16;
 pos_y		= 16;
-#action		= [ "add_white" ];
+action		= [ "hit" ];
 allowed_tile	= [ "ground" ];
 #inventory	= [ ];  
+attribute :
+{
+  life :
+  {
+    min = 0;
+    max = 10;
+    current = 10;
+    previous = 10;
+    on_min = "kill.lua";
+  };
+  agility :
+  {
+    min = 0;
+    max = 10;
+    current = 10;
+    previous = 10;
+    on_min = "kill.lua";
+  };
+};

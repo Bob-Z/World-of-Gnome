@@ -8,3 +8,22 @@ pos_x = 16;
 pos_y = 16;
 action          = [ "add_black_dragon", "add_dungeon", "add_dungeon_floor", "add_dungeon_wall", "add_skeleton" ];
 allowed_tile = [ "ground" ];
+attribute :
+{
+  life :
+  {
+    min = 0;
+    max = 10;
+    current = 10;
+    previous = 10;
+    on_min = "kill.lua";
+  };
+  agility :
+  {
+    min = 0;
+    max = 10;
+    current = 10;
+    previous = 10;
+    on_min = "kill.lua";
+  };
+};

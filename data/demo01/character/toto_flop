@@ -1,15 +1,16 @@
-marquee		= "marquee/lich.jpg";
-sprite		= "sprite/lich.gif";
-type		= "lich"
+marquee		= "marquee/knight.jpg";
+sprite		= "sprite/knight.gif";
+name		= "Flop";
+type		= "human";
 map		= "map1";
 pos_x		= 16;
 pos_y		= 16;
-action		= [ "add_black_dragon", "add_dungeon", "add_dungeon_floor", "add_dungeon_wall", "add_skeleton" ];
+action		= [ "hit" ];
 allowed_tile	= [ "ground" ];
 #inventory	= [ ];  
 attribute :
 {
-  life :
+  life : 
   {
     min = 0;
     max = 10;
@@ -17,7 +18,7 @@ attribute :
     previous = 10;
     on_min = "kill.lua";
   };
-  agility :
+  agility : 
   {
     min = 0;
     max = 10;

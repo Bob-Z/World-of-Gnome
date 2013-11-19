@@ -7,3 +7,22 @@ pos_y		= 0;
 #action		= [ "action1", "action2" ];
 #allowed_tile	= [ "ground" ];
 #inventory	= [ ];
+attribute :
+{
+  life :
+  {
+    min = 0;
+    max = 10;
+    current = 10;
+    previous = 10;
+    on_min = "kill.lua";
+  };
+  agility :
+  {
+    min = 0;
+    max = 10;
+    current = 10;
+    previous = 10;
+    on_min = "kill.lua";
+  };
+};

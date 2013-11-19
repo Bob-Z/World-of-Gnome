@@ -7,8 +7,11 @@ if target ~= nil then
 	print_text_map( character_get_map(target) , text);
 
 	if character_disconnect(target) ~= -1 then
+		character_delete(target)
 	-- get an apple as a reward for this kill
-		inventory_add(id,"apple");
+		print_text_id(id,"You find an apple")
+		item = item_create_from_template("apple")
+		inventory_add(id,item);
 	end
 else
 --else the kill was from environnment
