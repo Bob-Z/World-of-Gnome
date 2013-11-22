@@ -43,8 +43,17 @@ void log_print(char * file,int line,FILE *stream,int level,char * format, ...)
 	vsnprintf(buf,sizeof(buf),format,ap);
 	va_end(ap);
 
-	clock_gettime(CLOCK_MONOTONIC, &now);
-	fprintf(stream,"%ld.%09ld | %s\n",now.tv_sec,now.tv_nsec,buf);
+	if(log_level == LOGDEBUG) {
+		clock_gettime(CLOCK_MONOTONIC, &now);
+		fprintf(stream,"%ld.%09ld | %s:%d | %s\n",now.tv_sec,now.tv_nsec,file,line,buf);
+	}
+	else if(log_level == LOGDEV) {
+		clock_gettime(CLOCK_MONOTONIC, &now);
+		fprintf(stream,"%ld.%09ld | %s\n",now.tv_sec,now.tv_nsec,buf);
+	}
+	else if(log_level == LOGUSER) {
+		fprintf(stream,"%s\n",buf);
+	}
 }
 
 void init_log(char * log)
