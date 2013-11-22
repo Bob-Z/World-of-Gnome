@@ -23,6 +23,14 @@
 #include <signal.h>
 #include <stdlib.h>
 #include <npc.h>
+#include <getopt.h>
+#include <string.h>
+#include <stdlib.h>
+
+const char optstring[] = "?l:";
+const struct option longopts[] =
+        {{ "log",required_argument,NULL,'l' },
+        {NULL,0,NULL,0}};
 
 void sigint_handler(int sig)
 {
@@ -37,6 +45,21 @@ void sigint_handler(int sig)
 
 int main (int argc, char **argv)
 {
+	int opt_ret;
+	char * log = NULL;
+
+	while((opt_ret = getopt_long(argc, argv, optstring, longopts, NULL))!=-1) {
+		switch(opt_ret) {
+			case 'l':
+				log = strdup(optarg);;
+				break;
+			default:
+				printf("HELP:\n\n");
+				printf("-l --log: Set log level\n");
+				exit(0);
+		}
+	}
+
 	g_type_init();
 	g_thread_init(NULL);
 
@@ -44,8 +67,8 @@ int main (int argc, char **argv)
 	GMainLoop * mainLoop = NULL;
 	mainLoop = g_main_loop_new(NULL,FALSE);
 
-        if(argc == 2) {
-                gint log_level = g_ascii_strtoll(argv[1],NULL,10);
+        if(log) {
+                gint log_level = g_ascii_strtoll(log,NULL,10);
                 init_log(log_level);
         }
 
