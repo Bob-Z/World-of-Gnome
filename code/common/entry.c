@@ -24,6 +24,9 @@
 #include <string.h>
 #include <libconfig.h>
 #include <stdlib.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 
 #define AUTO_SAVE_TIMEOUT 30
 
@@ -324,7 +327,12 @@ static file_data_t * create_config(gchar * file)
 
 	ret = config_read_file (config->config, file);
 	if( ret == CONFIG_FALSE ) {
-		config_print_error(file,config->config);
+		/* if file doesn't exist we do not log an error since
+		config_read_file should have made a request for this file
+		to the server.*/
+		if(open(file,O_RDONLY) != -1) {
+			config_print_error(file,config->config);
+		}
 		config_destroy(config->config);
 		g_free(config->config);
 		g_free(config);
