@@ -134,7 +134,7 @@ gboolean image_DB_update(context_t * context,gchar * filename) {
                 image_name++;
         }
         else {
-                g_warning("%s: invalid filename ( %s )",__func__,filename);
+                werr(LOGDEV,"invalid filename ( %s )",filename);
                 return FALSE;
         }
 

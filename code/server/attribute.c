@@ -171,7 +171,7 @@ gint attribute_get(const gchar *id, const gchar * attribute)
 	gint current;
         context_t * context = context_find(id);
         if( context == NULL ) {
-                g_message("%s: Could not find context %s",__func__,id);
+                werr(LOGDEV,"%s: Could not find context %s",id);
                 return -1;
         }
 
@@ -194,7 +194,7 @@ gint attribute_set(const gchar * id, const gchar * attribute, gint value)
 {
         context_t * context = context_find(id);
         if( context == NULL ) {
-                g_message("%s: Could not find context %s",__func__,id);
+                werr(LOGDEV,"Could not find context %s",id);
                 return -1;
         }
 

@@ -32,7 +32,7 @@ gint equipment_delete(const gchar *id, const gchar * slot)
 {
         context_t * context = context_find(id);
         if( context == NULL ) {
-                g_message("%s: Could not find context %s",__func__,id);
+                werr(LOGDEV,"Could not find context %s",id);
                 return -1;
         }
 
@@ -52,7 +52,7 @@ gint equipment_add(const gchar *id, const gchar * slot, const gchar * item)
 {
         context_t * context = context_find(id);
         if( context == NULL ) {
-                g_message("%s: Could not find context %s",__func__,id);
+                werr(LOGDEV,"Could not find context %s",id);
                 return -1;
         }
 
@@ -73,7 +73,7 @@ const char * equipment_get_item_id(const gchar *id, const gchar * slot)
 	const gchar * item;
         context_t * context = context_find(id);
         if( context == NULL ) {
-                g_message("%s: Could not find context %s",__func__,id);
+                werr(LOGDEV,"Could not find context %s",id);
                 return NULL;
         }
 

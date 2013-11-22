@@ -67,7 +67,7 @@ static int l_character_get_selected_map_tile_x( lua_State* L)
 	id = luaL_checkstring(L, -1);
 	target = context_find(id);
 	if( target == NULL ) {
-		g_message("%s: Cannot find context with ID %s",__func__,id);
+		werr(LOGDEV,"Cannot find context with ID %s",id);
 		return 0;  /* number of results */
 	}
 	lua_pushnumber(L, target->selection.map_coord[0]);
@@ -82,7 +82,7 @@ static int l_character_get_selected_map_tile_y( lua_State* L)
 	id = luaL_checkstring(L, -1);
 	target = context_find(id);
 	if( target == NULL ) {
-		g_message("%s: Cannot find context with ID %s",__func__,id);
+		werr(LOGDEV,"Cannot find context with ID %s",id);
 		return 0;  /* number of results */
 	}
 	lua_pushnumber(L, target->selection.map_coord[1]);
@@ -97,7 +97,7 @@ static int l_character_get_selected_map( lua_State* L)
 	id = luaL_checkstring(L, -1);
 	target = context_find(id);
 	if( target == NULL ) {
-		g_message("%s: Cannot find context with ID %s",__func__,id);
+		werr(LOGDEV,"Cannot find context with ID %s",id);
 		return 0;  /* number of results */
 	}
 	lua_pushstring(L, target->selection.map);
@@ -112,7 +112,7 @@ static int l_character_get_selected_inventory_id( lua_State* L)
 	id = luaL_checkstring(L, -1);
 	target = context_find(id);
 	if( target == NULL ) {
-		g_message("%s: Cannot find context with ID %s",__func__,id);
+		werr(LOGDEV,"Cannot find context with ID %s",id);
 		return 0;  /* number of results */
 	}
 	lua_pushstring(L, target->selection.inventory);
@@ -127,7 +127,7 @@ static int l_character_get_selected_equipment_slot( lua_State* L)
 	id = luaL_checkstring(L, -1);
 	target = context_find(id);
 	if( target == NULL ) {
-		g_message("%s: Cannot find context with ID %s",__func__,id);
+		werr(LOGDEV,"Cannot find context with ID %s",id);
 		return 0;  /* number of results */
 	}
 	lua_pushstring(L, target->selection.equipment);
@@ -142,7 +142,7 @@ static int l_character_get_selected_character_id( lua_State* L)
 	id = luaL_checkstring(L, -1);
 	target = context_find(id);
 	if( target == NULL ) {
-		g_message("%s: Cannot find context with ID %s",__func__,id);
+		werr(LOGDEV,"Cannot find context with ID %s",id);
 		return 0;  /* number of results */
 	}
 	lua_pushstring(L, target->selection.id);
@@ -157,7 +157,7 @@ static int l_character_get_map( lua_State* L)
 	id = luaL_checkstring(L, -1);
 	target = context_find(id);
 	if( target == NULL ) {
-		g_message("%s: Cannot find context with ID %s",__func__,id);
+		werr(LOGDEV,"Cannot find context with ID %s",id);
 		return 0;  /* number of results */
 	}
 	lua_pushstring(L, target->map);
@@ -172,7 +172,7 @@ static int l_character_get_map_x( lua_State* L)
 	id = luaL_checkstring(L, -1);
 	target = context_find(id);
 	if( target == NULL ) {
-		g_message("%s: Cannot find context with ID %s",__func__,id);
+		werr(LOGDEV,"Cannot find context with ID %s",id);
 		return 0;  /* number of results */
 	}
 	lua_pushnumber(L, target->map_x);
@@ -187,7 +187,7 @@ static int l_character_get_map_y( lua_State* L)
 	id = luaL_checkstring(L, -1);
 	target = context_find(id);
 	if( target == NULL ) {
-		g_message("%s: Cannot find context with ID %s",__func__,id);
+		werr(LOGDEV,"Cannot find context with ID %s",id);
 		return 0;  /* number of results */
 	}
 	lua_pushnumber(L, target->map_y);
@@ -202,7 +202,7 @@ static int l_character_get_x( lua_State* L)
 	id = luaL_checkstring(L, -1);
 	target = context_find(id);
 	if( target == NULL ) {
-		g_message("%s: Cannot find context with ID %s",__func__,id);
+		werr(LOGDEV,"Cannot find context with ID %s",id);
 		return 0;  /* number of results */
 	}
 	lua_pushnumber(L, target->pos_x);
@@ -217,7 +217,7 @@ static int l_character_get_y( lua_State* L)
 	id = luaL_checkstring(L, -1);
 	target = context_find(id);
 	if( target == NULL ) {
-		g_message("%s: Cannot find context with ID %s",__func__,id);
+		werr(LOGDEV,"Cannot find context with ID %s",id);
 		return 0;  /* number of results */
 	}
 	lua_pushnumber(L, target->pos_y);
@@ -232,7 +232,7 @@ static int l_character_get_name( lua_State* L)
 	id = luaL_checkstring(L, -1);
 	target = context_find(id);
 	if( target == NULL ) {
-		g_message("%s: Cannot find context with ID %s",__func__,id);
+		werr(LOGDEV,"Cannot find context with ID %s",id);
 		return 0;  /* number of results */
 	}
 	lua_pushstring(L, target->character_name);
@@ -247,7 +247,7 @@ static int l_character_get_type( lua_State* L)
 	id = luaL_checkstring(L, -1);
 	target = context_find(id);
 	if( target == NULL ) {
-		g_message("%s: Cannot find context with ID %s",__func__,id);
+		werr(LOGDEV,"Cannot find context with ID %s",id);
 		return 0;  /* number of results */
 	}
 	lua_pushstring(L, target->type);
@@ -845,13 +845,13 @@ gint action_execute_script(context_t * context, const gchar * script, gchar ** p
 	if (luaL_loadfile(context->luaVM, filename) != 0 ) {
 		/* If something went wrong, error message is at the top of */
 		/* the stack */
-		g_message("Couldn't load LUA script %s: %s\n", filename, lua_tostring(context->luaVM, -1));
+		werr(LOGUSER,"Couldn't load LUA script %s: %s\n", filename, lua_tostring(context->luaVM, -1));
 		return -1;
 	}
 
 	/* Ask Lua to run the script */
 	if (lua_pcall(context->luaVM, 0, LUA_MULTRET, 0) != 0) {
-		g_message("Failed to run LUA script %s: %s\n", filename, lua_tostring(context->luaVM, -1));
+		werr(LOGUSER,"Failed to run LUA script %s: %s\n", filename, lua_tostring(context->luaVM, -1));
 		return -1;
 	}
 

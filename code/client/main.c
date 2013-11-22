@@ -110,17 +110,17 @@ int main (int argc, char **argv)
 	imageDB_init();
 
 	if( ! win_login_init(context) ) {
-		g_warning("Unable to initialize the login window, abort");
+		werr(LOGUSER,"Unable to initialize the login window, abort");
 		return 1;
 	}
 	
 	if( ! win_select_character_init(context) ) {
-		g_warning("Unable to initialize the select character window, abort");
+		werr(LOGUSER,"Unable to initialize the select character window, abort");
 		return 1;
 	}
 
 	if( ! win_game_init(context) ) {
-		g_warning("Unable to initialize the game window, abort");
+		werr(LOGUSER,"Unable to initialize the game window, abort");
 		return 1;
 	}
 

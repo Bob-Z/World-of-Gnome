@@ -53,7 +53,7 @@ int file_add(gchar * data,guint32 command_size,gchar ** out_filename)
 	gchar * ptr = data;
 	/* First 4 bytes are the size of the file name*/
 	if( command_size < sizeof(guint32) ) {
-		g_warning("file_add : Invalid file received");
+		werr(LOGDEV,"Invalid file received");
 		return 1;
 	}
 	guint32 file_name_size = *((guint32 *)ptr);
@@ -63,7 +63,7 @@ int file_add(gchar * data,guint32 command_size,gchar ** out_filename)
 	gchar * file_name = NULL;
 	file_name = g_memdup(ptr,file_name_size);
 	if( file_name == NULL ) {
-		g_warning("file_add : Unable to allocate %d bytes for file name",file_name_size);
+		werr(LOGDEV,"Unable to allocate %d bytes for file name",file_name_size);
 		return 1;
 	}
 
@@ -80,18 +80,18 @@ int file_add(gchar * data,guint32 command_size,gchar ** out_filename)
 
 	if( create_directory(full_name)) {
 		g_free(full_name);
-		g_warning("file_add : Can't create directory for %s", full_name);
+		werr(LOGDEV,"Can't create directory for %s", full_name);
 		return 1;
 	}
 	g_static_mutex_lock(&file_mutex);
 	gboolean res = file_set_contents(full_name,ptr,file_data_size,NULL);
 	g_static_mutex_unlock(&file_mutex);
 	if( res == FALSE ) {
-		g_warning("file_add : Error writing file %s with size %d",full_name, file_data_size);
+		werr(LOGDEV,"Error writing file %s with size %d",full_name, file_data_size);
 		return 1;
 	}
 
-	g_message("file_add : write file %s",full_name);
+	wlog(LOGDEBUG,"write file %s",full_name);
 
 	/* Update the image DB */
 	GdkPixbufAnimation * pixbuf = gdk_pixbuf_animation_new_from_file(full_name,NULL);

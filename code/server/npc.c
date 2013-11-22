@@ -53,7 +53,7 @@ static void npc_script(context_t * context, gchar * script, gchar ** parameters)
 		}
 	}
 
-        g_message("End AI script for %s(%s)",context->id, context->character_name);
+        wlog(LOGDEV,"End AI script for %s(%s)",context->id, context->character_name);
 
         /* Send connected  = FALSE to other context */
         context_spread(context);
@@ -80,7 +80,7 @@ static gpointer manage_npc(gpointer data)
 		return NULL;
 	}
 
-	g_warning("No AI script for %s",context->id);
+	werr(LOGUSER,"No AI script for %s",context->id);
 
 	return NULL;
 }
@@ -137,7 +137,7 @@ void instantiate_npc(const gchar * id)
 		return;
 	}
 
-	g_debug("Creating npc %s of type %s in map %s at %d,%d",name,type,map,x,y);
+	wlog(LOGDEV,"Creating npc %s of type %s in map %s at %d,%d",name,type,map,x,y);
 	ctx = context_new();
 	context_set_username(ctx,"CPU");
 	context_set_character_name(ctx,name);

@@ -89,23 +89,23 @@ High level commands
 /* sends a login request, the answer is asynchronously read by async_recv */
 void network_login(context_t * context, const gchar * name, const gchar * password)
 {
-	g_message("Send CMD_LOGIN_USER");
+	wlog(LOGDEBUG,"Send CMD_LOGIN_USER");
 	network_send_command(context, CMD_LOGIN_USER, g_utf8_strlen(name,-1) + 1, name,FALSE);
-	g_message("Send CMD_LOGIN_PASSWORD");
+	wlog(LOGDEBUG,"Send CMD_LOGIN_PASSWORD");
 	network_send_command(context, CMD_LOGIN_PASSWORD, g_utf8_strlen(password,-1) + 1, password,FALSE);
 }
 
 /* request characters list */
 void network_request_character_list(context_t * context)
 {
-	g_message("Send CMD_REQ_CHARACTER_LIST");
+	wlog(LOGDEBUG,"Send CMD_REQ_CHARACTER_LIST");
 	network_send_command(context, CMD_REQ_CHARACTER_LIST, 0, NULL,FALSE);
 }
 
 /* request a specific user's characters list */
 void network_request_user_character_list(context_t * context)
 {
-	g_message("Send CMD_REQ_USER_CHARACTER_LIST");
+	wlog(LOGDEBUG,"Send CMD_REQ_USER_CHARACTER_LIST");
 	network_send_command(context, CMD_REQ_USER_CHARACTER_LIST, g_utf8_strlen(context->user_name,-1)+1, context->user_name,FALSE);
 }
 
@@ -114,18 +114,18 @@ void network_send_text(const gchar * id, const gchar * string)
 {
         context_t * context = context_find(id);
         if( context == NULL ) {
-                g_message("%s: Could not find context %s",__func__,id);
+                werr(LOGDEV,"Could not find context %s",id);
                 return;
         }
 
         /* Early check to see if context is connected */
         GOutputStream * stream = context_get_output_stream(context);
         if( stream == NULL ) {
-                g_debug("%s: %s not connected",__func__,id);
+                werr(LOGDEV,"%s not connected",id);
                 return;
         }
 
-	g_message("Send CMD_SEND_TEXT :\"%s\" to %s (%s)",string,context->character_name,context->user_name);
+	wlog(LOGDEBUG,"Send CMD_SEND_TEXT :\"%s\" to %s (%s)",string,context->character_name,context->user_name);
 	network_send_command(context, CMD_SEND_TEXT, g_utf8_strlen(string,-1)+1, string,FALSE);
 }
 
@@ -184,7 +184,7 @@ void network_send_action(context_t * context, gchar * script,...)
 	}
 	va_end(ap);
 
-	g_debug("Send CMD_SEND_ACTION :%s",frame);
+	wlog(LOGDEBUG,"Send CMD_SEND_ACTION :%s",frame);
 	network_send_command(context, CMD_SEND_ACTION, g_utf8_strlen(frame,-1)+1, frame,FALSE);
 
 	g_free(frame);
@@ -216,7 +216,7 @@ void network_send_entry_int(context_t * context, const gchar * table, const gcha
 
 	frame = g_strconcat(ENTRY_TYPE_INT,NETWORK_DELIMITER,table,NETWORK_DELIMITER,file,NETWORK_DELIMITER,path,NETWORK_DELIMITER,buf,NULL);
 
-	g_message("Send CMD_SEND_ENTRY to %s :%s",context->id,frame);
+	wlog(LOGDEBUG,"Send CMD_SEND_ENTRY to %s :%s",context->id,frame);
 	network_send_command(context, CMD_SEND_ENTRY, g_utf8_strlen(frame,-1)+1, frame,FALSE);
 }
 
@@ -273,7 +273,7 @@ void network_send_req_file(context_t * context, gchar * file)
 
 	/* Sanity check */
 	if(file == NULL) {
-		g_warning("network_send_req_file_checksum called with NULL");
+		werr(LOGDEV,"network_send_req_file_checksum called with NULL");
 		return;
 	}
 
@@ -294,7 +294,7 @@ void network_send_req_file(context_t * context, gchar * file)
 		}
 		/* max_date > current_date, we cancel this request */
 		else {
-			g_debug("Previous request of file  %s has been done in a time too short",file);
+			werr(LOGDEBUG,"Previous request of file  %s has been done in a time too short",file);
 			g_date_time_unref(max_date);
 			g_date_time_unref(current_date);
 			return;
@@ -313,7 +313,7 @@ void network_send_req_file(context_t * context, gchar * file)
 	g_free(filename);
 
 	frame = g_strconcat(file,NETWORK_DELIMITER,cksum,NULL);
-	g_message("Send CMD_REQ_FILE :%s",file);
+	wlog(LOGDEBUG,"Send CMD_REQ_FILE :%s",file);
 	network_send_command(context, CMD_REQ_FILE, g_utf8_strlen(frame,-1)+1, frame,TRUE);
 	g_free(frame);
 	if(cksum[0] != '0' && cksum[1] != 0) {
@@ -435,7 +435,7 @@ void network_send_context(context_t * context)
 	g_memmove(data+data_size, selected_id, size);
 	data_size += size;
 
-	g_message("Send CMD_SEND_CONTEXT of %s",context->id);
+	wlog(LOGDEBUG,"Send CMD_SEND_CONTEXT of %s",context->id);
 	network_send_command(context, CMD_SEND_CONTEXT, data_size, data,FALSE);
 }
 
@@ -464,7 +464,7 @@ gboolean read_bytes(context_t * context, gchar * data, gsize size, gboolean is_d
 
         if( res == FALSE) {
                 //if(g_socket_is_connected(socket) ) {
-                g_warning("Network error: %d bytes requested, %d received.",(int)size,(int)byte_read);
+                werr(LOGDEV,"Network error: %d bytes requested, %d received.",(int)size,(int)byte_read);
                 return FALSE;
         }
 /*
@@ -503,7 +503,7 @@ void async_send(gpointer input_data,gpointer user_data)
 	//send command
 	res = g_output_stream_write_all(stream,&data->command,sizeof(guint32),&bytes_written,NULL,&err);
 	if( res == FALSE ) {
-		g_warning("Could not send command to %s",context->id);
+		werr(LOGUSER,"Could not send command to %s",context->id);
 		goto async_send_end;
 	}
 
@@ -511,7 +511,7 @@ void async_send(gpointer input_data,gpointer user_data)
 	guint32 size = data->count; // Force this to uint because gsize size is platform dependant
 	res = g_output_stream_write_all(stream,&size,sizeof(guint32),&bytes_written,NULL,&err);
 	if( res == FALSE ) {
-		g_warning("Could not send command to %s",context->id);
+		werr(LOGUSER,"Could not send command to %s",context->id);
 		goto async_send_end;
 	}
 
@@ -519,7 +519,7 @@ void async_send(gpointer input_data,gpointer user_data)
 	if(data->count > 0) {
 		res = g_output_stream_write_all(stream,data->data,data->count,&bytes_written,NULL,&err);
 		if(res == FALSE) {
-			g_warning("Could not send command to %s",context->id);
+			werr(LOGUSER,"Could not send command to %s",context->id);
 			goto async_send_end;
 		}
 	}
@@ -585,7 +585,7 @@ gpointer async_recv(gpointer data)
 //	} while( g_socket_is_connected(socket) );
 	} while( ! g_io_stream_is_closed( (GIOStream *)context_get_connection(context)));
         
-	g_warning("Socket closed on server side.");
+	werr(LOGUSER,"Socket closed on server side.");
 
 	context_set_connected(context,FALSE);
 	context_set_connection(context,NULL);
@@ -651,7 +651,7 @@ gpointer async_data_recv(gpointer data)
 //	} while( g_socket_is_connected(socket) );
 	} while( ! g_io_stream_is_closed( (GIOStream *)context_get_connection(context)));
         
-	g_warning("Socket closed on server side.");
+	werr(LOGUSER,"Socket closed on server side.");
 
 	context_set_connected(context,FALSE);
 	context_set_connection(context,NULL);
@@ -680,7 +680,7 @@ gboolean network_connect(context_t * context, const gchar * hostname)
 	client = g_socket_client_new();	
 	connection = g_socket_client_connect_to_host(client,hostname,PORT,NULL,&error);
 	if( connection == NULL ) {
-		g_warning("Can't connect to server");
+		werr(LOGUSER,"Can't connect to server");
 		return FALSE;
 	}	
 
@@ -705,7 +705,7 @@ int network_open_data_connection(context_t * context)
 	client = g_socket_client_new();	
 	connection = g_socket_client_connect_to_host(client,context->hostname,PORT,NULL,&error);
 	if( connection == NULL ) {
-		g_warning("Can't open data connection to server");
+		werr(LOGUSER,"Can't open data connection to server");
 		return FALSE;
 	}	
 
@@ -730,12 +730,13 @@ int network_open_data_connection(context_t * context)
  **************************/
 gboolean network_connection(GThreadedSocketService *service,GSocketConnection *connection, GObject *source_object, gpointer user_data)
 {
-        g_message("Client connected");
+        wlog(LOGUSER,"Client connected");
 
         context_t * context;
         context = context_new();
         if(context == NULL ) {
-                g_error("Failed to create context");
+                werr(LOGUSER,"Failed to create context");
+		return TRUE;
         }
 
         context_set_connection(context,connection);
@@ -786,7 +787,7 @@ gboolean network_connection(GThreadedSocketService *service,GSocketConnection *c
                         buf = NULL;
                 }
         }
-        g_message("Client disconnected");
+        wlog(LOGUSER,"Client disconnected");
         context_spread(context);
         context_write_to_file(context);
         context_free(context);
@@ -885,7 +886,7 @@ void network_send_context_to_context(context_t * dest_ctx, context_t * src_ctx)
 	g_memmove(data+data_size, src_ctx->id, size);
 	data_size += size;
 
-	g_message("Send CMD_SEND_CONTEXT of %s to %s",src_ctx->id,dest_ctx->id);
+	wlog(LOGDEBUG,"Send CMD_SEND_CONTEXT of %s to %s",src_ctx->id,dest_ctx->id);
         network_send_command(dest_ctx, CMD_SEND_CONTEXT, data_size, data,FALSE);
 
 }
@@ -908,7 +909,7 @@ int network_send_file(context_t * context, gchar * filename)
 
 	/* Never send files with password */
 	if ( g_strstr_len(PASSWD_TABLE,-1,filename) != NULL ) {
-		g_warning("send_file : Do not serve hazardous file  \"%s\"",filename);
+		werr(LOGUSER,"send_file : Do not serve hazardous file  \"%s\"",filename);
 
 		return 1;
 	}
@@ -924,7 +925,7 @@ int network_send_file(context_t * context, gchar * filename)
 	gboolean res = file_get_contents(full_name,&file_data,&file_length,NULL);
 	g_static_mutex_unlock(&file_mutex);
 	if( res == FALSE) {
-		g_warning("send_file : Error reading file \"%s\"",full_name);
+		werr(LOGUSER,"send_file : Error reading file \"%s\"",full_name);
 		g_free(full_name);
 		return 1;
 	}
@@ -936,7 +937,7 @@ int network_send_file(context_t * context, gchar * filename)
 	gchar * frame = g_malloc0(count);
 	if( frame == NULL) {
 		g_free(file_data);
-		g_warning("send_file : Error allocating memory");
+		werr(LOGUSER,"send_file : Error allocating memory");
 		return 1;
 	}
 
@@ -959,7 +960,7 @@ int network_send_file(context_t * context, gchar * filename)
 	g_free(file_data);
 
 	/* send the frame */
-	g_message("Send CMD_SEND_FILE : %s",filename);
+	wlog(LOGDEBUG,"Send CMD_SEND_FILE : %s",filename);
 	network_send_command(context, CMD_SEND_FILE, count, frame,FALSE);
 
 	g_free(frame);

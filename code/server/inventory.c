@@ -32,7 +32,7 @@ gint inventory_delete(const gchar * id, const gchar * item)
 {
 	context_t * context = context_find(id);
 	if( context == NULL ) {
-		g_message("%s: Could not find context %s",__func__,id);
+		werr(LOGDEV,"Could not find context %s",id);
 		return -1;
 	}
 
@@ -53,7 +53,7 @@ gint inventory_add(const gchar * id, const gchar * item)
 {
         context_t * context = context_find(id);
         if( context == NULL ) {
-                g_message("%s: Could not find context %s",__func__,id);
+		werr(LOGDEV,"Could not find context %s",id);
                 return -1;
         }
 
@@ -80,7 +80,7 @@ gint inventory_count(const gchar * id, const gchar * item_name)
 
         context_t * context = context_find(id);
         if( context == NULL ) {
-                g_message("%s: Could not find context %s",__func__,id);
+		werr(LOGDEV,"Could not find context %s",id);
                 return -1;
         }
 
@@ -114,7 +114,7 @@ gchar * inventory_get_by_name(const gchar * id, const gchar * item_name)
 
         context_t * context = context_find(id);
         if( context == NULL ) {
-                g_message("%s: Could not find context %s",__func__,id);
+		werr(LOGDEV,"Could not find context %s",id);
                 return NULL;
         }
 

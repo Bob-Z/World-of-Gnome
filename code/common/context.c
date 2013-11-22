@@ -916,7 +916,7 @@ void context_add_or_update_from_network_frame(context_t * context,gchar * data)
 	while( ctx != NULL ) {
 		if( g_strcmp0( id, ctx->id) == 0 ) { 
 			if( connected != FALSE ) {
-				g_message("Updating context %s / %s",user_name,name);
+				wlog(LOGDEBUG,"Updating context %s / %s",user_name,name);
 				/* do not call context_set_* function since we already have the lock */
 				g_free(ctx->map);
 				ctx->map = map;
@@ -940,7 +940,7 @@ void context_add_or_update_from_network_frame(context_t * context,gchar * data)
 				g_static_mutex_unlock (&context_list_mutex);
 			}
 			else {
-				g_message("Deleting context %s / %s",user_name,name);
+				wlog(LOGDEBUG,"Deleting context %s / %s",user_name,name);
 				/* Delete selection if it was selected */
 				if( context->selection.id != NULL ) {
 					if( g_strcmp0(context->selection.id, id) == 0 ) {
@@ -959,7 +959,7 @@ void context_add_or_update_from_network_frame(context_t * context,gchar * data)
 
 	g_static_mutex_unlock (&context_list_mutex);
 
-	g_message("Creating context %s / %s",user_name,name);
+	wlog(LOGDEBUG,"Creating context %s / %s",user_name,name);
 	ctx = context_new();
 	context_set_username(ctx,user_name);
 	context_set_character_name(ctx,name);

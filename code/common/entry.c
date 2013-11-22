@@ -40,9 +40,10 @@ static GHashTable* fileDB = NULL; /* table to store files data */
 
 static gint found = 0;
 
-static void config_print_error(const config_t * config)
+static void config_print_error(char * file, const config_t * config)
 {
-        g_warning("libconfig error @%d : %s\n",
+        werr(LOGUSER,"libconfig error %s@%d : %s\n",
+			file,
                         config_error_line(config),
                         config_error_text(config));
 }
@@ -92,7 +93,7 @@ file_dump_to_disk
 static void dump_file(gchar * filename, file_data_t * data)
 {
 	if( data->file_update) {
-		g_debug("Writing file %s",filename);
+		wlog(LOGDEBUG,"Writing file %s",filename);
 		free_config(data);
 		g_file_set_contents(filename,data->data,data->size,NULL);
 		data->file_update = FALSE;
@@ -103,7 +104,7 @@ static void dump_file(gchar * filename, file_data_t * data)
 static void dump_config(gchar * filename, file_data_t * data)
 {
 	if( data->config_update) {
-		g_debug("Writing config %s",filename);
+		wlog(LOGDEBUG,"Writing config %s",filename);
 		config_write_file(data->config,filename);
 		data->config_update = FALSE;
 
@@ -125,7 +126,7 @@ file_dump_all_to_disk
 ****************************/
 void file_dump_all_to_disk(void)
 {
-	g_debug("Dumping all files to disk");
+	wlog(LOGDEV,"Dumping all files to disk");
 	g_static_mutex_lock(&file_mutex);
 	if( fileDB ) {
 		g_hash_table_foreach(fileDB,file_dump_to_disk,NULL);
@@ -323,8 +324,7 @@ static file_data_t * create_config(gchar * file)
 
 	ret = config_read_file (config->config, file);
 	if( ret == CONFIG_FALSE ) {
-		g_warning("Error creating config on file %s",file);
-		config_print_error(config->config);
+		config_print_error(file,config->config);
 		config_destroy(config->config);
 		g_free(config->config);
 		g_free(config);
@@ -398,8 +398,7 @@ static file_data_t * get_config(const gchar * table, const gchar * file)
 
 			ret = config_read_file (config->config, filename);
 			if( ret == CONFIG_FALSE ) {
-				g_warning("Error reading config on file %s",file);
-				config_print_error(config->config);
+				config_print_error(filename,config->config);
 				config_destroy(config->config);
 				g_free(config->config);
 				return NULL;
@@ -1607,7 +1606,7 @@ gint entry_update(gchar * data)
 
 		value = g_ascii_strtoll(elements[4],NULL,10);	
 		if(config_setting_set_int (setting, value) == CONFIG_FALSE) {
-			g_warning("%s: Errror setting %s/%s/%s to %d",__func__,elements[1],elements[2],elements[3],value);
+			werr(LOGUSER,"Errror setting %s/%s/%s to %d",elements[1],elements[2],elements[3],value);
 		}
 		else {
 			config->config_update = TRUE;
@@ -1626,7 +1625,7 @@ gint entry_update(gchar * data)
 		}
 
 		if(config_setting_set_string (setting,elements[4]) == CONFIG_FALSE) {
-			g_warning("%s: Errror setting %s/%s/%s to %s",__func__,elements[1],elements[2],elements[3],elements[4]);
+			werr(LOGUSER,"Errror setting %s/%s/%s to %s",elements[1],elements[2],elements[3],elements[4]);
 		}
 		else {
 			config->config_update = TRUE;
@@ -1650,7 +1649,7 @@ gint entry_destroy(const gchar * id)
 
 	res = g_unlink(filename);
 	if(res != 0 ) {
-		g_warning("Error deleting file \"%s\"",filename);
+		werr(LOGUSER,"Error deleting file \"%s\"",filename);
 	}
 
 	g_hash_table_remove(fileDB,filename);

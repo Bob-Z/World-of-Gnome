@@ -223,7 +223,7 @@ GtkWidget * get_sprite(context_t * context) {
 
 	/* compute the sprite file name */
 	if(!read_string(CHARACTER_TABLE,context->id,&sprite_name,CHARACTER_KEY_SPRITE,NULL)) {
-		g_critical("Can't read sprite name for \"%s\" type",context->type);
+		werr(LOGUSER,"Can't read sprite name for \"%s\" type",context->type);
 		g_assert(1);
 	}
 		

@@ -44,19 +44,19 @@ gboolean parse_incoming_data(context_t * context, guint32 command, guint32 comma
 
         switch(command) {
                 case CMD_LOGIN_OK :
-                        g_message("Received CMD_LOGIN_OK");
+                        wlog(LOGDEBUG,"Received CMD_LOGIN_OK");
 			if(!network_open_data_connection(context)) {
 				return FALSE;
 			}
 			context_set_connected(context, TRUE);
-                        g_message("Successfully connected");
+                        wlog(LOGUSER,"Successfully connected");
 			hide_login_window();
 			show_select_character_window(context);
 			network_request_user_character_list(context);
-			g_message("Character list requested");
+			wlog(LOGDEBUG,"Character list requested");
                         break;
                 case CMD_LOGIN_NOK :
-                        g_message("Received CMD_LOGIN_NOK");
+                        wlog(LOGDEBUG,"Received CMD_LOGIN_NOK");
 			context_set_connected(context, FALSE);
 			/* message box */
 			gdk_threads_enter();
@@ -73,11 +73,11 @@ gboolean parse_incoming_data(context_t * context, guint32 command, guint32 comma
 
                         break;
                 case CMD_SEND_CHARACTER :
-                        g_message("Received CMD_SEND_CHARACTER");
-			g_message("New character : %s", data);
+                        wlog(LOGDEBUG,"Received CMD_SEND_CHARACTER");
+			wlog(LOGUSER,"New character : %s", data);
                         break;
                 case CMD_SEND_FILE :
-                        g_message("Received CMD_SEND_FILE");
+                        wlog(LOGDEBUG,"Received CMD_SEND_FILE");
 			file_add(data,command_size,&filename);
 
 			/* Special case for image file: try to update the widget data base */
@@ -93,27 +93,27 @@ gboolean parse_incoming_data(context_t * context, guint32 command, guint32 comma
 			updated_media = FALSE;
                         break;
                 case CMD_SEND_USER_CHARACTER :
-                        g_message("Received CMD_SEND_USER_CHARACTER");
+                        wlog(LOGDEBUG,"Received CMD_SEND_USER_CHARACTER");
 			add_user_character(context,data);
 			update_select_character_window(context);
                         break;
                 case CMD_SEND_CONTEXT :
-                        g_message("Received CMD_SEND_CONTEXT");
+                        wlog(LOGDEBUG,"Received CMD_SEND_CONTEXT");
 			context_add_or_update_from_network_frame(context,data);
 			redraw_window();
                         break;
 		case CMD_SEND_TEXT :
-                        g_message("Received CMD_SEND_TEXT");
+                        wlog(LOGDEBUG,"Received CMD_SEND_TEXT");
 			textview_add_line(data);
 			break;
 		case CMD_SEND_ENTRY :
-                        g_message("Received CMD_SEND_ENTRY");
+                        wlog(LOGDEBUG,"Received CMD_SEND_ENTRY");
 			if( entry_update(data) != -1 ) {
 				redraw_window();
 			}
 			break;
                 default:
-                        g_warning("Unknown request from server");
+                        werr(LOGDEV,"Unknown request from server");
 			return FALSE;
 			break;
         }

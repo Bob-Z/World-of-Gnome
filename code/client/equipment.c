@@ -131,12 +131,12 @@ void fill_equipment(context_t * context)
                 if(read_string(CHARACTER_TABLE,context->id,&equipped_name,EQUIPMENT_GROUP,name_list[index],EQUIPMENT_EQUIPPED,NULL)) {
                         /* Get the equipped object name */
                         if(!read_string(ITEM_TABLE,equipped_name,&equipped_text,ITEM_NAME,NULL)) {
-                                g_warning("Can't read object %s name in equippment slot %s",equipped_name,name);
+                                werr(LOGDEV,"Can't read object %s name in equippment slot %s",equipped_name,name);
                         }
                         else {
                                 /* Get it's icon */
                                 if(!read_string(ITEM_TABLE,equipped_name,&equipped_icon_name,ITEM_ICON,NULL)) {
-                                        g_warning("Can't read object %s icon in equippment slot %s",equipped_name,name);
+                                        werr(LOGDEV,"Can't read object %s icon in equippment slot %s",equipped_name,name);
                                 }
                                 else {
                                         icon = imageDB_get_widget(context,equipped_icon_name);
