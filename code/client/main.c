@@ -126,10 +126,7 @@ int main (int argc, char **argv)
 
 	win_login_set_entry(ip, user, pass);
 
-	if(log) {
-		gint log_level = g_ascii_strtoll(log,NULL,10);
-		init_log(log_level);
-	}
+	init_log(log);
 	
 	//Run the main loop
 	gdk_threads_enter();

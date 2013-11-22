@@ -22,52 +22,48 @@
 
 #include <glib.h>
 #include <glib/gprintf.h>
+#include "log.h"
+#include <string.h>
 
-static gint level;
+static int log_level = 0;
 
-void my_log_handler(const gchar *log_domain,
-                    GLogLevelFlags log_level,
-                    const gchar *message,
-                    gpointer user_data) {
+char *log_level_string[3] = {"user","dev","debug"};
 
-	if( level == 0 ) {
-		if( log_level <= G_LOG_LEVEL_CRITICAL ) {
-//			g_log_default_handler(log_domain,log_level,message,user_data);
-			printf("%04X | %s\n",log_level,message);
-		}
-		return;
-	}
-	if( level == 1 ) {
-		if( log_level <=  G_LOG_LEVEL_WARNING ) {
-//			g_log_default_handler(log_domain,log_level,message,user_data);
-			printf("%04X | %s\n",log_level,message);
-		}
+void log_print(char * file,int line,FILE *stream,int level,char * format, ...)
+{
+	va_list ap;
+	char buf[10000];
+	struct timespec now;
+
+	if(level > log_level) {
 		return;
 	}
 
-	if( level == 2 ) {
-		if( log_level <=  G_LOG_LEVEL_MESSAGE ) {
-//			g_log_default_handler(log_domain,log_level,message,user_data);
-			printf("%04X | %s\n",log_level,message);
-		}
-		return;
-	}
+	va_start(ap,format);
+	vsnprintf(buf,sizeof(buf),format,ap);
+	va_end(ap);
 
-	if( level >= 3 ) {
-		if( log_level <=  G_LOG_LEVEL_DEBUG ) {
-//			g_log_default_handler(log_domain,log_level,message,user_data);
-			printf("%04X | %s\n",log_level,message);
-		}
-		return;
-	}
-
-	g_printf("LOG ERROR\n");
+	clock_gettime(CLOCK_MONOTONIC, &now);
+	fprintf(stream,"%ld.%09ld | %s\n",now.tv_sec,now.tv_nsec,buf);
 }
 
-void init_log(gint log_level)
+void init_log(char * log)
 {
-	level = log_level;
-	g_log_set_handler (NULL, G_LOG_LEVEL_MASK | G_LOG_FLAG_FATAL
-                   | G_LOG_FLAG_RECURSION, my_log_handler, NULL);
+	if(log == NULL) {
+		return;
+	}
+
+	if(!strcmp(log,"0") || !strcmp(log,"user")) {
+		log_level = LOGUSER;
+		return;
+	}
+	if(!strcmp(log,"1") || !strcmp(log,"dev")) {
+		log_level = LOGDEV;
+		return;
+	}
+	if(!strcmp(log,"2") || !strcmp(log,"debug")) {
+		log_level = LOGDEBUG;
+		return;
+	}
 }
 #endif

@@ -17,5 +17,16 @@
    Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
-void init_log(gint log_level);
+#ifndef LOG_H
+#define LOG_H
 
+void init_log(char * log_level);
+void log_print(char * file,int line,FILE *stream,int level,char * format, ...);
+
+#define LOGUSER		0
+#define LOGDEV		1
+#define LOGDEBUG	2
+
+#define wlog(level,str,args...) log_print(__FILE__,__LINE__,stdout,level,str, ## args)
+#define werr(level,str,args...) log_print(__FILE__,__LINE__,stderr,level,str, ## args)
+#endif

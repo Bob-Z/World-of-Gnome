@@ -47,7 +47,7 @@ GtkWidget *		textentry;
 
 void redraw_window()
 {
-	g_message("redraw_window");
+	wlog(LOGDEBUG,"redraw_window");
 
 	gdk_threads_enter();
 	gdk_window_invalidate_rect(game_window->window,NULL,TRUE);
@@ -195,7 +195,7 @@ Called on configure event (resize...)
 ************************/
 gboolean on_configure_event(GtkWidget *widget, GdkEventConfigure *event, gpointer user_data)
 {
-	g_message("on_configure_event");
+	wlog(LOGDEBUG,"on_configure_event");
 
 	main_window_width = gdk_window_get_width(tile_set->window);
 	main_window_height = gdk_window_get_height(tile_set->window);
@@ -208,7 +208,7 @@ Called on expose event
 ************************/
 gboolean on_expose_event(GtkWidget *widget, GdkEventExpose *event, gpointer user_data)
 {
-	g_message("expose event: event = %d, widget = %p, window = %p, send_event = %d",event->type,widget,event->window,event->send_event);
+	wlog(LOGDEBUG,"expose event: event = %d, widget = %p, window = %p, send_event = %d",event->type,widget,event->window,event->send_event);
 	main_window_width = gdk_window_get_width(tile_set->window);
 	main_window_height = gdk_window_get_height(tile_set->window);
 

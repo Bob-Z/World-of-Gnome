@@ -67,10 +67,7 @@ int main (int argc, char **argv)
 	GMainLoop * mainLoop = NULL;
 	mainLoop = g_main_loop_new(NULL,FALSE);
 
-        if(log) {
-                gint log_level = g_ascii_strtoll(log,NULL,10);
-                init_log(log_level);
-        }
+	init_log(log);
 
 	//init non playing character
 	init_npc();
