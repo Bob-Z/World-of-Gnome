@@ -87,7 +87,7 @@ GtkWidget * imageDB_get_widget(context_t * context, const gchar * image_name)
 		pixbuf = gdk_pixbuf_animation_new_from_file(tmp,NULL);
 	}
 	g_free(tmp);
-	
+
 	new_widget = gtk_image_new_from_animation(pixbuf);
 
 	/* Set image_name in the imageDB to be updated when ready */
@@ -97,22 +97,22 @@ GtkWidget * imageDB_get_widget(context_t * context, const gchar * image_name)
 	return gtk_image_new_from_animation(gtk_image_get_animation(GTK_IMAGE(new_widget)));
 }
 
-/* return NULL if filename is NOT in the DB 
+/* return NULL if filename is NOT in the DB
    else return the widget coresponding to this
    file (not of copy of it !) */
 /* image_name is the image file name without any path (e.g. : marquee.jpg) */
 GtkWidget * imageDB_check_widget(gchar * image_name)
 {
-        GtkWidget ** w;
+	GtkWidget ** w;
 	gchar * name;
 
 	name =  g_strconcat( IMAGE_TABLE, "/", image_name , NULL);
 
-        w = g_hash_table_lookup(imageDB, name);
+	w = g_hash_table_lookup(imageDB, name);
 	g_free(name);
-        if( w != NULL ) {
-                return *w;
-        }
+	if( w != NULL ) {
+		return *w;
+	}
 
 	return NULL;
 }
@@ -120,41 +120,41 @@ GtkWidget * imageDB_check_widget(gchar * image_name)
 /* Update the database with a new file */
 /* filename is the path relative to base directory ( e.g.: images/marquee.jpg ) */
 /* return true if there is an update */
-gboolean image_DB_update(context_t * context,gchar * filename) {
-        gchar * full_name;
-        gchar * image_name = filename;
+gboolean image_DB_update(context_t * context,gchar * filename)
+{
+	gchar * full_name;
+	gchar * image_name = filename;
 	gboolean updated = FALSE;
 
-        /* search the / chararcter */
-        while( image_name[0] != '/' && image_name[0] != 0) {
-                image_name++;
-        }
+	/* search the / chararcter */
+	while( image_name[0] != '/' && image_name[0] != 0) {
+		image_name++;
+	}
 
-        if( image_name[0] == '/' ) {
-                image_name++;
-        }
-        else {
-                werr(LOGDEV,"invalid filename ( %s )",filename);
-                return FALSE;
-        }
+	if( image_name[0] == '/' ) {
+		image_name++;
+	} else {
+		werr(LOGDEV,"invalid filename ( %s )",filename);
+		return FALSE;
+	}
 
-        full_name = g_strconcat( g_getenv("HOME"),"/", base_directory, "/",filename, NULL);
+	full_name = g_strconcat( g_getenv("HOME"),"/", base_directory, "/",filename, NULL);
 
-        GdkPixbufAnimation * pixbuf = gdk_pixbuf_animation_new_from_file(full_name,NULL);
-        if( pixbuf ) {
+	GdkPixbufAnimation * pixbuf = gdk_pixbuf_animation_new_from_file(full_name,NULL);
+	if( pixbuf ) {
 		updated = TRUE;
-                /* It is actually an image, so try to update the widget DB */
-                GtkWidget * image = imageDB_check_widget(image_name);
-                if( image != NULL ) {
-                        /* The image exists in the DB, update the pixbuf */
-                        gdk_threads_enter();
-                        gtk_image_set_from_animation(GTK_IMAGE(image),pixbuf);
-                        gdk_threads_leave();
-                }
-                g_object_unref(pixbuf);
-        }
+		/* It is actually an image, so try to update the widget DB */
+		GtkWidget * image = imageDB_check_widget(image_name);
+		if( image != NULL ) {
+			/* The image exists in the DB, update the pixbuf */
+			gdk_threads_enter();
+			gtk_image_set_from_animation(GTK_IMAGE(image),pixbuf);
+			gdk_threads_leave();
+		}
+		g_object_unref(pixbuf);
+	}
 
-        g_free(full_name);
+	g_free(full_name);
 
 	return updated;
 }

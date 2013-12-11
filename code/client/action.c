@@ -46,7 +46,7 @@ clear_bar
 ************************/
 static void clear_bar(GtkWidget *widget,gpointer data)
 {
-        gtk_widget_destroy(widget);
+	gtk_widget_destroy(widget);
 }
 
 /************************
@@ -64,7 +64,7 @@ void update_action_bar(context_t * context, GtkWidget * bar)
 	GtkWidget * image_widget;
 	GtkToolItem * item;
 
-        /* Read action list for current user */
+	/* Read action list for current user */
 	if(!read_list(CHARACTER_TABLE,context->id,&action_list,CHARACTER_KEY_ACTION,NULL)) {
 		return;
 	}
@@ -81,8 +81,8 @@ void update_action_bar(context_t * context, GtkWidget * bar)
 		}
 
 		if(action_list[index]==NULL &&
-			old_action_list[index]== NULL &&
-			identical ){
+				old_action_list[index]== NULL &&
+				identical ) {
 			g_free(action_list);
 			return;
 		}
@@ -90,7 +90,7 @@ void update_action_bar(context_t * context, GtkWidget * bar)
 
 	/* update the bar */
 	/* Clear action_bar */
-        gtk_container_foreach(GTK_CONTAINER(bar),clear_bar,NULL);
+	gtk_container_foreach(GTK_CONTAINER(bar),clear_bar,NULL);
 
 	index = 0;
 	while(action_list[index] != NULL ) {

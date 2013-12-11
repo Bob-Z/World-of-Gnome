@@ -30,11 +30,11 @@
 /* return -1 if fails */
 gint equipment_delete(const gchar *id, const gchar * slot)
 {
-        context_t * context = context_find(id);
-        if( context == NULL ) {
-                werr(LOGDEV,"Could not find context %s",id);
-                return -1;
-        }
+	context_t * context = context_find(id);
+	if( context == NULL ) {
+		werr(LOGDEV,"Could not find context %s",id);
+		return -1;
+	}
 
 	if( remove_group(CHARACTER_TABLE, context->id, EQUIPMENT_EQUIPPED, EQUIPMENT_GROUP, slot, NULL)) {
 		/* update client */
@@ -50,11 +50,11 @@ gint equipment_delete(const gchar *id, const gchar * slot)
 /* return -1 if fails */
 gint equipment_add(const gchar *id, const gchar * slot, const gchar * item)
 {
-        context_t * context = context_find(id);
-        if( context == NULL ) {
-                werr(LOGDEV,"Could not find context %s",id);
-                return -1;
-        }
+	context_t * context = context_find(id);
+	if( context == NULL ) {
+		werr(LOGDEV,"Could not find context %s",id);
+		return -1;
+	}
 
 	if( write_string(CHARACTER_TABLE, context->id, item, EQUIPMENT_GROUP, slot, EQUIPMENT_EQUIPPED, NULL)) {
 		/* update client */
@@ -71,11 +71,11 @@ gint equipment_add(const gchar *id, const gchar * slot, const gchar * item)
 const char * equipment_get_item_id(const gchar *id, const gchar * slot)
 {
 	const gchar * item;
-        context_t * context = context_find(id);
-        if( context == NULL ) {
-                werr(LOGDEV,"Could not find context %s",id);
-                return NULL;
-        }
+	context_t * context = context_find(id);
+	if( context == NULL ) {
+		werr(LOGDEV,"Could not find context %s",id);
+		return NULL;
+	}
 
 	if(!read_string(CHARACTER_TABLE, context->id, &item, EQUIPMENT_GROUP, slot, EQUIPMENT_EQUIPPED, NULL)) {
 		return NULL;

@@ -32,8 +32,7 @@ static void get_selection(GtkIconView *icon_view,GtkTreePath *path,gpointer data
 
 	if( path ) {
 		selected_inventory_item_path = gtk_tree_path_copy(path);
-	}
-	else {
+	} else {
 		selected_inventory_item_path = NULL;
 	}
 }
@@ -49,13 +48,13 @@ gchar * get_selected_inventory_item()
 	gchar * item_name;
 
 	/* Get the selection path */
-        gtk_icon_view_selected_foreach(GTK_ICON_VIEW(inventory_list),get_selection,NULL);
+	gtk_icon_view_selected_foreach(GTK_ICON_VIEW(inventory_list),get_selection,NULL);
 	if( selected_inventory_item_path == NULL ) {
 		return NULL;
 	}
 
 	model = gtk_icon_view_get_model(GTK_ICON_VIEW(inventory_list));
-	if(!gtk_tree_model_get_iter(model,&iter,selected_inventory_item_path)){
+	if(!gtk_tree_model_get_iter(model,&iter,selected_inventory_item_path)) {
 		return NULL;
 	}
 	gtk_tree_model_get (model,&iter,3,&item_name,-1);
@@ -67,19 +66,19 @@ fill_inventory
 ************************/
 void fill_inventory(context_t * context)
 {
-        gchar ** item_list;
-        const gchar * value;
-        gint i=0;
-        GtkWidget * icon;
-        GdkPixbuf * icon_pixbuf;
-        gchar * label;
-        gchar * description = NULL;
+	gchar ** item_list;
+	const gchar * value;
+	gint i=0;
+	GtkWidget * icon;
+	GdkPixbuf * icon_pixbuf;
+	gchar * label;
+	gchar * description = NULL;
 	GtkListStore * inventory_list_store;
 	GtkTreeIter iter;
 	gchar * new_item;
 
 	/* Get the selection path */
-        gtk_icon_view_selected_foreach(GTK_ICON_VIEW(inventory_list),get_selection,NULL);
+	gtk_icon_view_selected_foreach(GTK_ICON_VIEW(inventory_list),get_selection,NULL);
 	/* clear the view */
 	inventory_list_store=GTK_LIST_STORE(gtk_icon_view_get_model(GTK_ICON_VIEW(inventory_list)));
 	gtk_list_store_clear(inventory_list_store);
@@ -94,50 +93,47 @@ void fill_inventory(context_t * context)
 		return;
 	}
 
-        while( item_list[i] != NULL) {
+	while( item_list[i] != NULL) {
 		if(!read_string(ITEM_TABLE,item_list[i],&value,ITEM_NAME,NULL)) {
 			label = g_strdup(item_list[i]);
-                }
-		else {
-                	label = g_strdup(value);
+		} else {
+			label = g_strdup(value);
 		}
 
 		if(!read_string(ITEM_TABLE,item_list[i],&value,ITEM_DESC,NULL)) {
 			description = g_strdup("");;
-                }
-		else {
-                        description = g_strdup(value);
+		} else {
+			description = g_strdup(value);
 		}
 
 		if(!read_string(ITEM_TABLE,item_list[i],&value,ITEM_ICON,NULL)) {
 			gtk_list_store_append (inventory_list_store, &iter);
 			gtk_list_store_set (inventory_list_store, &iter,
-					0, label,
-					1, description,
-					3, item_list[i],
-					-1);
+								0, label,
+								1, description,
+								3, item_list[i],
+								-1);
 
-		}
-		else {
+		} else {
 			icon = imageDB_get_widget(context,value);
 			icon_pixbuf = gdk_pixbuf_animation_get_static_image(gtk_image_get_animation(GTK_IMAGE(icon)));
 			gtk_widget_destroy(icon);
 
 			gtk_list_store_append (inventory_list_store, &iter);
 			gtk_list_store_set (inventory_list_store, &iter,
-					0, label,
-					1, description,
-					2, icon_pixbuf,
-					3, item_list[i],
-					-1);
+								0, label,
+								1, description,
+								2, icon_pixbuf,
+								3, item_list[i],
+								-1);
 
 		}
 
-	        g_free(description);
-                g_free(label);
+		g_free(description);
+		g_free(label);
 
-                i++;
-        }
+		i++;
+	}
 
 	g_free(item_list);
 
@@ -156,8 +152,7 @@ void fill_inventory(context_t * context)
 		if( context->selection.inventory == NULL) {
 			context->selection.inventory = new_item;
 			network_send_context(context);
-		}
-		else {
+		} else {
 			/* a different item was selected previously */
 			if(g_strcmp0(new_item,context->selection.inventory)!=0) {
 				g_free( context->selection.inventory );
@@ -169,8 +164,7 @@ void fill_inventory(context_t * context)
 				g_free(new_item);
 			}
 		}
-	}
-	else {
+	} else {
 		/* No more item selected */
 		if( context->selection.inventory != NULL ) {
 			g_free( context->selection.inventory );

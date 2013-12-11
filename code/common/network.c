@@ -33,12 +33,12 @@ extern context_t * context_list_start;
 static GHashTable* clockDB = NULL;
 static void free_key(gpointer data)
 {
-        g_free(data);
+	g_free(data);
 }
 
 static void free_value(gpointer data)
 {
-        g_date_time_unref(data);
+	g_date_time_unref(data);
 }
 
 typedef struct send_data {
@@ -60,8 +60,7 @@ void network_send_command(context_t * context, guint32 command, gsize count, con
 	/* Early check to see if context is connected */
 	if(is_data ) {
 		stream = context->output_data_stream;
-	}
-	else {
+	} else {
 		stream = context_get_output_stream(context);
 	}
 	if( stream == NULL ) {
@@ -112,18 +111,18 @@ void network_request_user_character_list(context_t * context)
 /* server sends a message to client */
 void network_send_text(const gchar * id, const gchar * string)
 {
-        context_t * context = context_find(id);
-        if( context == NULL ) {
-                werr(LOGDEV,"Could not find context %s",id);
-                return;
-        }
+	context_t * context = context_find(id);
+	if( context == NULL ) {
+		werr(LOGDEV,"Could not find context %s",id);
+		return;
+	}
 
-        /* Early check to see if context is connected */
-        GOutputStream * stream = context_get_output_stream(context);
-        if( stream == NULL ) {
-                werr(LOGDEV,"%s not connected",id);
-                return;
-        }
+	/* Early check to see if context is connected */
+	GOutputStream * stream = context_get_output_stream(context);
+	if( stream == NULL ) {
+		werr(LOGDEV,"%s not connected",id);
+		return;
+	}
 
 	wlog(LOGDEBUG,"Send CMD_SEND_TEXT :\"%s\" to %s (%s)",string,context->character_name,context->user_name);
 	network_send_command(context, CMD_SEND_TEXT, g_utf8_strlen(string,-1)+1, string,FALSE);
@@ -132,38 +131,38 @@ void network_send_text(const gchar * id, const gchar * string)
 /* Broadcast text to all connected players */
 void network_broadcast_text(context_t * context, const gchar * text)
 {
-        context_t * ctx = NULL;
+	context_t * ctx = NULL;
 
-        g_static_mutex_lock (&context_list_mutex);
+	g_static_mutex_lock (&context_list_mutex);
 
-        ctx = context_list_start;
+	ctx = context_list_start;
 
-        if( ctx == NULL ) {
-                g_static_mutex_unlock (&context_list_mutex);
-                return;
-        }
+	if( ctx == NULL ) {
+		g_static_mutex_unlock (&context_list_mutex);
+		return;
+	}
 
-        do {
-                /* Skip if not connected (NPC) */
-                if( ctx->output_stream == NULL ) {
-                        continue;
-                }
+	do {
+		/* Skip if not connected (NPC) */
+		if( ctx->output_stream == NULL ) {
+			continue;
+		}
 
-                /* Skip if not on the same map */
-/*
-                if( same_map_only ) {
-			if( target == NULL ) {
-				continue;
-			}
-                        if( g_strcmp0(target->map,ctx->map) != 0 ) {
-                                continue;
-                        }
-                }
-*/
+		/* Skip if not on the same map */
+		/*
+		                if( same_map_only ) {
+					if( target == NULL ) {
+						continue;
+					}
+		                        if( g_strcmp0(target->map,ctx->map) != 0 ) {
+		                                continue;
+		                        }
+		                }
+		*/
 		network_send_text(ctx->id,text);
-        } while( (ctx=ctx->next)!= NULL );
+	} while( (ctx=ctx->next)!= NULL );
 
-        g_static_mutex_unlock (&context_list_mutex);
+	g_static_mutex_unlock (&context_list_mutex);
 }
 
 /* server sends a command to be executed by the client */
@@ -195,11 +194,11 @@ void network_send_character_file(context_t * context)
 {
 	gchar * filename;
 
-        /* Check if this context is connected */
-        GOutputStream * stream = context_get_output_stream(context);
-        if( stream == NULL ) {
-                return;
-        }
+	/* Check if this context is connected */
+	GOutputStream * stream = context_get_output_stream(context);
+	if( stream == NULL ) {
+		return;
+	}
 
 	filename = g_strconcat(CHARACTER_TABLE,"/",context->id,NULL);
 	network_send_file(context,filename);
@@ -223,40 +222,40 @@ void network_send_entry_int(context_t * context, const gchar * table, const gcha
 /* Asks to update an int entry on all connected contexts */
 void network_broadcast_entry_int(const gchar * table, const gchar * file, const gchar * path, gint value, gboolean same_map_only)
 {
-        context_t * ctx = NULL;
-        context_t * target = NULL;
+	context_t * ctx = NULL;
+	context_t * target = NULL;
 
 	target = context_find(file);
 
-        g_static_mutex_lock (&context_list_mutex);
+	g_static_mutex_lock (&context_list_mutex);
 
-        ctx = context_list_start;
+	ctx = context_list_start;
 
-        if( ctx == NULL ) {
-                g_static_mutex_unlock (&context_list_mutex);
-                return;
-        }
+	if( ctx == NULL ) {
+		g_static_mutex_unlock (&context_list_mutex);
+		return;
+	}
 
-        do {
-                /* Skip if not connected (NPC) */
-                if( ctx->output_stream == NULL ) {
-                        continue;
-                }
-                /* Skip if not on the same map */
-                if( same_map_only ) {
+	do {
+		/* Skip if not connected (NPC) */
+		if( ctx->output_stream == NULL ) {
+			continue;
+		}
+		/* Skip if not on the same map */
+		if( same_map_only ) {
 			if( target == NULL ) {
 				continue;
 			}
-                        if( g_strcmp0(target->map,ctx->map) != 0 ) {
-                                continue;
-                        }
-                }
+			if( g_strcmp0(target->map,ctx->map) != 0 ) {
+				continue;
+			}
+		}
 
 		network_send_entry_int(ctx,table,file, path, value);
 
-        } while( (ctx=ctx->next)!= NULL );
+	} while( (ctx=ctx->next)!= NULL );
 
-        g_static_mutex_unlock (&context_list_mutex);
+	g_static_mutex_unlock (&context_list_mutex);
 }
 
 /* Client request a file */
@@ -267,9 +266,9 @@ void network_send_req_file(context_t * context, gchar * file)
 	gchar * filename;
 	gchar * cksum;
 	gchar * frame;
-        GDateTime * last_date = NULL;
-        GDateTime * current_date = NULL;
-        GDateTime * max_date = NULL;
+	GDateTime * last_date = NULL;
+	GDateTime * current_date = NULL;
+	GDateTime * max_date = NULL;
 
 	/* Sanity check */
 	if(file == NULL) {
@@ -277,10 +276,10 @@ void network_send_req_file(context_t * context, gchar * file)
 		return;
 	}
 
-        /* init clockDB if necessary */
-        if( clockDB == NULL ) {
-                clockDB = g_hash_table_new_full(g_str_hash,g_str_equal, free_key, free_value);
-        }
+	/* init clockDB if necessary */
+	if( clockDB == NULL ) {
+		clockDB = g_hash_table_new_full(g_str_hash,g_str_equal, free_key, free_value);
+	}
 
 	/* Ckeck that a previous request for this file has not been send recently */
 	last_date = g_hash_table_lookup(clockDB,file);
@@ -299,8 +298,7 @@ void network_send_req_file(context_t * context, gchar * file)
 			g_date_time_unref(current_date);
 			return;
 		}
-	}
-	else {
+	} else {
 		g_hash_table_replace(clockDB, file, current_date);
 	}
 
@@ -387,8 +385,7 @@ void network_send_context(context_t * context)
 
 	if( context->selection.id == NULL ) {
 		selected_id = "";
-	}
-	else {
+	} else {
 		selected_id = context->selection.id;
 	}
 	size = g_utf8_strlen(selected_id,-1)+1;
@@ -407,8 +404,7 @@ void network_send_context(context_t * context)
 
 	if( context->selection.map == NULL ) {
 		selected_map = "";
-	}
-	else {
+	} else {
 		selected_map = context->selection.map;
 	}
 	size = g_utf8_strlen(selected_map,-1)+1;
@@ -417,8 +413,7 @@ void network_send_context(context_t * context)
 
 	if( context->selection.inventory == NULL ) {
 		selected_id = "";
-	}
-	else {
+	} else {
 		selected_id = context->selection.inventory;
 	}
 	size = g_utf8_strlen(selected_id,-1)+1;
@@ -427,8 +422,7 @@ void network_send_context(context_t * context)
 
 	if( context->selection.equipment == NULL ) {
 		selected_id = "";
-	}
-	else {
+	} else {
 		selected_id = context->selection.equipment;
 	}
 	size = g_utf8_strlen(selected_id,-1)+1;
@@ -447,35 +441,34 @@ void network_send_context(context_t * context)
  **************************/
 gboolean read_bytes(context_t * context, gchar * data, gsize size, gboolean is_data)
 {
-        GError *err = NULL;
+	GError *err = NULL;
 	gboolean res;
 	GInputStream * stream;
-        gsize byte_read = 0;
+	gsize byte_read = 0;
 
 	if(is_data) {
 		stream = context->input_data_stream;
-	}
-	else {	
+	} else {
 		stream = context_get_input_stream(context);
 	}
 
 	res = g_input_stream_read_all(stream,data,size,&byte_read,NULL,&err);
 	g_prefix_error(&err,"Error receiving data");
 
-        if( res == FALSE) {
-                //if(g_socket_is_connected(socket) ) {
-                werr(LOGDEV,"Network error: %d bytes requested, %d received.",(int)size,(int)byte_read);
-                return FALSE;
-        }
-/*
-        if(byte_read == 0 ) {
-                //if(g_socket_is_connected(socket) ) {
-                g_warning("Network error: No data received");
-                return FALSE;
-        }
-*/
+	if( res == FALSE) {
+		//if(g_socket_is_connected(socket) ) {
+		werr(LOGDEV,"Network error: %d bytes requested, %d received.",(int)size,(int)byte_read);
+		return FALSE;
+	}
+	/*
+	        if(byte_read == 0 ) {
+	                //if(g_socket_is_connected(socket) ) {
+	                g_warning("Network error: No data received");
+	                return FALSE;
+	        }
+	*/
 
-        return TRUE;
+	return TRUE;
 }
 
 /*************************
@@ -493,13 +486,12 @@ void async_send(gpointer input_data,gpointer user_data)
 
 	if( data->is_data == FALSE ) {
 		stream = context->output_stream;
-	}
-	else {
+	} else {
 		stream = context->output_data_stream;
 	}
 
 	g_mutex_lock(&context->send_mutex);
-	
+
 	//send command
 	res = g_output_stream_write_all(stream,&data->command,sizeof(guint32),&bytes_written,NULL,&err);
 	if( res == FALSE ) {
@@ -551,40 +543,40 @@ gpointer async_recv(gpointer data)
 		command_size = 0;
 		buf = NULL;
 
-                if( !read_bytes(context,(gchar *)&command, sizeof(guint32),FALSE) ) {
-                        break;
-                }
-                /* Read a size */
-                if( !read_bytes(context,(gchar *)&command_size, sizeof(guint32),FALSE)) {
-                        break;
-                }
+		if( !read_bytes(context,(gchar *)&command, sizeof(guint32),FALSE) ) {
+			break;
+		}
+		/* Read a size */
+		if( !read_bytes(context,(gchar *)&command_size, sizeof(guint32),FALSE)) {
+			break;
+		}
 
-                /* Read additional data */
-                if( command_size > 0) {
-                        buf = g_malloc(command_size);
-                        g_assert(buf != NULL);
-                        if( !read_bytes(context,buf, command_size,FALSE) ) {
-                                break;
-                        }
-                }
+		/* Read additional data */
+		if( command_size > 0) {
+			buf = g_malloc(command_size);
+			g_assert(buf != NULL);
+			if( !read_bytes(context,buf, command_size,FALSE) ) {
+				break;
+			}
+		}
 
-                if (!parse_incoming_data(context, command, command_size, buf) ) {
-                        if( buf ) {
-                                g_free(buf);
-                                buf = NULL;
-                        }
-                        break;
-                }
+		if (!parse_incoming_data(context, command, command_size, buf) ) {
+			if( buf ) {
+				g_free(buf);
+				buf = NULL;
+			}
+			break;
+		}
 
 		if( buf != NULL) {
-                	g_free(buf);
-	                buf = NULL;
+			g_free(buf);
+			buf = NULL;
 		}
 
 //	} while( bytes_read != 0);
 //	} while( g_socket_is_connected(socket) );
 	} while( ! g_io_stream_is_closed( (GIOStream *)context_get_connection(context)));
-        
+
 	werr(LOGUSER,"Socket closed on server side.");
 
 	context_set_connected(context,FALSE);
@@ -617,40 +609,40 @@ gpointer async_data_recv(gpointer data)
 		command_size = 0;
 		buf = NULL;
 
-                if( !read_bytes(context,(gchar *)&command, sizeof(guint32),TRUE)) {
-                        break;
-                }
-                /* Read a size */
-                if( !read_bytes(context,(gchar *)&command_size, sizeof(guint32),TRUE) ) {
-                        break;
-                }
+		if( !read_bytes(context,(gchar *)&command, sizeof(guint32),TRUE)) {
+			break;
+		}
+		/* Read a size */
+		if( !read_bytes(context,(gchar *)&command_size, sizeof(guint32),TRUE) ) {
+			break;
+		}
 
-                /* Read additional data */
-                if( command_size > 0) {
-                        buf = g_malloc(command_size);
-                        g_assert(buf != NULL);
-                        if( !read_bytes(context,buf, command_size,TRUE) ) {
-                                break;
-                        }
-                }
+		/* Read additional data */
+		if( command_size > 0) {
+			buf = g_malloc(command_size);
+			g_assert(buf != NULL);
+			if( !read_bytes(context,buf, command_size,TRUE) ) {
+				break;
+			}
+		}
 
-                if (!parse_incoming_data(context, command, command_size, buf) ) {
-                        if( buf ) {
-                                g_free(buf);
-                                buf = NULL;
-                        }
-                        break;
-                }
+		if (!parse_incoming_data(context, command, command_size, buf) ) {
+			if( buf ) {
+				g_free(buf);
+				buf = NULL;
+			}
+			break;
+		}
 
 		if( buf != NULL) {
-                	g_free(buf);
-	                buf = NULL;
+			g_free(buf);
+			buf = NULL;
 		}
 
 //	} while( bytes_read != 0);
 //	} while( g_socket_is_connected(socket) );
 	} while( ! g_io_stream_is_closed( (GIOStream *)context_get_connection(context)));
-        
+
 	werr(LOGUSER,"Socket closed on server side.");
 
 	context_set_connected(context,FALSE);
@@ -677,12 +669,12 @@ gboolean network_connect(context_t * context, const gchar * hostname)
 	}
 	context->hostname = g_strdup(hostname);
 
-	client = g_socket_client_new();	
+	client = g_socket_client_new();
 	connection = g_socket_client_connect_to_host(client,hostname,PORT,NULL,&error);
 	if( connection == NULL ) {
 		werr(LOGUSER,"Can't connect to server");
 		return FALSE;
-	}	
+	}
 
 	context_set_connection(context, connection);
 	context_set_input_stream(context,g_io_stream_get_input_stream((GIOStream *)connection));
@@ -691,10 +683,10 @@ gboolean network_connect(context_t * context, const gchar * hostname)
 	g_mutex_init(&context->send_mutex);
 	context->send_thread = g_thread_pool_new(async_send,(gpointer)context,-1,FALSE,NULL);
 	listenThread = g_thread_new("recv_thread",async_recv,(gpointer)context);
-        g_assert_no_error(error);
+	g_assert_no_error(error);
 
 	return TRUE;
-} 
+}
 
 int network_open_data_connection(context_t * context)
 {
@@ -702,19 +694,19 @@ int network_open_data_connection(context_t * context)
 	GSocketConnection * connection = NULL;
 	GError * error = NULL;
 
-	client = g_socket_client_new();	
+	client = g_socket_client_new();
 	connection = g_socket_client_connect_to_host(client,context->hostname,PORT,NULL,&error);
 	if( connection == NULL ) {
 		werr(LOGUSER,"Can't open data connection to server");
 		return FALSE;
-	}	
+	}
 
 	context->data_connection = connection;
 	context->input_data_stream = g_io_stream_get_input_stream((GIOStream *)connection);
 	context->output_data_stream = g_io_stream_get_output_stream((GIOStream *)connection);
 
 	listenThread = g_thread_create(async_data_recv,(gpointer)context,TRUE,&error);
-        g_assert_no_error(error);
+	g_assert_no_error(error);
 
 	return TRUE;
 }
@@ -730,18 +722,18 @@ int network_open_data_connection(context_t * context)
  **************************/
 gboolean network_connection(GThreadedSocketService *service,GSocketConnection *connection, GObject *source_object, gpointer user_data)
 {
-        wlog(LOGUSER,"Client connected");
+	wlog(LOGUSER,"Client connected");
 
-        context_t * context;
-        context = context_new();
-        if(context == NULL ) {
-                werr(LOGUSER,"Failed to create context");
+	context_t * context;
+	context = context_new();
+	if(context == NULL ) {
+		werr(LOGUSER,"Failed to create context");
 		return TRUE;
-        }
+	}
 
-        context_set_connection(context,connection);
-        context_set_input_stream(context,g_io_stream_get_input_stream((GIOStream *)connection));
-        context_set_output_stream(context,g_io_stream_get_output_stream((GIOStream *)connection));
+	context_set_connection(context,connection);
+	context_set_input_stream(context,g_io_stream_get_input_stream((GIOStream *)connection));
+	context_set_output_stream(context,g_io_stream_get_output_stream((GIOStream *)connection));
 	context->send_thread = g_thread_pool_new(async_send,(gpointer)context,-1,FALSE,NULL);
 
 	context_new_VM(context);
@@ -749,50 +741,50 @@ gboolean network_connection(GThreadedSocketService *service,GSocketConnection *c
 	context_set_connected(context,TRUE);
 
 	while(context_get_connected(context)) {
-                guint32 command = 0;
-                guint32 command_size = 0;
-                gchar *buf = NULL;
-                /* Read a command code */
-                if( !read_bytes(context,(gchar *)&command, sizeof(guint32),FALSE)) {
+		guint32 command = 0;
+		guint32 command_size = 0;
+		gchar *buf = NULL;
+		/* Read a command code */
+		if( !read_bytes(context,(gchar *)&command, sizeof(guint32),FALSE)) {
 			context_set_connected(context,FALSE);
-                        break;
-                }
-                /* Read a size */
-                if( !read_bytes(context,(gchar *)&command_size, sizeof(guint32),FALSE)) {
+			break;
+		}
+		/* Read a size */
+		if( !read_bytes(context,(gchar *)&command_size, sizeof(guint32),FALSE)) {
 			context_set_connected(context,FALSE);
-                        break;
-                }
+			break;
+		}
 
-                /* Read additional data */
-                if( command_size > 0) {
-                        buf = g_malloc(command_size);
-                        g_assert(buf != NULL);
-                        if( !read_bytes(context,buf, command_size,FALSE)) {
+		/* Read additional data */
+		if( command_size > 0) {
+			buf = g_malloc(command_size);
+			g_assert(buf != NULL);
+			if( !read_bytes(context,buf, command_size,FALSE)) {
 				context_set_connected(context,FALSE);
-                                break;
-                        }
-                }
+				break;
+			}
+		}
 
-                if (!parse_incoming_data(context, command, command_size, buf) ) {
-                        if( buf ) {
-                                g_free(buf);
-                                buf = NULL;
-                        }
+		if (!parse_incoming_data(context, command, command_size, buf) ) {
+			if( buf ) {
+				g_free(buf);
+				buf = NULL;
+			}
 			context_set_connected(context,FALSE);
-                        break;
-                }
+			break;
+		}
 
-                if( buf != NULL) {
-                        g_free(buf);
-                        buf = NULL;
-                }
-        }
-        wlog(LOGUSER,"Client disconnected");
-        context_spread(context);
-        context_write_to_file(context);
-        context_free(context);
+		if( buf != NULL) {
+			g_free(buf);
+			buf = NULL;
+		}
+	}
+	wlog(LOGUSER,"Client disconnected");
+	context_spread(context);
+	context_write_to_file(context);
+	context_free(context);
 
-        return TRUE;
+	return TRUE;
 }
 
 /**************************
@@ -804,18 +796,18 @@ gboolean network_connection(GThreadedSocketService *service,GSocketConnection *c
 
 void network_init(void)
 {
-        GError *err = NULL;
+	GError *err = NULL;
 
-        GSocketService * service;
-        service = g_threaded_socket_service_new(MAX_CLIENT);
+	GSocketService * service;
+	service = g_threaded_socket_service_new(MAX_CLIENT);
 
-        g_socket_listener_add_inet_port ((GSocketListener *)service,PORT,NULL,&err);
-        g_assert_no_error(err);
+	g_socket_listener_add_inet_port ((GSocketListener *)service,PORT,NULL,&err);
+	g_assert_no_error(err);
 
-        g_signal_connect(service,"run", (GCallback)network_connection, NULL);
-        g_socket_service_start(service);
+	g_signal_connect(service,"run", (GCallback)network_connection, NULL);
+	g_socket_service_start(service);
 
-        return;
+	return;
 }
 
 /**************************
@@ -826,86 +818,86 @@ void network_init(void)
  **************************/
 void network_send_context_to_context(context_t * dest_ctx, context_t * src_ctx)
 {
-        gchar data[BIG_BUF];
-        gchar itoa[SMALL_BUF];
-        gint  data_size = 0;
-        gint  size = 0;
+	gchar data[BIG_BUF];
+	gchar itoa[SMALL_BUF];
+	gint  data_size = 0;
+	gint  size = 0;
 
-        size = g_utf8_strlen(src_ctx->user_name,-1)+1;
-        g_memmove(data+data_size, src_ctx->user_name, size);
-        data_size += size;
+	size = g_utf8_strlen(src_ctx->user_name,-1)+1;
+	g_memmove(data+data_size, src_ctx->user_name, size);
+	data_size += size;
 
-        size = g_utf8_strlen(src_ctx->character_name,-1)+1;
-        g_memmove(data+data_size, src_ctx->character_name, size);
-        data_size += size;
+	size = g_utf8_strlen(src_ctx->character_name,-1)+1;
+	g_memmove(data+data_size, src_ctx->character_name, size);
+	data_size += size;
 
-        size = g_utf8_strlen(src_ctx->map,-1)+1;
-        g_memmove(data+data_size, src_ctx->map, size);
-        data_size += size;
+	size = g_utf8_strlen(src_ctx->map,-1)+1;
+	g_memmove(data+data_size, src_ctx->map, size);
+	data_size += size;
 
-        g_snprintf(itoa,sizeof(itoa),"%d",src_ctx->connected);
-        size = g_utf8_strlen(itoa,-1)+1;
-        g_memmove(data+data_size, itoa, size);
-        data_size += size;
+	g_snprintf(itoa,sizeof(itoa),"%d",src_ctx->connected);
+	size = g_utf8_strlen(itoa,-1)+1;
+	g_memmove(data+data_size, itoa, size);
+	data_size += size;
 
-        g_snprintf(itoa,sizeof(itoa),"%d",src_ctx->pos_x);
-        size = g_utf8_strlen(itoa,-1)+1;
-        g_memmove(data+data_size, itoa, size);
-        data_size += size;
+	g_snprintf(itoa,sizeof(itoa),"%d",src_ctx->pos_x);
+	size = g_utf8_strlen(itoa,-1)+1;
+	g_memmove(data+data_size, itoa, size);
+	data_size += size;
 
-        g_snprintf(itoa,sizeof(itoa),"%d",src_ctx->pos_y);
-        size = g_utf8_strlen(itoa,-1)+1;
-        g_memmove(data+data_size, itoa, size);
-        data_size += size;
+	g_snprintf(itoa,sizeof(itoa),"%d",src_ctx->pos_y);
+	size = g_utf8_strlen(itoa,-1)+1;
+	g_memmove(data+data_size, itoa, size);
+	data_size += size;
 
-        size = g_utf8_strlen(src_ctx->type,-1)+1;
-        g_memmove(data+data_size, src_ctx->type, size);
-        data_size += size;
+	size = g_utf8_strlen(src_ctx->type,-1)+1;
+	g_memmove(data+data_size, src_ctx->type, size);
+	data_size += size;
 
-        g_snprintf(itoa,sizeof(itoa),"%d",src_ctx->map_x);
-        size = g_utf8_strlen(itoa,-1)+1;
-        g_memmove(data+data_size, itoa, size);
-        data_size += size;
+	g_snprintf(itoa,sizeof(itoa),"%d",src_ctx->map_x);
+	size = g_utf8_strlen(itoa,-1)+1;
+	g_memmove(data+data_size, itoa, size);
+	data_size += size;
 
-        g_snprintf(itoa,sizeof(itoa),"%d",src_ctx->map_y);
-        size = g_utf8_strlen(itoa,-1)+1;
-        g_memmove(data+data_size, itoa, size);
-        data_size += size;
+	g_snprintf(itoa,sizeof(itoa),"%d",src_ctx->map_y);
+	size = g_utf8_strlen(itoa,-1)+1;
+	g_memmove(data+data_size, itoa, size);
+	data_size += size;
 
-        g_snprintf(itoa,sizeof(itoa),"%d",src_ctx->tile_x);
-        size = g_utf8_strlen(itoa,-1)+1;
-        g_memmove(data+data_size, itoa, size);
-        data_size += size;
+	g_snprintf(itoa,sizeof(itoa),"%d",src_ctx->tile_x);
+	size = g_utf8_strlen(itoa,-1)+1;
+	g_memmove(data+data_size, itoa, size);
+	data_size += size;
 
-        g_snprintf(itoa,sizeof(itoa),"%d",src_ctx->tile_y);
-        size = g_utf8_strlen(itoa,-1)+1;
-        g_memmove(data+data_size, itoa, size);
-        data_size += size;
+	g_snprintf(itoa,sizeof(itoa),"%d",src_ctx->tile_y);
+	size = g_utf8_strlen(itoa,-1)+1;
+	g_memmove(data+data_size, itoa, size);
+	data_size += size;
 
 	size = g_utf8_strlen(src_ctx->id,-1)+1;
 	g_memmove(data+data_size, src_ctx->id, size);
 	data_size += size;
 
 	wlog(LOGDEBUG,"Send CMD_SEND_CONTEXT of %s to %s",src_ctx->id,dest_ctx->id);
-        network_send_command(dest_ctx, CMD_SEND_CONTEXT, data_size, data,FALSE);
+	network_send_command(dest_ctx, CMD_SEND_CONTEXT, data_size, data,FALSE);
 
 }
 
 /**************************
   network_send_file
 
- filename is relative to the data dir 
+ filename is relative to the data dir
 
   send a file to a context
-return 0 on success 
+return 0 on success
  **************************/
 int network_send_file(context_t * context, gchar * filename)
 {
 	/* Check if this context is connected */
-        GOutputStream * stream = context_get_output_stream(context);
-        if( stream == NULL ) {
-                return 1;
-        }
+	GOutputStream * stream = context_get_output_stream(context);
+	if( stream == NULL ) {
+		return 1;
+	}
 
 	/* Never send files with password */
 	if ( g_strstr_len(PASSWD_TABLE,-1,filename) != NULL ) {

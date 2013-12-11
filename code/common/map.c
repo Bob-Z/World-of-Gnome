@@ -35,9 +35,11 @@ gchar * map_new(gint x,gint y, gint tile_x, gint tile_y, gchar * default_tile)
 	gint i;
 
 	map_name = file_new(MAP_TABLE);
-	if(map_name == NULL) return NULL;
+	if(map_name == NULL) {
+		return NULL;
+	}
 
-	
+
 	if (!write_int(MAP_TABLE,map_name,x,MAP_KEY_SIZE_X, NULL) ) {
 		g_free(map_name);
 		return NULL;
@@ -56,7 +58,7 @@ gchar * map_new(gint x,gint y, gint tile_x, gint tile_y, gchar * default_tile)
 	}
 
 	tile_array=g_malloc0(((x*y)+1)*sizeof(gchar *));
-	for(i=0;i<(x*y);i++) {
+	for(i=0; i<(x*y); i++) {
 		tile_array[i] = default_tile;
 	}
 	if (!write_list(MAP_TABLE,map_name,tile_array,MAP_KEY_SET, NULL) ) {
@@ -73,35 +75,35 @@ return TRUE if the context is allowed to go to the tile at coord x,y
 *************************************/
 gboolean map_check_tile(gchar * id,gchar * map, gint x,gint y)
 {
-        gchar ** map_tiles;
-        gchar ** allowed_tile;
-        const gchar * tile_type;
-        gint i=0;
+	gchar ** map_tiles;
+	gchar ** allowed_tile;
+	const gchar * tile_type;
+	gint i=0;
 	gint size_x = 0;
 	gint size_y = 0;
 
-        if(!read_list(MAP_TABLE,map,&map_tiles,MAP_KEY_SET,NULL)) {
-                return FALSE;
-        }
+	if(!read_list(MAP_TABLE,map,&map_tiles,MAP_KEY_SET,NULL)) {
+		return FALSE;
+	}
 
-        if(!read_int(MAP_TABLE,map,&size_x,MAP_KEY_SIZE_X,NULL)) {
-                return FALSE;
-        }
+	if(!read_int(MAP_TABLE,map,&size_x,MAP_KEY_SIZE_X,NULL)) {
+		return FALSE;
+	}
 
-        if(!read_int(MAP_TABLE,map,&size_y,MAP_KEY_SIZE_Y,NULL)) {
-                return FALSE;
-        }
+	if(!read_int(MAP_TABLE,map,&size_y,MAP_KEY_SIZE_Y,NULL)) {
+		return FALSE;
+	}
 
 	/* sanity_check */
 	if( x < 0 || y < 0 || x >= size_x || y >= size_y ) {
 		return FALSE;
 	}
 
-        if(!read_string(TILE_TABLE,map_tiles[(size_x*y)+x],&tile_type,TILE_KEY_TYPE,NULL)) {
-                g_free(map_tiles);
-                /* no type for this tile, allowed for everyone */
-                return TRUE;
-        }
+	if(!read_string(TILE_TABLE,map_tiles[(size_x*y)+x],&tile_type,TILE_KEY_TYPE,NULL)) {
+		g_free(map_tiles);
+		/* no type for this tile, allowed for everyone */
+		return TRUE;
+	}
 
 	/* try specific allowed tile */
 	if(!read_list(CHARACTER_TABLE,id,&allowed_tile,CHARACTER_KEY_ALLOWED_TILE,NULL)) {
@@ -110,19 +112,19 @@ gboolean map_check_tile(gchar * id,gchar * map, gint x,gint y)
 		return TRUE;
 	}
 
-        while( allowed_tile[i] != NULL ) {
-                if( g_strcmp0(allowed_tile[i], tile_type) == 0 ) {
-                        g_free(allowed_tile);
-                        g_free(map_tiles);
-                        return TRUE;
-                }
-                i++;
-        }
+	while( allowed_tile[i] != NULL ) {
+		if( g_strcmp0(allowed_tile[i], tile_type) == 0 ) {
+			g_free(allowed_tile);
+			g_free(map_tiles);
+			return TRUE;
+		}
+		i++;
+	}
 
-        g_free(allowed_tile);
-        g_free(map_tiles);
+	g_free(allowed_tile);
+	g_free(map_tiles);
 
-        return FALSE;
+	return FALSE;
 }
 
 /* delete an item on context's map */
@@ -141,20 +143,20 @@ gchar * map_delete_item(const gchar * map, gint x, gint y)
 	if(!get_group_list(MAP_TABLE,map,&itemlist,MAP_ENTRY_ITEM_LIST,NULL)) {
 		g_static_mutex_unlock(&map_mutex);
 		return NULL;
- 	}
+	}
 
 	while(itemlist[i] != NULL) {
 		if( !read_int(MAP_TABLE,map,&mapx,MAP_ENTRY_ITEM_LIST,itemlist[i],MAP_ITEM_POS_X,NULL) ) {
 			g_static_mutex_unlock(&map_mutex);
 			g_free(itemlist);
 			return NULL;
- 		}
+		}
 
 		if( !read_int(MAP_TABLE,map,&mapy,MAP_ENTRY_ITEM_LIST,itemlist[i],MAP_ITEM_POS_Y,NULL) ) {
 			g_static_mutex_unlock(&map_mutex);
 			g_free(itemlist);
 			return NULL;
- 		}
+		}
 
 		if( x == mapx && y == mapy ) {
 			id = itemlist[i];
@@ -228,7 +230,7 @@ int map_set_tile(const gchar * map,const gchar * tile,gint x, gint y)
 	const gchar * value = NULL;
 	int sizex = -1;
 	gint index;
-	
+
 	/* Check parameters sanity */
 	if(map == NULL || tile == NULL) {
 		return -1;
@@ -252,14 +254,14 @@ int map_set_tile(const gchar * map,const gchar * tile,gint x, gint y)
 	/* read map tile */
 	if(!read_list_index(MAP_TABLE,map,&value, index,MAP_KEY_SET,NULL)) {
 		g_static_mutex_unlock(&map_mutex);
-                return -1;
-        }
+		return -1;
+	}
 
 	/* Do not change the tile if it already the requested tile */
-        if( g_strcmp0(value, tile) == 0 ) {
-                g_static_mutex_unlock(&map_mutex);
-                return 0;
-        }
+	if( g_strcmp0(value, tile) == 0 ) {
+		g_static_mutex_unlock(&map_mutex);
+		return 0;
+	}
 
 	if( write_list_index(MAP_TABLE, map, tile,index, MAP_KEY_SET,NULL ) ) {
 		context_broadcast_file(MAP_TABLE,map,TRUE);
@@ -271,21 +273,21 @@ int map_set_tile(const gchar * map,const gchar * tile,gint x, gint y)
 }
 
 /********************************************
- return the name of the tile on map at x,y 
+ return the name of the tile on map at x,y
  return must be freed by caller
 ********************************************/
 gchar * map_get_tile(const gchar * map,gint x, gint y)
 {
-        gchar ** map_tiles;
+	gchar ** map_tiles;
 	gint map_size_x;
 
-        if(!read_list(MAP_TABLE,map,&map_tiles,MAP_KEY_SET,NULL)) {
-                return NULL;
-        }
+	if(!read_list(MAP_TABLE,map,&map_tiles,MAP_KEY_SET,NULL)) {
+		return NULL;
+	}
 
 	if(!read_int(MAP_TABLE,map,&map_size_x,MAP_KEY_SIZE_X,NULL)) {
-                return NULL;
-        }
+		return NULL;
+	}
 
 	if( map_tiles[(map_size_x*y)+x] ) {
 		return g_strdup(map_tiles[(map_size_x*y)+x]);
@@ -295,22 +297,22 @@ gchar * map_get_tile(const gchar * map,gint x, gint y)
 }
 
 /********************************************
- return the type of the tile on map at x,y 
+ return the type of the tile on map at x,y
 ********************************************/
 const gchar * map_get_tile_type(const gchar * map,gint x, gint y)
 {
-        gchar ** map_tiles;
+	gchar ** map_tiles;
 	gint map_size_x;
 	gchar * tile;
 	const gchar * type;
 
-        if(!read_list(MAP_TABLE,map,&map_tiles,MAP_KEY_SET,NULL)) {
-                return NULL;
-        }
+	if(!read_list(MAP_TABLE,map,&map_tiles,MAP_KEY_SET,NULL)) {
+		return NULL;
+	}
 
 	if(!read_int(MAP_TABLE,map,&map_size_x,MAP_KEY_SIZE_X,NULL)) {
-                return NULL;
-        }
+		return NULL;
+	}
 
 	tile = map_tiles[(map_size_x*y)+x];
 	if( tile ) {
@@ -343,18 +345,18 @@ const gchar ** map_get_event(const gchar * map,gint x, gint y)
 	if(!get_group_list(MAP_TABLE,map,&eventlist,MAP_ENTRY_EVENT_LIST,NULL)) {
 		g_static_mutex_unlock(&map_mutex);
 		return NULL;
- 	}
+	}
 
 	while(eventlist[i] != NULL) {
 		if( !read_int(MAP_TABLE,map,&mapx,MAP_ENTRY_EVENT_LIST,eventlist[i],MAP_EVENT_POS_X,NULL) ) {
 			i++;
 			continue;
- 		}
+		}
 
 		if( !read_int(MAP_TABLE,map,&mapy,MAP_ENTRY_EVENT_LIST,eventlist[i],MAP_EVENT_POS_Y,NULL) ) {
 			i++;
 			continue;
- 		}
+		}
 
 		if( x == mapx && y == mapy ) {
 			event_id_num++;
@@ -449,21 +451,21 @@ gint map_delete_event(const gchar * map, const gchar * script, gint x, gint y)
 	if(!get_group_list(MAP_TABLE,map,&eventlist,MAP_ENTRY_EVENT_LIST,NULL)) {
 		g_static_mutex_unlock(&map_mutex);
 		return -1;
- 	}
+	}
 
 	while(eventlist[i] != NULL) {
 		if( !read_int(MAP_TABLE,map,&mapx,MAP_ENTRY_EVENT_LIST,eventlist[i],MAP_EVENT_POS_X,NULL) ) {
 			i++;
 			continue;
- 		}
+		}
 		if( !read_int(MAP_TABLE,map,&mapy,MAP_ENTRY_EVENT_LIST,eventlist[i],MAP_EVENT_POS_Y,NULL) ) {
 			i++;
 			continue;
- 		}
+		}
 		if( !read_string(MAP_TABLE,map,&s,MAP_ENTRY_EVENT_LIST,eventlist[i],MAP_EVENT_SCRIPT,NULL) ) {
 			i++;
 			continue;
- 		}
+		}
 		if( x == mapx && y == mapy && !g_strcmp0(s,script) ) {
 			id = eventlist[i];
 			break;

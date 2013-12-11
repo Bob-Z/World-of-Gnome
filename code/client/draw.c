@@ -40,7 +40,7 @@ static int map_y = -1;
 /* item list */
 static GtkWidget ** item_list = NULL;
 
-/* Save the last graphic element on which the mouse move over 
+/* Save the last graphic element on which the mouse move over
 to detect when it moves on a new graphic element */
 static gint	last_mouse_tile_x = -1;
 static gint	last_mouse_tile_y = -1;
@@ -75,7 +75,7 @@ gboolean on_motion_over_sprite_event(GtkWidget *widget, GdkEventMotion *event, g
 		string = g_strconcat( context->character_name,"\n", context->type, NULL);
 
 		gtk_label_set_text(GTK_LABEL(pointed_label), string);
-                g_free(string);
+		g_free(string);
 		pixbuf = gtk_image_get_animation( GTK_IMAGE(gtk_bin_get_child(GTK_BIN(context->sprite_image))) );
 		gtk_image_set_from_animation(GTK_IMAGE(pointed_image), pixbuf);
 	}
@@ -95,8 +95,7 @@ gboolean on_motion_over_tile_event(GtkWidget *widget, GdkEventMotion *event, gpo
 
 		if( tile_info->description != NULL ) {
 			gtk_label_set_text(GTK_LABEL(pointed_label), tile_info->description);
-		}
-		else {
+		} else {
 			gtk_label_set_text(GTK_LABEL(pointed_label), "");
 		}
 		pixbuf = gtk_image_get_animation( GTK_IMAGE(gtk_bin_get_child(GTK_BIN(widget))) );
@@ -144,15 +143,13 @@ void update_selected_tile(tile_info_t * tile_info, GtkWidget * tile_image)
 
 	if( tile_info != NULL && tile_info->description != NULL ) {
 		gtk_label_set_text(GTK_LABEL(selected_tile_label), tile_info->description);
-	}
-	else {
+	} else {
 		gtk_label_set_text(GTK_LABEL(selected_tile_label), "");
 	}
 
 	if( tile_image == NULL ) {
 		gtk_image_set_from_animation(GTK_IMAGE(selected_tile_image), NULL);
-	}
-	else {
+	} else {
 		pixbuf = gtk_image_get_animation( GTK_IMAGE(gtk_bin_get_child(GTK_BIN(tile_image))));
 		gtk_image_set_from_animation(GTK_IMAGE(selected_tile_image), pixbuf);
 	}
@@ -212,10 +209,11 @@ gboolean on_button_over_tile_event(GtkWidget *widget, GdkEventMotion *event, gpo
 
 /***********************
  Load the sprite if needed and return a copy of the sprite image
-You MUST have the GDK lock when calling this function 
+You MUST have the GDK lock when calling this function
 ***********************/
 
-GtkWidget * get_sprite(context_t * context) {
+GtkWidget * get_sprite(context_t * context)
+{
 
 	const gchar * sprite_name = NULL;
 	GtkWidget * new_sprite = NULL;
@@ -226,7 +224,7 @@ GtkWidget * get_sprite(context_t * context) {
 		werr(LOGUSER,"Can't read sprite name for \"%s\" type",context->type);
 		g_assert(1);
 	}
-		
+
 	/* get the image from the imageDB */
 	/* We must use the player's context to have the communication streams */
 	new_sprite = imageDB_get_widget(context_get_list_first(),sprite_name);
@@ -250,7 +248,7 @@ Draw  sprite
 tile_x and tile_y are the number of tiles from the tile in the center of the view.
 (0,0) is the center of the view so it is where the user's sprite appears
 
-You MUST have the GDK lock when calling this function 
+You MUST have the GDK lock when calling this function
 ************************/
 void draw_sprite(context_t * context, GtkWidget * tile_set, gint tile_x, gint tile_y,context_t * player_context)
 {
@@ -275,7 +273,7 @@ void draw_sprite(context_t * context, GtkWidget * tile_set, gint tile_x, gint ti
 	context->sprite_image = get_sprite(context);
 	/* Get the actual GTK image (it's an event box which is stored in context) */
 	image = gtk_bin_get_child(GTK_BIN(context->sprite_image));
-	
+
 
 	/* Retrieve sprite size */
 	pixbuf = gtk_image_get_animation(GTK_IMAGE(image));
@@ -284,44 +282,44 @@ void draw_sprite(context_t * context, GtkWidget * tile_set, gint tile_x, gint ti
 
 	/* center of the window + (number of tile from the center * size of a tile) - (size of the sprite/2) */
 	gtk_layout_put(GTK_LAYOUT(tile_set),context->sprite_image,
-				(main_window_width/2) + (tile_x * context->tile_x) - (x/2) ,	
-				(main_window_height/2)+ (tile_y * context->tile_y) - (y/2) );
+				   (main_window_width/2) + (tile_x * context->tile_x) - (x/2) ,
+				   (main_window_height/2)+ (tile_y * context->tile_y) - (y/2) );
 }
 
 /***********************
- Draw all sprite of the list 
-You MUST have the GDK lock when calling this function 
+ Draw all sprite of the list
+You MUST have the GDK lock when calling this function
 ***********************/
 void draw_all_sprite(GtkWidget * tile_set)
 {
-        context_t * ctx = NULL;
+	context_t * ctx = NULL;
 
-        context_lock_list();
+	context_lock_list();
 
-        context_t * first = context_get_list_first();
+	context_t * first = context_get_list_first();
 
-        /* The first context is the context of the user, we draw it after the other */
-        ctx = first->next;
+	/* The first context is the context of the user, we draw it after the other */
+	ctx = first->next;
 
-        while( ctx != NULL ) {
-               	draw_sprite(ctx, tile_set, ctx->pos_x - first->pos_x, ctx->pos_y - first->pos_y,first);
-                ctx = ctx->next;
-        }
+	while( ctx != NULL ) {
+		draw_sprite(ctx, tile_set, ctx->pos_x - first->pos_x, ctx->pos_y - first->pos_y,first);
+		ctx = ctx->next;
+	}
 
-        /* Finally draw the user's sprite */
-        draw_sprite(first, tile_set, 0,0,first);
+	/* Finally draw the user's sprite */
+	draw_sprite(first, tile_set, 0,0,first);
 
-        context_unlock_list();
+	context_unlock_list();
 }
 
 /***********************
  Create a widget containg an image for the requested tile
-You MUST have the GDK lock when calling this function 
+You MUST have the GDK lock when calling this function
 index is the index in the map_cooridnate array for this tile
 ***********************/
 GtkWidget * get_tile(context_t * context, gchar * tile_name, gint index, const gchar ** description)
 {
-	GtkWidget * new_image = NULL; 
+	GtkWidget * new_image = NULL;
 	GtkWidget * new_event_box = NULL;
 	const gchar * tile_file_name = NULL;
 
@@ -335,7 +333,7 @@ GtkWidget * get_tile(context_t * context, gchar * tile_name, gint index, const g
 	/* Save description for caller */
 	read_string(TILE_TABLE,tile_name,description,TILE_KEY_TEXT,NULL);
 
-        /* load image from imageDB */
+	/* load image from imageDB */
 	new_image = imageDB_get_widget(context,tile_file_name);
 
 	/* Add image to an eventbox to be able to catch event */
@@ -353,14 +351,14 @@ GtkWidget * get_tile(context_t * context, gchar * tile_name, gint index, const g
 
 /**********************
  Clean-up map tiles
- You MUST have the GDK lock when calling this function 
+ You MUST have the GDK lock when calling this function
 ***********************/
 void draw_cleanup(context_t * context)
 {
 	int i;
 
 	if(map_tiles != NULL ) {
-		for(i=0;i<map_x*map_y;i++){
+		for(i=0; i<map_x*map_y; i++) {
 			if( map_tiles[i] != NULL ) {
 				gtk_widget_destroy(map_tiles[i]);
 			}
@@ -374,9 +372,10 @@ void draw_cleanup(context_t * context)
 
 /***********************
  Load map if needed
-You MUST have the GDK lock when calling this function 
+You MUST have the GDK lock when calling this function
 ***********************/
-void draw_map(context_t * context, GtkWidget * tile_set) {
+void draw_map(context_t * context, GtkWidget * tile_set)
+{
 	gchar ** value = NULL;
 	gint i,j;
 
@@ -456,7 +455,7 @@ void draw_map(context_t * context, GtkWidget * tile_set) {
 
 		/* Clipping */
 		if(pos_right < 0 || pos_left > main_window_width ||
-		pos_top > main_window_height || pos_bottom < 0 ) {
+				pos_top > main_window_height || pos_bottom < 0 ) {
 			goto next_tile;
 		}
 
@@ -473,7 +472,7 @@ void draw_map(context_t * context, GtkWidget * tile_set) {
 		gtk_layout_put(GTK_LAYOUT(tile_set),map_tiles[y*context->map_x + x],pos_left,pos_top);
 
 		/* next */
-		next_tile:
+next_tile:
 		x++;
 		if( x >= context->map_x ) {
 			y++;
@@ -487,10 +486,11 @@ void draw_map(context_t * context, GtkWidget * tile_set) {
 
 /***********************
 Create the cursor image if not existing.
-Draw the cursor. 
-You MUST have the GDK lock when calling this function 
+Draw the cursor.
+You MUST have the GDK lock when calling this function
 ***********************/
-void draw_cursor(context_t * context, GtkWidget * tile_set) {
+void draw_cursor(context_t * context, GtkWidget * tile_set)
+{
 	gint x_coord;
 	gint y_coord;
 	GdkPixbufAnimation *Pixbuf;
@@ -556,7 +556,8 @@ void draw_cursor(context_t * context, GtkWidget * tile_set) {
 /**************************
 Put the requested item on the current map
 **************************/
-void put_item(context_t * context,GtkWidget * tile_set, const gchar * item_name, gint x,gint y) {
+void put_item(context_t * context,GtkWidget * tile_set, const gchar * item_name, gint x,gint y)
+{
 	const gchar * sprite_name = NULL;
 	gint i=0;
 	gint x_coord = 0;
@@ -598,9 +599,10 @@ void put_item(context_t * context,GtkWidget * tile_set, const gchar * item_name,
 
 /***********************
 Draw all items on the current map.
-You MUST have the GDK lock when calling this function 
+You MUST have the GDK lock when calling this function
 ***********************/
-void draw_item(context_t * context, GtkWidget * tile_set) {
+void draw_item(context_t * context, GtkWidget * tile_set)
+{
 	gint x;
 	gint y;
 	gint i=0;

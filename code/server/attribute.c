@@ -53,7 +53,7 @@ gint attribute_change(context_t * context, const gchar * id, const gchar * attri
 
 	g_static_mutex_lock(&attribute_mutex);
 
-	if(!read_int(CHARACTER_TABLE,id,&current,ATTRIBUTE_GROUP,attribute, ATTRIBUTE_CURRENT, NULL)){
+	if(!read_int(CHARACTER_TABLE,id,&current,ATTRIBUTE_GROUP,attribute, ATTRIBUTE_CURRENT, NULL)) {
 		g_static_mutex_unlock(&attribute_mutex);
 		return -1;
 	}
@@ -96,8 +96,7 @@ gint attribute_change(context_t * context, const gchar * id, const gchar * attri
 		if( do_min_action ) {
 			if(!read_string(CHARACTER_TABLE,id,&action,ATTRIBUTE_GROUP,attribute, ATTRIBUTE_ON_MIN, NULL)) {
 				do_min_action = FALSE;
-			}
-			else {
+			} else {
 				min_action = g_strdup(action);
 			}
 		}
@@ -112,8 +111,7 @@ gint attribute_change(context_t * context, const gchar * id, const gchar * attri
 		if( do_max_action ) {
 			if(!read_string(CHARACTER_TABLE,id,&action,ATTRIBUTE_GROUP,attribute, ATTRIBUTE_ON_MAX, NULL)) {
 				do_max_action = FALSE;
-			}
-			else {
+			} else {
 				max_action = g_strdup(action);
 			}
 		}
@@ -169,15 +167,15 @@ gint attribute_change(context_t * context, const gchar * id, const gchar * attri
 gint attribute_get(const gchar *id, const gchar * attribute)
 {
 	gint current;
-        context_t * context = context_find(id);
-        if( context == NULL ) {
-                werr(LOGDEV,"%s: Could not find context %s",id);
-                return -1;
-        }
+	context_t * context = context_find(id);
+	if( context == NULL ) {
+		werr(LOGDEV,"%s: Could not find context %s",id);
+		return -1;
+	}
 
 	g_static_mutex_lock(&attribute_mutex);
 
-	if(!read_int(CHARACTER_TABLE,id,&current,ATTRIBUTE_GROUP,attribute, ATTRIBUTE_CURRENT, NULL)){
+	if(!read_int(CHARACTER_TABLE,id,&current,ATTRIBUTE_GROUP,attribute, ATTRIBUTE_CURRENT, NULL)) {
 		g_static_mutex_unlock(&attribute_mutex);
 		return -1;
 	}
@@ -192,15 +190,15 @@ gint attribute_get(const gchar *id, const gchar * attribute)
 /* return -1 if fails */
 gint attribute_set(const gchar * id, const gchar * attribute, gint value)
 {
-        context_t * context = context_find(id);
-        if( context == NULL ) {
-                werr(LOGDEV,"Could not find context %s",id);
-                return -1;
-        }
+	context_t * context = context_find(id);
+	if( context == NULL ) {
+		werr(LOGDEV,"Could not find context %s",id);
+		return -1;
+	}
 
 	g_static_mutex_lock(&attribute_mutex);
 
-	if(!write_int(CHARACTER_TABLE,id,value,ATTRIBUTE_GROUP,attribute, ATTRIBUTE_CURRENT, NULL)){
+	if(!write_int(CHARACTER_TABLE,id,value,ATTRIBUTE_GROUP,attribute, ATTRIBUTE_CURRENT, NULL)) {
 		g_static_mutex_unlock(&attribute_mutex);
 		return -1;
 	}

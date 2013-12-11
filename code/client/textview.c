@@ -23,7 +23,8 @@
 extern GtkWidget *             textview;
 extern GtkTextBuffer *         textbuffer;
 
-void textview_add_line(gchar * string) {
+void textview_add_line(gchar * string)
+{
 
 	GtkTextIter iter;
 

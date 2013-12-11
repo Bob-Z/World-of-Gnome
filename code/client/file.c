@@ -109,8 +109,7 @@ int file_add(gchar * data,guint32 command_size,gchar ** out_filename)
 
 	if( out_filename != NULL ) {
 		*out_filename = file_name;
-	}
-	else {
+	} else {
 		g_free(file_name);
 	}
 
@@ -124,7 +123,7 @@ void file_clean(context_t * context)
 {
 	gchar * filename;
 
-        filename = g_strconcat( g_getenv("HOME"),"/", base_directory, "/",CHARACTER_TABLE,"/",context->id, NULL);
+	filename = g_strconcat( g_getenv("HOME"),"/", base_directory, "/",CHARACTER_TABLE,"/",context->id, NULL);
 	g_unlink(filename);
 	g_free( filename);
 }

@@ -31,12 +31,13 @@
 #include <stdlib.h>
 
 const char optstring[] = "?i:u:p:l:";
-const struct option longopts[] =
-        {{ "ip",required_argument,NULL,'i' },
-        { "user",required_argument,NULL,'u' },
-        { "pass",required_argument,NULL,'p' },
-        { "log",required_argument,NULL,'l' },
-        {NULL,0,NULL,0}};
+const struct option longopts[] = {
+	{ "ip",required_argument,NULL,'i' },
+	{ "user",required_argument,NULL,'u' },
+	{ "pass",required_argument,NULL,'p' },
+	{ "log",required_argument,NULL,'l' },
+	{NULL,0,NULL,0}
+};
 
 context_t * context;
 
@@ -81,29 +82,29 @@ int main (int argc, char **argv)
 
 	while((opt_ret = getopt_long(argc, argv, optstring, longopts, NULL))!=-1) {
 		switch(opt_ret) {
-			case 'i':
-				ip = strdup(optarg);;
-				break;
-			case 'u':
-				user = strdup(optarg);;
-				break;
-			case 'p':
-				pass = strdup(optarg);;
-				break;
-			case 'l':
-				log = strdup(optarg);;
-				break;
-			default:
-				printf("HELP:\n\n");
-				printf("-i --ip : Set a server IP\n");
-				printf("-u --user: Set a user name\n");
-				printf("-p --pass: Set a user password\n");
-				printf("-l --log: Set log level\n");
-				exit(0);
+		case 'i':
+			ip = strdup(optarg);;
+			break;
+		case 'u':
+			user = strdup(optarg);;
+			break;
+		case 'p':
+			pass = strdup(optarg);;
+			break;
+		case 'l':
+			log = strdup(optarg);;
+			break;
+		default:
+			printf("HELP:\n\n");
+			printf("-i --ip : Set a server IP\n");
+			printf("-u --user: Set a user name\n");
+			printf("-p --pass: Set a user password\n");
+			printf("-l --log: Set log level\n");
+			exit(0);
 		}
 	}
 
-        context = context_new();
+	context = context_new();
 
 	default_image_init();
 
@@ -113,7 +114,7 @@ int main (int argc, char **argv)
 		werr(LOGUSER,"Unable to initialize the login window, abort");
 		return 1;
 	}
-	
+
 	if( ! win_select_character_init(context) ) {
 		werr(LOGUSER,"Unable to initialize the select character window, abort");
 		return 1;
@@ -127,7 +128,7 @@ int main (int argc, char **argv)
 	win_login_set_entry(ip, user, pass);
 
 	init_log(log);
-	
+
 	//Run the main loop
 	gdk_threads_enter();
 	gtk_main();

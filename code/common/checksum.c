@@ -28,13 +28,13 @@
 
 gchar * checksum_file(const gchar * filename)
 {
-        gchar * file_data = NULL;
-        gsize file_length = 0;
-        gboolean res = file_get_contents(filename,&file_data,&file_length,NULL);
+	gchar * file_data = NULL;
+	gsize file_length = 0;
+	gboolean res = file_get_contents(filename,&file_data,&file_length,NULL);
 
-        if( res == FALSE) {
-                return NULL;
-        }
+	if( res == FALSE) {
+		return NULL;
+	}
 
 	gchar * checksum = NULL;
 

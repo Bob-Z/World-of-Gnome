@@ -53,13 +53,13 @@ static void npc_script(context_t * context, gchar * script, gchar ** parameters)
 		}
 	}
 
-        wlog(LOGDEV,"End AI script for %s(%s)",context->id, context->character_name);
+	wlog(LOGDEV,"End AI script for %s(%s)",context->id, context->character_name);
 
-        /* Send connected  = FALSE to other context */
-        context_spread(context);
+	/* Send connected  = FALSE to other context */
+	context_spread(context);
 
-        /* clean up */
-        context_free(context);
+	/* clean up */
+	context_free(context);
 }
 
 /**********************************
@@ -71,7 +71,7 @@ static gpointer manage_npc(gpointer data)
 	const gchar * ai;
 	gchar ** parameters;
 
-	if(read_string(CHARACTER_TABLE,context->id,&ai,CHARACTER_KEY_AI,NULL)){
+	if(read_string(CHARACTER_TABLE,context->id,&ai,CHARACTER_KEY_AI,NULL)) {
 		read_list(CHARACTER_TABLE,context->id,&parameters,CHARACTER_KEY_AI_PARAMS,NULL);
 		npc_script(context,(gchar *)ai,parameters);
 		if(parameters) {
@@ -99,7 +99,7 @@ void instantiate_npc(const gchar * id)
 	gint tile_y;
 	context_t * ctx;
 
-	// check if it's a NPC 
+	// check if it's a NPC
 	if(!read_int(CHARACTER_TABLE,id,&is_npc,CHARACTER_KEY_NPC,NULL)) {
 		return;
 	}
@@ -108,7 +108,7 @@ void instantiate_npc(const gchar * id)
 		return;
 	}
 
-	// read data of this npc 
+	// read data of this npc
 	if(!read_string(CHARACTER_TABLE,id,&map,CHARACTER_KEY_MAP,NULL)) {
 		return;
 	}
@@ -157,7 +157,7 @@ void instantiate_npc(const gchar * id)
 
 }
 /**************************
-init non playing character 
+init non playing character
 ***************************/
 void init_npc(void)
 {
@@ -165,7 +165,7 @@ void init_npc(void)
 	gchar * dirname;
 	const gchar * filename;
 
-        // Read all files in npc directory
+	// Read all files in npc directory
 	dirname = g_strconcat( g_getenv("HOME"),"/", base_directory, "/", CHARACTER_TABLE,  NULL);
 	dir = g_dir_open(dirname,0,NULL);
 	while(( filename = g_dir_read_name(dir)) != NULL ) {

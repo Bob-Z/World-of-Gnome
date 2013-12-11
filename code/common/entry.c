@@ -45,10 +45,10 @@ static gint found = 0;
 
 static void config_print_error(char * file, const config_t * config)
 {
-        werr(LOGUSER,"libconfig error %s@%d : %s\n",
-			file,
-                        config_error_line(config),
-                        config_error_text(config));
+	werr(LOGUSER,"libconfig error %s@%d : %s\n",
+		 file,
+		 config_error_line(config),
+		 config_error_text(config));
 }
 
 static void free_key(gpointer ptr)
@@ -59,7 +59,7 @@ static void free_key(gpointer ptr)
 static void free_file(file_data_t * data)
 {
 	if( data->data ) {
-	        g_free(data->data);
+		g_free(data->data);
 		data->data = NULL;
 		data->size = 0;
 		data->file_update = FALSE;
@@ -67,12 +67,12 @@ static void free_file(file_data_t * data)
 }
 static void free_config(file_data_t * data)
 {
-        if( data->config ) {
-                config_destroy (data->config);
-                g_free(data->config);
-                data->config = NULL;
+	if( data->config ) {
+		config_destroy (data->config);
+		g_free(data->config);
+		data->config = NULL;
 		data->config_update = FALSE;
-        }
+	}
 }
 static void free_fileDB_value(gpointer ptr)
 {
@@ -87,7 +87,7 @@ static void free_fileDB_value(gpointer ptr)
 
 static void free_updateDB_value(gpointer data)
 {
-        g_free(data);
+	g_free(data);
 }
 
 /****************************
@@ -112,7 +112,7 @@ static void dump_config(gchar * filename, file_data_t * data)
 		data->config_update = FALSE;
 
 		free_file(data);
-        }
+	}
 }
 static void file_dump_to_disk(gpointer key,gpointer value,gpointer user_data)
 {
@@ -157,45 +157,49 @@ the return string must be freed by caller
 ****************************/
 gchar * file_new(gchar * table)
 {
-        GDir * dir;
-        const gchar * name;
-        gchar * dirname;
-        gchar * filename;
-        gchar tag[7];
-        gint index = 0;
-        GFile * file;
-        GFileOutputStream * file_stream;
+	GDir * dir;
+	const gchar * name;
+	gchar * dirname;
+	gchar * filename;
+	gchar tag[7];
+	gint index = 0;
+	GFile * file;
+	GFileOutputStream * file_stream;
 
-        g_static_mutex_lock(&file_mutex);
-        g_sprintf(tag,"A%05x",index);
+	g_static_mutex_lock(&file_mutex);
+	g_sprintf(tag,"A%05x",index);
 
-        dirname = g_strconcat( g_getenv("HOME"),"/", base_directory, "/", table,  NULL);
-        dir = g_dir_open(dirname,0,NULL);
+	dirname = g_strconcat( g_getenv("HOME"),"/", base_directory, "/", table,  NULL);
+	dir = g_dir_open(dirname,0,NULL);
 
-        while(( name = g_dir_read_name(dir)) != NULL ) {
-                if( g_strcmp0(name,".") == 0 ) continue;
-                if( g_strcmp0(name,"..") == 0 ) continue;
-                if( g_strcmp0(name,tag) == 0 ) {
-                        index++;
-                        g_sprintf(tag,"A%05x",index);
-                        g_dir_rewind (dir);
-                        continue;
-                }
-        }
+	while(( name = g_dir_read_name(dir)) != NULL ) {
+		if( g_strcmp0(name,".") == 0 ) {
+			continue;
+		}
+		if( g_strcmp0(name,"..") == 0 ) {
+			continue;
+		}
+		if( g_strcmp0(name,tag) == 0 ) {
+			index++;
+			g_sprintf(tag,"A%05x",index);
+			g_dir_rewind (dir);
+			continue;
+		}
+	}
 
-        filename = g_strconcat(dirname,"/",tag,NULL);
-        file = g_file_new_for_path(filename);
-        file_stream = g_file_create(file,G_FILE_CREATE_NONE,NULL,NULL);
+	filename = g_strconcat(dirname,"/",tag,NULL);
+	file = g_file_new_for_path(filename);
+	file_stream = g_file_create(file,G_FILE_CREATE_NONE,NULL,NULL);
 
-        g_static_mutex_unlock(&file_mutex);
+	g_static_mutex_unlock(&file_mutex);
 
-        g_object_unref(file_stream);
-        g_object_unref(file);
+	g_object_unref(file_stream);
+	g_object_unref(file);
 
-        g_free(filename);
-        g_free(dirname);
+	g_free(filename);
+	g_free(dirname);
 
-        return g_strdup(tag);
+	return g_strdup(tag);
 }
 
 /****************************
@@ -219,7 +223,7 @@ gboolean file_get_contents(const gchar *filename,gchar **contents,gsize *length,
 
 	if( old_data == NULL ) {
 		/*First time we try to acces this file, read it from the disk */
-        	ret = g_file_get_contents(filename,contents,length,error);
+		ret = g_file_get_contents(filename,contents,length,error);
 		if( ret == FALSE ) {
 			return FALSE;
 		}
@@ -230,8 +234,7 @@ gboolean file_get_contents(const gchar *filename,gchar **contents,gsize *length,
 		new_data->size = *length;
 		g_hash_table_replace(fileDB,g_strdup(filename),new_data);
 		return TRUE;
-	}
-	else {
+	} else {
 		/* file modified by libconfig: dump modif to disk and
 		read them back */
 		if( old_data->config_update == TRUE ) {
@@ -239,19 +242,18 @@ gboolean file_get_contents(const gchar *filename,gchar **contents,gsize *length,
 
 			g_free(old_data->data);
 			ret = g_file_get_contents(filename,&old_data->data,
-						&old_data->size,error);
+									  &old_data->size,error);
 			if( ret == FALSE ) {
 				return FALSE;
 			}
-		}
-		else {
+		} else {
 			/* The file has been accessed by libconfig but
 			 not yet directly, load it */
 			if(old_data->data == NULL) {
-        			ret = g_file_get_contents(filename,
-							contents,
-							length,
-							error);
+				ret = g_file_get_contents(filename,
+										  contents,
+										  length,
+										  error);
 				if( ret == FALSE ) {
 					return FALSE;
 				}
@@ -369,30 +371,29 @@ static file_data_t * get_config(const gchar * table, const gchar * file)
 	file_data_t * config;
 	int ret;
 
-        if( client_server == CLIENT ) {
+	if( client_server == CLIENT ) {
 		init_updateDB(table,file);
-        }
+	}
 
-        filename = g_strconcat( g_getenv("HOME"),"/", base_directory, "/", table, "/", file, NULL);
+	filename = g_strconcat( g_getenv("HOME"),"/", base_directory, "/", table, "/", file, NULL);
 
-        if( fileDB == NULL ) {
-                fileDB = g_hash_table_new_full(g_str_hash,g_str_equal, free_key, free_fileDB_value);
-                if( client_server == SERVER) {
-                        g_thread_create(auto_save_files,NULL,FALSE,NULL);
-                }
-        }
+	if( fileDB == NULL ) {
+		fileDB = g_hash_table_new_full(g_str_hash,g_str_equal, free_key, free_fileDB_value);
+		if( client_server == SERVER) {
+			g_thread_create(auto_save_files,NULL,FALSE,NULL);
+		}
+	}
 
-        config = g_hash_table_lookup(fileDB,filename);
+	config = g_hash_table_lookup(fileDB,filename);
 
-        if( config == NULL ) {
-                /*First time we try to acces this file */
-                if( (config=create_config(filename)) == NULL ) {
-                        g_free(filename);
-                        return NULL;
-                }
-                g_hash_table_replace(fileDB,g_strdup(filename),config);
-        }
-	else {
+	if( config == NULL ) {
+		/*First time we try to acces this file */
+		if( (config=create_config(filename)) == NULL ) {
+			g_free(filename);
+			return NULL;
+		}
+		g_hash_table_replace(fileDB,g_strdup(filename),config);
+	} else {
 		/* Write cached data if any */
 		dump_file(filename,config);
 		/* Recreate a config if needed */
@@ -414,7 +415,7 @@ static file_data_t * get_config(const gchar * table, const gchar * file)
 		}
 	}
 
-        g_free(filename);
+	g_free(filename);
 
 	return config;
 }
@@ -425,8 +426,7 @@ static gchar * add_entry_to_path(gchar * path, gchar * entry)
 
 	if( path == NULL ) {
 		path = g_strconcat(entry,NULL);
-	}
-	else {
+	} else {
 		new_path=g_strconcat(path,".",entry,NULL);
 		g_free(path);
 		path = new_path;
@@ -486,18 +486,18 @@ static int __read_int(const gchar * table, const gchar * file, int * res, va_lis
 
 	*res = (int)result;
 
-        return TRUE;
+	return TRUE;
 }
 int read_int(const gchar * table, const gchar * file, int * res, ...)
 {
 	int ret;
 	va_list ap;
 
-        g_static_mutex_lock(&file_mutex);
-        va_start(ap, res);
+	g_static_mutex_lock(&file_mutex);
+	va_start(ap, res);
 	ret = __read_int(table, file, res, ap);
-        va_end(ap);
-        g_static_mutex_unlock(&file_mutex);
+	va_end(ap);
+	g_static_mutex_unlock(&file_mutex);
 
 	return ret;
 }
@@ -541,23 +541,23 @@ static int __read_string(const gchar * table, const gchar * file, const gchar **
 	}
 	g_free(path);
 
-        return TRUE;
+	return TRUE;
 }
 int read_string(const gchar * table, const gchar * file, const gchar ** res, ...)
 {
 	int ret;
 	va_list ap;
 
-        g_static_mutex_lock(&file_mutex);
-        va_start(ap, res);
+	g_static_mutex_lock(&file_mutex);
+	va_start(ap, res);
 	ret = __read_string(table, file, res, ap);
-        va_end(ap);
-        g_static_mutex_unlock(&file_mutex);
+	va_end(ap);
+	g_static_mutex_unlock(&file_mutex);
 
 	return ret;
 }
 
-/* Not used yet 
+/* Not used yet
 static int _read_string(const gchar * table, const gchar * file, const gchar ** res, ...)
 {
 	int ret;
@@ -597,25 +597,25 @@ static int __read_list_index(const gchar * table, const gchar * file, const gcha
 //		g_warning("%s: Can't read %s/%s/%s",__func__,table,file,path);
 		g_free(path);
 		return FALSE;
-	}	
+	}
 	g_free(path);
 
 	*res = config_setting_get_string_elem (setting,index);
 	if(*res == NULL ) {
 		return FALSE;
 	}
-        return TRUE;
+	return TRUE;
 }
 int read_list_index(const gchar * table, const gchar * file, const gchar ** res,gint index, ...)
 {
 	int ret;
 	va_list ap;
 
-        g_static_mutex_lock(&file_mutex);
-        va_start(ap, index);
+	g_static_mutex_lock(&file_mutex);
+	va_start(ap, index);
 	ret = __read_list_index(table,file, res,index, ap);
 	va_end(ap);
-        g_static_mutex_unlock(&file_mutex);
+	g_static_mutex_unlock(&file_mutex);
 
 	return ret;
 }
@@ -668,25 +668,25 @@ static int __read_list(const gchar * table, const gchar * file, gchar *** res, v
 		*res = g_realloc(*res,(i+1)*sizeof(gchar *));
 		(*res)[i-1] = (gchar *)elem;
 		(*res)[i] = NULL;
-		
+
 	}
 
 	if(*res == NULL) {
 		return FALSE;
 	}
 
-        return TRUE;
+	return TRUE;
 }
 int read_list(const gchar * table, const gchar * file, gchar *** res, ...)
 {
 	int ret;
 	va_list ap;
 
-        g_static_mutex_lock(&file_mutex);
-        va_start(ap, res);
+	g_static_mutex_lock(&file_mutex);
+	va_start(ap, res);
 	ret = __read_list(table, file, res, ap);
-        va_end(ap);
-        g_static_mutex_unlock(&file_mutex);
+	va_end(ap);
+	g_static_mutex_unlock(&file_mutex);
 
 	return ret;
 }
@@ -750,13 +750,12 @@ static config_setting_t * create_tree(const config_t * config, config_setting_t 
 		new_path = g_strconcat(path,".",entry,NULL);
 		g_free(path);
 		path = new_path;
-	}
-	else {
+	} else {
 		path = g_strconcat(entry,NULL);
 	}
 
 	return create_tree(config,setting,entry,path,type,ap);
-}	
+}
 
 /*********************/
 /*********************/
@@ -790,11 +789,11 @@ int write_int(const gchar * table, const gchar * file,int data, ...)
 	int ret;
 	va_list ap;
 
-        g_static_mutex_lock(&file_mutex);
-        va_start(ap, data);
+	g_static_mutex_lock(&file_mutex);
+	va_start(ap, data);
 	ret = __write_int(table, file, data, ap);
-        va_end(ap);
-        g_static_mutex_unlock(&file_mutex);
+	va_end(ap);
+	g_static_mutex_unlock(&file_mutex);
 
 	return ret;
 }
@@ -831,9 +830,9 @@ static int __write_string(const gchar * table, const gchar * file, const char * 
 
 	setting = create_tree(config->config,NULL,NULL,NULL,CONFIG_TYPE_STRING,ap);
 
-        /* update string */
+	/* update string */
 	if(config_setting_set_string(setting, data)==CONFIG_FALSE) {
-                return FALSE;
+		return FALSE;
 	}
 	config->config_update = TRUE;
 
@@ -844,11 +843,11 @@ int write_string(const gchar * table, const gchar * file, const char * data, ...
 	int ret;
 	va_list ap;
 
-        g_static_mutex_lock(&file_mutex);
-        va_start(ap, data);
+	g_static_mutex_lock(&file_mutex);
+	va_start(ap, data);
 	ret = __write_string(table, file, data, ap);
-        va_end(ap);
-        g_static_mutex_unlock(&file_mutex);
+	va_end(ap);
+	g_static_mutex_unlock(&file_mutex);
 
 	return ret;
 }
@@ -885,7 +884,7 @@ static int __write_list_index(const gchar * table, const gchar * file, const cha
 
 	setting = create_tree(config->config,NULL,NULL,NULL,CONFIG_TYPE_ARRAY,ap);
 
-	if(config_setting_set_string_elem(setting,index,data)==NULL){
+	if(config_setting_set_string_elem(setting,index,data)==NULL) {
 		return FALSE;
 	}
 
@@ -898,11 +897,11 @@ int write_list_index(const gchar * table, const gchar * file, const char * data,
 	int ret;
 	va_list ap;
 
-        g_static_mutex_lock(&file_mutex);
-        va_start(ap, index);
+	g_static_mutex_lock(&file_mutex);
+	va_start(ap, index);
 	ret = __write_list_index(table, file, data,index,ap);
-        va_end(ap);
-        g_static_mutex_unlock(&file_mutex);
+	va_end(ap);
+	g_static_mutex_unlock(&file_mutex);
 
 	return ret;
 }
@@ -940,7 +939,7 @@ static int __write_list(const gchar * table, const gchar * file, char ** data, v
 	setting = create_tree(config->config,NULL,NULL,NULL,CONFIG_TYPE_ARRAY,ap);
 
 	while(data[i] != NULL) {
-		if(config_setting_set_string_elem(setting,-1,data[i])==NULL){
+		if(config_setting_set_string_elem(setting,-1,data[i])==NULL) {
 			return FALSE;
 		}
 		i++;
@@ -955,11 +954,11 @@ int write_list(const gchar * table, const gchar * file, char ** data, ...)
 	int ret;
 	va_list ap;
 
-        g_static_mutex_lock(&file_mutex);
-        va_start(ap, data);
+	g_static_mutex_lock(&file_mutex);
+	va_start(ap, data);
 	ret = __write_list(table, file, data, ap);
-        va_end(ap);
-        g_static_mutex_unlock(&file_mutex);
+	va_end(ap);
+	g_static_mutex_unlock(&file_mutex);
 
 	return ret;
 }
@@ -982,43 +981,43 @@ static int _write_list(const gchar * table, const gchar * file, char ** data, ..
 /*********************/
 static gboolean __add_to_list(const gchar * table, const gchar * file, const gchar * to_be_added, va_list ap)
 {
-        file_data_t * config = NULL;
-        config_setting_t * setting = NULL;
-        gchar * path;
+	file_data_t * config = NULL;
+	config_setting_t * setting = NULL;
+	gchar * path;
 
-        config = get_config(table,file);
-        if(config==NULL) {
-                return 0;
-        }
+	config = get_config(table,file);
+	if(config==NULL) {
+		return 0;
+	}
 
 	path = get_path(ap);
 	if(path == NULL) {
 		return FALSE;
 	}
 
-        setting = config_lookup (config->config, path);
-        if( setting == NULL ) {
+	setting = config_lookup (config->config, path);
+	if( setting == NULL ) {
 		g_free(path);
-                return 0;
-        }
+		return 0;
+	}
 	g_free(path);
 
 	if(config_setting_set_string_elem(setting,-1,to_be_added)==NULL) {
 		return 0;
 	}
-		
+
 	config->config_update = TRUE;
-        return 1;
+	return 1;
 }
 gboolean add_to_list(const gchar * table, const gchar * file, const gchar * to_be_added, ...)
 {
 	gboolean ret;
 	va_list ap;
 
-        g_static_mutex_lock(&file_mutex);
-        va_start(ap, to_be_added);
+	g_static_mutex_lock(&file_mutex);
+	va_start(ap, to_be_added);
 	ret = __add_to_list(table,file,to_be_added,ap);
-        va_end(ap);
+	va_end(ap);
 	g_static_mutex_unlock(&file_mutex);
 
 	return ret;
@@ -1042,31 +1041,31 @@ static gboolean _add_to_list(const gchar * table, const gchar * file, const gcha
 /*********************/
 /*********************/
 
-static gboolean __remove_group(const gchar * table, const gchar * file, const gchar * group, va_list ap) {
+static gboolean __remove_group(const gchar * table, const gchar * file, const gchar * group, va_list ap)
+{
 
 	file_data_t * config;
-        config_setting_t * setting = NULL;
-        gchar * path;
+	config_setting_t * setting = NULL;
+	gchar * path;
 
 	config = get_config(table,file);
 	if(config==NULL) {
 		return FALSE;
 	}
 
-        path = get_path(ap);
+	path = get_path(ap);
 	if(path != NULL) {
 		setting = config_lookup(config->config,path);
 		g_free(path);
-	}
-	else {
+	} else {
 		setting = config_root_setting(config->config);
 	}
 
-        if( setting == NULL ) {
-                return FALSE;
-        }
+	if( setting == NULL ) {
+		return FALSE;
+	}
 
-	if( config_setting_remove(setting,group) == CONFIG_FALSE){
+	if( config_setting_remove(setting,group) == CONFIG_FALSE) {
 		return FALSE;
 	}
 
@@ -1086,18 +1085,18 @@ int remove_group(const gchar * table, const gchar * file, const gchar * group, .
 	int ret;
 	va_list ap;
 
-        g_static_mutex_lock(&file_mutex);
-        va_start(ap, group);
+	g_static_mutex_lock(&file_mutex);
+	va_start(ap, group);
 	ret = __remove_group(table, file, group, ap);
-        va_end(ap);
-        g_static_mutex_unlock(&file_mutex);
+	va_end(ap);
+	g_static_mutex_unlock(&file_mutex);
 
 	return ret;
 }
 /**********************
 get_unused_list_entry
 find an unused tag in a list, add it to the list and return it.
-returned string must be freed 
+returned string must be freed
 **********************/
 gchar * get_unused_list_entry(const gchar * table, const gchar * file, ...)
 {
@@ -1137,7 +1136,7 @@ gchar * get_unused_list_entry(const gchar * table, const gchar * file, ...)
 /**********************
 get_unused_group
 find an unused group, create it and return its name
-returned string must be freed 
+returned string must be freed
 **********************/
 gchar * __get_unused_group(const gchar * table, const gchar * file,  va_list ap)
 {
@@ -1159,8 +1158,7 @@ gchar * __get_unused_group(const gchar * table, const gchar * file,  va_list ap)
 	if(path != NULL) {
 		setting = config_lookup(config->config,path);
 		g_free(path);
-	}
-	else {
+	} else {
 		setting = config_root_setting(config->config);
 	}
 
@@ -1177,11 +1175,11 @@ gchar * get_unused_group(const gchar * table, const gchar * file, ...)
 	gchar * ret;
 	va_list ap;
 
-        g_static_mutex_lock(&file_mutex);
-        va_start(ap, file);
+	g_static_mutex_lock(&file_mutex);
+	va_start(ap, file);
 	ret = __get_unused_group(table, file, ap);
-        va_end(ap);
-        g_static_mutex_unlock(&file_mutex);
+	va_end(ap);
+	g_static_mutex_unlock(&file_mutex);
 
 	return ret;
 }
@@ -1189,7 +1187,7 @@ gchar * get_unused_group(const gchar * table, const gchar * file, ...)
 /**********************
 __get_unused_group_on_path
 find an unused group, DO NOT CREATE IT and return its name
-returned string must be freed 
+returned string must be freed
 **********************/
 gchar * __get_unused_group_on_path(const gchar * table, const gchar * file, gchar * path)
 {
@@ -1208,8 +1206,7 @@ gchar * __get_unused_group_on_path(const gchar * table, const gchar * file, gcha
 	if(path != NULL) {
 		setting = config_lookup(config->config,path);
 		g_free(path);
-	}
-	else {
+	} else {
 		setting = config_root_setting(config->config);
 	}
 
@@ -1227,7 +1224,7 @@ gchar * __get_unused_group_on_path(const gchar * table, const gchar * file, gcha
 get_group_list
 Return a list of the name of the elements in the specified group
 returned list must be freed  (g_free)
- return FALSE on error 
+ return FALSE on error
 **********************/
 int get_group_list(const gchar * table, const gchar * file, gchar *** res, ...)
 {
@@ -1254,8 +1251,7 @@ int get_group_list(const gchar * table, const gchar * file, gchar *** res, ...)
 	if(path != NULL && path[0] != 0) {
 		setting = config_lookup(config->config,path);
 		g_free(path);
-	}
-	else {
+	} else {
 		setting = config_root_setting(config->config);
 	}
 
@@ -1285,31 +1281,32 @@ int get_group_list(const gchar * table, const gchar * file, gchar *** res, ...)
 /* return 0 on failure */
 /*********************/
 
-static gboolean __remove_from_list(const gchar * table, const gchar * file, const gchar * to_be_removed, va_list ap) {
-        file_data_t * config = NULL;
-        config_setting_t * setting = NULL;
-        gchar * path;
-        int i = 0;
-        const char * elem;
+static gboolean __remove_from_list(const gchar * table, const gchar * file, const gchar * to_be_removed, va_list ap)
+{
+	file_data_t * config = NULL;
+	config_setting_t * setting = NULL;
+	gchar * path;
+	int i = 0;
+	const char * elem;
 
-        config = get_config(table,file);
-        if(config==NULL) {
-                return 0;
-        }
+	config = get_config(table,file);
+	if(config==NULL) {
+		return 0;
+	}
 
 	path = get_path(ap);
 	if(path == NULL) {
 		return FALSE;
 	}
 
-        setting = config_lookup (config->config, path);
-        if( setting == NULL ) {
+	setting = config_lookup (config->config, path);
+	if( setting == NULL ) {
 		g_free(path);
-                return 0;
-        }
+		return 0;
+	}
 	g_free(path);
 
-        while( (elem=config_setting_get_string_elem (setting,i )) != NULL ) {
+	while( (elem=config_setting_get_string_elem (setting,i )) != NULL ) {
 		if( g_strcmp0(elem,to_be_removed) == 0 ) {
 			if(config_setting_remove_elem (setting,i)==CONFIG_FALSE) {
 				return 0;
@@ -1317,24 +1314,25 @@ static gboolean __remove_from_list(const gchar * table, const gchar * file, cons
 			config->config_update = TRUE;
 			return 1;
 		}
-                i++;
-        }
+		i++;
+	}
 
-        return 0;
+	return 0;
 }
-gboolean remove_from_list(const gchar * table, const gchar * file, const gchar * to_be_removed, ...) {
+gboolean remove_from_list(const gchar * table, const gchar * file, const gchar * to_be_removed, ...)
+{
 	gboolean ret;
 	va_list ap;
 
-        g_static_mutex_lock(&file_mutex);
-        va_start(ap, to_be_removed);
+	g_static_mutex_lock(&file_mutex);
+	va_start(ap, to_be_removed);
 	ret = __remove_from_list(table,file,to_be_removed,ap);
 	va_end(ap);
 	g_static_mutex_unlock(&file_mutex);
 	return ret;
 }
 
-/* Not used yet 
+/* Not used yet
 static gboolean _remove_from_list(const gchar * table, const gchar * file, const gchar * to_be_removed, ...) {
 	gboolean ret;
 	va_list ap;
@@ -1369,7 +1367,7 @@ gboolean copy_aggregate(config_setting_t * source, config_setting_t * dest, int 
 		}
 	}
 
-	if(!copy_config(source,new_dest)){
+	if(!copy_config(source,new_dest)) {
 		config_setting_remove(dest,setting_name);
 		return 0;
 	}
@@ -1385,58 +1383,58 @@ gboolean copy_config(config_setting_t * source, config_setting_t * dest)
 	double double_value;
 	const char * string;
 
-        while((new_source=config_setting_get_elem(source,index+1))!= NULL ) {
-                index++;
+	while((new_source=config_setting_get_elem(source,index+1))!= NULL ) {
+		index++;
 		if(config_setting_is_group(new_source)) {
-			if(!copy_aggregate(new_source,dest,CONFIG_TYPE_GROUP)){
+			if(!copy_aggregate(new_source,dest,CONFIG_TYPE_GROUP)) {
 				return 0;
 			}
 		}
 
 		else if(config_setting_is_array(new_source)) {
-			if(!copy_aggregate(new_source,dest,CONFIG_TYPE_ARRAY)){
+			if(!copy_aggregate(new_source,dest,CONFIG_TYPE_ARRAY)) {
 				return 0;
 			}
 		}
 
 		else if(config_setting_is_list(new_source)) {
-			if(!copy_aggregate(new_source,dest,CONFIG_TYPE_LIST)){
+			if(!copy_aggregate(new_source,dest,CONFIG_TYPE_LIST)) {
 				return 0;
 			}
 		}
 
 		else {
 			switch(config_setting_type(new_source)) {
-				case CONFIG_TYPE_INT:
-					int_value = config_setting_get_int(new_source);
-					new_dest = config_setting_add (dest, config_setting_name(new_source),CONFIG_TYPE_INT);
-					config_setting_set_int(new_dest,int_value);
-					continue;
-				case CONFIG_TYPE_INT64:
-					long_value = config_setting_get_int64(new_source);
-					new_dest = config_setting_add (dest, config_setting_name(new_source),CONFIG_TYPE_INT64);
-					config_setting_set_int64(new_dest,long_value);
-					continue;
-				case CONFIG_TYPE_FLOAT:
-					double_value = config_setting_get_float(new_source);
-					new_dest = config_setting_add (dest, config_setting_name(new_source),CONFIG_TYPE_FLOAT);
-					config_setting_set_float(new_dest,double_value);
-					continue;
-				case CONFIG_TYPE_BOOL:
-					int_value = config_setting_get_bool(new_source);
-					new_dest = config_setting_add (dest, config_setting_name(new_source),CONFIG_TYPE_BOOL);
-					config_setting_set_bool(new_dest,int_value);
-					continue;
-				case CONFIG_TYPE_STRING:
-					string = config_setting_get_string(new_source);
-					new_dest = config_setting_add (dest, config_setting_name(new_source),CONFIG_TYPE_STRING);
-					config_setting_set_string(new_dest,string);
-					continue;
-				default:
-					return 0;
+			case CONFIG_TYPE_INT:
+				int_value = config_setting_get_int(new_source);
+				new_dest = config_setting_add (dest, config_setting_name(new_source),CONFIG_TYPE_INT);
+				config_setting_set_int(new_dest,int_value);
+				continue;
+			case CONFIG_TYPE_INT64:
+				long_value = config_setting_get_int64(new_source);
+				new_dest = config_setting_add (dest, config_setting_name(new_source),CONFIG_TYPE_INT64);
+				config_setting_set_int64(new_dest,long_value);
+				continue;
+			case CONFIG_TYPE_FLOAT:
+				double_value = config_setting_get_float(new_source);
+				new_dest = config_setting_add (dest, config_setting_name(new_source),CONFIG_TYPE_FLOAT);
+				config_setting_set_float(new_dest,double_value);
+				continue;
+			case CONFIG_TYPE_BOOL:
+				int_value = config_setting_get_bool(new_source);
+				new_dest = config_setting_add (dest, config_setting_name(new_source),CONFIG_TYPE_BOOL);
+				config_setting_set_bool(new_dest,int_value);
+				continue;
+			case CONFIG_TYPE_STRING:
+				string = config_setting_get_string(new_source);
+				new_dest = config_setting_add (dest, config_setting_name(new_source),CONFIG_TYPE_STRING);
+				config_setting_set_string(new_dest,string);
+				continue;
+			default:
+				return 0;
 			}
 		}
-        }
+	}
 
 	return 1;
 }
@@ -1465,11 +1463,11 @@ int list_create(const gchar * table, const gchar * file, ...)
 	int ret;
 	va_list ap;
 
-        g_static_mutex_lock(&file_mutex);
-        va_start(ap, file);
+	g_static_mutex_lock(&file_mutex);
+	va_start(ap, file);
 	ret = __list_create(table, file, ap);
-        va_end(ap);
-        g_static_mutex_unlock(&file_mutex);
+	va_end(ap);
+	g_static_mutex_unlock(&file_mutex);
 
 	return ret;
 }
@@ -1498,22 +1496,23 @@ int group_create(const gchar * table, const gchar * file, ...)
 	int ret;
 	va_list ap;
 
-        g_static_mutex_lock(&file_mutex);
-        va_start(ap, file);
+	g_static_mutex_lock(&file_mutex);
+	va_start(ap, file);
 	ret = __group_create(table, file, ap);
-        va_end(ap);
-        g_static_mutex_unlock(&file_mutex);
+	va_end(ap);
+	g_static_mutex_unlock(&file_mutex);
 
 	return ret;
 }
 
-static gchar * __copy_group(const gchar * src_table, const gchar * src_file, const gchar * dst_table, const gchar * dst_file, const gchar * group_name, va_list ap) {
-        file_data_t * src_config = NULL;
-        file_data_t * dst_config = NULL;
-        config_setting_t * src_setting = NULL;
-        config_setting_t * dst_setting = NULL;
-        gchar * path;
-        gchar * full_path;
+static gchar * __copy_group(const gchar * src_table, const gchar * src_file, const gchar * dst_table, const gchar * dst_file, const gchar * group_name, va_list ap)
+{
+	file_data_t * src_config = NULL;
+	file_data_t * dst_config = NULL;
+	config_setting_t * src_setting = NULL;
+	config_setting_t * dst_setting = NULL;
+	gchar * path;
+	gchar * full_path;
 	gchar * new_group_name = NULL;
 	const gchar * group_name_used = NULL;
 
@@ -1523,33 +1522,33 @@ static gchar * __copy_group(const gchar * src_table, const gchar * src_file, con
 		return NULL;
 	}
 
-        src_config = get_config(src_table,src_file);
-        if(src_config==NULL) {
+	src_config = get_config(src_table,src_file);
+	if(src_config==NULL) {
 		g_free(path);
 		g_free(full_path);
-                return NULL;
-        }
+		return NULL;
+	}
 
-        src_setting = config_lookup (src_config->config, full_path);
-        if( src_setting == NULL ) {
+	src_setting = config_lookup (src_config->config, full_path);
+	if( src_setting == NULL ) {
 		g_free(path);
 		g_free(full_path);
-                return NULL;
-        }
+		return NULL;
+	}
 
-        dst_config = get_config(dst_table,dst_file);
-        if(dst_config==NULL) {
+	dst_config = get_config(dst_table,dst_file);
+	if(dst_config==NULL) {
 		g_free(path);
 		g_free(full_path);
-                return NULL;
-        }
+		return NULL;
+	}
 
-        dst_setting = config_lookup(dst_config->config, full_path);
+	dst_setting = config_lookup(dst_config->config, full_path);
 	g_free(full_path);
 	/* if the setting does not exist, create it */
-        if( dst_setting == NULL ) {
+	if( dst_setting == NULL ) {
 		group_name_used = group_name;
-        }
+	}
 	/* else find a new name for it */
 	else {
 		new_group_name =  __get_unused_group_on_path(dst_table, dst_file, path);
@@ -1558,8 +1557,7 @@ static gchar * __copy_group(const gchar * src_table, const gchar * src_file, con
 
 	if( path != NULL ) {
 		dst_setting = config_lookup(dst_config->config, path);
-	}
-	else {
+	} else {
 		dst_setting = config_root_setting(dst_config->config);
 	}
 	dst_setting = config_setting_add(dst_setting,group_name_used,CONFIG_TYPE_GROUP);
@@ -1578,12 +1576,13 @@ static gchar * __copy_group(const gchar * src_table, const gchar * src_file, con
 }
 /* return a copy of the name used for the destination
 MUST BE FREED ! */
-gchar * copy_group(const gchar * src_table, const gchar * src_file, const gchar * dst_table, const gchar * dst_file, const gchar * group_name, ...) {
+gchar * copy_group(const gchar * src_table, const gchar * src_file, const gchar * dst_table, const gchar * dst_file, const gchar * group_name, ...)
+{
 	gchar * ret;
 	va_list ap;
 
-        g_static_mutex_lock(&file_mutex);
-        va_start(ap, group_name);
+	g_static_mutex_lock(&file_mutex);
+	va_start(ap, group_name);
 	ret = __copy_group(src_table,src_file,dst_table,dst_file,group_name,ap);
 	va_end(ap);
 	g_static_mutex_unlock(&file_mutex);
@@ -1612,11 +1611,10 @@ gint entry_update(gchar * data)
 			return -1;
 		}
 
-		value = g_ascii_strtoll(elements[4],NULL,10);	
+		value = g_ascii_strtoll(elements[4],NULL,10);
 		if(config_setting_set_int (setting, value) == CONFIG_FALSE) {
 			werr(LOGUSER,"Errror setting %s/%s/%s to %d",elements[1],elements[2],elements[3],value);
-		}
-		else {
+		} else {
 			config->config_update = TRUE;
 		}
 	}
@@ -1634,8 +1632,7 @@ gint entry_update(gchar * data)
 
 		if(config_setting_set_string (setting,elements[4]) == CONFIG_FALSE) {
 			werr(LOGUSER,"Errror setting %s/%s/%s to %s",elements[1],elements[2],elements[3],elements[4]);
-		}
-		else {
+		} else {
 			config->config_update = TRUE;
 		}
 	}
@@ -1652,7 +1649,7 @@ gint entry_destroy(const gchar * id)
 	gchar * filename;
 	int res;
 
-        filename = g_strconcat( g_getenv("HOME"),"/", base_directory, "/", CHARACTER_TABLE, "/", id, NULL);
+	filename = g_strconcat( g_getenv("HOME"),"/", base_directory, "/", CHARACTER_TABLE, "/", id, NULL);
 
 
 	res = g_unlink(filename);
@@ -1662,5 +1659,5 @@ gint entry_destroy(const gchar * id)
 
 	g_hash_table_remove(fileDB,filename);
 
-	return res;	
+	return res;
 }

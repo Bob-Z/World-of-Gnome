@@ -65,7 +65,7 @@ void on_game_window_destroy(GtkObject *object,gpointer   user_data)
 /***********************
 update_attributes
 
-Write attributes in the game window 
+Write attributes in the game window
 ***********************/
 void update_attributes(context_t * context)
 {
@@ -75,27 +75,27 @@ void update_attributes(context_t * context)
 	gint index = 0;
 	gint value;
 
-        attribute_list_store=GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(attribute_list)));
-        gtk_list_store_clear(attribute_list_store);
+	attribute_list_store=GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(attribute_list)));
+	gtk_list_store_clear(attribute_list_store);
 
 	if(!get_group_list(CHARACTER_TABLE,context->id,&name_list,ATTRIBUTE_GROUP,NULL) ) {
 		return;
 	}
 
-        while( name_list[index] != NULL) {
+	while( name_list[index] != NULL) {
 		if(!read_int(CHARACTER_TABLE,context->id,&value,ATTRIBUTE_GROUP,name_list[index],ATTRIBUTE_CURRENT,NULL)) {
 			index++;
 			continue;
 		}
 
-                gtk_list_store_append (attribute_list_store, &iter);
-                gtk_list_store_set (attribute_list_store, &iter,
-                                0, name_list[index],
-                                1, value,
-                                -1);
+		gtk_list_store_append (attribute_list_store, &iter);
+		gtk_list_store_set (attribute_list_store, &iter,
+							0, name_list[index],
+							1, value,
+							-1);
 
 		index++;
-        }
+	}
 
 	g_free(name_list);
 }
@@ -112,10 +112,10 @@ void win_game_update(context_t * context)
 	static gchar * old_map = NULL;
 	static gboolean first_time = TRUE;
 
-        /* Do nothing if not visible */
-        if( gtk_widget_get_visible(game_window) == FALSE ) {
-                return;
-        }
+	/* Do nothing if not visible */
+	if( gtk_widget_get_visible(game_window) == FALSE ) {
+		return;
+	}
 
 
 	if( context->type == NULL ) {
@@ -177,7 +177,7 @@ void show_game_window(context_t * context)
 
 	g_snprintf(title,SMALL_BUF,"%s - %s",TITLE_NAME,context->character_name);
 	gtk_window_set_title(GTK_WINDOW(game_window),title);
-        gtk_widget_show_all(game_window);
+	gtk_widget_show_all(game_window);
 }
 
 /*************************
@@ -185,9 +185,9 @@ void show_game_window(context_t * context)
 *************************/
 void hide_game_window(void)
 {
-        gdk_threads_enter();
-        gtk_widget_hide_all(game_window);
-        gdk_threads_leave();
+	gdk_threads_enter();
+	gtk_widget_hide_all(game_window);
+	gdk_threads_leave();
 }
 
 /************************
@@ -227,15 +227,15 @@ gboolean on_textentry_key_press_event (GtkWidget   *widget, GdkEventKey *event, 
 
 	if( event->type == GDK_KEY_PRESS ) {
 		switch ( event->keyval ) {
-			case GDK_KEY_Return :
-				buffer=gtk_entry_get_buffer(GTK_ENTRY(widget));
-				buff = gtk_entry_buffer_get_text(buffer);
-				network_send_action(context_get_list_first(),WOG_CHAT,buff,NULL);
-				gtk_entry_buffer_delete_text(buffer,0,-1);
-				break;
-			default:
-				return FALSE;
-				break;
+		case GDK_KEY_Return :
+			buffer=gtk_entry_get_buffer(GTK_ENTRY(widget));
+			buff = gtk_entry_buffer_get_text(buffer);
+			network_send_action(context_get_list_first(),WOG_CHAT,buff,NULL);
+			gtk_entry_buffer_delete_text(buffer,0,-1);
+			break;
+		default:
+			return FALSE;
+			break;
 		}
 	}
 
@@ -251,24 +251,23 @@ gboolean on_game_window_key_press_event (GtkWidget   *widget, GdkEventKey *event
 
 	if( event->type == GDK_KEY_PRESS ) {
 		switch ( event->keyval ) {
-			case GDK_KEY_Up :
-				network_send_action(ctx,"move_up.lua",NULL);
-				break;
-			case GDK_KEY_Down :
-				network_send_action(ctx,"move_down.lua",NULL);
-				break;
-			case GDK_KEY_Left :
-				network_send_action(ctx,"move_left.lua",NULL);
-				break;
-			case GDK_KEY_Right :
-				network_send_action(ctx,"move_right.lua",NULL);
-				break;
-			default:
-				return TRUE;
-				break;
+		case GDK_KEY_Up :
+			network_send_action(ctx,"move_up.lua",NULL);
+			break;
+		case GDK_KEY_Down :
+			network_send_action(ctx,"move_down.lua",NULL);
+			break;
+		case GDK_KEY_Left :
+			network_send_action(ctx,"move_left.lua",NULL);
+			break;
+		case GDK_KEY_Right :
+			network_send_action(ctx,"move_right.lua",NULL);
+			break;
+		default:
+			return TRUE;
+			break;
 		}
-	}
-	else {
+	} else {
 		return FALSE;
 	}
 
@@ -298,11 +297,11 @@ return FALSE on error
 
 gboolean win_game_init(context_t * context)
 {
-        GtkBuilder * builder = NULL;
-        builder = gtk_builder_new ();
+	GtkBuilder * builder = NULL;
+	builder = gtk_builder_new ();
 
-        gchar tmp[SMALL_BUF];
-        gdk_threads_enter();
+	gchar tmp[SMALL_BUF];
+	gdk_threads_enter();
 	//g_snprintf(tmp,SMALL_BUF,"./game.glade",DATADIR);
 	g_snprintf(tmp,SMALL_BUF,"./game.glade");
 	if( ! gtk_builder_add_from_file (builder, tmp,NULL)) {
@@ -314,37 +313,37 @@ gboolean win_game_init(context_t * context)
 		}
 	}
 
-        game_window = GTK_WIDGET(gtk_builder_get_object(builder,"game_window"));
-        tile_set = GTK_WIDGET(gtk_builder_get_object(builder,"tile_set"));
-        action_bar = GTK_WIDGET(gtk_builder_get_object(builder,"action_bar"));
-        attribute_list = GTK_WIDGET(gtk_builder_get_object(builder,"attribute_list"));
-        inventory_list = GTK_WIDGET(gtk_builder_get_object(builder,"inventory_list"));
-        equipment_list = GTK_WIDGET(gtk_builder_get_object(builder,"equipment_list"));
-        selected_character_label = GTK_WIDGET(gtk_builder_get_object(builder,"selected_character_label"));
-        selected_character_image = GTK_WIDGET(gtk_builder_get_object(builder,"selected_character_image"));
-        selected_tile_label = GTK_WIDGET(gtk_builder_get_object(builder,"selected_tile_label"));
-        selected_tile_image = GTK_WIDGET(gtk_builder_get_object(builder,"selected_tile_image"));
-        pointed_label = GTK_WIDGET(gtk_builder_get_object(builder,"pointed_label"));
-        pointed_image = GTK_WIDGET(gtk_builder_get_object(builder,"pointed_image"));
-        textview = GTK_WIDGET(gtk_builder_get_object(builder,"textview"));
-        textbuffer = GTK_TEXT_BUFFER(gtk_builder_get_object(builder,"textbuffer"));
-        textentry = GTK_WIDGET(gtk_builder_get_object(builder,"textentry"));
+	game_window = GTK_WIDGET(gtk_builder_get_object(builder,"game_window"));
+	tile_set = GTK_WIDGET(gtk_builder_get_object(builder,"tile_set"));
+	action_bar = GTK_WIDGET(gtk_builder_get_object(builder,"action_bar"));
+	attribute_list = GTK_WIDGET(gtk_builder_get_object(builder,"attribute_list"));
+	inventory_list = GTK_WIDGET(gtk_builder_get_object(builder,"inventory_list"));
+	equipment_list = GTK_WIDGET(gtk_builder_get_object(builder,"equipment_list"));
+	selected_character_label = GTK_WIDGET(gtk_builder_get_object(builder,"selected_character_label"));
+	selected_character_image = GTK_WIDGET(gtk_builder_get_object(builder,"selected_character_image"));
+	selected_tile_label = GTK_WIDGET(gtk_builder_get_object(builder,"selected_tile_label"));
+	selected_tile_image = GTK_WIDGET(gtk_builder_get_object(builder,"selected_tile_image"));
+	pointed_label = GTK_WIDGET(gtk_builder_get_object(builder,"pointed_label"));
+	pointed_image = GTK_WIDGET(gtk_builder_get_object(builder,"pointed_image"));
+	textview = GTK_WIDGET(gtk_builder_get_object(builder,"textview"));
+	textbuffer = GTK_TEXT_BUFFER(gtk_builder_get_object(builder,"textbuffer"));
+	textentry = GTK_WIDGET(gtk_builder_get_object(builder,"textentry"));
 
-        gtk_builder_connect_signals (builder, context);
-        g_object_unref (G_OBJECT (builder));
+	gtk_builder_connect_signals (builder, context);
+	g_object_unref (G_OBJECT (builder));
 
-        g_signal_connect(game_window,"configure-event",G_CALLBACK(on_configure_event),context);
-        g_signal_connect(game_window,"expose-event",G_CALLBACK(on_expose_event),context);
-        g_signal_connect(game_window,"key-press-event",G_CALLBACK(on_game_window_key_press_event),context);
-        g_signal_connect(game_window,"destroy",G_CALLBACK(on_game_window_destroy),context);
-        g_signal_connect(inventory_list,"button-release-event",G_CALLBACK(update_selection),context);
-        g_signal_connect(equipment_list,"button-release-event",G_CALLBACK(update_selection),context);
-        g_signal_connect(textentry,"key-press-event",G_CALLBACK(on_textentry_key_press_event),context);
+	g_signal_connect(game_window,"configure-event",G_CALLBACK(on_configure_event),context);
+	g_signal_connect(game_window,"expose-event",G_CALLBACK(on_expose_event),context);
+	g_signal_connect(game_window,"key-press-event",G_CALLBACK(on_game_window_key_press_event),context);
+	g_signal_connect(game_window,"destroy",G_CALLBACK(on_game_window_destroy),context);
+	g_signal_connect(inventory_list,"button-release-event",G_CALLBACK(update_selection),context);
+	g_signal_connect(equipment_list,"button-release-event",G_CALLBACK(update_selection),context);
+	g_signal_connect(textentry,"key-press-event",G_CALLBACK(on_textentry_key_press_event),context);
 
-        gtk_widget_hide_all(game_window);
-        gtk_widget_realize(game_window);
-       	gdk_threads_leave();
+	gtk_widget_hide_all(game_window);
+	gtk_widget_realize(game_window);
+	gdk_threads_leave();
 
-        return TRUE;
+	return TRUE;
 }
 

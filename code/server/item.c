@@ -44,17 +44,17 @@ gchar * item_create_empty()
 gchar * item_create_from_template(const gchar * template)
 {
 	gchar * new_name;
-        gchar * templatename;
-        gchar * newfilename;
-        GFile * templatefile;
-        GFile * newfile;
+	gchar * templatename;
+	gchar * newfilename;
+	GFile * templatefile;
+	GFile * newfile;
 
 	new_name = file_new(ITEM_TABLE);
 
-        templatename = g_strconcat( g_getenv("HOME"),"/", base_directory, "/", ITEM_TEMPLATE_TABLE, "/", template,  NULL);
+	templatename = g_strconcat( g_getenv("HOME"),"/", base_directory, "/", ITEM_TEMPLATE_TABLE, "/", template,  NULL);
 	templatefile = g_file_new_for_path(templatename);
 
-        newfilename = g_strconcat( g_getenv("HOME"),"/", base_directory, "/", ITEM_TABLE, "/", new_name,  NULL);
+	newfilename = g_strconcat( g_getenv("HOME"),"/", base_directory, "/", ITEM_TABLE, "/", new_name,  NULL);
 	newfile = g_file_new_for_path(newfilename);
 
 	if( g_file_copy(templatefile,newfile, G_FILE_COPY_OVERWRITE,NULL,NULL,NULL,NULL) == FALSE ) {
@@ -69,11 +69,11 @@ gchar * item_create_from_template(const gchar * template)
 /* return -1 if fails */
 gint item_destroy(const gchar * item_id)
 {
-        gchar * filename;
+	gchar * filename;
 
-        filename = g_strconcat( g_getenv("HOME"),"/", base_directory, "/", ITEM_TABLE, "/", item_id, NULL);
+	filename = g_strconcat( g_getenv("HOME"),"/", base_directory, "/", ITEM_TABLE, "/", item_id, NULL);
 
 	g_remove(filename);
 
-        return 0;
+	return 0;
 }

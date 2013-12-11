@@ -42,7 +42,7 @@ void character_send_list(context_t * context)
 		network_send_command(context, CMD_SEND_CHARACTER, g_utf8_strlen(character_list[i],-1)+1, character_list[i],FALSE);
 		i++;
 	}
-	
+
 	g_free(character_list);
 }
 
@@ -137,45 +137,45 @@ gint character_disconnect( const gchar * id)
 *******************************************************/
 gchar * character_create_from_template(const gchar * template)
 {
-        gchar * new_name;
-        gchar * templatename;
-        gchar * newfilename;
-        GFile * templatefile;
-        GFile * newfile;
+	gchar * new_name;
+	gchar * templatename;
+	gchar * newfilename;
+	GFile * templatefile;
+	GFile * newfile;
 
-        new_name = file_new(CHARACTER_TABLE);
+	new_name = file_new(CHARACTER_TABLE);
 
-        templatename = g_strconcat( g_getenv("HOME"),"/", base_directory, "/", CHARACTER_TEMPLATE_TABLE, "/", template,  NULL);
-        templatefile = g_file_new_for_path(templatename);
+	templatename = g_strconcat( g_getenv("HOME"),"/", base_directory, "/", CHARACTER_TEMPLATE_TABLE, "/", template,  NULL);
+	templatefile = g_file_new_for_path(templatename);
 
-        newfilename = g_strconcat( g_getenv("HOME"),"/", base_directory, "/", CHARACTER_TABLE, "/", new_name,  NULL);
-        newfile = g_file_new_for_path(newfilename);
+	newfilename = g_strconcat( g_getenv("HOME"),"/", base_directory, "/", CHARACTER_TABLE, "/", new_name,  NULL);
+	newfile = g_file_new_for_path(newfilename);
 
-        if( g_file_copy(templatefile,newfile, G_FILE_COPY_OVERWRITE,NULL,NULL,NULL,NULL) == FALSE ) {
-                g_free(new_name);
-                return NULL;
-        }
+	if( g_file_copy(templatefile,newfile, G_FILE_COPY_OVERWRITE,NULL,NULL,NULL,NULL) == FALSE ) {
+		g_free(new_name);
+		return NULL;
+	}
 
-        return new_name;
+	return new_name;
 }
 
 /*****************************/
 /* Call aggro script for each context in every npc context aggro dist */
 void character_update_aggro(context_t * context)
 {
-        context_t * ctx = NULL;
-        context_t * ctx2 = NULL;
-        gint aggro_dist;
-        gint dist;
-        const gchar * aggro_script;
+	context_t * ctx = NULL;
+	context_t * ctx2 = NULL;
+	gint aggro_dist;
+	gint dist;
+	const gchar * aggro_script;
 	gchar * param[] = { NULL,NULL };
 	gint no_aggro = 1;
 
-        ctx = context_list_start;
+	ctx = context_list_start;
 
-        if( ctx == NULL ) {
-                return;
-        }
+	if( ctx == NULL ) {
+		return;
+	}
 
 	/*For each context: check dist of every other context on the same map*/
 	/*For each context at aggro distance, execute the accro script */
@@ -244,7 +244,7 @@ gint character_set_pos(context_t * ctx, gchar * map, gint x, gint y)
 	}
 
 	/* Check if this character is allowed to go to the target tile */
-        if (map_check_tile(ctx->id,map,x,y) ) {
+	if (map_check_tile(ctx->id,map,x,y) ) {
 
 		if( g_strcmp0(ctx->map,map) ) {
 			change_map = 1;
@@ -284,7 +284,7 @@ gint character_set_pos(context_t * ctx, gchar * map, gint x, gint y)
 
 		character_update_aggro(ctx);
 		return 0;
-        }
+	}
 	return -1;
 }
 
@@ -295,7 +295,7 @@ gint character_set_pos(context_t * ctx, gchar * map, gint x, gint y)
 *********************************************************/
 gint character_set_npc(const gchar * id, gint npc)
 {
-	if(!write_int(CHARACTER_TABLE,id,npc,CHARACTER_KEY_NPC,NULL)){
+	if(!write_int(CHARACTER_TABLE,id,npc,CHARACTER_KEY_NPC,NULL)) {
 		return -1;
 	}
 

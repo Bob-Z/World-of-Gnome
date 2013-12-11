@@ -31,8 +31,8 @@ typedef struct selection {
 } selection_t;
 
 typedef struct context {
-        gchar *         user_name;
-        gboolean        connected;
+	gchar *         user_name;
+	gboolean        connected;
 	GSocketConnection * connection;
 	GInputStream * 	input_stream;
 	GOutputStream * output_stream;
@@ -59,7 +59,7 @@ typedef struct context {
 	lua_State*	luaVM; /* LUA state */
 	GCond*		cond;	/* async condition for npc */
 	GMutex*		cond_mutex;/* mutex for async condition for npc */
-	
+
 	struct context*	previous;
 	struct context*	next;
 } context_t;

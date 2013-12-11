@@ -31,7 +31,7 @@
 #define ENTRY_TYPE_STRING "string"
 
 /* Special action script name for chat */
-#define WOG_CHAT	"__wog_chat__" 
+#define WOG_CHAT	"__wog_chat__"
 
 //List of command :
 

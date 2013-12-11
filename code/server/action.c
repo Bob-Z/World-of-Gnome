@@ -54,8 +54,9 @@ static int l_character_create_from_template( lua_State* L)
 	character = luaL_checkstring(L, -1);
 	res = character_create_from_template(character);
 	lua_pushstring(L, res);
-        if( res)
-                g_free(res);
+	if( res) {
+		g_free(res);
+	}
 	return 1;  /* number of results */
 }
 
@@ -312,22 +313,22 @@ static int l_character_set_npc( lua_State* L)
 
 static int l_map_new( lua_State* L)
 {
-        gchar * map_name;
-        gint x;
-        gint y;
+	gchar * map_name;
+	gint x;
+	gint y;
 	gint tile_x;
 	gint tile_y;
 	const gchar * default_tile;
 
-        x = luaL_checkint(L, -5);
-        y = luaL_checkint(L, -4);
-        tile_x = luaL_checkint(L, -3);
-        tile_y = luaL_checkint(L, -2);
+	x = luaL_checkint(L, -5);
+	y = luaL_checkint(L, -4);
+	tile_x = luaL_checkint(L, -3);
+	tile_y = luaL_checkint(L, -2);
 	default_tile = luaL_checkstring(L, -1);
-        map_name = map_new(x,y,tile_x,tile_y,(gchar *)default_tile);
-        lua_pushstring(L, map_name);
+	map_name = map_new(x,y,tile_x,tile_y,(gchar *)default_tile);
+	lua_pushstring(L, map_name);
 	g_free(map_name);
-        return 1;  /* number of results */
+	return 1;  /* number of results */
 }
 
 static int l_map_set_tile( lua_State* L)
@@ -526,8 +527,9 @@ static int l_inventory_get_by_name( lua_State* L)
 	item_name = luaL_checkstring(L, -1);
 	res = inventory_get_by_name(id,item_name);
 	lua_pushstring(L, res);
-        if( res)
-                g_free(res);
+	if( res) {
+		g_free(res);
+	}
 	return 1;  /* number of results */
 }
 
@@ -537,8 +539,9 @@ static int l_item_create_empty( lua_State* L)
 
 	res = item_create_empty();
 	lua_pushstring(L, res);
-        if( res)
-                g_free(res);
+	if( res) {
+		g_free(res);
+	}
 	return 1;  /* number of results */
 }
 
@@ -550,8 +553,9 @@ static int l_item_create_from_template( lua_State* L)
 	item = luaL_checkstring(L, -1);
 	res = item_create_from_template(item);
 	lua_pushstring(L, res);
-        if( res)
-                g_free(res);
+	if( res) {
+		g_free(res);
+	}
 	return 1;  /* number of results */
 }
 
@@ -578,8 +582,9 @@ static int l_map_get_tile( lua_State* L)
 	y = luaL_checkint(L, -1);
 	res = map_get_tile(map,x,y);
 	lua_pushstring(L, res);
-	if( res) 
+	if( res) {
 		g_free(res);
+	}
 	return 1;  /* number of results */
 }
 
@@ -667,8 +672,8 @@ static int l_equipment_slot_add_item( lua_State* L)
 	const gchar * item;
 	gint res;
 
-        id = luaL_checkstring(L, -3);
-        slot = luaL_checkstring(L, -2);
+	id = luaL_checkstring(L, -3);
+	slot = luaL_checkstring(L, -2);
 	item = luaL_checkstring(L, -1);
 	res = equipment_add(id,slot,item);
 	lua_pushnumber(L, res);
@@ -677,12 +682,12 @@ static int l_equipment_slot_add_item( lua_State* L)
 
 static int l_equipment_slot_get_item_id( lua_State* L)
 {
-        const gchar * id;
-        const gchar * slot;
+	const gchar * id;
+	const gchar * slot;
 	const gchar * item;
 
-        id = luaL_checkstring(L, -2);
-        slot = luaL_checkstring(L, -1);
+	id = luaL_checkstring(L, -2);
+	slot = luaL_checkstring(L, -1);
 	item = equipment_get_item_id(id,slot);
 	if( item == NULL ) {
 		return 0;  /* number of results */
@@ -827,14 +832,13 @@ gint action_execute_script(context_t * context, const gchar * script, gchar ** p
 	filename = g_strconcat( g_getenv("HOME"),"/", base_directory, "/", SCRIPT_TABLE, "/", script, NULL);
 	/* push parameters on lua VM stack (only strings paramters are supported) */
 	if(parameters != NULL ) {
-		previous_parameter = parameters[0];	
-		for(i=0;i<MAX_PARAMETER;i++) {
+		previous_parameter = parameters[0];
+		for(i=0; i<MAX_PARAMETER; i++) {
 			g_sprintf(parameter_name,"parameter%d",i);
 			if(previous_parameter == NULL ) {
 				lua_pushstring(context->luaVM,NULL);
 				lua_setglobal (context->luaVM, parameter_name);
-			}
-			else {
+			} else {
 				lua_pushstring(context->luaVM,parameters[i]);
 				lua_setglobal (context->luaVM, parameter_name);
 				previous_parameter = parameters[i];

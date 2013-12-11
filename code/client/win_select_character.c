@@ -69,8 +69,7 @@ void update_select_character_window(context_t * context)
 
 		/* FIXME : It seems that animation are not supported in list... */
 		gtk_list_store_set(character_list_store,&iter,3,gdk_pixbuf_animation_get_static_image(gtk_image_get_animation(GTK_IMAGE(image))),-1);
-	}
-	while( gtk_tree_model_iter_next(model,&iter) != FALSE );
+	} while( gtk_tree_model_iter_next(model,&iter) != FALSE );
 	gdk_threads_leave();
 
 }
@@ -81,7 +80,7 @@ void update_select_character_window(context_t * context)
 void show_select_character_window(context_t * context)
 {
 	gdk_threads_enter();
-        gtk_widget_show_all(select_character_window);
+	gtk_widget_show_all(select_character_window);
 	gdk_threads_leave();
 	update_select_character_window(context);
 }
@@ -92,7 +91,7 @@ Called from on_* function so no need to lock GDK
 *************************/
 void hide_select_character_window(void)
 {
-        gtk_widget_hide_all(select_character_window);
+	gtk_widget_hide_all(select_character_window);
 }
 
 /*************************
@@ -128,10 +127,10 @@ void add_user_character(context_t * context, gchar * data)
 		gtk_list_store_append (character_list_store, &iter);
 		/* Try to display marquee */
 		gtk_list_store_set (character_list_store, &iter,
-				0, name,
-				1, type,
-				2, id,
-				-1);
+							0, name,
+							1, type,
+							2, id,
+							-1);
 	}
 
 	gdk_window_thaw_updates(character_list->window); /* to avoid flickering */
@@ -154,7 +153,7 @@ void on_play_clicked (GtkButton *button, gpointer   user_data)
 {
 	GtkTreeSelection *sel;
 	GtkTreeModel*   model;
-        GtkTreeIter     iter;
+	GtkTreeIter     iter;
 	gchar * id;
 	gchar * name;
 
@@ -170,12 +169,12 @@ void on_play_clicked (GtkButton *button, gpointer   user_data)
 	gtk_tree_model_get (model,&iter,2,&id, -1);
 	context_set_id(context, id);
 	g_free(id);
-	
+
 	gtk_tree_selection_get_selected(sel,&model,&iter);
 	gtk_tree_model_get (model,&iter,0,&name, -1);
 	context_set_character_name(context, name);
 	g_free(name);
-	
+
 	file_clean(context);
 
 	hide_select_character_window();
@@ -188,11 +187,11 @@ return FALSE on error
 
 gboolean win_select_character_init(context_t * context)
 {
-        GtkBuilder * builder = NULL;
-        builder = gtk_builder_new ();
+	GtkBuilder * builder = NULL;
+	builder = gtk_builder_new ();
 
 	gdk_threads_enter ();
-        gchar tmp[SMALL_BUF];
+	gchar tmp[SMALL_BUF];
 //	g_snprintf(tmp,SMALL_BUF,"./select_character.glade",DATADIR);
 	g_snprintf(tmp,SMALL_BUF,"./select_character.glade");
 	if( ! gtk_builder_add_from_file (builder, tmp,NULL)) {
@@ -203,11 +202,11 @@ gboolean win_select_character_init(context_t * context)
 		}
 	}
 
-        select_character_window = GTK_WIDGET(gtk_builder_get_object(builder,"select_character"));
-        character_list   = GTK_WIDGET(gtk_builder_get_object(builder,"character_list"));
+	select_character_window = GTK_WIDGET(gtk_builder_get_object(builder,"select_character"));
+	character_list   = GTK_WIDGET(gtk_builder_get_object(builder,"character_list"));
 
-        gtk_builder_connect_signals (builder, context);
-        g_object_unref (G_OBJECT (builder));
+	gtk_builder_connect_signals (builder, context);
+	g_object_unref (G_OBJECT (builder));
 
 	gtk_widget_hide_all(select_character_window);
 	gtk_widget_realize(select_character_window);

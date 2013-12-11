@@ -51,11 +51,11 @@ gint inventory_delete(const gchar * id, const gchar * item)
 /* return -1 if fails */
 gint inventory_add(const gchar * id, const gchar * item)
 {
-        context_t * context = context_find(id);
-        if( context == NULL ) {
+	context_t * context = context_find(id);
+	if( context == NULL ) {
 		werr(LOGDEV,"Could not find context %s",id);
-                return -1;
-        }
+		return -1;
+	}
 
 	/* Make sure the CHARACTER_KEY_INVENTORY list exists */
 	list_create(CHARACTER_TABLE,context->id,CHARACTER_KEY_INVENTORY,NULL);
@@ -78,11 +78,11 @@ gint inventory_count(const gchar * id, const gchar * item_name)
 	gchar ** name_list;
 	const gchar * name;
 
-        context_t * context = context_find(id);
-        if( context == NULL ) {
+	context_t * context = context_find(id);
+	if( context == NULL ) {
 		werr(LOGDEV,"Could not find context %s",id);
-                return -1;
-        }
+		return -1;
+	}
 
 	if(!read_list(CHARACTER_TABLE,context->id,&name_list,CHARACTER_KEY_INVENTORY,NULL) ) {
 		return -1;
@@ -107,33 +107,33 @@ gint inventory_count(const gchar * id, const gchar * item_name)
 /* the returned string must be freed */
 gchar * inventory_get_by_name(const gchar * id, const gchar * item_name)
 {
-        gint index;
-        gchar ** name_list;
-        const gchar * name;
+	gint index;
+	gchar ** name_list;
+	const gchar * name;
 	gchar * res;
 
-        context_t * context = context_find(id);
-        if( context == NULL ) {
+	context_t * context = context_find(id);
+	if( context == NULL ) {
 		werr(LOGDEV,"Could not find context %s",id);
-                return NULL;
-        }
+		return NULL;
+	}
 
 	if(!read_list(CHARACTER_TABLE,context->id,&name_list,CHARACTER_KEY_INVENTORY,NULL) ) {
-                return NULL;
-        }
+		return NULL;
+	}
 
-        index=0;
-        while( name_list[index] != NULL) {
+	index=0;
+	while( name_list[index] != NULL) {
 		if(read_string(ITEM_TABLE,name_list[index],&name,ITEM_NAME,NULL)) {
-                        if( g_strcmp0(item_name,name) == 0 ) {
+			if( g_strcmp0(item_name,name) == 0 ) {
 				res = g_strdup(name_list[index]);
 				g_free(name_list);
 				return res;
-                        }
-                }
+			}
+		}
 		index++;
-        }
+	}
 
 	g_free(name_list);
-        return NULL;
+	return NULL;
 }

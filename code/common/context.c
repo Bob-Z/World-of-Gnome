@@ -41,33 +41,33 @@ void context_init(context_t * context)
 	context->user_name = NULL;
 	context->connected = FALSE;
 	context->connection = NULL;
-        context->input_stream = NULL;
-        context->output_stream = NULL;
+	context->input_stream = NULL;
+	context->output_stream = NULL;
 	context->data_connection = NULL;
-        context->input_data_stream = NULL;
-        context->output_data_stream = NULL;
+	context->input_data_stream = NULL;
+	context->output_data_stream = NULL;
 	context->hostname = NULL;
 	context->send_thread = NULL;
 
-        context->character_name = NULL;
-        context->map = NULL;
-        context->map_x = -1;
-        context->map_y = -1;
-        context->tile_x = -1;
-        context->tile_y = -1;
+	context->character_name = NULL;
+	context->map = NULL;
+	context->map_x = -1;
+	context->map_y = -1;
+	context->tile_x = -1;
+	context->tile_y = -1;
 
-        context->pos_x = 0;
-        context->pos_y = 0;
-        context->type = NULL;
+	context->pos_x = 0;
+	context->pos_y = 0;
+	context->type = NULL;
 
-        context->sprite_image = NULL;
+	context->sprite_image = NULL;
 
-        context->selection.id = NULL;
-        context->selection.map_coord[0] = -1;
-        context->selection.map_coord[1] = -1;
-        context->selection.map = NULL;
-        context->selection.inventory = NULL;
-        context->selection.equipment = NULL;
+	context->selection.id = NULL;
+	context->selection.map_coord[0] = -1;
+	context->selection.map_coord[1] = -1;
+	context->selection.map = NULL;
+	context->selection.inventory = NULL;
+	context->selection.equipment = NULL;
 
 	context->id = NULL;
 	context->prev_map = NULL;
@@ -132,10 +132,10 @@ void context_free(context_t * context)
 		delete_file = FALSE;
 	}
 	context->data_connection = NULL;
-        context->input_stream = NULL;
-        context->output_stream = NULL;
-        context->input_data_stream = NULL;
-        context->output_data_stream = NULL;
+	context->input_stream = NULL;
+	context->output_stream = NULL;
+	context->input_data_stream = NULL;
+	context->output_data_stream = NULL;
 	g_free(context->hostname);
 	context->hostname = NULL;
 	context->send_thread = NULL;
@@ -149,14 +149,14 @@ void context_free(context_t * context)
 		gtk_widget_destroy(context->sprite_image);
 		context->sprite_image = NULL;
 	}
-        context->selection.id = NULL;
-        context->selection.map_coord[0] = -1;
-        context->selection.map_coord[1] = -1;
-        context->selection.map = NULL;
+	context->selection.id = NULL;
+	context->selection.map_coord[0] = -1;
+	context->selection.map_coord[1] = -1;
+	context->selection.map = NULL;
 	g_free(context->selection.inventory);
-        context->selection.inventory = NULL;
+	context->selection.inventory = NULL;
 	g_free(context->selection.equipment);
-        context->selection.equipment = NULL;
+	context->selection.equipment = NULL;
 	g_free(context->id);
 	context->id = NULL;
 	g_free(context->prev_map);
@@ -177,8 +177,7 @@ void context_free(context_t * context)
 		if( context->next != NULL) {
 			context->next->previous = NULL;
 		}
-	}
-	else {
+	} else {
 		context->previous->next = context->next;
 		if( context->next != NULL) {
 			context->next->previous = context->previous;
@@ -195,7 +194,7 @@ void context_free(context_t * context)
 	}
 
 	g_free(context);
-	
+
 	g_static_mutex_unlock (&context_list_mutex);
 
 	if(delete_file) {
@@ -388,7 +387,7 @@ gboolean context_set_type(context_t * context, const gchar * type)
 }
 
 /* context_set_pos_x
-  Set pos_x 
+  Set pos_x
 */
 void context_set_pos_x(context_t * context, guint pos)
 {
@@ -398,7 +397,7 @@ void context_set_pos_x(context_t * context, guint pos)
 }
 
 /* context_set_pos_y
-  Set pos_y 
+  Set pos_y
 */
 void context_set_pos_y(context_t * context, guint pos)
 {
@@ -408,7 +407,7 @@ void context_set_pos_y(context_t * context, guint pos)
 }
 
 /* context_set_map_x
-  Set map_x 
+  Set map_x
 */
 void context_set_map_x(context_t * context, guint pos)
 {
@@ -418,7 +417,7 @@ void context_set_map_x(context_t * context, guint pos)
 }
 
 /* context_set_map_y
-  Set map_y 
+  Set map_y
 */
 void context_set_map_y(context_t * context, guint pos)
 {
@@ -428,7 +427,7 @@ void context_set_map_y(context_t * context, guint pos)
 }
 
 /* context_set_tile_x
-  Set tile_x 
+  Set tile_x
 */
 void context_set_tile_x(context_t * context, guint pos)
 {
@@ -438,7 +437,7 @@ void context_set_tile_x(context_t * context, guint pos)
 }
 
 /* context_set_tile_y
-  Set tile_y 
+  Set tile_y
 */
 void context_set_tile_y(context_t * context, guint pos)
 {
@@ -483,8 +482,7 @@ gboolean context_set_prev_map(context_t * context, const gchar * name)
 			g_static_mutex_unlock (&context_list_mutex);
 			return FALSE;
 		}
-	}
-	else {
+	} else {
 		g_free(context->prev_map);
 		context->prev_map = NULL;
 	}
@@ -508,11 +506,11 @@ void context_new_VM(context_t * context)
 	g_static_mutex_unlock (&context_list_mutex);
 }
 /*******************************
-Update the memory context by reading the client's character data file on disk 
+Update the memory context by reading the client's character data file on disk
 *******************************/
 gboolean context_update_from_file(context_t * context)
 {
-/* Don't call context_set_* functions here to avoid inter-blocking */
+	/* Don't call context_set_* functions here to avoid inter-blocking */
 
 	const gchar * result;
 
@@ -587,7 +585,7 @@ gboolean context_write_to_file(context_t * context)
 
 	write_string(CHARACTER_TABLE, context->id,context->type,CHARACTER_KEY_TYPE,NULL);
 	write_string(CHARACTER_TABLE, context->id,context->map,CHARACTER_KEY_MAP, NULL);
-	
+
 
 	write_int(CHARACTER_TABLE, context->id,context->pos_x,CHARACTER_KEY_POS_X, NULL);
 
@@ -619,7 +617,7 @@ context_t * context_find(const gchar * id)
 
 /*******************************
 Update the context by decoding the received frame
-Called by server 
+Called by server
 *******************************/
 gboolean context_update_from_network_frame(context_t * context, gchar * frame)
 {
@@ -685,8 +683,7 @@ gboolean context_update_from_network_frame(context_t * context, gchar * frame)
 	}
 	if( data[0] != 0 ) {
 		context->selection.id = g_strdup(data);
-	}
-	else {
+	} else {
 		context->selection.id = NULL;
 	}
 	data += (g_utf8_strlen(data,-1)+1);
@@ -702,8 +699,7 @@ gboolean context_update_from_network_frame(context_t * context, gchar * frame)
 	}
 	if( data[0] != 0 ) {
 		context->selection.map = g_strdup(data);
-	}
-	else {
+	} else {
 		context->selection.map = NULL;
 	}
 	data += (g_utf8_strlen(data,-1)+1);
@@ -713,8 +709,7 @@ gboolean context_update_from_network_frame(context_t * context, gchar * frame)
 	}
 	if( data[0] != 0 ) {
 		context->selection.inventory = g_strdup(data);
-	}
-	else {
+	} else {
 		context->selection.inventory = NULL;
 	}
 	data += (g_utf8_strlen(data,-1)+1);
@@ -724,8 +719,7 @@ gboolean context_update_from_network_frame(context_t * context, gchar * frame)
 	}
 	if( data[0] != 0 ) {
 		context->selection.equipment = g_strdup(data);
-	}
-	else {
+	} else {
 		context->selection.equipment = NULL;
 	}
 	data += (g_utf8_strlen(data,-1)+1);
@@ -757,7 +751,7 @@ void context_spread(context_t * context)
 
 		/* Skip if not on the same map or previous map */
 		if( g_strcmp0(context->map,ctx->map) != 0 &&
-			g_strcmp0(context->prev_map,ctx->map) != 0 ) {
+				g_strcmp0(context->prev_map,ctx->map) != 0 ) {
 			continue;
 		}
 
@@ -768,7 +762,7 @@ void context_spread(context_t * context)
 
 		network_send_context_to_context(ctx, context);
 
-		
+
 	} while( (ctx=ctx->next)!= NULL );
 
 	/* The existing context on the previous map should have
@@ -848,14 +842,14 @@ void context_request_other_context(context_t * context)
 		}
 
 		network_send_context_to_context(context, ctx);
-		
+
 	} while( (ctx=ctx->next)!= NULL );
 
 	g_static_mutex_unlock (&context_list_mutex);
 }
 
 /* Called from client */
-void context_add_or_update_from_network_frame(context_t * context,gchar * data) 
+void context_add_or_update_from_network_frame(context_t * context,gchar * data)
 {
 	context_t * ctx = NULL;
 	gchar * user_name = NULL;
@@ -914,7 +908,7 @@ void context_add_or_update_from_network_frame(context_t * context,gchar * data)
 	ctx = context_list_start;
 
 	while( ctx != NULL ) {
-		if( g_strcmp0( id, ctx->id) == 0 ) { 
+		if( g_strcmp0( id, ctx->id) == 0 ) {
 			if( connected != FALSE ) {
 				wlog(LOGDEBUG,"Updating context %s / %s",user_name,name);
 				/* do not call context_set_* function since we already have the lock */
@@ -938,8 +932,7 @@ void context_add_or_update_from_network_frame(context_t * context,gchar * data)
 				g_free(id);
 
 				g_static_mutex_unlock (&context_list_mutex);
-			}
-			else {
+			} else {
 				wlog(LOGDEBUG,"Deleting context %s / %s",user_name,name);
 				/* Delete selection if it was selected */
 				if( context->selection.id != NULL ) {
@@ -972,7 +965,7 @@ void context_add_or_update_from_network_frame(context_t * context,gchar * data)
 	context_set_map_x(ctx,map_x);
 	context_set_map_y(ctx,map_y);
 	context_set_id(ctx,id);
-	
+
 	g_free(user_name);
 	g_free(name);
 	g_free(map);
