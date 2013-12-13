@@ -28,10 +28,13 @@
 #include "anim.h"
 #include "item.h"
 
+#define BORDER 20
+
 typedef struct {
 	char * id;
 	char * name;
 	char * type;
+	anim_t * anim;
 } character_t;
 
 static pthread_mutex_t character_mutex = PTHREAD_MUTEX_INITIALIZER;
@@ -44,10 +47,10 @@ Compose the character select screen
 **********************************/
 item_t * scr_select_compose(context_t * context)
 {
-	const char * marquee_name;
 	int i = 0;
-	anim_t * anim;
 	int x = 0;
+	const char * marquee_name;
+	static int max_h = 0;
 
 	wlog(LOGDEBUG,"Composing select character screen\n");
 
@@ -58,17 +61,26 @@ item_t * scr_select_compose(context_t * context)
 	pthread_mutex_lock(&character_mutex);
 	item_list = malloc(character_num*sizeof(item_t));
 
+	/* Load all anim and compute the max height */
+	for(i=0;i<character_num;i++) {
+		if(character_list[i].anim == NULL ) {
+			/* Compute the marquee file name */
+			if(!read_string(CHARACTER_TABLE,character_list[i].id,&marquee_name,CHARACTER_KEY_MARQUEE,NULL)) {
+				continue;
+			}
+			character_list[i].anim  = imageDB_get_anim(context,marquee_name);
+			if(character_list[i].anim->h > max_h) {
+				max_h = character_list[i].anim->h;
+			}
+		}
+	}
+
 	for(i=0;i<character_num;i++) {
 		item_init(&item_list[i]);
 		item_set_string(&item_list[i],character_list[i].name);
+		item_set_anim(&item_list[i],x,max_h/2-character_list[i].anim->h/2,character_list[i].anim);
 
-		/* Compute the marquee file name */
-		if(!read_string(CHARACTER_TABLE,character_list[i].id,&marquee_name,CHARACTER_KEY_MARQUEE,NULL)) {
-			continue;
-		}
-		anim  = imageDB_get_anim(context,marquee_name);
-		item_set_anim(&item_list[i],x,0,anim);
-		x +=anim->w;
+		x += character_list[i].anim->w + BORDER;
 	}
 	item_set_last(&item_list[i-1],1);
 
@@ -100,6 +112,7 @@ void scr_select_add_user_character(context_t * context, char * data)
 		current_string += strlen(current_string)+1;
 		character_list[character_num-1].name = strdup(current_string);
 		current_string += strlen(current_string)+1;
+		character_list[character_num-1].anim = NULL;
 	}
 
 	pthread_mutex_unlock(&character_mutex);
