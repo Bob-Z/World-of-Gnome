@@ -19,14 +19,14 @@
 
 #include "sdl.h"
 
-int fullscreen = 0;
-
-int mouse_x = 0;
-int mouse_y = 0;
+static int fullscreen = 0;
 
 static char keyboard_buf[2048];
 static unsigned int keyboard_index = 0;
 static void (*keyboard_cb)(void * arg) = NULL;
+
+static int virtual_x = 0;
+static int virtual_y = 0;
 
 //You must SDL_LockSurface(surface); then SDL_UnlockSurface(surface); before calling this function
 void sdl_set_pixel(SDL_Surface *surface, int x, int y, Uint32 R, Uint32 G, Uint32 B, Uint32 A)
@@ -70,14 +70,31 @@ void sdl_init(context_t * context)
 	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
 }
 
-void sdl_mouse_manager(SDL_Event * event, item_t * item_list)
+static void get_virtual(context_t * ctx,int * vx, int * vy)
+{
+	int sx;
+	int sy;
+
+	SDL_GetRendererOutputSize(ctx->render,&sx,&sy);
+	*vx = -virtual_x+(sx/2);
+	*vy = -virtual_y+(sy/2);
+
+printf("virtual x %d %d \n",virtual_x,virtual_y);
+printf("sx %d %d \n",sx,sy);
+printf("vx %d %d \n",*vx,*vy);
+}
+void sdl_mouse_manager(context_t * ctx, SDL_Event * event, item_t * item_list)
 {
 	SDL_Rect rect;
 	int i;
+	int vx;
+	int vy;
 
 	if(item_list == NULL) {
 		return;
 	}
+
+	get_virtual(ctx,&vx,&vy);
 
 	switch (event->type) {
 	case SDL_MOUSEMOTION:
@@ -86,10 +103,8 @@ void sdl_mouse_manager(SDL_Event * event, item_t * item_list)
 			   event->motion.xrel, event->motion.yrel,
 			   event->motion.x, event->motion.y);
 #endif
-		rect.x = event->motion.x;
-		rect.y = event->motion.y;
-		mouse_x = rect.x;
-		mouse_y = rect.y;
+		rect.x = event->motion.x - vx;
+		rect.y = event->motion.y - vy;
 //			printf("orig coord = %d,%d \n",rect.x,rect.y);
 		i=0;
 		do {
@@ -116,8 +131,8 @@ void sdl_mouse_manager(SDL_Event * event, item_t * item_list)
 		printf("Mouse button %d pressed at (%d,%d)\n",
 			   event->button.button, event->button.x, event->button.y);
 #endif
-		rect.x = event->button.x;
-		rect.y = event->button.y;
+		rect.x = event->button.x - vx;
+		rect.y = event->button.y - vy;
 //			printf("orig coord = %d,%d \n",rect.x,rect.y);
 		i=0;
 		do {
@@ -140,8 +155,8 @@ void sdl_mouse_manager(SDL_Event * event, item_t * item_list)
 
 		break;
 	case SDL_MOUSEBUTTONUP:
-		rect.x = event->button.x;
-		rect.y = event->button.y;
+		rect.x = event->button.x - vx;
+		rect.y = event->button.y - vy;
 		i=0;
 		do {
 			item_list[i].clicked=0;
@@ -221,14 +236,18 @@ void sdl_loop_manager()
 	}
 }
 
-void sdl_blit_frame(context_t * ctx,anim_t * anim, SDL_Rect * rect, int frame_num,int x, int y)
+void sdl_blit_frame(context_t * ctx,anim_t * anim, SDL_Rect * rect, int frame_num)
 {
 	SDL_Rect r;
+        int vx;
+        int vy;
+
+        get_virtual(ctx,&vx,&vy);
 
 	r.w = rect->w;
 	r.h = rect->h;
-	r.x = rect->x + x;
-	r.y = rect->y + y;
+	r.x = rect->x + vx;
+	r.y = rect->y + vy;
 
 	if( anim ) {
 		if( SDL_RenderCopy(ctx->render,anim->tex[frame_num],NULL,&r) < 0) {
@@ -237,11 +256,11 @@ void sdl_blit_frame(context_t * ctx,anim_t * anim, SDL_Rect * rect, int frame_nu
 	}
 }
 
-int sdl_blit_anim(context_t * ctx,anim_t * anim, SDL_Rect * rect, int start, int end,int x, int y)
+int sdl_blit_anim(context_t * ctx,anim_t * anim, SDL_Rect * rect, int start, int end)
 {
 	Uint32 time = SDL_GetTicks();
 
-	sdl_blit_frame(ctx,anim,rect,anim->current_frame,x,y);
+	sdl_blit_frame(ctx,anim,rect,anim->current_frame);
 
 	if( anim->prev_time == 0 ) {
 		anim->prev_time = time;
@@ -265,19 +284,19 @@ int sdl_blit_anim(context_t * ctx,anim_t * anim, SDL_Rect * rect, int start, int
 	return 0;
 }
 
-int sdl_blit_item(context_t * ctx,item_t * item,int x, int y)
+int sdl_blit_item(context_t * ctx,item_t * item)
 {
 
 	if( item->frame_normal == -1 ) {
-		return sdl_blit_anim(ctx,item->anim,&item->rect,item->anim_start,item->anim_end,x,y);
+		return sdl_blit_anim(ctx,item->anim,&item->rect,item->anim_start,item->anim_end);
 	} else {
-		sdl_blit_frame(ctx,item->anim,&item->rect,item->current_frame,x,y);
+		sdl_blit_frame(ctx,item->anim,&item->rect,item->current_frame);
 	}
 
 	return 0;
 }
 
-void sdl_blit_item_list(context_t * ctx,item_t * list,int x, int y)
+void sdl_blit_item_list(context_t * ctx,item_t * list)
 {
 	int i = 0;
 
@@ -286,7 +305,7 @@ void sdl_blit_item_list(context_t * ctx,item_t * list,int x, int y)
 	}
 
 	do {
-		sdl_blit_item(ctx,&list[i],x,y);
+		sdl_blit_item(ctx,&list[i]);
 		i++;
 	}
 	while(!list[i-1].last);
@@ -359,4 +378,13 @@ void sdl_keyboard_manager(SDL_Event * event)
 void sdl_blit_to_screen(context_t * ctx)
 {
 	SDL_RenderPresent(ctx->render);
+}
+
+void sdl_set_virtual_x(int x)
+{
+	virtual_x = x;
+}
+void sdl_set_virtual_y(int y)
+{
+	virtual_y = y;
 }

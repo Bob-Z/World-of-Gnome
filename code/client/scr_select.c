@@ -27,7 +27,7 @@
 #include "file.h"
 #include "anim.h"
 #include "item.h"
-#include "screen.h"
+#include "sdl.h"
 
 #define BORDER 20
 
@@ -43,6 +43,13 @@ static character_t * character_list = NULL;
 static int character_num = 0;
 static item_t * item_list = NULL;
 
+static void cb_left_click(void * arg)
+{
+	item_t * item = (item_t*)arg;
+
+	sdl_set_virtual_x(item->rect.x + item->rect.w/2);
+	sdl_set_virtual_y(item->rect.y + item->rect.h/2);
+}
 /**********************************
 Compose the character select screen
 **********************************/
@@ -52,7 +59,7 @@ item_t * scr_select_compose(context_t * context)
 	int x = 0;
 	const char * marquee_name;
 	static int max_h = 0;
-	static int init = 1;
+	static int init = 0;
 
 	wlog(LOGDEBUG,"Composing select character screen\n");
 
@@ -86,14 +93,15 @@ item_t * scr_select_compose(context_t * context)
 		item_init(&item_list[i]);
 		item_set_string(&item_list[i],character_list[i].name);
 		item_set_anim(&item_list[i],x,max_h/2-character_list[i].anim->h/2,character_list[i].anim);
+		item_set_click_left(&item_list[i],cb_left_click,(void *)&item_list[i]);
 
 		x += character_list[i].anim->w + BORDER;
 	}
 	item_set_last(&item_list[i-1],1);
 
 	if(init) {
-		screen_set_virtual_x(character_list[0].anim->w/2);
-		screen_set_virtual_y(character_list[0].anim->h/2);
+		sdl_set_virtual_x(character_list[0].anim->w/2);
+		sdl_set_virtual_y(character_list[0].anim->h/2);
 		init = 0;
 	}
 
