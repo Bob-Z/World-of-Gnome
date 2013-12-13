@@ -171,6 +171,13 @@ void sdl_screen_manager(context_t * ctx,SDL_Event * event)
 	const Uint8 *keystate;
 
 	switch (event->type) {
+        case SDL_WINDOWEVENT:
+		switch(event->window.event) {
+		case SDL_WINDOWEVENT_RESIZED:
+			SDL_RenderSetLogicalSize(ctx->render,event->window.data1,event->window.data2);
+			break;
+		}
+	break;
 	case SDL_KEYDOWN:
 		switch (event->key.keysym.sym) {
 		case SDLK_RETURN:
