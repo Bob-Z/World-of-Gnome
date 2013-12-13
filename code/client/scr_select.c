@@ -32,7 +32,6 @@ typedef struct {
 	char * id;
 	char * name;
 	char * type;
-	anim_t * marquee;
 } character_t;
 
 static pthread_mutex_t character_mutex = PTHREAD_MUTEX_INITIALIZER;
@@ -45,9 +44,10 @@ Compose the character select screen
 **********************************/
 item_t * scr_select_compose(context_t * context)
 {
-	const gchar * marquee_name;
+	const char * marquee_name;
 	int i = 0;
 	anim_t * anim;
+	int x = 0;
 
 	wlog(LOGDEBUG,"Composing select character screen\n");
 
@@ -67,7 +67,8 @@ item_t * scr_select_compose(context_t * context)
 			continue;
 		}
 		anim  = imageDB_get_anim(context,marquee_name);
-		item_set_anim(&item_list[i],0,0,anim);
+		item_set_anim(&item_list[i],x,0,anim);
+		x +=anim->w;
 	}
 	item_set_last(&item_list[i-1],1);
 
@@ -81,22 +82,25 @@ item_t * scr_select_compose(context_t * context)
 the data is a list a 3 strings, the first string is the id of the character (its file name) the second one is the type of the character, the third is the name of the character.
 the list ends with an empty string
 *************************/
-void scr_select_add_user_character(context_t * context, gchar * data)
+void scr_select_add_user_character(context_t * context, char * data)
 {
-	gchar * current_string = data;
+	char * current_string = data;
 
 	pthread_mutex_lock(&character_mutex);
 
-	character_num++;
+	while(current_string[0] != 0) {
 
-	character_list = realloc(character_list,sizeof(character_t)*character_num);
+		character_num++;
 
-	character_list[character_num-1].id = strdup(current_string);
-	current_string += strlen(current_string)+1;
-	character_list[character_num-1].type = strdup(current_string);
-	current_string += strlen(current_string)+1;
-	character_list[character_num-1].name = strdup(current_string);
-	character_list[character_num-1].marquee = NULL;
+		character_list = realloc(character_list,sizeof(character_t)*character_num);
+
+		character_list[character_num-1].id = strdup(current_string);
+		current_string += strlen(current_string)+1;
+		character_list[character_num-1].type = strdup(current_string);
+		current_string += strlen(current_string)+1;
+		character_list[character_num-1].name = strdup(current_string);
+		current_string += strlen(current_string)+1;
+	}
 
 	pthread_mutex_unlock(&character_mutex);
 
