@@ -355,4 +355,19 @@ anim_t * anim_load(const char * filename)
 	}
 
 	return ret;
+
+anim_t * anim_copy(anim_t * src)
+{
+	anim_t * new_anim;
+
+	new_anim = malloc(sizeof(anim_t));
+	new_anim->num_frame = src->num_frame;
+	new_anim->tex = src->tex;
+	new_anim->current_frame = src->current_frame;
+	new_anim->w = src->w;
+	new_anim->h = src->h;
+	new_anim->delay = src->delay;
+	new_anim->prev_time = src->prev_time;
+
+	return new_anim;
 }
