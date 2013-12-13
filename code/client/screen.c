@@ -27,8 +27,6 @@ static item_t * item_list = NULL;
 static int current_screen=SCREEN_SELECT;
 static int compose = 0;
 static pthread_mutex_t compose_mutex = PTHREAD_MUTEX_INITIALIZER;
-static int virtual_x = 0;
-static int virtual_y = 0;
 
 static void screen_select_compose(context_t * context)
 {
@@ -82,8 +80,6 @@ Render the currently selected item list to screen
 void screen_display(context_t * ctx)
 {
 	SDL_Event event;
-	int screen_x;
-	int screen_y;
 
 	while( screen_end == -1) {
 
@@ -93,7 +89,7 @@ void screen_display(context_t * ctx)
 			}
 
 			sdl_screen_manager(ctx,&event);
-			sdl_mouse_manager(&event,item_list);
+			sdl_mouse_manager(ctx,&event,item_list);
 			sdl_keyboard_manager(&event);
 		}
 
@@ -107,9 +103,7 @@ void screen_display(context_t * ctx)
 
 		SDL_RenderClear(ctx->render);
 
-		SDL_GetRendererOutputSize(ctx->render,&screen_x,&screen_y);
-
-		sdl_blit_item_list(ctx,item_list,virtual_x+(screen_x/2),virtual_y+(screen_y/2));
+		sdl_blit_item_list(ctx,item_list);
 
 		sdl_blit_to_screen(ctx);
 
@@ -117,13 +111,4 @@ void screen_display(context_t * ctx)
 	}
 
 	return;
-}
-
-void screen_set_virtual_x(int x)
-{
-	virtual_x = -x;
-}
-void screen_set_virtual_y(int y)
-{
-	virtual_y = -y;
 }
