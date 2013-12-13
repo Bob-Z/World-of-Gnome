@@ -221,20 +221,27 @@ void sdl_loop_manager()
 	}
 }
 
-void sdl_blit_frame(context_t * ctx,anim_t * anim, SDL_Rect * rect, int frame_num)
+void sdl_blit_frame(context_t * ctx,anim_t * anim, SDL_Rect * rect, int frame_num,int x, int y)
 {
+	SDL_Rect r;
+
+	r.w = rect->w;
+	r.h = rect->h;
+	r.x = rect->x + x;
+	r.y = rect->y + y;
+
 	if( anim ) {
-		if( SDL_RenderCopy(ctx->render,anim->tex[frame_num],NULL,rect) < 0) {
+		if( SDL_RenderCopy(ctx->render,anim->tex[frame_num],NULL,&r) < 0) {
 			werr(LOGDEV,"SDL_RenderCopy error\n");
 		}
 	}
 }
 
-int sdl_blit_anim(context_t * ctx,anim_t * anim, SDL_Rect * rect, int start, int end)
+int sdl_blit_anim(context_t * ctx,anim_t * anim, SDL_Rect * rect, int start, int end,int x, int y)
 {
 	Uint32 time = SDL_GetTicks();
 
-	sdl_blit_frame(ctx,anim,rect,anim->current_frame);
+	sdl_blit_frame(ctx,anim,rect,anim->current_frame,x,y);
 
 	if( anim->prev_time == 0 ) {
 		anim->prev_time = time;
@@ -258,19 +265,19 @@ int sdl_blit_anim(context_t * ctx,anim_t * anim, SDL_Rect * rect, int start, int
 	return 0;
 }
 
-int sdl_blit_item(context_t * ctx,item_t * item)
+int sdl_blit_item(context_t * ctx,item_t * item,int x, int y)
 {
 
 	if( item->frame_normal == -1 ) {
-		return sdl_blit_anim(ctx,item->anim,&item->rect,item->anim_start,item->anim_end);
+		return sdl_blit_anim(ctx,item->anim,&item->rect,item->anim_start,item->anim_end,x,y);
 	} else {
-		sdl_blit_frame(ctx,item->anim,&item->rect,item->current_frame);
+		sdl_blit_frame(ctx,item->anim,&item->rect,item->current_frame,x,y);
 	}
 
 	return 0;
 }
 
-void sdl_blit_item_list(context_t * ctx,item_t * list)
+void sdl_blit_item_list(context_t * ctx,item_t * list,int x, int y)
 {
 	int i = 0;
 
@@ -279,7 +286,7 @@ void sdl_blit_item_list(context_t * ctx,item_t * list)
 	}
 
 	do {
-		sdl_blit_item(ctx,&list[i]);
+		sdl_blit_item(ctx,&list[i],x,y);
 		i++;
 	}
 	while(!list[i-1].last);

@@ -27,6 +27,7 @@
 #include "file.h"
 #include "anim.h"
 #include "item.h"
+#include "screen.h"
 
 #define BORDER 20
 
@@ -51,11 +52,17 @@ item_t * scr_select_compose(context_t * context)
 	int x = 0;
 	const char * marquee_name;
 	static int max_h = 0;
+	static int init = 1;
 
 	wlog(LOGDEBUG,"Composing select character screen\n");
 
+	if(character_num==0) {
+		return NULL;
+	}
+
 	if(item_list) {
 		free(item_list);
+		item_list = NULL;
 	}
 
 	pthread_mutex_lock(&character_mutex);
@@ -83,6 +90,12 @@ item_t * scr_select_compose(context_t * context)
 		x += character_list[i].anim->w + BORDER;
 	}
 	item_set_last(&item_list[i-1],1);
+
+	if(init) {
+		screen_set_virtual_x(character_list[0].anim->w/2);
+		screen_set_virtual_y(character_list[0].anim->h/2);
+		init = 0;
+	}
 
 	pthread_mutex_unlock(&character_mutex);
 
