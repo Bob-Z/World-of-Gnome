@@ -21,6 +21,7 @@
 #include <glib.h>
 #include <gio/gio.h>
 #include <lua.h>
+#include <SDL2/SDL.h>
 
 typedef struct selection {
 	gchar *		id;	/* a character id */
@@ -42,6 +43,9 @@ typedef struct context {
 	gchar *		hostname;
 	GThreadPool *	send_thread;
 	GMutex		send_mutex;
+
+	SDL_Renderer * render;
+	SDL_Window * window;
 
 	gchar *		character_name;
 	gchar *		map;	/* map name */

@@ -26,6 +26,7 @@
 extern GtkWidget *             equipment_list;
 GtkTreePath * selected_equipment_item_path = NULL;
 
+#if 0
 static void get_selection(GtkTreeModel *model, GtkTreePath *path, GtkTreeIter *iter, gpointer data)
 {
 	gtk_tree_path_free(selected_equipment_item_path);
@@ -36,6 +37,7 @@ static void get_selection(GtkTreeModel *model, GtkTreePath *path, GtkTreeIter *i
 		selected_equipment_item_path = NULL;
 	}
 }
+#endif
 
 /****************************
 get_selected_equipment_item
@@ -43,24 +45,24 @@ need to free the returned string
 ****************************/
 gchar * get_selected_equipment_item()
 {
-	GtkTreeModel * model;
-	GtkTreeIter iter;
-	gchar * slot_name;
-	GtkTreeSelection *  selection;
+//SDL	GtkTreeModel * model;
+//SDL	GtkTreeIter iter;
+	gchar * slot_name = NULL;
+//SDL	GtkTreeSelection *  selection;
 
-	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(equipment_list));
+//SDL	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(equipment_list));
 
 	/* Get the selection path */
-	gtk_tree_selection_selected_foreach(selection,get_selection,NULL);
+//SDL	gtk_tree_selection_selected_foreach(selection,get_selection,NULL);
 	if( selected_equipment_item_path == NULL ) {
 		return NULL;
 	}
 
-	model = gtk_tree_view_get_model(GTK_TREE_VIEW(equipment_list));
-	if(!gtk_tree_model_get_iter(model,&iter,selected_equipment_item_path)) {
-		return NULL;
-	}
-	gtk_tree_model_get (model,&iter,4,&slot_name,-1);
+//SDL	model = gtk_tree_view_get_model(GTK_TREE_VIEW(equipment_list));
+//SDL	if(!gtk_tree_model_get_iter(model,&iter,selected_equipment_item_path)) {
+//SDL		return NULL;
+//SDL	}
+//SDL	gtk_tree_model_get (model,&iter,4,&slot_name,-1);
 
 	return g_strdup(slot_name);
 }
@@ -70,9 +72,9 @@ fill_equipment
 void fill_equipment(context_t * context)
 {
 	gchar ** name_list;
-	GtkWidget * icon;
-	GdkPixbuf * icon_pixbuf;
-	GtkListStore * equipment_list_store;
+//SDL	GtkWidget * icon;
+//SDL	GdkPixbuf * icon_pixbuf;
+	GtkListStore * equipment_list_store = NULL;
 	GtkTreeIter iter;
 	gchar * new_slot;
 	gint index = 0;
@@ -82,15 +84,15 @@ void fill_equipment(context_t * context)
 	const gchar * equipped_icon_name;
 	const gchar * item_name;
 	gchar * name;
-	GtkTreeSelection *  selection;
+	GtkTreeSelection *  selection = NULL;
 
 
 	/* Get the selection path */
-	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(equipment_list));
-	gtk_tree_selection_selected_foreach(selection,get_selection,NULL);
+//SDL	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(equipment_list));
+//SDL	gtk_tree_selection_selected_foreach(selection,get_selection,NULL);
 	/* clear the view */
-	equipment_list_store=GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(equipment_list)));
-	gtk_list_store_clear(equipment_list_store);
+//SDL	equipment_list_store=GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(equipment_list)));
+//SDL	gtk_list_store_clear(equipment_list_store);
 
 	if(!get_group_list(CHARACTER_TABLE,context->id,&name_list,EQUIPMENT_GROUP,NULL) ) {
 		return;
@@ -113,15 +115,15 @@ void fill_equipment(context_t * context)
 								4, name_list[index],
 								-1);
 		} else {
-			icon = imageDB_get_widget(context,icon_name);
-			icon_pixbuf = gdk_pixbuf_animation_get_static_image(gtk_image_get_animation(GTK_IMAGE(icon)));
-			gtk_widget_destroy(icon);
+//SDL			icon = imageDB_get_widget(context,icon_name);
+//SDL			icon_pixbuf = gdk_pixbuf_animation_get_static_image(gtk_image_get_animation(GTK_IMAGE(icon)));
+//SDL			gtk_widget_destroy(icon);
 
-			gtk_list_store_set (equipment_list_store, &iter,
-								0, name,
-								1, icon_pixbuf,
-								4, name_list[index],
-								-1);
+//SDL			gtk_list_store_set (equipment_list_store, &iter,
+//SDL								0, name,
+//SDL								1, icon_pixbuf,
+//SDL								4, name_list[index],
+//SDL								-1);
 		}
 
 		/* Is there an equipped object ? */
@@ -134,14 +136,14 @@ void fill_equipment(context_t * context)
 				if(!read_string(ITEM_TABLE,equipped_name,&equipped_icon_name,ITEM_ICON,NULL)) {
 					werr(LOGDEV,"Can't read object %s icon in equippment slot %s",equipped_name,name);
 				} else {
-					icon = imageDB_get_widget(context,equipped_icon_name);
-					icon_pixbuf = gdk_pixbuf_animation_get_static_image(gtk_image_get_animation(GTK_IMAGE(icon)));
-					gtk_widget_destroy(icon);
+//SDL					icon = imageDB_get_widget(context,equipped_icon_name);
+//SDL					icon_pixbuf = gdk_pixbuf_animation_get_static_image(gtk_image_get_animation(GTK_IMAGE(icon)));
+//SDL					gtk_widget_destroy(icon);
 
-					gtk_list_store_set (equipment_list_store, &iter,
-										2, equipped_text,
-										3, icon_pixbuf,
-										-1);
+//SDL					gtk_list_store_set (equipment_list_store, &iter,
+//SDL										2, equipped_text,
+//SDL										3, icon_pixbuf,
+//SDL										-1);
 				}
 
 			}

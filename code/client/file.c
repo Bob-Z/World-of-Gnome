@@ -47,7 +47,7 @@ int create_directory(gchar * filename)
 
 
 /* return 0 on success */
-int file_add(gchar * data,guint32 command_size,gchar ** out_filename)
+int file_add(context_t * context,gchar * data,guint32 command_size)
 {
 	/* Get the data from the network frame */
 	gchar * ptr = data;
@@ -94,25 +94,9 @@ int file_add(gchar * data,guint32 command_size,gchar ** out_filename)
 	wlog(LOGDEBUG,"write file %s",full_name);
 
 	/* Update the image DB */
-	GdkPixbufAnimation * pixbuf = gdk_pixbuf_animation_new_from_file(full_name,NULL);
-	if( pixbuf != NULL ) {
-		/* Check for this file in the imageDB */
-		GtkWidget * image = imageDB_check_widget(file_name);
-		if( image != NULL ) {
-			/* The image exists, update the pixbuf */
-			gdk_threads_enter();
-			gtk_image_set_from_animation(GTK_IMAGE(image),pixbuf);
-			gdk_threads_leave();
-		}
-		g_object_unref(pixbuf);
-	}
+	image_DB_update(context,file_name);
 
-	if( out_filename != NULL ) {
-		*out_filename = file_name;
-	} else {
-		g_free(file_name);
-	}
-
+	g_free(file_name);
 	g_free(full_name);
 	return 0;
 }
