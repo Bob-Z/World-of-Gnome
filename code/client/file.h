@@ -17,6 +17,6 @@
    Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
-int file_add(gchar * data,guint32 command_size,gchar ** out_filename);
+int file_add(context_t * context,gchar * data,guint32 command_size);
 void file_clean(context_t *);
 int create_directory(gchar * filename);

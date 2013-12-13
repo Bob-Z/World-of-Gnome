@@ -23,6 +23,7 @@ When a file is received from the server, the parser's thread check the image dat
 
 #include <gtk/gtk.h>
 #include "../common/common.h"
+#include "anim.h"
 
 gboolean updated_media = FALSE;
 
@@ -35,7 +36,37 @@ static void free_key(gpointer data)
 
 static void free_value(gpointer data)
 {
+	anim_t * a;
+	int i;
+
+	a = (anim_t*)data;
+
+	if(a->tex) {
+		for(i=0;i<a->num_frame;i++) {
+			SDL_DestroyTexture(a->tex[i]);
+		}
+		free(a->tex);
+	}
+
 	g_free(data);
+}
+
+static anim_t * default_anim(context_t * ctx)
+{
+	anim_t * anim;
+
+	anim = malloc(sizeof(anim_t));
+
+	anim->num_frame = 1;
+	anim->tex = malloc(sizeof(SDL_Texture*));
+	anim->tex[0] = SDL_CreateTexture(ctx->render, SDL_PIXELFORMAT_ABGR8888, SDL_TEXTUREACCESS_STATIC, 1,1);
+	anim->current_frame = 0;
+	anim->w = 1;
+	anim->h = 1;
+	anim->delay = 0;
+	anim->prev_time = 0;
+
+	return anim;
 }
 
 void imageDB_init()
@@ -44,16 +75,16 @@ void imageDB_init()
 	imageDB = g_hash_table_new_full(g_str_hash,g_str_equal, free_key, free_value);
 }
 
-void imageDB_add_file(context_t * context, gchar * filename, GtkWidget * widget)
+void imageDB_add_file(context_t * context, gchar * filename, anim_t * anim)
 {
+#if 0
 	if( g_hash_table_lookup(imageDB, filename) ) {
 		return;
 	}
+#endif
 
 	gchar * name = g_strdup(filename);
-	GtkWidget ** w = g_malloc(sizeof(GtkWidget *));
-	*w = widget;
-	g_hash_table_replace(imageDB, name, w);
+	g_hash_table_replace(imageDB, name, anim);
 
 	/* request an update to the server */
 	network_send_req_file(context,filename);
@@ -61,57 +92,51 @@ void imageDB_add_file(context_t * context, gchar * filename, GtkWidget * widget)
 
 /* Return a copy of the image which must be destroyed (gtk_widget_destroy) */
 /* image_name is the image file name without any path (e.g. : marquee.jpg) */
-GtkWidget * imageDB_get_widget(context_t * context, const gchar * image_name)
+anim_t * imageDB_get_anim(context_t * context, const gchar * image_name)
 {
-	GtkWidget ** w;
+	anim_t * anim;
 	gchar * tmp;
 	gchar * filename;
-	GdkPixbufAnimation * pixbuf;
-	GtkWidget *new_widget;
 
 	filename = g_strconcat( IMAGE_TABLE, "/", image_name , NULL);
-	w = g_hash_table_lookup(imageDB, filename);
-	if( w != NULL ) {
+	anim = g_hash_table_lookup(imageDB, filename);
+	if( anim != NULL ) {
 		g_free(filename);
-		return gtk_image_new_from_animation(gtk_image_get_animation(GTK_IMAGE(*w)));
+		return anim_copy(anim);
 	}
 
 	/* The image was not in the imageDB */
 	/* try to read the file currently available */
 	tmp = g_strconcat( g_getenv("HOME"),"/", base_directory, "/", IMAGE_TABLE, "/",  image_name , NULL);
-	pixbuf = gdk_pixbuf_animation_new_from_file(tmp,NULL);
-	if( pixbuf == NULL ) {
+	anim = anim_load(context,tmp);
+	if( anim == NULL ) {
 		/* Use the default image */
-		g_free(tmp);
-		tmp = g_strconcat( g_getenv("HOME"),"/", base_directory, "/", IMAGE_TABLE, "/",  DEFAULT_IMAGE_FILE , NULL);
-		pixbuf = gdk_pixbuf_animation_new_from_file(tmp,NULL);
+		return default_anim(context);
 	}
 	g_free(tmp);
 
-	new_widget = gtk_image_new_from_animation(pixbuf);
-
 	/* Set image_name in the imageDB to be updated when ready */
-	imageDB_add_file(context, filename, new_widget);
+	imageDB_add_file(context, filename, anim);
 
 	/* return a copy of the default image file */
-	return gtk_image_new_from_animation(gtk_image_get_animation(GTK_IMAGE(new_widget)));
+	return anim_copy(anim);
 }
 
 /* return NULL if filename is NOT in the DB
-   else return the widget coresponding to this
+   else return the anim coresponding to this
    file (not of copy of it !) */
 /* image_name is the image file name without any path (e.g. : marquee.jpg) */
-GtkWidget * imageDB_check_widget(gchar * image_name)
+anim_t * imageDB_check_anim(gchar * image_name)
 {
-	GtkWidget ** w;
+	anim_t * anim;
 	gchar * name;
 
 	name =  g_strconcat( IMAGE_TABLE, "/", image_name , NULL);
 
-	w = g_hash_table_lookup(imageDB, name);
+	anim = g_hash_table_lookup(imageDB, name);
 	g_free(name);
-	if( w != NULL ) {
-		return *w;
+	if( anim != NULL ) {
+		return anim;
 	}
 
 	return NULL;
@@ -125,6 +150,8 @@ gboolean image_DB_update(context_t * context,gchar * filename)
 	gchar * full_name;
 	gchar * image_name = filename;
 	gboolean updated = FALSE;
+	anim_t * anim;
+	anim_t * old_anim;
 
 	/* search the / chararcter */
 	while( image_name[0] != '/' && image_name[0] != 0) {
@@ -140,22 +167,18 @@ gboolean image_DB_update(context_t * context,gchar * filename)
 
 	full_name = g_strconcat( g_getenv("HOME"),"/", base_directory, "/",filename, NULL);
 
-	GdkPixbufAnimation * pixbuf = gdk_pixbuf_animation_new_from_file(full_name,NULL);
-	if( pixbuf ) {
+	anim = anim_load(context,full_name);
+	if( anim ) {
 		updated = TRUE;
-		/* It is actually an image, so try to update the widget DB */
-		GtkWidget * image = imageDB_check_widget(image_name);
-		if( image != NULL ) {
-			/* The image exists in the DB, update the pixbuf */
-			gdk_threads_enter();
-			gtk_image_set_from_animation(GTK_IMAGE(image),pixbuf);
-			gdk_threads_leave();
+		/* It is actually an image, so try to update the anim DB */
+		old_anim = imageDB_check_anim(image_name);
+		if( old_anim != NULL ) {
+			/* The anim exists in the DB, update the anim */
+			imageDB_add_file(context,filename,anim);
 		}
-		g_object_unref(pixbuf);
 	}
 
 	g_free(full_name);
 
 	return updated;
 }
-
