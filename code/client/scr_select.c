@@ -59,7 +59,7 @@ item_t * scr_select_compose(context_t * context)
 	int x = 0;
 	const char * marquee_name;
 	static int max_h = 0;
-	static int init = 0;
+	static int init = 1;
 
 	wlog(LOGDEBUG,"Composing select character screen\n");
 
