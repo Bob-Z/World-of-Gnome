@@ -49,6 +49,9 @@ void context_init(context_t * context)
 	context->hostname = NULL;
 	context->send_thread = NULL;
 
+	context->render = NULL;
+	context->window = NULL;
+
 	context->character_name = NULL;
 	context->map = NULL;
 	context->map_x = -1;

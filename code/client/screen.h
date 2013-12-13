@@ -17,17 +17,11 @@
    Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
-#include <gtk/gtk.h>
+#include "item.h"
 #include "../common/common.h"
 
-extern GtkWidget *             textview;
-extern GtkTextBuffer *         textbuffer;
+#define SCREEN_SELECT 0
+#define SCREEN_PLAY 1
 
-void textview_add_line(gchar * string)
-{
-
-//SDL	GtkTextIter iter;
-
-//SDL	gtk_text_buffer_get_start_iter(textbuffer,&iter);
-//SDL	gtk_text_buffer_insert(textbuffer,&iter,string,-1);
-}
+void screen_display(context_t * ctx);
+void screen_compose();

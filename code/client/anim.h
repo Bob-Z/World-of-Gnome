@@ -17,17 +17,23 @@
    Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
-#include <gtk/gtk.h>
+#ifndef ANIM_H
+#define ANIM_H
+
+#include <SDL2/SDL.h>
 #include "../common/common.h"
 
-extern GtkWidget *             textview;
-extern GtkTextBuffer *         textbuffer;
+typedef struct {
+	int num_frame;
+	SDL_Texture ** tex;
+	int current_frame;
+	int w; // width
+	int h; // height
+	Uint32 delay; //delay between 2 frame in millisecond
+	Uint32 prev_time; //time when the previous anim frame was displayed
+} anim_t;
 
-void textview_add_line(gchar * string)
-{
-
-//SDL	GtkTextIter iter;
-
-//SDL	gtk_text_buffer_get_start_iter(textbuffer,&iter);
-//SDL	gtk_text_buffer_insert(textbuffer,&iter,string,-1);
-}
+anim_t * anim_load(context_t * ctx, const char * filename);
+void anim_reset_anim(anim_t * anim);
+anim_t * anim_copy(anim_t * src);
+#endif

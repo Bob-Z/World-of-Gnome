@@ -26,6 +26,7 @@
 extern GtkWidget *             inventory_list;
 GtkTreePath * selected_inventory_item_path = NULL;
 
+#if 0
 static void get_selection(GtkIconView *icon_view,GtkTreePath *path,gpointer data)
 {
 	gtk_tree_path_free(selected_inventory_item_path);
@@ -36,6 +37,7 @@ static void get_selection(GtkIconView *icon_view,GtkTreePath *path,gpointer data
 		selected_inventory_item_path = NULL;
 	}
 }
+#endif
 
 /****************************
 get_selected_inventory_item
@@ -43,21 +45,22 @@ need to free the returned string
 ****************************/
 gchar * get_selected_inventory_item()
 {
-	GtkTreeModel * model;
-	GtkTreeIter iter;
+//SDL	GtkTreeModel * model;
+//SDL	GtkTreeIter iter;
 	gchar * item_name;
 
+	item_name=NULL;
 	/* Get the selection path */
-	gtk_icon_view_selected_foreach(GTK_ICON_VIEW(inventory_list),get_selection,NULL);
+//SDL	gtk_icon_view_selected_foreach(GTK_ICON_VIEW(inventory_list),get_selection,NULL);
 	if( selected_inventory_item_path == NULL ) {
 		return NULL;
 	}
 
-	model = gtk_icon_view_get_model(GTK_ICON_VIEW(inventory_list));
-	if(!gtk_tree_model_get_iter(model,&iter,selected_inventory_item_path)) {
-		return NULL;
-	}
-	gtk_tree_model_get (model,&iter,3,&item_name,-1);
+//SDL	model = gtk_icon_view_get_model(GTK_ICON_VIEW(inventory_list));
+//SDL	if(!gtk_tree_model_get_iter(model,&iter,selected_inventory_item_path)) {
+//SDL		return NULL;
+//SDL	}
+//SDL	gtk_tree_model_get (model,&iter,3,&item_name,-1);
 
 	return g_strdup(item_name);
 }
@@ -69,24 +72,24 @@ void fill_inventory(context_t * context)
 	gchar ** item_list;
 	const gchar * value;
 	gint i=0;
-	GtkWidget * icon;
-	GdkPixbuf * icon_pixbuf;
+//SDL	GtkWidget * icon;
+//SDL	GdkPixbuf * icon_pixbuf;
 	gchar * label;
 	gchar * description = NULL;
-	GtkListStore * inventory_list_store;
-	GtkTreeIter iter;
+//SDL	GtkListStore * inventory_list_store;
+//SDL	GtkTreeIter iter;
 	gchar * new_item;
 
 	/* Get the selection path */
-	gtk_icon_view_selected_foreach(GTK_ICON_VIEW(inventory_list),get_selection,NULL);
+//SDL	gtk_icon_view_selected_foreach(GTK_ICON_VIEW(inventory_list),get_selection,NULL);
 	/* clear the view */
-	inventory_list_store=GTK_LIST_STORE(gtk_icon_view_get_model(GTK_ICON_VIEW(inventory_list)));
-	gtk_list_store_clear(inventory_list_store);
+//SDL	inventory_list_store=GTK_LIST_STORE(gtk_icon_view_get_model(GTK_ICON_VIEW(inventory_list)));
+//SDL	gtk_list_store_clear(inventory_list_store);
 
 	/* set-up the column */
-	gtk_icon_view_set_text_column(GTK_ICON_VIEW(inventory_list),0);
-	gtk_icon_view_set_tooltip_column(GTK_ICON_VIEW(inventory_list),1);
-	gtk_icon_view_set_pixbuf_column(GTK_ICON_VIEW(inventory_list),2);
+//SDL	gtk_icon_view_set_text_column(GTK_ICON_VIEW(inventory_list),0);
+//SDL	gtk_icon_view_set_tooltip_column(GTK_ICON_VIEW(inventory_list),1);
+//SDL	gtk_icon_view_set_pixbuf_column(GTK_ICON_VIEW(inventory_list),2);
 
 	/* read data from file */
 	if(!read_list(CHARACTER_TABLE,context->id,&item_list, CHARACTER_KEY_INVENTORY,NULL)) {
@@ -107,25 +110,25 @@ void fill_inventory(context_t * context)
 		}
 
 		if(!read_string(ITEM_TABLE,item_list[i],&value,ITEM_ICON,NULL)) {
-			gtk_list_store_append (inventory_list_store, &iter);
-			gtk_list_store_set (inventory_list_store, &iter,
-								0, label,
-								1, description,
-								3, item_list[i],
-								-1);
+//SDL			gtk_list_store_append (inventory_list_store, &iter);
+//SDL			gtk_list_store_set (inventory_list_store, &iter,
+//SDL								0, label,
+//SDL								1, description,
+//SDL								3, item_list[i],
+//SDL								-1);
 
 		} else {
-			icon = imageDB_get_widget(context,value);
-			icon_pixbuf = gdk_pixbuf_animation_get_static_image(gtk_image_get_animation(GTK_IMAGE(icon)));
-			gtk_widget_destroy(icon);
+//SDL			icon = imageDB_get_widget(context,value);
+//SDL			icon_pixbuf = gdk_pixbuf_animation_get_static_image(gtk_image_get_animation(GTK_IMAGE(icon)));
+//SDL			gtk_widget_destroy(icon);
 
-			gtk_list_store_append (inventory_list_store, &iter);
-			gtk_list_store_set (inventory_list_store, &iter,
-								0, label,
-								1, description,
-								2, icon_pixbuf,
-								3, item_list[i],
-								-1);
+//SDL			gtk_list_store_append (inventory_list_store, &iter);
+//SDL			gtk_list_store_set (inventory_list_store, &iter,
+//SDL								0, label,
+//SDL								1, description,
+//SDL								2, icon_pixbuf,
+//SDL								3, item_list[i],
+//SDL								-1);
 
 		}
 
@@ -143,7 +146,7 @@ void fill_inventory(context_t * context)
 	}
 
 	if( selected_inventory_item_path ) {
-		gtk_icon_view_select_path(GTK_ICON_VIEW(inventory_list),selected_inventory_item_path);
+//SDL		gtk_icon_view_select_path(GTK_ICON_VIEW(inventory_list),selected_inventory_item_path);
 	}
 
 	new_item = get_selected_inventory_item();

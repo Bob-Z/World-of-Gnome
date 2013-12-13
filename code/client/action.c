@@ -61,8 +61,10 @@ void update_action_bar(context_t * context, GtkWidget * bar)
 	gint index = 0;
 	const gchar * text;
 	const gchar * icon;
+#if 0
 	GtkWidget * image_widget;
 	GtkToolItem * item;
+#endif
 
 	/* Read action list for current user */
 	if(!read_list(CHARACTER_TABLE,context->id,&action_list,CHARACTER_KEY_ACTION,NULL)) {
@@ -107,6 +109,8 @@ void update_action_bar(context_t * context, GtkWidget * bar)
 		}
 
 		/* load image */
+// hidden code durign passage to SDL 2 
+#if 0
 		image_widget = imageDB_get_widget(context, icon);
 
 		item = gtk_tool_button_new(image_widget,action_list[index]);
@@ -115,6 +119,7 @@ void update_action_bar(context_t * context, GtkWidget * bar)
 		gtk_toolbar_insert(GTK_TOOLBAR(bar),item,0);
 
 		index++;
+#endif
 	}
 
 	if( save_list ) {
