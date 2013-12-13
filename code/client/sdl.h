@@ -43,10 +43,10 @@ void sdl_set_pixel(SDL_Surface *surface, int x, int y, Uint32 R, Uint32 G, Uint3
 void sdl_mouse_manager(SDL_Event * event, item_t * item_list);
 void sdl_screen_manager(context_t * ctx,SDL_Event * event);
 void sdl_loop_manager();
-void sdl_blit_frame(context_t * ctx,anim_t * anim, SDL_Rect * rect, int frame_num);
-int sdl_blit_anim(context_t * ctx,anim_t * anim, SDL_Rect * rect, int start, int end);
-int sdl_blit_item(context_t * ctx,item_t * item);
-void sdl_blit_item_list(context_t * ctx,item_t * item_list);
+void sdl_blit_frame(context_t * ctx,anim_t * anim, SDL_Rect * rect, int frame_num,int x,int y);
+int sdl_blit_anim(context_t * ctx,anim_t * anim, SDL_Rect * rect, int start, int end,int x,int y);
+int sdl_blit_item(context_t * ctx,item_t * item,int x,int y);
+void sdl_blit_item_list(context_t * ctx,item_t * item_list,int x,int y);
 void sdl_keyboard_init(char * string, void (*cb)(void*arg));
 char * sdl_keyboard_get_buf();
 void sdl_keyboard_manager(SDL_Event * event);
