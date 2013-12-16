@@ -28,6 +28,7 @@
 #include "anim.h"
 #include "item.h"
 #include "sdl.h"
+#include "screen.h"
 
 #define BORDER 20
 #define FONT "/usr/share/fonts/truetype/ubuntu-font-family/Ubuntu-C.ttf"
@@ -44,6 +45,7 @@ static pthread_mutex_t character_mutex = PTHREAD_MUTEX_INITIALIZER;
 static character_t * character_list = NULL;
 static int character_num = 0;
 static item_t * item_list = NULL;
+static character_t * current_character = NULL;
 
 static void cb_left_click(void * arg)
 {
@@ -52,6 +54,27 @@ static void cb_left_click(void * arg)
 	sdl_set_virtual_x(item->rect.x + item->rect.w/2);
 	sdl_set_virtual_y(item->rect.y + item->rect.h/2);
 }
+
+static void cb_right_click(void * arg)
+{
+	context_t * ctx = (context_t*)arg;
+
+	ctx->character_name = current_character->name;
+	ctx->type = current_character->type;
+	ctx->id = current_character->id;
+
+	screen_set_screen(SCREEN_PLAY);
+
+	screen_compose();
+}
+
+static void cb_over(void * arg)
+{
+	character_t * c = (character_t*)arg;
+
+	current_character = c;
+}
+
 /**********************************
 Compose the character select screen
 **********************************/
@@ -98,6 +121,8 @@ item_t * scr_select_compose(context_t * context)
 		item_init(&item_list[i*3]);
 		item_set_anim(&item_list[i*3],x,max_h/2-character_list[i].anim->h/2,character_list[i].anim);
 		item_set_click_left(&item_list[i*3],cb_left_click,(void *)&item_list[i*3]);
+		item_set_click_right(&item_list[i*3],cb_right_click,(void *)context);
+		item_set_over(&item_list[i*3],cb_over,(void *)character_list[i].id);
 
 		x += character_list[i].anim->w + BORDER;
 		/* character name */
