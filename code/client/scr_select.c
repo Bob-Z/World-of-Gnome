@@ -61,6 +61,8 @@ static void cb_right_click(void * arg)
 
 	ctx->id = strdup(current_character->id);
 
+	file_clean(ctx);
+
 	screen_set_screen(SCREEN_PLAY);
 
 	screen_compose();
