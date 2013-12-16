@@ -146,7 +146,7 @@ anim_t * anim_load(context_t * ctx, const char * filename)
                                         pFrameRGB->data,
                                         pFrameRGB->linesize);
 
-				anim->tex[i] = SDL_CreateTexture(ctx->render, SDL_PIXELFORMAT_ABGR8888, SDL_TEXTUREACCESS_STREAMING, pCodecCtx->width,pCodecCtx->height);
+				anim->tex[i] = SDL_CreateTexture(ctx->render, SDL_PIXELFORMAT_ABGR8888, SDL_TEXTUREACCESS_STATIC, pCodecCtx->width,pCodecCtx->height);
 				if( anim->tex[i] == NULL ) {
 					werr(LOGDEV,"SDL_CreateTexture error: %s\n",SDL_GetError());
 				}
