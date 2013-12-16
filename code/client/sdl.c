@@ -25,8 +25,14 @@ static char keyboard_buf[2048];
 static unsigned int keyboard_index = 0;
 static void (*keyboard_cb)(void * arg) = NULL;
 
+#define VIRTUAL_ANIM_DURATION 500
 static int virtual_x = 0;
 static int virtual_y = 0;
+static int old_vx = 0;
+static int old_vy = 0;
+static int current_vx = 0;
+static int current_vy = 0;
+static Uint32 virtual_tick = 0;
 
 //You must SDL_LockSurface(surface); then SDL_UnlockSurface(surface); before calling this function
 void sdl_set_pixel(SDL_Surface *surface, int x, int y, Uint32 R, Uint32 G, Uint32 B, Uint32 A)
@@ -76,10 +82,11 @@ static void get_virtual(context_t * ctx,int * vx, int * vy)
 	int sy;
 
 	SDL_GetRendererOutputSize(ctx->render,&sx,&sy);
-	*vx = -virtual_x+(sx/2);
-	*vy = -virtual_y+(sy/2);
+	*vx = (sx/2)-current_vx;
+	*vy = (sy/2)-current_vy;
 
 printf("virtual x %d %d \n",virtual_x,virtual_y);
+printf("current virtual x %d %d \n",current_vx,current_vy);
 printf("sx %d %d \n",sx,sy);
 printf("vx %d %d \n",*vx,*vy);
 }
@@ -234,6 +241,19 @@ void sdl_loop_manager()
 	if( timer < old_timer + FRAME_DELAY ) {
 		SDL_Delay(old_timer + FRAME_DELAY - timer);
 	}
+
+	timer = SDL_GetTicks();
+	if( virtual_tick + VIRTUAL_ANIM_DURATION > timer ) {
+		current_vx = (int)((float)old_vx + (float)( virtual_x - old_vx ) * (float)(timer - virtual_tick) / (float)VIRTUAL_ANIM_DURATION);
+		current_vy = (int)((float)old_vy + (float)( virtual_y - old_vy ) * (float)(timer - virtual_tick) / (float)VIRTUAL_ANIM_DURATION);
+	}
+	else {
+		old_vx = virtual_x;
+		current_vx = virtual_x;
+
+		old_vy = virtual_y;
+		current_vy = virtual_y;
+	}
 }
 
 void sdl_blit_frame(context_t * ctx,anim_t * anim, SDL_Rect * rect, int frame_num)
@@ -382,9 +402,17 @@ void sdl_blit_to_screen(context_t * ctx)
 
 void sdl_set_virtual_x(int x)
 {
-	virtual_x = x;
+	if( x != virtual_x ) {
+		old_vx = current_vx;
+		virtual_x = x;
+		virtual_tick = SDL_GetTicks();
+	}
 }
 void sdl_set_virtual_y(int y)
 {
-	virtual_y = y;
+	if( y != virtual_y ) {
+		old_vy = current_vy;
+		virtual_y = y;
+		virtual_tick = SDL_GetTicks();
+	}
 }
