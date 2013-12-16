@@ -59,9 +59,7 @@ static void cb_right_click(void * arg)
 {
 	context_t * ctx = (context_t*)arg;
 
-	ctx->character_name = current_character->name;
-	ctx->type = current_character->type;
-	ctx->id = current_character->id;
+	ctx->id = strdup(current_character->id);
 
 	screen_set_screen(SCREEN_PLAY);
 
@@ -122,7 +120,7 @@ item_t * scr_select_compose(context_t * context)
 		item_set_anim(&item_list[i*3],x,max_h/2-character_list[i].anim->h/2,character_list[i].anim);
 		item_set_click_left(&item_list[i*3],cb_left_click,(void *)&item_list[i*3]);
 		item_set_click_right(&item_list[i*3],cb_right_click,(void *)context);
-		item_set_over(&item_list[i*3],cb_over,(void *)character_list[i].id);
+		item_set_over(&item_list[i*3],cb_over,(void *)&character_list[i]);
 
 		x += character_list[i].anim->w + BORDER;
 		/* character name */
