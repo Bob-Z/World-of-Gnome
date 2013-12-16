@@ -62,8 +62,6 @@ gboolean parse_incoming_data(context_t * context, guint32 command, guint32 comma
 	case CMD_SEND_FILE :
 		wlog(LOGDEBUG,"Received CMD_SEND_FILE");
 		file_add(context,data,command_size);
-
-		/* Asynchronous update of screens */
 		screen_compose();
 		break;
 	case CMD_SEND_USER_CHARACTER :
@@ -74,7 +72,6 @@ gboolean parse_incoming_data(context_t * context, guint32 command, guint32 comma
 	case CMD_SEND_CONTEXT :
 		wlog(LOGDEBUG,"Received CMD_SEND_CONTEXT");
 		context_add_or_update_from_network_frame(context,data);
-		//redraw_window();
 		screen_compose();
 		break;
 	case CMD_SEND_TEXT :
@@ -84,7 +81,6 @@ gboolean parse_incoming_data(context_t * context, guint32 command, guint32 comma
 	case CMD_SEND_ENTRY :
 		wlog(LOGDEBUG,"Received CMD_SEND_ENTRY");
 		if( entry_update(data) != -1 ) {
-			//redraw_window();
 			screen_compose();
 		}
 		break;
