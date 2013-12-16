@@ -19,13 +19,14 @@
 
 #include "sdl.h"
 
+#define VIRTUAL_ANIM_DURATION 200
+
 static int fullscreen = 0;
 
 static char keyboard_buf[2048];
 static unsigned int keyboard_index = 0;
 static void (*keyboard_cb)(void * arg) = NULL;
 
-#define VIRTUAL_ANIM_DURATION 500
 static int virtual_x = 0;
 static int virtual_y = 0;
 static int old_vx = 0;
@@ -54,6 +55,11 @@ void sdl_init(context_t * context)
 		exit(EXIT_FAILURE);
 	}
 
+	if (TTF_Init() == -1){
+		werr(LOGUSER,"TTF init failed: %s.\n",SDL_GetError());
+		exit(EXIT_FAILURE);
+	}
+
 	atexit(sdl_cleanup);
 
 	context->window = SDL_CreateWindow("World of Gnome",
@@ -62,13 +68,13 @@ void sdl_init(context_t * context)
 								 DEFAULT_SCREEN_W, DEFAULT_SCREEN_H,
 								 SDL_WINDOW_RESIZABLE);
 	if( context->window == NULL) {
-		printf("SDL window init failed: %s.\n",SDL_GetError());
+		werr(LOGUSER,"SDL window init failed: %s.\n",SDL_GetError());
 		exit(EXIT_FAILURE);
 	}
 
 	context->render = SDL_CreateRenderer(context->window, -1, 0);
 	if( context->render == NULL) {
-		printf("SDL renderer init failed: %s\n",SDL_GetError());
+		werr(LOGUSER,"SDL renderer init failed: %s\n",SDL_GetError());
 		exit(EXIT_FAILURE);
 	}
 
@@ -84,11 +90,6 @@ static void get_virtual(context_t * ctx,int * vx, int * vy)
 	SDL_GetRendererOutputSize(ctx->render,&sx,&sy);
 	*vx = (sx/2)-current_vx;
 	*vy = (sy/2)-current_vy;
-
-printf("virtual x %d %d \n",virtual_x,virtual_y);
-printf("current virtual x %d %d \n",current_vx,current_vy);
-printf("sx %d %d \n",sx,sy);
-printf("vx %d %d \n",*vx,*vy);
 }
 void sdl_mouse_manager(context_t * ctx, SDL_Event * event, item_t * item_list)
 {
@@ -256,7 +257,7 @@ void sdl_loop_manager()
 	}
 }
 
-void sdl_blit_frame(context_t * ctx,anim_t * anim, SDL_Rect * rect, int frame_num)
+void sdl_blit_tex(context_t * ctx,SDL_Texture * tex, SDL_Rect * rect)
 {
 	SDL_Rect r;
         int vx;
@@ -269,8 +270,8 @@ void sdl_blit_frame(context_t * ctx,anim_t * anim, SDL_Rect * rect, int frame_nu
 	r.x = rect->x + vx;
 	r.y = rect->y + vy;
 
-	if( anim ) {
-		if( SDL_RenderCopy(ctx->render,anim->tex[frame_num],NULL,&r) < 0) {
+	if( tex ) {
+		if( SDL_RenderCopy(ctx->render,tex,NULL,&r) < 0) {
 			werr(LOGDEV,"SDL_RenderCopy error\n");
 		}
 	}
@@ -280,7 +281,7 @@ int sdl_blit_anim(context_t * ctx,anim_t * anim, SDL_Rect * rect, int start, int
 {
 	Uint32 time = SDL_GetTicks();
 
-	sdl_blit_frame(ctx,anim,rect,anim->current_frame);
+	sdl_blit_tex(ctx,anim->tex[anim->current_frame],rect);
 
 	if( anim->prev_time == 0 ) {
 		anim->prev_time = time;
@@ -304,14 +305,45 @@ int sdl_blit_anim(context_t * ctx,anim_t * anim, SDL_Rect * rect, int start, int
 	return 0;
 }
 
+void sdl_print_item(context_t * ctx,item_t * item)
+{
+	SDL_Surface * surf;
+	SDL_Color bg={0,0,0};
+	SDL_Color fg={0xff,0xff,0xff};
+	SDL_Rect r;
+
+	/* Get center of item */
+        r.x = item->rect.x + (item->rect.w/2);
+        r.y = item->rect.y + (item->rect.h/2);
+
+	/* Get top/left of text */
+	TTF_SizeText(item->font, item->string, &r.w, &r.h);
+	r.x = r.x-(r.w/2);
+	r.y = r.y-(r.h/2);
+
+	if(item->str_tex == NULL ) {
+		surf = TTF_RenderText_Blended(item->font, item->string, fg);
+		item->str_tex=SDL_CreateTextureFromSurface(ctx->render,surf);
+		SDL_FreeSurface(surf);
+	}
+
+	sdl_blit_tex(ctx,item->str_tex,&r);
+}
+
 int sdl_blit_item(context_t * ctx,item_t * item)
 {
 
-	if( item->frame_normal == -1 ) {
-		return sdl_blit_anim(ctx,item->anim,&item->rect,item->anim_start,item->anim_end);
-	} else {
-		sdl_blit_frame(ctx,item->anim,&item->rect,item->current_frame);
+	if(item->anim) {
+		if( item->frame_normal == -1 ) {
+			sdl_blit_anim(ctx,item->anim,&item->rect,item->anim_start,item->anim_end);
+		} else {
+			sdl_blit_tex(ctx,item->anim->tex[item->frame_normal],&item->rect);
+		}
 	}
+
+	if( item->font != NULL && item->string != NULL ) {
+                sdl_print_item(ctx,item);
+        }
 
 	return 0;
 }
