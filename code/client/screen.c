@@ -21,6 +21,7 @@
 #include "sdl.h"
 #include "screen.h"
 #include "scr_select.h"
+#include "scr_play.h"
 
 static int screen_end = -1;
 static item_t * item_list = NULL;
@@ -39,11 +40,11 @@ static void screen_select_compose(context_t * context)
 
 static void screen_select_play(context_t * context)
 {
-//	item_t * list;
+	item_t * list;
 
-//	list = scr_play_compose(context_t * context);
+	list = scr_play_compose(context);
 
-//	item_list = list;
+	item_list = list;
 }
 
 /***********************************************
@@ -111,4 +112,9 @@ void screen_display(context_t * ctx)
 	}
 
 	return;
+}
+
+void screen_set_screen(int screen)
+{
+	current_screen = screen;
 }

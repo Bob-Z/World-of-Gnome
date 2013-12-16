@@ -97,6 +97,7 @@ void sdl_mouse_manager(context_t * ctx, SDL_Event * event, item_t * item_list)
 	int i;
 	int vx;
 	int vy;
+	item_t * I;
 
 	if(item_list == NULL) {
 		return;
@@ -104,88 +105,60 @@ void sdl_mouse_manager(context_t * ctx, SDL_Event * event, item_t * item_list)
 
 	get_virtual(ctx,&vx,&vy);
 
-	switch (event->type) {
-	case SDL_MOUSEMOTION:
 #if 0
-		printf("Mouse moved by %d,%d to (%d,%d)\n",
-			   event->motion.xrel, event->motion.yrel,
-			   event->motion.x, event->motion.y);
+	printf("Mouse moved by %d,%d to (%d,%d)\n",
+			event->motion.xrel, event->motion.yrel,
+			event->motion.x, event->motion.y);
 #endif
-		rect.x = event->motion.x - vx;
-		rect.y = event->motion.y - vy;
-//			printf("orig coord = %d,%d \n",rect.x,rect.y);
-		i=0;
-		do {
-			item_list[i].current_frame = item_list[i].frame_normal;
-			if( (item_list[i].rect.x < rect.x) &&
-					((item_list[i].rect.x+item_list[i].rect.w) > rect.x) &&
-					(item_list[i].rect.y < rect.y) &&
-					((item_list[i].rect.y+item_list[i].rect.h) > rect.y) ) {
-				item_list[i].current_frame = item_list[i].frame_over;
-				if( item_list[i].over ) {
-					item_list[i].over(item_list[i].over_arg);
-				}
-			}
-			if(item_list[i].clicked) {
-				item_list[i].current_frame = item_list[i].frame_click;
-			}
-			i++;
-		}
-		while(!item_list[i-1].last);
-
-		break;
-	case SDL_MOUSEBUTTONDOWN:
+	rect.x = event->motion.x - vx;
+	rect.y = event->motion.y - vy;
 #if 0
-		printf("Mouse button %d pressed at (%d,%d)\n",
-			   event->button.button, event->button.x, event->button.y);
+	printf("orig coord = %d,%d \n",rect.x,rect.y);
 #endif
-		rect.x = event->button.x - vx;
-		rect.y = event->button.y - vy;
-//			printf("orig coord = %d,%d \n",rect.x,rect.y);
-		i=0;
-		do {
-			if( (item_list[i].rect.x < rect.x) &&
-					((item_list[i].rect.x+item_list[i].rect.w) > rect.x) &&
-					(item_list[i].rect.y < rect.y) &&
-					((item_list[i].rect.y+item_list[i].rect.h) > rect.y) ) {
-				if( item_list[i].click_left && event->button.button == SDL_BUTTON_LEFT) {
-					item_list[i].current_frame=item_list[i].frame_click;
-					item_list[i].clicked=1;
-				}
-				if( item_list[i].click_right && event->button.button == SDL_BUTTON_RIGHT) {
-					item_list[i].current_frame=item_list[i].frame_click;
-					item_list[i].clicked=1;
-				}
+	i=0;
+	do {
+		I = &item_list[i];
+		I->current_frame = I->frame_normal;
+		if( (I->rect.x < rect.x) &&
+				((I->rect.x+I->rect.w) > rect.x) &&
+				(I->rect.y < rect.y) &&
+				((I->rect.y+I->rect.h) > rect.y) ) {
+			switch (event->type) {
+				case SDL_MOUSEMOTION:
+					I->current_frame = I->frame_over;
+					if( I->over ) {
+						I->over(I->over_arg);
+					}
+					break;
+				case SDL_MOUSEBUTTONDOWN:
+					I->current_frame = I->frame_click;
+					if( I->click_left && event->button.button == SDL_BUTTON_LEFT) {
+						I->current_frame=I->frame_click;
+						I->clicked=1;
+					}
+					if( I->click_right && event->button.button == SDL_BUTTON_RIGHT) {
+						I->current_frame=I->frame_click;
+						I->clicked=1;
+					}
+					break;
+				case SDL_MOUSEBUTTONUP:
+					I->clicked=0;
+					I->current_frame = I->frame_normal;
+					if( I->click_left && event->button.button == SDL_BUTTON_LEFT) {
+						I->click_left(I->click_left_arg);
+					}
+					if( I->click_right && event->button.button == SDL_BUTTON_RIGHT) {
+						I->click_right(I->click_right_arg);
+					}
+					break;
 			}
-			i++;
 		}
-		while(!item_list[i-1].last);
-
-		break;
-	case SDL_MOUSEBUTTONUP:
-		rect.x = event->button.x - vx;
-		rect.y = event->button.y - vy;
-		i=0;
-		do {
-			item_list[i].clicked=0;
-			item_list[i].current_frame = item_list[i].frame_normal;
-			if( (item_list[i].rect.x < rect.x) &&
-					((item_list[i].rect.x+item_list[i].rect.w) > rect.x) &&
-					(item_list[i].rect.y < rect.y) &&
-					((item_list[i].rect.y+item_list[i].rect.h) > rect.y) ) {
-				if( item_list[i].click_left && event->button.button == SDL_BUTTON_LEFT) {
-					item_list[i].click_left(item_list[i].click_left_arg);
-				}
-				if( item_list[i].click_right && event->button.button == SDL_BUTTON_RIGHT) {
-					item_list[i].click_right(item_list[i].click_right_arg);
-				}
-			}
-			i++;
+		if(I->clicked) {
+			I->current_frame = I->frame_click;
 		}
-		while(!item_list[i-1].last);
-
-		break;
+		i++;
 	}
+	while(!item_list[i-1].last);
 }
 
 /* Take care of system's windowing event */
@@ -308,7 +281,7 @@ int sdl_blit_anim(context_t * ctx,anim_t * anim, SDL_Rect * rect, int start, int
 void sdl_print_item(context_t * ctx,item_t * item)
 {
 	SDL_Surface * surf;
-	SDL_Color bg={0,0,0};
+//	SDL_Color bg={0,0,0};
 	SDL_Color fg={0xff,0xff,0xff};
 	SDL_Rect r;
 

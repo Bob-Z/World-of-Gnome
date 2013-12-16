@@ -18,11 +18,7 @@
 */
 
 #include "item.h"
-#include "../common/common.h"
 
-#define SCREEN_SELECT 0
-#define SCREEN_PLAY 1
+item_t * scr_play_compose(context_t * context);
+//void scr_select_add_user_character(context_t * context, gchar * data);
 
-void screen_display(context_t * ctx);
-void screen_compose();
-void screen_set_screen(int screen);

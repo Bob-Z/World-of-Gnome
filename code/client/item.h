@@ -59,6 +59,7 @@ void item_set_string(item_t * item,const char * string);
 void item_set_geometry(item_t * item,int x, int y, int w, int h);
 void item_set_anim_start(item_t * item, int start_frame);
 void item_set_anim_end(item_t * item, int end_frame);
+void item_set_font(item_t * item, TTF_Font * font);
 void item_set_last(item_t * item,int i);
 
 #endif
