@@ -107,7 +107,7 @@ static void compose_map(context_t * ctx)
 /**********************************
 Compose the character select screen
 **********************************/
-item_t * scr_play_compose(context_t * context)
+item_t * scr_play_compose(context_t * ctx)
 {
 	wlog(LOGDEBUG,"Composing play screen\n");
 
@@ -117,15 +117,18 @@ item_t * scr_play_compose(context_t * context)
 		num_item = 0;
 	}
 
-	if(context->map == NULL ) {
-		if(!context_update_from_file(context)) {
+	if(ctx->map == NULL ) {
+		if(!context_update_from_file(ctx)) {
 			return NULL;
 		}
 	}
 
-	compose_map(context);
+	compose_map(ctx);
 
 	item_set_last(&item_list[num_item-1],1);
+
+	sdl_set_virtual_x(ctx->pos_x * ctx->tile_x - ctx->tile_x/2);
+	sdl_set_virtual_y(ctx->pos_y * ctx->tile_y - ctx->tile_y/2);
 #if 0
 	pthread_mutex_lock(&character_mutex);
 
