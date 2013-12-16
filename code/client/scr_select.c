@@ -30,6 +30,8 @@
 #include "sdl.h"
 
 #define BORDER 20
+#define FONT "/usr/share/fonts/truetype/ubuntu-font-family/Ubuntu-C.ttf"
+#define FONT_SIZE 30
 
 typedef struct {
 	char * id;
@@ -73,7 +75,6 @@ item_t * scr_select_compose(context_t * context)
 	}
 
 	pthread_mutex_lock(&character_mutex);
-	item_list = malloc(character_num*sizeof(item_t));
 
 	/* Load all anim and compute the max height */
 	for(i=0;i<character_num;i++) {
@@ -89,19 +90,34 @@ item_t * scr_select_compose(context_t * context)
 		}
 	}
 
+	item_list = malloc(character_num*sizeof(item_t)*3);
+
+	/* Create item list */
 	for(i=0;i<character_num;i++) {
-		item_init(&item_list[i]);
-		item_set_string(&item_list[i],character_list[i].name);
-		item_set_anim(&item_list[i],x,max_h/2-character_list[i].anim->h/2,character_list[i].anim);
-		item_set_click_left(&item_list[i],cb_left_click,(void *)&item_list[i]);
+		/* Character picture */
+		item_init(&item_list[i*3]);
+		item_set_anim(&item_list[i*3],x,max_h/2-character_list[i].anim->h/2,character_list[i].anim);
+		item_set_click_left(&item_list[i*3],cb_left_click,(void *)&item_list[i*3]);
 
 		x += character_list[i].anim->w + BORDER;
+		/* character name */
+		item_init(&item_list[i*3+1]);
+		item_set_string(&item_list[i*3+1],character_list[i].name);
+		item_set_font(&item_list[i*3+1],TTF_OpenFont(FONT, FONT_SIZE));
+		/* display string just above the picture */
+		item_set_frame(&item_list[i*3+1],item_list[i*3].rect.x + item_list[i*3].rect.w/2, item_list[i*3].rect.y-FONT_SIZE/2,NULL);
+
+		/* character type */
+		item_init(&item_list[i*3+2]);
+		item_set_string(&item_list[i*3+2],character_list[i].type);
+		item_set_font(&item_list[i*3+2],TTF_OpenFont(FONT, FONT_SIZE));
+		/* display string just below the picture */
+		item_set_frame(&item_list[i*3+2],item_list[i*3].rect.x + item_list[i*3].rect.w/2, item_list[i*3].rect.y+item_list[i*3].rect.h+FONT_SIZE/2,NULL);
 	}
-	item_set_last(&item_list[i-1],1);
+	item_set_last(&item_list[(i*3)-1],1);
 
 	if(init) {
-		sdl_set_virtual_x(character_list[0].anim->w/2);
-		sdl_set_virtual_y(character_list[0].anim->h/2);
+		cb_left_click(&item_list[0]);
 		init = 0;
 	}
 

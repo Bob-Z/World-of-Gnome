@@ -21,14 +21,15 @@
 #define ITEM_H
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 #include "anim.h"
 
 typedef struct {
 	SDL_Rect rect;
 	anim_t * anim;
-	int current_frame;
 	int anim_start;
 	int anim_end;
+	int current_frame;
 	int frame_normal; // if -1 it's an animation
 	int frame_over;
 	int frame_click;
@@ -40,6 +41,8 @@ typedef struct {
 	void (*over)(void * arg); //callback on mouse over this item
 	void * over_arg;
 	const char * string;		// string centered on item
+	TTF_Font * font;
+	SDL_Texture * str_tex;
 	int last;	// Last element in a list of item
 } item_t;
 
