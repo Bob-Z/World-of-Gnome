@@ -105,6 +105,34 @@ static void compose_map(context_t * ctx)
 }
 
 /**********************************
+Compose sprites
+**********************************/
+static void compose_sprite(context_t * context)
+{
+	const char * sprite_name = NULL;
+	anim_t * anim;
+	context_t * ctx;
+
+	ctx = context;
+        while(ctx != NULL ) {
+		/* compute the sprite file name */
+		if(!read_string(CHARACTER_TABLE,ctx->id,&sprite_name,CHARACTER_KEY_SPRITE,NULL)) {
+			werr(LOGUSER,"Can't read sprite name for \"%s\" type",context->type);
+			break;;
+		}
+
+		anim = imageDB_get_anim(ctx,sprite_name);
+
+		num_item++;
+		item_list = realloc(item_list,sizeof(item_t)*num_item);
+		item_init(&item_list[num_item-1]);
+		item_set_anim(&item_list[num_item-1],ctx->pos_x*ctx->tile_x,ctx->pos_y*ctx->tile_y,anim);
+
+		ctx = ctx->next;
+	}
+}
+
+/**********************************
 Compose the character select screen
 **********************************/
 item_t * scr_play_compose(context_t * ctx)
@@ -124,6 +152,8 @@ item_t * scr_play_compose(context_t * ctx)
 	}
 
 	compose_map(ctx);
+
+	compose_sprite(ctx);
 
 	item_set_last(&item_list[num_item-1],1);
 
