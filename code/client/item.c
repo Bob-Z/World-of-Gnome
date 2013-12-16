@@ -40,6 +40,8 @@ void item_init(item_t * item)
 	item->over=NULL;
 	item->over_arg=NULL;
 	item->string=NULL;
+	item->font=NULL;
+	item->str_tex=NULL;
 	item->last=0;
 }
 
@@ -104,6 +106,10 @@ void item_set_over(item_t * item,void (*over)(void * arg),void * over_arg)
 void item_set_string(item_t * item,const char * string)
 {
 	item->string = string;
+	if(item->str_tex) {
+		SDL_DestroyTexture(item->str_tex);
+		item->str_tex = NULL;
+	}
 }
 void item_set_geometry(item_t * item,int x, int y, int w, int h)
 {
@@ -115,4 +121,13 @@ void item_set_geometry(item_t * item,int x, int y, int w, int h)
 void item_set_last(item_t * item,int i)
 {
 	item->last = i;
+}
+
+void item_set_font(item_t * item, TTF_Font * font)
+{
+	item->font = font;
+	if(item->str_tex) {
+		SDL_DestroyTexture(item->str_tex);
+		item->str_tex = NULL;
+	}
 }

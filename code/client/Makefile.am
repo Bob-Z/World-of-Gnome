@@ -1,9 +1,6 @@
 bin_PROGRAMS=wog_client
 wog_client_SOURCES=main.c parser.c win_login.c file.c imageDB.c client.c action.c inventory.c textview.c equipment.c sdl.c item.c anim.c scr_select.c screen.c
 
-AV_LIB=-lavcodec -lavformat -lswscale
-SDL_LIB=`sdl2-config --libs`
-
 wog_client_LDADD=../common/libcommon.a /usr/lib/libconfig.a $(ADD_LIB)
 
 wog_clientdir = $(datadir)/wog/client
