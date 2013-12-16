@@ -113,6 +113,8 @@ static void compose_sprite(context_t * context)
 	anim_t * anim;
 	context_t * ctx;
 
+	context_lock_list();
+
 	ctx = context;
         while(ctx != NULL ) {
 		/* compute the sprite file name */
@@ -130,6 +132,8 @@ static void compose_sprite(context_t * context)
 
 		ctx = ctx->next;
 	}
+
+	context_unlock_list();
 }
 
 /**********************************
