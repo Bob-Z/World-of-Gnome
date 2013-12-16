@@ -31,6 +31,78 @@
 
 //static pthread_mutex_t character_mutex = PTHREAD_MUTEX_INITIALIZER;
 static item_t * item_list = NULL;
+static int num_item = 0;
+
+/**********************************
+Compose the characters map
+**********************************/
+static void compose_map(context_t * ctx)
+{
+	int i;
+	char ** value = NULL;
+	int x = 0;
+        int y = 0;
+	const char * tile_image;
+	anim_t * anim;
+
+	/* description of the map */
+        if( ctx->map_x == -1 ) {
+                if(!read_int(MAP_TABLE, ctx->map, &i,MAP_KEY_SIZE_X,NULL)) {
+                        return;
+                }
+                context_set_map_x(ctx, i);
+        }
+        if( ctx->map_y == -1 ) {
+                if(!read_int(MAP_TABLE, ctx->map, &i,MAP_KEY_SIZE_Y,NULL)) {
+                        return;
+                }
+                context_set_map_y( ctx,i);
+        }
+        if( ctx->tile_x == -1 ) {
+                if(!read_int(MAP_TABLE, ctx->map, &i,MAP_KEY_TILE_SIZE_X,NULL)){
+                        return;
+                }
+                context_set_tile_x( ctx, i);
+        }
+        if( ctx->tile_y == -1 ) {
+                if(!read_int(MAP_TABLE, ctx->map,&i,MAP_KEY_TILE_SIZE_Y,NULL)) {
+                        return;
+                }
+                context_set_tile_y( ctx, i);
+        }
+        if(!read_list(MAP_TABLE, ctx->map, &value,MAP_KEY_SET,NULL)) {
+                return;
+        }
+
+
+	/* Parse map string */
+	i=0;
+        while(value[i] != NULL ) {
+		if(!read_string(TILE_TABLE,value[i],&tile_image,TILE_KEY_IMAGE,NULL)) {
+                break;
+		}
+#if 0
+		/* Save description for caller */
+		read_string(TILE_TABLE,tile_name,description,TILE_KEY_TEXT,NULL);
+#endif
+		anim = imageDB_get_anim(ctx,tile_image);
+//TODO Free anim when freeing the item list 
+
+		num_item++;
+		item_list = realloc(item_list,sizeof(item_t)*num_item);
+		item_init(&item_list[num_item-1]);
+		item_set_anim(&item_list[num_item-1],x*ctx->tile_x,y*ctx->tile_y,anim);
+		x++;
+		if(x>=ctx->map_x) {
+			x=0;
+			y++;
+		}
+
+		i++;
+        }
+
+        g_free(value);
+}
 
 /**********************************
 Compose the character select screen
@@ -42,8 +114,18 @@ item_t * scr_play_compose(context_t * context)
 	if(item_list) {
 		free(item_list);
 		item_list = NULL;
+		num_item = 0;
 	}
 
+	if(context->map == NULL ) {
+		if(!context_update_from_file(context)) {
+			return NULL;
+		}
+	}
+
+	compose_map(context);
+
+	item_set_last(&item_list[num_item-1],1);
 #if 0
 	pthread_mutex_lock(&character_mutex);
 

@@ -493,6 +493,10 @@ int read_int(const gchar * table, const gchar * file, int * res, ...)
 	int ret;
 	va_list ap;
 
+	if( file == NULL ) {
+		werr(LOGDEV,"\"file\" input is empty\n");
+		return 0;
+	}
 	g_static_mutex_lock(&file_mutex);
 	va_start(ap, res);
 	ret = __read_int(table, file, res, ap);
@@ -548,6 +552,10 @@ int read_string(const gchar * table, const gchar * file, const gchar ** res, ...
 	int ret;
 	va_list ap;
 
+	if( file == NULL ) {
+		werr(LOGDEV,"\"file\" input is empty\n");
+		return 0;
+	}
 	g_static_mutex_lock(&file_mutex);
 	va_start(ap, res);
 	ret = __read_string(table, file, res, ap);
@@ -611,6 +619,10 @@ int read_list_index(const gchar * table, const gchar * file, const gchar ** res,
 	int ret;
 	va_list ap;
 
+	if( file == NULL ) {
+		werr(LOGDEV,"\"file\" input is empty\n");
+		return 0;
+	}
 	g_static_mutex_lock(&file_mutex);
 	va_start(ap, index);
 	ret = __read_list_index(table,file, res,index, ap);
@@ -682,6 +694,10 @@ int read_list(const gchar * table, const gchar * file, gchar *** res, ...)
 	int ret;
 	va_list ap;
 
+	if( file == NULL ) {
+		werr(LOGDEV,"\"file\" input is empty\n");
+		return 0;
+	}
 	g_static_mutex_lock(&file_mutex);
 	va_start(ap, res);
 	ret = __read_list(table, file, res, ap);
