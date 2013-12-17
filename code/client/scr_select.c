@@ -59,7 +59,8 @@ static void cb_right_click(void * arg)
 {
 	context_t * ctx = (context_t*)arg;
 
-	ctx->id = strdup(current_character->id);
+	context_set_id(ctx,current_character->id);
+	context_set_character_name(ctx, current_character->name);
 
 	file_clean(ctx);
 
