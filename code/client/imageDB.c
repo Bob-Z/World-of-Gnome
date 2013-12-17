@@ -115,7 +115,7 @@ anim_t * imageDB_get_anim(context_t * context, const gchar * image_name)
 	/* The image was not in the imageDB */
 	/* try to read the file currently available */
 	tmp = g_strconcat( g_getenv("HOME"),"/", base_directory, "/", IMAGE_TABLE, "/",  image_name , NULL);
-	anim = anim_load(context,tmp);
+	anim = anim_load(tmp);
 	if( anim == NULL ) {
 		wlog(LOGDEBUG,"Returning default anim for %s",filename);
 		g_free(tmp);
@@ -179,7 +179,7 @@ gboolean image_DB_update(context_t * context,gchar * filename)
 
 	full_name = g_strconcat( g_getenv("HOME"),"/", base_directory, "/",filename, NULL);
 
-	anim = anim_load(context,full_name);
+	anim = anim_load(full_name);
 	if( anim ) {
 		updated = TRUE;
 		/* It is actually an image, so try to update the anim DB */

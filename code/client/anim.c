@@ -22,8 +22,9 @@
 #include <libavformat/avformat.h>
 #include <libswscale/swscale.h>
 
-anim_t * anim_load(context_t * ctx, const char * filename)
+anim_t * anim_load(const char * filename)
 {
+	context_t * ctx = context_get_list_first(); //Player's context
 	anim_t * anim = NULL;
 	anim_t * ret = NULL;
 	AVFormatContext *pFormatCtx = NULL;
