@@ -24,7 +24,7 @@
 #include <SDL2/SDL_ttf.h>
 #include "anim.h"
 
-typedef struct {
+typedef struct item {
 	SDL_Rect rect;
 	anim_t * anim;
 	int anim_start;
@@ -43,9 +43,11 @@ typedef struct {
 	const char * string;		// string centered on item
 	TTF_Font * font;
 	SDL_Texture * str_tex;
-	int last;	// Last element in a list of item
+	struct item * next;	// next element in a list of item
 } item_t;
 
+item_t * item_list_add(item_t * item_list);
+void item_list_free(item_t * item_list);
 void item_init(item_t * item);
 void item_set_frame(item_t * item, int x, int y,anim_t * anim);
 void item_set_anim(item_t * item, int x, int y,anim_t * anim);
@@ -60,6 +62,5 @@ void item_set_geometry(item_t * item,int x, int y, int w, int h);
 void item_set_anim_start(item_t * item, int start_frame);
 void item_set_anim_end(item_t * item, int end_frame);
 void item_set_font(item_t * item, TTF_Font * font);
-void item_set_last(item_t * item,int i);
 
 #endif
