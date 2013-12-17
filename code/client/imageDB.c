@@ -31,6 +31,9 @@ static GHashTable* imageDB;
 
 static void free_key(gpointer data)
 {
+	char * filename = (char *)data;
+
+	wlog(LOGDEBUG,"Removing image %s",filename);
 	g_free(data);
 }
 
@@ -83,6 +86,8 @@ void imageDB_add_file(context_t * context, gchar * filename, anim_t * anim)
 	}
 #endif
 
+	wlog(LOGDEBUG,"Adding image %s",filename);
+
 	gchar * name = g_strdup(filename);
 	g_hash_table_replace(imageDB, name, anim);
 
@@ -99,8 +104,10 @@ anim_t * imageDB_get_anim(context_t * context, const gchar * image_name)
 	gchar * filename;
 
 	filename = g_strconcat( IMAGE_TABLE, "/", image_name , NULL);
+	wlog(LOGDEBUG,"Get image %s",filename);
 	anim = g_hash_table_lookup(imageDB, filename);
 	if( anim != NULL ) {
+		wlog(LOGDEBUG,"image %s found in DB",filename);
 		g_free(filename);
 		return anim_copy(anim);
 	}
@@ -110,12 +117,17 @@ anim_t * imageDB_get_anim(context_t * context, const gchar * image_name)
 	tmp = g_strconcat( g_getenv("HOME"),"/", base_directory, "/", IMAGE_TABLE, "/",  image_name , NULL);
 	anim = anim_load(context,tmp);
 	if( anim == NULL ) {
+		wlog(LOGDEBUG,"Returning default anim for %s",filename);
+		g_free(tmp);
+		/* request an update to the server */
+		network_send_req_file(context,filename);
 		/* Use the default image */
 		return default_anim(context);
 	}
 	g_free(tmp);
 
 	/* Set image_name in the imageDB to be updated when ready */
+	wlog(LOGDEBUG,"Adding %s to the DB",filename);
 	imageDB_add_file(context, filename, anim);
 
 	/* return a copy of the default image file */
