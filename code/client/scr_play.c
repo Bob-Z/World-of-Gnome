@@ -143,6 +143,8 @@ Compose the character select screen
 **********************************/
 item_t * scr_play_compose(context_t * ctx)
 {
+	static int init = 1;
+
 	wlog(LOGDEBUG,"Composing play screen\n");
 
 	if(item_list) {
@@ -154,6 +156,12 @@ item_t * scr_play_compose(context_t * ctx)
 		if(!context_update_from_file(ctx)) {
 			return NULL;
 		}
+	}
+
+	if(init) {
+		/* Register this character to receive server notifications */
+		network_send_context(ctx);
+		init = 0;
 	}
 
 	compose_map(ctx);
