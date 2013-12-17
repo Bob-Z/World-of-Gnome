@@ -33,7 +33,7 @@ typedef struct {
 	Uint32 prev_time; //time when the previous anim frame was displayed
 } anim_t;
 
-anim_t * anim_load(context_t * ctx, const char * filename);
+anim_t * anim_load(const char * filename);
 void anim_reset_anim(anim_t * anim);
 anim_t * anim_copy(anim_t * src);
 #endif
