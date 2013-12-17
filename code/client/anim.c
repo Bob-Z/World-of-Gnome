@@ -39,7 +39,7 @@ anim_t * anim_load(context_t * ctx, const char * filename)
 	int numBytes;
 	uint8_t *buffer = NULL;
 
-	wlog(LOGDEBUG,"Loading anim: %s\n",filename);
+	wlog(LOGDEBUG,"Loading anim: %s",filename);
 
 	anim = malloc(sizeof(anim_t));
 	memset(anim,0,sizeof(anim_t));
@@ -49,13 +49,13 @@ anim_t * anim_load(context_t * ctx, const char * filename)
 
         // Open video file
         if (avformat_open_input(&pFormatCtx, filename, NULL, NULL) != 0) {
-		werr(LOGDEV,"Cannot open file %s\n",filename);
+		werr(LOGDEV,"Cannot open file %s",filename);
                 goto error;
 	}
 
         // Retrieve stream information
         if (avformat_find_stream_info(pFormatCtx, NULL) < 0) {
-		werr(LOGDEV,"Cannot find stream information for file %s\n",filename);
+		werr(LOGDEV,"Cannot find stream information for file %s",filename);
                 goto error;
 	}
 
@@ -76,7 +76,7 @@ anim_t * anim_load(context_t * ctx, const char * filename)
                 }
 
         if (videoStream == -1) {
-		werr(LOGDEV,"Didn't find a video stream in %s\n",filename);
+		werr(LOGDEV,"Didn't find a video stream in %s",filename);
                 goto error;
 	}
 
@@ -86,13 +86,13 @@ anim_t * anim_load(context_t * ctx, const char * filename)
         // Find the decoder for the video stream
         pCodec = avcodec_find_decoder(pCodecCtx->codec_id);
         if (pCodec == NULL) {
-		werr(LOGDEV,"Unsupported codec for %s\n",filename);
+		werr(LOGDEV,"Unsupported codec for %s",filename);
                 goto error;
 	}
 
         // Open codec
         if (avcodec_open2(pCodecCtx, pCodec, NULL) < 0) {
-		werr(LOGDEV,"Could not open codec for %s\n",filename);
+		werr(LOGDEV,"Could not open codec for %s",filename);
                 goto error;
 	}
 
@@ -102,7 +102,7 @@ anim_t * anim_load(context_t * ctx, const char * filename)
         // Allocate an AVFrame structure
         pFrameRGB = avcodec_alloc_frame();
         if (pFrameRGB == NULL) {
-		werr(LOGDEV,"Could not allocate AVFrame structure for %s\n",filename);
+		werr(LOGDEV,"Could not allocate AVFrame structure for %s",filename);
                 goto error;
 	}
 
@@ -126,7 +126,7 @@ anim_t * anim_load(context_t * ctx, const char * filename)
 	anim->h = pCodecCtx->height;
 
         if (pSwsCtx == NULL) {
-		werr(LOGDEV,"Cannot initialize sws context for %s\n",filename);
+		werr(LOGDEV,"Cannot initialize sws context for %s",filename);
                 goto error;
 	}
 
@@ -148,11 +148,11 @@ anim_t * anim_load(context_t * ctx, const char * filename)
 
 				anim->tex[i] = SDL_CreateTexture(ctx->render, SDL_PIXELFORMAT_ABGR8888, SDL_TEXTUREACCESS_STATIC, pCodecCtx->width,pCodecCtx->height);
 				if( anim->tex[i] == NULL ) {
-					werr(LOGDEV,"SDL_CreateTexture error: %s\n",SDL_GetError());
+					werr(LOGDEV,"SDL_CreateTexture error: %s",SDL_GetError());
 				}
                                 /* Copy decoded bits to render texture */
                                 if (SDL_UpdateTexture(anim->tex[i],NULL,pFrameRGB->data[0],pFrameRGB->linesize[0]) < 0) {
-					werr(LOGDEV,"SDL_UpdateTexture error: %s\n",SDL_GetError());
+					werr(LOGDEV,"SDL_UpdateTexture error: %s",SDL_GetError());
 				}
 				i++;
                         }
