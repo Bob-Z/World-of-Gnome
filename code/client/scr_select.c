@@ -86,7 +86,7 @@ item_t * scr_select_compose(context_t * context)
 	static int max_h = 0;
 	static int init = 1;
 
-	wlog(LOGDEBUG,"Composing select character screen\n");
+	wlog(LOGDEBUG,"Composing select character screen");
 
 	if(character_num==0) {
 		return NULL;
@@ -99,17 +99,17 @@ item_t * scr_select_compose(context_t * context)
 
 	pthread_mutex_lock(&character_mutex);
 
+	wlog(LOGDEBUG,"Composing %d characters",character_num);
+
 	/* Load all anim and compute the max height */
 	for(i=0;i<character_num;i++) {
-		if(character_list[i].anim == NULL ) {
-			/* Compute the marquee file name */
-			if(!read_string(CHARACTER_TABLE,character_list[i].id,&marquee_name,CHARACTER_KEY_MARQUEE,NULL)) {
-				continue;
-			}
-			character_list[i].anim  = imageDB_get_anim(context,marquee_name);
-			if(character_list[i].anim->h > max_h) {
-				max_h = character_list[i].anim->h;
-			}
+		/* Compute the marquee file name */
+		if(!read_string(CHARACTER_TABLE,character_list[i].id,&marquee_name,CHARACTER_KEY_MARQUEE,NULL)) {
+			continue;
+		}
+		character_list[i].anim  = imageDB_get_anim(context,marquee_name);
+		if(character_list[i].anim->h > max_h) {
+			max_h = character_list[i].anim->h;
 		}
 	}
 
@@ -117,8 +117,14 @@ item_t * scr_select_compose(context_t * context)
 
 	/* Create item list */
 	for(i=0;i<character_num;i++) {
-		/* Character picture */
 		item_init(&item_list[i*3]);
+		item_init(&item_list[i*3+1]);
+		item_init(&item_list[i*3+2]);
+
+		if( character_list[i].anim == NULL ) {
+			continue;
+		}
+		/* Character picture */
 		item_set_anim(&item_list[i*3],x,max_h/2-character_list[i].anim->h/2,character_list[i].anim);
 		item_set_click_left(&item_list[i*3],cb_left_click,(void *)&item_list[i*3]);
 		item_set_click_right(&item_list[i*3],cb_right_click,(void *)context);
@@ -126,14 +132,12 @@ item_t * scr_select_compose(context_t * context)
 
 		x += character_list[i].anim->w + BORDER;
 		/* character name */
-		item_init(&item_list[i*3+1]);
 		item_set_string(&item_list[i*3+1],character_list[i].name);
 		item_set_font(&item_list[i*3+1],TTF_OpenFont(FONT, FONT_SIZE));
 		/* display string just above the picture */
 		item_set_frame(&item_list[i*3+1],item_list[i*3].rect.x + item_list[i*3].rect.w/2, item_list[i*3].rect.y-FONT_SIZE/2,NULL);
 
 		/* character type */
-		item_init(&item_list[i*3+2]);
 		item_set_string(&item_list[i*3+2],character_list[i].type);
 		item_set_font(&item_list[i*3+2],TTF_OpenFont(FONT, FONT_SIZE));
 		/* display string just below the picture */
@@ -175,11 +179,13 @@ void scr_select_add_user_character(context_t * context, char * data)
 		character_list[character_num-1].name = strdup(current_string);
 		current_string += strlen(current_string)+1;
 		character_list[character_num-1].anim = NULL;
+
+		wlog(LOGDEBUG,"Character %s / %s /%s added",character_list[character_num-1].id,character_list[character_num-1].type,character_list[character_num-1].name);
 	}
 
 	pthread_mutex_unlock(&character_mutex);
 
-	wlog(LOGDEV,"Received character %s of type %s\n",character_list[character_num-1].name,character_list[character_num-1].type);
+	wlog(LOGDEV,"Received character %s of type %s",character_list[character_num-1].name,character_list[character_num-1].type);
 }
 
 /*************************
