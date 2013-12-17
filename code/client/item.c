@@ -19,6 +19,41 @@
 
 #include "item.h"
 
+item_t * item_list_add(item_t * item_list)
+{
+	item_t * item;
+
+	item = malloc(sizeof(item_t));
+	item_init(item);
+
+	/* add to item list */
+	if(item_list != NULL) {
+		while(item_list->next) {
+			item_list = item_list->next;
+		}
+		item_list->next = item;
+	}
+
+	return item;
+}
+
+static void item_free(item_t * item)
+{
+	free(item->anim);
+	free(item);
+}
+
+void item_list_free(item_t * item_list)
+{
+	if(item_list == NULL) {
+		return;
+	}
+	
+	item_list_free(item_list->next);
+
+	item_free(item_list);
+}
+
 void item_init(item_t * item)
 {
 	item->rect.x=-1;
@@ -42,7 +77,7 @@ void item_init(item_t * item)
 	item->string=NULL;
 	item->font=NULL;
 	item->str_tex=NULL;
-	item->last=0;
+	item->next=NULL;
 }
 
 void item_set_frame(item_t * item, int x, int y,anim_t * anim)
@@ -111,16 +146,13 @@ void item_set_string(item_t * item,const char * string)
 		item->str_tex = NULL;
 	}
 }
+
 void item_set_geometry(item_t * item,int x, int y, int w, int h)
 {
 	item->rect.x=x;
 	item->rect.y=y;
 	item->rect.w=w;
 	item->rect.h=h;
-}
-void item_set_last(item_t * item,int i)
-{
-	item->last = i;
 }
 
 void item_set_font(item_t * item, TTF_Font * font)
