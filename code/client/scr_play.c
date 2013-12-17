@@ -31,7 +31,6 @@
 
 //static pthread_mutex_t character_mutex = PTHREAD_MUTEX_INITIALIZER;
 static item_t * item_list = NULL;
-static int num_item = 0;
 
 /**********************************
 Compose the characters map
@@ -44,6 +43,7 @@ static void compose_map(context_t * ctx)
         int y = 0;
 	const char * tile_image;
 	anim_t * anim;
+	item_t * item;
 
 	/* description of the map */
         if( ctx->map_x == -1 ) {
@@ -85,13 +85,13 @@ static void compose_map(context_t * ctx)
 		/* Save description for caller */
 		read_string(TILE_TABLE,tile_name,description,TILE_KEY_TEXT,NULL);
 #endif
-		anim = imageDB_get_anim(ctx,tile_image);
-//TODO Free anim when freeing the item list 
+		item = item_list_add(item_list);
+		if(item_list == NULL) {
+			item_list = item;
+		}
 
-		num_item++;
-		item_list = realloc(item_list,sizeof(item_t)*num_item);
-		item_init(&item_list[num_item-1]);
-		item_set_anim(&item_list[num_item-1],x*ctx->tile_x,y*ctx->tile_y,anim);
+		anim = imageDB_get_anim(ctx,tile_image);
+		item_set_anim(item,x*ctx->tile_x,y*ctx->tile_y,anim);
 		x++;
 		if(x>=ctx->map_x) {
 			x=0;
@@ -112,6 +112,7 @@ static void compose_sprite(context_t * context)
 	const char * sprite_name = NULL;
 	anim_t * anim;
 	context_t * ctx;
+	item_t * item;
 
 	context_lock_list();
 
@@ -123,12 +124,13 @@ static void compose_sprite(context_t * context)
 			break;;
 		}
 
-		anim = imageDB_get_anim(ctx,sprite_name);
+		item = item_list_add(item_list);
+		if(item_list == NULL) {
+			item_list = item;
+		}
 
-		num_item++;
-		item_list = realloc(item_list,sizeof(item_t)*num_item);
-		item_init(&item_list[num_item-1]);
-		item_set_anim(&item_list[num_item-1],ctx->pos_x*ctx->tile_x,ctx->pos_y*ctx->tile_y,anim);
+		anim = imageDB_get_anim(ctx,sprite_name);
+		item_set_anim(item,ctx->pos_x*ctx->tile_x,ctx->pos_y*ctx->tile_y,anim);
 
 		ctx = ctx->next;
 	}
@@ -144,9 +146,8 @@ item_t * scr_play_compose(context_t * ctx)
 	wlog(LOGDEBUG,"Composing play screen\n");
 
 	if(item_list) {
-		free(item_list);
+		item_list_free(item_list);
 		item_list = NULL;
-		num_item = 0;
 	}
 
 	if(ctx->map == NULL ) {
@@ -158,8 +159,6 @@ item_t * scr_play_compose(context_t * ctx)
 	compose_map(ctx);
 
 	compose_sprite(ctx);
-
-	item_set_last(&item_list[num_item-1],1);
 
 	sdl_set_virtual_x(ctx->pos_x * ctx->tile_x + ctx->tile_x/2);
 	sdl_set_virtual_y(ctx->pos_y * ctx->tile_y + ctx->tile_y/2);

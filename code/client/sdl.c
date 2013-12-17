@@ -94,7 +94,6 @@ static void get_virtual(context_t * ctx,int * vx, int * vy)
 void sdl_mouse_manager(context_t * ctx, SDL_Event * event, item_t * item_list)
 {
 	SDL_Rect rect;
-	int i;
 	int vx;
 	int vy;
 	item_t * I;
@@ -115,9 +114,9 @@ void sdl_mouse_manager(context_t * ctx, SDL_Event * event, item_t * item_list)
 #if 0
 	printf("orig coord = %d,%d \n",rect.x,rect.y);
 #endif
-	i=0;
-	do {
-		I = &item_list[i];
+
+	I = item_list;
+	while(I) {
 		I->current_frame = I->frame_normal;
 		if( (I->rect.x < rect.x) &&
 				((I->rect.x+I->rect.w) > rect.x) &&
@@ -156,9 +155,8 @@ void sdl_mouse_manager(context_t * ctx, SDL_Event * event, item_t * item_list)
 		if(I->clicked) {
 			I->current_frame = I->frame_click;
 		}
-		i++;
+		I = I->next;
 	}
-	while(!item_list[i-1].last);
 }
 
 /* Take care of system's windowing event */
@@ -323,17 +321,13 @@ int sdl_blit_item(context_t * ctx,item_t * item)
 
 void sdl_blit_item_list(context_t * ctx,item_t * list)
 {
-	int i = 0;
+	item_t * item;
 
-	if(list == NULL) {
-		return;
+	item = list;
+	while(item)  {
+		sdl_blit_item(ctx,item);
+		item = item->next;
 	}
-
-	do {
-		sdl_blit_item(ctx,&list[i]);
-		i++;
-	}
-	while(!list[i-1].last);
 }
 
 void sdl_keyboard_init(char * string, void (*cb)(void*arg))

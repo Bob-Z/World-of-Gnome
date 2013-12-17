@@ -85,6 +85,8 @@ item_t * scr_select_compose(context_t * context)
 	const char * marquee_name;
 	static int max_h = 0;
 	static int init = 1;
+	item_t * item;
+	item_t * item_image;
 
 	wlog(LOGDEBUG,"Composing select character screen");
 
@@ -93,7 +95,7 @@ item_t * scr_select_compose(context_t * context)
 	}
 
 	if(item_list) {
-		free(item_list);
+		item_list_free(item_list);
 		item_list = NULL;
 	}
 
@@ -113,39 +115,40 @@ item_t * scr_select_compose(context_t * context)
 		}
 	}
 
-	item_list = malloc(character_num*sizeof(item_t)*3);
-
 	/* Create item list */
 	for(i=0;i<character_num;i++) {
-		item_init(&item_list[i*3]);
-		item_init(&item_list[i*3+1]);
-		item_init(&item_list[i*3+2]);
-
 		if( character_list[i].anim == NULL ) {
 			continue;
 		}
+
 		/* Character picture */
-		item_set_anim(&item_list[i*3],x,max_h/2-character_list[i].anim->h/2,character_list[i].anim);
-		item_set_click_left(&item_list[i*3],cb_left_click,(void *)&item_list[i*3]);
-		item_set_click_right(&item_list[i*3],cb_right_click,(void *)context);
-		item_set_over(&item_list[i*3],cb_over,(void *)&character_list[i]);
+		item = item_list_add(item_list);
+		item_image = item;
+		if(item_list == NULL) {
+			item_list = item;
+		}
+		item_set_anim(item,x,max_h/2-character_list[i].anim->h/2,character_list[i].anim);
+		item_set_click_left(item,cb_left_click,(void *)item);
+		item_set_click_right(item,cb_right_click,(void *)context);
+		item_set_over(item,cb_over,(void *)&character_list[i]);
 
 		x += character_list[i].anim->w + BORDER;
 		/* character name */
-		item_set_string(&item_list[i*3+1],character_list[i].name);
-		item_set_font(&item_list[i*3+1],TTF_OpenFont(FONT, FONT_SIZE));
+		item = item_list_add(item_list);
+		item_set_string(item,character_list[i].name);
+		item_set_font(item,TTF_OpenFont(FONT, FONT_SIZE));
 		/* display string just above the picture */
-		item_set_frame(&item_list[i*3+1],item_list[i*3].rect.x + item_list[i*3].rect.w/2, item_list[i*3].rect.y-FONT_SIZE/2,NULL);
+		item_set_frame(item,item_image->rect.x + item_image->rect.w/2, item_image->rect.y-FONT_SIZE/2,NULL);
 
 		/* character type */
-		item_set_string(&item_list[i*3+2],character_list[i].type);
-		item_set_font(&item_list[i*3+2],TTF_OpenFont(FONT, FONT_SIZE));
+		item = item_list_add(item_list);
+		item_set_string(item,character_list[i].type);
+		item_set_font(item,TTF_OpenFont(FONT, FONT_SIZE));
 		/* display string just below the picture */
-		item_set_frame(&item_list[i*3+2],item_list[i*3].rect.x + item_list[i*3].rect.w/2, item_list[i*3].rect.y+item_list[i*3].rect.h+FONT_SIZE/2,NULL);
+		item_set_frame(item,item_image->rect.x + item_image->rect.w/2, item_image->rect.y+item_image->rect.h+FONT_SIZE/2,NULL);
 	}
-	item_set_last(&item_list[(i*3)-1],1);
 
-	if(init) {
+	if(init && item_list) {
 		cb_left_click(&item_list[0]);
 		init = 0;
 	}
