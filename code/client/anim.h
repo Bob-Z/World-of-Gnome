@@ -35,5 +35,4 @@ typedef struct {
 
 anim_t * anim_load(const char * filename);
 void anim_reset_anim(anim_t * anim);
-anim_t * anim_copy(anim_t * src);
 #endif
