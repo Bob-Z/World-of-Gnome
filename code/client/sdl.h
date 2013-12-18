@@ -37,6 +37,12 @@
 //#define PAL_TO_RGB(x) x.r<<2,x.g<<2,x.b<<2,SDL_OPAQUE
 #define PAL_TO_RGB(x) x.r,x.g,x.b,SDL_OPAQUE
 
+typedef struct keycb {
+        SDL_Scancode code;
+        void (*cb)(void*);
+        struct keycb * next;
+} keycb_t;
+
 void sdl_init(context_t * context);
 void sdl_cleanup(void);
 void sdl_set_pixel(SDL_Surface *surface, int x, int y, Uint32 R, Uint32 G, Uint32 B, Uint32 A);
@@ -54,3 +60,5 @@ void sdl_keyboard_manager(SDL_Event * event);
 void sdl_blit_to_screen(context_t * ctx);
 void sdl_set_virtual_x(int x);
 void sdl_set_virtual_y(int y);
+keycb_t * sdl_add_keycb(SDL_Scancode code,void (*cb)(void*));
+void sdl_free_keycb(keycb_t ** key);
