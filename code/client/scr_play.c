@@ -32,6 +32,33 @@
 //static pthread_mutex_t character_mutex = PTHREAD_MUTEX_INITIALIZER;
 static item_t * item_list = NULL;
 
+//Keynoard callback
+
+static void key_up(void * arg)
+{
+	context_t * ctx = context_get_list_first();
+
+	network_send_action(ctx,"move_up.lua",NULL);
+}
+static void key_down(void * arg)
+{
+	context_t * ctx = context_get_list_first();
+
+	network_send_action(ctx,"move_down.lua",NULL);
+}
+static void key_left(void * arg)
+{
+	context_t * ctx = context_get_list_first();
+
+	network_send_action(ctx,"move_left.lua",NULL);
+}
+static void key_right(void * arg)
+{
+	context_t * ctx = context_get_list_first();
+
+	network_send_action(ctx,"move_right.lua",NULL);
+}
+
 /**********************************
 Compose the characters map
 **********************************/
@@ -174,75 +201,12 @@ item_t * scr_play_compose(context_t * ctx)
 
 	sdl_set_virtual_x(ctx->pos_x * ctx->tile_x + ctx->tile_x/2);
 	sdl_set_virtual_y(ctx->pos_y * ctx->tile_y + ctx->tile_y/2);
-#if 0
-	pthread_mutex_lock(&character_mutex);
 
-	item_list = malloc(character_num*sizeof(item_t)*3);
-
-	/* Create item list */
-	for(i=0;i<character_num;i++) {
-		/* Character picture */
-		item_init(&item_list[i*3]);
-		item_set_anim(&item_list[i*3],x,max_h/2-character_list[i].anim->h/2,character_list[i].anim);
-		item_set_click_left(&item_list[i*3],cb_left_click,(void *)&item_list[i*3]);
-
-		x += character_list[i].anim->w + BORDER;
-		/* character name */
-		item_init(&item_list[i*3+1]);
-		item_set_string(&item_list[i*3+1],character_list[i].name);
-		item_set_font(&item_list[i*3+1],TTF_OpenFont(FONT, FONT_SIZE));
-		/* display string just above the picture */
-		item_set_frame(&item_list[i*3+1],item_list[i*3].rect.x + item_list[i*3].rect.w/2, item_list[i*3].rect.y-FONT_SIZE/2,NULL);
-
-		/* character type */
-		item_init(&item_list[i*3+2]);
-		item_set_string(&item_list[i*3+2],character_list[i].type);
-		item_set_font(&item_list[i*3+2],TTF_OpenFont(FONT, FONT_SIZE));
-		/* display string just below the picture */
-		item_set_frame(&item_list[i*3+2],item_list[i*3].rect.x + item_list[i*3].rect.w/2, item_list[i*3].rect.y+item_list[i*3].rect.h+FONT_SIZE/2,NULL);
-	}
-	item_set_last(&item_list[(i*3)-1],1);
-
-	if(init) {
-		cb_left_click(&item_list[0]);
-		init = 0;
-	}
-
-	pthread_mutex_unlock(&character_mutex);
-#endif
+	sdl_free_keycb(NULL);
+	sdl_add_keycb(SDL_SCANCODE_UP,key_up);
+	sdl_add_keycb(SDL_SCANCODE_DOWN,key_down);
+	sdl_add_keycb(SDL_SCANCODE_LEFT,key_left);
+	sdl_add_keycb(SDL_SCANCODE_RIGHT,key_right);
 
 	return item_list;
 }
-
-/*************************
- add a character to the list
-the data is a list a 3 strings, the first string is the id of the character (its file name) the second one is the type of the character, the third is the name of the character.
-the list ends with an empty string
-*************************/
-#if 0
-void scr_select_add_user_character(context_t * context, char * data)
-{
-	char * current_string = data;
-
-	pthread_mutex_lock(&character_mutex);
-
-	while(current_string[0] != 0) {
-
-		character_num++;
-
-		character_list = realloc(character_list,sizeof(character_t)*character_num);
-
-		character_list[character_num-1].id = strdup(current_string);
-		current_string += strlen(current_string)+1;
-		character_list[character_num-1].type = strdup(current_string);
-		current_string += strlen(current_string)+1;
-		character_list[character_num-1].name = strdup(current_string);
-		current_string += strlen(current_string)+1;
-		character_list[character_num-1].anim = NULL;
-	}
-
-	pthread_mutex_unlock(&character_mutex);
-
-	wlog(LOGDEV,"Received character %s of type %s\n",character_list[character_num-1].name,character_list[character_num-1].type);
-}
-#endif
