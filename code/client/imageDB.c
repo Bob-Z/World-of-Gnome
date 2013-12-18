@@ -104,10 +104,8 @@ anim_t * imageDB_get_anim(context_t * context, const gchar * image_name)
 	gchar * filename;
 
 	filename = g_strconcat( IMAGE_TABLE, "/", image_name , NULL);
-	wlog(LOGDEBUG,"Get image %s",filename);
 	anim = g_hash_table_lookup(imageDB, filename);
 	if( anim != NULL ) {
-		wlog(LOGDEBUG,"image %s found in DB",filename);
 		g_free(filename);
 		return anim_copy(anim);
 	}
