@@ -39,7 +39,6 @@ item_t * item_list_add(item_t * item_list)
 
 static void item_free(item_t * item)
 {
-	free(item->anim);
 	free(item);
 }
 
