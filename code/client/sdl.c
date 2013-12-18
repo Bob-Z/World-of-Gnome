@@ -35,6 +35,8 @@ static int current_vx = 0;
 static int current_vy = 0;
 static Uint32 virtual_tick = 0;
 
+static keycb_t * key_callback = NULL;
+
 //You must SDL_LockSurface(surface); then SDL_UnlockSurface(surface); before calling this function
 void sdl_set_pixel(SDL_Surface *surface, int x, int y, Uint32 R, Uint32 G, Uint32 B, Uint32 A)
 {
@@ -91,6 +93,7 @@ static void get_virtual(context_t * ctx,int * vx, int * vy)
 	*vx = (sx/2)-current_vx;
 	*vy = (sy/2)-current_vy;
 }
+
 void sdl_mouse_manager(context_t * ctx, SDL_Event * event, item_t * item_list)
 {
 	SDL_Rect rect;
@@ -353,9 +356,19 @@ char * sdl_keyboard_get_buf()
 void sdl_keyboard_manager(SDL_Event * event)
 {
 	const Uint8 *keystate;
+	keycb_t * key;
 
 	switch (event->type) {
 	case SDL_KEYDOWN:
+		key = key_callback;
+		if(key) {
+			do {
+				if( event->key.keysym.scancode == key->code) {
+					key->cb(NULL);
+				}
+				key=key->next;
+			} while(key);
+		}
 		if( event->key.keysym.sym == SDLK_RETURN ) {
 			if( keyboard_cb ) {
 				keyboard_cb(NULL);
@@ -414,4 +427,48 @@ void sdl_set_virtual_y(int y)
 		virtual_y = y;
 		virtual_tick = SDL_GetTicks();
 	}
+}
+
+keycb_t * sdl_add_keycb(SDL_Scancode code,void (*cb)(void*))
+{
+	keycb_t * key;
+
+	if(key_callback==NULL) {
+		key = malloc(sizeof(keycb_t));
+		key_callback = key;
+		key->code = code;
+		key->cb = cb;
+		key->next = NULL;
+		return key;
+	}
+	else {
+		key = key_callback;
+		while(key->next != NULL) {
+			key = key->next;
+		}
+		key->next = malloc(sizeof(keycb_t));
+		key = key->next;
+		key->code = code;
+		key->cb = cb;
+		key->next = NULL;
+		return key;
+	}
+}
+
+static void rec_free_keycb(keycb_t * key) {
+	if(key == NULL) {
+                return;
+        }
+
+	if (key->next) {
+		rec_free_keycb(key->next);
+	}
+
+	free(key);
+}
+void sdl_free_keycb(keycb_t ** key)
+{
+	rec_free_keycb(key_callback);
+
+	key_callback = NULL;
 }
