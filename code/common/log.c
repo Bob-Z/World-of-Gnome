@@ -45,7 +45,7 @@ void log_print(char * file,int line,FILE *stream,int level,char * format, ...)
 
 	if(log_level == LOGDEBUG) {
 		clock_gettime(CLOCK_MONOTONIC, &now);
-		fprintf(stream,"%ld.%09ld | %s:%d | %s\n",now.tv_sec,now.tv_nsec,file,line,buf);
+		fprintf(stream,"%ld.%09ld | %10s:%3d | %s\n",now.tv_sec,now.tv_nsec,file,line,buf);
 	} else if(log_level == LOGDEV) {
 		clock_gettime(CLOCK_MONOTONIC, &now);
 		fprintf(stream,"%ld.%09ld | %s\n",now.tv_sec,now.tv_nsec,buf);
