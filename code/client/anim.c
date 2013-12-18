@@ -26,6 +26,10 @@
 
 #define GIF_GCE 0xf9
 
+#define DISPOSE_DO_NOT 1 /* Draw on top of previous image */
+#define DISPOSE_BACKGROUND 2 /* Clean with the background color */
+#define DISPOSE_PREVIOUS 3 /* Restore to previous content */
+
 static anim_t * giflib_load(const char * filename)
 {
 	context_t * ctx = context_get_list_first(); //Player's context
@@ -33,7 +37,7 @@ static anim_t * giflib_load(const char * filename)
 	int i;
 	int j;
 	int transparent;
-	int transparent_color;
+	unsigned char transparent_color;
 	int disposal;
 	int delay;
 	ColorMapObject * global_pal;
@@ -52,7 +56,7 @@ static anim_t * giflib_load(const char * filename)
 	wlog(LOGDEBUG,"Using giflib to decode %s",filename);
 	DGifSlurp(gif);
 
-	wlog(LOGDEBUG,"%d frames %d x %d ",gif->ImageCount, gif->Image.Width, gif->Image.Height);
+	wlog(LOGDEBUG,"%d frames %d x %d ",gif->ImageCount, gif->SWidth, gif->SHeight);
 
 	anim = malloc(sizeof(anim_t));
 	memset(anim,0,sizeof(anim_t));
@@ -63,8 +67,12 @@ static anim_t * giflib_load(const char * filename)
 	anim->h = gif->Image.Height;
 	anim->delay = malloc(sizeof(Uint32) * anim->num_frame);
 
+	surf = SDL_CreateRGBSurface(0,gif->SWidth,gif->SHeight,32,0xff000000,0x00ff0000,0x0000ff00,0x000000ff);
+	memset(surf->pixels,0,gif->SWidth*gif->SHeight*sizeof(Uint32));
+
 	global_pal = gif->SColorMap;
 	for(i=0;i<gif->ImageCount;i++) {
+		wlog(LOGDEBUG,"Image %d : %d x %d; %d x %d",i,gif->SavedImages[i].ImageDesc.Left,gif->SavedImages[i].ImageDesc.Top,gif->SavedImages[i].ImageDesc.Width,gif->SavedImages[i].ImageDesc.Height);
 		/* select palette */
 		pal = global_pal;
 		if( gif->SavedImages[i].ImageDesc.ColorMap ) {
@@ -87,14 +95,15 @@ static anim_t * giflib_load(const char * filename)
 		}
 
 		/* Create surface */
-		surf = SDL_CreateRGBSurface(0,gif->Image.Width,gif->Image.Height,32,0xff000000,0x00ff0000,0x0000ff00,0x000000ff);
+		if(disposal==DISPOSE_BACKGROUND || disposal==DISPOSE_PREVIOUS) {
+			memset(surf->pixels,0,gif->Image.Width*gif->Image.Height*sizeof(Uint32));
+		}
 
 		pix_index = 0;
 		for(y=0;y<gif->Image.Height;y++) {
 			for(x=0;x<gif->Image.Width;x++) {
 				col = gif->SavedImages[i].RasterBits[x+y*gif->Image.Width];
 				if(col == transparent_color && transparent) {
-					((char*)surf->pixels)[pix_index+3] = 0;
 				}
 				else {
 					((char*)surf->pixels)[pix_index+3] = pal->Colors[col].Red;
@@ -108,8 +117,8 @@ static anim_t * giflib_load(const char * filename)
 
 		anim->delay[i] = delay;
 		anim->tex[i] = SDL_CreateTextureFromSurface(ctx->render,surf);
-		SDL_FreeSurface(surf);
 	}
+	SDL_FreeSurface(surf);
 
 	return anim;
 }
