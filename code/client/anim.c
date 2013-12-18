@@ -48,6 +48,11 @@ static anim_t * giflib_load(const char * filename)
 	int col;
 	int pix_index;
 	anim_t * anim;
+	unsigned char bg_color;
+	int left;
+	int top;
+	int width;
+	int height;
 
 	gif = DGifOpenFileName(filename);
 	if(gif == NULL) {
@@ -56,15 +61,17 @@ static anim_t * giflib_load(const char * filename)
 	wlog(LOGDEBUG,"Using giflib to decode %s",filename);
 	DGifSlurp(gif);
 
-	wlog(LOGDEBUG,"%d frames %d x %d ",gif->ImageCount, gif->SWidth, gif->SHeight);
+	bg_color = gif->SBackGroundColor;
+
+	wlog(LOGDEBUG,"%d frames %d x %d bg_color=%d",gif->ImageCount, gif->SWidth, gif->SHeight,bg_color);
 
 	anim = malloc(sizeof(anim_t));
 	memset(anim,0,sizeof(anim_t));
 
 	anim->num_frame = gif->ImageCount;
 	anim->tex = malloc(sizeof(SDL_Texture *) * anim->num_frame);
-	anim->w = gif->Image.Width;
-	anim->h = gif->Image.Height;
+	anim->w = gif->SWidth;
+	anim->h = gif->SHeight;
 	anim->delay = malloc(sizeof(Uint32) * anim->num_frame);
 
 	surf = SDL_CreateRGBSurface(0,gif->SWidth,gif->SHeight,32,0xff000000,0x00ff0000,0x0000ff00,0x000000ff);
@@ -72,7 +79,12 @@ static anim_t * giflib_load(const char * filename)
 
 	global_pal = gif->SColorMap;
 	for(i=0;i<gif->ImageCount;i++) {
-		wlog(LOGDEBUG,"Image %d : %d x %d; %d x %d",i,gif->SavedImages[i].ImageDesc.Left,gif->SavedImages[i].ImageDesc.Top,gif->SavedImages[i].ImageDesc.Width,gif->SavedImages[i].ImageDesc.Height);
+		left = gif->SavedImages[i].ImageDesc.Left;
+		top = gif->SavedImages[i].ImageDesc.Top;
+		width = gif->SavedImages[i].ImageDesc.Width;
+		height = gif->SavedImages[i].ImageDesc.Height;
+
+		wlog(LOGDEBUG,"Image %d : %d x %d; %d x %d",i,left,top,width,height);
 		/* select palette */
 		pal = global_pal;
 		if( gif->SavedImages[i].ImageDesc.ColorMap ) {
@@ -94,15 +106,19 @@ static anim_t * giflib_load(const char * filename)
 			}
 		}
 
-		/* Create surface */
-		if(disposal==DISPOSE_BACKGROUND || disposal==DISPOSE_PREVIOUS) {
-			memset(surf->pixels,0,gif->Image.Width*gif->Image.Height*sizeof(Uint32));
+		/* Prepare surface depending of disposal */
+		if(disposal==DISPOSE_BACKGROUND) {
+			memset(surf->pixels,0,gif->SWidth*gif->SHeight*sizeof(Uint32));
+		}
+		if(disposal==DISPOSE_PREVIOUS) { /* This is probably wrong */
+			memset(surf->pixels,0,gif->SWidth*gif->SHeight*sizeof(Uint32));
 		}
 
-		pix_index = 0;
-		for(y=0;y<gif->Image.Height;y++) {
-			for(x=0;x<gif->Image.Width;x++) {
-				col = gif->SavedImages[i].RasterBits[x+y*gif->Image.Width];
+		/* Fill surface buffer with raster bytes */
+		for(y=0;y<height;y++) {
+			for(x=0;x<width;x++) {
+				pix_index = ((x+left)+(y+top)*gif->SWidth)*4;
+				col = gif->SavedImages[i].RasterBits[(x)+(y)*gif->SavedImages[i].ImageDesc.Width];
 				if(col == transparent_color && transparent) {
 				}
 				else {
@@ -111,7 +127,6 @@ static anim_t * giflib_load(const char * filename)
 					((char*)surf->pixels)[pix_index+1] = pal->Colors[col].Blue;
 					((char*)surf->pixels)[pix_index+0] = 0xFF;
 				}
-				pix_index += 4;
 			}
 		}
 
@@ -119,6 +134,8 @@ static anim_t * giflib_load(const char * filename)
 		anim->tex[i] = SDL_CreateTextureFromSurface(ctx->render,surf);
 	}
 	SDL_FreeSurface(surf);
+
+	DGifCloseFile(gif);
 
 	return anim;
 }
