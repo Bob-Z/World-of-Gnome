@@ -22,7 +22,99 @@
 #include <libavformat/avformat.h>
 #include <libswscale/swscale.h>
 
-anim_t * anim_load(const char * filename)
+#include <gif_lib.h>
+
+#define GIF_GCE 0xf9
+
+static anim_t * giflib_load(const char * filename)
+{
+	context_t * ctx = context_get_list_first(); //Player's context
+	GifFileType * gif;
+	int i;
+	int j;
+	int transparent;
+	int transparent_color;
+	int disposal;
+	int delay;
+	ColorMapObject * global_pal;
+	ColorMapObject * pal;
+	SDL_Surface* surf;
+	int x;
+	int y;
+	int col;
+	int pix_index;
+	anim_t * anim;
+
+	gif = DGifOpenFileName(filename);
+	if(gif == NULL) {
+		return NULL;
+	}
+	wlog(LOGDEBUG,"Using giflib to decode %s",filename);
+	DGifSlurp(gif);
+
+	wlog(LOGDEBUG,"%d frames %d x %d ",gif->ImageCount, gif->Image.Width, gif->Image.Height);
+
+	anim = malloc(sizeof(anim_t));
+	memset(anim,0,sizeof(anim_t));
+
+	anim->num_frame = gif->ImageCount;
+	anim->tex = malloc(sizeof(SDL_Texture *) * anim->num_frame);
+	anim->w = gif->Image.Width;
+	anim->h = gif->Image.Height;
+	anim->delay = malloc(sizeof(Uint32) * anim->num_frame);
+
+	global_pal = gif->SColorMap;
+	for(i=0;i<gif->ImageCount;i++) {
+		/* select palette */
+		pal = global_pal;
+		if( gif->SavedImages[i].ImageDesc.ColorMap ) {
+			pal = gif->SavedImages[i].ImageDesc.ColorMap;
+		}
+		/* GCE */
+		for(j=0;j<gif->SavedImages[i].ExtensionBlockCount;j++) {
+			if(gif->SavedImages[i].ExtensionBlocks[j].Function == GIF_GCE) {
+				transparent = gif->SavedImages[i].ExtensionBlocks[j].Bytes[0] & 0x01;
+				wlog(LOGDEBUG,"transparent : %d",transparent);
+				disposal = (gif->SavedImages[i].ExtensionBlocks[j].Bytes[0] & 28)>>2;
+				wlog(LOGDEBUG,"disposal : %d",disposal);
+				delay = (gif->SavedImages[i].ExtensionBlocks[j].Bytes[1] + gif->SavedImages[i].ExtensionBlocks[j].Bytes[2] * 256)*10;
+				wlog(LOGDEBUG,"delay : %d ms",delay);
+				if(transparent) {
+					transparent_color = gif->SavedImages[i].ExtensionBlocks[j].Bytes[3];
+					wlog(LOGDEBUG,"transparent color : %d",transparent_color);
+				}
+			}
+		}
+
+		/* Create surface */
+		surf = SDL_CreateRGBSurface(0,gif->Image.Width,gif->Image.Height,32,0xff000000,0x00ff0000,0x0000ff00,0x000000ff);
+
+		pix_index = 0;
+		for(y=0;y<gif->Image.Height;y++) {
+			for(x=0;x<gif->Image.Width;x++) {
+				col = gif->SavedImages[i].RasterBits[x+y*gif->Image.Width];
+				if(col == transparent_color && transparent) {
+					((char*)surf->pixels)[pix_index+3] = 0;
+				}
+				else {
+					((char*)surf->pixels)[pix_index+3] = pal->Colors[col].Red;
+					((char*)surf->pixels)[pix_index+2] = pal->Colors[col].Green;
+					((char*)surf->pixels)[pix_index+1] = pal->Colors[col].Blue;
+					((char*)surf->pixels)[pix_index+0] = 0xFF;
+				}
+				pix_index += 4;
+			}
+		}
+
+		anim->delay[i] = delay;
+		anim->tex[i] = SDL_CreateTextureFromSurface(ctx->render,surf);
+		SDL_FreeSurface(surf);
+	}
+
+	return anim;
+}
+
+static anim_t * libav_load(const char * filename)
 {
 	context_t * ctx = context_get_list_first(); //Player's context
 	anim_t * anim = NULL;
@@ -39,6 +131,7 @@ anim_t * anim_load(const char * filename)
 	int frameFinished;
 	int numBytes;
 	uint8_t *buffer = NULL;
+	int delay;
 
 	wlog(LOGDEBUG,"Loading anim: %s",filename);
 
@@ -60,19 +153,20 @@ anim_t * anim_load(const char * filename)
                 goto error;
 	}
 
-
+	wlog(LOGDEBUG,"%d streams in %s",pFormatCtx->nb_streams,filename);
         // Find the first video stream
         videoStream = -1;
         for (i = 0; i < pFormatCtx->nb_streams; i++)
                 if (pFormatCtx->streams[i]->codec->codec_type == AVMEDIA_TYPE_VIDEO) {
                         videoStream = i;
                         /* total stream duration (in nanosecond) / number of image in the stream / 1000 (to get milliseconds */
-                        anim->delay = pFormatCtx->duration / pFormatCtx->streams[i]->duration / 1000;
+                        delay = pFormatCtx->duration / pFormatCtx->streams[i]->duration / 1000;
                         /* If the above doesn't work try with frame_rate : 
                         pFormatCtx->streams[i]->r_frame_rate
                         */
 			anim->num_frame = pFormatCtx->streams[i]->duration;
 			anim->tex = (SDL_Texture**)malloc(anim->num_frame * sizeof(SDL_Texture*));
+			anim->delay = (Uint32*)malloc(anim->num_frame * sizeof(Uint32));
                         break;
                 }
 
@@ -99,7 +193,10 @@ anim_t * anim_load(const char * filename)
 
         // Allocate video frame
         pFrame = avcodec_alloc_frame();
-
+        if (pFrame == NULL) {
+		werr(LOGDEV,"Could not allocate video frame for %s",filename);
+                goto error;
+	}
         // Allocate an AVFrame structure
         pFrameRGB = avcodec_alloc_frame();
         if (pFrameRGB == NULL) {
@@ -147,6 +244,7 @@ anim_t * anim_load(const char * filename)
                                         pFrameRGB->data,
                                         pFrameRGB->linesize);
 
+				anim->delay[i] = delay;
 				anim->tex[i] = SDL_CreateTexture(ctx->render, SDL_PIXELFORMAT_ABGR8888, SDL_TEXTUREACCESS_STATIC, pCodecCtx->width,pCodecCtx->height);
 				if( anim->tex[i] == NULL ) {
 					werr(LOGDEV,"SDL_CreateTexture error: %s",SDL_GetError());
@@ -174,7 +272,7 @@ error:
 			free(anim);
 		}
 	}
-#if 0
+
         // Free the RGB image
 	if(buffer) {
 		av_free(buffer);
@@ -198,7 +296,6 @@ error:
 	if(pFormatCtx) {
 		avformat_close_input(&pFormatCtx);
 	}
-#endif
 
 	return ret;
 }
@@ -223,4 +320,17 @@ anim_t * anim_copy(anim_t * src)
 	new_anim->prev_time = src->prev_time;
 
 	return new_anim;
+}
+
+anim_t * anim_load(const char * filename)
+{
+	anim_t * ret;
+
+	ret = giflib_load(filename);
+
+	if(ret == NULL) {
+		ret = libav_load(filename);
+	}
+
+	return ret;
 }

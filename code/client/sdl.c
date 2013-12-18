@@ -257,7 +257,7 @@ int sdl_blit_anim(context_t * ctx,anim_t * anim, SDL_Rect * rect, int start, int
 	if( anim->prev_time == 0 ) {
 		anim->prev_time = time;
 	}
-	if( time >= anim->prev_time + anim->delay) {
+	if( time >= anim->prev_time + anim->delay[anim->current_frame]) {
 		(anim->current_frame)++;
 		anim->prev_time = time;
 		if( end != -1 ) {

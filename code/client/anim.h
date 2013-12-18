@@ -29,8 +29,8 @@ typedef struct {
 	int current_frame;
 	int w; // width
 	int h; // height
-	Uint32 delay; //delay between 2 frame in millisecond
-	Uint32 prev_time; //time when the previous anim frame was displayed
+	Uint32 * delay; //delay between each frame in millisecond
+	Uint32 prev_time; //time to show the current_frame
 } anim_t;
 
 anim_t * anim_load(const char * filename);
