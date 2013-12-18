@@ -29,6 +29,8 @@ gboolean updated_media = FALSE;
 
 static GHashTable* imageDB;
 
+static anim_t * def_anim = NULL;
+
 static void free_key(gpointer data)
 {
 	char * filename = (char *)data;
@@ -56,20 +58,21 @@ static void free_value(gpointer data)
 
 static anim_t * default_anim(context_t * ctx)
 {
-	anim_t * anim;
+	if(def_anim == NULL) {
+		def_anim = malloc(sizeof(anim_t));
 
-	anim = malloc(sizeof(anim_t));
+		def_anim->num_frame = 1;
+		def_anim->tex = malloc(sizeof(SDL_Texture*));
+		def_anim->tex[0] = SDL_CreateTexture(ctx->render, SDL_PIXELFORMAT_ABGR8888, SDL_TEXTUREACCESS_STATIC, 1,1);
+		def_anim->current_frame = 0;
+		def_anim->w = 1;
+		def_anim->h = 1;
+		def_anim->delay = malloc(sizeof(Uint32));;
+		def_anim->delay[0] = 0;
+		def_anim->prev_time = 0;
+	}
 
-	anim->num_frame = 1;
-	anim->tex = malloc(sizeof(SDL_Texture*));
-	anim->tex[0] = SDL_CreateTexture(ctx->render, SDL_PIXELFORMAT_ABGR8888, SDL_TEXTUREACCESS_STATIC, 1,1);
-	anim->current_frame = 0;
-	anim->w = 1;
-	anim->h = 1;
-	anim->delay = 0;
-	anim->prev_time = 0;
-
-	return anim;
+	return def_anim;
 }
 
 void imageDB_init()
@@ -107,7 +110,7 @@ anim_t * imageDB_get_anim(context_t * context, const gchar * image_name)
 	anim = g_hash_table_lookup(imageDB, filename);
 	if( anim != NULL ) {
 		g_free(filename);
-		return anim_copy(anim);
+		return anim;
 	}
 
 	/* The image was not in the imageDB */
@@ -129,7 +132,7 @@ anim_t * imageDB_get_anim(context_t * context, const gchar * image_name)
 	imageDB_add_file(context, filename, anim);
 
 	/* return a copy of the default image file */
-	return anim_copy(anim);
+	return anim;
 }
 
 /* return NULL if filename is NOT in the DB
