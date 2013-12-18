@@ -130,7 +130,11 @@ static void compose_sprite(context_t * context)
 		}
 
 		anim = imageDB_get_anim(ctx,sprite_name);
-		item_set_anim(item,ctx->pos_x*ctx->tile_x,ctx->pos_y*ctx->tile_y,anim);
+		item_set_anim(
+			item,
+			ctx->pos_x*ctx->tile_x - (anim->w-ctx->tile_x)/2,
+			ctx->pos_y*ctx->tile_y - (anim->h-ctx->tile_y)/2,
+			anim);
 
 		ctx = ctx->next;
 	}
