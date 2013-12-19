@@ -32,6 +32,8 @@
 
 #define DEFAULT_DELAY 40
 
+extern GStaticMutex file_mutex;
+
 static anim_t * giflib_load(const char * filename)
 {
 	context_t * ctx = context_get_list_first(); //Player's context
@@ -56,12 +58,15 @@ static anim_t * giflib_load(const char * filename)
 	int width;
 	int height;
 
+	g_static_mutex_lock(&file_mutex);
 	gif = DGifOpenFileName(filename);
 	if(gif == NULL) {
+		g_static_mutex_unlock(&file_mutex);
 		return NULL;
 	}
 	wlog(LOGDEBUG,"Using giflib to decode %s",filename);
 	DGifSlurp(gif);
+	g_static_mutex_unlock(&file_mutex);
 
 	bg_color = gif->SBackGroundColor;
 
@@ -164,13 +169,13 @@ static anim_t * libav_load(const char * filename)
 	uint8_t *buffer = NULL;
 	int delay;
 
-	wlog(LOGDEBUG,"Loading anim: %s",filename);
-
 	anim = malloc(sizeof(anim_t));
 	memset(anim,0,sizeof(anim_t));
 
         // Register all formats and codecs
         av_register_all();
+
+	g_static_mutex_lock(&file_mutex);
 
         // Open video file
         if (avformat_open_input(&pFormatCtx, filename, NULL, NULL) != 0) {
@@ -184,7 +189,7 @@ static anim_t * libav_load(const char * filename)
                 goto error;
 	}
 
-	wlog(LOGDEBUG,"%d streams in %s",pFormatCtx->nb_streams,filename);
+	wlog(LOGDEBUG,"Loading %d streams in %s",pFormatCtx->nb_streams,filename);
         // Find the first video stream
         videoStream = -1;
         for (i = 0; i < pFormatCtx->nb_streams; i++)
@@ -327,6 +332,8 @@ error:
 	if(pFormatCtx) {
 		avformat_close_input(&pFormatCtx);
 	}
+
+	g_static_mutex_unlock(&file_mutex);
 
 	return ret;
 }
