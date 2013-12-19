@@ -53,8 +53,13 @@ typedef struct context {
 	gint		map_y;	/* map size */
 	gint		tile_x; /* size of a tile for the current map */
 	gint		tile_y; /* size of a tile for the current map */
-	gint		pos_x;	/* player position */
-	gint		pos_y;	/* player position */
+	gint		pos_x;	/* player position (in tile) */
+	gint		pos_y;	/* player position (in tile) */
+	gint		cur_pos_x;	/* player position (in tile) */
+	gint		cur_pos_y;	/* player position (in tile) */
+	gint		old_pos_x;	/* player position (in tile) */
+	gint		old_pos_y;	/* player position (in tile) */
+	Uint32		pos_tick;	/* tick for player animation */
 	gchar *		type;	/* character's type */
 	GtkWidget * 	sprite_image;
 	selection_t 	selection; /* Selected tile or sprite */

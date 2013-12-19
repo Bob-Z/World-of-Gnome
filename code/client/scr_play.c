@@ -124,7 +124,6 @@ static void compose_map(context_t * ctx)
 			x=0;
 			y++;
 		}
-
 		i++;
         }
 
@@ -134,34 +133,66 @@ static void compose_map(context_t * ctx)
 /**********************************
 Compose sprites
 **********************************/
-static void compose_sprite(context_t * context)
+static void compose_sprite(context_t * ctx)
 {
 	const char * sprite_name = NULL;
 	anim_t * anim;
-	context_t * ctx;
 	item_t * item;
+	int x;
+	int y;
+	int ox;
+	int oy;
+	Uint32 timer;
 
 	context_lock_list();
 
-	ctx = context;
         while(ctx != NULL ) {
 		/* compute the sprite file name */
 		if(!read_string(CHARACTER_TABLE,ctx->id,&sprite_name,CHARACTER_KEY_SPRITE,NULL)) {
-			werr(LOGUSER,"Can't read sprite name for \"%s\" type",context->type);
+			werr(LOGDEV,"ID=%s. Can't read sprite name for \"%s\" type",ctx->id,ctx->type);
 			break;;
 		}
+
+		anim = imageDB_get_anim(ctx,sprite_name);
 
 		item = item_list_add(item_list);
 		if(item_list == NULL) {
 			item_list = item;
 		}
 
-		anim = imageDB_get_anim(ctx,sprite_name);
-		item_set_anim(
-			item,
-			ctx->pos_x*ctx->tile_x - (anim->w-ctx->tile_x)/2,
-			ctx->pos_y*ctx->tile_y - (anim->h-ctx->tile_y)/2,
-			anim);
+		timer = SDL_GetTicks();
+
+		if( ctx->pos_tick == 0 ) {
+			ctx->cur_pos_x = ctx->pos_x;
+			ctx->cur_pos_y = ctx->pos_y;
+			ctx->pos_tick = 1;
+		}
+
+		/* If previous animation has ended */
+		if( ctx->pos_tick + VIRTUAL_ANIM_DURATION < timer ) {
+			ctx->old_pos_x = ctx->cur_pos_x;
+			ctx->old_pos_y = ctx->cur_pos_y;
+		/* Detect sprite movement, initiate animation */
+			if(ctx->pos_x != ctx->old_pos_x||ctx->pos_y != ctx->old_pos_y){
+				ctx->pos_tick = timer;
+				ctx->cur_pos_x = ctx->pos_x;
+				ctx->cur_pos_y = ctx->pos_y;
+			}
+		}
+
+		/* Get position in pixel */
+		x = ctx->cur_pos_x * ctx->tile_x;
+		y = ctx->cur_pos_y * ctx->tile_y;
+		ox = ctx->old_pos_x * ctx->tile_x;
+		oy = ctx->old_pos_y * ctx->tile_y;
+
+		/* Center sprite on tile */
+		x -= (anim->w-ctx->tile_x)/2;
+		y -= (anim->h-ctx->tile_y)/2;
+		ox -= (anim->w-ctx->tile_x)/2;
+		oy -= (anim->h-ctx->tile_y)/2;
+
+		item_set_smooth_anim(item,x,y,ox,oy,ctx->pos_tick,anim);
 
 		ctx = ctx->next;
 	}
