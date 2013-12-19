@@ -112,6 +112,10 @@ void item_set_smooth_anim(item_t * item, int x, int y,int old_x, int old_y, Uint
 	item_set_frame(item,x,y,anim);
 	item->frame_normal = -1;
 }
+void item_set_overlay(item_t * item, int overlay)
+{
+	item->overlay = overlay;
+}
 void item_set_frame_normal(item_t * item, int num_frame)
 {
 	item->frame_normal = num_frame;
