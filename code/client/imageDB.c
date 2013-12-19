@@ -31,6 +31,8 @@ static GHashTable* imageDB;
 
 static anim_t * def_anim = NULL;
 
+static pthread_mutex_t db_mutex = PTHREAD_MUTEX_INITIALIZER;
+
 static void free_key(gpointer data)
 {
 	char * filename = (char *)data;
@@ -83,11 +85,9 @@ void imageDB_init()
 
 void imageDB_add_file(context_t * context, gchar * filename, anim_t * anim)
 {
-#if 0
 	if( g_hash_table_lookup(imageDB, filename) ) {
 		return;
 	}
-#endif
 
 	wlog(LOGDEBUG,"Adding image %s to the DB",filename);
 
@@ -108,11 +108,14 @@ anim_t * imageDB_get_anim(context_t * context, const gchar * image_name)
 
 	filename = g_strconcat( IMAGE_TABLE, "/", image_name , NULL);
 
+	pthread_mutex_lock(&db_mutex);
+
 	/* Lookup DB */
 	anim = g_hash_table_lookup(imageDB, filename);
 
 	/* Find image in DB */
 	if( anim != NULL ) {
+		pthread_mutex_unlock(&db_mutex);
 		g_free(filename);
 		return anim;
 	}
@@ -123,6 +126,7 @@ anim_t * imageDB_get_anim(context_t * context, const gchar * image_name)
 	anim = anim_load(tmp);
 	/* Unable to load local file */
 	if( anim == NULL ) {
+		pthread_mutex_unlock(&db_mutex);
 		wlog(LOGDEBUG,"Return default anim for %s",filename);
 		g_free(tmp);
 		/* request an update to the server */
@@ -134,6 +138,7 @@ anim_t * imageDB_get_anim(context_t * context, const gchar * image_name)
 
 	/* Local file load OK, save to DB */
 	imageDB_add_file(context, filename, anim);
+	pthread_mutex_unlock(&db_mutex);
 
 	return anim;
 }
@@ -149,7 +154,10 @@ anim_t * imageDB_check_anim(gchar * image_name)
 
 	name =  g_strconcat( IMAGE_TABLE, "/", image_name , NULL);
 
+	pthread_mutex_lock(&db_mutex);
 	anim = g_hash_table_lookup(imageDB, name);
+	pthread_mutex_unlock(&db_mutex);
+
 	g_free(name);
 	if( anim != NULL ) {
 		return anim;
