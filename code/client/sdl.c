@@ -474,6 +474,19 @@ void sdl_set_virtual_y(int y)
 	}
 }
 
+void sdl_force_virtual_x(int x)
+{
+	virtual_x = x;
+	current_vx = x;
+	old_vx =x;
+}
+void sdl_force_virtual_y(int y)
+{
+	virtual_y = y;
+	current_vy = y;
+	old_vx =y;
+}
+
 keycb_t * sdl_add_keycb(SDL_Scancode code,void (*cb)(void*))
 {
 	keycb_t * key;
