@@ -19,8 +19,6 @@
 
 #include "sdl.h"
 
-#define VIRTUAL_ANIM_DURATION 200
-
 static int fullscreen = 0;
 
 static char keyboard_buf[2048];
@@ -306,8 +304,21 @@ void sdl_print_item(context_t * ctx,item_t * item)
 
 int sdl_blit_item(context_t * ctx,item_t * item)
 {
+	Uint32 timer = SDL_GetTicks();
 
 	if(item->anim) {
+		if( item->timer ) {
+			if( item->timer + VIRTUAL_ANIM_DURATION > timer) {
+				item->rect.x = (int)((float)item->old_x + (float)(item->x - item->old_x) * (float)(timer - item->timer) / (float)VIRTUAL_ANIM_DURATION);
+				item->rect.y = (int)((float)item->old_y + (float)(item->y - item->old_y) * (float)(timer - item->timer) / (float)VIRTUAL_ANIM_DURATION);
+			}
+			else {
+				item->rect.x =item->x;
+				item->rect.y =item->y;
+//printf("+++ anim reset : %d x %d\n", item->rect.x,item->rect.y);
+			}
+		}
+
 		if( item->frame_normal == -1 ) {
 			sdl_blit_anim(ctx,item->anim,&item->rect,item->anim_start,item->anim_end);
 		} else {

@@ -17,6 +17,7 @@
    Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
+#include <SDL2/SDL.h>
 #include "item.h"
 
 item_t * item_list_add(item_t * item_list)
@@ -59,6 +60,12 @@ void item_init(item_t * item)
 	item->rect.y=-1;
 	item->rect.w=0;
 	item->rect.h=0;
+	item->x=-1;
+	item->y=-1;
+	item->old_x=-1;
+	item->old_y=-1;
+	item->timer=0;
+	item->overlay=0;
 	item->anim=NULL;
 	item->anim_start=0;
 	item->anim_end=-1;
@@ -91,6 +98,17 @@ void item_set_frame(item_t * item, int x, int y,anim_t * anim)
 }
 void item_set_anim(item_t * item, int x, int y,anim_t * anim)
 {
+	item_set_frame(item,x,y,anim);
+	item->frame_normal = -1;
+}
+
+void item_set_smooth_anim(item_t * item, int x, int y,int old_x, int old_y, Uint32 timer, anim_t * anim)
+{
+	item->x = x;
+	item->y = y;
+	item->old_x = old_x;
+	item->old_y = old_y;
+	item->timer = timer;
 	item_set_frame(item,x,y,anim);
 	item->frame_normal = -1;
 }
