@@ -72,7 +72,7 @@ void sdl_init(context_t * context)
 		exit(EXIT_FAILURE);
 	}
 
-	context->render = SDL_CreateRenderer(context->window, -1, 0);
+	context->render = SDL_CreateRenderer(context->window, -1, SDL_RENDERER_PRESENTVSYNC);
 	if( context->render == NULL) {
 		werr(LOGUSER,"SDL renderer init failed: %s\n",SDL_GetError());
 		exit(EXIT_FAILURE);
