@@ -30,6 +30,8 @@
 #define DISPOSE_BACKGROUND 2 /* Clean with the background color */
 #define DISPOSE_PREVIOUS 3 /* Restore to previous content */
 
+#define DEFAULT_DELAY 40
+
 static anim_t * giflib_load(const char * filename)
 {
 	context_t * ctx = context_get_list_first(); //Player's context
@@ -98,6 +100,9 @@ static anim_t * giflib_load(const char * filename)
 				disposal = (gif->SavedImages[i].ExtensionBlocks[j].Bytes[0] & 28)>>2;
 				wlog(LOGDEBUG,"disposal : %d",disposal);
 				delay = (gif->SavedImages[i].ExtensionBlocks[j].Bytes[1] + gif->SavedImages[i].ExtensionBlocks[j].Bytes[2] * 256)*10;
+				if(delay==0) {
+					delay = DEFAULT_DELAY;
+				}
 				wlog(LOGDEBUG,"delay : %d ms",delay);
 				if(transparent) {
 					transparent_color = gif->SavedImages[i].ExtensionBlocks[j].Bytes[3];
