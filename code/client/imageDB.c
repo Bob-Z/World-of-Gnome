@@ -85,11 +85,9 @@ void imageDB_init()
 
 void imageDB_add_file(context_t * context, gchar * filename, anim_t * anim)
 {
-#if 0
 	if( g_hash_table_lookup(imageDB, filename) ) {
 		return;
 	}
-#endif
 
 	wlog(LOGDEBUG,"Adding image %s to the DB",filename);
 
