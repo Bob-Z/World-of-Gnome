@@ -200,6 +200,73 @@ static void compose_sprite(context_t * ctx)
 	context_unlock_list();
 }
 
+void cb_action(void * arg)
+{
+	char * script = (char *)arg;
+
+	network_send_action(context_get_list_first(),script,NULL);
+}
+
+/**********************************
+Compose action icon
+**********************************/
+static void compose_action(context_t * ctx)
+{
+	char ** action_list = NULL;
+	const char * text;
+        const char * icon;
+        const char * script;
+	anim_t * anim;
+	item_t * item;
+	int sw = 0;
+	int sh = 0;
+	int x=0;
+
+	SDL_GetRendererOutputSize(ctx->render,&sw,&sh);
+
+	/* Read action list for current user */
+        if(!read_list(CHARACTER_TABLE,ctx->id,&action_list,CHARACTER_KEY_ACTION,NULL)) {
+                return;
+        }
+
+        while(*action_list != NULL ) {
+                if(!read_string(ACTION_TABLE,*action_list,&text,ACTION_KEY_TEXT,NULL)) {
+			action_list ++;
+                        continue;
+                }
+
+                if(!read_string(ACTION_TABLE,*action_list,&icon,ACTION_KEY_ICON,NULL)) {
+			action_list ++;
+                        continue;
+                }
+		if(!read_string(ACTION_TABLE,*action_list,&script,ACTION_KEY_SCRIPT,NULL)) {
+			action_list ++;
+                        continue;
+		}
+
+
+                /* load image */
+                anim = imageDB_get_anim(ctx, icon);
+		if(anim == NULL) {
+			action_list ++;
+                        continue;
+		}
+
+		item = item_list_add(item_list);
+		if(item_list == NULL) {
+			item_list = item;
+		}
+
+		item_set_overlay(item,1);
+		item_set_anim(item,x,sh-anim->h,anim);
+		x += anim->w;
+		item_set_click_left(item,cb_action,(void*)script);
+
+		action_list ++;
+        }
+
+}
+
 /**********************************
 Compose the character select screen
 **********************************/
@@ -227,8 +294,8 @@ item_t * scr_play_compose(context_t * ctx)
 	}
 
 	compose_map(ctx);
-
 	compose_sprite(ctx);
+	compose_action(ctx);
 
 	sdl_set_virtual_x(ctx->cur_pos_x * ctx->tile_x + ctx->tile_x/2);
 	sdl_set_virtual_y(ctx->cur_pos_y * ctx->tile_y + ctx->tile_y/2);
