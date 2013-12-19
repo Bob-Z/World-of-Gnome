@@ -61,6 +61,11 @@ void context_init(context_t * context)
 
 	context->pos_x = 0;
 	context->pos_y = 0;
+	context->cur_pos_x = 0;
+	context->cur_pos_y = 0;
+	context->old_pos_x = 0;
+	context->old_pos_y = 0;
+	context->pos_tick = 0;
 	context->type = NULL;
 
 	context->sprite_image = NULL;
