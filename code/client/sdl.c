@@ -18,6 +18,7 @@
 */
 
 #include "sdl.h"
+#include "screen.h"
 
 static int fullscreen = 0;
 
@@ -98,6 +99,8 @@ void sdl_mouse_manager(context_t * ctx, SDL_Event * event, item_t * item_list)
 	int vx;
 	int vy;
 	item_t * I;
+	int overlay_first = 1;
+	int skip_non_overlay = 0;
 
 	if(item_list == NULL) {
 		return;
@@ -109,57 +112,78 @@ void sdl_mouse_manager(context_t * ctx, SDL_Event * event, item_t * item_list)
 			event->motion.x, event->motion.y);
 	printf("orig coord = %d,%d \n",rect.x,rect.y);
 #endif
-	I = item_list;
-	while(I) {
-		if(I->overlay) {
-			rect.x = event->motion.x;
-			rect.y = event->motion.y;
-		}
-		else {
-			get_virtual(ctx,&vx,&vy);
-			rect.x = event->motion.x - vx;
-			rect.y = event->motion.y - vy;
-		}
 
-		I->current_frame = I->frame_normal;
-		if( (I->rect.x < rect.x) &&
-				((I->rect.x+I->rect.w) > rect.x) &&
-				(I->rect.y < rect.y) &&
-				((I->rect.y+I->rect.h) > rect.y) ) {
-			switch (event->type) {
-				case SDL_MOUSEMOTION:
-					I->current_frame = I->frame_over;
-					if( I->over ) {
-						I->over(I->over_arg);
-					}
-					break;
-				case SDL_MOUSEBUTTONDOWN:
-					I->current_frame = I->frame_click;
-					if( I->click_left && event->button.button == SDL_BUTTON_LEFT) {
-						I->current_frame=I->frame_click;
-						I->clicked=1;
-					}
-					if( I->click_right && event->button.button == SDL_BUTTON_RIGHT) {
-						I->current_frame=I->frame_click;
-						I->clicked=1;
-					}
-					break;
-				case SDL_MOUSEBUTTONUP:
-					I->clicked=0;
-					I->current_frame = I->frame_normal;
-					if( I->click_left && event->button.button == SDL_BUTTON_LEFT) {
-						I->click_left(I->click_left_arg);
-					}
-					if( I->click_right && event->button.button == SDL_BUTTON_RIGHT) {
-						I->click_right(I->click_right_arg);
-					}
-					break;
+	/* First test overlay (UI) before background */
+	while(overlay_first!=-1) {
+		I = item_list;
+		while(I) {
+			if(I->overlay) {
+				if(!overlay_first) {
+					I = I->next;
+					continue;
+				}
+				rect.x = event->motion.x;
+				rect.y = event->motion.y;
 			}
+			else {
+				if(overlay_first) {
+					I = I->next;
+					continue;
+				}
+				get_virtual(ctx,&vx,&vy);
+				rect.x = event->motion.x - vx;
+				rect.y = event->motion.y - vy;
+			}
+
+			I->current_frame = I->frame_normal;
+			if( (I->rect.x < rect.x) &&
+					((I->rect.x+I->rect.w) > rect.x) &&
+					(I->rect.y < rect.y) &&
+					((I->rect.y+I->rect.h) > rect.y) ) {
+				/* We are on overlay item: skip, non-overlay item */
+				if(overlay_first) {
+					skip_non_overlay=1;
+				}
+				switch (event->type) {
+					case SDL_MOUSEMOTION:
+						I->current_frame = I->frame_over;
+						if( I->over ) {
+							I->over(I->over_arg);
+						}
+						screen_compose();
+						break;
+					case SDL_MOUSEBUTTONDOWN:
+						I->current_frame = I->frame_click;
+						if( I->click_left && event->button.button == SDL_BUTTON_LEFT) {
+							I->current_frame=I->frame_click;
+							I->clicked=1;
+						}
+						if( I->click_right && event->button.button == SDL_BUTTON_RIGHT) {
+							I->current_frame=I->frame_click;
+							I->clicked=1;
+						}
+						screen_compose();
+						break;
+					case SDL_MOUSEBUTTONUP:
+						I->clicked=0;
+						I->current_frame = I->frame_normal;
+						if( I->click_left && event->button.button == SDL_BUTTON_LEFT) {
+							I->click_left(I->click_left_arg);
+						}
+						if( I->click_right && event->button.button == SDL_BUTTON_RIGHT) {
+							I->click_right(I->click_right_arg);
+						}
+						screen_compose();
+						break;
+				}
+			}
+			if(I->clicked) {
+				I->current_frame = I->frame_click;
+			}
+			I = I->next;
 		}
-		if(I->clicked) {
-			I->current_frame = I->frame_click;
-		}
-		I = I->next;
+		overlay_first--;
+		if(skip_non_overlay) break;
 	}
 }
 

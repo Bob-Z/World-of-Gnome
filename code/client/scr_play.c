@@ -59,6 +59,16 @@ static void key_right(void * arg)
 	network_send_action(ctx,"move_right.lua",NULL);
 }
 
+void cb_select_map(void *arg)
+{
+	item_t * item = (item_t*)arg;
+	context_t * ctx = context_get_list_first();
+
+        ctx->selection.map_coord[0]= item->tile_x;
+        ctx->selection.map_coord[1]= item->tile_y;
+	network_send_context(ctx);
+}
+
 /**********************************
 Compose the characters map
 **********************************/
@@ -119,6 +129,8 @@ static void compose_map(context_t * ctx)
 
 		anim = imageDB_get_anim(ctx,tile_image);
 		item_set_anim(item,x*ctx->tile_x,y*ctx->tile_y,anim);
+		item_set_tile(item,x,y);
+		item_set_click_left(item,cb_select_map,item);
 		x++;
 		if(x>=ctx->map_x) {
 			x=0;
@@ -128,6 +140,15 @@ static void compose_map(context_t * ctx)
         }
 
         g_free(value);
+}
+
+void cb_select_sprite(void *arg)
+{
+	char * id = (char*)arg;
+
+	context_t * ctx = context_get_list_first();
+        ctx->selection.id= id;
+	network_send_context(ctx);
 }
 
 /**********************************
@@ -193,6 +214,7 @@ static void compose_sprite(context_t * ctx)
 		oy -= (anim->h-ctx->tile_y)/2;
 
 		item_set_smooth_anim(item,x,y,ox,oy,ctx->pos_tick,anim);
+		item_set_click_left(item,cb_select_sprite,ctx->id);
 
 		ctx = ctx->next;
 	}
@@ -268,13 +290,68 @@ static void compose_action(context_t * ctx)
 }
 
 /**********************************
+Compose select cursor
+**********************************/
+static void compose_select(context_t * ctx)
+{
+	item_t * item;
+	anim_t * anim;
+	int x;
+	int y;
+
+	anim = imageDB_get_anim(ctx,CURSOR_SPRITE_FILE);
+	if(anim == NULL) {
+		return;
+	}
+
+	x = ctx->selection.map_coord[0];
+	y = ctx->selection.map_coord[1];
+
+	if( x != -1 && y != -1) {
+		item = item_list_add(item_list);
+		if(item_list == NULL) {
+			item_list = item;
+		}
+
+		/* get pixel coordiante from tile coordianate */
+		x = x * ctx->tile_x;
+		y = y * ctx->tile_y;
+
+		/* Center on tile */
+		x -= (anim->w-ctx->tile_x)/2;
+                y -= (anim->h-ctx->tile_y)/2;
+
+		item_set_anim(item,x,y,anim);
+	}
+
+	if( ctx->selection.id != NULL) {
+		item = item_list_add(item_list);
+		if(item_list == NULL) {
+			item_list = item;
+		}
+
+                if(!read_int(CHARACTER_TABLE,ctx->selection.id,&x,CHARACTER_KEY_POS_X,NULL)) {
+                        return;
+                }
+                if(!read_int(CHARACTER_TABLE,ctx->selection.id,&y,CHARACTER_KEY_POS_Y,NULL)) {
+                        return;
+                }
+
+		/* Center on tile */
+		x -= (anim->w-ctx->tile_x)/2;
+                y -= (anim->h-ctx->tile_y)/2;
+
+		item_set_anim(item,x,y,anim);
+	}
+
+}
+
+/**********************************
 Compose the character select screen
 **********************************/
 item_t * scr_play_compose(context_t * ctx)
 {
 	static int init = 1;
-
-	wlog(LOGDEBUG,"Composing play screen\n");
 
 	if(item_list) {
 		item_list_free(item_list);
@@ -296,6 +373,7 @@ item_t * scr_play_compose(context_t * ctx)
 	compose_map(ctx);
 	compose_sprite(ctx);
 	compose_action(ctx);
+	compose_select(ctx);
 
 	sdl_set_virtual_x(ctx->cur_pos_x * ctx->tile_x + ctx->tile_x/2);
 	sdl_set_virtual_y(ctx->cur_pos_y * ctx->tile_y + ctx->tile_y/2);

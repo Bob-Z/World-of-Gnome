@@ -112,6 +112,13 @@ void item_set_smooth_anim(item_t * item, int x, int y,int old_x, int old_y, Uint
 	item_set_frame(item,x,y,anim);
 	item->frame_normal = -1;
 }
+
+void item_set_tile(item_t * item, int x, int y)
+{
+	item->tile_x = x;
+	item->tile_y = y;
+}
+
 void item_set_overlay(item_t * item, int overlay)
 {
 	item->overlay = overlay;
