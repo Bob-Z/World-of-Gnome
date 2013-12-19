@@ -230,8 +230,8 @@ item_t * scr_play_compose(context_t * ctx)
 
 	compose_sprite(ctx);
 
-	sdl_set_virtual_x(ctx->pos_x * ctx->tile_x + ctx->tile_x/2);
-	sdl_set_virtual_y(ctx->pos_y * ctx->tile_y + ctx->tile_y/2);
+	sdl_set_virtual_x(ctx->cur_pos_x * ctx->tile_x + ctx->tile_x/2);
+	sdl_set_virtual_y(ctx->cur_pos_y * ctx->tile_y + ctx->tile_y/2);
 
 	sdl_free_keycb(NULL);
 	sdl_add_keycb(SDL_SCANCODE_UP,key_up);
