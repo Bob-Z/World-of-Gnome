@@ -62,6 +62,7 @@ int file_add(context_t * context,gchar * data,guint32 command_size)
 	ptr += sizeof(guint32);
 	gchar * file_name = NULL;
 	file_name = g_memdup(ptr,file_name_size);
+	wlog(LOGDEBUG,"Received file %s",file_name);
 	if( file_name == NULL ) {
 		werr(LOGDEV,"Unable to allocate %d bytes for file name",file_name_size);
 		return 1;
