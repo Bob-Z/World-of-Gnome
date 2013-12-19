@@ -89,7 +89,7 @@ void imageDB_add_file(context_t * context, gchar * filename, anim_t * anim)
 	}
 #endif
 
-	wlog(LOGDEBUG,"Adding image %s",filename);
+	wlog(LOGDEBUG,"Adding image %s to the DB",filename);
 
 	gchar * name = g_strdup(filename);
 	g_hash_table_replace(imageDB, name, anim);
@@ -107,18 +107,23 @@ anim_t * imageDB_get_anim(context_t * context, const gchar * image_name)
 	gchar * filename;
 
 	filename = g_strconcat( IMAGE_TABLE, "/", image_name , NULL);
+
+	/* Lookup DB */
 	anim = g_hash_table_lookup(imageDB, filename);
+
+	/* Find image in DB */
 	if( anim != NULL ) {
 		g_free(filename);
 		return anim;
 	}
 
 	/* The image was not in the imageDB */
-	/* try to read the file currently available */
+	/* try to read the local file */
 	tmp = g_strconcat( g_getenv("HOME"),"/", base_directory, "/", IMAGE_TABLE, "/",  image_name , NULL);
 	anim = anim_load(tmp);
+	/* Unable to load local file */
 	if( anim == NULL ) {
-		wlog(LOGDEBUG,"Returning default anim for %s",filename);
+		wlog(LOGDEBUG,"Return default anim for %s",filename);
 		g_free(tmp);
 		/* request an update to the server */
 		network_send_req_file(context,filename);
@@ -127,11 +132,9 @@ anim_t * imageDB_get_anim(context_t * context, const gchar * image_name)
 	}
 	g_free(tmp);
 
-	/* Set image_name in the imageDB to be updated when ready */
-	wlog(LOGDEBUG,"Adding %s to the DB",filename);
+	/* Local file load OK, save to DB */
 	imageDB_add_file(context, filename, anim);
 
-	/* return a copy of the default image file */
 	return anim;
 }
 

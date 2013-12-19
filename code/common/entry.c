@@ -96,7 +96,7 @@ file_dump_to_disk
 static void dump_file(gchar * filename, file_data_t * data)
 {
 	if( data->file_update) {
-		wlog(LOGDEBUG,"Writing file %s",filename);
+		wlog(LOGDEBUG,"Dump file %s",filename);
 		free_config(data);
 		g_file_set_contents(filename,data->data,data->size,NULL);
 		data->file_update = FALSE;
@@ -107,7 +107,7 @@ static void dump_file(gchar * filename, file_data_t * data)
 static void dump_config(gchar * filename, file_data_t * data)
 {
 	if( data->config_update) {
-		wlog(LOGDEBUG,"Writing config %s",filename);
+		wlog(LOGDEBUG,"Dump config %s",filename);
 		config_write_file(data->config,filename);
 		data->config_update = FALSE;
 
