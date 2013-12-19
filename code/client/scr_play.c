@@ -111,7 +111,6 @@ static void compose_map(context_t * ctx)
                 return;
         }
 
-
 	/* Parse map string */
 	i=0;
         while(value[i] != NULL ) {
@@ -164,10 +163,16 @@ static void compose_sprite(context_t * ctx)
 	int ox;
 	int oy;
 	Uint32 timer;
+	context_t * player_context = context_get_list_first();
 
 	context_lock_list();
 
         while(ctx != NULL ) {
+		if( strcmp(ctx->map,player_context->map)) {
+			ctx = ctx->next;
+			continue;
+		}
+
 		/* compute the sprite file name */
 		if(!read_string(CHARACTER_TABLE,ctx->id,&sprite_name,CHARACTER_KEY_SPRITE,NULL)) {
 			werr(LOGDEV,"ID=%s. Can't read sprite name for \"%s\" type",ctx->id,ctx->type);
