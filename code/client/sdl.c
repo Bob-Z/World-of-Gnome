@@ -103,21 +103,24 @@ void sdl_mouse_manager(context_t * ctx, SDL_Event * event, item_t * item_list)
 		return;
 	}
 
-	get_virtual(ctx,&vx,&vy);
-
 #if 0
 	printf("Mouse moved by %d,%d to (%d,%d)\n",
 			event->motion.xrel, event->motion.yrel,
 			event->motion.x, event->motion.y);
-#endif
-	rect.x = event->motion.x - vx;
-	rect.y = event->motion.y - vy;
-#if 0
 	printf("orig coord = %d,%d \n",rect.x,rect.y);
 #endif
-
 	I = item_list;
 	while(I) {
+		if(I->overlay) {
+			rect.x = event->motion.x;
+			rect.y = event->motion.y;
+		}
+		else {
+			get_virtual(ctx,&vx,&vy);
+			rect.x = event->motion.x - vx;
+			rect.y = event->motion.y - vy;
+		}
+
 		I->current_frame = I->frame_normal;
 		if( (I->rect.x < rect.x) &&
 				((I->rect.x+I->rect.w) > rect.x) &&
@@ -229,18 +232,25 @@ void sdl_loop_manager()
 	}
 }
 
-void sdl_blit_tex(context_t * ctx,SDL_Texture * tex, SDL_Rect * rect)
+void sdl_blit_tex(context_t * ctx,SDL_Texture * tex, SDL_Rect * rect,int overlay)
 {
 	SDL_Rect r;
         int vx;
         int vy;
 
-        get_virtual(ctx,&vx,&vy);
+	if(overlay) {
+		r.x = rect->x;
+		r.y = rect->y;
+	}
+	else {
+		get_virtual(ctx,&vx,&vy);
+
+		r.x = rect->x + vx;
+		r.y = rect->y + vy;
+	}
 
 	r.w = rect->w;
 	r.h = rect->h;
-	r.x = rect->x + vx;
-	r.y = rect->y + vy;
 
 	if( tex ) {
 		if( SDL_RenderCopy(ctx->render,tex,NULL,&r) < 0) {
@@ -249,11 +259,11 @@ void sdl_blit_tex(context_t * ctx,SDL_Texture * tex, SDL_Rect * rect)
 	}
 }
 
-int sdl_blit_anim(context_t * ctx,anim_t * anim, SDL_Rect * rect, int start, int end)
+int sdl_blit_anim(context_t * ctx,anim_t * anim, SDL_Rect * rect, int start, int end,int overlay)
 {
 	Uint32 time = SDL_GetTicks();
 
-	sdl_blit_tex(ctx,anim->tex[anim->current_frame],rect);
+	sdl_blit_tex(ctx,anim->tex[anim->current_frame],rect,overlay);
 
 	if( anim->prev_time == 0 ) {
 		anim->prev_time = time;
@@ -299,7 +309,7 @@ void sdl_print_item(context_t * ctx,item_t * item)
 		SDL_FreeSurface(surf);
 	}
 
-	sdl_blit_tex(ctx,item->str_tex,&r);
+	sdl_blit_tex(ctx,item->str_tex,&r,item->overlay);
 }
 
 int sdl_blit_item(context_t * ctx,item_t * item)
@@ -320,9 +330,9 @@ int sdl_blit_item(context_t * ctx,item_t * item)
 		}
 
 		if( item->frame_normal == -1 ) {
-			sdl_blit_anim(ctx,item->anim,&item->rect,item->anim_start,item->anim_end);
+			sdl_blit_anim(ctx,item->anim,&item->rect,item->anim_start,item->anim_end,item->overlay);
 		} else {
-			sdl_blit_tex(ctx,item->anim->tex[item->frame_normal],&item->rect);
+			sdl_blit_tex(ctx,item->anim->tex[item->frame_normal],&item->rect,item->overlay);
 		}
 	}
 
