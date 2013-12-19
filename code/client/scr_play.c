@@ -357,6 +357,7 @@ Compose the character select screen
 item_t * scr_play_compose(context_t * ctx)
 {
 	static int init = 1;
+	static char * map = NULL;
 
 	if(item_list) {
 		item_list_free(item_list);
@@ -380,8 +381,27 @@ item_t * scr_play_compose(context_t * ctx)
 	compose_action(ctx);
 	compose_select(ctx);
 
-	sdl_set_virtual_x(ctx->cur_pos_x * ctx->tile_x + ctx->tile_x/2);
-	sdl_set_virtual_y(ctx->cur_pos_y * ctx->tile_y + ctx->tile_y/2);
+	if(map == NULL) {
+		map=strdup(ctx->map);
+		sdl_force_virtual_x(ctx->cur_pos_x * ctx->tile_x + ctx->tile_x/2);
+		sdl_force_virtual_y(ctx->cur_pos_y * ctx->tile_y + ctx->tile_y/2);
+	}
+	else {
+		/* force virtual coordinate on map change */
+		if(strcmp(map,ctx->map)) {
+			free(map);
+			map=strdup(ctx->map);
+			sdl_force_virtual_x(ctx->cur_pos_x * ctx->tile_x + ctx->tile_x/2);
+			sdl_force_virtual_y(ctx->cur_pos_y * ctx->tile_y + ctx->tile_y/2);
+
+		}
+		/* set virtual coordiante on the same map */
+		else {
+			sdl_set_virtual_x(ctx->cur_pos_x * ctx->tile_x + ctx->tile_x/2);
+			sdl_set_virtual_y(ctx->cur_pos_y * ctx->tile_y + ctx->tile_y/2);
+		}
+	}
+
 
 	sdl_free_keycb(NULL);
 	sdl_add_keycb(SDL_SCANCODE_UP,key_up);
