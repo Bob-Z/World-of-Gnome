@@ -137,7 +137,7 @@ static void compose_map(context_t * ctx)
 	i=0;
         while(value[i] != NULL ) {
 		if(!read_string(TILE_TABLE,value[i],&tile_image,TILE_KEY_IMAGE,NULL)) {
-			break;
+			goto map_continue;
 		}
 #if 0
 		/* Save description for caller */
@@ -152,6 +152,7 @@ static void compose_map(context_t * ctx)
 		item_set_anim(item,x*ctx->tile_x,y*ctx->tile_y,anim);
 		item_set_tile(item,x,y);
 		item_set_click_left(item,cb_select_map,item);
+map_continue:
 		x++;
 		if(x>=ctx->map_x) {
 			x=0;
