@@ -79,6 +79,7 @@ void context_init(context_t * context)
 
 	context->id = NULL;
 	context->prev_map = NULL;
+	context->new_map_drawn = 0;
 	context->luaVM = NULL;
 	context->cond = NULL;
 	context->cond_mutex = NULL;
@@ -369,6 +370,7 @@ gboolean context_set_map(context_t * context, const gchar * map)
 	if( context->map == NULL ) {
 		ret = FALSE;
 	}
+	context->new_map_drawn = 0;
 
 	g_static_mutex_unlock (&context_list_mutex);
 
