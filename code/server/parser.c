@@ -75,6 +75,10 @@ gboolean parse_incoming_data(context_t * context, guint32 command, guint32 comma
 		break;
 	case CMD_REQ_FILE :
 		elements = g_strsplit(data,NETWORK_DELIMITER,0);
+		if(elements==NULL) {
+			werr(LOGDEV,"Received empty CMD_REQ_FILE");
+			break;
+		}
 		wlog(LOGDEBUG,"Received CMD_REQ_FILE for %s",elements[0]);
 		/* compare checksum */
 		filename = g_strconcat( g_getenv("HOME"),"/", base_directory, "/", elements[0], NULL);
