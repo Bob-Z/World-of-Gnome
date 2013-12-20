@@ -97,6 +97,8 @@ void instantiate_npc(const gchar * id)
 	gint y;
 	gint tile_x;
 	gint tile_y;
+	gint map_x;
+	gint map_y;
 	context_t * ctx;
 
 	// check if it's a NPC
@@ -129,6 +131,14 @@ void instantiate_npc(const gchar * id)
 		return;
 	}
 
+	if(!read_int(MAP_TABLE,map,&map_x,MAP_KEY_SIZE_X,NULL)) {
+		return;
+	}
+
+	if(!read_int(MAP_TABLE,map,&map_y,MAP_KEY_SIZE_Y,NULL)) {
+		return;
+	}
+
 	if(!read_string(CHARACTER_TABLE,id,&name,CHARACTER_KEY_NAME,NULL)) {
 		name = "";
 	}
@@ -143,6 +153,10 @@ void instantiate_npc(const gchar * id)
 	context_set_character_name(ctx,name);
 	context_set_connected(ctx,1);
 	context_set_map(ctx,map);
+#if 0
+	context_set_map_x(ctx,map_x);
+	context_set_map_y(ctx,map_y);
+#endif
 	context_set_type(ctx,type);
 	context_set_pos_x(ctx,x);
 	context_set_pos_y(ctx,y);
