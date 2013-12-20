@@ -208,7 +208,7 @@ static void compose_sprite(context_t * ctx)
 			break;;
 		}
 
-		anim = imageDB_get_anim(ctx,sprite_name);
+		anim = imageDB_get_anim(player_context,sprite_name);
 
 		item = item_list_add(item_list);
 		if(item_list == NULL) {
