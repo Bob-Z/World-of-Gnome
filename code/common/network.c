@@ -360,16 +360,6 @@ void network_send_context(context_t * context)
 	g_memmove(data+data_size, context->type, size);
 	data_size += size;
 
-	g_snprintf(itoa,sizeof(itoa),"%d",context->map_x);
-	size = g_utf8_strlen(itoa,-1)+1;
-	g_memmove(data+data_size, itoa, size);
-	data_size += size;
-
-	g_snprintf(itoa,sizeof(itoa),"%d",context->map_y);
-	size = g_utf8_strlen(itoa,-1)+1;
-	g_memmove(data+data_size, itoa, size);
-	data_size += size;
-
 	g_snprintf(itoa,sizeof(itoa),"%d",context->tile_x);
 	size = g_utf8_strlen(itoa,-1)+1;
 	g_memmove(data+data_size, itoa, size);
@@ -853,16 +843,6 @@ void network_send_context_to_context(context_t * dest_ctx, context_t * src_ctx)
 
 	size = g_utf8_strlen(src_ctx->type,-1)+1;
 	g_memmove(data+data_size, src_ctx->type, size);
-	data_size += size;
-
-	g_snprintf(itoa,sizeof(itoa),"%d",src_ctx->map_x);
-	size = g_utf8_strlen(itoa,-1)+1;
-	g_memmove(data+data_size, itoa, size);
-	data_size += size;
-
-	g_snprintf(itoa,sizeof(itoa),"%d",src_ctx->map_y);
-	size = g_utf8_strlen(itoa,-1)+1;
-	g_memmove(data+data_size, itoa, size);
 	data_size += size;
 
 	g_snprintf(itoa,sizeof(itoa),"%d",src_ctx->tile_x);

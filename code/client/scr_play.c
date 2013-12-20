@@ -88,21 +88,6 @@ static void compose_map(context_t * ctx)
 
 	g_static_mutex_lock(&file_mutex);
 
-	/* description of the map */
-        if( ctx->map_x == -1 ) {
-                if(!_read_int(MAP_TABLE, ctx->map, &i,MAP_KEY_SIZE_X,NULL)) {
-			g_static_mutex_unlock(&file_mutex);
-                        return;
-                }
-                context_set_map_x(ctx, i);
-        }
-        if( ctx->map_y == -1 ) {
-                if(!_read_int(MAP_TABLE, ctx->map, &i,MAP_KEY_SIZE_Y,NULL)) {
-			g_static_mutex_unlock(&file_mutex);
-                        return;
-                }
-                context_set_map_y( ctx,i);
-        }
         if( ctx->tile_x == -1 ) {
                 if(!_read_int(MAP_TABLE, ctx->map, &i,MAP_KEY_TILE_SIZE_X,NULL)){
 			g_static_mutex_unlock(&file_mutex);
@@ -218,10 +203,14 @@ static void compose_sprite(context_t * ctx)
 
 		timer = SDL_GetTicks();
 
-		/* Force position when changing map */
-		if(!ctx->new_map_drawn) {
+		/* Force position when the player has changed map */
+		if(change_map) {
 			ctx->pos_tick = 0;
-			ctx->new_map_drawn=1;
+		}
+		/* Force position when this context has changed map */
+		if(ctx->change_map) {
+			ctx->pos_tick = 0;
+			ctx->change_map = 0;
 		}
 
 		if( ctx->pos_tick == 0 ) {
@@ -393,7 +382,6 @@ Compose the character select screen
 item_t * scr_play_compose(context_t * ctx)
 {
 	static int init = 1;
-	static char * map = NULL;
 
 	if(item_list) {
 		item_list_free(item_list);
@@ -412,23 +400,7 @@ item_t * scr_play_compose(context_t * ctx)
 		init = 0;
 	}
 
-	if(map == NULL) {
-		map=strdup(ctx->map);
-		change_map = 1;
-	}
-	else {
-		if(strcmp(map,ctx->map)) {
-			free(map);
-			map=strdup(ctx->map);
-			change_map = 1;
-
-			/* Force player's position (without smooth animation */
-			ctx->pos_tick = 0;
-		}
-		else {
-			change_map = 0;
-		}
-	}
+	change_map = ctx->change_map;
 
 	compose_map(ctx);
 	compose_sprite(ctx);

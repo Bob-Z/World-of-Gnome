@@ -79,7 +79,7 @@ void context_init(context_t * context)
 
 	context->id = NULL;
 	context->prev_map = NULL;
-	context->new_map_drawn = 0;
+	context->change_map = 0;
 	context->luaVM = NULL;
 	context->cond = NULL;
 	context->cond_mutex = NULL;
@@ -348,30 +348,43 @@ gboolean context_set_character_name(context_t * context, const gchar * name)
 
   Returns FALSE if error
 */
-gboolean context_set_map(context_t * context, const gchar * map)
+static gboolean _context_set_map(context_t * context, const gchar * map)
 {
-	int ret = TRUE;
-	gint size_x;
-	gint size_y;
+	gint map_x;
+	gint map_y;
 
-	if(!read_int(MAP_TABLE,map,&size_x, MAP_KEY_SIZE_X,NULL)) {
-		return  FALSE;
+	if(context->prev_map != NULL) {
+		if(!strcmp(context->map,map)) {
+			return TRUE;
+		}
 	}
-	if(!read_int(MAP_TABLE,map,&size_y, MAP_KEY_SIZE_Y,NULL)) {
+
+	if(!read_int(MAP_TABLE,map,&map_x,MAP_KEY_SIZE_X,NULL)) {
 		return FALSE;
 	}
-	g_static_mutex_lock (&context_list_mutex);
+	if(!read_int(MAP_TABLE,map,&map_y,MAP_KEY_SIZE_Y,NULL)) {
+		return FALSE;
+	}
+
 	g_free( context->prev_map );
 	context->prev_map = g_strdup(context->map);
 	g_free( context->map );
 	context->map = g_strdup(map);
-	context->map_x = size_x;
-	context->map_y = size_y;
 	if( context->map == NULL ) {
-		ret = FALSE;
+		return FALSE;
 	}
-	context->new_map_drawn = 0;
+	context->map_x = map_x;
+	context->map_y = map_y;
+	context->change_map = 1;
 
+	return TRUE;
+}
+gboolean context_set_map(context_t * context, const gchar * map)
+{
+	int ret;
+
+	g_static_mutex_lock (&context_list_mutex);
+	ret = _context_set_map(context,map);
 	g_static_mutex_unlock (&context_list_mutex);
 
 	return ret;
@@ -416,26 +429,6 @@ void context_set_pos_y(context_t * context, guint pos)
 	g_static_mutex_unlock (&context_list_mutex);
 }
 
-/* context_set_map_x
-  Set map_x
-*/
-void context_set_map_x(context_t * context, guint pos)
-{
-	g_static_mutex_lock (&context_list_mutex);
-	context->map_x = pos;
-	g_static_mutex_unlock (&context_list_mutex);
-}
-
-/* context_set_map_y
-  Set map_y
-*/
-void context_set_map_y(context_t * context, guint pos)
-{
-	g_static_mutex_lock (&context_list_mutex);
-	context->map_y = pos;
-	g_static_mutex_unlock (&context_list_mutex);
-}
-
 /* context_set_tile_x
   Set tile_x
 */
@@ -476,31 +469,6 @@ gboolean context_set_id(context_t * context, const gchar * name)
 	return TRUE;
 }
 
-/* context_set_prev_map
-  Set prev_map
-
-  Returns FALSE if error
-*/
-gboolean context_set_prev_map(context_t * context, const gchar * name)
-{
-	g_static_mutex_lock (&context_list_mutex);
-
-	g_free( context->prev_map );
-	if( name != NULL) {
-		context->prev_map = g_strdup(name);
-		if( context->prev_map == NULL ) {
-			g_static_mutex_unlock (&context_list_mutex);
-			return FALSE;
-		}
-	} else {
-		g_free(context->prev_map);
-		context->prev_map = NULL;
-	}
-
-	g_static_mutex_unlock (&context_list_mutex);
-	return TRUE;
-}
-
 void register_lua_functions( context_t * context);
 void context_new_VM(context_t * context)
 {
@@ -523,6 +491,7 @@ gboolean context_update_from_file(context_t * context)
 	/* Don't call context_set_* functions here to avoid inter-blocking */
 
 	const gchar * result;
+	int ret;
 
 	g_static_mutex_lock (&context_list_mutex);
 
@@ -561,8 +530,8 @@ gboolean context_update_from_file(context_t * context)
 	}
 
 	g_free( context->map );
-	context->map = g_strdup(result);
-	if( context->map == NULL ) {
+	ret = _context_set_map(context, result);
+	if( ret == FALSE ) {
 		g_static_mutex_unlock (&context_list_mutex);
 		return FALSE;
 	}
@@ -648,11 +617,7 @@ gboolean context_update_from_network_frame(context_t * context, gchar * frame)
 	context->character_name = g_strdup(data);
 	data += (g_utf8_strlen(data,-1)+1);
 
-	if( context->prev_map ) {
-		g_free( context->prev_map );
-	}
-	context->prev_map = context->map;
-	context->map = g_strdup(data);
+	_context_set_map(context,data);
 	data += (g_utf8_strlen(data,-1)+1);
 
 	context->connected = g_ascii_strtoll(data,NULL,10);
@@ -668,12 +633,6 @@ gboolean context_update_from_network_frame(context_t * context, gchar * frame)
 		g_free( context->type );
 	}
 	context->type = g_strdup(data);
-	data += (g_utf8_strlen(data,-1)+1);
-
-	context->map_x = g_ascii_strtoll(data,NULL,10);
-	data += (g_utf8_strlen(data,-1)+1);
-
-	context->map_y = g_ascii_strtoll(data,NULL,10);
 	data += (g_utf8_strlen(data,-1)+1);
 
 	context->tile_x = g_ascii_strtoll(data,NULL,10);
@@ -868,8 +827,6 @@ void context_add_or_update_from_network_frame(context_t * context,gchar * data)
 	gboolean connected;
 	gint pos_x;
 	gint pos_y;
-	gint map_x;
-	gint map_y;
 	gint tile_x;
 	gint tile_y;
 	gchar * type = NULL;
@@ -898,12 +855,6 @@ void context_add_or_update_from_network_frame(context_t * context,gchar * data)
 	type = g_strdup(data);
 	data += (g_utf8_strlen(data,-1)+1);
 
-	map_x = g_ascii_strtoll(data,NULL,10);
-	data += (g_utf8_strlen(data,-1)+1);
-
-	map_y = g_ascii_strtoll(data,NULL,10);
-	data += (g_utf8_strlen(data,-1)+1);
-
 	tile_x = g_ascii_strtoll(data,NULL,10);
 	data += (g_utf8_strlen(data,-1)+1);
 
@@ -922,14 +873,10 @@ void context_add_or_update_from_network_frame(context_t * context,gchar * data)
 			if( connected != FALSE ) {
 				wlog(LOGDEBUG,"Updating context %s / %s",user_name,name);
 				/* do not call context_set_* function since we already have the lock */
-				g_free(ctx->map);
-				ctx->map = map;
+				_context_set_map(ctx,map);
 
 				ctx->pos_x = pos_x;
 				ctx->pos_y = pos_y;
-
-				ctx->map_x = map_x;
-				ctx->map_y = map_y;
 
 				ctx->tile_x = tile_x;
 				ctx->tile_y = tile_y;
@@ -972,8 +919,6 @@ void context_add_or_update_from_network_frame(context_t * context,gchar * data)
 	context_set_pos_y(ctx,pos_y);
 	context_set_tile_x(ctx,tile_x);
 	context_set_tile_y(ctx,tile_y);
-	context_set_map_x(ctx,map_x);
-	context_set_map_y(ctx,map_y);
 	context_set_id(ctx,id);
 
 	g_free(user_name);
