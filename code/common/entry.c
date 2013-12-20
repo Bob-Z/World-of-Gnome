@@ -488,6 +488,7 @@ static int __read_int(const gchar * table, const gchar * file, int * res, va_lis
 
 	return TRUE;
 }
+/* Auto lock version */
 int read_int(const gchar * table, const gchar * file, int * res, ...)
 {
 	int ret;
@@ -506,8 +507,8 @@ int read_int(const gchar * table, const gchar * file, int * res, ...)
 	return ret;
 }
 
-/* Not used yet
-static int _read_int(const gchar * table, const gchar * file, int * res, ...)
+/*No lock version */
+int _read_int(const gchar * table, const gchar * file, int * res, ...)
 {
 	int ret;
 	va_list ap;
@@ -518,7 +519,6 @@ static int _read_int(const gchar * table, const gchar * file, int * res, ...)
 
 	return ret;
 }
-*/
 /*********************/
 /*********************/
 /*********************/
@@ -547,6 +547,7 @@ static int __read_string(const gchar * table, const gchar * file, const gchar **
 
 	return TRUE;
 }
+/* Auto lock version */
 int read_string(const gchar * table, const gchar * file, const gchar ** res, ...)
 {
 	int ret;
@@ -565,8 +566,8 @@ int read_string(const gchar * table, const gchar * file, const gchar ** res, ...
 	return ret;
 }
 
-/* Not used yet
-static int _read_string(const gchar * table, const gchar * file, const gchar ** res, ...)
+/* No lock version */
+int _read_string(const gchar * table, const gchar * file, const gchar ** res, ...)
 {
 	int ret;
 	va_list ap;
@@ -577,7 +578,6 @@ static int _read_string(const gchar * table, const gchar * file, const gchar ** 
 
 	return ret;
 }
-*/
 /*********************/
 /*********************/
 /*********************/
@@ -614,6 +614,7 @@ static int __read_list_index(const gchar * table, const gchar * file, const gcha
 	}
 	return TRUE;
 }
+/* Auto lock version */
 int read_list_index(const gchar * table, const gchar * file, const gchar ** res,gint index, ...)
 {
 	int ret;
@@ -631,8 +632,8 @@ int read_list_index(const gchar * table, const gchar * file, const gchar ** res,
 
 	return ret;
 }
-/* Not used yet
-static int _read_list_index(const gchar * table, const gchar * file, const gchar ** res,gint index, ...)
+/* No lock version */
+int _read_list_index(const gchar * table, const gchar * file, const gchar ** res,gint index, ...)
 {
 	int ret;
 	va_list ap;
@@ -643,7 +644,6 @@ static int _read_list_index(const gchar * table, const gchar * file, const gchar
 
 	return ret;
 }
-*/
 /*********************/
 /*********************/
 /*********************/
@@ -689,6 +689,7 @@ static int __read_list(const gchar * table, const gchar * file, gchar *** res, v
 
 	return TRUE;
 }
+/* Auto lock version */
 int read_list(const gchar * table, const gchar * file, gchar *** res, ...)
 {
 	int ret;
@@ -707,8 +708,8 @@ int read_list(const gchar * table, const gchar * file, gchar *** res, ...)
 	return ret;
 }
 
-/* Not used yet
-static int _read_list(const gchar * table, const gchar * file, gchar *** res, ...)
+/* No lock version */
+int _read_list(const gchar * table, const gchar * file, gchar *** res, ...)
 {
 	int ret;
 	va_list ap;
@@ -719,7 +720,6 @@ static int _read_list(const gchar * table, const gchar * file, gchar *** res, ..
 
 	return ret;
 }
-*/
 /*********************/
 /*********************/
 /*********************/
