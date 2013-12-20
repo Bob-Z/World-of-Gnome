@@ -33,6 +33,7 @@ extern GStaticMutex file_mutex;
 
 //static pthread_mutex_t character_mutex = PTHREAD_MUTEX_INITIALIZER;
 static item_t * item_list = NULL;
+static int change_map = 0;
 
 //Keynoard callback
 
@@ -217,6 +218,12 @@ static void compose_sprite(context_t * ctx)
 
 		timer = SDL_GetTicks();
 
+		/* Force position when changing map */
+		if(!ctx->new_map_drawn) {
+			ctx->pos_tick = 0;
+			ctx->new_map_drawn=1;
+		}
+
 		if( ctx->pos_tick == 0 ) {
 			ctx->cur_pos_x = ctx->pos_x;
 			ctx->cur_pos_y = ctx->pos_y;
@@ -387,7 +394,6 @@ item_t * scr_play_compose(context_t * ctx)
 {
 	static int init = 1;
 	static char * map = NULL;
-	int change_map = 0;
 
 	if(item_list) {
 		item_list_free(item_list);
