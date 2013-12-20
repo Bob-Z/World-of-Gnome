@@ -26,8 +26,11 @@ gchar * file_new(gchar * table);
 
 int read_int(const gchar * table, const gchar * file, int * res, ...);
 int read_string(const gchar * table, const gchar * file, const gchar ** res, ...);
+int _read_int(const gchar * table, const gchar * file, int * res, ...);
+int _read_string(const gchar * table, const gchar * file, const gchar ** res, ...);
 int read_list_index(const gchar * table, const gchar * file, const gchar ** res,gint index, ...);
 int read_list(const gchar * table, const gchar * file, gchar *** res, ...);
+int _read_list(const gchar * table, const gchar * file, gchar *** res, ...);
 
 int write_int(const gchar * table, const gchar * file, int data, ...);
 int write_string(const gchar * table, const gchar * file,const char * data, ...);
