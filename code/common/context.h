@@ -65,7 +65,7 @@ typedef struct context {
 	selection_t 	selection; /* Selected tile or sprite */
 	gchar *		id; /* unique ID of a character (its filename) */
 	gchar *		prev_map; /* the map from where this context comes */
-	int 		new_map_drawn; /* Has this context already been drawn in the new map ? */
+	int 		change_map; /* Has this context map changed ? */
 	lua_State*	luaVM; /* LUA state */
 	GCond*		cond;	/* async condition for npc */
 	GMutex*		cond_mutex;/* mutex for async condition for npc */
