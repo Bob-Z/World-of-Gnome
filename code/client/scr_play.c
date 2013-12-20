@@ -29,6 +29,8 @@
 #include "item.h"
 #include "sdl.h"
 
+extern GStaticMutex file_mutex;
+
 //static pthread_mutex_t character_mutex = PTHREAD_MUTEX_INITIALIZER;
 static item_t * item_list = NULL;
 
@@ -75,6 +77,7 @@ Compose the characters map
 static void compose_map(context_t * ctx)
 {
 	int i;
+	char ** orig_value = NULL;
 	char ** value = NULL;
 	int x = 0;
         int y = 0;
@@ -82,40 +85,59 @@ static void compose_map(context_t * ctx)
 	anim_t * anim;
 	item_t * item;
 
+	g_static_mutex_lock(&file_mutex);
+
 	/* description of the map */
         if( ctx->map_x == -1 ) {
-                if(!read_int(MAP_TABLE, ctx->map, &i,MAP_KEY_SIZE_X,NULL)) {
+                if(!_read_int(MAP_TABLE, ctx->map, &i,MAP_KEY_SIZE_X,NULL)) {
+			g_static_mutex_unlock(&file_mutex);
                         return;
                 }
                 context_set_map_x(ctx, i);
         }
         if( ctx->map_y == -1 ) {
-                if(!read_int(MAP_TABLE, ctx->map, &i,MAP_KEY_SIZE_Y,NULL)) {
+                if(!_read_int(MAP_TABLE, ctx->map, &i,MAP_KEY_SIZE_Y,NULL)) {
+			g_static_mutex_unlock(&file_mutex);
                         return;
                 }
                 context_set_map_y( ctx,i);
         }
         if( ctx->tile_x == -1 ) {
-                if(!read_int(MAP_TABLE, ctx->map, &i,MAP_KEY_TILE_SIZE_X,NULL)){
+                if(!_read_int(MAP_TABLE, ctx->map, &i,MAP_KEY_TILE_SIZE_X,NULL)){
+			g_static_mutex_unlock(&file_mutex);
                         return;
                 }
                 context_set_tile_x( ctx, i);
         }
         if( ctx->tile_y == -1 ) {
-                if(!read_int(MAP_TABLE, ctx->map,&i,MAP_KEY_TILE_SIZE_Y,NULL)) {
+                if(!_read_int(MAP_TABLE, ctx->map,&i,MAP_KEY_TILE_SIZE_Y,NULL)){
+			g_static_mutex_unlock(&file_mutex);
                         return;
                 }
                 context_set_tile_y( ctx, i);
         }
-        if(!read_list(MAP_TABLE, ctx->map, &value,MAP_KEY_SET,NULL)) {
+        if(!_read_list(MAP_TABLE, ctx->map, &orig_value,MAP_KEY_SET,NULL)) {
+		g_static_mutex_unlock(&file_mutex);
                 return;
         }
+
+	/* Save list to be able to release the file lock so that imageDB_get_anim can get it back when reading a file image */
+	i=0;
+        while(orig_value[i] != NULL ) {
+		value = realloc(value,sizeof(char*)*(i+2));
+		value[i] = strdup(orig_value[i]);
+		value[i+1]=NULL;
+		i++;
+	}
+	free(orig_value);
+
+	g_static_mutex_unlock(&file_mutex);
 
 	/* Parse map string */
 	i=0;
         while(value[i] != NULL ) {
 		if(!read_string(TILE_TABLE,value[i],&tile_image,TILE_KEY_IMAGE,NULL)) {
-                break;
+			break;
 		}
 #if 0
 		/* Save description for caller */
@@ -138,7 +160,13 @@ static void compose_map(context_t * ctx)
 		i++;
         }
 
-        g_free(value);
+	/* Free the copied value list */
+	i=0;
+        while(value[i] != NULL ) {
+		free(value[i]);
+		i++;
+	}
+	free(value);
 }
 
 void cb_select_sprite(void *arg)
