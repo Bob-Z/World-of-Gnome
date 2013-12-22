@@ -63,6 +63,9 @@ CFLAGS+=" -export-dynamic"
 CFLAGS+=" ${LIBCONFIG_CFLAGS}"
 CFLAGS+=" ${LIBLUA_CFLAGS}"
 
+ADD_LIB="$LIBCONFIG_LIBS"
+
+
 AC_SUBST(SET_MAKE)
 
 dnl expand ${datadir} and write it out
