@@ -1,0 +1,4 @@
+Dependancies installation on Debian/Ubuntu:
+
+apt-get install automake libgtk2.0-dev libgconf2-dev libconfig8-dev liblualib50-dev libgif-dev libsdl2-dev libavformat-dev libavcodec-dev libswscale-dev libsdl-ttf2.0-dev 
+
