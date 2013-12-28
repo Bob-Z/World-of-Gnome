@@ -1,3 +1,0 @@
-text		= "Remove an equipment";
-icon		= "white.jpg";
-script		= "remove_equip.lua";

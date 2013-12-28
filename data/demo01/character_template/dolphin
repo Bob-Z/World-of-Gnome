@@ -7,4 +7,4 @@ pos_y		= 0;
 #action		= [ ];
 allowed_tile	= [ "sea" ];
 #inventory	= [ ];  
-ai		= "ai_random.lua";
+ai		= "ai/ai_random.lua";
