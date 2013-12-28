@@ -1,3 +1,0 @@
-text            = "Get an item from the field";
-icon            = "gray.jpg";
-script		= "get.lua";
