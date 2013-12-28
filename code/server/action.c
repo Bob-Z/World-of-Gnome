@@ -29,6 +29,7 @@
 #include <lua.h>
 #include <lualib.h>
 #include <lauxlib.h>
+#include <stdlib.h>
 
 #define LUAVM_CONTEXT "wog_context"
 
@@ -603,6 +604,36 @@ static int l_map_get_tile_type( lua_State* L)
 	return 1;  /* number of results */
 }
 
+static int l_map_get_character( lua_State* L)
+{
+	const gchar * map;
+	gint x;
+	gint y;
+	gchar ** res;
+	gchar ** cur_res;
+	int res_num = 0;
+
+	map = luaL_checkstring(L, -3);
+	x = luaL_checkint(L, -2);
+	y = luaL_checkint(L, -1);
+
+	res = map_get_character(map,x,y);
+	if( res) {
+		cur_res = res;
+		while(*cur_res != NULL) {
+wlog(LOGDEBUG,"Pushing %s",*cur_res);
+			lua_pushstring(L, *cur_res);
+			free(*cur_res);
+			res_num++;
+			cur_res++;
+		}
+		free(res);
+	}
+
+wlog(LOGDEBUG,"returning %d",res_num);
+	return res_num;  /* number of results */
+}
+
 static int l_character_attribute_change( lua_State* L)
 {
 	const gchar * id;
@@ -753,6 +784,8 @@ void register_lua_functions(context_t * context)
 	lua_setglobal(L, "map_get_tile");
 	lua_pushcfunction(L, l_map_get_tile_type);
 	lua_setglobal(L, "map_get_tile_type");
+	lua_pushcfunction(L, l_map_get_character);
+	lua_setglobal(L, "map_get_character");
 	lua_pushcfunction(L, l_map_add_event);
 	lua_setglobal(L, "map_add_event");
 	lua_pushcfunction(L, l_map_add_event_param);
