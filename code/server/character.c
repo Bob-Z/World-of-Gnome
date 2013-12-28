@@ -233,7 +233,7 @@ return -1 if the postion was not set (because tile not allowed or out of bound)
 ******************************************************/
 gint character_set_pos(context_t * ctx, gchar * map, gint x, gint y)
 {
-	const gchar ** event_id;
+	gchar ** event_id;
 	const gchar * script;
 	gchar ** param;
 	int i;
@@ -280,6 +280,7 @@ gint character_set_pos(context_t * ctx, gchar * map, gint x, gint y)
 				i++;
 				g_free(param);
 			}
+			g_free(event_id);
 		}
 
 		character_update_aggro(ctx);

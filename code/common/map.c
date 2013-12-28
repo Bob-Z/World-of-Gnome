@@ -20,6 +20,8 @@
 #include <glib.h>
 #include <gio/gio.h>
 #include "common.h"
+#include <stdlib.h>
+#include <string.h>
 
 /* avoid 2 server's thread to change a map file at the same time */
 static GStaticMutex map_mutex = G_STATIC_MUTEX_INIT;
@@ -330,10 +332,10 @@ const gchar * map_get_tile_type(const gchar * map,gint x, gint y)
  return an array of event id on given map at x,y
  This array MUST be freed by caller
 ************************************************/
-const gchar ** map_get_event(const gchar * map,gint x, gint y)
+gchar ** map_get_event(const gchar * map,gint x, gint y)
 {
 	gchar ** eventlist = NULL;
-	const gchar ** event_id = NULL;
+	gchar ** event_id = NULL;
 	gint i=0;
 	gint mapx;
 	gint mapy;
@@ -492,4 +494,30 @@ gint map_delete_event(const gchar * map, const gchar * script, gint x, gint y)
 	context_broadcast_file(MAP_TABLE,map,TRUE);
 
 	return 0;
+}
+
+/************************************************
+ return an array of character id on given map at x,y
+ This array AND its content MUST be freed by caller
+************************************************/
+char ** map_get_character(const gchar * map,gint x, gint y)
+{
+	char ** character_list = NULL;
+	int character_num = 0;
+	context_t * ctx = context_get_list_first();
+
+	context_lock_list();
+	while(ctx!= NULL) {
+		if(ctx->pos_x == x && ctx->pos_y == y && !strcmp(ctx->map,map)){
+			character_num++;
+			character_list=realloc(character_list,sizeof(char*)*(character_num+1));
+			character_list[character_num-1] = strdup(ctx->id);
+			character_list[character_num]=NULL;
+		}
+
+		ctx = ctx->next;
+	}
+	context_unlock_list();
+
+	return character_list;
 }
