@@ -508,6 +508,10 @@ char ** map_get_character(const gchar * map,gint x, gint y)
 
 	context_lock_list();
 	while(ctx!= NULL) {
+		if(ctx->map == NULL) {
+			ctx = ctx->next;
+			continue;
+		}
 		if(ctx->pos_x == x && ctx->pos_y == y && !strcmp(ctx->map,map)){
 			character_num++;
 			character_list=realloc(character_list,sizeof(char*)*(character_num+1));
