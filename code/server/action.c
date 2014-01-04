@@ -392,6 +392,15 @@ static int l_print_text_server( lua_State* L)
 	return 0;  /* number of results */
 }
 
+static int l_print_text_debug( lua_State* L)
+{
+	const gchar * string;
+
+	string = luaL_checkstring(L, -1);
+	wlog(LOGDEV,(char*)string);
+	return 0;  /* number of results */
+}
+
 static int l_map_add_item( lua_State* L)
 {
 	const gchar * map;
@@ -829,6 +838,8 @@ void register_lua_functions(context_t * context)
 	lua_setglobal(L, "print_text_map");
 	lua_pushcfunction(L, l_print_text_server);
 	lua_setglobal(L, "print_text_server");
+	lua_pushcfunction(L, l_print_text_debug);
+	lua_setglobal(L, "print_text_debug");
 
 	/* push the context on lua VM stack */
 	lua_pushlightuserdata(L,context);
