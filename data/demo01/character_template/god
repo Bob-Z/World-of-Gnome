@@ -4,6 +4,6 @@ type		= "god"
 map		= "map1";
 pos_x		= 16;
 pos_y		= 16;
-action		= [ "add_ground", "add_sea" , "add_dolphin"];
+action		= [ "add_ground", "add_sea" , "add_dolphin", "add_flower"];
 #allowed_tile	= [ "ground" ];
 #inventory	= [ ];
