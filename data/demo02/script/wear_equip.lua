@@ -1,14 +1,14 @@
-id = player_get_id();
+id = player_get_id()
 
 slot = character_get_selected_equipment_slot(id)
 if slot == nil or slot == "" then
-	print_text_id(id, "Please, select an equipment slot to equip");
+	print_text_id(id, "Please, select an equipment slot to equip")
 	return
 end
 
 item = character_get_selected_inventory_id(id)
 if item == nil or item == "" then
-	print_text_id(id, "Please, select an item to equip");
+	print_text_id(id, "Please, select an item to equip")
 	return
 end
 
