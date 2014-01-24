@@ -3,4 +3,4 @@ map = parameter0
 x = parameter1
 y = parameter2
 
-character_set_pos(id,map,x,y);
+character_set_pos(id,map,x,y)
