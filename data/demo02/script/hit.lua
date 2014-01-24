@@ -1,4 +1,4 @@
-id = player_get_id();
+id = player_get_id()
 
 target = character_get_selected_character_id(id)
 if target == nil then
@@ -10,7 +10,7 @@ target_agility = character_attribute_get(target,"agility")
 player = player_get_id()
 player_agility = character_attribute_get(player,"agility")
 
-hit = math.random(target_agility+player_agility);
+hit = math.random(target_agility+player_agility)
 
 if hit <= player_agility then
 	print_text_id(id, "hit !")
