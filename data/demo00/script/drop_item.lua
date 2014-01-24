@@ -1,4 +1,4 @@
-id = player_get_id();
+id = player_get_id()
 
 item = character_get_selected_inventory_id(id)
 if item == nil or item == "" then
