@@ -1,4 +1,4 @@
-id = player_get_id();
+id = player_get_id()
 
 print_text_id(id, "It's a trap !")
 
