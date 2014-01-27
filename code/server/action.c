@@ -36,6 +36,11 @@
 extern context_t * context_list_start;
 
 /* LUA script functions */
+
+/* player_get_id
+Input:
+Output: ID of the current context
+*/
 static int l_player_get_id( lua_State* L)
 {
 	context_t * context;
@@ -47,6 +52,11 @@ static int l_player_get_id( lua_State* L)
 	return 1;  /* number of results */
 }
 
+/* character_create_from_template
+Input:
+ - character template name
+Output:
+*/
 static int l_character_create_from_template( lua_State* L)
 {
 	const gchar * character;
@@ -61,6 +71,11 @@ static int l_character_create_from_template( lua_State* L)
 	return 1;  /* number of results */
 }
 
+/* character_get_selected_map_tile_x
+Input:
+ - ID of a character
+Output: X coordinate if selected tile
+*/
 static int l_character_get_selected_map_tile_x( lua_State* L)
 {
 	context_t * target;
@@ -76,6 +91,11 @@ static int l_character_get_selected_map_tile_x( lua_State* L)
 	return 1;  /* number of results */
 }
 
+/* character_get_selected_map_tile_y
+Input:
+ - ID of a character
+Output: Y coordinate if selected tile
+*/
 static int l_character_get_selected_map_tile_y( lua_State* L)
 {
 	context_t * target;
@@ -91,6 +111,11 @@ static int l_character_get_selected_map_tile_y( lua_State* L)
 	return 1;  /* number of results */
 }
 
+/* character_get_selected_map
+Input:
+ - ID of a character
+Output: ID of the selected map
+*/
 static int l_character_get_selected_map( lua_State* L)
 {
 	context_t * target;
@@ -106,6 +131,11 @@ static int l_character_get_selected_map( lua_State* L)
 	return 1;  /* number of results */
 }
 
+/* character_get_selected_inventory_id
+Input:
+ - ID of a character
+Output: ID of selected item in inventory
+*/
 static int l_character_get_selected_inventory_id( lua_State* L)
 {
 	context_t * target;
@@ -121,6 +151,11 @@ static int l_character_get_selected_inventory_id( lua_State* L)
 	return 1;  /* number of results */
 }
 
+/* character_get_selected_equipment_slot
+Input:
+ - ID of a character
+Output: ID of selected item in equipment
+*/
 static int l_character_get_selected_equipment_slot( lua_State* L)
 {
 	context_t * target;
@@ -136,6 +171,11 @@ static int l_character_get_selected_equipment_slot( lua_State* L)
 	return 1;  /* number of results */
 }
 
+/* character_get_selected_character_id
+Input:
+ - ID of a character
+Output: ID of the selected character
+*/
 static int l_character_get_selected_character_id( lua_State* L)
 {
 	context_t * target;
@@ -151,6 +191,11 @@ static int l_character_get_selected_character_id( lua_State* L)
 	return 1;  /* number of results */
 }
 
+/* character_get_map
+Input:
+ - ID of a character
+Output: ID of the map where the character is
+*/
 static int l_character_get_map( lua_State* L)
 {
 	context_t * target;
@@ -166,6 +211,11 @@ static int l_character_get_map( lua_State* L)
 	return 1;  /* number of results */
 }
 
+/* character_get_map_x
+Input:
+ - ID of a map
+Output: Width of the map
+*/
 static int l_character_get_map_x( lua_State* L)
 {
 	context_t * target;
@@ -181,6 +231,11 @@ static int l_character_get_map_x( lua_State* L)
 	return 1;  /* number of results */
 }
 
+/* character_get_map_y
+Input:
+ - ID of a map
+Output: Height of the map
+*/
 static int l_character_get_map_y( lua_State* L)
 {
 	context_t * target;
@@ -196,6 +251,11 @@ static int l_character_get_map_y( lua_State* L)
 	return 1;  /* number of results */
 }
 
+/* character_get_x
+Input:
+ - ID of a character
+Output: X coordinate of the character
+*/
 static int l_character_get_x( lua_State* L)
 {
 	context_t * target;
@@ -211,6 +271,11 @@ static int l_character_get_x( lua_State* L)
 	return 1;  /* number of results */
 }
 
+/* character_get_y
+Input:
+ - ID of a character
+Output: Y coordinate of the character
+*/
 static int l_character_get_y( lua_State* L)
 {
 	context_t * target;
@@ -226,6 +291,11 @@ static int l_character_get_y( lua_State* L)
 	return 1;  /* number of results */
 }
 
+/* character_get_name
+Input:
+ - ID of a character
+Output: Name of the character
+*/
 static int l_character_get_name( lua_State* L)
 {
 	context_t * target;
@@ -241,6 +311,11 @@ static int l_character_get_name( lua_State* L)
 	return 1;  /* number of results */
 }
 
+/* character_get_type
+Input:
+ - ID of a character
+Output: Type of the character
+*/
 static int l_character_get_type( lua_State* L)
 {
 	context_t * target;
@@ -256,6 +331,14 @@ static int l_character_get_type( lua_State* L)
 	return 1;  /* number of results */
 }
 
+/* character_disconnect
+
+Disconnect a context
+
+Input:
+ - ID of a character
+Output:
+*/
 static int l_character_disconnect( lua_State* L)
 {
 	const gchar * id;
@@ -267,6 +350,14 @@ static int l_character_disconnect( lua_State* L)
 	return 1;  /* number of results */
 }
 
+/* character_delete
+
+Delete the data file of a character
+
+Input:
+ - ID of a character
+Output:
+*/
 static int l_character_delete( lua_State* L)
 {
 	const gchar * id;
@@ -278,6 +369,18 @@ static int l_character_delete( lua_State* L)
 	return 1;  /* number of results */
 }
 
+/* character_set_pos
+
+Set a character's position.
+May fail with regard to allowed tiles
+
+Input:
+ - ID of a character
+ - ID of the map to set
+ - X cooridnate in the map
+ - Y cooridnate in the map
+Output:
+*/
 static int l_character_set_pos( lua_State* L)
 {
 	const gchar * id;
@@ -298,6 +401,15 @@ static int l_character_set_pos( lua_State* L)
 	return 1;  /* number of results */
 }
 
+/* character_set_npc
+
+Set a character as a non-player character and starts it's AI script.
+
+Input:
+ - ID of a character
+ - Value of NPC (0 for player's character, 1 for NPC)
+Output:
+*/
 static int l_character_set_npc( lua_State* L)
 {
 	const gchar * id;
@@ -312,6 +424,18 @@ static int l_character_set_npc( lua_State* L)
 	return 1;  /* number of results */
 }
 
+/* map_new
+
+Create a map
+
+Input:
+ - Width of map
+ - Height of map
+ - Width of tile (in pixels)
+ - Height of tile (in pixels)
+ - ID of default tile (new map is filled with)
+Output: New map ID
+*/
 static int l_map_new( lua_State* L)
 {
 	gchar * map_name;
@@ -332,6 +456,17 @@ static int l_map_new( lua_State* L)
 	return 1;  /* number of results */
 }
 
+/* map_set_tile
+
+Set a tile in a map
+
+Input:
+ - ID of a map
+ - ID of a tile
+ - X coordinate of the tile to set
+ - Y coordinate of the tile to set
+Output:
+*/
 static int l_map_set_tile( lua_State* L)
 {
 	const gchar * map;
@@ -349,6 +484,15 @@ static int l_map_set_tile( lua_State* L)
 	return 1;  /* number of results */
 }
 
+/* print_text_id
+
+Send a message to a character
+
+Input:
+ - ID of the receiver
+ - message
+Output:
+*/
 static int l_print_text_id( lua_State* L)
 {
 	const gchar * id;
@@ -364,6 +508,15 @@ static int l_print_text_id( lua_State* L)
 	return 0;  /* number of results */
 }
 
+/* print_text_map
+
+Send a message to all characters on a map
+
+Input:
+ - ID of a map
+ - message
+Output:
+*/
 static int l_print_text_map( lua_State* L)
 {
 	const gchar * map;
@@ -379,6 +532,14 @@ static int l_print_text_map( lua_State* L)
 	return 0;  /* number of results */
 }
 
+/* print_text_server
+
+Send a message to all characters on the server
+
+Input:
+ - message
+Output:
+*/
 static int l_print_text_server( lua_State* L)
 {
 	const gchar * string;
@@ -392,6 +553,14 @@ static int l_print_text_server( lua_State* L)
 	return 0;  /* number of results */
 }
 
+/* print_text_debug
+
+Print a message in the server's log (mainly for debug purpose)
+
+Input:
+ - message
+Output:
+*/
 static int l_print_text_debug( lua_State* L)
 {
 	const gchar * string;
@@ -401,6 +570,17 @@ static int l_print_text_debug( lua_State* L)
 	return 0;  /* number of results */
 }
 
+/* map_add_item
+
+Add an item on a map
+
+Input:
+ - ID of a map
+ - ID of an item
+ - X coordinate in the map
+ - Y coordinate in the map
+Output:
+*/
 static int l_map_add_item( lua_State* L)
 {
 	const gchar * map;
@@ -418,6 +598,16 @@ static int l_map_add_item( lua_State* L)
 	return 1;  /* number of results */
 }
 
+/* map_delete_item
+
+Remove an item from a map (only the first item found on the tile is deleted)
+
+Input:
+ - ID of a map
+ - X coordinate in the map
+ - Y coordinate in the map
+Output:
+*/
 static int l_map_delete_item( lua_State* L)
 {
 	const gchar * map;
@@ -436,6 +626,17 @@ static int l_map_delete_item( lua_State* L)
 	return 1;  /* number of results */
 }
 
+/* map_add_event
+
+Add an event on a map
+
+Input:
+ - ID of a map
+ - Event's script
+ - X coordinate in the map
+ - Y coordinate in the map
+Output: Event ID
+*/
 static int l_map_add_event( lua_State* L)
 {
 	const gchar * map;
@@ -456,6 +657,16 @@ static int l_map_add_event( lua_State* L)
 	return 1;  /* number of results */
 }
 
+/* map_add_event_param
+
+Add a parameter to the given event
+
+Input:
+ - ID of a map
+ - ID of an event
+ - parameter to add
+Output:
+*/
 static int l_map_add_event_param( lua_State* L)
 {
 	const gchar * map;
@@ -471,6 +682,17 @@ static int l_map_add_event_param( lua_State* L)
 	return 1;  /* number of results */
 }
 
+/* map_delete_event
+
+Add a parameter to the given event
+
+Input:
+ - ID of a map
+ - event's script
+ - X coordinate (in tiles)
+ - Y coordinate (in tiles)
+Output:
+*/
 static int l_map_delete_event( lua_State* L)
 {
 	const gchar * map;
@@ -488,6 +710,15 @@ static int l_map_delete_event( lua_State* L)
 	return 1;  /* number of results */
 }
 
+/* inventory_delete
+
+Delete an item from the inventory
+
+Input:
+ - ID of a character
+ - ID of an item
+Output:
+*/
 static int l_inventory_delete( lua_State* L)
 {
 	const gchar * id;
@@ -501,6 +732,15 @@ static int l_inventory_delete( lua_State* L)
 	return 1;  /* number of results */
 }
 
+/* inventory_add
+
+Add an item in the inventory
+
+Input:
+ - ID of a character
+ - ID of an item
+Output:
+*/
 static int l_inventory_add( lua_State* L)
 {
 	const gchar * id;
@@ -514,6 +754,15 @@ static int l_inventory_add( lua_State* L)
 	return 1;  /* number of results */
 }
 
+/* inventory_count
+
+Get the number of item of the same type
+
+Input:
+ - ID of a character
+ - ID of an item
+Output: Number of item of that type
+*/
 static int l_inventory_count( lua_State* L)
 {
 	const gchar * id;
@@ -527,6 +776,15 @@ static int l_inventory_count( lua_State* L)
 	return 1;  /* number of results */
 }
 
+/* inventory_get_by_name
+
+Get item ID from its name
+
+Input:
+ - ID of a character
+ - name of an item
+Output: ID of an item of that type
+*/
 static int l_inventory_get_by_name( lua_State* L)
 {
 	const gchar * id;
@@ -543,6 +801,13 @@ static int l_inventory_get_by_name( lua_State* L)
 	return 1;  /* number of results */
 }
 
+/* item_create_empty
+
+Create an empty item
+
+Input:
+Output: ID of a new item
+*/
 static int l_item_create_empty( lua_State* L)
 {
 	gchar * res;
@@ -555,6 +820,13 @@ static int l_item_create_empty( lua_State* L)
 	return 1;  /* number of results */
 }
 
+/* item_create_from_template
+
+Create an item from a template
+
+Input: item template name
+Output: ID of a new item
+*/
 static int l_item_create_from_template( lua_State* L)
 {
 	const gchar * item;
@@ -569,6 +841,14 @@ static int l_item_create_from_template( lua_State* L)
 	return 1;  /* number of results */
 }
 
+/* item_destroy
+
+Delete an item
+
+Input:
+ - ID of an item
+Output:
+*/
 static int l_item_destroy( lua_State* L)
 {
 	const gchar * item;
@@ -580,6 +860,16 @@ static int l_item_destroy( lua_State* L)
 	return 1;  /* number of results */
 }
 
+/* map_get_tile
+
+Get tile ID of a given map
+
+Input:
+ - ID of a map
+ - X coordinate (in tiles)
+ - Y coordinate (in tiles)
+Output: ID of the tile
+*/
 static int l_map_get_tile( lua_State* L)
 {
 	const gchar * map;
@@ -598,6 +888,16 @@ static int l_map_get_tile( lua_State* L)
 	return 1;  /* number of results */
 }
 
+/* map_get_tile_type
+
+Get tile type of a given map
+
+Input:
+ - ID of a map
+ - X coordinate (in tiles)
+ - Y coordinate (in tiles)
+Output: type of the tile
+*/
 static int l_map_get_tile_type( lua_State* L)
 {
 	const gchar * map;
@@ -613,6 +913,16 @@ static int l_map_get_tile_type( lua_State* L)
 	return 1;  /* number of results */
 }
 
+/* map_get_character
+
+Get list of characters on a tile
+
+Input:
+ - ID of a map
+ - X coordinate (in tiles)
+ - Y coordinate (in tiles)
+Output: Array of characters on that tile
+*/
 static int l_map_get_character( lua_State* L)
 {
 	const gchar * map;
@@ -643,6 +953,16 @@ wlog(LOGDEBUG,"returning %d",res_num);
 	return res_num;  /* number of results */
 }
 
+/* character_attribute_change
+
+Add (or remove) a value to the given attribute
+
+Input:
+ - ID of a character
+ - ID of an attribute
+ - value to add (may be negative)
+Output:
+*/
 static int l_character_attribute_change( lua_State* L)
 {
 	const gchar * id;
@@ -664,6 +984,15 @@ static int l_character_attribute_change( lua_State* L)
 	return 1;  /* number of results */
 }
 
+/* character_attribute_get
+
+Get the value of the given attribute
+
+Input:
+ - ID of a character
+ - ID of an attribute
+Output: Value of the given attribute
+*/
 static int l_character_attribute_get( lua_State* L)
 {
 	const gchar * id;
@@ -677,6 +1006,16 @@ static int l_character_attribute_get( lua_State* L)
 	return 1;  /* number of results */
 }
 
+/* character_attribute_set
+
+Set an attribute to the given value
+
+Input:
+ - ID of a character
+ - ID of an attribute
+ - value
+Output:
+*/
 static int l_character_attribute_set( lua_State* L)
 {
 	const gchar * id;
@@ -692,6 +1031,15 @@ static int l_character_attribute_set( lua_State* L)
 	return 1;  /* number of results */
 }
 
+/* equipment_slot_delete_item
+
+Delete an item from an equipment slot
+
+Input:
+ - ID of a character
+ - ID of an equipment slot
+Output:
+*/
 static int l_equipment_slot_delete_item( lua_State* L)
 {
 	const gchar * id;
@@ -705,6 +1053,16 @@ static int l_equipment_slot_delete_item( lua_State* L)
 	return 1;  /* number of results */
 }
 
+/* equipment_slot_add_item
+
+Add an item to an equipment slot
+
+Input:
+ - ID of a character
+ - ID of an equipment slot
+ - ID of an item
+Output:
+*/
 static int l_equipment_slot_add_item( lua_State* L)
 {
 	const gchar * id;
@@ -720,6 +1078,15 @@ static int l_equipment_slot_add_item( lua_State* L)
 	return 1;  /* number of results */
 }
 
+/* equipment_slot_get_item_id
+
+Get the item's ID of an equipment slot
+
+Input:
+ - ID of a character
+ - ID of an equipment slot
+Output: ID of an item
+*/
 static int l_equipment_slot_get_item_id( lua_State* L)
 {
 	const gchar * id;
