@@ -135,7 +135,7 @@ gint character_disconnect( const gchar * id)
  the returned string must be freed by caller
  return NULL if fails
 *******************************************************/
-gchar * character_create_from_template(const gchar * template)
+gchar * character_create_from_template(context_t * ctx,const gchar * template,const char * map, int x, int y)
 {
 	gchar * new_name;
 	gchar * templatename;
@@ -155,6 +155,28 @@ gchar * character_create_from_template(const gchar * template)
 		g_free(new_name);
 		return NULL;
 	}
+
+	/* Check if new character is allowed to be created here */
+	if(!map_check_tile(ctx,new_name,map,x,y)) {
+		g_file_delete(newfile,NULL,NULL);
+		return NULL;
+	}
+
+	/* Write position */
+        if(!write_string(CHARACTER_TABLE,new_name,map,CHARACTER_KEY_MAP,NULL)) {
+		g_file_delete(newfile,NULL,NULL);
+		return NULL;
+        }
+
+        if(!write_int(CHARACTER_TABLE,new_name,x,CHARACTER_KEY_POS_X,NULL)) {
+		g_file_delete(newfile,NULL,NULL);
+		return NULL;
+        }
+
+        if(!write_int(CHARACTER_TABLE,new_name,y,CHARACTER_KEY_POS_Y,NULL)) {
+		g_file_delete(newfile,NULL,NULL);
+		return NULL;
+        }
 
 	return new_name;
 }
@@ -244,7 +266,7 @@ gint character_set_pos(context_t * ctx, gchar * map, gint x, gint y)
 	}
 
 	/* Check if this character is allowed to go to the target tile */
-	if (map_check_tile(ctx->id,map,x,y) ) {
+	if (map_check_tile(ctx,ctx->id,map,x,y) ) {
 
 		if( g_strcmp0(ctx->map,map) ) {
 			change_map = 1;
