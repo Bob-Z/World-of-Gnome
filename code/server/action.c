@@ -55,15 +55,31 @@ static int l_player_get_id( lua_State* L)
 /* character_create_from_template
 Input:
  - character template name
+ - map of the newly created character
+ - x ...
+ - y ...
 Output:
+	id of the new character or nil if cannot be created or placed
 */
 static int l_character_create_from_template( lua_State* L)
 {
-	const gchar * character;
-	gchar * res;
+	const gchar * template;
+	const char * map;
+	int x;
+	int y;
 
-	character = luaL_checkstring(L, -1);
-	res = character_create_from_template(character);
+	gchar * res;
+	context_t * ctx;
+
+	lua_getglobal(L,LUAVM_CONTEXT);
+	ctx = lua_touserdata(L, -1);
+	lua_pop(L,1);
+
+	template = luaL_checkstring(L, -4);
+	map = luaL_checkstring(L, -3);
+	x = luaL_checkint(L, -2);
+	y = luaL_checkint(L, -1);
+	res = character_create_from_template(ctx,template,map,x,y);
 	lua_pushstring(L, res);
 	if( res) {
 		g_free(res);
@@ -1229,9 +1245,8 @@ return -1 if the script do not return something
 gint action_execute_script(context_t * context, const gchar * script, gchar ** parameters)
 {
 	gchar * filename;
-	gchar * previous_parameter;
 	gchar parameter_name[SMALL_BUF];
-	gint i;
+	gint param_num = 0;
 	gint return_value;
 
 	/* Special case for chat */
@@ -1240,23 +1255,8 @@ gint action_execute_script(context_t * context, const gchar * script, gchar ** p
 		return -1;
 	}
 
+	/* Load script */
 	filename = g_strconcat( g_getenv("HOME"),"/", base_directory, "/", SCRIPT_TABLE, "/", script, NULL);
-	/* push parameters on lua VM stack (only strings paramters are supported) */
-	if(parameters != NULL ) {
-		previous_parameter = parameters[0];
-		for(i=0; i<MAX_PARAMETER; i++) {
-			g_sprintf(parameter_name,"parameter%d",i);
-			if(previous_parameter == NULL ) {
-				lua_pushstring(context->luaVM,NULL);
-				lua_setglobal (context->luaVM, parameter_name);
-			} else {
-				lua_pushstring(context->luaVM,parameters[i]);
-				lua_setglobal (context->luaVM, parameter_name);
-				previous_parameter = parameters[i];
-			}
-		}
-	}
-
 	if (luaL_loadfile(context->luaVM, filename) != 0 ) {
 		/* If something went wrong, error message is at the top of */
 		/* the stack */
@@ -1264,8 +1264,22 @@ gint action_execute_script(context_t * context, const gchar * script, gchar ** p
 		return -1;
 	}
 
-	/* Ask Lua to run the script */
-	if (lua_pcall(context->luaVM, 0, LUA_MULTRET, 0) != 0) {
+	/* Fake call to read global variable from the script file (i.e. the f function */
+	lua_pcall(context->luaVM, 0, 0, 0);
+
+	/* push f function on LUA VM stack */
+	lua_getglobal(context->luaVM,"f");
+
+	/* push parameters on lua VM stack (only strings parameters are supported) */
+	if(parameters != NULL ) {
+		while(parameters[param_num] != NULL ) {
+			lua_pushstring(context->luaVM,parameters[param_num]);
+			param_num++;
+		}
+	}
+
+	/* Ask Lua to call the f function with the given parameters */
+	if (lua_pcall(context->luaVM, param_num, 1, 0) != 0) {
 		werr(LOGUSER,"Failed to run LUA script %s: %s\n", filename, lua_tostring(context->luaVM, -1));
 		return -1;
 	}
@@ -1274,8 +1288,10 @@ gint action_execute_script(context_t * context, const gchar * script, gchar ** p
 
 	/* retrieve result */
 	if (!lua_isnumber(context->luaVM, -1)) {
+		lua_pop(context->luaVM, 1);
 		return -1;
 	}
 	return_value = lua_tonumber(context->luaVM, -1);
+	lua_pop(context->luaVM, 1);
 	return return_value;
 }
