@@ -36,6 +36,9 @@ static void npc_script(context_t * context, gchar * script, gchar ** parameters)
 
 	context_new_VM(context);
 
+	/* Allow the calling thread to continue */
+	g_mutex_unlock(context->cond_mutex);
+
 	while(context_get_connected(context)) {
 		g_static_mutex_lock(&npc_mutex);
 		timeout_ms = action_execute_script(context,script,parameters);
@@ -80,6 +83,8 @@ static gpointer manage_npc(gpointer data)
 		return NULL;
 	}
 
+	/* Allow the calling thread to continue */
+	g_mutex_unlock(context->cond_mutex);
 	werr(LOGUSER,"No AI script for %s",context->id);
 
 	return NULL;
@@ -152,8 +157,15 @@ void instantiate_npc(const gchar * id)
 	ctx->cond = g_cond_new();
 	ctx->cond_mutex = g_mutex_new();
 
+	context_spread(ctx);
+
+	/* Make sure the thread has created the LUA VM before continung */
+	g_mutex_lock(ctx->cond_mutex);
 	/* start management thread */
 	g_thread_create(manage_npc,(gpointer)ctx,FALSE,NULL);
+	/* Wait for the thread to unlock the mutex */
+	g_mutex_lock(ctx->cond_mutex);
+	g_mutex_unlock(ctx->cond_mutex);
 
 }
 /**************************
