@@ -5,6 +5,6 @@ map		= "map1";
 pos_x		= 16;
 pos_y		= 16;
 #action		= [ ];
-allowed_tile	= [ "ground" ];
+allowed_tile	= "allowed_tile/ground.lua";
 #inventory	= [ ];  
 ai		= "ai/ai_random.lua";

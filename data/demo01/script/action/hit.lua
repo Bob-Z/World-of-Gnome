@@ -1,3 +1,5 @@
+function f ()
+
 id = player_get_id()
 
 target = character_get_selected_character_id(id)
@@ -17,4 +19,6 @@ if hit <= player_agility then
 	character_attribute_change(target,"life",-1)
 else
 	print_text_id(id, "missed")
+end
+
 end

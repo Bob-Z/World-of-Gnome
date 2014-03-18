@@ -1,3 +1,3 @@
 image	= "tile/dungeon_stairs_up.gif";
 text	= "Go upstairs";
-type	= "ground";
+type	= "stair";

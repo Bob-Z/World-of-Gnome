@@ -1,3 +1,5 @@
+function f ()
+
 id = player_get_id()
 
 map = character_get_map(id)
@@ -15,3 +17,4 @@ end
 
 character_set_pos(id,map,new_pos_x,new_pos_y)
 
+end
