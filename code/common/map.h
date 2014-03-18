@@ -23,7 +23,7 @@
 gchar * map_new(gint x,gint y, gint tile_x, gint tile_y, gchar * default_tile);
 gchar * map_delete_item(const gchar * map, gint x, gint y);
 gint map_add_item(const gchar * map, const gchar * item, gint x, gint y);
-gboolean map_check_tile(gchar * id,gchar * map,gint x,gint y);
+gboolean map_check_tile(context_t * ctx,char * id,const char * map,gint x,gint y);
 int map_set_tile(const gchar * map,const gchar * tile,gint x, gint y);
 gchar * map_get_tile(const gchar * map,gint x, gint y);
 const gchar * map_get_tile_type(const gchar * map,gint x, gint y);

@@ -36,6 +36,10 @@ gchar * map_new(gint x,gint y, gint tile_x, gint tile_y, gchar * default_tile)
 	gchar ** tile_array;
 	gint i;
 
+	if( x<0 || y<0 ) {
+		return NULL;
+	}
+
 	map_name = file_new(MAP_TABLE);
 	if(map_name == NULL) {
 		return NULL;
@@ -72,61 +76,35 @@ gchar * map_new(gint x,gint y, gint tile_x, gint tile_y, gchar * default_tile)
 }
 
 /***********************************
-check if context is allowed to go on a tile
+check if id is allowed to go on a tile
 return TRUE if the context is allowed to go to the tile at coord x,y
 *************************************/
-gboolean map_check_tile(gchar * id,gchar * map, gint x,gint y)
+gboolean map_check_tile(context_t * ctx,char * id, const gchar * map, gint x,gint y)
 {
-	gchar ** map_tiles;
-	gchar ** allowed_tile;
-	const gchar * tile_type;
-	gint i=0;
-	gint size_x = 0;
-	gint size_y = 0;
+	const gchar * action;
+	char sx[64];
+	char sy[64];
+	char * param[5];
+	gboolean res;
 
-	if(!read_list(MAP_TABLE,map,&map_tiles,MAP_KEY_SET,NULL)) {
-		return FALSE;
-	}
-
-	if(!read_int(MAP_TABLE,map,&size_x,MAP_KEY_SIZE_X,NULL)) {
-		return FALSE;
-	}
-
-	if(!read_int(MAP_TABLE,map,&size_y,MAP_KEY_SIZE_Y,NULL)) {
-		return FALSE;
-	}
-
-	/* sanity_check */
-	if( x < 0 || y < 0 || x >= size_x || y >= size_y ) {
-		return FALSE;
-	}
-
-	if(!read_string(TILE_TABLE,map_tiles[(size_x*y)+x],&tile_type,TILE_KEY_TYPE,NULL)) {
-		g_free(map_tiles);
-		/* no type for this tile, allowed for everyone */
+	if( x<0 || y<0 ) {
 		return TRUE;
 	}
 
-	/* try specific allowed tile */
-	if(!read_list(CHARACTER_TABLE,id,&allowed_tile,CHARACTER_KEY_ALLOWED_TILE,NULL)) {
-		/* no allowed_type -> this character is allowed on all tile*/
-		g_free(map_tiles);
-		return TRUE;
+	if(read_string(CHARACTER_TABLE,id,&action, CHARACTER_KEY_ALLOWED_TILE, NULL)) {
+		param[0] = id;
+		param[1] = (char *)map;
+		sprintf(sx,"%d",x);
+		sprintf(sy,"%d",y);
+		param[2] = sx;
+		param[3] = sy;
+		param[4] = NULL;
+		res = action_execute_script(ctx,action,param);
+		return res;
 	}
 
-	while( allowed_tile[i] != NULL ) {
-		if( g_strcmp0(allowed_tile[i], tile_type) == 0 ) {
-			g_free(allowed_tile);
-			g_free(map_tiles);
-			return TRUE;
-		}
-		i++;
-	}
-
-	g_free(allowed_tile);
-	g_free(map_tiles);
-
-	return FALSE;
+	/* always allow if no script */
+	return TRUE;
 }
 
 /* delete an item on context's map */
@@ -138,6 +116,10 @@ gchar * map_delete_item(const gchar * map, gint x, gint y)
 	gint mapy;
 	const gchar * id = NULL;
 	gchar * saved_item = NULL;
+
+	if( x<0 || y<0 ) {
+		return NULL;
+	}
 
 	/* Manage concurrent acces to map files */
 	g_static_mutex_lock(&map_mutex);
@@ -201,6 +183,10 @@ gchar * map_delete_item(const gchar * map, gint x, gint y)
 /******************************************/
 gint map_add_item(const gchar * map, const gchar * id, gint x, gint y)
 {
+
+	if( x<0 || y<0 ) {
+		return -1;
+	}
 
 	g_static_mutex_lock(&map_mutex);
 
@@ -283,6 +269,10 @@ gchar * map_get_tile(const gchar * map,gint x, gint y)
 	gchar ** map_tiles;
 	gint map_size_x;
 
+	if( x<0 || y<0) {
+		return NULL;
+	}
+
 	if(!read_list(MAP_TABLE,map,&map_tiles,MAP_KEY_SET,NULL)) {
 		return NULL;
 	}
@@ -307,6 +297,10 @@ const gchar * map_get_tile_type(const gchar * map,gint x, gint y)
 	gint map_size_x;
 	gchar * tile;
 	const gchar * type;
+
+	if( x<0 || y<0) {
+		return NULL;
+	}
 
 	if(!read_list(MAP_TABLE,map,&map_tiles,MAP_KEY_SET,NULL)) {
 		return NULL;
@@ -340,6 +334,10 @@ gchar ** map_get_event(const gchar * map,gint x, gint y)
 	gint mapx;
 	gint mapy;
 	int event_id_num = 0;
+
+	if( x<0 || y<0 ) {
+		return NULL;
+	}
 
 	/* Manage concurrent acces to map files */
 	g_static_mutex_lock(&map_mutex);
@@ -383,6 +381,10 @@ gchar ** map_get_event(const gchar * map,gint x, gint y)
 gchar * map_add_event(const gchar * map, const gchar * script, gint x, gint y )
 {
 	gchar * id;
+
+	if( x<0 || y<0 ) {
+		return NULL;
+	}
 
 	/* Make sure the MAP_ENTRY_EVENT_LIST group exists */
 	group_create(MAP_TABLE,map,MAP_ENTRY_EVENT_LIST,NULL);
@@ -447,6 +449,10 @@ gint map_delete_event(const gchar * map, const gchar * script, gint x, gint y)
 	const gchar * s;
 	const gchar * id = NULL;
 
+	if( x<0 || y<0 ) {
+		return -1;
+	}
+
 	/* Manage concurrent acces to map files */
 	g_static_mutex_lock(&map_mutex);
 	/* Search events on the specified tile */
@@ -505,6 +511,10 @@ char ** map_get_character(const gchar * map,gint x, gint y)
 	char ** character_list = NULL;
 	int character_num = 0;
 	context_t * ctx = context_get_list_first();
+
+	if( x<0 || y<0 ) {
+		return NULL;
+	}
 
 	context_lock_list();
 	while(ctx!= NULL) {
