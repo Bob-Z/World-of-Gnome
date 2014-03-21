@@ -1,3 +1,5 @@
+function f ()
+
 id = player_get_id()
 
 slot = character_get_selected_equipment_slot(id)
@@ -24,4 +26,6 @@ end
 -- put item from inventory to equipment
 if inventory_delete(id,item) ~= 1 then
 	equipment_slot_get_add_item(id,slot,item)
+end
+
 end

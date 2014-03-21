@@ -1,6 +1,6 @@
-id = player_get_id()
+function f (aggro_id)
 
-aggro_id = parameter0
+id = player_get_id()
 
 if aggro_id == "" then
 	character_attribute_set(id,"already_aggro",0)
@@ -12,3 +12,4 @@ else
 	end
 end
 
+end

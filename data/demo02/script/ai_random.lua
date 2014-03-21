@@ -1,3 +1,5 @@
+function f ()
+
 id = player_get_id()
 
 map = character_get_map(id)
@@ -11,3 +13,5 @@ character_set_pos(id,map,new_pos_x,new_pos_y)
 
 -- return the time in ms before the next NPC AI action
 return 1000
+
+end

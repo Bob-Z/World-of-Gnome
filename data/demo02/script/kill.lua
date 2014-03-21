@@ -1,3 +1,5 @@
+function f ()
+
 id = player_get_id()
 
 target = character_get_selected_character_id(id)
@@ -15,4 +17,6 @@ else
 	text = string.format("%s named %s die on %s",character_get_type(id), character_get_name(id), character_get_map(id))
 	print_text_map( character_get_map(id) , text)
 	character_disconnect(id)
+end
+
 end

@@ -1,3 +1,5 @@
+function f ()
+
 x = { 1,2,3,3,3,2,1,1 }
 y = { 1,1,1,2,3,3,3,2 }
 num_move = 8
@@ -25,3 +27,5 @@ character_attribute_set(id,"path_index",index)
 
 -- return the time in ms before the next NPC AI action
 return 1000
+
+end

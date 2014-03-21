@@ -1,3 +1,5 @@
+function f ()
+
 id = player_get_id()
 
 num_item = inventory_count(id,"apple")
@@ -10,3 +12,5 @@ if num_item >= 1 then
 end
 
 print_text_id(id, "No more apple to eat")
+
+end

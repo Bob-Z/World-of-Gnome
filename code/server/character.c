@@ -206,6 +206,10 @@ void character_update_aggro(context_t * context)
 			continue;
 		}
 
+		if( ctx->luaVM == NULL ) {
+			continue;
+		}
+
 		no_aggro = 1;
 		if(!read_int(CHARACTER_TABLE,ctx->id,&aggro_dist, CHARACTER_KEY_AGGRO_DIST,NULL)) {
 			continue;
@@ -236,6 +240,7 @@ void character_update_aggro(context_t * context)
 
 			if(dist <= aggro_dist) {
 				param[0] = ctx2->id;
+				param[1] = NULL;
 				action_execute_script(ctx,aggro_script,param);
 				no_aggro = 0;
 			}
@@ -244,6 +249,7 @@ void character_update_aggro(context_t * context)
 		/* Notify if no aggro available */
 		if( no_aggro ) {
 			param[0] = "";
+			param[1] = NULL;
 			action_execute_script(ctx,aggro_script,param);
 		}
 	} while( (ctx=ctx->next)!= NULL );
