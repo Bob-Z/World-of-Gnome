@@ -7,3 +7,4 @@ Sprite:
  - flower3: http://cancandancer897.deviantart.com/
  - goblin: http://www.pixeljoint.com/forum/forum_posts.asp?TID=1477
  - god: http://www.rpgmakervx.net/lofiversion/index.php/t37410.html
+ - lich: http://www.fantasicawiki.com/wiki/Lich
