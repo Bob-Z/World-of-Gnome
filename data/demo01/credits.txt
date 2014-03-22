@@ -13,3 +13,5 @@ Sprite:
 Marquee:
 
  - god: http://tales_of_fans.revolublog.com/luna-et-aska-a975593
+ - lich: http://designspartan.com/presentation/les-digital-paintings-de-fantasy-de-chao-yuan-xu/
+ - knight: https://soundcloud.com/devalen-bill-vai/second-crusade-perang-salib-ii
