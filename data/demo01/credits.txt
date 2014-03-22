@@ -1,3 +1,4 @@
 Sprite:
 
  - black dragon: http://www.fantasicawiki.com/wiki/Black_Dragon
+ - dolphin: http://www.1up-games.com/md/ecco.html
