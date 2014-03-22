@@ -9,3 +9,7 @@ Sprite:
  - god: http://www.rpgmakervx.net/lofiversion/index.php/t37410.html
  - lich: http://www.fantasicawiki.com/wiki/Lich
  - skeleton: http://dustycloud.org/tmp/lpc_blogimages/
+
+Marquee:
+
+ - god: http://tales_of_fans.revolublog.com/luna-et-aska-a975593
