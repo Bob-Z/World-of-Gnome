@@ -5,3 +5,4 @@ Sprite:
  - flower1: http://firstfear.deviantart.com/art/AV-Pink-Flower-Sprite-267774958
  - flower2: http://naturedouce.canalblog.com/archives/2011/01/28/20239810.html
  - flower3: http://cancandancer897.deviantart.com/
+ - goblin: http://www.pixeljoint.com/forum/forum_posts.asp?TID=1477
