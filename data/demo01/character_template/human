@@ -5,7 +5,7 @@ map		= "map1";
 pos_x		= 16;
 pos_y		= 16;
 action		= [ "hit" ];
-allowed_tile	= "allowed_tile/ground_stair.lua";
+allowed_tile_script	= "allowed_tile/ground_stair.lua";
 #inventory	= [ ];  
 attribute :
 {

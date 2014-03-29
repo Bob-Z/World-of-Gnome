@@ -5,7 +5,7 @@ map		= "map1";
 pos_x		= 16;
 pos_y		= 16;
 action		= [ "add_black_dragon", "add_dungeon", "add_dungeon_floor", "add_dungeon_wall", "add_skeleton" ];
-allowed_tile	= "allowed_tile/ground_stair.lua";
+allowed_tile_script	= "allowed_tile/ground_stair.lua";
 #inventory	= [ ];  
 attribute :
 {
