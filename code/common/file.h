@@ -59,6 +59,7 @@
 #define CHARACTER_KEY_NAME	"name"
 #define CHARACTER_KEY_ACTION	"action"
 #define CHARACTER_KEY_ALLOWED_TILE	"allowed_tile"
+#define CHARACTER_KEY_ALLOWED_TILE_SCRIPT	"allowed_tile_script"
 #define CHARACTER_KEY_INVENTORY	"inventory"
 #define CHARACTER_KEY_AI	"ai"
 #define CHARACTER_KEY_AI_PARAMS	"ai_params"

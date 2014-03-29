@@ -86,12 +86,27 @@ gboolean map_check_tile(context_t * ctx,char * id, const gchar * map, gint x,gin
 	char sy[64];
 	char * param[5];
 	gboolean res;
+	gchar ** map_tiles;
+	gchar ** allowed_tile;
+	const gchar * tile_type;
+	gint i=0;
+	gint size_x = 0;
+	gint size_y = 0;
 
-	if( x<0 || y<0 ) {
-		return TRUE;
+	if(!read_int(MAP_TABLE,map,&size_x,MAP_KEY_SIZE_X,NULL)) {
+		return FALSE;
+	}
+	if(!read_int(MAP_TABLE,map,&size_y,MAP_KEY_SIZE_Y,NULL)) {
+		return FALSE;
 	}
 
-	if(read_string(CHARACTER_TABLE,id,&action, CHARACTER_KEY_ALLOWED_TILE, NULL)) {
+	/* sanity_check */
+	if( x < 0 || y < 0 || x >= size_x || y >= size_y ) {
+		return FALSE;
+	}
+
+	/* If there is a allowed_tile_script, run it */
+	if(read_string(CHARACTER_TABLE,id,&action, CHARACTER_KEY_ALLOWED_TILE_SCRIPT, NULL)) {
 		param[0] = id;
 		param[1] = (char *)map;
 		sprintf(sx,"%d",x);
@@ -103,7 +118,37 @@ gboolean map_check_tile(context_t * ctx,char * id, const gchar * map, gint x,gin
 		return res;
 	}
 
-	/* always allow if no script */
+	/* Read tile list on this map */
+	if(!read_list(MAP_TABLE,map,&map_tiles,MAP_KEY_SET,NULL)) {
+		return FALSE;
+	}
+
+	/* Check the tile has a type */
+	if(!read_string(TILE_TABLE,map_tiles[(size_x*y)+x],&tile_type,TILE_KEY_TYPE,NULL)) {
+		g_free(map_tiles);
+		/* this tile has no type, allowed for everyone */
+		return TRUE;
+	}
+
+	/* If there is allowed_tile list, check it */
+	if(read_list(CHARACTER_TABLE,id,&allowed_tile,CHARACTER_KEY_ALLOWED_TILE,NULL)) {
+		i=0;
+		while( allowed_tile[i] != NULL ) {
+			if( g_strcmp0(allowed_tile[i], tile_type) == 0 ) {
+				g_free(allowed_tile);
+				g_free(map_tiles);
+				return TRUE;
+			}
+			i++;
+		}
+
+		g_free(allowed_tile);
+		g_free(map_tiles);
+
+		return FALSE;
+	}
+
+	/* Allow all tiles by default */
 	return TRUE;
 }
 
@@ -268,16 +313,22 @@ gchar * map_get_tile(const gchar * map,gint x, gint y)
 {
 	gchar ** map_tiles;
 	gint map_size_x;
+	gint map_size_y;
 
-	if( x<0 || y<0) {
-		return NULL;
-	}
 
 	if(!read_list(MAP_TABLE,map,&map_tiles,MAP_KEY_SET,NULL)) {
 		return NULL;
 	}
 
 	if(!read_int(MAP_TABLE,map,&map_size_x,MAP_KEY_SIZE_X,NULL)) {
+		return NULL;
+	}
+
+	if(!read_int(MAP_TABLE,map,&map_size_y,MAP_KEY_SIZE_Y,NULL)) {
+		return NULL;
+	}
+
+	if( x<0 || y<0 || x >= map_size_x || y >= map_size_y ) {
 		return NULL;
 	}
 
