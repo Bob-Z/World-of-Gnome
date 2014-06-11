@@ -28,6 +28,7 @@
 #include "anim.h"
 #include "item.h"
 #include "sdl.h"
+#include "screen.h"
 
 extern GStaticMutex file_mutex;
 
@@ -60,6 +61,11 @@ static void key_right(void * arg)
 	context_t * ctx = context_get_list_first();
 
 	network_send_action(ctx,"move_right.lua",NULL);
+}
+
+static void key_inventory(void * arg)
+{
+        screen_set_screen(SCREEN_INVENTORY);
 }
 
 void cb_select_map(void *arg)
@@ -423,6 +429,7 @@ item_t * scr_play_compose(context_t * ctx)
 	sdl_add_keycb(SDL_SCANCODE_DOWN,key_down);
 	sdl_add_keycb(SDL_SCANCODE_LEFT,key_left);
 	sdl_add_keycb(SDL_SCANCODE_RIGHT,key_right);
+	sdl_add_keycb(SDL_SCANCODE_I,key_inventory);
 
 	return item_list;
 }

@@ -62,6 +62,8 @@ void sdl_keyboard_manager(SDL_Event * event);
 void sdl_blit_to_screen(context_t * ctx);
 void sdl_set_virtual_x(int x);
 void sdl_set_virtual_y(int y);
+int sdl_get_virtual_x();
+int sdl_get_virtual_y();
 void sdl_force_virtual_x(int x);
 void sdl_force_virtual_y(int y);
 keycb_t * sdl_add_keycb(SDL_Scancode code,void (*cb)(void*));

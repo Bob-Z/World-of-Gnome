@@ -474,6 +474,16 @@ void sdl_set_virtual_y(int y)
 	}
 }
 
+int sdl_get_virtual_x()
+{
+	return virtual_x;
+}
+
+int sdl_get_virtual_y()
+{
+	return virtual_y;
+}
+
 void sdl_force_virtual_x(int x)
 {
 	virtual_x = x;
