@@ -311,6 +311,14 @@ int sdl_blit_anim(context_t * ctx,anim_t * anim, SDL_Rect * rect, int start, int
 	return 0;
 }
 
+void sdl_get_string_size(TTF_Font * font,const char * string,int * w,int *h)
+{
+	SDL_Rect r;
+
+	TTF_SizeText(font, string, &r.w, &r.h);
+	*w = r.w;
+	*h = r.h;
+}
 void sdl_print_item(context_t * ctx,item_t * item)
 {
 	SDL_Surface * surf;
