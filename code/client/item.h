@@ -49,6 +49,8 @@ typedef struct item {
 	void (*over)(void * arg); //callback on mouse over this item
 	void * over_arg;
 	const char * string;		// string centered on item
+	int string_w;			// width of string
+	int string_h;			// height of string
 	TTF_Font * font;
 	SDL_Texture * str_tex;
 	struct item * next;	// next element in a list of item

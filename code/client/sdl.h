@@ -53,6 +53,7 @@ void sdl_screen_manager(context_t * ctx,SDL_Event * event);
 void sdl_loop_manager();
 void sdl_blit_tex(context_t * ctx,SDL_Texture * tex, SDL_Rect * rect,int overlay);
 int sdl_blit_anim(context_t * ctx,anim_t * anim, SDL_Rect * rect, int start, int end,int overlay);
+void sdl_get_string_size(TTF_Font * font,const char * string,int * w,int *h);
 void sdl_print_item(context_t * ctx,item_t * item);
 int sdl_blit_item(context_t * ctx,item_t * item);
 void sdl_blit_item_list(context_t * ctx,item_t * item_list);

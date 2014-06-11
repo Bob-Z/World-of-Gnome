@@ -30,6 +30,10 @@
 #include "sdl.h"
 #include "screen.h"
 
+#define FONT "/usr/share/fonts/truetype/ubuntu-font-family/Ubuntu-C.ttf"
+#define FONT_SIZE 30
+char ** attribute_string = NULL;
+
 extern GStaticMutex file_mutex;
 
 //static pthread_mutex_t character_mutex = PTHREAD_MUTEX_INITIALIZER;
@@ -312,6 +316,66 @@ static void compose_sprite(context_t * ctx)
 	context_unlock_list();
 }
 
+ /**********************************
++Compose attribute
++**********************************/
+static void compose_attribute(context_t * ctx)
+{
+	item_t * item;
+	char ** name_list;
+	int index = 0;
+	int value;
+	int y = 0;
+	int num_attr = 0;
+	char buf[1024];
+	int w,h;
+
+	if(attribute_string) {
+		index = 0;
+		while(attribute_string[index]) {
+			free(attribute_string[index]);
+			attribute_string[index]=NULL;
+			index++;
+		}
+		free(attribute_string);
+		attribute_string=NULL;
+	}
+
+	if(!get_group_list(CHARACTER_TABLE,ctx->id,&name_list,ATTRIBUTE_GROUP,NULL) ) {
+		return;
+	}
+
+	index=0;
+	while( name_list[index] != NULL) {
+		if(!read_int(CHARACTER_TABLE,ctx->id,&value,ATTRIBUTE_GROUP,name_list[index],ATTRIBUTE_CURRENT,NULL)) {
+			index++;
+			continue;
+		}
+
+		num_attr++;
+		attribute_string = realloc(attribute_string, (num_attr+1)*sizeof(char*));
+		sprintf(buf,"%s: %d",name_list[index],value);
+		attribute_string[num_attr-1] = strdup(buf);
+		attribute_string[num_attr]=NULL;
+
+		item = item_list_add(item_list);
+		if(item_list == NULL) {
+			item_list = item;
+		}
+
+		item_set_overlay(item,1);
+		item_set_string(item,attribute_string[num_attr-1]);
+		item_set_font(item,TTF_OpenFont(FONT, FONT_SIZE));
+		sdl_get_string_size(item->font,item->string,&w,&h);
+		item_set_frame(item,w/2,h/2+y,NULL);
+		y+=h;
+
+		index++;
+	}
+
+	free(name_list);
+}
+
 void cb_action(void * arg)
 {
 	char * script = (char *)arg;
@@ -465,8 +529,10 @@ item_t * scr_play_compose(context_t * ctx)
 	compose_map(ctx);
 	compose_item(ctx);
 	compose_sprite(ctx);
-	compose_action(ctx);
 	compose_select(ctx);
+	/* Overlay */
+	compose_attribute(ctx);
+	compose_action(ctx);
 
 	/* force virtual coordinate on map change */
 	if(change_map) {
