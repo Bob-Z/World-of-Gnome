@@ -27,7 +27,6 @@ static int screen_end = -1;
 static item_t * item_list = NULL;
 static int current_screen=SCREEN_SELECT;
 static int compose = 0;
-static pthread_mutex_t compose_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 static void screen_select_compose(context_t * context)
 {
@@ -55,9 +54,7 @@ created the renderer (or maybe the window ?)
 ***********************************************/
 void screen_compose()
 {
-	pthread_mutex_lock(&compose_mutex);
 	compose = 1;
-	pthread_mutex_unlock(&compose_mutex);
 }
 
 /******************************************************
@@ -95,10 +92,7 @@ void screen_display(context_t * ctx)
 		}
 
 		if(compose) {
-			pthread_mutex_lock(&compose_mutex);
 			compose = 0;
-			pthread_mutex_unlock(&compose_mutex);
-
 			compose_scr(ctx);
 		}
 
@@ -116,5 +110,8 @@ void screen_display(context_t * ctx)
 
 void screen_set_screen(int screen)
 {
-	current_screen = screen;
+	if(screen != current_screen) {
+		current_screen = screen;
+		screen_compose();
+	}
 }
