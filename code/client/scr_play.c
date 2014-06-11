@@ -65,7 +65,7 @@ static void key_right(void * arg)
 
 static void key_inventory(void * arg)
 {
-        screen_set_screen(SCREEN_INVENTORY);
+	screen_set_screen(SCREEN_INVENTORY);
 }
 
 void cb_select_map(void *arg)
@@ -79,7 +79,7 @@ void cb_select_map(void *arg)
 }
 
 /**********************************
-Compose the characters map
+Compose the map
 **********************************/
 static void compose_map(context_t * ctx)
 {
@@ -169,6 +169,60 @@ void cb_select_sprite(void *arg)
 	context_t * ctx = context_get_list_first();
         ctx->selection.id= id;
 	network_send_context(ctx);
+}
+
+/**********************************
+Compose item on map
+**********************************/
+static void compose_item(context_t * ctx)
+{
+	const char * sprite_name = NULL;
+	anim_t * anim;
+	item_t * item;
+	int x;
+	int y;
+	char ** item_id;
+	int i;
+
+	if(!get_group_list(MAP_TABLE,ctx->map,&item_id,MAP_ENTRY_ITEM_LIST,NULL)) {
+		return;
+	}
+
+	i=0;
+	while( item_id[i] != NULL ) {
+		if(!read_int(MAP_TABLE,ctx->map,&x,MAP_ENTRY_ITEM_LIST,item_id[i],MAP_ITEM_POS_X,NULL)) {
+			i++;
+			continue;
+		}
+
+		if(!read_int(MAP_TABLE,ctx->map,&y,MAP_ENTRY_ITEM_LIST,item_id[i],MAP_ITEM_POS_Y,NULL)) {
+			i++;
+			continue;
+		}
+
+		if(!read_string(ITEM_TABLE,item_id[i],&sprite_name,ITEM_SPRITE,NULL)) {
+			i++;
+			continue;
+		}
+
+		item = item_list_add(item_list);
+		if(item_list == NULL) {
+			item_list = item;
+		}
+
+		anim = imageDB_get_anim(ctx,sprite_name);
+		x = x*ctx->tile_x;
+		y = y*ctx->tile_y;
+		/* Center sprite on tile */
+		x -= (anim->w-ctx->tile_x)/2;
+		y -= (anim->h-ctx->tile_y)/2;
+
+		item_set_anim(item,x,y,anim);
+
+		i++;
+	}
+
+	free(item_id);
 }
 
 /**********************************
@@ -409,6 +463,7 @@ item_t * scr_play_compose(context_t * ctx)
 	change_map = ctx->change_map;
 
 	compose_map(ctx);
+	compose_item(ctx);
 	compose_sprite(ctx);
 	compose_action(ctx);
 	compose_select(ctx);
