@@ -22,6 +22,7 @@
 #include "screen.h"
 #include "scr_select.h"
 #include "scr_play.h"
+#include "scr_inventory.h"
 
 static int screen_end = -1;
 static item_t * item_list = NULL;
@@ -37,11 +38,20 @@ static void screen_select_compose(context_t * context)
 	item_list = list;
 }
 
-static void screen_select_play(context_t * context)
+static void screen_play_compose(context_t * context)
 {
 	item_t * list;
 
 	list = scr_play_compose(context);
+
+	item_list = list;
+}
+
+static void screen_inventory_compose(context_t * context)
+{
+	item_t * list;
+
+	list = scr_inventory_compose(context);
 
 	item_list = list;
 }
@@ -67,7 +77,10 @@ static void compose_scr(context_t * context)
 			screen_select_compose(context);
 		break;
 		case SCREEN_PLAY:
-			screen_select_play(context);
+			screen_play_compose(context);
+		break;
+		case SCREEN_INVENTORY:
+			screen_inventory_compose(context);
 		break;
 	}
 }
