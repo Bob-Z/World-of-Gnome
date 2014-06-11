@@ -125,7 +125,7 @@ static void compose_select(context_t * ctx)
 	int x=0;
 	int i;
 
-	if(ctx->selection.inventory == NULL) {
+	if(ctx->selection.inventory == NULL || ctx->selection.inventory[0] == 0) {
 		return;
 	}
 
@@ -148,17 +148,19 @@ static void compose_select(context_t * ctx)
 	
 	i = 0;
 	item = item_list;
-	while( strcmp(inventory_list[i],ctx->selection.inventory) ) {
+	while( inventory_list[i] && strcmp(inventory_list[i],ctx->selection.inventory) ) {
 		x += item->anim->w;
 		item=item->next;
 		i++;
 	}
 
-	item = item_list_add(item_list);
-	if(item_list == NULL) {
-		item_list = item;
+	if(inventory_list[i]) {
+		item = item_list_add(item_list);
+		if(item_list == NULL) {
+			item_list = item;
+		}
+		item_set_anim(item,x,0,anim);
 	}
-	item_set_anim(item,x,0,anim);
 }
 
 /**********************************
