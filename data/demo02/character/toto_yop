@@ -29,15 +29,18 @@ equipment :
 {
   head : 
   {
-    icon = "head.png";
+    icon = "slot/head.png";
     equipped = "A0008";
+    name = "head";
   };
   right_hand : 
   {
     name = "right hand";
+    icon = "slot/right_hand.png";
   };
   left_hand : 
   {
     name = "left hand";
+    icon = "slot/left_hand.png";
   };
 };
