@@ -329,6 +329,11 @@ static void compose_attribute(context_t * ctx)
 	int num_attr = 0;
 	char buf[1024];
 	int w,h;
+	static TTF_Font * font = NULL;
+
+	if ( font == NULL ) {
+		font = TTF_OpenFont(FONT, FONT_SIZE);
+	}
 
 	if(attribute_string) {
 		index = 0;
@@ -365,7 +370,7 @@ static void compose_attribute(context_t * ctx)
 
 		item_set_overlay(item,1);
 		item_set_string(item,attribute_string[num_attr-1]);
-		item_set_font(item,TTF_OpenFont(FONT, FONT_SIZE));
+		item_set_font(item,font);
 		sdl_get_string_size(item->font,item->string,&w,&h);
 		item_set_frame(item,w/2,h/2+y,NULL);
 		y+=h;
@@ -443,6 +448,135 @@ static void compose_action(context_t * ctx)
 
 }
 
+void cb_select_slot(void * arg)
+{
+	char * id = (char*)arg;
+	context_t * ctx = context_get_list_first();
+
+	ctx->selection.equipment = id;
+	network_send_context(ctx);
+}
+
+/**********************************
+Compose equipment icon
+**********************************/
+static void compose_equipment(context_t * ctx)
+{
+	char ** name_list = NULL;
+	anim_t * anim;
+	anim_t * anim2;
+	anim_t * anim3;
+	item_t * item;
+	int sw = 0;
+	int sh = 0;
+	int y=0;
+	int x=0;
+	int h1;
+	int index;
+//	char * name;
+	const char * icon_name;
+	const char * equipped_name;
+	const char * equipped_text;
+	const char * equipped_icon_name;
+
+	SDL_GetRendererOutputSize(ctx->render,&sw,&sh);
+
+	if(!get_group_list(CHARACTER_TABLE,ctx->id,&name_list,EQUIPMENT_GROUP,NULL) ) {
+		return;
+	}
+
+	index=0;
+	while( name_list[index] != NULL) {
+		/* Get the slot name */
+/*
+		if(!read_string(CHARACTER_TABLE,ctx->id,&item_name,EQUIPMENT_GROUP,name_list[index],EQUIPMENT_NAME,NULL)) {
+			name = strdup(name_list[index]);
+		} else {
+			name = strdup(item_name);
+		}
+*/
+		h1 = 0;
+		/* Get the slot icon */
+		if(!read_string(CHARACTER_TABLE,ctx->id,&icon_name,EQUIPMENT_GROUP,name_list[index],EQUIPMENT_ICON,NULL)) {
+			/* Display nothing */
+		} else {
+			/* load image */
+			anim = imageDB_get_anim(ctx, icon_name);
+			if(anim == NULL) {
+				index ++;
+				continue;
+			}
+
+			item = item_list_add(item_list);
+			if(item_list == NULL) {
+				item_list = item;
+			}
+
+			x = sw-anim->w;
+			h1 = anim->h;
+			item_set_overlay(item,1);
+			item_set_anim(item,x,y,anim);
+
+			item_set_click_left(item,cb_select_slot,name_list[index]);
+		}
+
+		/* Is there an equipped object ? */
+		if(read_string(CHARACTER_TABLE,ctx->id,&equipped_name,EQUIPMENT_GROUP,name_list[index],EQUIPMENT_EQUIPPED,NULL)) {
+			/* Get the equipped object name */
+			if(!read_string(ITEM_TABLE,equipped_name,&equipped_text,ITEM_NAME,NULL)) {
+				werr(LOGDEV,"Can't read object %s name in equipment slot %s",equipped_name,name_list[index]);
+			}
+			/* Get it's icon */
+			if(!read_string(ITEM_TABLE,equipped_name,&equipped_icon_name,ITEM_ICON,NULL)) {
+				werr(LOGDEV,"Can't read object %s icon in equipment slot %s",equipped_name,name_list[index]);
+			} else {
+				item = item_list_add(item_list);
+				if(item_list == NULL) {
+					item_list = item;
+				}
+
+				anim2 = imageDB_get_anim(ctx, equipped_icon_name);
+				if(anim2 != NULL) {
+					item_set_overlay(item,1);
+					item_set_anim(item,x-anim->w,y,anim2);
+					item_set_click_left(item,cb_select_slot,name_list[index]);
+					if(h1 < anim->h) {
+						h1 = anim->h;
+					}
+				}
+			}
+		}
+
+		/* Draw selection cursor */
+		if( ctx->selection.equipment != NULL) {
+			if( !strcmp(ctx->selection.equipment,name_list[index]) ) {
+				anim3 = imageDB_get_anim(ctx,CURSOR_EQUIP_FILE);
+				if(anim3 != NULL) {
+					item = item_list_add(item_list);
+					if(item_list == NULL) {
+						item_list = item;
+					}
+
+					/* Center on icon */
+					item_set_overlay(item,1);
+					item_set_anim(item,x - (anim3->w-anim->w)/2, y - (anim3->h-anim->w)/2, anim3);
+				}
+			}
+		}
+
+		if(h1 > anim->h) {
+			y += h1;
+		}
+		else {
+			y += anim->h;
+		}
+
+		index++;
+	}
+
+	free(name_list);
+}
+
 /**********************************
 Compose select cursor
 **********************************/
@@ -458,6 +592,7 @@ static void compose_select(context_t * ctx)
 		return;
 	}
 
+	/* Tile selection */
 	x = ctx->selection.map_coord[0];
 	y = ctx->selection.map_coord[1];
 
@@ -478,6 +613,7 @@ static void compose_select(context_t * ctx)
 		item_set_anim(item,x,y,anim);
 	}
 
+	/* Sprite selection */
 	if( ctx->selection.id != NULL) {
 		item = item_list_add(item_list);
 		if(item_list == NULL) {
@@ -497,7 +633,6 @@ static void compose_select(context_t * ctx)
 
 		item_set_anim(item,x,y,anim);
 	}
-
 }
 
 /**********************************
@@ -533,6 +668,7 @@ item_t * scr_play_compose(context_t * ctx)
 	/* Overlay */
 	compose_attribute(ctx);
 	compose_action(ctx);
+	compose_equipment(ctx);
 
 	/* force virtual coordinate on map change */
 	if(change_map) {
