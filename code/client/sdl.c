@@ -150,7 +150,6 @@ void sdl_mouse_manager(context_t * ctx, SDL_Event * event, item_t * item_list)
 						if( I->over ) {
 							I->over(I->over_arg);
 						}
-						screen_compose();
 						break;
 					case SDL_MOUSEBUTTONDOWN:
 						I->current_frame = I->frame_click;
@@ -162,8 +161,6 @@ void sdl_mouse_manager(context_t * ctx, SDL_Event * event, item_t * item_list)
 							I->current_frame=I->frame_click;
 							I->clicked=1;
 						}
-
-						screen_compose();
 						break;
 					case SDL_MOUSEBUTTONUP:
 						I->clicked=0;
@@ -180,10 +177,17 @@ void sdl_mouse_manager(context_t * ctx, SDL_Event * event, item_t * item_list)
 						if( I->click_right && event->button.button == SDL_BUTTON_RIGHT && event->button.clicks == 2) {
 							I->double_click_right(I->double_click_right_arg);
 						}
-
-						screen_compose();
+						break;
+					case SDL_MOUSEWHEEL:
+						if( event->wheel.y > 0 && I->wheel_up ) {
+							I->wheel_up(I->wheel_up_arg);
+						}
+						if( event->wheel.y < 0 && I->wheel_down ) {
+							I->wheel_down(I->wheel_down_arg);
+						}
 						break;
 				}
+				screen_compose();
 			}
 			if(I->clicked) {
 				I->current_frame = I->frame_click;

@@ -172,6 +172,18 @@ void item_set_double_click_right(item_t * item,void (*double_click_right)(void *
 	item->double_click_right_arg=double_click_right_arg;
 }
 
+void item_set_wheel_up(item_t * item,void (*wheel_up)(void * arg),void * wheel_up_arg)
+{
+	item->wheel_up=wheel_up;
+	item->wheel_up_arg=wheel_up_arg;
+}
+
+void item_set_wheel_down(item_t * item,void (*wheel_down)(void * arg),void * wheel_down_arg)
+{
+	item->wheel_down=wheel_down;
+	item->wheel_down_arg=wheel_down_arg;
+}
+
 void item_set_over(item_t * item,void (*over)(void * arg),void * over_arg)
 {
 	item->over=over;
