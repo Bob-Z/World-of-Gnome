@@ -125,6 +125,7 @@ void screen_set_screen(int screen)
 {
 	if(screen != current_screen) {
 		current_screen = screen;
+		context_reset_all_position();
 		screen_compose();
 	}
 }
