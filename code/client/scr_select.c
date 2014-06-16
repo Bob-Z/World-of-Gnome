@@ -55,13 +55,9 @@ static void cb_left_click(void * arg)
 	sdl_set_virtual_y(item->rect.y + item->rect.h/2);
 }
 
-static void cb_right_click(void * arg)
+static void cb_select_click(void * arg)
 {
 	context_t * ctx = (context_t*)arg;
-
-	if ( current_character == NULL ) {
-		return;
-	}
 
 	context_set_id(ctx,current_character->id);
 	context_set_character_name(ctx, current_character->name);
@@ -136,7 +132,8 @@ item_t * scr_select_compose(context_t * context)
 		}
 		item_set_anim(item,x,max_h/2-character_list[i].anim->h/2,character_list[i].anim);
 		item_set_click_left(item,cb_left_click,(void *)item);
-		item_set_click_right(item,cb_right_click,(void *)context);
+		item_set_click_right(item,cb_select_click,(void *)context);
+		item_set_double_click_left(item,cb_select_click,(void *)context);
 		item_set_over(item,cb_over,(void *)&character_list[i]);
 
 		x += character_list[i].anim->w + BORDER;
