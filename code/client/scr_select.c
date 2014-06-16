@@ -46,8 +46,9 @@ static character_t * character_list = NULL;
 static int character_num = 0;
 static item_t * item_list = NULL;
 static character_t * current_character = NULL;
+static item_t * current_item = NULL;
 
-static void cb_left_click(void * arg)
+static void cb_show_item(void * arg)
 {
 	item_t * item = (item_t*)arg;
 
@@ -76,6 +77,36 @@ static void cb_over(void * arg)
 	character_t * c = (character_t*)arg;
 
 	current_character = c;
+}
+
+static void cb_wheel_up(void * arg)
+{
+	if( current_item == NULL ) {
+		return;
+	}
+	if( current_item->next != NULL ) {
+		current_item = current_item->next;
+		cb_show_item(current_item);
+	}
+}
+
+static void cb_wheel_down(void * arg)
+{
+	item_t * i;
+
+	if( current_item == NULL ) {
+		return;
+	}
+
+	i = item_list;
+	while( i->next != current_item && i->next != NULL ) {
+		i = i->next;
+	}
+
+	if( i->next != NULL ) {
+		current_item = i;
+		cb_show_item(current_item);
+	}
 }
 
 /**********************************
@@ -130,10 +161,17 @@ item_t * scr_select_compose(context_t * context)
 		if(item_list == NULL) {
 			item_list = item;
 		}
+
+		if (current_item == NULL ) {
+			current_item = item;
+		}
+
 		item_set_anim(item,x,max_h/2-character_list[i].anim->h/2,character_list[i].anim);
-		item_set_click_left(item,cb_left_click,(void *)item);
+		item_set_click_left(item,cb_show_item,(void *)item);
 		item_set_click_right(item,cb_select_click,(void *)context);
 		item_set_double_click_left(item,cb_select_click,(void *)context);
+		item_set_wheel_up(item,cb_wheel_up,(void *)context);
+		item_set_wheel_down(item,cb_wheel_down,(void *)context);
 		item_set_over(item,cb_over,(void *)&character_list[i]);
 
 		x += character_list[i].anim->w + BORDER;
@@ -153,7 +191,7 @@ item_t * scr_select_compose(context_t * context)
 	}
 
 	if(init && item_list) {
-		cb_left_click(&item_list[0]);
+		cb_show_item(&item_list[0]);
 		init = 0;
 	}
 

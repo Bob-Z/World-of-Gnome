@@ -50,6 +50,10 @@ typedef struct item {
 	void * double_click_left_arg;
 	void (*double_click_right)(void * arg); //callback on double right click on this item
 	void * double_click_right_arg;
+	void (*wheel_up)(void * arg); //callback on mouse wheel up
+	void * wheel_up_arg;
+	void (*wheel_down)(void * arg); //callback on mouse wheel down
+	void * wheel_down_arg;
 	void (*over)(void * arg); //callback on mouse over this item
 	void * over_arg;
 	const char * string;		// string centered on item
@@ -75,6 +79,8 @@ void item_set_click_left(item_t * item,void (*click_left)(void * arg),void * cli
 void item_set_click_right(item_t * item,void (*click_right)(void * arg),void * click_right_arg);
 void item_set_double_click_left(item_t * item,void (*click_left)(void * arg),void * click_left_arg);
 void item_set_double_click_right(item_t * item,void (*click_right)(void * arg),void * click_right_arg);
+void item_set_wheel_up(item_t * item,void (*cb_wheel_up)(void * arg),void * wheel_up_arg);
+void item_set_wheel_down(item_t * item,void (*cb_wheel_down)(void * arg),void * wheel_down_arg);
 void item_set_over(item_t * item,void (*over)(void * arg),void * over_arg);
 void item_set_string(item_t * item,const char * string);
 void item_set_geometry(item_t * item,int x, int y, int w, int h);
