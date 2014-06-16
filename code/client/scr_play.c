@@ -29,9 +29,14 @@
 #include "item.h"
 #include "sdl.h"
 #include "screen.h"
+#include "textview.h"
 
 #define FONT "/usr/share/fonts/truetype/ubuntu-font-family/Ubuntu-C.ttf"
 #define FONT_SIZE 30
+#define TEXT_FONT "/usr/share/fonts/truetype/ubuntu-font-family/Ubuntu-C.ttf"
+#define TEXT_FONT_SIZE 15
+#define TEXT_TIMEOUT 5000 /* Text display timeout */
+
 char ** attribute_string = NULL;
 
 extern GStaticMutex file_mutex;
@@ -39,6 +44,9 @@ extern GStaticMutex file_mutex;
 //static pthread_mutex_t character_mutex = PTHREAD_MUTEX_INITIALIZER;
 static item_t * item_list = NULL;
 static int change_map = 0;
+
+static int action_bar_height;
+static int attribute_height;
 
 //Keynoard callback
 
@@ -247,6 +255,10 @@ static void compose_sprite(context_t * ctx)
 	context_lock_list();
 
         while(ctx != NULL ) {
+		if( ctx->map == NULL ) {
+			ctx = ctx->next;
+			continue;
+		}
 		if( strcmp(ctx->map,player_context->map)) {
 			ctx = ctx->next;
 			continue;
@@ -374,6 +386,9 @@ static void compose_attribute(context_t * ctx)
 		sdl_get_string_size(item->font,item->string,&w,&h);
 		item_set_frame(item,w/2,h/2+y,NULL);
 		y+=h;
+		if(attribute_height<y) {
+			attribute_height = y;
+		}
 
 		index++;
 	}
@@ -404,6 +419,8 @@ static void compose_action(context_t * ctx)
 	int x=0;
 
 	SDL_GetRendererOutputSize(ctx->render,&sw,&sh);
+
+	action_bar_height = 0;
 
 	/* Read action list for current user */
         if(!read_list(CHARACTER_TABLE,ctx->id,&action_list,CHARACTER_KEY_ACTION,NULL)) {
@@ -442,6 +459,9 @@ static void compose_action(context_t * ctx)
 		item_set_anim(item,x,sh-anim->h,anim);
 		x += anim->w;
 		item_set_click_left(item,cb_action,(void*)script);
+		if( action_bar_height < anim->h ) {
+			action_bar_height = anim->h;
+		}
 
 		action_list ++;
         }
@@ -578,6 +598,61 @@ static void compose_equipment(context_t * ctx)
 }
 
 /**********************************
+Compose text
+**********************************/
+static void compose_text(context_t * ctx)
+{
+	const history_entry_t * history;
+	history_entry_t * hist;
+	Uint32 time = SDL_GetTicks();
+	int sw;
+	int sh;
+	int current_y;
+	static TTF_Font * font = NULL;
+	item_t * item;
+	int w;
+	int h;
+
+	if ( font == NULL ) {
+		font = TTF_OpenFont(TEXT_FONT, TEXT_FONT_SIZE);
+	}
+
+	SDL_GetRendererOutputSize(ctx->render,&sw,&sh);
+	current_y = sh - action_bar_height;
+
+	history = textview_get_history();
+
+	if ( history == NULL ) {
+		return;
+	}
+
+	hist = (history_entry_t*)history;
+
+	while(hist) {
+		if ( time > hist->time + TEXT_TIMEOUT ) {
+			return;
+		}
+
+		item = item_list_add(item_list);
+		if(item_list == NULL) {
+			item_list = item;
+		}
+
+		item_set_overlay(item,1);
+		item_set_string(item,hist->text);
+		item_set_font(item,font);
+		sdl_get_string_size(item->font,item->string,&w,&h);
+		item_set_frame(item,w/2,current_y-(h/2),NULL);
+		current_y-=h;
+		if(attribute_height > current_y) {
+			return;
+		}
+
+		hist = hist->next;
+	}
+}
+
+/**********************************
 Compose select cursor
 **********************************/
 static void compose_select(context_t * ctx)
@@ -669,6 +744,7 @@ item_t * scr_play_compose(context_t * ctx)
 	compose_attribute(ctx);
 	compose_action(ctx);
 	compose_equipment(ctx);
+	compose_text(ctx);
 
 	/* force virtual coordinate on map change */
 	if(change_map) {

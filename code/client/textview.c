@@ -17,17 +17,26 @@
    Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
-#include <gtk/gtk.h>
 #include "../common/common.h"
+#include "sdl.h"
+#include "textview.h"
 
-extern GtkWidget *             textview;
-extern GtkTextBuffer *         textbuffer;
+history_entry_t * text_history = NULL;
 
-void textview_add_line(gchar * string)
+void textview_add_line(char * text)
 {
+	history_entry_t * new_entry;
 
-//SDL	GtkTextIter iter;
+	new_entry = malloc(sizeof(history_entry_t));
 
-//SDL	gtk_text_buffer_get_start_iter(textbuffer,&iter);
-//SDL	gtk_text_buffer_insert(textbuffer,&iter,string,-1);
+	new_entry->text = strdup(text);
+	new_entry->time = SDL_GetTicks();
+	new_entry->next = text_history;
+
+	text_history = new_entry;
+}
+
+const history_entry_t * textview_get_history()
+{
+	return text_history;
 }
