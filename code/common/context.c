@@ -979,4 +979,20 @@ gint context_distance(context_t * ctx1, context_t * ctx2)
 
 	return (distx>disty?distx:disty);
 }
+
+/* Reset all contexts position information used for smooth animation */
+/* Called on screen switch */
+void context_reset_all_position()
+{
+	context_t * ctx = context_get_list_first();
+
+	g_static_mutex_lock (&context_list_mutex);
+	while(ctx != NULL ) {
+		ctx->old_pos_x = ctx->cur_pos_x;
+		ctx->old_pos_y = ctx->cur_pos_y;
+		ctx->pos_tick = 0;
+		ctx = ctx->next;
+	}
+	g_static_mutex_unlock (&context_list_mutex);
+}
 #endif

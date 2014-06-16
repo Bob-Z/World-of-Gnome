@@ -112,3 +112,4 @@ void context_request_other_context(context_t * context);
 context_t * context_find(const gchar * id);
 void context_broadcast_text(const gchar * map, const gchar * text);
 gint context_distance(context_t * ctx1, context_t * ctx2);
+void context_reset_all_position();
