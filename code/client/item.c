@@ -160,6 +160,18 @@ void item_set_click_right(item_t * item,void (*click_right)(void * arg),void * c
 	item->click_right_arg=click_right_arg;
 }
 
+void item_set_double_click_left(item_t * item,void (*double_click_left)(void * arg),void * double_click_left_arg)
+{
+	item->double_click_left=double_click_left;
+	item->double_click_left_arg=double_click_left_arg;
+}
+
+void item_set_double_click_right(item_t * item,void (*double_click_right)(void * arg),void * double_click_right_arg)
+{
+	item->double_click_right=double_click_right;
+	item->double_click_right_arg=double_click_right_arg;
+}
+
 void item_set_over(item_t * item,void (*over)(void * arg),void * over_arg)
 {
 	item->over=over;
