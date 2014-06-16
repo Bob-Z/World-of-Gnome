@@ -77,6 +77,18 @@ static void compose_inventory(context_t * ctx)
 	}
 
 	while( inventory_list[i] != NULL) {
+		/* Icon is mandatory for now */
+		if(!read_string(ITEM_TABLE,inventory_list[i],&value,ITEM_ICON,NULL)) {
+			i++;
+			continue;
+		}
+		/* load image */
+		anim = imageDB_get_anim(ctx, value);
+		if(anim == NULL) {
+			i++;
+            continue;
+		}
+
 		if(!read_string(ITEM_TABLE,inventory_list[i],&value,ITEM_NAME,NULL)) {
 			label = strdup(inventory_list[i]);
 		} else {
@@ -87,17 +99,6 @@ static void compose_inventory(context_t * ctx)
 			description = strdup("");;
 		} else {
 			description = strdup(value);
-		}
-
-		if(!read_string(ITEM_TABLE,inventory_list[i],&value,ITEM_ICON,NULL)) {
-			i++;
-			continue;
-		}
-                /* load image */
-		anim = imageDB_get_anim(ctx, value);
-		if(anim == NULL) {
-			i++;
-            continue;
 		}
 
 		item = item_list_add(item_list);
@@ -122,7 +123,7 @@ static void compose_select(context_t * ctx)
 {
 	item_t * item;
 	anim_t * anim;
-	int x=0;
+	int x;
 	int i;
 
 	if(ctx->selection.inventory == NULL || ctx->selection.inventory[0] == 0) {
@@ -145,8 +146,9 @@ static void compose_select(context_t * ctx)
 	if(!read_list(CHARACTER_TABLE,ctx->id,&inventory_list, CHARACTER_KEY_INVENTORY,NULL)) {
 		return;
 	}
-	
+
 	i = 0;
+	x = 0;
 	item = item_list;
 	while( inventory_list[i] && strcmp(inventory_list[i],ctx->selection.inventory) ) {
 		x += item->anim->w;
