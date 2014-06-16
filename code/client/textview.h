@@ -19,5 +19,12 @@
 
 #ifndef TEXTVIEW
 #define TEXTVIEW
-void textview_add_line(gchar * string);
+typedef struct history_entry {
+	char * text;
+	Uint32 time;
+	struct history_entry * next;
+} history_entry_t;
+
+void textview_add_line(char * text);
+const history_entry_t * textview_get_history();
 #endif
