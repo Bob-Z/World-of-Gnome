@@ -22,9 +22,10 @@
 
 static int fullscreen = 0;
 
-static char keyboard_buf[2048];
-static unsigned int keyboard_index = 0;
-static void (*keyboard_cb)(void * arg) = NULL;
+static char *keyboard_text_buf = NULL;
+static unsigned int keyboard_text_index = 0;
+static unsigned int keyboard_text_index_max = 0;
+static void (*keyboard_text_cb)(void * arg) = NULL;
 
 static int virtual_x = 0;
 static int virtual_y = 0;
@@ -150,8 +151,14 @@ void sdl_mouse_manager(context_t * ctx, SDL_Event * event, item_t * item_list)
 						if( I->over ) {
 							I->over(I->over_arg);
 						}
+						screen_compose();
 						break;
 					case SDL_MOUSEBUTTONDOWN:
+						sdl_keyboard_text_reset();
+						if( I->editable ) {
+							sdl_keyboard_text_init(I->string,I->edit_cb);
+						}
+
 						I->current_frame = I->frame_click;
 						if( I->click_left && event->button.button == SDL_BUTTON_LEFT) {
 							I->current_frame=I->frame_click;
@@ -161,6 +168,7 @@ void sdl_mouse_manager(context_t * ctx, SDL_Event * event, item_t * item_list)
 							I->current_frame=I->frame_click;
 							I->clicked=1;
 						}
+						screen_compose();
 						break;
 					case SDL_MOUSEBUTTONUP:
 						I->clicked=0;
@@ -171,12 +179,13 @@ void sdl_mouse_manager(context_t * ctx, SDL_Event * event, item_t * item_list)
 						if( I->click_right && event->button.button == SDL_BUTTON_RIGHT && event->button.clicks == 1) {
 							I->click_right(I->click_right_arg);
 						}
-						if( I->click_left && event->button.button == SDL_BUTTON_LEFT && event->button.clicks == 2) {
+						if( I->double_click_left && event->button.button == SDL_BUTTON_LEFT && event->button.clicks == 2) {
 							I->double_click_left(I->double_click_left_arg);
 						}
-						if( I->click_right && event->button.button == SDL_BUTTON_RIGHT && event->button.clicks == 2) {
+						if( I->double_click_right && event->button.button == SDL_BUTTON_RIGHT && event->button.clicks == 2) {
 							I->double_click_right(I->double_click_right_arg);
 						}
+						screen_compose();
 						break;
 					case SDL_MOUSEWHEEL:
 						if( event->wheel.y > 0 && I->wheel_up ) {
@@ -185,9 +194,9 @@ void sdl_mouse_manager(context_t * ctx, SDL_Event * event, item_t * item_list)
 						if( event->wheel.y < 0 && I->wheel_down ) {
 							I->wheel_down(I->wheel_down_arg);
 						}
+						screen_compose();
 						break;
 				}
-				screen_compose();
 			}
 			if(I->clicked) {
 				I->current_frame = I->frame_click;
@@ -398,24 +407,27 @@ void sdl_blit_item_list(context_t * ctx,item_t * list)
 	}
 }
 
-void sdl_keyboard_init(char * string, void (*cb)(void*arg))
+void sdl_keyboard_text_init(char * buf, void (*cb)(void*arg))
 {
-	keyboard_index=0;
-	if( string ) {
-		strcpy(keyboard_buf,string);
-		keyboard_index=strlen(keyboard_buf);
+	if ( buf == NULL ) {
+		return;
 	}
-	keyboard_buf[keyboard_index]=0;
-	keyboard_cb=cb;
+
+	keyboard_text_index=strlen(buf);
+	keyboard_text_buf = buf;
+	keyboard_text_cb = cb;
 }
 
-char * sdl_keyboard_get_buf()
+void sdl_keyboard_text_reset()
 {
-	if(keyboard_cb) {
-		return keyboard_buf;
-	} else {
-		return NULL;
-	}
+	keyboard_text_index=0;
+	keyboard_text_buf = NULL;
+	keyboard_text_cb = NULL;
+}
+
+char * sdl_keyboard_text_get_buf()
+{
+	return keyboard_text_buf;
 }
 
 void sdl_keyboard_manager(SDL_Event * event)
@@ -425,28 +437,33 @@ void sdl_keyboard_manager(SDL_Event * event)
 
 	switch (event->type) {
 	case SDL_KEYDOWN:
-		key = key_callback;
-		if(key) {
-			do {
-				if( event->key.keysym.scancode == key->code) {
-					key->cb(NULL);
-				}
-				key=key->next;
-			} while(key);
+		/* If no keyboard_text ready, key are used for UI */
+		if( keyboard_text_buf == NULL ) {
+			key = key_callback;
+			if(key) {
+				do {
+					if( event->key.keysym.scancode == key->code) {
+						key->cb(NULL);
+					}
+					key = key->next;
+				} while(key);
+			}
+			break;
 		}
+
+		/* Else keys are used to enter text */
 		if( event->key.keysym.sym == SDLK_RETURN ) {
-			if( keyboard_cb ) {
-				keyboard_cb(NULL);
-				keyboard_cb=NULL;
+			if( keyboard_text_cb ) {
+				keyboard_text_cb(keyboard_text_buf);
 			}
 		}
 
 		if( event->key.keysym.sym == SDLK_DELETE ||
 				event->key.keysym.sym == SDLK_BACKSPACE) {
-			if(keyboard_index > 0 ) {
-				keyboard_index--;
+			if(keyboard_text_index > 0 ) {
+				keyboard_text_index--;
 			}
-			keyboard_buf[keyboard_index]=0;
+			keyboard_text_buf[keyboard_text_index]=0;
 		}
 
 		if( event->key.keysym.sym >= SDLK_SPACE &&
@@ -460,12 +477,17 @@ void sdl_keyboard_manager(SDL_Event * event)
 					 event->key.keysym.sym <=SDL_SCANCODE_Z) ) {
 				event->key.keysym.sym = (SDL_Scancode)(event->key.keysym.sym-32);
 			}
-			keyboard_buf[keyboard_index]=event->key.keysym.sym;
-			if( keyboard_index < sizeof(keyboard_buf)) {
-				keyboard_index++;
+			keyboard_text_buf[keyboard_text_index]=event->key.keysym.sym;
+/* TODO: check max buffer size */
+#if 0
+			if( keyboard_text_index < sizeof(keyboard_text_buf)) {
+				keyboard_text_index++;
 			}
-			keyboard_buf[keyboard_index]=0;
+#endif
+			keyboard_text_index++;
+			keyboard_text_buf[keyboard_text_index]=0;
 		}
+		screen_compose();
 		break;
 	default:
 		break;

@@ -19,6 +19,7 @@
 
 #include <SDL2/SDL.h>
 #include "item.h"
+#include "sdl.h"
 
 item_t * item_list_add(item_t * item_list)
 {
@@ -78,24 +79,61 @@ void item_init(item_t * item)
 	item->click_left_arg=NULL;
 	item->click_right=NULL;
 	item->click_right_arg=NULL;
+	item->double_click_left=NULL;
+	item->double_click_left_arg=NULL;
+	item->double_click_right=NULL;
+	item->double_click_right_arg=NULL;
+	item->wheel_up=NULL;
+	item->wheel_up_arg=NULL;
+	item->wheel_down=NULL;
+	item->wheel_down_arg=NULL;
 	item->over=NULL;
 	item->over_arg=NULL;
 	item->string=NULL;
 	item->font=NULL;
 	item->str_tex=NULL;
+	item->editable=0;
+	item->edit_cb=NULL;
 	item->next=NULL;
 }
 
 void item_set_frame(item_t * item, int x, int y,anim_t * anim)
 {
+	int w;
+	int h;
+	int max_w = 0;
+	int max_h = 0;
+
 	item->rect.x = x;
 	item->rect.y = y;
+
 	if( anim ) {
-		item->rect.w = anim->w;
-		item->rect.h = anim->h;
 		item->anim = anim;
+		max_w = anim->w;
+		max_h = anim->h;
 	}
+	if( item->string ) {
+		sdl_get_string_size(item->font,item->string,&w,&h);
+		if ( w > max_w ) {
+			max_w = w;
+		}
+		if ( h > max_h ) {
+			max_h = h;
+		}
+	}
+
+	item->rect.w = max_w;
+	item->rect.h = max_h;
 }
+
+void item_set_frame_shape(item_t * item, int x, int y,int w, int h)
+{
+	item->rect.x = x;
+	item->rect.y = y;
+	item->rect.w = w;
+	item->rect.h = h;
+}
+
 void item_set_anim(item_t * item, int x, int y,anim_t * anim)
 {
 	item_set_frame(item,x,y,anim);
@@ -190,13 +228,24 @@ void item_set_over(item_t * item,void (*over)(void * arg),void * over_arg)
 	item->over_arg=over_arg;
 }
 
-void item_set_string(item_t * item,const char * string)
+void item_set_string(item_t * item,char * buf)
 {
-	item->string = string;
+	item->string = buf;
+
 	if(item->str_tex) {
 		SDL_DestroyTexture(item->str_tex);
 		item->str_tex = NULL;
 	}
+}
+
+void item_set_editable(item_t * item,int is_editable)
+{
+	item->editable = is_editable;
+}
+
+void item_set_edit_cb(item_t * item,void (*cb_edit)(void * arg))
+{
+	item->edit_cb = cb_edit;
 }
 
 void item_set_geometry(item_t * item,int x, int y, int w, int h)

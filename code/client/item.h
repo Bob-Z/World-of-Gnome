@@ -56,11 +56,11 @@ typedef struct item {
 	void * wheel_down_arg;
 	void (*over)(void * arg); //callback on mouse over this item
 	void * over_arg;
-	const char * string;		// string centered on item
-	int string_w;			// width of string
-	int string_h;			// height of string
+	char * string;		// string centered on item
 	TTF_Font * font;
 	SDL_Texture * str_tex;
+	int editable;
+	void (*edit_cb)(void * arg);
 	struct item * next;	// next element in a list of item
 } item_t;
 
@@ -68,6 +68,7 @@ item_t * item_list_add(item_t * item_list);
 void item_list_free(item_t * item_list);
 void item_init(item_t * item);
 void item_set_frame(item_t * item, int x, int y,anim_t * anim);
+void item_set_frame_shape(item_t * item, int x, int y,int w, int h);
 void item_set_anim(item_t * item, int x, int y,anim_t * anim);
 void item_set_smooth_anim(item_t * item, int x, int y,int old_x, int old_y, Uint32 timer, anim_t * anim);
 void item_set_tile(item_t * item, int x, int y);
@@ -82,7 +83,9 @@ void item_set_double_click_right(item_t * item,void (*click_right)(void * arg),v
 void item_set_wheel_up(item_t * item,void (*cb_wheel_up)(void * arg),void * wheel_up_arg);
 void item_set_wheel_down(item_t * item,void (*cb_wheel_down)(void * arg),void * wheel_down_arg);
 void item_set_over(item_t * item,void (*over)(void * arg),void * over_arg);
-void item_set_string(item_t * item,const char * string);
+void item_set_string(item_t * item,char * string);
+void item_set_editable(item_t * item,int is_editable);
+void item_set_edit_cb(item_t * item,void (*cb_edit)(void * arg));
 void item_set_geometry(item_t * item,int x, int y, int w, int h);
 void item_set_anim_start(item_t * item, int start_frame);
 void item_set_anim_end(item_t * item, int end_frame);

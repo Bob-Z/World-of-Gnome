@@ -125,6 +125,8 @@ item_t * scr_select_compose(context_t * context)
 	static int init = 1;
 	item_t * item;
 	item_t * item_image;
+	int w;
+	int h;
 
 	wlog(LOGDEBUG,"Composing select character screen");
 
@@ -184,14 +186,16 @@ item_t * scr_select_compose(context_t * context)
 		item_set_string(item,character_list[i].name);
 		item_set_font(item,TTF_OpenFont(FONT, FONT_SIZE));
 		/* display string just above the picture */
-		item_set_frame(item,item_image->rect.x + item_image->rect.w/2, item_image->rect.y-FONT_SIZE/2,NULL);
+		sdl_get_string_size(item->font,item->string,&w,&h);
+		item_set_frame(item,item_image->rect.x + item_image->rect.w/2 - w/2, item_image->rect.y-h,NULL);
 
 		/* character type */
 		item = item_list_add(item_list);
 		item_set_string(item,character_list[i].type);
 		item_set_font(item,TTF_OpenFont(FONT, FONT_SIZE));
 		/* display string just below the picture */
-		item_set_frame(item,item_image->rect.x + item_image->rect.w/2, item_image->rect.y+item_image->rect.h+FONT_SIZE/2,NULL);
+		sdl_get_string_size(item->font,item->string,&w,&h);
+		item_set_frame(item,item_image->rect.x + item_image->rect.w/2 - w/2, item_image->rect.y+item_image->rect.h,NULL);
 	}
 
 	if(init && item_list) {
