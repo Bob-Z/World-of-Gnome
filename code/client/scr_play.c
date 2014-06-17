@@ -38,6 +38,7 @@
 #define TEXT_TIMEOUT 5000 /* Text display timeout */
 
 char ** attribute_string = NULL;
+char text_buffer[2048];
 
 extern GStaticMutex file_mutex;
 
@@ -78,6 +79,15 @@ static void key_right(void * arg)
 static void key_inventory(void * arg)
 {
 	screen_set_screen(SCREEN_INVENTORY);
+}
+
+static void keyboard_text(void * arg)
+{
+	char * text = (char*)arg;
+
+	network_send_action(context_get_list_first(),WOG_CHAT,text,NULL);
+	text_buffer[0]=0;
+	screen_compose();
 }
 
 void cb_select_map(void *arg)
@@ -384,7 +394,7 @@ static void compose_attribute(context_t * ctx)
 		item_set_string(item,attribute_string[num_attr-1]);
 		item_set_font(item,font);
 		sdl_get_string_size(item->font,item->string,&w,&h);
-		item_set_frame(item,w/2,h/2+y,NULL);
+		item_set_frame(item,0,y,NULL);
 		y+=h;
 		if(attribute_height<y) {
 			attribute_height = y;
@@ -612,6 +622,8 @@ static void compose_text(context_t * ctx)
 	item_t * item;
 	int w;
 	int h;
+	int x;
+	int y;
 
 	if ( font == NULL ) {
 		font = TTF_OpenFont(TEXT_FONT, TEXT_FONT_SIZE);
@@ -620,6 +632,33 @@ static void compose_text(context_t * ctx)
 	SDL_GetRendererOutputSize(ctx->render,&sw,&sh);
 	current_y = sh - action_bar_height;
 
+	/* Draw edit box */
+	item = item_list_add(item_list);
+	if(item_list == NULL) {
+		item_list = item;
+	}
+
+	item_set_overlay(item,1);
+	item_set_string(item,text_buffer);
+	item_set_font(item,font);
+	item_set_editable(item,1);
+	item_set_edit_cb(item,keyboard_text);
+	sdl_get_string_size(item->font,item->string,&w,&h);
+	x = w;
+	if ( w < 100 ) {
+		x = 100;
+	}
+	y = h;
+	if ( y < TEXT_FONT_SIZE ) {
+		y = TEXT_FONT_SIZE;
+	}
+	item_set_frame_shape(item,0,current_y-y,x,y);
+	current_y-=y;
+	if(attribute_height > current_y) {
+		return;
+	}
+
+	/* Draw text history */
 	history = textview_get_history();
 
 	if ( history == NULL ) {
@@ -642,7 +681,7 @@ static void compose_text(context_t * ctx)
 		item_set_string(item,hist->text);
 		item_set_font(item,font);
 		sdl_get_string_size(item->font,item->string,&w,&h);
-		item_set_frame(item,w/2,current_y-(h/2),NULL);
+		item_set_frame(item,0,current_y-h,NULL);
 		current_y-=h;
 		if(attribute_height > current_y) {
 			return;
@@ -731,6 +770,8 @@ item_t * scr_play_compose(context_t * ctx)
 	if(init) {
 		/* Register this character to receive server notifications */
 		network_send_context(ctx);
+		/* Empty text buffer */
+		text_buffer[0]=0;
 		init = 0;
 	}
 
@@ -740,6 +781,7 @@ item_t * scr_play_compose(context_t * ctx)
 	compose_item(ctx);
 	compose_sprite(ctx);
 	compose_select(ctx);
+
 	/* Overlay */
 	compose_attribute(ctx);
 	compose_action(ctx);
