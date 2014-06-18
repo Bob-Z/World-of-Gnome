@@ -1,3 +1,5 @@
+function f ()
+
 id = player_get_id()
 x = character_get_selected_map_tile_x(id)
 y = character_get_selected_map_tile_y(id)
@@ -49,3 +51,4 @@ map_add_event_param(map,event,new_map)
 map_add_event_param(map,event,16)
 map_add_event_param(map,event,16)
 
+end

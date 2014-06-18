@@ -1,0 +1,3 @@
+text            = "Eat an apple";
+icon            = "black.jpg";
+script		= "eat_apple.lua";
