@@ -69,8 +69,6 @@ static void cb_select_click(void * arg)
 
 	file_clean(ctx);
 
-	file_clean(ctx);
-
 	screen_set_screen(SCREEN_PLAY);
 
 	screen_compose();
