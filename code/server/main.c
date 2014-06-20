@@ -61,9 +61,6 @@ int main (int argc, char **argv)
 		}
 	}
 
-	g_type_init();
-	g_thread_init(NULL);
-
 	//init the main loop
 	GMainLoop * mainLoop = NULL;
 	mainLoop = g_main_loop_new(NULL,FALSE);

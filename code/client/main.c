@@ -53,11 +53,6 @@ int main (int argc, char **argv)
 	char * log = NULL;
 
 
-	g_type_init();
-	g_thread_init(NULL);
-	gdk_threads_init();
-	gtk_init (&argc, &argv);
-
 	while((opt_ret = getopt_long(argc, argv, optstring, longopts, NULL))!=-1) {
 		switch(opt_ret) {
 		case 'i':
