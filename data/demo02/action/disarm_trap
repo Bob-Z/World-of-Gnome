@@ -1,3 +1,3 @@
 text            = "Disarm a trap on the floor";
-icon            = "gray.jpg";
+icon            = "action/gray.jpg";
 script		= "disarm_trap.lua";
