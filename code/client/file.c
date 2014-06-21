@@ -24,8 +24,6 @@
 #include <dirent.h>
 //#include "imageDB.h"
 
-extern GStaticMutex file_mutex;
-
 /* return 0 if directory was successfully created */
 int create_directory(gchar * filename)
 {
@@ -84,9 +82,9 @@ int file_add(context_t * context,gchar * data,guint32 command_size)
 		werr(LOGDEV,"Can't create directory for %s", full_name);
 		return 1;
 	}
-	g_static_mutex_lock(&file_mutex);
+	SDL_LockMutex(file_mutex);
 	gboolean res = file_set_contents(full_name,ptr,file_data_size,NULL);
-	g_static_mutex_unlock(&file_mutex);
+	SDL_UnlockMutex(file_mutex);
 	if( res == FALSE ) {
 		werr(LOGDEV,"Error writing file %s with size %d",full_name, file_data_size);
 		return 1;

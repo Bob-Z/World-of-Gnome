@@ -25,7 +25,7 @@
 extern SDL_mutex* context_list_mutex;
 extern SDL_mutex* npc_mutex;
 extern SDL_mutex* attribute_mutex;
-
+extern SDL_mutex* file_mutex;
 
 void mutex_init();
 

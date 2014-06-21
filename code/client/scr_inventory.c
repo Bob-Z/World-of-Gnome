@@ -29,8 +29,6 @@
 #include "sdl.h"
 #include "screen.h"
 
-extern GStaticMutex file_mutex;
-
 static item_t * item_list = NULL;
 static char ** inventory_list = NULL;
 static int virtual_x;

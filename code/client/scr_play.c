@@ -40,8 +40,6 @@
 char ** attribute_string = NULL;
 char text_buffer[2048];
 
-extern GStaticMutex file_mutex;
-
 //static pthread_mutex_t character_mutex = PTHREAD_MUTEX_INITIALIZER;
 static item_t * item_list = NULL;
 static int change_map = 0;
@@ -114,24 +112,24 @@ static void compose_map(context_t * ctx)
 	anim_t * anim;
 	item_t * item;
 
-	g_static_mutex_lock(&file_mutex);
+	SDL_LockMutex(file_mutex);
 
         if( ctx->tile_x == -1 ) {
                 if(!_read_int(MAP_TABLE, ctx->map, &i,MAP_KEY_TILE_SIZE_X,NULL)){
-			g_static_mutex_unlock(&file_mutex);
+			SDL_UnlockMutex(file_mutex);
                         return;
                 }
                 context_set_tile_x( ctx, i);
         }
         if( ctx->tile_y == -1 ) {
                 if(!_read_int(MAP_TABLE, ctx->map,&i,MAP_KEY_TILE_SIZE_Y,NULL)){
-			g_static_mutex_unlock(&file_mutex);
+			SDL_UnlockMutex(file_mutex);
                         return;
                 }
                 context_set_tile_y( ctx, i);
         }
         if(!_read_list(MAP_TABLE, ctx->map, &orig_value,MAP_KEY_SET,NULL)) {
-		g_static_mutex_unlock(&file_mutex);
+		SDL_UnlockMutex(file_mutex);
                 return;
         }
 
@@ -145,7 +143,7 @@ static void compose_map(context_t * ctx)
 	}
 	free(orig_value);
 
-	g_static_mutex_unlock(&file_mutex);
+	SDL_UnlockMutex(file_mutex);
 
 	/* Parse map string */
 	i=0;

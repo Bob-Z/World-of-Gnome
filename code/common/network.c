@@ -25,7 +25,6 @@
 #include <dirent.h>
 
 static GThread * listenThread = NULL;
-extern GStaticMutex file_mutex;
 extern context_t * context_list_start;
 
 /* Date of the last request for a file (avoid server request flood for the same file */
@@ -893,9 +892,9 @@ int network_send_file(context_t * context, gchar * filename)
 	gchar * file_data = NULL;
 	gsize file_length = 0;
 
-	g_static_mutex_lock(&file_mutex);
+	SDL_LockMutex(file_mutex);
 	gboolean res = file_get_contents(full_name,&file_data,&file_length,NULL);
-	g_static_mutex_unlock(&file_mutex);
+	SDL_UnlockMutex(file_mutex);
 	if( res == FALSE) {
 		werr(LOGUSER,"send_file : Error reading file \"%s\"",full_name);
 		g_free(full_name);

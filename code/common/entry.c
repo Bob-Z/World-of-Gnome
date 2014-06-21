@@ -30,7 +30,6 @@
 
 #define AUTO_SAVE_TIMEOUT 30
 
-GStaticMutex file_mutex = G_STATIC_MUTEX_INIT;
 static GHashTable* updateDB = NULL; /* To remember which file we have never tried to read before */
 typedef struct file_data {
 	gchar * data;
@@ -130,11 +129,11 @@ file_dump_all_to_disk
 void file_dump_all_to_disk(void)
 {
 	wlog(LOGDEV,"Dumping all files to disk");
-	g_static_mutex_lock(&file_mutex);
+	SDL_LockMutex(file_mutex);
 	if( fileDB ) {
 		g_hash_table_foreach(fileDB,file_dump_to_disk,NULL);
 	}
-	g_static_mutex_unlock(&file_mutex);
+	SDL_UnlockMutex(file_mutex);
 }
 /**********************************
 auto_save_files
@@ -166,7 +165,7 @@ gchar * file_new(gchar * table)
 	GFile * file;
 	GFileOutputStream * file_stream;
 
-	g_static_mutex_lock(&file_mutex);
+	SDL_LockMutex(file_mutex);
 	g_sprintf(tag,"A%05x",index);
 
 	dirname = g_strconcat( g_getenv("HOME"),"/", base_directory, "/", table,  NULL);
@@ -191,7 +190,7 @@ gchar * file_new(gchar * table)
 	file = g_file_new_for_path(filename);
 	file_stream = g_file_create(file,G_FILE_CREATE_NONE,NULL,NULL);
 
-	g_static_mutex_unlock(&file_mutex);
+	SDL_UnlockMutex(file_mutex);
 
 	g_object_unref(file_stream);
 	g_object_unref(file);
@@ -498,11 +497,11 @@ int read_int(const gchar * table, const gchar * file, int * res, ...)
 		werr(LOGDEV,"\"file\" input is empty\n");
 		return 0;
 	}
-	g_static_mutex_lock(&file_mutex);
+	SDL_LockMutex(file_mutex);
 	va_start(ap, res);
 	ret = __read_int(table, file, res, ap);
 	va_end(ap);
-	g_static_mutex_unlock(&file_mutex);
+	SDL_UnlockMutex(file_mutex);
 
 	return ret;
 }
@@ -557,11 +556,11 @@ int read_string(const gchar * table, const gchar * file, const gchar ** res, ...
 		werr(LOGDEV,"\"file\" input is empty\n");
 		return 0;
 	}
-	g_static_mutex_lock(&file_mutex);
+	SDL_LockMutex(file_mutex);
 	va_start(ap, res);
 	ret = __read_string(table, file, res, ap);
 	va_end(ap);
-	g_static_mutex_unlock(&file_mutex);
+	SDL_UnlockMutex(file_mutex);
 
 	return ret;
 }
@@ -624,11 +623,11 @@ int read_list_index(const gchar * table, const gchar * file, const gchar ** res,
 		werr(LOGDEV,"\"file\" input is empty\n");
 		return 0;
 	}
-	g_static_mutex_lock(&file_mutex);
+	SDL_LockMutex(file_mutex);
 	va_start(ap, index);
 	ret = __read_list_index(table,file, res,index, ap);
 	va_end(ap);
-	g_static_mutex_unlock(&file_mutex);
+	SDL_UnlockMutex(file_mutex);
 
 	return ret;
 }
@@ -699,11 +698,11 @@ int read_list(const gchar * table, const gchar * file, gchar *** res, ...)
 		werr(LOGDEV,"\"file\" input is empty\n");
 		return 0;
 	}
-	g_static_mutex_lock(&file_mutex);
+	SDL_LockMutex(file_mutex);
 	va_start(ap, res);
 	ret = __read_list(table, file, res, ap);
 	va_end(ap);
-	g_static_mutex_unlock(&file_mutex);
+	SDL_UnlockMutex(file_mutex);
 
 	return ret;
 }
@@ -805,11 +804,11 @@ int write_int(const gchar * table, const gchar * file,int data, ...)
 	int ret;
 	va_list ap;
 
-	g_static_mutex_lock(&file_mutex);
+	SDL_LockMutex(file_mutex);
 	va_start(ap, data);
 	ret = __write_int(table, file, data, ap);
 	va_end(ap);
-	g_static_mutex_unlock(&file_mutex);
+	SDL_UnlockMutex(file_mutex);
 
 	return ret;
 }
@@ -859,11 +858,11 @@ int write_string(const gchar * table, const gchar * file, const char * data, ...
 	int ret;
 	va_list ap;
 
-	g_static_mutex_lock(&file_mutex);
+	SDL_LockMutex(file_mutex);
 	va_start(ap, data);
 	ret = __write_string(table, file, data, ap);
 	va_end(ap);
-	g_static_mutex_unlock(&file_mutex);
+	SDL_UnlockMutex(file_mutex);
 
 	return ret;
 }
@@ -913,11 +912,11 @@ int write_list_index(const gchar * table, const gchar * file, const char * data,
 	int ret;
 	va_list ap;
 
-	g_static_mutex_lock(&file_mutex);
+	SDL_LockMutex(file_mutex);
 	va_start(ap, index);
 	ret = __write_list_index(table, file, data,index,ap);
 	va_end(ap);
-	g_static_mutex_unlock(&file_mutex);
+	SDL_UnlockMutex(file_mutex);
 
 	return ret;
 }
@@ -970,11 +969,11 @@ int write_list(const gchar * table, const gchar * file, char ** data, ...)
 	int ret;
 	va_list ap;
 
-	g_static_mutex_lock(&file_mutex);
+	SDL_LockMutex(file_mutex);
 	va_start(ap, data);
 	ret = __write_list(table, file, data, ap);
 	va_end(ap);
-	g_static_mutex_unlock(&file_mutex);
+	SDL_UnlockMutex(file_mutex);
 
 	return ret;
 }
@@ -1030,11 +1029,11 @@ gboolean add_to_list(const gchar * table, const gchar * file, const gchar * to_b
 	gboolean ret;
 	va_list ap;
 
-	g_static_mutex_lock(&file_mutex);
+	SDL_LockMutex(file_mutex);
 	va_start(ap, to_be_added);
 	ret = __add_to_list(table,file,to_be_added,ap);
 	va_end(ap);
-	g_static_mutex_unlock(&file_mutex);
+	SDL_UnlockMutex(file_mutex);
 
 	return ret;
 }
@@ -1101,11 +1100,11 @@ int remove_group(const gchar * table, const gchar * file, const gchar * group, .
 	int ret;
 	va_list ap;
 
-	g_static_mutex_lock(&file_mutex);
+	SDL_LockMutex(file_mutex);
 	va_start(ap, group);
 	ret = __remove_group(table, file, group, ap);
 	va_end(ap);
-	g_static_mutex_unlock(&file_mutex);
+	SDL_UnlockMutex(file_mutex);
 
 	return ret;
 }
@@ -1122,7 +1121,7 @@ gchar * get_unused_list_entry(const gchar * table, const gchar * file, ...)
 	gint i = 0;
 	va_list ap;
 
-	g_static_mutex_lock(&file_mutex);
+	SDL_LockMutex(file_mutex);
 	g_sprintf(tag,"A%05x",index);
 
 	va_start(ap,file);
@@ -1144,7 +1143,7 @@ gchar * get_unused_list_entry(const gchar * table, const gchar * file, ...)
 		return NULL;
 	}
 	va_end(ap);
-	g_static_mutex_unlock(&file_mutex);
+	SDL_UnlockMutex(file_mutex);
 
 	return g_strdup(tag);
 }
@@ -1191,11 +1190,11 @@ gchar * get_unused_group(const gchar * table, const gchar * file, ...)
 	gchar * ret;
 	va_list ap;
 
-	g_static_mutex_lock(&file_mutex);
+	SDL_LockMutex(file_mutex);
 	va_start(ap, file);
 	ret = __get_unused_group(table, file, ap);
 	va_end(ap);
-	g_static_mutex_unlock(&file_mutex);
+	SDL_UnlockMutex(file_mutex);
 
 	return ret;
 }
@@ -1258,7 +1257,7 @@ int get_group_list(const gchar * table, const gchar * file, gchar *** res, ...)
 		return FALSE;
 	}
 
-	g_static_mutex_lock(&file_mutex);
+	SDL_LockMutex(file_mutex);
 
 	va_start(ap,res);
 	path = get_path(ap);
@@ -1273,7 +1272,7 @@ int get_group_list(const gchar * table, const gchar * file, gchar *** res, ...)
 
 	/* The path does not exist in the conf file */
 	if(setting == NULL ) {
-		g_static_mutex_unlock(&file_mutex);
+		SDL_UnlockMutex(file_mutex);
 		return FALSE;
 	}
 
@@ -1284,7 +1283,7 @@ int get_group_list(const gchar * table, const gchar * file, gchar *** res, ...)
 		(*res)[index] = NULL;
 	}
 
-	g_static_mutex_unlock(&file_mutex);
+	SDL_UnlockMutex(file_mutex);
 
 	if( *res == NULL) {
 		return FALSE;
@@ -1340,11 +1339,11 @@ gboolean remove_from_list(const gchar * table, const gchar * file, const gchar *
 	gboolean ret;
 	va_list ap;
 
-	g_static_mutex_lock(&file_mutex);
+	SDL_LockMutex(file_mutex);
 	va_start(ap, to_be_removed);
 	ret = __remove_from_list(table,file,to_be_removed,ap);
 	va_end(ap);
-	g_static_mutex_unlock(&file_mutex);
+	SDL_UnlockMutex(file_mutex);
 	return ret;
 }
 
@@ -1479,11 +1478,11 @@ int list_create(const gchar * table, const gchar * file, ...)
 	int ret;
 	va_list ap;
 
-	g_static_mutex_lock(&file_mutex);
+	SDL_LockMutex(file_mutex);
 	va_start(ap, file);
 	ret = __list_create(table, file, ap);
 	va_end(ap);
-	g_static_mutex_unlock(&file_mutex);
+	SDL_UnlockMutex(file_mutex);
 
 	return ret;
 }
@@ -1512,11 +1511,11 @@ int group_create(const gchar * table, const gchar * file, ...)
 	int ret;
 	va_list ap;
 
-	g_static_mutex_lock(&file_mutex);
+	SDL_LockMutex(file_mutex);
 	va_start(ap, file);
 	ret = __group_create(table, file, ap);
 	va_end(ap);
-	g_static_mutex_unlock(&file_mutex);
+	SDL_UnlockMutex(file_mutex);
 
 	return ret;
 }
@@ -1597,11 +1596,11 @@ gchar * copy_group(const gchar * src_table, const gchar * src_file, const gchar 
 	gchar * ret;
 	va_list ap;
 
-	g_static_mutex_lock(&file_mutex);
+	SDL_LockMutex(file_mutex);
 	va_start(ap, group_name);
 	ret = __copy_group(src_table,src_file,dst_table,dst_file,group_name,ap);
 	va_end(ap);
-	g_static_mutex_unlock(&file_mutex);
+	SDL_UnlockMutex(file_mutex);
 	return ret;
 }
 

@@ -32,8 +32,6 @@
 
 #define DEFAULT_DELAY 40
 
-extern GStaticMutex file_mutex;
-
 static anim_t * giflib_load(const char * filename)
 {
 	context_t * ctx = context_get_list_first(); //Player's context
@@ -58,15 +56,15 @@ static anim_t * giflib_load(const char * filename)
 	int width;
 	int height;
 
-	g_static_mutex_lock(&file_mutex);
+	SDL_LockMutex(file_mutex);
 	gif = DGifOpenFileName(filename);
 	if(gif == NULL) {
-		g_static_mutex_unlock(&file_mutex);
+		SDL_UnlockMutex(file_mutex);
 		return NULL;
 	}
 	wlog(LOGDEBUG,"Using giflib to decode %s",filename);
 	DGifSlurp(gif);
-	g_static_mutex_unlock(&file_mutex);
+	SDL_UnlockMutex(file_mutex);
 
 	bg_color = gif->SBackGroundColor;
 
@@ -175,7 +173,7 @@ static anim_t * libav_load(const char * filename)
         // Register all formats and codecs
         av_register_all();
 
-	g_static_mutex_lock(&file_mutex);
+	SDL_LockMutex(file_mutex);
 
         // Open video file
         if (avformat_open_input(&pFormatCtx, filename, NULL, NULL) != 0) {
@@ -333,7 +331,7 @@ error:
 		avformat_close_input(&pFormatCtx);
 	}
 
-	g_static_mutex_unlock(&file_mutex);
+	SDL_UnlockMutex(file_mutex);
 
 	return ret;
 }
