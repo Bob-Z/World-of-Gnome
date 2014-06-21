@@ -29,20 +29,16 @@ npc_script
 
 static void npc_script(context_t * context, gchar * script, gchar ** parameters)
 {
-	GTimeVal time;
-	gint timeout_ms;
+	Uint32 timeout_ms;
 
 	context_new_VM(context);
 
 	/* Allow the calling thread to continue */
-	g_mutex_unlock(context->cond_mutex);
+	SDL_UnlockMutex(npc_start_mutex);
 
 	while(context_get_connected(context)) {
 		SDL_LockMutex(npc_mutex);
 		timeout_ms = action_execute_script(context,script,parameters);
-
-		g_get_current_time(&time);
-		g_time_val_add(&time,timeout_ms * 1000);
 
 		SDL_UnlockMutex(npc_mutex);
 
@@ -50,7 +46,9 @@ static void npc_script(context_t * context, gchar * script, gchar ** parameters)
 		the connected status. So we test it to avoid waiting for the
 		timeout duration before disconnecting */
 		if( context_get_connected(context) ) {
-			g_cond_timed_wait(context->cond,context->cond_mutex,&time);
+			SDL_LockMutex(context->cond_mutex);
+			SDL_CondWaitTimeout(context->cond,context->cond_mutex,timeout_ms);
+			SDL_UnlockMutex(context->cond_mutex);
 		}
 	}
 
@@ -82,7 +80,7 @@ static gpointer manage_npc(gpointer data)
 	}
 
 	/* Allow the calling thread to continue */
-	g_mutex_unlock(context->cond_mutex);
+	SDL_UnlockMutex(npc_start_mutex);
 	werr(LOGUSER,"No AI script for %s",context->id);
 
 	return NULL;
@@ -166,18 +164,18 @@ void instantiate_npc(const gchar * id)
 	context_set_tile_x(ctx,tile_x);
 	context_set_tile_y(ctx,tile_y);
 	context_set_id(ctx,id);
-	ctx->cond = g_cond_new();
-	ctx->cond_mutex = g_mutex_new();
+	ctx->cond = SDL_CreateCond();
+	ctx->cond_mutex = SDL_CreateMutex();
 
 	context_spread(ctx);
 
 	/* Make sure the thread has created the LUA VM before continung */
-	g_mutex_lock(ctx->cond_mutex);
+	SDL_LockMutex(npc_start_mutex);
 	/* start management thread */
 	g_thread_create(manage_npc,(gpointer)ctx,FALSE,NULL);
 	/* Wait for the thread to unlock the mutex */
-	g_mutex_lock(ctx->cond_mutex);
-	g_mutex_unlock(ctx->cond_mutex);
+	SDL_LockMutex(npc_start_mutex);
+	SDL_UnlockMutex(npc_start_mutex);
 
 }
 /**************************

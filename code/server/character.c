@@ -119,9 +119,9 @@ gint character_disconnect( const gchar * id)
 	if( ctx->output_stream == NULL ) {
 		context_set_connected(ctx,FALSE);
 		/* Wake up NPC */
-		if( g_mutex_trylock (ctx->cond_mutex) == TRUE ) {
-			g_cond_signal (ctx->cond);
-			g_mutex_unlock (ctx->cond_mutex);
+		if( SDL_TryLockMutex (ctx->cond_mutex) == TRUE ) {
+			SDL_CondSignal (ctx->cond);
+			SDL_UnlockMutex (ctx->cond_mutex);
 		}
 	}
 	/* For player */

@@ -67,8 +67,8 @@ typedef struct context {
 	gchar *		prev_map; /* the map from where this context comes */
 	int 		change_map; /* Has this context map changed ? */
 	lua_State*	luaVM; /* LUA state */
-	GCond*		cond;	/* async condition for npc */
-	GMutex*		cond_mutex;/* mutex for async condition for npc */
+	SDL_cond*		cond;	/* async condition for npc */
+	SDL_mutex*		cond_mutex;/* mutex for async condition for npc */
 
 	struct context*	previous;
 	struct context*	next;

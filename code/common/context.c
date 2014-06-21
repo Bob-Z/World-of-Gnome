@@ -171,10 +171,10 @@ void context_free(context_t * context)
 		lua_close(context->luaVM);
 	}
 	if( context->cond != NULL) {
-		g_cond_free(context->cond);
+		SDL_DestroyCond(context->cond);
 	}
 	if( context->cond_mutex != NULL) {
-		g_mutex_free(context->cond_mutex);
+		SDL_DestroyMutex(context->cond_mutex);
 	}
 
 	/* First context of the list */
