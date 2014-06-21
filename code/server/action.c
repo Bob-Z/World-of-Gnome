@@ -1244,7 +1244,6 @@ return -1 if the script do not return something
 gint action_execute_script(context_t * context, const gchar * script, gchar ** parameters)
 {
 	gchar * filename;
-	gchar parameter_name[SMALL_BUF];
 	gint param_num = 0;
 	gint return_value;
 
