@@ -23,9 +23,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* avoid 2 server's thread to change a map file at the same time */
-static GStaticMutex map_mutex = G_STATIC_MUTEX_INIT;
-
 /***********************************
 Create a new map.
 Return the name of the new map
@@ -167,22 +164,22 @@ gchar * map_delete_item(const gchar * map, gint x, gint y)
 	}
 
 	/* Manage concurrent acces to map files */
-	g_static_mutex_lock(&map_mutex);
+	SDL_LockMutex(map_mutex);
 	/* Search the items on the specified tile */
 	if(!get_group_list(MAP_TABLE,map,&itemlist,MAP_ENTRY_ITEM_LIST,NULL)) {
-		g_static_mutex_unlock(&map_mutex);
+		SDL_UnlockMutex(map_mutex);
 		return NULL;
 	}
 
 	while(itemlist[i] != NULL) {
 		if( !read_int(MAP_TABLE,map,&mapx,MAP_ENTRY_ITEM_LIST,itemlist[i],MAP_ITEM_POS_X,NULL) ) {
-			g_static_mutex_unlock(&map_mutex);
+			SDL_UnlockMutex(map_mutex);
 			g_free(itemlist);
 			return NULL;
 		}
 
 		if( !read_int(MAP_TABLE,map,&mapy,MAP_ENTRY_ITEM_LIST,itemlist[i],MAP_ITEM_POS_Y,NULL) ) {
-			g_static_mutex_unlock(&map_mutex);
+			SDL_UnlockMutex(map_mutex);
 			g_free(itemlist);
 			return NULL;
 		}
@@ -201,7 +198,7 @@ gchar * map_delete_item(const gchar * map, gint x, gint y)
 		if( saved_item) {
 			g_free(saved_item);
 		}
-		g_static_mutex_unlock(&map_mutex);
+		SDL_UnlockMutex(map_mutex);
 		return NULL;
 	}
 
@@ -209,13 +206,13 @@ gchar * map_delete_item(const gchar * map, gint x, gint y)
 	if(!remove_group(MAP_TABLE,map,id,MAP_ENTRY_ITEM_LIST,NULL)) {
 		g_free(itemlist);
 		g_free(saved_item);
-		g_static_mutex_unlock(&map_mutex);
+		SDL_UnlockMutex(map_mutex);
 		return NULL;
 	}
 
 	g_free(itemlist);
 
-	g_static_mutex_unlock(&map_mutex);
+	SDL_UnlockMutex(map_mutex);
 
 	/* Send network notifications */
 	context_broadcast_file(MAP_TABLE,map,TRUE);
@@ -233,20 +230,20 @@ gint map_add_item(const gchar * map, const gchar * id, gint x, gint y)
 		return -1;
 	}
 
-	g_static_mutex_lock(&map_mutex);
+	SDL_LockMutex(map_mutex);
 
 	if (!write_int(MAP_TABLE,map,x,MAP_ENTRY_ITEM_LIST,id,MAP_ITEM_POS_X, NULL) ) {
 		remove_group(MAP_TABLE,map,id,MAP_ENTRY_ITEM_LIST,NULL);
-		g_static_mutex_unlock(&map_mutex);
+		SDL_UnlockMutex(map_mutex);
 		return -1;
 	}
 	if (!write_int(MAP_TABLE,map,y,MAP_ENTRY_ITEM_LIST,id,MAP_ITEM_POS_Y, NULL) ) {
 		remove_group(MAP_TABLE,map,id,MAP_ENTRY_ITEM_LIST,NULL);
-		g_static_mutex_unlock(&map_mutex);
+		SDL_UnlockMutex(map_mutex);
 		return -1;
 	}
 
-	g_static_mutex_unlock(&map_mutex);
+	SDL_UnlockMutex(map_mutex);
 
 	/* Send network notifications */
 	context_broadcast_file(MAP_TABLE,map,TRUE);
@@ -274,11 +271,11 @@ int map_set_tile(const gchar * map,const gchar * tile,gint x, gint y)
 	}
 
 	/* Manage concurrent acces to map files */
-	g_static_mutex_lock(&map_mutex);
+	SDL_LockMutex(map_mutex);
 
 	/* read size of map */
 	if(!read_int(MAP_TABLE,map,&sizex,MAP_KEY_SIZE_X,NULL)) {
-		g_static_mutex_unlock(&map_mutex);
+		SDL_UnlockMutex(map_mutex);
 		return -1;
 	}
 
@@ -286,13 +283,13 @@ int map_set_tile(const gchar * map,const gchar * tile,gint x, gint y)
 
 	/* read map tile */
 	if(!read_list_index(MAP_TABLE,map,&value, index,MAP_KEY_SET,NULL)) {
-		g_static_mutex_unlock(&map_mutex);
+		SDL_UnlockMutex(map_mutex);
 		return -1;
 	}
 
 	/* Do not change the tile if it already the requested tile */
 	if( g_strcmp0(value, tile) == 0 ) {
-		g_static_mutex_unlock(&map_mutex);
+		SDL_UnlockMutex(map_mutex);
 		return 0;
 	}
 
@@ -300,7 +297,7 @@ int map_set_tile(const gchar * map,const gchar * tile,gint x, gint y)
 		context_broadcast_file(MAP_TABLE,map,TRUE);
 	}
 
-	g_static_mutex_unlock(&map_mutex);
+	SDL_UnlockMutex(map_mutex);
 
 	return 0;
 }
@@ -391,10 +388,10 @@ gchar ** map_get_event(const gchar * map,gint x, gint y)
 	}
 
 	/* Manage concurrent acces to map files */
-	g_static_mutex_lock(&map_mutex);
+	SDL_LockMutex(map_mutex);
 	/* Search the items on the specified tile */
 	if(!get_group_list(MAP_TABLE,map,&eventlist,MAP_ENTRY_EVENT_LIST,NULL)) {
-		g_static_mutex_unlock(&map_mutex);
+		SDL_UnlockMutex(map_mutex);
 		return NULL;
 	}
 
@@ -418,7 +415,7 @@ gchar ** map_get_event(const gchar * map,gint x, gint y)
 
 		i++;
 	}
-	g_static_mutex_unlock(&map_mutex);
+	SDL_UnlockMutex(map_mutex);
 
 	return event_id;
 }
@@ -445,29 +442,29 @@ gchar * map_add_event(const gchar * map, const gchar * script, gint x, gint y )
 		return NULL;
 	}
 
-	g_static_mutex_lock(&map_mutex);
+	SDL_LockMutex(map_mutex);
 
 	if (!write_int(MAP_TABLE,map,x,MAP_ENTRY_EVENT_LIST,id,MAP_EVENT_POS_X, NULL) ) {
 		remove_group(MAP_TABLE,map,id,MAP_ENTRY_EVENT_LIST,NULL);
 		g_free(id);
-		g_static_mutex_unlock(&map_mutex);
+		SDL_UnlockMutex(map_mutex);
 		return NULL;
 	}
 	if (!write_int(MAP_TABLE,map,y,MAP_ENTRY_EVENT_LIST,id,MAP_EVENT_POS_Y, NULL) ) {
 		remove_group(MAP_TABLE,map,id,MAP_ENTRY_EVENT_LIST,NULL);
 		g_free(id);
-		g_static_mutex_unlock(&map_mutex);
+		SDL_UnlockMutex(map_mutex);
 		return NULL;
 	}
 
 	if (!write_string(MAP_TABLE,map,script,MAP_ENTRY_EVENT_LIST,id,MAP_EVENT_SCRIPT, NULL) ) {
 		remove_group(MAP_TABLE,map,id,MAP_ENTRY_EVENT_LIST,NULL);
 		g_free(id);
-		g_static_mutex_unlock(&map_mutex);
+		SDL_UnlockMutex(map_mutex);
 		return NULL;
 	}
 
-	g_static_mutex_unlock(&map_mutex);
+	SDL_UnlockMutex(map_mutex);
 
 	/* Send network notifications */
 	context_broadcast_file(MAP_TABLE,map,TRUE);
@@ -505,10 +502,10 @@ gint map_delete_event(const gchar * map, const gchar * script, gint x, gint y)
 	}
 
 	/* Manage concurrent acces to map files */
-	g_static_mutex_lock(&map_mutex);
+	SDL_LockMutex(map_mutex);
 	/* Search events on the specified tile */
 	if(!get_group_list(MAP_TABLE,map,&eventlist,MAP_ENTRY_EVENT_LIST,NULL)) {
-		g_static_mutex_unlock(&map_mutex);
+		SDL_UnlockMutex(map_mutex);
 		return -1;
 	}
 
@@ -535,17 +532,17 @@ gint map_delete_event(const gchar * map, const gchar * script, gint x, gint y)
 	g_free(eventlist);
 
 	if( id == NULL ) {
-		g_static_mutex_unlock(&map_mutex);
+		SDL_UnlockMutex(map_mutex);
 		return -1;
 	}
 
 	/* remove the event from the events list of the map */
 	if(!remove_group(MAP_TABLE,map,id,MAP_ENTRY_EVENT_LIST,NULL)) {
-		g_static_mutex_unlock(&map_mutex);
+		SDL_UnlockMutex(map_mutex);
 		return -1;
 	}
 
-	g_static_mutex_unlock(&map_mutex);
+	SDL_UnlockMutex(map_mutex);
 
 	/* Send network notifications */
 	context_broadcast_file(MAP_TABLE,map,TRUE);
