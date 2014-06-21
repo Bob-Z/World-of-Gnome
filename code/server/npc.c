@@ -23,8 +23,6 @@
 #include "npc.h"
 #include "action.h"
 
-GStaticMutex npc_mutex = G_STATIC_MUTEX_INIT;
-
 /**********************************
 npc_script
 *********************************/
@@ -40,13 +38,13 @@ static void npc_script(context_t * context, gchar * script, gchar ** parameters)
 	g_mutex_unlock(context->cond_mutex);
 
 	while(context_get_connected(context)) {
-		g_static_mutex_lock(&npc_mutex);
+		SDL_LockMutex(npc_mutex);
 		timeout_ms = action_execute_script(context,script,parameters);
 
 		g_get_current_time(&time);
 		g_time_val_add(&time,timeout_ms * 1000);
 
-		g_static_mutex_unlock(&npc_mutex);
+		SDL_UnlockMutex(npc_mutex);
 
 		/* The previous call to action_execute_script may have changed
 		the connected status. So we test it to avoid waiting for the
