@@ -512,14 +512,11 @@ static int l_print_text_id( lua_State* L)
 {
 	const gchar * id;
 	const gchar * string;
-	gchar * buf;
 
 	id = luaL_checkstring(L, -2);
 	string = luaL_checkstring(L, -1);
 	/* add a trailing \n */
-	buf = g_strconcat(string,"\n",NULL);
-	network_send_text(id,buf);
-	g_free(buf);
+	network_send_text(id,string);
 	return 0;  /* number of results */
 }
 
@@ -536,14 +533,11 @@ static int l_print_text_map( lua_State* L)
 {
 	const gchar * map;
 	const gchar * string;
-	gchar * buf;
 
 	map = luaL_checkstring(L, -2);
 	string = luaL_checkstring(L, -1);
 	/* add a trailing \n */
-	buf = g_strconcat(string,"\n",NULL);
-	context_broadcast_text(map,buf);
-	g_free(buf);
+	context_broadcast_text(map,string);
 	return 0;  /* number of results */
 }
 
@@ -558,13 +552,10 @@ Output:
 static int l_print_text_server( lua_State* L)
 {
 	const gchar * string;
-	gchar * buf;
 
 	string = luaL_checkstring(L, -1);
 	/* add a trailing \n */
-	buf = g_strconcat(string,"\n",NULL);
-	context_broadcast_text(NULL,buf);
-	g_free(buf);
+	context_broadcast_text(NULL,string);
 	return 0;  /* number of results */
 }
 
@@ -1232,7 +1223,7 @@ static void action_chat(context_t * context, const gchar * text)
 {
 	gchar * new_text;
 
-	new_text = g_strconcat(context->character_name,": ",text,"\n",NULL);
+	new_text = g_strconcat(context->character_name,": ",text,NULL);
 	network_broadcast_text(context,new_text);
 	g_free(new_text);
 }
