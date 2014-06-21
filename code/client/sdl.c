@@ -24,7 +24,7 @@ static int fullscreen = 0;
 
 static char *keyboard_text_buf = NULL;
 static unsigned int keyboard_text_index = 0;
-static unsigned int keyboard_text_index_max = 0;
+//static unsigned int keyboard_text_index_max = 0;
 static void (*keyboard_text_cb)(void * arg) = NULL;
 
 static int virtual_x = 0;
