@@ -214,7 +214,7 @@ gboolean file_get_contents(const gchar *filename,gchar **contents,gsize *length,
 	if( fileDB == NULL ) {
 		fileDB = g_hash_table_new_full(g_str_hash,g_str_equal, free_key, free_fileDB_value);
 		if( client_server == SERVER) {
-			g_thread_create(auto_save_files,NULL,FALSE,NULL);
+			g_thread_new("auto_save",auto_save_files,NULL);
 		}
 	}
 
@@ -282,7 +282,7 @@ gboolean file_set_contents(const gchar *filename,const gchar *contents,gssize le
 	if( fileDB == NULL ) {
 		fileDB = g_hash_table_new_full(g_str_hash,g_str_equal, free_key, free_fileDB_value);
 		if( client_server == SERVER) {
-			g_thread_create(auto_save_files,NULL,FALSE,NULL);
+			g_thread_new("auto_save",auto_save_files,NULL);
 		}
 	}
 
@@ -379,7 +379,7 @@ static file_data_t * get_config(const gchar * table, const gchar * file)
 	if( fileDB == NULL ) {
 		fileDB = g_hash_table_new_full(g_str_hash,g_str_equal, free_key, free_fileDB_value);
 		if( client_server == SERVER) {
-			g_thread_create(auto_save_files,NULL,FALSE,NULL);
+			g_thread_new("auto_save",auto_save_files,NULL);
 		}
 	}
 
@@ -464,7 +464,7 @@ static int __read_int(const gchar * table, const gchar * file, int * res, va_lis
 {
 	const file_data_t * config = NULL;
 	char * path=NULL;
-	long int result;
+	int result;
 
 	config = get_config(table,file);
 	if(config==NULL) {
@@ -483,7 +483,7 @@ static int __read_int(const gchar * table, const gchar * file, int * res, va_lis
 	}
 	g_free(path);
 
-	*res = (int)result;
+	*res = result;
 
 	return TRUE;
 }
