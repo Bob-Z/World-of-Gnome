@@ -147,6 +147,11 @@ void network_broadcast_text(context_t * context, const gchar * text)
 			continue;
 		}
 
+		/* Skip data transmission network */
+		if( ctx->user_name == NULL ) {
+			continue;
+		}
+
 		/* Skip if not on the same map */
 		/*
 		                if( same_map_only ) {
