@@ -26,7 +26,6 @@
 
 static GThread * listenThread = NULL;
 extern GStaticMutex file_mutex;
-extern GStaticMutex context_list_mutex;
 extern context_t * context_list_start;
 
 /* Date of the last request for a file (avoid server request flood for the same file */
@@ -134,12 +133,12 @@ void network_broadcast_text(context_t * context, const gchar * text)
 {
 	context_t * ctx = NULL;
 
-	g_static_mutex_lock (&context_list_mutex);
+	SDL_LockMutex(context_list_mutex);
 
 	ctx = context_list_start;
 
 	if( ctx == NULL ) {
-		g_static_mutex_unlock (&context_list_mutex);
+		SDL_UnlockMutex(context_list_mutex);
 		return;
 	}
 
@@ -163,7 +162,7 @@ void network_broadcast_text(context_t * context, const gchar * text)
 		network_send_text(ctx->id,text);
 	} while( (ctx=ctx->next)!= NULL );
 
-	g_static_mutex_unlock (&context_list_mutex);
+	SDL_UnlockMutex(context_list_mutex);
 }
 
 /* server sends a command to be executed by the client */
@@ -228,12 +227,12 @@ void network_broadcast_entry_int(const gchar * table, const gchar * file, const 
 
 	target = context_find(file);
 
-	g_static_mutex_lock (&context_list_mutex);
+	SDL_LockMutex(context_list_mutex);
 
 	ctx = context_list_start;
 
 	if( ctx == NULL ) {
-		g_static_mutex_unlock (&context_list_mutex);
+		SDL_UnlockMutex(context_list_mutex);
 		return;
 	}
 
@@ -256,7 +255,7 @@ void network_broadcast_entry_int(const gchar * table, const gchar * file, const 
 
 	} while( (ctx=ctx->next)!= NULL );
 
-	g_static_mutex_unlock (&context_list_mutex);
+	SDL_UnlockMutex(context_list_mutex);
 }
 
 /* Client request a file */

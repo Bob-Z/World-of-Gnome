@@ -30,7 +30,6 @@
 #include <glib/gstdio.h>
 
 context_t * context_list_start = NULL;
-GStaticMutex context_list_mutex = G_STATIC_MUTEX_INIT; /* exclusive access to context_list */
 
 /* context_init
   Initialize a context_t struct
@@ -91,11 +90,11 @@ context_t * context_new(void)
 {
 	context_t * ctx;
 
-	g_static_mutex_lock(&context_list_mutex);
+	SDL_LockMutex(context_list_mutex);
 	if ( context_list_start == NULL ) {
 		context_list_start = g_new0(context_t,1);
 		context_init(context_list_start);
-		g_static_mutex_unlock(&context_list_mutex);
+		SDL_UnlockMutex(context_list_mutex);
 		return context_list_start;
 	}
 
@@ -107,7 +106,7 @@ context_t * context_new(void)
 	ctx->next = g_new0(context_t,1);
 	context_init(ctx->next);
 	ctx->next->previous = ctx;
-	g_static_mutex_unlock(&context_list_mutex);
+	SDL_UnlockMutex(context_list_mutex);
 	return ctx->next;
 }
 
@@ -120,7 +119,7 @@ void context_free(context_t * context)
 	gint delete_file = TRUE;
 	context_t * ctx;
 
-	g_static_mutex_lock (&context_list_mutex);
+	SDL_LockMutex(context_list_mutex);
 
 	filename = g_strconcat( g_getenv("HOME"),"/", base_directory, "/", CHARACTER_TABLE, "/", context->id, NULL);
 // We should not errase the file's data from memory until it's dumped to disk, so comment this line
@@ -203,7 +202,7 @@ void context_free(context_t * context)
 
 	g_free(context);
 
-	g_static_mutex_unlock (&context_list_mutex);
+	SDL_UnlockMutex(context_list_mutex);
 
 	if(delete_file) {
 		g_unlink(filename);
@@ -213,12 +212,12 @@ void context_free(context_t * context)
 
 void context_lock_list()
 {
-	g_static_mutex_lock (&context_list_mutex);
+	SDL_LockMutex(context_list_mutex);
 }
 
 void context_unlock_list()
 {
-	g_static_mutex_unlock (&context_list_mutex);
+	SDL_UnlockMutex(context_list_mutex);
 }
 
 context_t * context_get_list_first()
@@ -233,16 +232,16 @@ context_t * context_get_list_first()
 */
 gboolean context_set_username(context_t * context, const gchar * name)
 {
-	g_static_mutex_lock (&context_list_mutex);
+	SDL_LockMutex(context_list_mutex);
 
 	g_free( context->user_name );
 	context->user_name = g_strdup(name);
 	if( context->user_name == NULL ) {
-		g_static_mutex_unlock (&context_list_mutex);
+		SDL_UnlockMutex(context_list_mutex);
 		return FALSE;
 	}
 
-	g_static_mutex_unlock (&context_list_mutex);
+	SDL_UnlockMutex(context_list_mutex);
 	return TRUE;
 }
 
@@ -251,9 +250,9 @@ gboolean context_set_username(context_t * context, const gchar * name)
 */
 void context_set_connected(context_t * context, gboolean connected)
 {
-	g_static_mutex_lock (&context_list_mutex);
+	SDL_LockMutex(context_list_mutex);
 	context->connected = connected;
-	g_static_mutex_unlock (&context_list_mutex);
+	SDL_UnlockMutex(context_list_mutex);
 }
 /* context_get_connected
   Get connection flag
@@ -262,36 +261,36 @@ gboolean context_get_connected(context_t * context)
 {
 	gboolean conn = FALSE;
 
-	g_static_mutex_lock (&context_list_mutex);
+	SDL_LockMutex(context_list_mutex);
 	conn = context->connected;
-	g_static_mutex_unlock (&context_list_mutex);
+	SDL_UnlockMutex(context_list_mutex);
 
 	return conn;
 }
 
 void context_set_input_stream(context_t * context, GInputStream * stream)
 {
-	g_static_mutex_lock (&context_list_mutex);
+	SDL_LockMutex(context_list_mutex);
 	context->input_stream = stream;
-	g_static_mutex_unlock (&context_list_mutex);
+	SDL_UnlockMutex(context_list_mutex);
 }
 
 GInputStream * context_get_input_stream(context_t * context)
 {
 	GInputStream * conn = NULL;
 
-	g_static_mutex_lock (&context_list_mutex);
+	SDL_LockMutex(context_list_mutex);
 	conn = context->input_stream;
-	g_static_mutex_unlock (&context_list_mutex);
+	SDL_UnlockMutex(context_list_mutex);
 
 	return conn;
 }
 
 void context_set_output_stream(context_t * context, GOutputStream * stream)
 {
-	g_static_mutex_lock (&context_list_mutex);
+	SDL_LockMutex(context_list_mutex);
 	context->output_stream = stream;
-	g_static_mutex_unlock (&context_list_mutex);
+	SDL_UnlockMutex(context_list_mutex);
 }
 
 GOutputStream * context_get_output_stream(context_t * context)
@@ -299,27 +298,27 @@ GOutputStream * context_get_output_stream(context_t * context)
 	GOutputStream * conn = NULL;
 
 //FIXME
-//	g_static_mutex_lock (&context_list_mutex);
+//	SDL_LockMutex(context_list_mutex);
 	conn = context->output_stream;
-//	g_static_mutex_unlock (&context_list_mutex);
+//	SDL_UnlockMutex(context_list_mutex);
 
 	return conn;
 }
 
 void context_set_connection(context_t * context, GSocketConnection * connection)
 {
-	g_static_mutex_lock (&context_list_mutex);
+	SDL_LockMutex(context_list_mutex);
 	context->connection = connection;
-	g_static_mutex_unlock (&context_list_mutex);
+	SDL_UnlockMutex(context_list_mutex);
 }
 
 GSocketConnection * context_get_connection(context_t * context)
 {
 	GSocketConnection * conn = NULL;
 
-	g_static_mutex_lock (&context_list_mutex);
+	SDL_LockMutex(context_list_mutex);
 	conn = context->connection;
-	g_static_mutex_unlock (&context_list_mutex);
+	SDL_UnlockMutex(context_list_mutex);
 
 	return conn;
 }
@@ -332,13 +331,13 @@ gboolean context_set_character_name(context_t * context, const gchar * name)
 {
 	int ret = TRUE;
 
-	g_static_mutex_lock (&context_list_mutex);
+	SDL_LockMutex(context_list_mutex);
 	g_free( context->character_name );
 	context->character_name = g_strdup(name);
 	if( context->character_name == NULL ) {
 		ret = FALSE;
 	}
-	g_static_mutex_unlock (&context_list_mutex);
+	SDL_UnlockMutex(context_list_mutex);
 
 	return ret;
 }
@@ -382,9 +381,9 @@ gboolean context_set_map(context_t * context, const gchar * map)
 {
 	int ret;
 
-	g_static_mutex_lock (&context_list_mutex);
+	SDL_LockMutex(context_list_mutex);
 	ret = _context_set_map(context,map);
-	g_static_mutex_unlock (&context_list_mutex);
+	SDL_UnlockMutex(context_list_mutex);
 
 	return ret;
 }
@@ -397,13 +396,13 @@ gboolean context_set_type(context_t * context, const gchar * type)
 {
 	int ret = TRUE;
 
-	g_static_mutex_lock (&context_list_mutex);
+	SDL_LockMutex(context_list_mutex);
 	g_free( context->type );
 	context->type = g_strdup(type);
 	if( context->type == NULL ) {
 		ret = FALSE;
 	}
-	g_static_mutex_unlock (&context_list_mutex);
+	SDL_UnlockMutex(context_list_mutex);
 
 	return ret;
 }
@@ -413,9 +412,9 @@ gboolean context_set_type(context_t * context, const gchar * type)
 */
 void context_set_pos_x(context_t * context, guint pos)
 {
-	g_static_mutex_lock (&context_list_mutex);
+	SDL_LockMutex(context_list_mutex);
 	context->pos_x = pos;
-	g_static_mutex_unlock (&context_list_mutex);
+	SDL_UnlockMutex(context_list_mutex);
 }
 
 /* context_set_pos_y
@@ -423,9 +422,9 @@ void context_set_pos_x(context_t * context, guint pos)
 */
 void context_set_pos_y(context_t * context, guint pos)
 {
-	g_static_mutex_lock (&context_list_mutex);
+	SDL_LockMutex(context_list_mutex);
 	context->pos_y = pos;
-	g_static_mutex_unlock (&context_list_mutex);
+	SDL_UnlockMutex(context_list_mutex);
 }
 
 /* context_set_tile_x
@@ -433,9 +432,9 @@ void context_set_pos_y(context_t * context, guint pos)
 */
 void context_set_tile_x(context_t * context, guint pos)
 {
-	g_static_mutex_lock (&context_list_mutex);
+	SDL_LockMutex(context_list_mutex);
 	context->tile_x = pos;
-	g_static_mutex_unlock (&context_list_mutex);
+	SDL_UnlockMutex(context_list_mutex);
 }
 
 /* context_set_tile_y
@@ -443,9 +442,9 @@ void context_set_tile_x(context_t * context, guint pos)
 */
 void context_set_tile_y(context_t * context, guint pos)
 {
-	g_static_mutex_lock (&context_list_mutex);
+	SDL_LockMutex(context_list_mutex);
 	context->tile_y = pos;
-	g_static_mutex_unlock (&context_list_mutex);
+	SDL_UnlockMutex(context_list_mutex);
 }
 
 /* context_set_id
@@ -455,23 +454,23 @@ void context_set_tile_y(context_t * context, guint pos)
 */
 gboolean context_set_id(context_t * context, const gchar * name)
 {
-	g_static_mutex_lock (&context_list_mutex);
+	SDL_LockMutex(context_list_mutex);
 
 	g_free( context->id );
 	context->id = g_strdup(name);
 	if( context->id == NULL ) {
-		g_static_mutex_unlock (&context_list_mutex);
+		SDL_UnlockMutex(context_list_mutex);
 		return FALSE;
 	}
 
-	g_static_mutex_unlock (&context_list_mutex);
+	SDL_UnlockMutex(context_list_mutex);
 	return TRUE;
 }
 
 void register_lua_functions( context_t * context);
 void context_new_VM(context_t * context)
 {
-	g_static_mutex_lock (&context_list_mutex);
+	SDL_LockMutex(context_list_mutex);
 	context->luaVM = lua_open();
 	lua_baselibopen(context->luaVM);
 	lua_tablibopen(context->luaVM);
@@ -480,7 +479,7 @@ void context_new_VM(context_t * context)
 	lua_mathlibopen(context->luaVM);
 
 	register_lua_functions(context);
-	g_static_mutex_unlock (&context_list_mutex);
+	SDL_UnlockMutex(context_list_mutex);
 }
 /*******************************
 Update the memory context by reading the client's character data file on disk
@@ -492,60 +491,60 @@ gboolean context_update_from_file(context_t * context)
 	const gchar * result;
 	int ret;
 
-	g_static_mutex_lock (&context_list_mutex);
+	SDL_LockMutex(context_list_mutex);
 
 	if( context->id == NULL ) {
-		g_static_mutex_unlock (&context_list_mutex);
+		SDL_UnlockMutex(context_list_mutex);
 		return FALSE;
 	}
 
 	if(!read_string(CHARACTER_TABLE,context->id,&result, CHARACTER_KEY_NAME,NULL)) {
-		g_static_mutex_unlock (&context_list_mutex);
+		SDL_UnlockMutex(context_list_mutex);
 		return FALSE;
 	}
 
 	g_free( context->character_name );
 	context->character_name = g_strdup(result);
 	if( context->character_name == NULL ) {
-		g_static_mutex_unlock (&context_list_mutex);
+		SDL_UnlockMutex(context_list_mutex);
 		return FALSE;
 	}
 
 	if(!read_string(CHARACTER_TABLE,context->id,&result, CHARACTER_KEY_TYPE,NULL)) {
-		g_static_mutex_unlock (&context_list_mutex);
+		SDL_UnlockMutex(context_list_mutex);
 		return FALSE;
 	}
 
 	g_free( context->type );
 	context->type = g_strdup(result);
 	if( context->type == NULL ) {
-		g_static_mutex_unlock (&context_list_mutex);
+		SDL_UnlockMutex(context_list_mutex);
 		return FALSE;
 	}
 
 	if(!read_string(CHARACTER_TABLE,context->id,&result, CHARACTER_KEY_MAP,NULL)) {
-		g_static_mutex_unlock (&context_list_mutex);
+		SDL_UnlockMutex(context_list_mutex);
 		return FALSE;
 	}
 
 	g_free( context->map );
 	ret = _context_set_map(context, result);
 	if( ret == FALSE ) {
-		g_static_mutex_unlock (&context_list_mutex);
+		SDL_UnlockMutex(context_list_mutex);
 		return FALSE;
 	}
 
 	if(!read_int(CHARACTER_TABLE,context->id,&context->pos_x, CHARACTER_KEY_POS_X,NULL)) {
-		g_static_mutex_unlock (&context_list_mutex);
+		SDL_UnlockMutex(context_list_mutex);
 		return FALSE;
 	}
 
 	if(!read_int(CHARACTER_TABLE,context->id,&context->pos_y, CHARACTER_KEY_POS_Y,NULL)) {
-		g_static_mutex_unlock (&context_list_mutex);
+		SDL_UnlockMutex(context_list_mutex);
 		return FALSE;
 	}
 
-	g_static_mutex_unlock (&context_list_mutex);
+	SDL_UnlockMutex(context_list_mutex);
 	return TRUE;
 }
 
@@ -554,10 +553,10 @@ Write a context to server's disk
 *******************************/
 gboolean context_write_to_file(context_t * context)
 {
-	g_static_mutex_lock (&context_list_mutex);
+	SDL_LockMutex(context_list_mutex);
 
 	if( context->id == NULL ) {
-		g_static_mutex_unlock (&context_list_mutex);
+		SDL_UnlockMutex(context_list_mutex);
 		return FALSE;
 	}
 
@@ -569,7 +568,7 @@ gboolean context_write_to_file(context_t * context)
 
 	write_int(CHARACTER_TABLE, context->id,context->pos_y,CHARACTER_KEY_POS_Y, NULL);
 
-	g_static_mutex_unlock (&context_list_mutex);
+	SDL_UnlockMutex(context_list_mutex);
 	return TRUE;
 }
 
@@ -601,7 +600,7 @@ gboolean context_update_from_network_frame(context_t * context, gchar * frame)
 {
 	gchar * data = frame;
 
-	g_static_mutex_lock (&context_list_mutex);
+	SDL_LockMutex(context_list_mutex);
 
 	if( context->user_name ) {
 		g_free( context->user_name );
@@ -692,7 +691,7 @@ gboolean context_update_from_network_frame(context_t * context, gchar * frame)
 	}
 	data += (g_utf8_strlen(data,-1)+1);
 
-	g_static_mutex_unlock (&context_list_mutex);
+	SDL_UnlockMutex(context_list_mutex);
 
 	return TRUE;
 }
@@ -702,12 +701,12 @@ void context_spread(context_t * context)
 {
 	context_t * ctx = NULL;
 
-	g_static_mutex_lock (&context_list_mutex);
+	SDL_LockMutex(context_list_mutex);
 
 	ctx = context_list_start;
 
 	if( ctx == NULL ) {
-		g_static_mutex_unlock (&context_list_mutex);
+		SDL_UnlockMutex(context_list_mutex);
 		return;
 	}
 
@@ -739,7 +738,7 @@ void context_spread(context_t * context)
 	g_free(context->prev_map);
 	context->prev_map = NULL;
 
-	g_static_mutex_unlock (&context_list_mutex);
+	SDL_UnlockMutex(context_list_mutex);
 }
 
 /*if "map" == NULL : server sends a message to all connected client
@@ -749,12 +748,12 @@ void context_broadcast_text(const gchar * map, const gchar * text)
 {
 	context_t * ctx = NULL;
 
-	g_static_mutex_lock (&context_list_mutex);
+	SDL_LockMutex(context_list_mutex);
 
 	ctx = context_list_start;
 
 	if( ctx == NULL ) {
-		g_static_mutex_unlock (&context_list_mutex);
+		SDL_UnlockMutex(context_list_mutex);
 		return;
 	}
 
@@ -780,7 +779,7 @@ void context_broadcast_text(const gchar * map, const gchar * text)
 
 	} while( (ctx=ctx->next)!= NULL );
 
-	g_static_mutex_unlock (&context_list_mutex);
+	SDL_UnlockMutex(context_list_mutex);
 }
 
 /* Send the data of all existing context to the passed context */
@@ -789,12 +788,12 @@ void context_request_other_context(context_t * context)
 {
 	context_t * ctx = NULL;
 
-	g_static_mutex_lock (&context_list_mutex);
+	SDL_LockMutex(context_list_mutex);
 
 	ctx = context_list_start;
 
 	if( ctx == NULL ) {
-		g_static_mutex_unlock (&context_list_mutex);
+		SDL_UnlockMutex(context_list_mutex);
 		return;
 	}
 
@@ -813,7 +812,7 @@ void context_request_other_context(context_t * context)
 
 	} while( (ctx=ctx->next)!= NULL );
 
-	g_static_mutex_unlock (&context_list_mutex);
+	SDL_UnlockMutex(context_list_mutex);
 }
 
 /* Called from client */
@@ -864,7 +863,7 @@ void context_add_or_update_from_network_frame(context_t * context,gchar * data)
 	data += (g_utf8_strlen(data,-1)+1);
 
 	/* search for this context */
-	g_static_mutex_lock (&context_list_mutex);
+	SDL_LockMutex(context_list_mutex);
 	ctx = context_list_start;
 
 	while( ctx != NULL ) {
@@ -887,7 +886,7 @@ void context_add_or_update_from_network_frame(context_t * context,gchar * data)
 				g_free(name);
 				g_free(id);
 
-				g_static_mutex_unlock (&context_list_mutex);
+				SDL_UnlockMutex(context_list_mutex);
 			} else {
 				wlog(LOGDEBUG,"Deleting context %s / %s",user_name,name);
 				/* Delete selection if it was selected */
@@ -898,7 +897,7 @@ void context_add_or_update_from_network_frame(context_t * context,gchar * data)
 					}
 
 				}
-				g_static_mutex_unlock (&context_list_mutex);
+				SDL_UnlockMutex(context_list_mutex);
 				context_free(ctx);
 			}
 			return;
@@ -906,7 +905,7 @@ void context_add_or_update_from_network_frame(context_t * context,gchar * data)
 		ctx = ctx->next;
 	}
 
-	g_static_mutex_unlock (&context_list_mutex);
+	SDL_UnlockMutex(context_list_mutex);
 
 	wlog(LOGDEBUG,"Creating context %s / %s",user_name,name);
 	ctx = context_new();
@@ -932,12 +931,12 @@ void context_broadcast_file(const gchar * table, const gchar * file, gboolean sa
 	context_t * ctx = NULL;
 	gchar * filename;
 
-	g_static_mutex_lock (&context_list_mutex);
+	SDL_LockMutex(context_list_mutex);
 
 	ctx = context_list_start;
 
 	if( ctx == NULL ) {
-		g_static_mutex_unlock (&context_list_mutex);
+		SDL_UnlockMutex(context_list_mutex);
 		return;
 	}
 
@@ -959,7 +958,7 @@ void context_broadcast_file(const gchar * table, const gchar * file, gboolean sa
 
 	} while( (ctx=ctx->next)!= NULL );
 
-	g_static_mutex_unlock (&context_list_mutex);
+	SDL_UnlockMutex(context_list_mutex);
 }
 
 /* Return the distance between two contexts */
@@ -986,13 +985,13 @@ void context_reset_all_position()
 {
 	context_t * ctx = context_get_list_first();
 
-	g_static_mutex_lock (&context_list_mutex);
+	SDL_LockMutex(context_list_mutex);
 	while(ctx != NULL ) {
 		ctx->old_pos_x = ctx->cur_pos_x;
 		ctx->old_pos_y = ctx->cur_pos_y;
 		ctx->pos_tick = 0;
 		ctx = ctx->next;
 	}
-	g_static_mutex_unlock (&context_list_mutex);
+	SDL_UnlockMutex(context_list_mutex);
 }
 #endif

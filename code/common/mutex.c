@@ -17,19 +17,11 @@
    Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
-#ifndef WOG_COMMON_INCLUDE
-#define WOG_COMMON_INCLUDE
+#include <SDL2/SDL.h>
 
-#include "checksum.h"
-#include "const.h"
-#include "context.h"
-#include "file.h"
-#include "protocol.h"
-#include "network.h"
-#include "client_server.h"
-#include "map.h"
-#include "entry.h"
-#include "log.h"
-#include "mutex.h"
+SDL_mutex* context_list_mutex = NULL;
 
-#endif
+void mutex_init()
+{
+	context_list_mutex = SDL_CreateMutex();
+}

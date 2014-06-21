@@ -77,6 +77,8 @@ int main (int argc, char **argv)
 		}
 	}
 
+	mutex_init();
+
 	context = context_new();
 
 	context_set_username(context,user);
