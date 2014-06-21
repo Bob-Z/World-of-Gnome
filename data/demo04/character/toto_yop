@@ -1,0 +1,27 @@
+marquee         = "marquee/knight_marquee.jpg";
+sprite          = "sprite/knight.gif";
+name = "yop";
+inventory = [ "A0009", "A0007", "A0000", "A0002" ];
+type = "human";
+map = "village";
+pos_x = 1;
+pos_y = 6;
+action = [  ];
+allowed_tile = [ ];
+attribute : 
+{
+  life : 
+  {
+    min = 0;
+    max = 10;
+    current = 10;
+    previous = 10;
+  };
+  agility : 
+  {
+    min = 0;
+    max = 10;
+    current = 10;
+    previous = 10;
+  };
+};

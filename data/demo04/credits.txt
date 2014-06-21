@@ -1,0 +1,7 @@
+Sprite:
+
+ - knight: http://www.spriters-resource.com/ds/rondoofswords/sheet/42665/
+
+Map:
+
+ - village: http://www.spriters-resource.com/game_boy_advance/lunarleg/
