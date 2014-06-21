@@ -22,6 +22,7 @@
 #include "common.h"
 #include <stdlib.h>
 #include <string.h>
+#include "../server/action.h"
 
 /***********************************
 Create a new map.
