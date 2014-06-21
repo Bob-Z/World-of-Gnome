@@ -23,8 +23,8 @@
 #include <SDL2/SDL.h>
 
 extern SDL_mutex* context_list_mutex;
-/*Server only */
 extern SDL_mutex* npc_mutex;
+extern SDL_mutex* attribute_mutex;
 
 
 void mutex_init();

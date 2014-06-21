@@ -21,9 +21,11 @@
 
 SDL_mutex* context_list_mutex = NULL;
 SDL_mutex* npc_mutex = NULL;
+SDL_mutex* attribute_mutex = NULL;
 
 void mutex_init()
 {
 	context_list_mutex = SDL_CreateMutex();
 	npc_mutex = SDL_CreateMutex();
+	attribute_mutex = SDL_CreateMutex();
 }

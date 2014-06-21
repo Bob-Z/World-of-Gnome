@@ -25,9 +25,6 @@
 #include <string.h>
 #include "action.h"
 
-static GStaticMutex attribute_mutex = G_STATIC_MUTEX_INIT;
-
-
 /*****************************/
 /* Add the specified value to the specified attribute */
 /* Check on max and min are done and call to on_* scripts are done if set */
@@ -51,10 +48,10 @@ gint attribute_change(context_t * context, const gchar * id, const gchar * attri
 	gchar * max_action = NULL;
 	gchar * up_action = NULL;
 
-	g_static_mutex_lock(&attribute_mutex);
+	SDL_LockMutex(attribute_mutex);
 
 	if(!read_int(CHARACTER_TABLE,id,&current,ATTRIBUTE_GROUP,attribute, ATTRIBUTE_CURRENT, NULL)) {
-		g_static_mutex_unlock(&attribute_mutex);
+		SDL_UnlockMutex(attribute_mutex);
 		return -1;
 	}
 
@@ -83,11 +80,11 @@ gint attribute_change(context_t * context, const gchar * id, const gchar * attri
 	}
 
 	if(!write_int(CHARACTER_TABLE,id,current,ATTRIBUTE_GROUP,attribute, ATTRIBUTE_CURRENT, NULL)) {
-		g_static_mutex_unlock(&attribute_mutex);
+		SDL_UnlockMutex(attribute_mutex);
 		return -1;
 	}
 	if(!write_int(CHARACTER_TABLE,id,old,ATTRIBUTE_GROUP,attribute, ATTRIBUTE_PREVIOUS, NULL)) {
-		g_static_mutex_unlock(&attribute_mutex);
+		SDL_UnlockMutex(attribute_mutex);
 		return -1;
 	}
 
@@ -122,7 +119,7 @@ gint attribute_change(context_t * context, const gchar * id, const gchar * attri
 		}
 	}
 
-	g_static_mutex_unlock(&attribute_mutex);
+	SDL_UnlockMutex(attribute_mutex);
 
 	/* do automatic actions */
 	if( do_down_action && down_action) {
@@ -173,14 +170,14 @@ gint attribute_get(const gchar *id, const gchar * attribute)
 		return -1;
 	}
 
-	g_static_mutex_lock(&attribute_mutex);
+	SDL_LockMutex(attribute_mutex);
 
 	if(!read_int(CHARACTER_TABLE,id,&current,ATTRIBUTE_GROUP,attribute, ATTRIBUTE_CURRENT, NULL)) {
-		g_static_mutex_unlock(&attribute_mutex);
+		SDL_UnlockMutex(attribute_mutex);
 		return -1;
 	}
 
-	g_static_mutex_unlock(&attribute_mutex);
+	SDL_UnlockMutex(attribute_mutex);
 
 	return current;
 }
@@ -196,14 +193,14 @@ gint attribute_set(const gchar * id, const gchar * attribute, gint value)
 		return -1;
 	}
 
-	g_static_mutex_lock(&attribute_mutex);
+	SDL_LockMutex(attribute_mutex);
 
 	if(!write_int(CHARACTER_TABLE,id,value,ATTRIBUTE_GROUP,attribute, ATTRIBUTE_CURRENT, NULL)) {
-		g_static_mutex_unlock(&attribute_mutex);
+		SDL_UnlockMutex(attribute_mutex);
 		return -1;
 	}
 
-	g_static_mutex_unlock(&attribute_mutex);
+	SDL_UnlockMutex(attribute_mutex);
 
 	return 0;
 }
