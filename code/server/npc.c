@@ -172,7 +172,7 @@ void instantiate_npc(const gchar * id)
 	/* Make sure the thread has created the LUA VM before continung */
 	SDL_LockMutex(npc_start_mutex);
 	/* start management thread */
-	g_thread_create(manage_npc,(gpointer)ctx,FALSE,NULL);
+	g_thread_new("manage_npc",manage_npc,(gpointer)ctx);
 	/* Wait for the thread to unlock the mutex */
 	SDL_LockMutex(npc_start_mutex);
 	SDL_UnlockMutex(npc_start_mutex);
