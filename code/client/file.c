@@ -17,7 +17,6 @@
    Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
-#include <gtk/gtk.h>
 #include <glib.h>
 #include <glib/gstdio.h>
 #include "../common/common.h"

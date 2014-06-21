@@ -18,7 +18,6 @@
 */
 
 #include <glib.h>
-#include <gtk/gtk.h>
 #include <glib/gprintf.h>
 #include "../common/common.h"
 #include "character.h"

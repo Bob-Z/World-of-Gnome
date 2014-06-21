@@ -65,8 +65,6 @@ void context_init(context_t * context)
 	context->pos_tick = 0;
 	context->type = NULL;
 
-	context->sprite_image = NULL;
-
 	context->selection.id = NULL;
 	context->selection.map_coord[0] = -1;
 	context->selection.map_coord[1] = -1;
@@ -151,10 +149,6 @@ void context_free(context_t * context)
 	context->map = NULL;
 	g_free(context->type);
 	context->type = NULL;
-	if( context->sprite_image != NULL ) {
-		gtk_widget_destroy(context->sprite_image);
-		context->sprite_image = NULL;
-	}
 	context->selection.id = NULL;
 	context->selection.map_coord[0] = -1;
 	context->selection.map_coord[1] = -1;
@@ -466,7 +460,12 @@ gboolean context_set_id(context_t * context, const gchar * name)
 	return TRUE;
 }
 
+#ifdef SERVER
 void register_lua_functions( context_t * context);
+#else
+/* Client do not use LUA for now */
+void register_lua_functions( context_t * context) {}
+#endif
 void context_new_VM(context_t * context)
 {
 	SDL_LockMutex(context_list_mutex);

@@ -17,7 +17,6 @@
    Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
-#include <gtk/gtk.h>
 #include <glib.h>
 #include <gio/gio.h>
 #include <lua.h>
@@ -61,7 +60,6 @@ typedef struct context {
 	gint		old_pos_y;	/* player position (in tile) */
 	Uint32		pos_tick;	/* tick for player animation */
 	gchar *		type;	/* character's type */
-	GtkWidget * 	sprite_image;
 	selection_t 	selection; /* Selected tile or sprite */
 	gchar *		id; /* unique ID of a character (its filename) */
 	gchar *		prev_map; /* the map from where this context comes */

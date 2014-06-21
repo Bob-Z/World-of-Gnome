@@ -21,7 +21,6 @@
 /* When a thread need an image, it create a GtkWidget containing the image, then it adds an entry in the image data base (a hash table) with the name of the file containing the image on the disk (relative to $HOME/.config/wog/client/data) as the key and the pointer to the GtkWidget as the value.
 When a file is received from the server, the parser's thread check the image data base and if the received file is an entry in the image data base, it update the corresponding GtkImage*/
 
-#include <gtk/gtk.h>
 #include "../common/common.h"
 #include "anim.h"
 

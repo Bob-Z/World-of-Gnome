@@ -20,14 +20,10 @@
 #include <glib.h>
 #include <gio/gio.h>
 #include "../common/common.h"
-#include <gtk/gtk.h>
 #include "scr_select.h"
 #include "file.h"
 #include "imageDB.h"
-#include "win_game.h"
 #include "textview.h"
-#include "action.h"
-#include "draw.h"
 #include "screen.h"
 
 /* parse_incoming_data

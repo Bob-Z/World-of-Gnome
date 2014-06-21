@@ -17,5 +17,9 @@
    Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
+#include "../common/common.h"
+
 const char * base_directory = ".config/wog/client";
 int client_server = 0;
+/* Only needed by server, so empty function for client */
+void register_lua_functions( context_t * context) {};

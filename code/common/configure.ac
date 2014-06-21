@@ -45,7 +45,6 @@ dnl Checks for library functions.
 PKG_CHECK_MODULES(GLIB, [glib-2.0])
 PKG_CHECK_MODULES(GTHREAD, [gthread-2.0])
 PKG_CHECK_MODULES(GIO, [gio-2.0])
-PKG_CHECK_MODULES(GTK, [gtk+-2.0])
 dnl Check for libconfig
 PKG_CHECK_MODULES([LIBCONFIG], [libconfig >= 0.20],,
   AC_MSG_ERROR([libconfig 0.20 or newer not found.])
@@ -57,8 +56,6 @@ PKG_CHECK_MODULES([LIBSDL2], [ sdl2 >= 2.0.0])
 CFLAGS+=" ${GLIB_CFLAGS}"
 CFLAGS+=" ${GTHREAD_CFLAGS}"
 CFLAGS+=" ${GIO_CFLAGS}"
-CFLAGS+=" ${GTK_CFLAGS}"
-CFLAGS+=" -export-dynamic"
 CFLAGS+=" ${LIBCONFIG_CFLAGS}"
 CFLAGS+=" ${LIBLUA_CFLAGS}"
 CFLAGS+=" ${LIBSDL2_CFLAGS}"

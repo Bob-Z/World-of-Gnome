@@ -20,7 +20,6 @@
 #include <glib.h>
 #include <gio/gio.h>
 #include "../common/common.h"
-#include <gtk/gtk.h>
 #include "imageDB.h"
 #include "file.h"
 #include <getopt.h>
