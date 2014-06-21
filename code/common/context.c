@@ -24,7 +24,6 @@
 #include <string.h>
 #include <glib.h>
 #include <stdlib.h>
-#include <gtk/gtk.h>
 #include <lualib.h>
 #include <lauxlib.h>
 #include <glib/gstdio.h>
