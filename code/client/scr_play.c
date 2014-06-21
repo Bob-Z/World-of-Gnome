@@ -697,31 +697,33 @@ static void compose_select(context_t * ctx)
 	int x;
 	int y;
 
+	/* Tile selection */
+	x = ctx->selection.map_coord[0];
+	y = ctx->selection.map_coord[1];
+
+	if( x == -1 || y == -1) {
+		return;
+	}
+
 	anim = imageDB_get_anim(ctx,CURSOR_SPRITE_FILE);
 	if(anim == NULL) {
 		return;
 	}
 
-	/* Tile selection */
-	x = ctx->selection.map_coord[0];
-	y = ctx->selection.map_coord[1];
-
-	if( x != -1 && y != -1) {
-		item = item_list_add(item_list);
-		if(item_list == NULL) {
-			item_list = item;
-		}
-
-		/* get pixel coordiante from tile coordianate */
-		x = x * ctx->tile_x;
-		y = y * ctx->tile_y;
-
-		/* Center on tile */
-		x -= (anim->w-ctx->tile_x)/2;
-                y -= (anim->h-ctx->tile_y)/2;
-
-		item_set_anim(item,x,y,anim);
+	item = item_list_add(item_list);
+	if(item_list == NULL) {
+		item_list = item;
 	}
+
+	/* get pixel coordiante from tile coordianate */
+	x = x * ctx->tile_x;
+	y = y * ctx->tile_y;
+
+	/* Center on tile */
+	x -= (anim->w-ctx->tile_x)/2;
+	y -= (anim->h-ctx->tile_y)/2;
+
+	item_set_anim(item,x,y,anim);
 
 	/* Sprite selection */
 	if( ctx->selection.id != NULL) {
