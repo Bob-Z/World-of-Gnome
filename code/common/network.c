@@ -681,7 +681,7 @@ int network_open_data_connection(context_t * context)
 {
 	GSocketClient * client;
 	GSocketConnection * connection = NULL;
-	GError * error = NULL;
+	GError *error;
 
 	client = g_socket_client_new();
 	connection = g_socket_client_connect_to_host(client,context->hostname,PORT,NULL,&error);
@@ -694,7 +694,7 @@ int network_open_data_connection(context_t * context)
 	context->input_data_stream = g_io_stream_get_input_stream((GIOStream *)connection);
 	context->output_data_stream = g_io_stream_get_output_stream((GIOStream *)connection);
 
-	listenThread = g_thread_create(async_data_recv,(gpointer)context,TRUE,&error);
+	listenThread = g_thread_new("data_connection",async_data_recv,(gpointer)context);
 	g_assert_no_error(error);
 
 	return TRUE;
