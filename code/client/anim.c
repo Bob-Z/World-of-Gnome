@@ -278,7 +278,7 @@ static anim_t * libpng_load(const char * filename)
 
 	for (i = 0; i < height; i++)
 	{
-		row_pointers[i] = (png_bytep)(surf->pixels +
+		row_pointers[height-i-1] = (png_bytep)(surf->pixels +
 				((height - (i + 1)) * width * sizeof(Uint32)));
 	}
 
