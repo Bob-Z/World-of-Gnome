@@ -23,6 +23,7 @@
 #include <libswscale/swscale.h>
 
 #include <gif_lib.h>
+#include <png.h>
 
 #define GIF_GCE 0xf9
 
@@ -144,6 +145,161 @@ static anim_t * giflib_load(const char * filename)
 	SDL_FreeSurface(surf);
 
 	DGifCloseFile(gif);
+
+	return anim;
+}
+
+static anim_t * libpng_load(const char * filename)
+{
+	context_t * ctx = context_get_list_first(); //Player's context
+	FILE *fp;
+	png_structp png_ptr;
+	png_infop info_ptr;
+	SDL_Surface* surf;
+	anim_t * anim;
+	png_bytep *row_pointers;
+	png_uint_32 width;
+	png_uint_32 height;
+	int bit_depth;
+	int color_type;
+	int i;
+	png_byte magic[8];
+
+	/* open image file */
+	fp = fopen (filename, "rb");
+	if (!fp)
+	{
+		fprintf (stderr, "error: couldn't open \"%s\"!\n", filename);
+		return NULL;
+	}
+
+	/* read magic number */
+	fread (magic, 1, sizeof (magic), fp);
+
+	/* check for valid magic number */
+	if (!png_check_sig (magic, sizeof (magic)))
+	{
+		return NULL;
+	}
+
+	/* create a png read struct */
+	png_ptr = png_create_read_struct
+		(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+	if (!png_ptr)
+	{
+		return NULL;
+	}
+
+	/* create a png info struct */
+	info_ptr = png_create_info_struct (png_ptr);
+	if (!info_ptr)
+	{
+		png_destroy_read_struct (&png_ptr, NULL, NULL);
+		return NULL;
+	}
+
+	wlog(LOGDEBUG,"Using libpng to decode %s",filename);
+
+	SDL_LockMutex(file_mutex);
+
+	/* set error handling */
+	if (setjmp(png_ptr->jmpbuf))
+	{
+		png_read_destroy(png_ptr, info_ptr, (png_info *)0);
+		fclose(fp);
+		SDL_UnlockMutex(file_mutex);
+		free(png_ptr);
+		free(info_ptr);
+		/* If we get here, we had a problem reading the file */
+		return NULL;
+	}
+
+	/* setup libpng for using standard C fread() function
+	   with our FILE pointer */
+	png_init_io (png_ptr, fp);
+
+	/* tell libpng that we have already read the magic number */
+	png_set_sig_bytes (png_ptr, sizeof (magic));
+
+	/* read the file information */
+	png_read_info(png_ptr, info_ptr);
+
+	/* get some usefull information from header */
+	bit_depth = png_get_bit_depth (png_ptr, info_ptr);
+	color_type = png_get_color_type (png_ptr, info_ptr);
+
+	/* convert index color images to RGB images */
+	if (color_type == PNG_COLOR_TYPE_PALETTE) {
+		png_set_palette_to_rgb (png_ptr);
+	}
+
+	/* convert 1-2-4 bits grayscale images to 8 bits
+	   grayscale. */
+	if (color_type == PNG_COLOR_TYPE_GRAY && bit_depth < 8) {
+		png_set_gray_1_2_4_to_8 (png_ptr);
+	}
+
+	if (png_get_valid (png_ptr, info_ptr, PNG_INFO_tRNS)) {
+		png_set_tRNS_to_alpha (png_ptr);
+	}
+
+	if (bit_depth == 16) {
+		png_set_strip_16 (png_ptr);
+	}
+	else if (bit_depth < 8) {
+		png_set_packing (png_ptr);
+	}
+
+	/* optional call to update the info structure */
+	png_read_update_info(png_ptr, info_ptr);
+
+	/* retrieve updated information */
+	png_get_IHDR (png_ptr, info_ptr,
+			&width,&height,
+			&bit_depth, &color_type,
+			NULL, NULL, NULL);
+
+	wlog(LOGDEBUG,"size: %dx%d bit_depth: %d, type: %d",width,height,bit_depth,color_type);
+	/* allocate the memory to hold the image using the fields
+	   of png_info. */
+	anim = malloc(sizeof(anim_t));
+	memset(anim,0,sizeof(anim_t));
+
+	anim->num_frame = 1;
+	anim->tex = malloc(sizeof(SDL_Texture *) * anim->num_frame);
+	anim->w = width;
+	anim->h = height;
+	anim->delay = malloc(sizeof(Uint32) * anim->num_frame);
+	anim->delay[0] = 0;
+
+	surf = SDL_CreateRGBSurface(0,width,height,32,0x000000ff,0x0000ff00,0x00ff0000,0xff000000);
+	memset(surf->pixels,0,width*height*sizeof(Uint32));
+	row_pointers = (png_bytep *)malloc (sizeof (png_bytep) * height);
+
+	for (i = 0; i < height; i++)
+	{
+		row_pointers[i] = (png_bytep)(surf->pixels +
+				((height - (i + 1)) * width * sizeof(Uint32)));
+	}
+
+	/* the easiest way to read the image */
+	png_read_image(png_ptr, row_pointers);
+
+	free(row_pointers);
+
+	/* read the rest of the file, getting any additional chunks
+	   in info_ptr */
+	png_read_end(png_ptr, info_ptr);
+
+	/* clean up after the read, and free any memory allocated */
+	png_destroy_read_struct (&png_ptr, &info_ptr, NULL);
+
+	/* close the file */
+	fclose(fp);
+	SDL_UnlockMutex(file_mutex);
+
+	anim->tex[0] = SDL_CreateTextureFromSurface(ctx->render,surf);
+	SDL_FreeSurface(surf);
 
 	return anim;
 }
@@ -347,10 +503,16 @@ anim_t * anim_load(const char * filename)
 	anim_t * ret;
 
 	ret = giflib_load(filename);
-
-	if(ret == NULL) {
-		ret = libav_load(filename);
+	if(ret != NULL) {
+		return ret;
 	}
+
+	ret = libpng_load(filename);
+	if(ret != NULL) {
+		return ret;
+	}
+
+	ret = libav_load(filename);
 
 	return ret;
 }
