@@ -31,5 +31,6 @@
 #include "entry.h"
 #include "log.h"
 #include "mutex.h"
+#include "item.h"
 
 #endif

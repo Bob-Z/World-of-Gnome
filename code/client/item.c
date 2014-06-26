@@ -41,6 +41,10 @@ item_t * item_list_add(item_t * item_list)
 
 static void item_free(item_t * item)
 {
+	if ( item->string ) {
+		free(item->string);
+	}
+
 	free(item);
 }
 
@@ -230,7 +234,7 @@ void item_set_over(item_t * item,void (*over)(void * arg),void * over_arg)
 
 void item_set_string(item_t * item,char * buf)
 {
-	item->string = buf;
+	item->string = strdup(buf);
 
 	if(item->str_tex) {
 		SDL_DestroyTexture(item->str_tex);

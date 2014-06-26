@@ -39,6 +39,7 @@ void network_send_text(const gchar * id, const gchar * string);
 void network_broadcast_text(context_t * context, const gchar * text);
 void network_send_action(context_t * context, gchar * frame,...);
 int network_send_file(context_t * context, gchar * filename);
+int network_send_table_file(context_t * context, char * table, char * filename);
 void network_send_req_file(context_t * context, gchar * file);
 void network_send_entry_int(context_t * context, const gchar * table, const gchar * file, const gchar *path, int value);
 void network_broadcast_entry_int(const gchar * table, const gchar * file, const gchar * path, gint value, gboolean same_map_only);

@@ -34,6 +34,8 @@
 #define TEXT_FONT "/usr/share/fonts/truetype/ubuntu-font-family/Ubuntu-C.ttf"
 #define TEXT_FONT_SIZE 15
 #define TEXT_TIMEOUT 5000 /* Text display timeout */
+#define ITEM_FONT "/usr/share/fonts/truetype/ubuntu-font-family/Ubuntu-C.ttf"
+#define ITEM_FONT_SIZE 15
 
 char ** attribute_string = NULL;
 char text_buffer[2048];
@@ -201,6 +203,14 @@ static void compose_item(context_t * ctx)
 	int y;
 	char ** item_id;
 	int i;
+	static TTF_Font * font = NULL;
+	const char * template;
+	int quantity;
+	char buf[1024];
+
+	if ( font == NULL ) {
+		font = TTF_OpenFont(ITEM_FONT, ITEM_FONT_SIZE);
+	}
 
 	if(!get_group_list(MAP_TABLE,ctx->map,&item_id,MAP_ENTRY_ITEM_LIST,NULL)) {
 		return;
@@ -218,10 +228,23 @@ static void compose_item(context_t * ctx)
 			continue;
 		}
 
-		if(!read_string(ITEM_TABLE,item_id[i],&sprite_name,ITEM_SPRITE,NULL)) {
-			i++;
-			continue;
+		template = item_is_resource(item_id[i]);
+
+		if ( template == NULL ) {
+			if(!read_string(ITEM_TABLE,item_id[i],&sprite_name,ITEM_SPRITE,NULL)) {
+				i++;
+				continue;
+			}
 		}
+		else {
+			if(!read_string(ITEM_TEMPLATE_TABLE,template,&sprite_name,ITEM_SPRITE,NULL)) {
+				i++;
+				continue;
+			}
+		}
+
+		quantity = item_get_quantity(item_id[i]);
+		sprintf(buf,"%d",quantity);
 
 		item = item_list_add(item_list);
 		if(item_list == NULL) {
@@ -236,6 +259,8 @@ static void compose_item(context_t * ctx)
 		y -= (anim->h-ctx->tile_y)/2;
 
 		item_set_anim(item,x,y,anim);
+		item_set_string(item,buf);
+		item_set_font(item,font);
 
 		i++;
 	}
@@ -334,9 +359,9 @@ static void compose_sprite(context_t * ctx)
 	context_unlock_list();
 }
 
- /**********************************
-+Compose attribute
-+**********************************/
+/**********************************
+Compose attribute
+**********************************/
 static void compose_attribute(context_t * ctx)
 {
 	item_t * item;
@@ -697,33 +722,31 @@ static void compose_select(context_t * ctx)
 	int x;
 	int y;
 
-	/* Tile selection */
-	x = ctx->selection.map_coord[0];
-	y = ctx->selection.map_coord[1];
-
-	if( x == -1 || y == -1) {
-		return;
-	}
-
 	anim = imageDB_get_anim(ctx,CURSOR_SPRITE_FILE);
 	if(anim == NULL) {
 		return;
 	}
 
-	item = item_list_add(item_list);
-	if(item_list == NULL) {
-		item_list = item;
+	/* Tile selection */
+	x = ctx->selection.map_coord[0];
+	y = ctx->selection.map_coord[1];
+
+	if( x != -1 && y != -1) {
+		item = item_list_add(item_list);
+		if(item_list == NULL) {
+			item_list = item;
+		}
+
+		/* get pixel coordiante from tile coordianate */
+		x = x * ctx->tile_x;
+		y = y * ctx->tile_y;
+
+		/* Center on tile */
+		x -= (anim->w-ctx->tile_x)/2;
+                y -= (anim->h-ctx->tile_y)/2;
+
+		item_set_anim(item,x,y,anim);
 	}
-
-	/* get pixel coordiante from tile coordianate */
-	x = x * ctx->tile_x;
-	y = y * ctx->tile_y;
-
-	/* Center on tile */
-	x -= (anim->w-ctx->tile_x)/2;
-	y -= (anim->h-ctx->tile_y)/2;
-
-	item_set_anim(item,x,y,anim);
 
 	/* Sprite selection */
 	if( ctx->selection.id != NULL) {

@@ -115,6 +115,8 @@
 #define ITEM_SPRITE		"sprite"
 #define ITEM_ICON		"icon"
 #define ITEM_DESC		"description"
+#define ITEM_TEMPLATE		"template"
+#define ITEM_QUANTITY		"quantity"
 
 #define ITEM_TEMPLATE_TABLE	"item_template"
 

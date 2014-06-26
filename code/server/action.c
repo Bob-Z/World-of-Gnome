@@ -24,7 +24,6 @@
 #include "equipment.h"
 #include "inventory.h"
 #include "attribute.h"
-#include "item.h"
 #include <lualib.h>
 #include <lauxlib.h>
 #include <stdlib.h>
@@ -759,28 +758,6 @@ static int l_inventory_add( lua_State* L)
 	return 1;  /* number of results */
 }
 
-/* inventory_count
-
-Get the number of item of the same type
-
-Input:
- - ID of a character
- - ID of an item
-Output: Number of item of that type
-*/
-static int l_inventory_count( lua_State* L)
-{
-	const gchar * id;
-	const gchar * item;
-	gint res;
-
-	id = luaL_checkstring(L, -2);
-	item = luaL_checkstring(L, -1);
-	res = inventory_count(id,item);
-	lua_pushnumber(L, res);
-	return 1;  /* number of results */
-}
-
 /* inventory_get_by_name
 
 Get item ID from its name
@@ -845,6 +822,48 @@ static int l_item_create_from_template( lua_State* L)
 	}
 	return 1;  /* number of results */
 }
+
+/* item_get_quantity
+
+Get the quantity of an item
+
+Input:
+ - ID of an item
+Output: Quantity of that item
+*/
+static int l_item_get_quantity( lua_State* L)
+{
+	const gchar * item;
+	gint res;
+
+	item = luaL_checkstring(L, -1);
+	res = item_get_quantity(item);
+	lua_pushnumber(L, res);
+	return 1;  /* number of results */
+}
+
+/* item_set_quantity
+
+Set the quantity of an item
+
+Input:
+ - ID of an item
+ - quantity to set
+Output: -1 on error
+*/
+static int l_item_set_quantity( lua_State* L)
+{
+	const gchar * item;
+	gint quantity;
+	gint res;
+
+	item = luaL_checkstring(L, -2);
+	quantity = luaL_checkint(L, -1);
+	res = item_set_quantity(item,quantity);
+	lua_pushnumber(L, res);
+	return 1;  /* number of results */
+}
+
 
 /* item_destroy
 
@@ -1178,8 +1197,6 @@ void register_lua_functions(context_t * context)
 	lua_setglobal(L, "inventory_delete");
 	lua_pushcfunction(L, l_inventory_add);
 	lua_setglobal(L, "inventory_add");
-	lua_pushcfunction(L, l_inventory_count);
-	lua_setglobal(L, "inventory_count");
 	lua_pushcfunction(L, l_inventory_get_by_name);
 	lua_setglobal(L, "inventory_get_by_name");
 	/* item func */
@@ -1187,6 +1204,10 @@ void register_lua_functions(context_t * context)
 	lua_setglobal(L, "item_create_empty");
 	lua_pushcfunction(L, l_item_create_from_template);
 	lua_setglobal(L, "item_create_from_template");
+	lua_pushcfunction(L, l_item_get_quantity);
+	lua_setglobal(L, "item_get_quantity");
+	lua_pushcfunction(L, l_item_set_quantity);
+	lua_setglobal(L, "item_set_quantity");
 	lua_pushcfunction(L, l_item_destroy);
 	lua_setglobal(L, "item_destroy");
 	/* character attribute func */

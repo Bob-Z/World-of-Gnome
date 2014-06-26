@@ -49,62 +49,72 @@ gint inventory_delete(const gchar * id, const gchar * item)
 /*****************************/
 /* Add the requested item to the character's inventory */
 /* return -1 if fails */
-gint inventory_add(const gchar * id, const gchar * item)
+gint inventory_add(const gchar * ctx_id, const gchar * item_id)
 {
-	context_t * context = context_find(id);
+	context_t * context = context_find(ctx_id);
+	const char * template;
+	int index;
+	char ** name_list;
+	const char * current_template;
+	int add_count;
+	int current_count;
+
 	if( context == NULL ) {
-		werr(LOGDEV,"Could not find context %s",id);
+		werr(LOGDEV,"Could not find context %s",ctx_id);
 		return -1;
 	}
 
 	/* Make sure the CHARACTER_KEY_INVENTORY list exists */
 	list_create(CHARACTER_TABLE,context->id,CHARACTER_KEY_INVENTORY,NULL);
 
-	if(!add_to_list(CHARACTER_TABLE,context->id,item, CHARACTER_KEY_INVENTORY, NULL)) {
-		return -1;
+	template = item_is_resource(item_id);
+	if(template == NULL) {
+		if(!add_to_list(CHARACTER_TABLE,context->id,item_id, CHARACTER_KEY_INVENTORY, NULL)) {
+			return -1;
+		}
+	}
+	else {
+		if(!read_int(ITEM_TABLE,item_id,&add_count,ITEM_QUANTITY,NULL)) {
+			return -1;
+		}
+		if(!read_list(CHARACTER_TABLE,context->id,&name_list,CHARACTER_KEY_INVENTORY,NULL) ) {
+			return -1;
+		}
+
+		index=0;
+		while( name_list[index] != NULL) {
+			if(read_string(ITEM_TABLE,name_list[index],&current_template,ITEM_TEMPLATE,NULL)) {
+				if( strcmp(template,current_template) == 0 ) {
+					if(read_int(ITEM_TABLE,name_list[index],&current_count,ITEM_QUANTITY,NULL)) {
+						add_count+=current_count;
+						item_set_quantity(name_list[index],add_count);
+						item_destroy(item_id);
+						network_send_table_file(context,ITEM_TABLE,name_list[index]);
+						return 0;
+					}
+				}
+			}
+			index++;
+		}
+
+		/* First time we add this type of resource to inventory */
+		if( name_list[index] == NULL ) {
+			if(!add_to_list(CHARACTER_TABLE,context->id,item_id, CHARACTER_KEY_INVENTORY, NULL)) {
+				return -1;
+			}
+		}
+
+		free(name_list);
 	}
 
 	network_send_character_file(context);
 	return 0;
 }
 
-/*****************************/
-/* Count the number of item whose name is passed in the character's inventory */
-/* return -1 if fails, otherwise the number of item */
-gint inventory_count(const gchar * id, const gchar * item_name)
-{
-	gint count = 0;
-	gint index;
-	gchar ** name_list;
-	const gchar * name;
-
-	context_t * context = context_find(id);
-	if( context == NULL ) {
-		werr(LOGDEV,"Could not find context %s",id);
-		return -1;
-	}
-
-	if(!read_list(CHARACTER_TABLE,context->id,&name_list,CHARACTER_KEY_INVENTORY,NULL) ) {
-		return -1;
-	}
-
-	index=0;
-	while( name_list[index] != NULL) {
-		if(read_string(ITEM_TABLE,name_list[index],&name,ITEM_NAME,NULL)) {
-			if( g_strcmp0(item_name,name) == 0 ) {
-				count++;
-			}
-		}
-		index++;
-	}
-
-	g_free(name_list);
-	return count;
-}
-
-/*****************************/
-/* return an item ID of an item in inventory with specified name */
-/* the returned string must be freed */
+/***************************************************************************
+ return an item ID of an item in inventory with specified name
+ the returned string must be freed
+***************************************************************************/
 gchar * inventory_get_by_name(const gchar * id, const gchar * item_name)
 {
 	gint index;
@@ -124,7 +134,7 @@ gchar * inventory_get_by_name(const gchar * id, const gchar * item_name)
 
 	index=0;
 	while( name_list[index] != NULL) {
-		if(read_string(ITEM_TABLE,name_list[index],&name,ITEM_NAME,NULL)) {
+		if( (name=item_get_name(name_list[index])) != NULL ) {
 			if( g_strcmp0(item_name,name) == 0 ) {
 				res = g_strdup(name_list[index]);
 				g_free(name_list);

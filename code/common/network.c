@@ -943,3 +943,16 @@ int network_send_file(context_t * context, gchar * filename)
 
 	return 0;
 }
+
+/**************************
+  network_send_table_file
+
+  send table/file to a context
+return 0 on success
+ **************************/
+int network_send_table_file(context_t * context, char * table, char * filename)
+{
+	char * full_name = NULL;
+	full_name = g_strconcat( table, "/", filename, NULL);
+	return network_send_file(context,full_name);
+}

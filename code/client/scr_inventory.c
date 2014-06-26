@@ -28,6 +28,9 @@
 #include "sdl.h"
 #include "screen.h"
 
+#define ITEM_FONT "/usr/share/fonts/truetype/ubuntu-font-family/Ubuntu-C.ttf"
+#define ITEM_FONT_SIZE 15
+
 static item_t * item_list = NULL;
 static char ** inventory_list = NULL;
 static int virtual_x;
@@ -62,41 +65,80 @@ static void compose_inventory(context_t * ctx)
 	item_t * item;
 	int x=0;
 	int i = 0;
+	static TTF_Font * font = NULL;
+	const char * template;
+	int quantity;
+	char buf[1024];
 
+	if ( font == NULL ) {
+		font = TTF_OpenFont(ITEM_FONT, ITEM_FONT_SIZE);
+	}
 
 	if (inventory_list) {
 		free(inventory_list);
 	}
-	
+
 	/* read data from file */
 	if(!read_list(CHARACTER_TABLE,ctx->id,&inventory_list, CHARACTER_KEY_INVENTORY,NULL)) {
 		return;
 	}
 
 	while( inventory_list[i] != NULL) {
-		/* Icon is mandatory for now */
-		if(!read_string(ITEM_TABLE,inventory_list[i],&value,ITEM_ICON,NULL)) {
-			i++;
-			continue;
+		template = item_is_resource(inventory_list[i]);
+
+		if( template == NULL ) {
+			/* Icon is mandatory for now */
+			if(!read_string(ITEM_TABLE,inventory_list[i],&value,ITEM_ICON,NULL)) {
+				i++;
+				continue;
+			}
+			/* load image */
+			anim = imageDB_get_anim(ctx, value);
+			if(anim == NULL) {
+				i++;
+				continue;
+			}
+
+			if(!read_string(ITEM_TABLE,inventory_list[i],&value,ITEM_NAME,NULL)) {
+				label = strdup(inventory_list[i]);
+			} else {
+				label = strdup(value);
+			}
+
+			if(!read_string(ITEM_TABLE,inventory_list[i],&value,ITEM_DESC,NULL)) {
+				description = strdup("");;
+			} else {
+				description = strdup(value);
+			}
 		}
-		/* load image */
-		anim = imageDB_get_anim(ctx, value);
-		if(anim == NULL) {
-			i++;
-            continue;
+		else {
+			/* Icon is mandatory for now */
+			if(!read_string(ITEM_TEMPLATE_TABLE,template,&value,ITEM_ICON,NULL)) {
+				i++;
+				continue;
+			}
+			/* load image */
+			anim = imageDB_get_anim(ctx, value);
+			if(anim == NULL) {
+				i++;
+				continue;
+			}
+
+			if(!read_string(ITEM_TEMPLATE_TABLE,template,&value,ITEM_NAME,NULL)) {
+				label = strdup(inventory_list[i]);
+			} else {
+				label = strdup(value);
+			}
+
+			if(!read_string(ITEM_TEMPLATE_TABLE,template,&value,ITEM_DESC,NULL)) {
+				description = strdup("");;
+			} else {
+				description = strdup(value);
+			}
 		}
 
-		if(!read_string(ITEM_TABLE,inventory_list[i],&value,ITEM_NAME,NULL)) {
-			label = strdup(inventory_list[i]);
-		} else {
-			label = strdup(value);
-		}
-
-		if(!read_string(ITEM_TABLE,inventory_list[i],&value,ITEM_DESC,NULL)) {
-			description = strdup("");;
-		} else {
-			description = strdup(value);
-		}
+		quantity = item_get_quantity(inventory_list[i]);
+		sprintf(buf,"%d",quantity);
 
 		item = item_list_add(item_list);
 		if(item_list == NULL) {
@@ -104,9 +146,12 @@ static void compose_inventory(context_t * ctx)
 		}
 
 		item_set_anim(item,x,0,anim);
+		item_set_string(item,buf);
+		item_set_font(item,font);
+
 		x += anim->w;
 		item_set_click_left(item,cb_select,(void*)inventory_list[i]);
-		
+
 		free(description);
 		free(label);
 		i++;
