@@ -7,7 +7,7 @@ SDL_LIB=`sdl2-config --libs`
 wog_client_LDADD=../common/libcommon.a $(ADD_LIB)
 
 wog_clientdir = $(datadir)/wog/client
-wog_client_DATA = login.glade select_character.glade game.glade
+#wog_client_DATA = login.glade select_character.glade game.glade
 
 dist_noinst_HEADERS = parser.h file.h imageDB.h sdl.h item.h anim.h screen.h scr_select.h scr_play.h scr_inventory.h
 
