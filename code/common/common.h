@@ -22,15 +22,17 @@
 
 #include "checksum.h"
 #include "const.h"
+#include "network.h"
 #include "context.h"
 #include "syntax.h"
 #include "protocol.h"
-#include "network.h"
 #include "client_server.h"
 #include "map.h"
 #include "entry.h"
 #include "log.h"
 #include "mutex.h"
 #include "item.h"
+#include "list.h"
+#include "file.h"
 
 #endif

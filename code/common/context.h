@@ -17,6 +17,9 @@
    Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
+#ifndef CONTEXT_H
+#define CONTEXT_H
+
 #include <glib.h>
 #include <gio/gio.h>
 #include <lua.h>
@@ -111,3 +114,5 @@ context_t * context_find(const gchar * id);
 void context_broadcast_text(const gchar * map, const gchar * text);
 gint context_distance(context_t * ctx1, context_t * ctx2);
 void context_reset_all_position();
+
+#endif

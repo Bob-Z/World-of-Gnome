@@ -21,7 +21,7 @@
 #define NETWORK_H
 
 #include <glib.h>
-#include "common.h"
+#include "context.h"
 
 void network_init(void);
 int network_open_data_connection(context_t * context);

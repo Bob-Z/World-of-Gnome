@@ -17,6 +17,9 @@
    Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
+#ifndef ITEM_H
+#define ITEM_H
+
 gchar * item_create_empty();
 gchar * item_create_from_template(const gchar * template);
 gint item_destroy(const gchar * item_id);
@@ -25,3 +28,5 @@ const char * item_is_resource(const char * item_id);
 int item_get_quantity(const char * item_id);
 int item_set_quantity(const char * item_id, int quantity);
 const char * item_get_name(const char * item_id);
+
+#endif

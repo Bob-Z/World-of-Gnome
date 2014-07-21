@@ -17,16 +17,13 @@
    Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
-#ifndef CONTEXT_H
-#define CONTEXT_H
-
-#include "common.h"
 #include <string.h>
 #include <glib.h>
 #include <stdlib.h>
 #include <lualib.h>
 #include <lauxlib.h>
 #include <glib/gstdio.h>
+#include <common.h>
 
 context_t * context_list_start = NULL;
 
@@ -992,4 +989,3 @@ void context_reset_all_position()
 	}
 	SDL_UnlockMutex(context_list_mutex);
 }
-#endif
