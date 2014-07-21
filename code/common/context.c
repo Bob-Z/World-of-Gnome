@@ -23,7 +23,7 @@
 #include <lualib.h>
 #include <lauxlib.h>
 #include <glib/gstdio.h>
-#include <common.h>
+#include "common.h"
 
 context_t * context_list_start = NULL;
 
@@ -86,7 +86,8 @@ context_t * context_new(void)
 
 	SDL_LockMutex(context_list_mutex);
 	if ( context_list_start == NULL ) {
-		context_list_start = g_new0(context_t,1);
+		context_list_start = malloc(sizeof(context_t));
+		memset(context_list_start,0,sizeof(context_t));
 		context_init(context_list_start);
 		SDL_UnlockMutex(context_list_mutex);
 		return context_list_start;
@@ -97,7 +98,8 @@ context_t * context_new(void)
 		ctx = ctx->next;
 	}
 
-	ctx->next = g_new0(context_t,1);
+	ctx->next = malloc(sizeof(context_t));
+	memset(ctx->next,0,sizeof(context_t));
 	context_init(ctx->next);
 	ctx->next->previous = ctx;
 	SDL_UnlockMutex(context_list_mutex);
@@ -109,18 +111,24 @@ context_t * context_new(void)
 */
 void context_free(context_t * context)
 {
-	gchar * filename;
-	gint delete_file = TRUE;
+	char filename[512] = "";
+	int delete_file = TRUE;
 	context_t * ctx;
 
 	SDL_LockMutex(context_list_mutex);
 
-	filename = g_strconcat( g_getenv("HOME"),"/", base_directory, "/", CHARACTER_TABLE, "/", context->id, NULL);
-// We should not errase the file's data from memory until it's dumped to disk, so comment this line
+	strcat(filename,getenv("HOME"));
+	strcat(filename,"/");
+	strcat(filename,base_directory);
+	strcat(filename,"/");
+	strcat(filename,CHARACTER_TABLE);
+	strcat(filename,"/");
+	strcat(filename,context->id);
+	
+// We should not erase the file's data from memory until it's dumped to disk, so comment this line
 //	entry_destroy(context->id);
 
-
-	g_free(context->user_name);
+	free(context->user_name);
 	context->user_name = NULL;
 	context->connected = FALSE;
 	if( context->connection != NULL) {
@@ -137,26 +145,26 @@ void context_free(context_t * context)
 	context->output_stream = NULL;
 	context->input_data_stream = NULL;
 	context->output_data_stream = NULL;
-	g_free(context->hostname);
+	free(context->hostname);
 	context->hostname = NULL;
 	context->send_thread = NULL;
-	g_free(context->character_name);
+	free(context->character_name);
 	context->character_name = NULL;
-	g_free(context->map);
+	free(context->map);
 	context->map = NULL;
-	g_free(context->type);
+	free(context->type);
 	context->type = NULL;
 	context->selection.id = NULL;
 	context->selection.map_coord[0] = -1;
 	context->selection.map_coord[1] = -1;
 	context->selection.map = NULL;
-	g_free(context->selection.inventory);
+	free(context->selection.inventory);
 	context->selection.inventory = NULL;
-	g_free(context->selection.equipment);
+	free(context->selection.equipment);
 	context->selection.equipment = NULL;
-	g_free(context->id);
+	free(context->id);
 	context->id = NULL;
-	g_free(context->prev_map);
+	free(context->prev_map);
 	context->prev_map = NULL;
 	if( context->luaVM != NULL) {
 		lua_close(context->luaVM);
@@ -184,20 +192,19 @@ void context_free(context_t * context)
 	/* Remove this context if it was selected */
 	ctx = context_list_start;
 	while( ctx != NULL ) {
-		if (g_strcmp0(context->id,ctx->selection.id)==0) {
+		if (strcmp(context->id,ctx->selection.id)==0) {
 			ctx->selection.id = NULL;
 		}
 		ctx = ctx->next;
 	}
 
-	g_free(context);
+	free(context);
 
 	SDL_UnlockMutex(context_list_mutex);
 
 	if(delete_file) {
-		g_unlink(filename);
+		unlink(filename);
 	}
-	g_free(filename);
 }
 
 void context_lock_list()
@@ -220,12 +227,12 @@ context_t * context_get_list_first()
 
   Returns FALSE if error
 */
-gboolean context_set_username(context_t * context, const gchar * name)
+int context_set_username(context_t * context, const char * name)
 {
 	SDL_LockMutex(context_list_mutex);
 
-	g_free( context->user_name );
-	context->user_name = g_strdup(name);
+	free( context->user_name );
+	context->user_name = strdup(name);
 	if( context->user_name == NULL ) {
 		SDL_UnlockMutex(context_list_mutex);
 		return FALSE;
@@ -238,7 +245,7 @@ gboolean context_set_username(context_t * context, const gchar * name)
 /* context_set_connected
   Set connected flag
 */
-void context_set_connected(context_t * context, gboolean connected)
+void context_set_connected(context_t * context, int connected)
 {
 	SDL_LockMutex(context_list_mutex);
 	context->connected = connected;
@@ -247,9 +254,9 @@ void context_set_connected(context_t * context, gboolean connected)
 /* context_get_connected
   Get connection flag
 */
-gboolean context_get_connected(context_t * context)
+int context_get_connected(context_t * context)
 {
-	gboolean conn = FALSE;
+	int conn = FALSE;
 
 	SDL_LockMutex(context_list_mutex);
 	conn = context->connected;
@@ -317,13 +324,13 @@ GSocketConnection * context_get_connection(context_t * context)
 
   Returns FALSE if error
 */
-gboolean context_set_character_name(context_t * context, const gchar * name)
+int context_set_character_name(context_t * context, const char * name)
 {
 	int ret = TRUE;
 
 	SDL_LockMutex(context_list_mutex);
-	g_free( context->character_name );
-	context->character_name = g_strdup(name);
+	free( context->character_name );
+	context->character_name = strdup(name);
 	if( context->character_name == NULL ) {
 		ret = FALSE;
 	}
@@ -336,15 +343,16 @@ gboolean context_set_character_name(context_t * context, const gchar * name)
 
   Returns FALSE if error
 */
-static gboolean _context_set_map(context_t * context, const gchar * map)
+static int _context_set_map(context_t * context, const char * map)
 {
-	gint map_x;
-	gint map_y;
+	int map_x;
+	int map_y;
 
 	if(context->prev_map != NULL) {
 		if(!strcmp(context->map,map)) {
 			return TRUE;
 		}
+		free( context->prev_map );
 	}
 
 	if(!read_int(MAP_TABLE,map,&map_x,MAP_KEY_SIZE_X,NULL)) {
@@ -354,10 +362,12 @@ static gboolean _context_set_map(context_t * context, const gchar * map)
 		return FALSE;
 	}
 
-	g_free( context->prev_map );
-	context->prev_map = g_strdup(context->map);
-	g_free( context->map );
-	context->map = g_strdup(map);
+	if(context->map) {
+		context->prev_map = strdup(context->map);
+		free( context->map );
+	}
+
+	context->map = strdup(map);
 	if( context->map == NULL ) {
 		return FALSE;
 	}
@@ -367,7 +377,7 @@ static gboolean _context_set_map(context_t * context, const gchar * map)
 
 	return TRUE;
 }
-gboolean context_set_map(context_t * context, const gchar * map)
+int context_set_map(context_t * context, const char * map)
 {
 	int ret;
 
@@ -382,13 +392,13 @@ gboolean context_set_map(context_t * context, const gchar * map)
 
   Returns FALSE if error
 */
-gboolean context_set_type(context_t * context, const gchar * type)
+int context_set_type(context_t * context, const char * type)
 {
 	int ret = TRUE;
 
 	SDL_LockMutex(context_list_mutex);
-	g_free( context->type );
-	context->type = g_strdup(type);
+	free( context->type );
+	context->type = strdup(type);
 	if( context->type == NULL ) {
 		ret = FALSE;
 	}
@@ -400,7 +410,7 @@ gboolean context_set_type(context_t * context, const gchar * type)
 /* context_set_pos_x
   Set pos_x
 */
-void context_set_pos_x(context_t * context, guint pos)
+void context_set_pos_x(context_t * context, unsigned int pos)
 {
 	SDL_LockMutex(context_list_mutex);
 	context->pos_x = pos;
@@ -410,7 +420,7 @@ void context_set_pos_x(context_t * context, guint pos)
 /* context_set_pos_y
   Set pos_y
 */
-void context_set_pos_y(context_t * context, guint pos)
+void context_set_pos_y(context_t * context, unsigned int pos)
 {
 	SDL_LockMutex(context_list_mutex);
 	context->pos_y = pos;
@@ -420,7 +430,7 @@ void context_set_pos_y(context_t * context, guint pos)
 /* context_set_tile_x
   Set tile_x
 */
-void context_set_tile_x(context_t * context, guint pos)
+void context_set_tile_x(context_t * context, unsigned int pos)
 {
 	SDL_LockMutex(context_list_mutex);
 	context->tile_x = pos;
@@ -430,7 +440,7 @@ void context_set_tile_x(context_t * context, guint pos)
 /* context_set_tile_y
   Set tile_y
 */
-void context_set_tile_y(context_t * context, guint pos)
+void context_set_tile_y(context_t * context, unsigned int pos)
 {
 	SDL_LockMutex(context_list_mutex);
 	context->tile_y = pos;
@@ -442,12 +452,12 @@ void context_set_tile_y(context_t * context, guint pos)
 
   Returns FALSE if error
 */
-gboolean context_set_id(context_t * context, const gchar * name)
+int context_set_id(context_t * context, const char * name)
 {
 	SDL_LockMutex(context_list_mutex);
 
-	g_free( context->id );
-	context->id = g_strdup(name);
+	free( context->id );
+	context->id = strdup(name);
 	if( context->id == NULL ) {
 		SDL_UnlockMutex(context_list_mutex);
 		return FALSE;
@@ -479,11 +489,11 @@ void context_new_VM(context_t * context)
 /*******************************
 Update the memory context by reading the client's character data file on disk
 *******************************/
-gboolean context_update_from_file(context_t * context)
+int context_update_from_file(context_t * context)
 {
 	/* Don't call context_set_* functions here to avoid inter-blocking */
 
-	const gchar * result;
+	const char * result;
 	int ret;
 
 	SDL_LockMutex(context_list_mutex);
@@ -498,8 +508,8 @@ gboolean context_update_from_file(context_t * context)
 		return FALSE;
 	}
 
-	g_free( context->character_name );
-	context->character_name = g_strdup(result);
+	free( context->character_name );
+	context->character_name = strdup(result);
 	if( context->character_name == NULL ) {
 		SDL_UnlockMutex(context_list_mutex);
 		return FALSE;
@@ -510,8 +520,8 @@ gboolean context_update_from_file(context_t * context)
 		return FALSE;
 	}
 
-	g_free( context->type );
-	context->type = g_strdup(result);
+	free( context->type );
+	context->type = strdup(result);
 	if( context->type == NULL ) {
 		SDL_UnlockMutex(context_list_mutex);
 		return FALSE;
@@ -522,7 +532,7 @@ gboolean context_update_from_file(context_t * context)
 		return FALSE;
 	}
 
-	g_free( context->map );
+	free( context->map );
 	ret = _context_set_map(context, result);
 	if( ret == FALSE ) {
 		SDL_UnlockMutex(context_list_mutex);
@@ -546,7 +556,7 @@ gboolean context_update_from_file(context_t * context)
 /*******************************
 Write a context to server's disk
 *******************************/
-gboolean context_write_to_file(context_t * context)
+int context_write_to_file(context_t * context)
 {
 	SDL_LockMutex(context_list_mutex);
 
@@ -570,14 +580,14 @@ gboolean context_write_to_file(context_t * context)
 /*******************************
 Find a context in memroy from its id
 *******************************/
-context_t * context_find(const gchar * id)
+context_t * context_find(const char * id)
 {
 	context_t * ctx;
 
 	ctx = context_list_start;
 
 	while(ctx != NULL ) {
-		if( g_strcmp0(ctx->id,id) == 0 ) {
+		if( strcmp(ctx->id,id) == 0 ) {
 			return ctx;
 		}
 
@@ -591,100 +601,100 @@ context_t * context_find(const gchar * id)
 Update the context by decoding the received frame
 Called by server
 *******************************/
-gboolean context_update_from_network_frame(context_t * context, gchar * frame)
+int context_update_from_network_frame(context_t * context, char * frame)
 {
-	gchar * data = frame;
+	char * data = frame;
 
 	SDL_LockMutex(context_list_mutex);
 
 	if( context->user_name ) {
-		g_free( context->user_name );
+		free( context->user_name );
 	}
-	context->user_name = g_strdup(data);
+	context->user_name = strdup(data);
 
-	data += (g_utf8_strlen(data,-1)+1);
+	data += (strlen(data)+1);
 
 	if( context->character_name ) {
-		g_free( context->character_name );
+		free( context->character_name );
 	}
-	context->character_name = g_strdup(data);
-	data += (g_utf8_strlen(data,-1)+1);
+	context->character_name = strdup(data);
+	data += (strlen(data)+1);
 
 	_context_set_map(context,data);
-	data += (g_utf8_strlen(data,-1)+1);
+	data += (strlen(data)+1);
 
-	context->connected = g_ascii_strtoll(data,NULL,10);
-	data += (g_utf8_strlen(data,-1)+1);
+	context->connected = atoi(data);
+	data += (strlen(data)+1);
 
-	context->pos_x = g_ascii_strtoll(data,NULL,10);
-	data += (g_utf8_strlen(data,-1)+1);
+	context->pos_x = atoi(data);
+	data += (strlen(data)+1);
 
-	context->pos_y = g_ascii_strtoll(data,NULL,10);
-	data += (g_utf8_strlen(data,-1)+1);
+	context->pos_y = atoi(data);
+	data += (strlen(data)+1);
 
 	if( context->type ) {
-		g_free( context->type );
+		free( context->type );
 	}
-	context->type = g_strdup(data);
-	data += (g_utf8_strlen(data,-1)+1);
+	context->type = strdup(data);
+	data += (strlen(data)+1);
 
-	context->tile_x = g_ascii_strtoll(data,NULL,10);
-	data += (g_utf8_strlen(data,-1)+1);
+	context->tile_x = atoi(data);
+	data += (strlen(data)+1);
 
-	context->tile_y = g_ascii_strtoll(data,NULL,10);
-	data += (g_utf8_strlen(data,-1)+1);
+	context->tile_y = atoi(data);
+	data += (strlen(data)+1);
 
 	if( context->id ) {
-		g_free( context->id );
+		free( context->id );
 	}
-	context->id = g_strdup(data);
-	data += (g_utf8_strlen(data,-1)+1);
+	context->id = strdup(data);
+	data += (strlen(data)+1);
 
 	if( context->selection.id ) {
-		g_free( context->selection.id );
+		free( context->selection.id );
 	}
 	if( data[0] != 0 ) {
-		context->selection.id = g_strdup(data);
+		context->selection.id = strdup(data);
 	} else {
 		context->selection.id = NULL;
 	}
-	data += (g_utf8_strlen(data,-1)+1);
+	data += (strlen(data)+1);
 
-	context->selection.map_coord[0] = g_ascii_strtoll(data,NULL,10);
-	data += (g_utf8_strlen(data,-1)+1);
+	context->selection.map_coord[0] = atoi(data);
+	data += (strlen(data)+1);
 
-	context->selection.map_coord[1] = g_ascii_strtoll(data,NULL,10);
-	data += (g_utf8_strlen(data,-1)+1);
+	context->selection.map_coord[1] = atoi(data);
+	data += (strlen(data)+1);
 
 	if( context->selection.map ) {
-		g_free( context->selection.map );
+		free( context->selection.map );
 	}
 	if( data[0] != 0 ) {
-		context->selection.map = g_strdup(data);
+		context->selection.map = strdup(data);
 	} else {
 		context->selection.map = NULL;
 	}
-	data += (g_utf8_strlen(data,-1)+1);
+	data += (strlen(data)+1);
 
 	if( context->selection.inventory ) {
-		g_free( context->selection.inventory );
+		free( context->selection.inventory );
 	}
 	if( data[0] != 0 ) {
-		context->selection.inventory = g_strdup(data);
+		context->selection.inventory = strdup(data);
 	} else {
 		context->selection.inventory = NULL;
 	}
-	data += (g_utf8_strlen(data,-1)+1);
+	data += (strlen(data)+1);
 
 	if( context->selection.equipment ) {
-		g_free( context->selection.equipment );
+		free( context->selection.equipment );
 	}
 	if( data[0] != 0 ) {
-		context->selection.equipment = g_strdup(data);
+		context->selection.equipment = strdup(data);
 	} else {
 		context->selection.equipment = NULL;
 	}
-	data += (g_utf8_strlen(data,-1)+1);
+	data += (strlen(data)+1);
 
 	SDL_UnlockMutex(context_list_mutex);
 
@@ -712,9 +722,11 @@ void context_spread(context_t * context)
 		}
 
 		/* Skip if not on the same map or previous map */
-		if( g_strcmp0(context->map,ctx->map) != 0 &&
-				g_strcmp0(context->prev_map,ctx->map) != 0 ) {
-			continue;
+		if( ctx->map ) {
+			if( strcmp(context->map,ctx->map) != 0 &&
+					strcmp(context->prev_map,ctx->map) != 0 ) {
+				continue;
+			}
 		}
 
 		/* Skip if the player has not selected its character (not yet entered in the game)  */
@@ -730,7 +742,7 @@ void context_spread(context_t * context)
 	/* The existing context on the previous map should have
 	been deleted, we don't need this anymore -> this will
 	generate less network request */
-	g_free(context->prev_map);
+	free(context->prev_map);
 	context->prev_map = NULL;
 
 	SDL_UnlockMutex(context_list_mutex);
@@ -739,7 +751,7 @@ void context_spread(context_t * context)
 /*if "map" == NULL : server sends a message to all connected client
  if "map" != NULL : server sends a message to all connected clients on the map
 */
-void context_broadcast_text(const gchar * map, const gchar * text)
+void context_broadcast_text(const char * map, const char * text)
 {
 	context_t * ctx = NULL;
 
@@ -760,7 +772,7 @@ void context_broadcast_text(const gchar * map, const gchar * text)
 
 		if(map) {
 			/* Skip if not on the same map */
-			if( g_strcmp0(map,ctx->map) != 0 ) {
+			if( strcmp(map,ctx->map) != 0 ) {
 				continue;
 			}
 
@@ -799,8 +811,10 @@ void context_request_other_context(context_t * context)
 		}
 
 		/* Skip if not on the same map */
-		if( g_strcmp0(context->map,ctx->map) != 0 ) {
-			continue;
+		if( ctx->map ) {
+			if( strcmp(context->map,ctx->map) != 0 ) {
+				continue;
+			}
 		}
 
 		network_send_context_to_context(context, ctx);
@@ -811,58 +825,58 @@ void context_request_other_context(context_t * context)
 }
 
 /* Called from client */
-void context_add_or_update_from_network_frame(context_t * context,gchar * data)
+void context_add_or_update_from_network_frame(context_t * context,char * data)
 {
 	context_t * ctx = NULL;
-	gchar * user_name = NULL;
-	gchar * name = NULL;
-	gchar * map = NULL;
-	gboolean connected;
-	gint pos_x;
-	gint pos_y;
-	gint tile_x;
-	gint tile_y;
-	gchar * type = NULL;
-	gchar * id = NULL;
+	char * user_name = NULL;
+	char * name = NULL;
+	char * map = NULL;
+	int connected;
+	int pos_x;
+	int pos_y;
+	int tile_x;
+	int tile_y;
+	char * type = NULL;
+	char * id = NULL;
 
 	/* First decode the data */
 
-	user_name = g_strdup(data);
-	data += (g_utf8_strlen(data,-1)+1);
+	user_name = strdup(data);
+	data += (strlen(data)+1);
 
-	name = g_strdup(data);
-	data += (g_utf8_strlen(data,-1)+1);
+	name = strdup(data);
+	data += (strlen(data)+1);
 
-	map = g_strdup(data);
-	data += (g_utf8_strlen(data,-1)+1);
+	map = strdup(data);
+	data += (strlen(data)+1);
 
-	connected = g_ascii_strtoll(data,NULL,10);
-	data += (g_utf8_strlen(data,-1)+1);
+	connected = atoi(data);
+	data += (strlen(data)+1);
 
-	pos_x = g_ascii_strtoll(data,NULL,10);
-	data += (g_utf8_strlen(data,-1)+1);
+	pos_x = atoi(data);
+	data += (strlen(data)+1);
 
-	pos_y = g_ascii_strtoll(data,NULL,10);
-	data += (g_utf8_strlen(data,-1)+1);
+	pos_y = atoi(data);
+	data += (strlen(data)+1);
 
-	type = g_strdup(data);
-	data += (g_utf8_strlen(data,-1)+1);
+	type = strdup(data);
+	data += (strlen(data)+1);
 
-	tile_x = g_ascii_strtoll(data,NULL,10);
-	data += (g_utf8_strlen(data,-1)+1);
+	tile_x = atoi(data);
+	data += (strlen(data)+1);
 
-	tile_y = g_ascii_strtoll(data,NULL,10);
-	data += (g_utf8_strlen(data,-1)+1);
+	tile_y = atoi(data);
+	data += (strlen(data)+1);
 
-	id = g_strdup(data);
-	data += (g_utf8_strlen(data,-1)+1);
+	id = strdup(data);
+	data += (strlen(data)+1);
 
 	/* search for this context */
 	SDL_LockMutex(context_list_mutex);
 	ctx = context_list_start;
 
 	while( ctx != NULL ) {
-		if( g_strcmp0( id, ctx->id) == 0 ) {
+		if( strcmp( id, ctx->id) == 0 ) {
 			if( connected != FALSE ) {
 				wlog(LOGDEBUG,"Updating context %s / %s",user_name,name);
 				/* do not call context_set_* function since we already have the lock */
@@ -874,19 +888,19 @@ void context_add_or_update_from_network_frame(context_t * context,gchar * data)
 				ctx->tile_x = tile_x;
 				ctx->tile_y = tile_y;
 
-				g_free(ctx->type);
+				free(ctx->type);
 				ctx->type = type;
 
-				g_free(user_name);
-				g_free(name);
-				g_free(id);
+				free(user_name);
+				free(name);
+				free(id);
 
 				SDL_UnlockMutex(context_list_mutex);
 			} else {
 				wlog(LOGDEBUG,"Deleting context %s / %s",user_name,name);
 				/* Delete selection if it was selected */
 				if( context->selection.id != NULL ) {
-					if( g_strcmp0(context->selection.id, id) == 0 ) {
+					if( strcmp(context->selection.id, id) == 0 ) {
 						context->selection.id = NULL;
 						network_send_context(context);
 					}
@@ -914,17 +928,17 @@ void context_add_or_update_from_network_frame(context_t * context,gchar * data)
 	context_set_tile_y(ctx,tile_y);
 	context_set_id(ctx,id);
 
-	g_free(user_name);
-	g_free(name);
-	g_free(map);
-	g_free(type);
+	free(user_name);
+	free(name);
+	free(map);
+	free(type);
 }
 
 /* Broadcast upload of a file to all connected context */
-void context_broadcast_file(const gchar * table, const gchar * file, gboolean same_map_only)
+void context_broadcast_file(const char * table, const char * file, int same_map_only)
 {
 	context_t * ctx = NULL;
-	gchar * filename;
+	char filename[512] = "";
 
 	SDL_LockMutex(context_list_mutex);
 
@@ -935,7 +949,9 @@ void context_broadcast_file(const gchar * table, const gchar * file, gboolean sa
 		return;
 	}
 
-	filename = g_strconcat( table , "/", file, NULL);
+	strcat(filename,table);
+	strcat(filename,"/");
+	strcat(filename,file);
 
 	do {
 		/* Skip if not connected (NPC) */
@@ -944,7 +960,7 @@ void context_broadcast_file(const gchar * table, const gchar * file, gboolean sa
 		}
 		/* Skip if not on the same map */
 		if( same_map_only ) {
-			if( g_strcmp0(file,ctx->map) != 0 ) {
+			if( strcmp(file,ctx->map) != 0 ) {
 				continue;
 			}
 		}
@@ -957,10 +973,10 @@ void context_broadcast_file(const gchar * table, const gchar * file, gboolean sa
 }
 
 /* Return the distance between two contexts */
-gint context_distance(context_t * ctx1, context_t * ctx2)
+int context_distance(context_t * ctx1, context_t * ctx2)
 {
-	gint distx;
-	gint disty;
+	int distx;
+	int disty;
 
 	distx = ctx1->pos_x - ctx2->pos_x;
 	if(distx < 0 ) {

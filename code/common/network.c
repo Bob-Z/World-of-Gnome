@@ -817,6 +817,11 @@ void network_send_context_to_context(context_t * dest_ctx, context_t * src_ctx)
 	gint  data_size = 0;
 	gint  size = 0;
 
+	/* Source context is not ready yet */
+	if( src_ctx->user_name == NULL ) {
+		return;
+	}
+
 	size = g_utf8_strlen(src_ctx->user_name,-1)+1;
 	g_memmove(data+data_size, src_ctx->user_name, size);
 	data_size += size;
