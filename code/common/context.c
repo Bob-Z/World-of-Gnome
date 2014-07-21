@@ -117,13 +117,6 @@ void context_free(context_t * context)
 
 	SDL_LockMutex(context_list_mutex);
 
-	strcat(filename,getenv("HOME"));
-	strcat(filename,"/");
-	strcat(filename,base_directory);
-	strcat(filename,"/");
-	strcat(filename,CHARACTER_TABLE);
-	strcat(filename,"/");
-	strcat(filename,context->id);
 	
 // We should not erase the file's data from memory until it's dumped to disk, so comment this line
 //	entry_destroy(context->id);
@@ -203,6 +196,14 @@ void context_free(context_t * context)
 	SDL_UnlockMutex(context_list_mutex);
 
 	if(delete_file) {
+		strcat(filename,getenv("HOME"));
+		strcat(filename,"/");
+		strcat(filename,base_directory);
+		strcat(filename,"/");
+		strcat(filename,CHARACTER_TABLE);
+		strcat(filename,"/");
+		strcat(filename,context->id);
+
 		unlink(filename);
 	}
 }
