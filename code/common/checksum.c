@@ -17,30 +17,38 @@
    Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
-#include <glib.h>
-#include <gio/gio.h>
 #include <common.h>
-
+#include <stdio.h>
+#include <stdlib.h>
 
 /* Return a string representing the checksum of the file or NULL on error */
 /* filename is the directory + name */
 /* The returned string MUST be FREED */
 
-gchar * checksum_file(const gchar * filename)
+char * checksum_file(const char * filename)
 {
-	gchar * file_data = NULL;
-	gsize file_length = 0;
-	gboolean res = file_get_contents(filename,&file_data,&file_length,NULL);
-
-	if( res == FALSE) {
+	FILE *fp;
+	int ch;
+	unsigned long int checksum = 0;
+	char text[128];
+	
+	fp = fopen(filename,"r"); // read mode
+ 
+	if( fp == NULL )
+	{
 		return NULL;
 	}
 
-	gchar * checksum = NULL;
+	/* TODO: implement a safer crc calculation */
+	while( ( ch = fgetc(fp) ) != EOF ) {
+		checksum += ch;
+	}
 
-	checksum = g_compute_checksum_for_data ( G_CHECKSUM_MD5,(guchar *)file_data,file_length);
+	fclose(fp);
+	
+	snprintf(text,128,"%ld",checksum);
 
-	g_free(file_data);
+	wlog(LOGDEBUG,"Checksum for %s is %s",filename,text);
 
-	return checksum;
+	return strdup(text);
 }

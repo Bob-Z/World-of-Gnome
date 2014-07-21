@@ -19,8 +19,5 @@
 
 #ifndef CHECKSUM_H
 #define CHECKSUM_H
-
-#include <glib.h>
-
-gchar * checksum_file(const gchar * filename);
+char * checksum_file(const char * filename);
 #endif
