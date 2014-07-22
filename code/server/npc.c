@@ -33,8 +33,7 @@ static void npc_script(context_t * context, gchar * script, gchar ** parameters)
 
 	context_new_VM(context);
 
-	/* Allow the calling thread to continue */
-	SDL_UnlockMutex(npc_start_mutex);
+	wlog(LOGDEV,"Start AI script for %s(%s)",context->id, context->character_name);
 
 	while(context_get_connected(context)) {
 		SDL_LockMutex(npc_mutex);
@@ -79,8 +78,6 @@ static gpointer manage_npc(gpointer data)
 		return NULL;
 	}
 
-	/* Allow the calling thread to continue */
-	SDL_UnlockMutex(npc_start_mutex);
 	werr(LOGUSER,"No AI script for %s",context->id);
 
 	return NULL;
@@ -169,14 +166,7 @@ void instantiate_npc(const gchar * id)
 
 	context_spread(ctx);
 
-	/* Make sure the thread has created the LUA VM before continung */
-	SDL_LockMutex(npc_start_mutex);
-	/* start management thread */
 	g_thread_new("manage_npc",manage_npc,(gpointer)ctx);
-	/* Wait for the thread to unlock the mutex */
-	SDL_LockMutex(npc_start_mutex);
-	SDL_UnlockMutex(npc_start_mutex);
-
 }
 /**************************
 init non playing character

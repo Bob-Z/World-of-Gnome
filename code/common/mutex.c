@@ -24,7 +24,6 @@ SDL_mutex* npc_mutex = NULL;
 SDL_mutex* attribute_mutex = NULL;
 SDL_mutex* file_mutex = NULL;
 SDL_mutex* map_mutex = NULL;
-SDL_mutex* npc_start_mutex = NULL;
 
 void mutex_init()
 {
@@ -32,5 +31,4 @@ void mutex_init()
 	npc_mutex = SDL_CreateMutex();
 	attribute_mutex = SDL_CreateMutex();
 	map_mutex = SDL_CreateMutex();
-	npc_start_mutex = SDL_CreateMutex();
 }
