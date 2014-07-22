@@ -25,7 +25,7 @@
 #include <getopt.h>
 #include <string.h>
 #include <stdlib.h>
-#include "sdl.h"
+#include "../sdl_item/sdl.h"
 #include "screen.h"
 
 const char optstring[] = "?i:u:p:l:";
@@ -82,7 +82,7 @@ int main (int argc, char **argv)
 
 	context_set_username(context,user);
 
-	sdl_init(context);
+	sdl_init(&context->render, &context->window, screen_compose);
 
 	imageDB_init();
 

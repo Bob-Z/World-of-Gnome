@@ -18,7 +18,7 @@
 */
 
 #include <pthread.h>
-#include "sdl.h"
+#include "../sdl_item/sdl.h"
 #include "screen.h"
 #include "scr_select.h"
 #include "scr_play.h"
@@ -99,8 +99,8 @@ void screen_display(context_t * ctx)
 				return;
 			}
 
-			sdl_screen_manager(ctx,&event);
-			sdl_mouse_manager(ctx,&event,item_list);
+			sdl_screen_manager(ctx->window, ctx->render, &event);
+			sdl_mouse_manager(ctx->render,&event,item_list);
 			sdl_keyboard_manager(&event);
 		}
 
@@ -111,9 +111,9 @@ void screen_display(context_t * ctx)
 
 		SDL_RenderClear(ctx->render);
 
-		sdl_blit_item_list(ctx,item_list);
+		sdl_blit_item_list(ctx->render,item_list);
 
-		sdl_blit_to_screen(ctx);
+		sdl_blit_to_screen(ctx->render);
 
 		sdl_loop_manager();
 	}

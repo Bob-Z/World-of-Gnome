@@ -1,4 +1,4 @@
-SUBDIRS = common server client
+SUBDIRS = sdl_item common server client
 
 # Distribute files from here.
 EXTRA_DIST = server/AUTHORS server/ChangeLog server/configure.ac server/COPYING server/INSTALL server/Makefile.am server/NEWS server/README\

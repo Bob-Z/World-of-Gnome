@@ -17,7 +17,7 @@
    Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
-#include "anim.h"
+#include "../sdl_item/anim.h"
 
 void imageDB_init();
 void imageDB_add_file(context_t * context, gchar * filename, anim_t * anim);

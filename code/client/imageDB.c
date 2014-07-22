@@ -22,7 +22,7 @@
 When a file is received from the server, the parser's thread check the image data base and if the received file is an entry in the image data base, it update the corresponding GtkImage*/
 
 #include "../common/common.h"
-#include "anim.h"
+#include "../sdl_item/anim.h"
 
 gboolean updated_media = FALSE;
 
@@ -122,7 +122,7 @@ anim_t * imageDB_get_anim(context_t * context, const gchar * image_name)
 	/* The image was not in the imageDB */
 	/* try to read the local file */
 	tmp = g_strconcat( g_getenv("HOME"),"/", base_directory, "/", IMAGE_TABLE, "/",  image_name , NULL);
-	anim = anim_load(tmp);
+	anim = anim_load(context->render,tmp);
 	/* Unable to load local file */
 	if( anim == NULL ) {
 		pthread_mutex_unlock(&db_mutex);
@@ -190,7 +190,7 @@ gboolean image_DB_update(context_t * context,gchar * filename)
 
 	full_name = g_strconcat( g_getenv("HOME"),"/", base_directory, "/",filename, NULL);
 
-	anim = anim_load(full_name);
+	anim = anim_load(context->render,full_name);
 	if( anim ) {
 		updated = TRUE;
 		/* It is actually an image, so try to update the anim DB */

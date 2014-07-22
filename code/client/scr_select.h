@@ -17,7 +17,7 @@
    Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
-#include "item.h"
+#include "../sdl_item/item.h"
 
 item_t * scr_select_compose(context_t * context);
 void scr_select_add_user_character(context_t * context, gchar * data);

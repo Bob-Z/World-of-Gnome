@@ -23,9 +23,9 @@
 #include <glib/gstdio.h>
 #include "imageDB.h"
 #include "file.h"
-#include "anim.h"
-#include "item.h"
-#include "sdl.h"
+#include "../sdl_item/anim.h"
+#include "../sdl_item/item.h"
+#include "../sdl_item/sdl.h"
 #include "screen.h"
 #include "textview.h"
 

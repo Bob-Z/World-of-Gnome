@@ -18,7 +18,7 @@
 */
 
 #include "../common/common.h"
-#include "sdl.h"
+#include "../sdl_item/sdl.h"
 #include "textview.h"
 
 history_entry_t * text_history = NULL;

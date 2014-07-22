@@ -18,7 +18,7 @@ AC_CANONICAL_HOST
 
 AC_PROG_RANLIB
 
-AC_CONFIG_SUBDIRS([common] [server] [client])
+AC_CONFIG_SUBDIRS([sdl_item] [common] [server] [client])
 
 dnl Checks for programs.
 AC_PROG_INSTALL
