@@ -185,8 +185,10 @@ void context_free(context_t * context)
 	/* Remove this context if it was selected */
 	ctx = context_list_start;
 	while( ctx != NULL ) {
-		if (strcmp(context->id,ctx->selection.id)==0) {
-			ctx->selection.id = NULL;
+		if( context->id && ctx->selection.id ) {
+			if (strcmp(context->id,ctx->selection.id)==0) {
+				ctx->selection.id = NULL;
+			}
 		}
 		ctx = ctx->next;
 	}
@@ -587,9 +589,11 @@ context_t * context_find(const char * id)
 
 	ctx = context_list_start;
 
-	while(ctx != NULL ) {
-		if( strcmp(ctx->id,id) == 0 ) {
-			return ctx;
+	while(ctx != NULL) {
+		if( ctx->id ) {
+			if( strcmp(ctx->id,id) == 0 ) {
+				return ctx;
+			}
 		}
 
 		ctx = ctx->next;
@@ -723,7 +727,7 @@ void context_spread(context_t * context)
 		}
 
 		/* Skip if not on the same map or previous map */
-		if( ctx->map ) {
+		if( ctx->map && context->map && context->prev_map) {
 			if( strcmp(context->map,ctx->map) != 0 &&
 					strcmp(context->prev_map,ctx->map) != 0 ) {
 				continue;
@@ -960,7 +964,7 @@ void context_broadcast_file(const char * table, const char * file, int same_map_
 			continue;
 		}
 		/* Skip if not on the same map */
-		if( same_map_only ) {
+		if( same_map_only && ctx->map) {
 			if( strcmp(file,ctx->map) != 0 ) {
 				continue;
 			}
