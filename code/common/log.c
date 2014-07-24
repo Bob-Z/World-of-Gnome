@@ -20,16 +20,83 @@
 #ifndef LOG_C
 #define LOG_C
 
-#include <glib.h>
-#include <glib/gprintf.h>
 #include "log.h"
 #include <string.h>
+#include <stdlib.h>
+#include <stdarg.h>
+#include <time.h>
 
 static int log_level = 0;
 
 char *log_level_string[3] = {"user","dev","debug"};
 
-void log_print(char * file,int line,FILE *stream,int level,char * format, ...)
+char ** file_filter = NULL;
+int file_filter_num = 0;
+
+char ** func_filter = NULL;
+int func_filter_num = 0;
+
+/**************************************************
+**************************************************/
+void log_add_file_filter(const char * file)
+{
+	file_filter_num++;
+	file_filter = realloc(file_filter,sizeof(char*)*file_filter_num);
+	file_filter[file_filter_num-1] = strdup(file);
+}
+
+/**************************************************
+**************************************************/
+void log_add_func_filter(const char * func)
+{
+	func_filter_num++;
+	func_filter = realloc(func_filter,sizeof(char*)*func_filter_num);
+	func_filter[func_filter_num-1] = strdup(func);
+}
+
+/**************************************************
+return 1 if filter is found
+**************************************************/
+static int is_allowed_file(const char * file)
+{
+	int i;
+	
+	if( file_filter == NULL ) {
+		return 1;
+	}
+	
+	for(i=0;i<file_filter_num;i++) {
+		if( !strcmp(file_filter[i],file) ) {
+			return 1;
+		}
+	}
+	
+	return 0;
+}
+
+/**************************************************
+return 1 if filter is found
+**************************************************/
+static int is_allowed_func(const char * func)
+{
+	int i;
+
+	if( func_filter == NULL ) {
+		return 1;
+	}
+
+	for(i=0;i<func_filter_num;i++) {
+		if( !strcmp(func_filter[i],func) ) {
+			return 1;
+		}
+	}
+
+	return 0;
+}
+
+/**************************************************
+**************************************************/
+void log_print(const char * file,const char * func,int line,FILE *stream,int level,char * format, ...)
 {
 	va_list ap;
 	char buf[10000];
@@ -39,13 +106,21 @@ void log_print(char * file,int line,FILE *stream,int level,char * format, ...)
 		return;
 	}
 
+	if( !is_allowed_file(file) ) {
+		return;
+	}
+
+	if( !is_allowed_func(func) ) {
+		return;
+	}
+
 	va_start(ap,format);
 	vsnprintf(buf,sizeof(buf),format,ap);
 	va_end(ap);
 
 	if(log_level == LOGDEBUG) {
 		clock_gettime(CLOCK_MONOTONIC, &now);
-		fprintf(stream,"%ld.%09ld | %10s:%3d | %s\n",now.tv_sec,now.tv_nsec,file,line,buf);
+		fprintf(stream,"%ld.%09ld | %10s(%3d):%s | %s\n",now.tv_sec,now.tv_nsec,file,line,func,buf);
 	} else if(log_level == LOGDEV) {
 		clock_gettime(CLOCK_MONOTONIC, &now);
 		fprintf(stream,"%ld.%09ld | %s\n",now.tv_sec,now.tv_nsec,buf);
@@ -54,21 +129,23 @@ void log_print(char * file,int line,FILE *stream,int level,char * format, ...)
 	}
 }
 
-void init_log(char * log)
+/**************************************************
+**************************************************/
+void log_set_level(char * log)
 {
 	if(log == NULL) {
 		return;
 	}
 
-	if(!strcmp(log,"0") || !strcmp(log,"user")) {
+	if(!strcmp(log,"0") || !strcasecmp(log,"user")) {
 		log_level = LOGUSER;
 		return;
 	}
-	if(!strcmp(log,"1") || !strcmp(log,"dev")) {
+	if(!strcmp(log,"1") || !strcasecmp(log,"dev")) {
 		log_level = LOGDEV;
 		return;
 	}
-	if(!strcmp(log,"2") || !strcmp(log,"debug")) {
+	if(!strcmp(log,"2") || !strcasecmp(log,"debug")) {
 		log_level = LOGDEBUG;
 		return;
 	}

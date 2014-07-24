@@ -17,8 +17,6 @@
    Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
-#include <glib.h>
-#include <gio/gio.h>
 #include "../common/common.h"
 #include "imageDB.h"
 #include "file.h"
@@ -28,12 +26,14 @@
 #include "../sdl_item/sdl.h"
 #include "screen.h"
 
-const char optstring[] = "?i:u:p:l:";
+const char optstring[] = "?i:u:p:l:f:F:";
 const struct option longopts[] = {
 	{ "ip",required_argument,NULL,'i' },
 	{ "user",required_argument,NULL,'u' },
 	{ "pass",required_argument,NULL,'p' },
 	{ "log",required_argument,NULL,'l' },
+	{ "file",required_argument,NULL,'f' },
+	{ "func",required_argument,NULL,'F' },
 	{NULL,0,NULL,0}
 };
 
@@ -42,29 +42,32 @@ context_t * context;
 /**************************
   main
 **************************/
-
 int main (int argc, char **argv)
 {
 	int opt_ret;
 	char * ip = NULL;
 	char * user = NULL;
 	char * pass = NULL;
-	char * log = NULL;
-
 
 	while((opt_ret = getopt_long(argc, argv, optstring, longopts, NULL))!=-1) {
 		switch(opt_ret) {
 		case 'i':
-			ip = strdup(optarg);;
+			ip = strdup(optarg);
 			break;
 		case 'u':
-			user = strdup(optarg);;
+			user = strdup(optarg);
 			break;
 		case 'p':
-			pass = strdup(optarg);;
+			pass = strdup(optarg);
 			break;
 		case 'l':
-			log = strdup(optarg);;
+			log_set_level(optarg);
+			break;
+		case 'f':
+			log_add_file_filter(optarg);
+			break;
+		case 'F':
+			log_add_func_filter(optarg);
 			break;
 		default:
 			printf("HELP:\n\n");
@@ -72,6 +75,8 @@ int main (int argc, char **argv)
 			printf("-u --user: Set a user name\n");
 			printf("-p --pass: Set a user password\n");
 			printf("-l --log: Set log level\n");
+			printf("-f --file: Only display logs from this source file\n");
+			printf("-F --func: Only display logs from this function\n");
 			exit(0);
 		}
 	}
@@ -83,29 +88,6 @@ int main (int argc, char **argv)
 	context_set_username(context,user);
 
 	sdl_init(&context->render, &context->window, screen_compose);
-
-	imageDB_init();
-
-/*
-	if( ! win_login_init(context) ) {
-		werr(LOGUSER,"Unable to initialize the login window, abort");
-		return 1;
-	}
-
-	if( ! win_select_character_init(context) ) {
-		werr(LOGUSER,"Unable to initialize the select character window, abort");
-		return 1;
-	}
-
-	if( ! win_game_init(context) ) {
-		werr(LOGUSER,"Unable to initialize the game window, abort");
-		return 1;
-	}
-
-	win_login_set_entry(ip, user, pass);
-*/
-
-	init_log(log);
 
 	/* connect to server */
         if( network_connect(context,ip) ) {

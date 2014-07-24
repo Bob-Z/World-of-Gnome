@@ -20,13 +20,17 @@
 #ifndef LOG_H
 #define LOG_H
 
-void init_log(char * log_level);
-void log_print(char * file,int line,FILE *stream,int level,char * format, ...);
+#include <stdio.h>
+
+void log_set_level(char * log_level);
+void log_add_file_filter(const char * file);
+void log_add_func_filter(const char * func);
+void log_print(const char * file,const char * func, int line,FILE *stream,int level,char * format, ...);
 
 #define LOGUSER		0
 #define LOGDEV		1
 #define LOGDEBUG	2
 
-#define wlog(level,str,args...) log_print(__FILE__,__LINE__,stdout,level,str, ## args)
-#define werr(level,str,args...) log_print(__FILE__,__LINE__,stderr,level,str, ## args)
+#define wlog(level,str,args...) log_print(__FILE__,__func__,__LINE__,stdout,level,str, ## args)
+#define werr(level,str,args...) log_print(__FILE__,__func__,__LINE__,stderr,level,str, ## args)
 #endif

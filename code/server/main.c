@@ -27,15 +27,16 @@
 #include <string.h>
 #include <stdlib.h>
 
-const char optstring[] = "?l:";
+const char optstring[] = "?l:f:F:";
 const struct option longopts[] = {
 	{ "log",required_argument,NULL,'l' },
+	{ "file",required_argument,NULL,'f' },
+	{ "func",required_argument,NULL,'F' },
 	{NULL,0,NULL,0}
 };
 
 void sigint_handler(int sig)
 {
-	file_dump_all_to_disk();
 	printf("Exiting\n");
 	exit(0);
 }
@@ -43,20 +44,26 @@ void sigint_handler(int sig)
 /**************************
   main
  **************************/
-
 int main (int argc, char **argv)
 {
 	int opt_ret;
-	char * log = NULL;
 
 	while((opt_ret = getopt_long(argc, argv, optstring, longopts, NULL))!=-1) {
 		switch(opt_ret) {
 		case 'l':
-			log = strdup(optarg);;
+			log_set_level(optarg);
+			break;
+		case 'f':
+			log_add_file_filter(optarg);
+			break;
+		case 'F':
+			log_add_func_filter(optarg);
 			break;
 		default:
 			printf("HELP:\n\n");
 			printf("-l --log: Set log level\n");
+			printf("-f --file: Only display logs from this source file\n");
+			printf("-F --func: Only display logs from this function\n");
 			exit(0);
 		}
 	}
@@ -66,8 +73,6 @@ int main (int argc, char **argv)
 	//init the main loop
 	GMainLoop * mainLoop = NULL;
 	mainLoop = g_main_loop_new(NULL,FALSE);
-
-	init_log(log);
 
 	//init non playing character
 	init_npc();
