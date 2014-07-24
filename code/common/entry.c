@@ -153,9 +153,10 @@ static const config_t * get_config(const char * table, const char * file)
 
 	file_lock(filename);
 
+	wlog(LOGDEBUG,"Entry asked : %s",filename);
+	file_update(context_get_list_first(),filename);
+
 	if( (config=load_config(filename)) == NULL ) {
-		wlog(LOGDEBUG,"Entry asked : %s",filename);
-		file_update(context_get_list_first(),filename);
 		file_unlock(filename);
 		SDL_UnlockMutex(entry_mutex);
 		return NULL;
