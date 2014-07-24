@@ -112,24 +112,19 @@ static void compose_map(context_t * ctx)
 	anim_t * anim;
 	item_t * item;
 
-	SDL_LockMutex(file_mutex);
-
         if( ctx->tile_x == -1 ) {
-                if(!_read_int(MAP_TABLE, ctx->map, &i,MAP_KEY_TILE_SIZE_X,NULL)){
-			SDL_UnlockMutex(file_mutex);
+                if(!read_int(MAP_TABLE, ctx->map, &i,MAP_KEY_TILE_SIZE_X,NULL)){
                         return;
                 }
                 context_set_tile_x( ctx, i);
         }
         if( ctx->tile_y == -1 ) {
-                if(!_read_int(MAP_TABLE, ctx->map,&i,MAP_KEY_TILE_SIZE_Y,NULL)){
-			SDL_UnlockMutex(file_mutex);
+                if(!read_int(MAP_TABLE, ctx->map,&i,MAP_KEY_TILE_SIZE_Y,NULL)){
                         return;
                 }
                 context_set_tile_y( ctx, i);
         }
-        if(!_read_list(MAP_TABLE, ctx->map, &orig_value,MAP_KEY_SET,NULL)) {
-		SDL_UnlockMutex(file_mutex);
+        if(!read_list(MAP_TABLE, ctx->map, &orig_value,MAP_KEY_SET,NULL)) {
                 return;
         }
 
@@ -142,8 +137,6 @@ static void compose_map(context_t * ctx)
 		i++;
 	}
 	free(orig_value);
-
-	SDL_UnlockMutex(file_mutex);
 
 	/* Parse map string */
 	i=0;

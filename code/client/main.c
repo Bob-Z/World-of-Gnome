@@ -81,7 +81,7 @@ int main (int argc, char **argv)
 		}
 	}
 
-	mutex_init();
+	common_mutex_init();
 
 	context = context_new();
 

@@ -152,8 +152,9 @@ static void compose_inventory(context_t * ctx)
 		x += anim->w;
 		item_set_click_left(item,cb_select,(void*)inventory_list[i]);
 
-		free(description);
 		free(label);
+		free(description);
+
 		i++;
 	}
 }

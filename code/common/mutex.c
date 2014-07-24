@@ -22,13 +22,14 @@
 SDL_mutex* context_list_mutex = NULL;
 SDL_mutex* npc_mutex = NULL;
 SDL_mutex* attribute_mutex = NULL;
-SDL_mutex* file_mutex = NULL;
 SDL_mutex* map_mutex = NULL;
+SDL_mutex* file_list_mutex = NULL;
 
-void mutex_init()
+void common_mutex_init()
 {
 	context_list_mutex = SDL_CreateMutex();
 	npc_mutex = SDL_CreateMutex();
 	attribute_mutex = SDL_CreateMutex();
 	map_mutex = SDL_CreateMutex();
+	file_list_mutex = SDL_CreateMutex();
 }

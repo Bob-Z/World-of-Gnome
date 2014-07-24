@@ -20,39 +20,27 @@
 #ifndef ENTRY_H
 #define ENTRY_H
 
-#include <glib.h>
+int read_int(const char * table, const char * file, int * res, ...);
+int read_string(const char * table, const char * file, const char ** res, ...);
+int read_list_index(const char * table, const char * file, const char ** res,int index, ...);
+int read_list(const char * table, const char * file, char *** res, ...);
 
-gchar * file_new(gchar * table);
+int write_int(const char * table, const char * file, int data, ...);
+int write_string(const char * table, const char * file,const char * data, ...);
+int write_list_index(const char * table, const char * file, const char * data,int index, ...);
+int write_list(const char * table, const char * file, char ** data, ...);
 
-int read_int(const gchar * table, const gchar * file, int * res, ...);
-int read_string(const gchar * table, const gchar * file, const gchar ** res, ...);
-int _read_int(const gchar * table, const gchar * file, int * res, ...);
-int _read_string(const gchar * table, const gchar * file, const gchar ** res, ...);
-int read_list_index(const gchar * table, const gchar * file, const gchar ** res,gint index, ...);
-int read_list(const gchar * table, const gchar * file, gchar *** res, ...);
-int _read_list(const gchar * table, const gchar * file, gchar *** res, ...);
+char * get_unused_list_entry(const char * table, const char * file, ...);
+char * get_unused_group(const char * table, const char * file, ...);
+int get_group_list(const char * table, const char * file, char *** res, ...);
 
-int write_int(const gchar * table, const gchar * file, int data, ...);
-int write_string(const gchar * table, const gchar * file,const char * data, ...);
-int write_list_index(const gchar * table, const gchar * file, const char * data,gint index, ...);
-int write_list(const gchar * table, const gchar * file, char ** data, ...);
+int add_to_list(const char * table, const char * file, const char * to_be_added, ...);
+int remove_group(const char * table, const char * file, const char * group, ...);
 
-gchar * get_unused_list_entry(const gchar * table, const gchar * file, ...);
-gchar * get_unused_group(const gchar * table, const gchar * file, ...);
-int get_group_list(const gchar * table, const gchar * file, gchar *** res, ...);
-
-gboolean file_get_contents(const gchar *filename,gchar **contents,gsize *length,GError **error);
-gboolean file_set_contents(const gchar *filename,const gchar *contents,gssize length,GError **error);
-
-gboolean add_to_list(const gchar * table, const gchar * file, const gchar * to_be_added, ...);
-int remove_group(const gchar * table, const gchar * file, const gchar * group, ...);
-
-void file_dump_all_to_disk(void);
-
-gboolean remove_from_list(const gchar * table, const gchar * file, const gchar * to_be_removed, ...);
-int list_create(const gchar * table, const gchar * file, ...);
-int group_create(const gchar * table, const gchar * file, ...);
-gchar * copy_group(const gchar * src_table, const gchar * src_file, const gchar * dst_table, const gchar * dst_file, const gchar * group_name, ...);
-gint entry_update(gchar * data);
-gint entry_destroy(const gchar * id);
+int remove_from_list(const char * table, const char * file, const char * to_be_removed, ...);
+int list_create(const char * table, const char * file, ...);
+int group_create(const char * table, const char * file, ...);
+char * copy_group(const char * src_table, const char * src_file, const char * dst_table, const char * dst_file, const char * group_name, ...);
+int entry_update(char * data);
+int entry_destroy(const char * id);
 #endif

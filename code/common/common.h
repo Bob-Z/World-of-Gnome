@@ -22,9 +22,11 @@
 
 #include "checksum.h"
 #include "const.h"
-#include "network.h"
-#include "context.h"
+#include "list.h"
 #include "syntax.h"
+#include "context.h"
+#include "file.h"
+#include "network.h"
 #include "protocol.h"
 #include "client_server.h"
 #include "map.h"
@@ -32,7 +34,5 @@
 #include "log.h"
 #include "mutex.h"
 #include "item.h"
-#include "list.h"
-#include "file.h"
 
 #endif

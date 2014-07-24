@@ -17,10 +17,9 @@
    Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
-//#include "common.h"
 #include "common.h"
 
-static list_t * list_search(list_t * list, char * key)
+static list_t * list_search(list_t * list, const char * key)
 {
 	list_t * current_list = list;
 	int i;
@@ -29,9 +28,13 @@ static list_t * list_search(list_t * list, char * key)
 		i = 0;
 		while(current_list->key[i] != 0 && key[i] != 0) {
 			if( current_list->key[i] != key[i] ) {
+				if( current_list->next == NULL ) {
+					return NULL;
+				}
 				current_list = current_list->next;
-				continue;
+				break;
 			}
+			i++;
 		}
 
 		/* Key is found */
@@ -48,11 +51,11 @@ static list_t * list_search(list_t * list, char * key)
 Return the pointer associated with the given key
 Return NULL if key does not match any list entry.
 *****************************************/
-void * list_find(list_t * list, char * key)
+void * list_find(list_t * list, const char * key)
 {
 	list_t * current_list;
 	
-	current_list = list_find(list,key);
+	current_list = list_search(list,key);
 
 	if( current_list ) {
 		return current_list->data;
@@ -66,7 +69,7 @@ Add or update an entry into the given list.
 key and data pointers are copied in the list. The user should not free them.
 Return the head of the list.
 *****************************************/
-list_t * list_update(list_t * list, char *key, void * data)
+list_t * list_update(list_t * list, const char *key, void * data)
 {
 	list_t * current_list = list;
 	list_t * new_list;
@@ -81,14 +84,15 @@ list_t * list_update(list_t * list, char *key, void * data)
 
 	/* The key doesn't exists; create it */
 	new_list = malloc(sizeof(list_t));
-	new_list->key = key;
+	new_list->key = strdup(key);
 	new_list->data = data;
 	new_list->next = NULL;
 	
 	if( list == NULL) {
 		return new_list;
 	}
-	
+
+	current_list = list;	
 	while(current_list->next != NULL) {
 		current_list = current_list->next;
 	}

@@ -20,6 +20,7 @@
 #include <glib.h>
 #include <gio/gio.h>
 #include "common.h"
+#include "file.h"
 #include <stdlib.h>
 #include <string.h>
 #include "../server/action.h"

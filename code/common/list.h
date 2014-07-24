@@ -21,13 +21,13 @@
 #define LIST_H
 
 typedef struct list_tag {
-	char * key;
+	const char * key;
 	void * data;
 	struct list_tag * next;
 } list_t;
 
-void * list_find(list_t * list, char * key);
-list_t * list_update(list_t * list, char *key, void * data);
-list_t * list_del(list_t * list, char *key);
+void * list_find(list_t * list, const char * key);
+list_t * list_update(list_t * list, const char *key, void * data);
+list_t * list_del(list_t * list, const char *key);
 
 #endif

@@ -17,17 +17,11 @@
    Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
-#ifndef FILE_H
-#define FILE_H
+#include "context.h"
 
-#include "common.h"
-
-typedef struct file_tag {
-	Uint32 timestamp;
-	SDL_mutex * mutex;
-} file_t;
-
-void file_lock(char * filename);
-void file_unlock(char * filename);
+void file_lock(const char * filename);
+void file_unlock(const char * filename);
 void file_update(context_t * context, char * filename);
-#endif
+char * file_new(char * table);
+int file_get_contents(const char *filename,char **contents,int *length);
+int file_set_contents(const char *filename,const char *contents,int length);

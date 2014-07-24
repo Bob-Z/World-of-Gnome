@@ -68,7 +68,7 @@ int main (int argc, char **argv)
 		}
 	}
 
-	mutex_init();
+	common_mutex_init();
 
 	//init the main loop
 	GMainLoop * mainLoop = NULL;

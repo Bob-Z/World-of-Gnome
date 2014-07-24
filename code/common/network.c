@@ -23,21 +23,10 @@
 #include "common.h"
 #include <string.h>
 #include <dirent.h>
+#include "file.h"
 
 static GThread * listenThread = NULL;
 extern context_t * context_list_start;
-
-/* Date of the last request for a file (avoid server request flood for the same file */
-static GHashTable* clockDB = NULL;
-static void free_key(gpointer data)
-{
-	g_free(data);
-}
-
-static void free_value(gpointer data)
-{
-	g_date_time_unref(data);
-}
 
 typedef struct send_data {
 	guint32 command;
@@ -270,40 +259,11 @@ void network_send_req_file(context_t * context, gchar * file)
 	gchar * filename;
 	gchar * cksum;
 	gchar * frame;
-	GDateTime * last_date = NULL;
-	GDateTime * current_date = NULL;
-	GDateTime * max_date = NULL;
 
 	/* Sanity check */
 	if(file == NULL) {
 		werr(LOGDEV,"network_send_req_file_checksum called with NULL");
 		return;
-	}
-
-	/* init clockDB if necessary */
-	if( clockDB == NULL ) {
-		clockDB = g_hash_table_new_full(g_str_hash,g_str_equal, free_key, free_value);
-	}
-
-	/* Ckeck that a previous request for this file has not been send recently */
-	last_date = g_hash_table_lookup(clockDB,file);
-	current_date = g_date_time_new_now_local();
-	if( last_date != NULL ) {
-		max_date = g_date_time_add_seconds(last_date, FILE_REQUEST_TIMEOUT);
-		/* max_date < current_date we can send a request */
-		if( g_date_time_compare( max_date, current_date ) == -1 ) {
-			g_hash_table_replace(clockDB, g_strdup(file), current_date);
-			g_date_time_unref(max_date);
-		}
-		/* max_date > current_date, we cancel this request */
-		else {
-			werr(LOGDEBUG,"Previous request of file  %s has been done in a time too short",file);
-			g_date_time_unref(max_date);
-			g_date_time_unref(current_date);
-			return;
-		}
-	} else {
-		g_hash_table_replace(clockDB, file, current_date);
 	}
 
 	/* Compute checksum of local file */
@@ -900,11 +860,9 @@ int network_send_file(context_t * context, gchar * filename)
 	full_name = g_strconcat( g_getenv("HOME"),"/", base_directory, "/", filename, NULL);
 
 	gchar * file_data = NULL;
-	gsize file_length = 0;
+	int file_length = 0;
 
-	SDL_LockMutex(file_mutex);
-	gboolean res = file_get_contents(full_name,&file_data,&file_length,NULL);
-	SDL_UnlockMutex(file_mutex);
+	int res = file_get_contents(full_name,&file_data,&file_length);
 	if( res == FALSE) {
 		werr(LOGUSER,"send_file : Error reading file \"%s\"",full_name);
 		g_free(full_name);
@@ -953,7 +911,7 @@ int network_send_file(context_t * context, gchar * filename)
   network_send_table_file
 
   send table/file to a context
-return 0 on success
+  return 0 on success
  **************************/
 int network_send_table_file(context_t * context, char * table, char * filename)
 {

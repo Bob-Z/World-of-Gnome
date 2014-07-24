@@ -81,9 +81,7 @@ int file_add(context_t * context,gchar * data,guint32 command_size)
 		werr(LOGDEV,"Can't create directory for %s", full_name);
 		return 1;
 	}
-	SDL_LockMutex(file_mutex);
-	gboolean res = file_set_contents(full_name,ptr,file_data_size,NULL);
-	SDL_UnlockMutex(file_mutex);
+	gboolean res = file_set_contents(full_name,ptr,file_data_size);
 	if( res == FALSE ) {
 		werr(LOGDEV,"Error writing file %s with size %d",full_name, file_data_size);
 		return 1;

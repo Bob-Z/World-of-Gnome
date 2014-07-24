@@ -113,6 +113,7 @@ char * item_resource_new(const char * template, int quantity)
 /************************************************
  return template name of resource
  return NULL  if item is unique (i.e. not a resource)
+ if not NULL, MUST BE FREED by caller
 ************************************************/
 const char * item_is_resource(const char * item_id)
 {
@@ -130,8 +131,9 @@ const char * item_is_resource(const char * item_id)
 int item_get_quantity(const char * item_id)
 {
 	int quantity;
+	const char * template;
 
-	if(item_is_resource(item_id)==NULL) {
+	if((template=item_is_resource(item_id))==NULL) {
 		return 1; /* unique item */
 	}
 
@@ -148,7 +150,9 @@ int item_get_quantity(const char * item_id)
 *****************************/
 int item_set_quantity(const char * item_id, int quantity)
 {
-	if(item_is_resource(item_id)==NULL) {
+	const char * template;
+
+	if((template=item_is_resource(item_id))==NULL) {
 		return -1; /* unique item */
 	}
 
