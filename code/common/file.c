@@ -223,7 +223,7 @@ int file_set_contents(const char *filename,const char *contents,int length)
 
 	file_lock(filename);
 
-	fd = open(fullname,O_WRONLY);
+	fd = creat(fullname,S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH);
 	if(fd == -1) {
 		werr(LOGDEV,"Error open on file %s\n",fullname);
 		return FALSE;

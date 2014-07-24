@@ -862,7 +862,7 @@ int network_send_file(context_t * context, gchar * filename)
 	gchar * file_data = NULL;
 	int file_length = 0;
 
-	int res = file_get_contents(full_name,&file_data,&file_length);
+	int res = file_get_contents(filename,&file_data,&file_length);
 	if( res == FALSE) {
 		werr(LOGUSER,"send_file : Error reading file \"%s\"",full_name);
 		g_free(full_name);
