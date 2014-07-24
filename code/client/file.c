@@ -22,6 +22,7 @@
 #include "../common/common.h"
 #include <dirent.h>
 #include "imageDB.h"
+#include "screen.h"
 
 /* return 0 if directory was successfully created */
 int create_directory(gchar * filename)
@@ -93,6 +94,8 @@ int file_add(context_t * context,gchar * data,guint32 command_size)
 	entry_remove(file_name);
 	/* Update the image DB */
 	image_DB_remove(file_name);
+
+	screen_compose();
 
 	g_free(file_name);
 	g_free(full_name);
