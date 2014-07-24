@@ -62,7 +62,7 @@ void file_lock(const char * filename)
  *****************************************/
 void file_unlock(const char * filename)
 {
-	file_t * file_data;
+	const file_t * file_data;
 
 	SDL_LockMutex(file_list_mutex);
 	file_data = list_find(file_list,filename);

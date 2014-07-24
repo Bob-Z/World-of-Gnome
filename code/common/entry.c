@@ -25,9 +25,11 @@
 #include <unistd.h>
 #include <stdarg.h>
 
+list_t * entry_list = NULL;
+
 /*********************
 *********************/
-static void config_print_error(char * file, config_t * config)
+static void config_print_error(char * file, const config_t * config)
 {
 	werr(LOGUSER,"libconfig error %s@%d : %s\n",
 		 file,
@@ -37,7 +39,7 @@ static void config_print_error(char * file, config_t * config)
 
 /*********************
 *********************/
-static void write_config(config_t * config,const char * table, const char * file)
+static void write_config(const config_t * config,const char * table, const char * file)
 {
 	char filename[512] = "";
 	char fullname[512] = "";
@@ -53,21 +55,21 @@ static void write_config(config_t * config,const char * table, const char * file
 	strcat(fullname,filename);
 
 	file_lock(filename);
-	config_write_file(config,fullname);
+	config_write_file((config_t*)config,fullname);
 	file_unlock(filename);
 }
 /*********************
 *********************/
+#if 0
 static void free_config(config_t * config)
 {
 	config_destroy(config);
 	free(config);
 }
-
+#endif
 /*********************
-returned config MUST BE config_destroy and FREED
 *********************/
-static config_t * load_config(char * filename)
+static const config_t * load_config(char * filename)
 {
 	int ret;
 	config_t * config = NULL;
@@ -93,32 +95,70 @@ static config_t * load_config(char * filename)
 		if(stat(fullname,&sts) != -1 || client_server == SERVER) {
 			config_print_error(fullname,config);
 		}
-		free_config(config);
 		return NULL;
 	}
 
 	return config;
 }
 
+/****************************************************
+Remove an entry from the DB
+******************************************************/
+void entry_remove(char * filename)
+{
+	const config_t * old_config;
+
+        /* Clean-up old anim if any */
+        SDL_LockMutex(entry_mutex);
+        old_config = list_find(entry_list,filename);
+        if( old_config ) {
+		/* TODO: Since read_string (and some more) use const pointer to config_t data
+		we cannot delete a config_t structure freely because afterward, some functions
+		may point to freed (and corrupted)  string data.
+		This is a major memory leak which need a clever solution.
+		*/
+#if 0
+                free_config(old_config);
+#endif
+        }
+
+        entry_list = list_update(entry_list,filename,NULL);
+
+        SDL_UnlockMutex(entry_mutex);
+}
+
 /*********************
 returned config MUST BE config_destroy and FREED
 *********************/
-static config_t * get_config(const char * table, const char * file)
+static const config_t * get_config(const char * table, const char * file)
 {
 	char filename[512] = "";
-	config_t * config;
+	const config_t * config;
 
 	strcat(filename,table);
 	strcat(filename,"/");
 	strcat(filename,file);
+
+	SDL_LockMutex(entry_mutex);
+        config = list_find(entry_list,filename);
+
+	if(config) {
+		SDL_UnlockMutex(entry_mutex);
+		return config;
+	}
 
 	file_lock(filename);
 
 	if( (config=load_config(filename)) == NULL ) {
 			file_update(context_get_list_first(),filename);
 			file_unlock(filename);
+			SDL_UnlockMutex(entry_mutex);
 			return NULL;
 	}
+	file_unlock(filename);
+
+	entry_list = list_update(entry_list,filename,(config_t*)config);
+	SDL_UnlockMutex(entry_mutex);
 
 	return config;
 }
@@ -171,7 +211,7 @@ return FALSE on error
 *********************/
 static int __read_int(const char * table, const char * file, int * res, va_list ap)
 {
-	config_t * config = NULL;
+	const config_t * config = NULL;
 	char * path=NULL;
 	int result;
 
@@ -182,16 +222,13 @@ static int __read_int(const char * table, const char * file, int * res, va_list 
 
 	path = get_path(ap);
 	if(path == NULL) {
-		free_config(config);
 		return FALSE;
 	}
 
 	if(config_lookup_int (config, path, &result)==CONFIG_FALSE) {
-		free_config(config);
 		free(path);
 		return FALSE;
 	}
-	free_config(config);
 	free(path);
 
 	*res = result;
@@ -220,7 +257,7 @@ res MUST BE FREED by caller
 *********************/
 static int __read_string(const char * table, const char * file, const char ** res, va_list ap)
 {
-	config_t * config = NULL;
+	const config_t * config = NULL;
 	char * path;
 	const char * result;
 
@@ -231,18 +268,15 @@ static int __read_string(const char * table, const char * file, const char ** re
 
 	path = get_path(ap);
 	if(path == NULL) {
-		free_config(config);
 		return FALSE;
 	}
 
 	if(config_lookup_string (config, path, &result)==CONFIG_FALSE) {
 //		g_warning("%s: Can't read %s/%s/%s",__func__,table,file,path);
 		free(path);
-		free_config(config);
 		return FALSE;
 	}
 	free(path);
-	free_config(config);
 	*res = strdup(result);
 
 	return TRUE;
@@ -269,7 +303,7 @@ res MUST BE FREED by caller
 *********************/
 static int __read_list_index(const char * table, const char * file, const char ** res, int index, va_list ap)
 {
-	config_t * config = NULL;
+	const config_t * config = NULL;
 	config_setting_t * setting = NULL;
 	char * path;
 	const char * result;
@@ -283,7 +317,6 @@ static int __read_list_index(const char * table, const char * file, const char *
 
 	path = get_path(ap);
 	if(path == NULL) {
-		free_config(config);
 		return FALSE;
 	}
 
@@ -291,17 +324,14 @@ static int __read_list_index(const char * table, const char * file, const char *
 	if( setting == NULL ) {
 //		g_warning("%s: Can't read %s/%s/%s",__func__,table,file,path);
 		free(path);
-		free_config(config);
 		return FALSE;
 	}
 	free(path);
 
 	result = config_setting_get_string_elem (setting,index);
 	if(result == NULL ) {
-		free_config(config);
 		return FALSE;
 	}
-	free_config(config);
 
 	*res = strdup(result);
 	return TRUE;
@@ -328,7 +358,7 @@ Each elements of res MUST BE FREED by caller
 *********************/
 static int __read_list(const char * table, const char * file, char *** res, va_list ap)
 {
-	config_t * config = NULL;
+	const config_t * config = NULL;
 	config_setting_t * setting = NULL;
 	char * path;
 	int i = 0;
@@ -343,14 +373,12 @@ static int __read_list(const char * table, const char * file, char *** res, va_l
 
 	path = get_path(ap);
 	if(path == NULL) {
-		free_config(config);
 		return FALSE;
 	}
 
 	setting = config_lookup (config, path);
 	if( setting == NULL ) {
 		free(path);
-		free_config(config);
 		return FALSE;
 	}
 	free(path);
@@ -363,7 +391,6 @@ static int __read_list(const char * table, const char * file, char *** res, va_l
 
 	}
 
-	free_config(config);
 
 	if(*res == NULL) {
 		return FALSE;
@@ -390,7 +417,7 @@ int read_list(const char * table, const char * file, char *** res, ...)
 /*********************
 return FALSE on error
 *********************/
-static config_setting_t * create_tree(config_t * config, config_setting_t * prev_setting, char * prev_entry, char * path, int type, va_list ap)
+static config_setting_t * create_tree(const config_t * config, config_setting_t * prev_setting, char * prev_entry, char * path, int type, va_list ap)
 {
 	char * entry = NULL;
 	char new_path[512] = "";
@@ -448,7 +475,7 @@ return FALSE on error
 static int __write_int(const char * table, const char * file, int data, va_list ap)
 {
 	config_setting_t * setting;
-	config_t * config;
+	const config_t * config;
 
 	config = get_config(table,file);
 	if(config==NULL) {
@@ -459,12 +486,10 @@ static int __write_int(const char * table, const char * file, int data, va_list 
 
 	/* update int */
 	if(config_setting_set_int(setting, data)==CONFIG_FALSE) {
-		free_config(config);
 		return FALSE;
 	}
 
 	write_config(config,table,file);
-	free_config(config);
 	return TRUE;
 }
 
@@ -489,7 +514,7 @@ return FALSE on error
 static int __write_string(const char * table, const char * file, const char * data, va_list ap)
 {
 	config_setting_t * setting;
-	config_t * config;
+	const config_t * config;
 
 	config = get_config(table,file);
 	if(config==NULL) {
@@ -500,12 +525,10 @@ static int __write_string(const char * table, const char * file, const char * da
 
 	/* update string */
 	if(config_setting_set_string(setting, data)==CONFIG_FALSE) {
-		free_config(config);
 		return FALSE;
 	}
 
 	write_config(config,table,file);
-	free_config(config);
 	return TRUE;
 }
 
@@ -530,7 +553,7 @@ return FALSE on error
 static int __write_list_index(const char * table, const char * file, const char * data, int index, va_list ap)
 {
 	config_setting_t * setting = NULL;
-	config_t * config;
+	const config_t * config;
 
 	config = get_config(table,file);
 	if(config==NULL) {
@@ -540,12 +563,10 @@ static int __write_list_index(const char * table, const char * file, const char 
 	setting = create_tree(config,NULL,NULL,NULL,CONFIG_TYPE_ARRAY,ap);
 
 	if(config_setting_set_string_elem(setting,index,data)==NULL) {
-		free_config(config);
 		return FALSE;
 	}
 
 	write_config(config,table,file);
-	free_config(config);
 	return TRUE;
 }
 
@@ -570,7 +591,7 @@ return FALSE on error
 static int __write_list(const char * table, const char * file, char ** data, va_list ap)
 {
 	config_setting_t * setting;
-	config_t * config;
+	const config_t * config;
 	int i=0;
 
 	config = get_config(table,file);
@@ -582,14 +603,12 @@ static int __write_list(const char * table, const char * file, char ** data, va_
 
 	while(data[i] != NULL) {
 		if(config_setting_set_string_elem(setting,-1,data[i])==NULL) {
-			free_config(config);
 			return FALSE;
 		}
 		i++;
 	}
 
 	write_config(config,table,file);
-	free_config(config);
 
 	return TRUE;
 }
@@ -614,7 +633,7 @@ return FALSE on error
 *********************/
 static int __add_to_list(const char * table, const char * file, const char * to_be_added, va_list ap)
 {
-	config_t * config = NULL;
+	const config_t * config = NULL;
 	config_setting_t * setting = NULL;
 	char * path;
 
@@ -631,7 +650,6 @@ static int __add_to_list(const char * table, const char * file, const char * to_
 	setting = config_lookup (config, path);
 	if( setting == NULL ) {
 		free(path);
-		free_config(config);
 		return 0;
 	}
 	free(path);
@@ -641,7 +659,6 @@ static int __add_to_list(const char * table, const char * file, const char * to_
 	}
 
 	write_config(config,table,file);
-	free_config(config);
 
 	return 1;
 }
@@ -667,7 +684,7 @@ return FALSE on error
 static int __remove_group(const char * table, const char * file, const char * group, va_list ap)
 {
 
-	config_t * config;
+	const config_t * config;
 	config_setting_t * setting = NULL;
 	char * path;
 
@@ -693,7 +710,6 @@ static int __remove_group(const char * table, const char * file, const char * gr
 	}
 
 	write_config(config,table,file);
-	free_config(config);
 
 	return TRUE;
 }
@@ -761,7 +777,7 @@ char * __get_unused_group(const char * table, const char * file,  va_list ap)
 	int index = 0;
 	char * path;
 	config_setting_t * setting;
-	config_t * config;
+	const config_t * config;
 
 	config = get_config(table,file);
 	if(config==NULL) {
@@ -783,8 +799,6 @@ char * __get_unused_group(const char * table, const char * file,  va_list ap)
 		index++;
 		sprintf(tag,"A%05x",index);
 	}
-
-	free_config(config);
 
 	return strdup(tag);
 }
@@ -816,7 +830,7 @@ char * __get_unused_group_on_path(const char * table, const char * file, char * 
 	char tag[7];
 	int index = 0;
 	config_setting_t * setting;
-	config_t * config;
+	const config_t * config;
 
 	config = get_config(table,file);
 	if(config==NULL) {
@@ -839,8 +853,6 @@ char * __get_unused_group_on_path(const char * table, const char * file, char * 
 
 	config_setting_remove(setting,tag);
 
-	free_config(config);
-
 	return strdup(tag);
 }
 
@@ -853,7 +865,7 @@ returned list must be freed  (g_free)
 int get_group_list(const char * table, const char * file, char *** res, ...)
 {
 	char * path;
-	config_t * config;
+	const config_t * config;
 	va_list ap;
 	config_setting_t * setting;
 	config_setting_t * elem_setting;
@@ -879,7 +891,6 @@ int get_group_list(const char * table, const char * file, char *** res, ...)
 
 	/* The path does not exist in the conf file */
 	if(setting == NULL ) {
-		free_config(config);
 		return FALSE;
 	}
 
@@ -889,8 +900,6 @@ int get_group_list(const char * table, const char * file, char *** res, ...)
 		(*res)[index-1] = (char *)config_setting_name(elem_setting);
 		(*res)[index] = NULL;
 	}
-
-	free_config(config);
 
 	if( *res == NULL) {
 		return FALSE;
@@ -904,7 +913,7 @@ return 0 on failure
 *********************/
 static int __remove_from_list(const char * table, const char * file, const char * to_be_removed, va_list ap)
 {
-	config_t * config = NULL;
+	const config_t * config = NULL;
 	config_setting_t * setting = NULL;
 	char * path;
 	int i = 0;
@@ -922,7 +931,6 @@ static int __remove_from_list(const char * table, const char * file, const char 
 
 	setting = config_lookup (config, path);
 	if( setting == NULL ) {
-		free_config(config);
 		free(path);
 		return 0;
 	}
@@ -931,12 +939,10 @@ static int __remove_from_list(const char * table, const char * file, const char 
 	while( (elem=config_setting_get_string_elem (setting,i )) != NULL ) {
 		if( strcmp(elem,to_be_removed) == 0 ) {
 			if(config_setting_remove_elem (setting,i)==CONFIG_FALSE) {
-				free_config(config);
 				return 0;
 			}
 
 			write_config(config,table,file);
-			free_config(config);
 			return 1;
 		}
 		i++;
@@ -1067,7 +1073,7 @@ return 0 on failure
 *********************/
 static int __list_create(const char * table, const char * file, va_list ap)
 {
-	config_t * config;
+	const config_t * config;
 
 	config = get_config(table,file);
 	if(config==NULL) {
@@ -1077,7 +1083,6 @@ static int __list_create(const char * table, const char * file, va_list ap)
 	create_tree(config,NULL,NULL,NULL,CONFIG_TYPE_LIST,ap);
 
 	write_config(config,table,file);
-	free_config(config);
 	return TRUE;
 }
 
@@ -1101,7 +1106,7 @@ return 0 on failure
 *********************/
 static int __group_create(const char * table, const char * file, va_list ap)
 {
-	config_t * config;
+	const config_t * config;
 
 	config = get_config(table,file);
 	if(config==NULL) {
@@ -1111,7 +1116,6 @@ static int __group_create(const char * table, const char * file, va_list ap)
 	create_tree(config,NULL,NULL,NULL,CONFIG_TYPE_GROUP,ap);
 
 	write_config(config,table,file);
-	free_config(config);
 	return TRUE;
 }
 
@@ -1135,8 +1139,8 @@ return 0 on failure
 *********************/
 static char * __copy_group(const char * src_table, const char * src_file, const char * dst_table, const char * dst_file, const char * group_name, va_list ap)
 {
-	config_t * src_config = NULL;
-	config_t * dst_config = NULL;
+	const config_t * src_config = NULL;
+	const config_t * dst_config = NULL;
 	config_setting_t * src_setting = NULL;
 	config_setting_t * dst_setting = NULL;
 	char * path;
@@ -1161,7 +1165,6 @@ static char * __copy_group(const char * src_table, const char * src_file, const 
 	if( src_setting == NULL ) {
 		free(path);
 		free(full_path);
-		free_config(src_config);
 		return NULL;
 	}
 
@@ -1169,7 +1172,6 @@ static char * __copy_group(const char * src_table, const char * src_file, const 
 	if(dst_config==NULL) {
 		free(path);
 		free(full_path);
-		free_config(src_config);
 		return NULL;
 	}
 
@@ -1195,13 +1197,8 @@ static char * __copy_group(const char * src_table, const char * src_file, const 
 	free(path);
 
 	if(!copy_config(src_setting,dst_setting)) {
-		free_config(src_config);
-		free_config(dst_config);
 		return NULL;
 	}
-
-	free_config(src_config);
-	free_config(dst_config);
 
 	if(new_group_name != NULL ) {
 		return new_group_name;
@@ -1234,7 +1231,7 @@ int entry_update(char * data)
 	char * source;
 	char * elements[5] = {NULL,NULL,NULL,NULL,NULL};
 	config_setting_t * setting;
-	config_t * config= NULL;
+	const config_t * config= NULL;
 	int value;
 	char * token;
 	int index = 0;
@@ -1285,9 +1282,6 @@ entry_update_cleanup:
 		if(elements[index]) {
 			free(elements[index]);
 		}
-	}
-	if(config) {
-		free_config(config);
 	}
 
 	return ret;

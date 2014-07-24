@@ -18,45 +18,33 @@
 */
 
 /* This manage an image data base */
-/* When a thread need an image, it create a GtkWidget containing the image, then it adds an entry in the image data base (a hash table) with the name of the file containing the image on the disk (relative to $HOME/.config/wog/client/data) as the key and the pointer to the GtkWidget as the value.
-When a file is received from the server, the parser's thread check the image data base and if the received file is an entry in the image data base, it update the corresponding GtkImage*/
 
 #include "../common/common.h"
 #include "../sdl_item/anim.h"
 
-gboolean updated_media = FALSE;
-
-static GHashTable* imageDB;
+static list_t * image_list = NULL;
 
 static anim_t * def_anim = NULL;
 
-static pthread_mutex_t db_mutex = PTHREAD_MUTEX_INITIALIZER;
-
-static void free_key(gpointer data)
+/* TODO : move this to sdl_item */
+/**************************
+**************************/
+static void free_anim(anim_t * anim)
 {
-	char * filename = (char *)data;
-
-	wlog(LOGDEBUG,"Removing image %s",filename);
-	g_free(data);
-}
-
-static void free_value(gpointer data)
-{
-	anim_t * a;
 	int i;
 
-	a = (anim_t*)data;
-
-	if(a->tex) {
-		for(i=0;i<a->num_frame;i++) {
-			SDL_DestroyTexture(a->tex[i]);
+	if(anim->tex) {
+		for(i=0;i<anim->num_frame;i++) {
+			SDL_DestroyTexture(anim->tex[i]);
 		}
-		free(a->tex);
+		free(anim->tex);
 	}
 
-	g_free(data);
+	free(anim);
 }
 
+/**************************
+**************************/
 static anim_t * default_anim(context_t * ctx)
 {
 	if(def_anim == NULL) {
@@ -76,132 +64,81 @@ static anim_t * default_anim(context_t * ctx)
 	return def_anim;
 }
 
-void imageDB_init()
+/**************************
+**************************/
+static anim_t * image_load(context_t * ctx, char * filename)
 {
-	/* key is a string : it is the filename of the image */
-	imageDB = g_hash_table_new_full(g_str_hash,g_str_equal, free_key, free_value);
-}
-
-void imageDB_add_file(context_t * context, gchar * filename, anim_t * anim)
-{
-	if( g_hash_table_lookup(imageDB, filename) ) {
-		return;
-	}
-
-	wlog(LOGDEBUG,"Adding image %s to the DB",filename);
-
-	gchar * name = g_strdup(filename);
-	g_hash_table_replace(imageDB, name, anim);
-
-	/* request an update to the server */
-	network_send_req_file(context,filename);
-}
-
-/* Return a copy of the image which must be destroyed (gtk_widget_destroy) */
-/* image_name is the image file name without any path (e.g. : marquee.jpg) */
-anim_t * imageDB_get_anim(context_t * context, const gchar * image_name)
-{
+	char fullname[512] = "";
 	anim_t * anim;
-	gchar * tmp;
-	gchar * filename;
+	
+	strcat(fullname,getenv("HOME"));
+	strcat(fullname,"/");
+	strcat(fullname,base_directory);
+	strcat(fullname,"/");
+	strcat(fullname,filename);
 
-	filename = g_strconcat( IMAGE_TABLE, "/", image_name , NULL);
-
-	pthread_mutex_lock(&db_mutex);
-
-	/* Lookup DB */
-	anim = g_hash_table_lookup(imageDB, filename);
-
-	/* Find image in DB */
-	if( anim != NULL ) {
-		pthread_mutex_unlock(&db_mutex);
-		g_free(filename);
-		return anim;
-	}
-
-	/* The image was not in the imageDB */
-	/* try to read the local file */
-	tmp = g_strconcat( g_getenv("HOME"),"/", base_directory, "/", IMAGE_TABLE, "/",  image_name , NULL);
-	anim = anim_load(context->render,tmp);
-	/* Unable to load local file */
-	if( anim == NULL ) {
-		pthread_mutex_unlock(&db_mutex);
-		wlog(LOGDEBUG,"Return default anim for %s",filename);
-		g_free(tmp);
-		/* request an update to the server */
-		network_send_req_file(context,filename);
-		/* Use the default image */
-		return default_anim(context);
-	}
-	g_free(tmp);
-
-	/* Local file load OK, save to DB */
-	imageDB_add_file(context, filename, anim);
-	pthread_mutex_unlock(&db_mutex);
-
+	anim = anim_load(ctx->render, fullname);
+	
 	return anim;
 }
 
-/* return NULL if filename is NOT in the DB
-   else return the anim coresponding to this
-   file (not of copy of it !) */
-/* image_name is the image file name without any path (e.g. : marquee.jpg) */
-anim_t * imageDB_check_anim(gchar * image_name)
+/******************************************************
+Return a pointer to an anim_t object
+image_name is the image file path and name in the IMAGE_TABLE directory
+*******************************************************/
+anim_t * imageDB_get_anim(context_t * context, const char * image_name)
 {
 	anim_t * anim;
-	gchar * name;
+	char filename[512] = "";
 
-	name =  g_strconcat( IMAGE_TABLE, "/", image_name , NULL);
+	strcat(filename,IMAGE_TABLE);
+	strcat(filename,"/");
+	strcat(filename,image_name);
 
-	pthread_mutex_lock(&db_mutex);
-	anim = g_hash_table_lookup(imageDB, name);
-	pthread_mutex_unlock(&db_mutex);
-
-	g_free(name);
-	if( anim != NULL ) {
+	SDL_LockMutex(imageDB_mutex);
+	/* Search for a previously loaded anim */
+	anim = list_find(image_list,filename);
+	if(anim) {
+		SDL_UnlockMutex(imageDB_mutex);
 		return anim;
 	}
+	
+	/* Try to load from a file */
+	file_lock(filename);
+	
+	anim = image_load(context,filename);
+	
+	if(anim) {
+		image_list = list_update(image_list,filename,anim);
+		file_unlock(filename);
+		SDL_UnlockMutex(imageDB_mutex);
+		return anim;
+	}
+	
+	/* Request an update to the server */
+	file_update(context,filename);
 
-	return NULL;
+	file_unlock(filename);
+	SDL_UnlockMutex(imageDB_mutex);
+
+	return default_anim(context);
 }
 
-/* Update the database with a new file */
-/* filename is the path relative to base directory ( e.g.: images/marquee.jpg ) */
-/* return true if there is an update */
-gboolean image_DB_update(context_t * context,gchar * filename)
+/****************************************************
+Remove an entry from the DB
+******************************************************/
+void image_DB_remove(char * filename)
 {
-	gchar * full_name;
-	gchar * image_name = filename;
-	gboolean updated = FALSE;
-	anim_t * anim;
 	anim_t * old_anim;
 
-	/* search the / chararcter */
-	while( image_name[0] != '/' && image_name[0] != 0) {
-		image_name++;
+	/* Clean-up old anim if any */
+	SDL_LockMutex(imageDB_mutex);
+	old_anim = list_find(image_list,filename);
+	if( old_anim ) {
+		free_anim(old_anim);
 	}
 
-	if( image_name[0] == '/' ) {
-		image_name++;
-	} else {
-		werr(LOGDEV,"invalid filename ( %s )",filename);
-		return FALSE;
-	}
+	image_list = list_update(image_list,filename,NULL);
 
-	full_name = g_strconcat( g_getenv("HOME"),"/", base_directory, "/",filename, NULL);
-
-	anim = anim_load(context->render,full_name);
-	if( anim ) {
-		updated = TRUE;
-		/* It is actually an image, so try to update the anim DB */
-		old_anim = imageDB_check_anim(image_name);
-		if( old_anim != NULL ) {
-			/* The anim exists in the DB, update the anim */
-			imageDB_add_file(context,filename,anim);
-		}
-	}
-
-	g_free(full_name);
-
-	return updated;
+	SDL_UnlockMutex(imageDB_mutex);
 }

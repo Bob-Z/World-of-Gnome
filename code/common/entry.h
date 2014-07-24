@@ -20,6 +20,8 @@
 #ifndef ENTRY_H
 #define ENTRY_H
 
+void entry_remove(char * filename);
+
 int read_int(const char * table, const char * file, int * res, ...);
 int read_string(const char * table, const char * file, const char ** res, ...);
 int read_list_index(const char * table, const char * file, const char ** res,int index, ...);

@@ -19,9 +19,5 @@
 
 #include "../sdl_item/anim.h"
 
-void imageDB_init();
-void imageDB_add_file(context_t * context, gchar * filename, anim_t * anim);
 anim_t * imageDB_get_anim(context_t * context, const gchar * image_name);
-anim_t * imageDB_check_anim(gchar * file_name);
-gboolean image_DB_update(context_t * context,gchar * filename);
-extern gboolean updated_media;
+void image_DB_remove(char * filename);

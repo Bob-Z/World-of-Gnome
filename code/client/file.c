@@ -21,7 +21,7 @@
 #include <glib/gstdio.h>
 #include "../common/common.h"
 #include <dirent.h>
-//#include "imageDB.h"
+#include "imageDB.h"
 
 /* return 0 if directory was successfully created */
 int create_directory(gchar * filename)
@@ -89,8 +89,10 @@ int file_add(context_t * context,gchar * data,guint32 command_size)
 
 	wlog(LOGDEBUG,"write file %s",full_name);
 
+	/* Update the entry DB */
+	entry_remove(file_name);
 	/* Update the image DB */
-//	image_DB_update(context,file_name);
+	image_DB_remove(file_name);
 
 	g_free(file_name);
 	g_free(full_name);
