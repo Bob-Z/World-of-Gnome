@@ -38,7 +38,7 @@ static list_t * list_search(list_t * list, const char * key)
 		}
 
 		/* Key is found */
-		if( current_list->key[i] == key[i] ) {
+		if( current_list->key[i] == 0 && key[i] == 0 ) {
 			return current_list;
 		}
 		
