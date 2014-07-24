@@ -32,10 +32,6 @@ typedef struct file_tag {
         SDL_mutex * mutex;
 } file_t;
 
-/* TODO: push this in const.h */
-/* in millisecond */
-#define _FILE_REQUEST_TIMEOUT (1000)
-
 /****************************************
   filename is "table/dir/file"
  *****************************************/
@@ -92,7 +88,7 @@ void file_update(context_t * context, char * filename)
 	SDL_UnlockMutex(file_list_mutex);
 
 	/* Avoid flooding the server */
-	if( file_data->timestamp + _FILE_REQUEST_TIMEOUT > current_time ) {
+	if( file_data->timestamp + FILE_REQUEST_TIMEOUT > current_time ) {
 		werr(LOGDEBUG,"Previous request of file  %s has been less than %d ms ago",filename,FILE_REQUEST_TIMEOUT );
 		return;
 	}
