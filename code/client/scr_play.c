@@ -37,8 +37,8 @@
 #define ITEM_FONT "/usr/share/fonts/truetype/ubuntu-font-family/Ubuntu-C.ttf"
 #define ITEM_FONT_SIZE 15
 
-char ** attribute_string = NULL;
-char text_buffer[2048];
+static char ** attribute_string = NULL;
+static char text_buffer[2048];
 
 //static pthread_mutex_t character_mutex = PTHREAD_MUTEX_INITIALIZER;
 static item_t * item_list = NULL;
@@ -46,6 +46,9 @@ static int change_map = 0;
 
 static int action_bar_height;
 static int attribute_height;
+static char * last_action_script = NULL;
+
+static void cb_action(void * arg);
 
 //Keynoard callback
 
@@ -88,7 +91,7 @@ static void keyboard_text(void * arg)
 	screen_compose();
 }
 
-void cb_select_map(void *arg)
+static void cb_select_map(void *arg)
 {
 	item_t * item = (item_t*)arg;
 	context_t * ctx = context_get_list_first();
@@ -96,6 +99,12 @@ void cb_select_map(void *arg)
         ctx->selection.map_coord[0]= item->tile_x;
         ctx->selection.map_coord[1]= item->tile_y;
 	network_send_context(ctx);
+}
+
+static void cb_redo_map(void *arg)
+{
+	cb_select_map(arg);
+	cb_action(last_action_script);
 }
 
 /**********************************
@@ -158,6 +167,7 @@ static void compose_map(context_t * ctx)
 		item_set_anim(item,x*ctx->tile_x,y*ctx->tile_y,anim);
 		item_set_tile(item,x,y);
 		item_set_click_left(item,cb_select_map,item);
+		item_set_click_right(item,cb_redo_map,item);
 map_continue:
 		x++;
 		if(x>=ctx->map_x) {
@@ -176,13 +186,19 @@ map_continue:
 	free(value);
 }
 
-void cb_select_sprite(void *arg)
+static void cb_select_sprite(void *arg)
 {
 	char * id = (char*)arg;
 
 	context_t * ctx = context_get_list_first();
         ctx->selection.id= id;
 	network_send_context(ctx);
+}
+
+static void cb_redo_sprite(void *arg)
+{
+	cb_select_sprite(arg);
+	cb_action(last_action_script);
 }
 
 /**********************************
@@ -346,6 +362,7 @@ static void compose_sprite(context_t * ctx)
 
 		item_set_smooth_anim(item,x,y,ox,oy,ctx->pos_tick,anim);
 		item_set_click_left(item,cb_select_sprite,ctx->id);
+		item_set_click_right(item,cb_redo_sprite,item);
 
 		ctx = ctx->next;
 	}
@@ -421,11 +438,13 @@ static void compose_attribute(context_t * ctx)
 	free(name_list);
 }
 
-void cb_action(void * arg)
+static void cb_action(void * arg)
 {
 	char * script = (char *)arg;
 
 	network_send_action(context_get_list_first(),script,NULL);
+
+	last_action_script = arg;
 }
 
 /**********************************
@@ -493,7 +512,7 @@ static void compose_action(context_t * ctx)
 
 }
 
-void cb_select_slot(void * arg)
+static void cb_select_slot(void * arg)
 {
 	char * id = (char*)arg;
 	context_t * ctx = context_get_list_first();
