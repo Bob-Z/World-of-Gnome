@@ -140,20 +140,20 @@ static const config_t * get_config(const char * table, const char * file)
 	strcat(filename,"/");
 	strcat(filename,file);
 
-	wlog(LOGDEBUG,"Entry get : %s",filename);
+//	wlog(LOGDEBUG,"Entry get : %s",filename);
 
 	SDL_LockMutex(entry_mutex);
         config = list_find(entry_list,filename);
 
 	if(config) {
-		wlog(LOGDEBUG,"Entry found : %s",filename);
+//		wlog(LOGDEBUG,"Entry found : %s",filename);
 		SDL_UnlockMutex(entry_mutex);
 		return config;
 	}
 
 	file_lock(filename);
 
-	wlog(LOGDEBUG,"Entry asked : %s",filename);
+//	wlog(LOGDEBUG,"Entry asked : %s",filename);
 	file_update(context_get_list_first(),filename);
 
 	if( (config=load_config(filename)) == NULL ) {
@@ -163,7 +163,7 @@ static const config_t * get_config(const char * table, const char * file)
 	}
 	file_unlock(filename);
 
-	wlog(LOGDEBUG,"Entry loaded : %s",filename);
+//	wlog(LOGDEBUG,"Entry loaded : %s",filename);
 	entry_list = list_update(entry_list,filename,(config_t*)config);
 	SDL_UnlockMutex(entry_mutex);
 
