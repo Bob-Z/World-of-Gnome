@@ -95,13 +95,13 @@ anim_t * imageDB_get_anim(context_t * context, const char * image_name)
 	strcat(filename,"/");
 	strcat(filename,image_name);
 
-	wlog(LOGDEBUG,"Image get: %s",filename);
+//	wlog(LOGDEBUG,"Image get: %s",filename);
 
 	SDL_LockMutex(imageDB_mutex);
 	/* Search for a previously loaded anim */
 	anim = list_find(image_list,filename);
 	if(anim) {
-		wlog(LOGDEBUG,"Image find: %s",filename);
+//		wlog(LOGDEBUG,"Image find: %s",filename);
 		SDL_UnlockMutex(imageDB_mutex);
 		return anim;
 	}
@@ -112,7 +112,7 @@ anim_t * imageDB_get_anim(context_t * context, const char * image_name)
 	anim = image_load(context,filename);
 	
 	if(anim) {
-		wlog(LOGDEBUG,"Image loaded: %s",filename);
+//		wlog(LOGDEBUG,"Image loaded: %s",filename);
 		image_list = list_update(image_list,filename,anim);
 		file_unlock(filename);
 		SDL_UnlockMutex(imageDB_mutex);
@@ -120,7 +120,7 @@ anim_t * imageDB_get_anim(context_t * context, const char * image_name)
 	}
 	
 	/* Request an update to the server */
-	wlog(LOGDEBUG,"Image asked: %s",filename);
+//	wlog(LOGDEBUG,"Image asked: %s",filename);
 	file_update(context,filename);
 
 	file_unlock(filename);
