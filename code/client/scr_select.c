@@ -123,6 +123,8 @@ item_t * scr_select_compose(context_t * context)
 	item_t * item_image;
 	int w;
 	int h;
+	static TTF_Font * font_name = NULL;
+	static TTF_Font * font_type = NULL;
 
 	wlog(LOGDEBUG,"Composing select character screen");
 
@@ -178,20 +180,36 @@ item_t * scr_select_compose(context_t * context)
 
 		x += character_list[i].anim->w + BORDER;
 		/* character name */
-		item = item_list_add(item_list);
-		item_set_string(item,character_list[i].name);
-		item_set_font(item,TTF_OpenFont(FONT, FONT_SIZE));
-		/* display string just above the picture */
-		sdl_get_string_size(item->font,item->string,&w,&h);
-		item_set_frame(item,item_image->rect.x + item_image->rect.w/2 - w/2, item_image->rect.y-h,NULL);
+		if(font_name == NULL) {
+			font_name = TTF_OpenFont(FONT, FONT_SIZE);
+		}
+		if( font_name ) {
+			item = item_list_add(item_list);
+			item_set_string(item,character_list[i].name);
+			item_set_font(item,font_name);
+			/* display string just above the picture */
+			sdl_get_string_size(item->font,item->string,&w,&h);
+			item_set_frame(item,item_image->rect.x + item_image->rect.w/2 - w/2, item_image->rect.y-h,NULL);
+		}
+		else {
+			werr(LOGDEV,"Can't open TTF font %s",FONT);
+		}
 
 		/* character type */
-		item = item_list_add(item_list);
-		item_set_string(item,character_list[i].type);
-		item_set_font(item,TTF_OpenFont(FONT, FONT_SIZE));
-		/* display string just below the picture */
-		sdl_get_string_size(item->font,item->string,&w,&h);
-		item_set_frame(item,item_image->rect.x + item_image->rect.w/2 - w/2, item_image->rect.y+item_image->rect.h,NULL);
+		if(font_type == NULL) {
+			font_type = TTF_OpenFont(FONT, FONT_SIZE);
+		}
+		if( font_type ) {
+			item = item_list_add(item_list);
+			item_set_string(item,character_list[i].type);
+			item_set_font(item,font_type);
+			/* display string just below the picture */
+			sdl_get_string_size(item->font,item->string,&w,&h);
+			item_set_frame(item,item_image->rect.x + item_image->rect.w/2 - w/2, item_image->rect.y+item_image->rect.h,NULL);
+		}
+		else {
+			werr(LOGDEV,"Can't open TTF font %s",FONT);
+		}
 	}
 
 	if(init && item_list) {
