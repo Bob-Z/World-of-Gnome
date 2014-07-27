@@ -74,7 +74,7 @@ static void key_right(void * arg)
 	network_send_action(ctx,"move_right.lua",NULL);
 }
 
-static void key_inventory(void * arg)
+static void show_inventory(void * arg)
 {
 	screen_set_screen(SCREEN_INVENTORY);
 }
@@ -154,6 +154,7 @@ static void compose_map(context_t * ctx)
 		}
 
 		anim = imageDB_get_anim(ctx,tile_image);
+
 		item_set_anim(item,x*ctx->tile_x,y*ctx->tile_y,anim);
 		item_set_tile(item,x,y);
 		item_set_click_left(item,cb_select_map,item);
@@ -467,11 +468,11 @@ static void compose_action(context_t * ctx)
 		}
 
 
-                /* load image */
-                anim = imageDB_get_anim(ctx, icon);
+		/* load image */
+		anim = imageDB_get_anim(ctx, icon);
 		if(anim == NULL) {
 			action_list ++;
-                        continue;
+			continue;
 		}
 
 		item = item_list_add(item_list);
@@ -522,6 +523,7 @@ static void compose_equipment(context_t * ctx)
 	const char * equipped_name;
 	const char * equipped_text;
 	const char * equipped_icon_name;
+	const char * inventory_icon_name;
 
 	SDL_GetRendererOutputSize(ctx->render,&sw,&sh);
 
@@ -616,6 +618,23 @@ static void compose_equipment(context_t * ctx)
 		}
 
 		index++;
+	}
+
+	/* Draw selected item */
+	if( ctx->selection.inventory != NULL) {
+			if(!read_string(ITEM_TABLE,ctx->selection.inventory,&inventory_icon_name,ITEM_ICON,NULL)) {
+				werr(LOGDEV,"Can't read object %s icon (selected in inventory)",ctx->selection.inventory);
+			} else {
+				item = item_list_add(item_list);
+				if(item_list == NULL) {
+					item_list = item;
+				}
+
+				anim = imageDB_get_anim(ctx, inventory_icon_name);
+				item_set_overlay(item,1);
+				item_set_anim(item,sw-anim->w,y,anim);
+				item_set_click_left(item,show_inventory,NULL);
+			}
 	}
 
 	free(name_list);
@@ -818,7 +837,7 @@ item_t * scr_play_compose(context_t * ctx)
 	sdl_add_keycb(SDL_SCANCODE_DOWN,key_down);
 	sdl_add_keycb(SDL_SCANCODE_LEFT,key_left);
 	sdl_add_keycb(SDL_SCANCODE_RIGHT,key_right);
-	sdl_add_keycb(SDL_SCANCODE_I,key_inventory);
+	sdl_add_keycb(SDL_SCANCODE_I,show_inventory);
 
 	return item_list;
 }
