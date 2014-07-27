@@ -31,7 +31,6 @@ static list_t * list_search(list_t * list, const char * key)
 				if( current_list->next == NULL ) {
 					return NULL;
 				}
-				current_list = current_list->next;
 				break;
 			}
 			i++;
