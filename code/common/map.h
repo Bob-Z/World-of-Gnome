@@ -19,18 +19,16 @@
 
 #ifndef MAP_H
 #define MAP_H
-
-gchar * map_new(gint x,gint y, gint tile_x, gint tile_y, gchar * default_tile);
-gchar * map_delete_item(const gchar * map, gint x, gint y);
-gint map_add_item(const gchar * map, const gchar * item, gint x, gint y);
-gboolean map_check_tile(context_t * ctx,char * id,const char * map,gint x,gint y);
-int map_set_tile(const gchar * map,const gchar * tile,gint x, gint y);
-gchar * map_get_tile(const gchar * map,gint x, gint y);
-const gchar * map_get_tile_type(const gchar * map,gint x, gint y);
-gchar ** map_get_event(const gchar * map,gint x, gint y);
-char ** map_get_character(const gchar * map,gint x, gint y);
-gchar * map_add_event(const gchar * map, const gchar * script, gint x, gint y);
-gboolean map_add_event_param(const gchar * map, const gchar * event_id, const gchar * param);
-gint map_delete_event(const gchar * map, const gchar * script, gint x, gint y);
+char * map_new(int x,int y, int tile_x, int tile_y, char * default_tile);
+char * map_delete_item(const char * map, int x, int y);
+int map_add_item(const char * map, const char * item, int x, int y);
+int map_check_tile(context_t * ctx,char * id,const char * map,int x,int y);
+int map_set_tile(const char * map,const char * tile,int x, int y);
+char * map_get_tile(const char * map,int x, int y);
+const char * map_get_tile_type(const char * map,int x, int y);
+char ** map_get_event(const char * map,int x, int y);
+char ** map_get_character(const char * map,int x, int y);
+char * map_add_event(const char * map, const char * script, int x, int y);
+int map_add_event_param(const char * map, const char * event_id, const char * param);
+int map_delete_event(const char * map, const char * script, int x, int y);
 #endif
-

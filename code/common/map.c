@@ -17,10 +17,7 @@
    Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
-#include <glib.h>
-#include <gio/gio.h>
 #include "common.h"
-#include "file.h"
 #include <stdlib.h>
 #include <string.h>
 #include "../server/action.h"
@@ -29,11 +26,11 @@
 Create a new map.
 Return the name of the new map
 *************************************/
-gchar * map_new(gint x,gint y, gint tile_x, gint tile_y, gchar * default_tile)
+char * map_new(int x,int y, int tile_x, int tile_y, char * default_tile)
 {
-	gchar * map_name;
-	gchar ** tile_array;
-	gint i;
+	char * map_name;
+	char ** tile_array;
+	int i;
 
 	if( x<0 || y<0 ) {
 		return NULL;
@@ -46,28 +43,28 @@ gchar * map_new(gint x,gint y, gint tile_x, gint tile_y, gchar * default_tile)
 
 
 	if (!write_int(MAP_TABLE,map_name,x,MAP_KEY_SIZE_X, NULL) ) {
-		g_free(map_name);
+		free(map_name);
 		return NULL;
 	}
 	if (!write_int(MAP_TABLE,map_name,y,MAP_KEY_SIZE_Y, NULL) ) {
-		g_free(map_name);
+		free(map_name);
 		return NULL;
 	}
 	if (!write_int(MAP_TABLE,map_name,tile_x,MAP_KEY_TILE_SIZE_X, NULL) ) {
-		g_free(map_name);
+		free(map_name);
 		return NULL;
 	}
 	if (!write_int(MAP_TABLE,map_name,tile_y,MAP_KEY_TILE_SIZE_Y, NULL) ) {
-		g_free(map_name);
+		free(map_name);
 		return NULL;
 	}
 
-	tile_array=g_malloc0(((x*y)+1)*sizeof(gchar *));
+	tile_array=malloc(((x*y)+1)*sizeof(char *));
 	for(i=0; i<(x*y); i++) {
 		tile_array[i] = default_tile;
 	}
 	if (!write_list(MAP_TABLE,map_name,tile_array,MAP_KEY_SET, NULL) ) {
-		g_free(map_name);
+		free(map_name);
 		return NULL;
 	}
 
@@ -78,19 +75,19 @@ gchar * map_new(gint x,gint y, gint tile_x, gint tile_y, gchar * default_tile)
 check if id is allowed to go on a tile
 return TRUE if the context is allowed to go to the tile at coord x,y
 *************************************/
-gboolean map_check_tile(context_t * ctx,char * id, const gchar * map, gint x,gint y)
+int map_check_tile(context_t * ctx,char * id, const char * map, int x,int y)
 {
-	const gchar * action;
+	const char * action;
 	char sx[64];
 	char sy[64];
 	char * param[5];
-	gboolean res;
-	gchar ** map_tiles;
-	gchar ** allowed_tile;
-	const gchar * tile_type;
-	gint i=0;
-	gint size_x = 0;
-	gint size_y = 0;
+	int res;
+	char ** map_tiles;
+	char ** allowed_tile;
+	const char * tile_type;
+	int i=0;
+	int size_x = 0;
+	int size_y = 0;
 
 	if(!read_int(MAP_TABLE,map,&size_x,MAP_KEY_SIZE_X,NULL)) {
 		return FALSE;
@@ -124,7 +121,7 @@ gboolean map_check_tile(context_t * ctx,char * id, const gchar * map, gint x,gin
 
 	/* Check the tile has a type */
 	if(!read_string(TILE_TABLE,map_tiles[(size_x*y)+x],&tile_type,TILE_KEY_TYPE,NULL)) {
-		g_free(map_tiles);
+		free(map_tiles);
 		/* this tile has no type, allowed for everyone */
 		return TRUE;
 	}
@@ -133,16 +130,16 @@ gboolean map_check_tile(context_t * ctx,char * id, const gchar * map, gint x,gin
 	if(read_list(CHARACTER_TABLE,id,&allowed_tile,CHARACTER_KEY_ALLOWED_TILE,NULL)) {
 		i=0;
 		while( allowed_tile[i] != NULL ) {
-			if( g_strcmp0(allowed_tile[i], tile_type) == 0 ) {
-				g_free(allowed_tile);
-				g_free(map_tiles);
+			if( strcmp(allowed_tile[i], tile_type) == 0 ) {
+				free(allowed_tile);
+				free(map_tiles);
 				return TRUE;
 			}
 			i++;
 		}
 
-		g_free(allowed_tile);
-		g_free(map_tiles);
+		free(allowed_tile);
+		free(map_tiles);
 
 		return FALSE;
 	}
@@ -152,14 +149,14 @@ gboolean map_check_tile(context_t * ctx,char * id, const gchar * map, gint x,gin
 }
 
 /* delete an item on context's map */
-gchar * map_delete_item(const gchar * map, gint x, gint y)
+char * map_delete_item(const char * map, int x, int y)
 {
-	gchar ** itemlist;
-	gint i=0;
-	gint mapx;
-	gint mapy;
-	const gchar * id = NULL;
-	gchar * saved_item = NULL;
+	char ** itemlist;
+	int i=0;
+	int mapx;
+	int mapy;
+	const char * id = NULL;
+	char * saved_item = NULL;
 
 	if( x<0 || y<0 ) {
 		return NULL;
@@ -176,19 +173,19 @@ gchar * map_delete_item(const gchar * map, gint x, gint y)
 	while(itemlist[i] != NULL) {
 		if( !read_int(MAP_TABLE,map,&mapx,MAP_ENTRY_ITEM_LIST,itemlist[i],MAP_ITEM_POS_X,NULL) ) {
 			SDL_UnlockMutex(map_mutex);
-			g_free(itemlist);
+			free(itemlist);
 			return NULL;
 		}
 
 		if( !read_int(MAP_TABLE,map,&mapy,MAP_ENTRY_ITEM_LIST,itemlist[i],MAP_ITEM_POS_Y,NULL) ) {
 			SDL_UnlockMutex(map_mutex);
-			g_free(itemlist);
+			free(itemlist);
 			return NULL;
 		}
 
 		if( x == mapx && y == mapy ) {
 			id = itemlist[i];
-			saved_item = g_strdup(itemlist[i]);
+			saved_item = strdup(itemlist[i]);
 			break;
 		}
 
@@ -196,9 +193,9 @@ gchar * map_delete_item(const gchar * map, gint x, gint y)
 	}
 
 	if( id == NULL ) {
-		g_free(itemlist);
+		free(itemlist);
 		if( saved_item) {
-			g_free(saved_item);
+			free(saved_item);
 		}
 		SDL_UnlockMutex(map_mutex);
 		return NULL;
@@ -206,13 +203,13 @@ gchar * map_delete_item(const gchar * map, gint x, gint y)
 
 	/* remove the item from the item list of the map */
 	if(!remove_group(MAP_TABLE,map,id,MAP_ENTRY_ITEM_LIST,NULL)) {
-		g_free(itemlist);
-		g_free(saved_item);
+		free(itemlist);
+		free(saved_item);
 		SDL_UnlockMutex(map_mutex);
 		return NULL;
 	}
 
-	g_free(itemlist);
+	free(itemlist);
 
 	SDL_UnlockMutex(map_mutex);
 
@@ -225,7 +222,7 @@ gchar * map_delete_item(const gchar * map, gint x, gint y)
 /* Add an item on map at given coordinate */
 /* return -1 if fails                      */
 /******************************************/
-gint map_add_item(const gchar * map, const gchar * id, gint x, gint y)
+int map_add_item(const char * map, const char * id, int x, int y)
 {
 
 	if( x<0 || y<0 ) {
@@ -256,12 +253,12 @@ gint map_add_item(const gchar * map, const gchar * id, gint x, gint y)
 /* Write a new tile into a map file */
 /* return -1 if fails */
 /************************************/
-int map_set_tile(const gchar * map,const gchar * tile,gint x, gint y)
+int map_set_tile(const char * map,const char * tile,int x, int y)
 {
 	/* Extract params */
-	const gchar * value = NULL;
+	const char * value = NULL;
 	int sizex = -1;
-	gint index;
+	int index;
 
 	/* Check parameters sanity */
 	if(map == NULL || tile == NULL) {
@@ -290,7 +287,7 @@ int map_set_tile(const gchar * map,const gchar * tile,gint x, gint y)
 	}
 
 	/* Do not change the tile if it already the requested tile */
-	if( g_strcmp0(value, tile) == 0 ) {
+	if( strcmp(value, tile) == 0 ) {
 		SDL_UnlockMutex(map_mutex);
 		return 0;
 	}
@@ -308,11 +305,11 @@ int map_set_tile(const gchar * map,const gchar * tile,gint x, gint y)
  return the name of the tile on map at x,y
  return must be freed by caller
 ********************************************/
-gchar * map_get_tile(const gchar * map,gint x, gint y)
+char * map_get_tile(const char * map,int x, int y)
 {
-	gchar ** map_tiles;
-	gint map_size_x;
-	gint map_size_y;
+	char ** map_tiles;
+	int map_size_x;
+	int map_size_y;
 
 
 	if(!read_list(MAP_TABLE,map,&map_tiles,MAP_KEY_SET,NULL)) {
@@ -332,7 +329,7 @@ gchar * map_get_tile(const gchar * map,gint x, gint y)
 	}
 
 	if( map_tiles[(map_size_x*y)+x] ) {
-		return g_strdup(map_tiles[(map_size_x*y)+x]);
+		return strdup(map_tiles[(map_size_x*y)+x]);
 	}
 
 	return NULL;
@@ -341,12 +338,12 @@ gchar * map_get_tile(const gchar * map,gint x, gint y)
 /********************************************
  return the type of the tile on map at x,y
 ********************************************/
-const gchar * map_get_tile_type(const gchar * map,gint x, gint y)
+const char * map_get_tile_type(const char * map,int x, int y)
 {
-	gchar ** map_tiles;
-	gint map_size_x;
-	gchar * tile;
-	const gchar * type;
+	char ** map_tiles;
+	int map_size_x;
+	char * tile;
+	const char * type;
 
 	if( x<0 || y<0) {
 		return NULL;
@@ -376,13 +373,13 @@ const gchar * map_get_tile_type(const gchar * map,gint x, gint y)
  return an array of event id on given map at x,y
  This array MUST be freed by caller
 ************************************************/
-gchar ** map_get_event(const gchar * map,gint x, gint y)
+char ** map_get_event(const char * map,int x, int y)
 {
-	gchar ** eventlist = NULL;
-	gchar ** event_id = NULL;
-	gint i=0;
-	gint mapx;
-	gint mapy;
+	char ** eventlist = NULL;
+	char ** event_id = NULL;
+	int i=0;
+	int mapx;
+	int mapy;
 	int event_id_num = 0;
 
 	if( x<0 || y<0 ) {
@@ -410,7 +407,7 @@ gchar ** map_get_event(const gchar * map,gint x, gint y)
 
 		if( x == mapx && y == mapy ) {
 			event_id_num++;
-			event_id=g_realloc(event_id,sizeof(gchar*)*(event_id_num+1));
+			event_id=realloc(event_id,sizeof(char*)*(event_id_num+1));
 			event_id[event_id_num-1] = eventlist[i];
 			event_id[event_id_num] = NULL;
 		}
@@ -428,9 +425,9 @@ gchar ** map_get_event(const gchar * map,gint x, gint y)
  return the event id is success
  the return event id must be freed by caller
 ***********************************************/
-gchar * map_add_event(const gchar * map, const gchar * script, gint x, gint y )
+char * map_add_event(const char * map, const char * script, int x, int y )
 {
-	gchar * id;
+	char * id;
 
 	if( x<0 || y<0 ) {
 		return NULL;
@@ -448,20 +445,20 @@ gchar * map_add_event(const gchar * map, const gchar * script, gint x, gint y )
 
 	if (!write_int(MAP_TABLE,map,x,MAP_ENTRY_EVENT_LIST,id,MAP_EVENT_POS_X, NULL) ) {
 		remove_group(MAP_TABLE,map,id,MAP_ENTRY_EVENT_LIST,NULL);
-		g_free(id);
+		free(id);
 		SDL_UnlockMutex(map_mutex);
 		return NULL;
 	}
 	if (!write_int(MAP_TABLE,map,y,MAP_ENTRY_EVENT_LIST,id,MAP_EVENT_POS_Y, NULL) ) {
 		remove_group(MAP_TABLE,map,id,MAP_ENTRY_EVENT_LIST,NULL);
-		g_free(id);
+		free(id);
 		SDL_UnlockMutex(map_mutex);
 		return NULL;
 	}
 
 	if (!write_string(MAP_TABLE,map,script,MAP_ENTRY_EVENT_LIST,id,MAP_EVENT_SCRIPT, NULL) ) {
 		remove_group(MAP_TABLE,map,id,MAP_ENTRY_EVENT_LIST,NULL);
-		g_free(id);
+		free(id);
 		SDL_UnlockMutex(map_mutex);
 		return NULL;
 	}
@@ -478,7 +475,7 @@ gchar * map_add_event(const gchar * map, const gchar * script, gint x, gint y )
  Add a parameter to the given event
  return 0 if fails
 ***********************************************/
-gboolean map_add_event_param(const gchar * map, const gchar * event_id, const gchar * param)
+int map_add_event_param(const char * map, const char * event_id, const char * param)
 {
 	/* Make sure the param list exists */
 	list_create(MAP_TABLE,map,MAP_ENTRY_EVENT_LIST,event_id,MAP_EVENT_PARAM,NULL);
@@ -490,14 +487,14 @@ gboolean map_add_event_param(const gchar * map, const gchar * event_id, const gc
 /* Delete an event on map at given coordinate */
 /* return -1 if fails                         */
 /**********************************************/
-gint map_delete_event(const gchar * map, const gchar * script, gint x, gint y)
+int map_delete_event(const char * map, const char * script, int x, int y)
 {
-	gchar ** eventlist;
-	gint i=0;
-	gint mapx;
-	gint mapy;
-	const gchar * s;
-	const gchar * id = NULL;
+	char ** eventlist;
+	int i=0;
+	int mapx;
+	int mapy;
+	const char * s;
+	const char * id = NULL;
 
 	if( x<0 || y<0 ) {
 		return -1;
@@ -524,14 +521,14 @@ gint map_delete_event(const gchar * map, const gchar * script, gint x, gint y)
 			i++;
 			continue;
 		}
-		if( x == mapx && y == mapy && !g_strcmp0(s,script) ) {
+		if( x == mapx && y == mapy && !strcmp(s,script) ) {
 			id = eventlist[i];
 			break;
 		}
 		i++;
 	}
 
-	g_free(eventlist);
+	free(eventlist);
 
 	if( id == NULL ) {
 		SDL_UnlockMutex(map_mutex);
@@ -556,7 +553,7 @@ gint map_delete_event(const gchar * map, const gchar * script, gint x, gint y)
  return an array of character id on given map at x,y
  This array AND its content MUST be freed by caller
 ************************************************/
-char ** map_get_character(const gchar * map,gint x, gint y)
+char ** map_get_character(const char * map,int x, int y)
 {
 	char ** character_list = NULL;
 	int character_num = 0;
