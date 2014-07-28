@@ -19,7 +19,7 @@
 
 #include "../common/common.h"
 
-gint attribute_change(context_t * context, const gchar * id, const gchar * attribute, gint value);
-gint attribute_get(const gchar * id, const gchar * attribute);
-gint attribute_set(const gchar * id, const gchar * attribute, gint value);
+int attribute_change(context_t * context, const char * id, const char * attribute, int value);
+int attribute_get(const char * id, const char * attribute);
+int attribute_set(const char * id, const char * attribute, int value);
 
