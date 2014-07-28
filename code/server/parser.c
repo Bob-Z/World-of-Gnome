@@ -17,21 +17,21 @@
    Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
-#include <glib.h>
-#include <gio/gio.h>
 #include "../common/common.h"
 #include "character.h"
 #include "action.h"
 #include <string.h>
 
-/* parse_incoming_data
-
-Return FALSE on error, TRUE if OK */
-gboolean parse_incoming_data(context_t * context, guint32 command, guint32 command_size, gchar * data)
+/**************************************
+Return FALSE on error, TRUE if OK
+**************************************/
+int parse_incoming_data(context_t * context, Uint32 command, Uint32 command_size, char * data)
 {
-	const gchar * value = NULL;
-	gchar * filename;
-	gchar ** elements;
+	const char * value = NULL;
+	char fullname[512] = "";
+	char * elements[512];
+	char * cksum;
+	int i;
 
 	//wlog(LOGDEBUG,"Received command : %d, command_size : %d", command, command_size);
 
@@ -55,7 +55,7 @@ gboolean parse_incoming_data(context_t * context, guint32 command, guint32 comma
 		if(!read_string(PASSWD_TABLE, context->user_name, &value, PASSWD_KEY_PASSWORD,NULL)) {
 			return FALSE;
 		}
-		if( g_strcmp0(value, data) != 0) {
+		if( strcmp(value, data) != 0) {
 			werr(LOGUSER,"Wrong login for %s",context->user_name);
 			/* send answer */
 			network_send_command(context, CMD_LOGIN_NOK, 0, NULL, FALSE);
@@ -74,31 +74,42 @@ gboolean parse_incoming_data(context_t * context, guint32 command, guint32 comma
 		wlog(LOGDEBUG,"character list sent");
 		break;
 	case CMD_REQ_FILE :
-		elements = g_strsplit(data,NETWORK_DELIMITER,0);
-		if(elements==NULL) {
-			werr(LOGDEV,"Received empty CMD_REQ_FILE");
+		i = 0;
+		elements[i] = strtok(data,NETWORK_DELIMITER);
+		while(elements[i]) {
+			i++;
+			elements[i] = strtok(NULL,NETWORK_DELIMITER);
+		}
+
+		if(elements[0]==NULL || elements[1]==NULL) {
+			werr(LOGDEV,"Received erroneous CMD_REQ_FILE");
 			break;
 		}
 		wlog(LOGDEBUG,"Received CMD_REQ_FILE for %s",elements[0]);
 		/* compare checksum */
-		filename = g_strconcat( g_getenv("HOME"),"/", base_directory, "/", elements[0], NULL);
-		gchar * cksum = checksum_file(filename);
-		g_free(filename);
+		fullname[0]=0;
+		strcat(fullname,getenv("HOME"));
+		strcat(fullname,"/");
+		strcat(fullname,base_directory);
+		strcat(fullname,"/");
+		strcat(fullname,elements[0]);
+
+		cksum = checksum_file(fullname);
+
 		if( cksum == NULL) {
 			werr(LOGUSER,"Required file %s doesn't exists",elements[0]);
-			g_strfreev(elements);
 			break;
 		}
 
-		if( g_strcmp0(elements[1],cksum) == 0 ) {
+		if( strcmp(elements[1],cksum) == 0 ) {
 			wlog(LOGDEBUG,"Client has already newest %s file",elements[0]);
-			g_strfreev(elements);
+			free(cksum);
 			break;
 		}
-		g_free(cksum);
+		free(cksum);
+
 		network_send_file(context,elements[0]);
 		wlog(LOGDEBUG,"File %s sent",elements[0]);
-		g_strfreev(elements);
 		break;
 	case CMD_REQ_USER_CHARACTER_LIST :
 		wlog(LOGDEBUG,"Received CMD_REQ_USER_CHARACTER_LIST");
@@ -118,9 +129,14 @@ gboolean parse_incoming_data(context_t * context, guint32 command, guint32 comma
 		break;
 	case CMD_SEND_ACTION :
 		wlog(LOGDEBUG,"Received CMD_SEND_ACTION");
-		elements = g_strsplit(data,NETWORK_DELIMITER,0);
+		i = 0;
+		elements[i] = strtok(data,NETWORK_DELIMITER);
+		while(elements[i]) {
+			i++;
+			elements[i] = strtok(NULL,NETWORK_DELIMITER);
+		}
+
 		action_execute_script(context,elements[0],&elements[1]);
-		g_strfreev(elements);
 		break;
 	default:
 		werr(LOGDEV,"Unknown request %d from client",command);
