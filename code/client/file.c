@@ -33,6 +33,7 @@ static int mkdir_all(const char * pathname)
 	char * token;
 	char * source;
 	int ret = -1;
+	char directory[512] = "";
 
 	if(pathname == NULL) {
 		return -1;
@@ -43,7 +44,9 @@ static int mkdir_all(const char * pathname)
 	token =  strtok(source,"/");
 
 	while( token != NULL ) {
-		ret = mkdir(token,0775);
+		strcat(directory,"/");
+		strcat(directory,token);
+		ret = mkdir(directory,0775);
 		token =  strtok(NULL,"/");
 	}
 
@@ -121,10 +124,7 @@ int file_add(context_t * context,char * data,Uint32 command_size)
 	strcat(fullname,"/");
 	strcat(fullname,filename);
 
-	if( create_directory(fullname)) {
-		werr(LOGDEV,"Can't create directory for %s", fullname);
-		return -1;
-	}
+	create_directory(fullname);
 
 	res = file_set_contents(filename,ptr,filedata_size);
 	if( res == FALSE ) {
