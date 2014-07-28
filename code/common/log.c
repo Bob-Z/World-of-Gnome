@@ -25,6 +25,7 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <time.h>
+#include <SDL2/SDL.h>
 
 static int log_level = 0;
 
@@ -100,7 +101,6 @@ void log_print(const char * file,const char * func,int line,FILE *stream,int lev
 {
 	va_list ap;
 	char buf[10000];
-	struct timespec now;
 
 	if(level > log_level) {
 		return;
@@ -119,11 +119,9 @@ void log_print(const char * file,const char * func,int line,FILE *stream,int lev
 	va_end(ap);
 
 	if(log_level == LOGDEBUG) {
-		clock_gettime(CLOCK_MONOTONIC, &now);
-		fprintf(stream,"%ld.%09ld | %10s(%3d):%s | %s\n",now.tv_sec,now.tv_nsec,file,line,func,buf);
+		fprintf(stream,"%09d|%ld|%s(%d):%s|%s\n",SDL_GetTicks(),SDL_ThreadID(),file,line,func,buf);
 	} else if(log_level == LOGDEV) {
-		clock_gettime(CLOCK_MONOTONIC, &now);
-		fprintf(stream,"%ld.%09ld | %s\n",now.tv_sec,now.tv_nsec,buf);
+		fprintf(stream,"%09d|%s\n",SDL_GetTicks(),buf);
 	} else if(log_level == LOGUSER) {
 		fprintf(stream,"%s\n",buf);
 	}
@@ -151,3 +149,4 @@ void log_set_level(char * log)
 	}
 }
 #endif
+
