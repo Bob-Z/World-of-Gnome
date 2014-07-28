@@ -17,45 +17,42 @@
    Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
-#include <glib.h>
-#include <glib/gprintf.h>
-#include <gio/gio.h>
 #include "../common/common.h"
 #include <dirent.h>
 #include <string.h>
 #include "npc.h"
 #include "action.h"
 
-extern context_t * context_list_start;
-
-/*****************************/
+/*********************************************
+*********************************************/
 void character_send_list(context_t * context)
 {
-	gchar ** character_list;
-	gint i = 0;
+	char ** character_list;
+	int i = 0;
 
 	if(!read_list(USERS_TABLE, context->user_name,&character_list,USERS_CHARACTER_LIST,NULL)) {
 		return;
 	}
 
 	while( character_list[i] != NULL ) {
-		network_send_command(context, CMD_SEND_CHARACTER, g_utf8_strlen(character_list[i],-1)+1, character_list[i],FALSE);
+		network_send_command(context, CMD_SEND_CHARACTER, strlen(character_list[i])+1, character_list[i],FALSE);
 		i++;
 	}
 
-	g_free(character_list);
+	free(character_list);
 }
 
-/*****************************/
+/*********************************************
+*********************************************/
 void character_user_send_list(context_t * context)
 {
-	gchar * data = NULL;
-	guint data_size = 0;
-	guint string_size = 0;
-	gchar ** character_list;
-	const gchar * type;
-	const gchar * name;
-	gint i;
+	char * data = NULL;
+	Uint32 data_size = 0;
+	Uint32 string_size = 0;
+	char ** character_list;
+	const char * type;
+	const char * name;
+	int i;
 
 	if(!read_list(USERS_TABLE, context->user_name,&character_list,USERS_CHARACTER_LIST,NULL)) {
 		return;
@@ -63,7 +60,7 @@ void character_user_send_list(context_t * context)
 
 	i = 0;
 
-	data = g_strdup("");
+	data = strdup("");
 	while( character_list[i] != NULL ) {
 		if(!read_string(CHARACTER_TABLE, character_list[i], &type, CHARACTER_KEY_TYPE,NULL)) {
 			i++;
@@ -76,41 +73,41 @@ void character_user_send_list(context_t * context)
 		}
 
 		/* add the name of the character to the network frame */
-		string_size = g_utf8_strlen(character_list[i],-1)+1;
-		data = g_realloc(data, data_size + string_size);
-		g_memmove(data+data_size,character_list[i], string_size);
+		string_size = strlen(character_list[i])+1;
+		data = realloc(data, data_size + string_size);
+		memcpy(data+data_size,character_list[i], string_size);
 		data_size += string_size;
 
 		/* add the type of the character to the network frame */
-		string_size = g_utf8_strlen(type,-1)+1;
-		data = g_realloc(data, data_size + string_size);
-		g_memmove(data+data_size, type, string_size);
+		string_size = strlen(type)+1;
+		data = realloc(data, data_size + string_size);
+		memcpy(data+data_size,type, string_size);
 		data_size += string_size;
 
 		/* add the type of the character to the network frame */
-		string_size = g_utf8_strlen(name,-1)+1;
-		data = g_realloc(data, data_size + string_size);
-		g_memmove(data+data_size, name, string_size);
+		string_size = strlen(name)+1;
+		data = realloc(data, data_size + string_size);
+		memcpy(data+data_size,name, string_size);
 		data_size += string_size;
 
 		i++;
 	}
 
-	g_free(character_list);
+	free(character_list);
 
 	/* Mark the end of the list */
-	data = g_realloc(data, data_size + 1);
+	data = realloc(data, data_size + 1);
 	data[data_size] = 0;
 	data_size ++;
 
 	network_send_command(context, CMD_SEND_USER_CHARACTER, data_size, data,FALSE);
-	g_free(data);
+	free(data);
 }
 
 /*****************************/
 /* disconnect a character */
 /* return -1 if fails */
-gint character_disconnect( const gchar * id)
+int character_disconnect( const char * id)
 {
 	context_t * ctx;
 
@@ -130,72 +127,86 @@ gint character_disconnect( const gchar * id)
 }
 
 /******************************************************
- Create a new character based on the specified template
- return the id of the newly created character
- the returned string must be freed by caller
- return NULL if fails
+Create a new character based on the specified template
+return the id of the newly created character
+the returned string MUST BE FREED by caller
+return NULL if fails
 *******************************************************/
-gchar * character_create_from_template(context_t * ctx,const gchar * template,const char * map, int x, int y)
+char * character_create_from_template(context_t * ctx,const char * template,const char * map, int x, int y)
 {
-	gchar * new_name;
-	gchar * templatename;
-	gchar * newfilename;
-	GFile * templatefile;
-	GFile * newfile;
+	char * new_name;
+	char templatename[512] = "";
+	char newfilename[512] = "";
 
 	new_name = file_new(CHARACTER_TABLE);
 
-	templatename = g_strconcat( g_getenv("HOME"),"/", base_directory, "/", CHARACTER_TEMPLATE_TABLE, "/", template,  NULL);
-	templatefile = g_file_new_for_path(templatename);
+	strcat(templatename,getenv("HOME"));
+	strcat(templatename,"/");
+	strcat(templatename,base_directory);
+	strcat(templatename,"/");
+	strcat(templatename,CHARACTER_TEMPLATE_TABLE);
+	strcat(templatename,"/");
+	strcat(templatename,template);
 
-	newfilename = g_strconcat( g_getenv("HOME"),"/", base_directory, "/", CHARACTER_TABLE, "/", new_name,  NULL);
-	newfile = g_file_new_for_path(newfilename);
+	strcat(newfilename,getenv("HOME"));
+	strcat(newfilename,"/");
+	strcat(newfilename,base_directory);
+	strcat(newfilename,"/");
+	strcat(newfilename,CHARACTER_TABLE);
+	strcat(newfilename,"/");
+	strcat(newfilename,new_name);
 
-	if( g_file_copy(templatefile,newfile, G_FILE_COPY_OVERWRITE,NULL,NULL,NULL,NULL) == FALSE ) {
-		g_free(new_name);
-		return NULL;
-	}
+	file_copy(templatename,newfilename);
 
 	/* Check if new character is allowed to be created here */
 	if(!map_check_tile(ctx,new_name,map,x,y)) {
-		g_file_delete(newfile,NULL,NULL);
+		unlink(newfilename);
+		free(new_name);
 		return NULL;
 	}
 
 	/* Write position */
-        if(!write_string(CHARACTER_TABLE,new_name,map,CHARACTER_KEY_MAP,NULL)) {
-		g_file_delete(newfile,NULL,NULL);
+	if(!write_string(CHARACTER_TABLE,new_name,map,CHARACTER_KEY_MAP,NULL)) {
+		unlink(newfilename);
+		free(new_name);
 		return NULL;
-        }
+	}
 
-        if(!write_int(CHARACTER_TABLE,new_name,x,CHARACTER_KEY_POS_X,NULL)) {
-		g_file_delete(newfile,NULL,NULL);
+	if(!write_int(CHARACTER_TABLE,new_name,x,CHARACTER_KEY_POS_X,NULL)) {
+		unlink(newfilename);
+		free(new_name);
 		return NULL;
-        }
+	}
 
-        if(!write_int(CHARACTER_TABLE,new_name,y,CHARACTER_KEY_POS_Y,NULL)) {
-		g_file_delete(newfile,NULL,NULL);
+	if(!write_int(CHARACTER_TABLE,new_name,y,CHARACTER_KEY_POS_Y,NULL)) {
+		unlink(newfilename);
+		free(new_name);
 		return NULL;
-        }
+	}
 
 	return new_name;
 }
 
-/*****************************/
-/* Call aggro script for each context in every npc context aggro dist */
+/***********************************************************************
+Call aggro script for each context in every npc context aggro dist
+***********************************************************************/
 void character_update_aggro(context_t * context)
 {
 	context_t * ctx = NULL;
 	context_t * ctx2 = NULL;
-	gint aggro_dist;
-	gint dist;
-	const gchar * aggro_script;
-	gchar * param[] = { NULL,NULL };
-	gint no_aggro = 1;
+	int aggro_dist;
+	int dist;
+	const char * aggro_script;
+	char * param[] = { NULL,NULL };
+	int no_aggro = 1;
 
-	ctx = context_list_start;
+	ctx = context_get_list_first();
 
 	if( ctx == NULL ) {
+		return;
+	}
+
+	if( ctx->map == NULL ) {
 		return;
 	}
 
@@ -219,7 +230,7 @@ void character_update_aggro(context_t * context)
 			continue;
 		}
 
-		ctx2 = context_list_start;
+		ctx2 = context_get_list_first();
 
 		do {
 			/* Skip current context */
@@ -227,12 +238,16 @@ void character_update_aggro(context_t * context)
 				continue;
 			}
 
-			if(!ctx2->id) {
+			if(ctx2->id == NULL) {
+				continue;
+			}
+
+			if(ctx2->map == NULL) {
 				continue;
 			}
 
 			/* Skip if not on the same map */
-			if( g_strcmp0(ctx->map,ctx2->map) != 0 ) {
+			if( strcmp(ctx->map,ctx2->map) != 0 ) {
 				continue;
 			}
 
@@ -253,17 +268,16 @@ void character_update_aggro(context_t * context)
 			action_execute_script(ctx,aggro_script,param);
 		}
 	} while( (ctx=ctx->next)!= NULL );
-
 }
 
 /******************************************************
-return -1 if the postion was not set (because tile not allowed or out of bound)
+return -1 if the position was not set (because tile not allowed or out of bound)
 ******************************************************/
-gint character_set_pos(context_t * ctx, gchar * map, gint x, gint y)
+int character_set_pos(context_t * ctx, char * map, int x, int y)
 {
-	gchar ** event_id;
-	const gchar * script;
-	gchar ** param;
+	char ** event_id;
+	const char * script;
+	char ** param;
 	int i;
 	int change_map = 0;
 
@@ -274,7 +288,7 @@ gint character_set_pos(context_t * ctx, gchar * map, gint x, gint y)
 	/* Check if this character is allowed to go to the target tile */
 	if (map_check_tile(ctx,ctx->id,map,x,y) ) {
 
-		if( g_strcmp0(ctx->map,map) ) {
+		if( strcmp(ctx->map,map) ) {
 			change_map = 1;
 		}
 
@@ -306,9 +320,9 @@ gint character_set_pos(context_t * ctx, gchar * map, gint x, gint y)
 				action_execute_script(ctx,script,param);
 
 				i++;
-				g_free(param);
+				free(param);
 			}
-			g_free(event_id);
+			free(event_id);
 		}
 
 		character_update_aggro(ctx);
@@ -322,7 +336,7 @@ gint character_set_pos(context_t * ctx, gchar * map, gint x, gint y)
  If the value is != 0 , the NPC is instanciated
  return -1 on error
 *********************************************************/
-gint character_set_npc(const gchar * id, gint npc)
+int character_set_npc(const char * id, int npc)
 {
 	if(!write_int(CHARACTER_TABLE,id,npc,CHARACTER_KEY_NPC,NULL)) {
 		return -1;
@@ -334,3 +348,4 @@ gint character_set_npc(const gchar * id, gint npc)
 
 	return 0;
 }
+

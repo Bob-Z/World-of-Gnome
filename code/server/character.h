@@ -19,8 +19,9 @@
 
 void character_send_list(context_t * context);
 void character_user_send_list(context_t * context);
-gint character_disconnect(const gchar * id);
-gint character_set_pos(context_t * ctx,const gchar * map, gint x, gint y);
-gchar * character_create_from_template(context_t * ctx,const gchar * template,const char * map, int x, int y);
+int character_disconnect(const char * id);
+int character_set_pos(context_t * ctx,const char * map, int x, int y);
+char * character_create_from_template(context_t * ctx,const char * template,const char * map, int x, int y);
 void character_update_aggro(context_t * context);
-gint character_set_npc(const gchar * ctx, gint npc);
+int character_set_npc(const char * ctx, int npc);
+
