@@ -17,8 +17,6 @@
    Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
-#include <glib.h>
-#include <glib/gstdio.h>
 #include "../common/common.h"
 #include "npc.h"
 #include "action.h"
@@ -26,8 +24,7 @@
 /**********************************
 npc_script
 *********************************/
-
-static void npc_script(context_t * context, gchar * script, gchar ** parameters)
+static void npc_script(context_t * context, char * script, char ** parameters)
 {
 	Uint32 timeout_ms;
 
@@ -63,41 +60,42 @@ static void npc_script(context_t * context, gchar * script, gchar ** parameters)
 /**********************************
 manage_npc
 *********************************/
-static gpointer manage_npc(gpointer data)
+static int manage_npc(void * data)
 {
 	context_t * context = (context_t *)data;
-	const gchar * ai;
-	gchar ** parameters;
+	const char * ai;
+	char ** parameters;
 
 	if(read_string(CHARACTER_TABLE,context->id,&ai,CHARACTER_KEY_AI,NULL)) {
 		read_list(CHARACTER_TABLE,context->id,&parameters,CHARACTER_KEY_AI_PARAMS,NULL);
-		npc_script(context,(gchar *)ai,parameters);
+		npc_script(context,(char *)ai,parameters);
 		if(parameters) {
-			g_free(parameters);
+			free(parameters);
 		}
-		return NULL;
+		return 0;
 	}
 
 	werr(LOGUSER,"No AI script for %s",context->id);
 
-	return NULL;
+	return 0;
 }
 
 /***************************
 ***************************/
-void instantiate_npc(const gchar * id)
+void instantiate_npc(const char * id)
 {
-	const gchar * type;
-	const gchar * name;
-	const gchar * map;
-	gint is_npc;
-	gint x;
-	gint y;
-	gint tile_x;
-	gint tile_y;
-	gint map_x;
-	gint map_y;
+	const char * type;
+	const char * name;
+	const char * map;
+	int is_npc;
+	int x;
+	int y;
+	int tile_x;
+	int tile_y;
+	int map_x;
+	int map_y;
 	context_t * ctx;
+	char buf[512];
 
 	// check if it's a NPC
 	if(!read_int(CHARACTER_TABLE,id,&is_npc,CHARACTER_KEY_NPC,NULL)) {
@@ -166,28 +164,34 @@ void instantiate_npc(const gchar * id)
 
 	context_spread(ctx);
 
-	g_thread_new("manage_npc",manage_npc,(gpointer)ctx);
+	sprintf(buf,"npc:%s",id);
+	SDL_CreateThread(manage_npc,buf,(void*)ctx);
 }
 /**************************
 init non playing character
 ***************************/
 void init_npc(void)
 {
-	GDir * dir;
-	gchar * dirname;
-	const gchar * filename;
+	DIR * dir;
+	char dirname[512] = "";
+	struct dirent * ent;
 
 	// Read all files in npc directory
-	dirname = g_strconcat( g_getenv("HOME"),"/", base_directory, "/", CHARACTER_TABLE,  NULL);
-	dir = g_dir_open(dirname,0,NULL);
-	while(( filename = g_dir_read_name(dir)) != NULL ) {
-		// check for hidden file
-		if(filename[0] == '.') {
+	strcat(dirname,getenv("HOME"));
+	strcat(dirname,"/");
+	strcat(dirname,base_directory);
+	strcat(dirname,"/");
+	strcat(dirname,CHARACTER_TABLE);
+
+	dir = opendir(dirname);
+	while(( ent = readdir(dir)) != NULL ) {
+		// skip hidden file
+		if(ent->d_name[0] == '.') {
 			continue;
 		}
 
-		instantiate_npc(filename);
+		instantiate_npc(ent->d_name);
 	}
-	g_dir_close(dir);
-	g_free(dirname);
+	closedir(dir);
 }
+
