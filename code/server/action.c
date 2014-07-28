@@ -17,8 +17,6 @@
    Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
-#include <glib.h>
-#include <glib/gprintf.h>
 #include "../common/common.h"
 #include "character.h"
 #include "equipment.h"
@@ -29,8 +27,6 @@
 #include <stdlib.h>
 
 #define LUAVM_CONTEXT "wog_context"
-
-extern context_t * context_list_start;
 
 /* LUA script functions */
 
@@ -60,12 +56,12 @@ Output:
 */
 static int l_character_create_from_template( lua_State* L)
 {
-	const gchar * template;
+	const char * template;
 	const char * map;
 	int x;
 	int y;
 
-	gchar * res;
+	char * res;
 	context_t * ctx;
 
 	lua_getglobal(L,LUAVM_CONTEXT);
@@ -79,7 +75,7 @@ static int l_character_create_from_template( lua_State* L)
 	res = character_create_from_template(ctx,template,map,x,y);
 	lua_pushstring(L, res);
 	if( res) {
-		g_free(res);
+		free(res);
 	}
 	return 1;  /* number of results */
 }
@@ -92,7 +88,7 @@ Output: X coordinate if selected tile
 static int l_character_get_selected_map_tile_x( lua_State* L)
 {
 	context_t * target;
-	const gchar * id;
+	const char * id;
 
 	id = luaL_checkstring(L, -1);
 	target = context_find(id);
@@ -112,7 +108,7 @@ Output: Y coordinate if selected tile
 static int l_character_get_selected_map_tile_y( lua_State* L)
 {
 	context_t * target;
-	const gchar * id;
+	const char * id;
 
 	id = luaL_checkstring(L, -1);
 	target = context_find(id);
@@ -132,7 +128,7 @@ Output: ID of the selected map
 static int l_character_get_selected_map( lua_State* L)
 {
 	context_t * target;
-	const gchar * id;
+	const char * id;
 
 	id = luaL_checkstring(L, -1);
 	target = context_find(id);
@@ -152,7 +148,7 @@ Output: ID of selected item in inventory
 static int l_character_get_selected_inventory_id( lua_State* L)
 {
 	context_t * target;
-	const gchar * id;
+	const char * id;
 
 	id = luaL_checkstring(L, -1);
 	target = context_find(id);
@@ -172,7 +168,7 @@ Output: ID of selected item in equipment
 static int l_character_get_selected_equipment_slot( lua_State* L)
 {
 	context_t * target;
-	const gchar * id;
+	const char * id;
 
 	id = luaL_checkstring(L, -1);
 	target = context_find(id);
@@ -192,7 +188,7 @@ Output: ID of the selected character
 static int l_character_get_selected_character_id( lua_State* L)
 {
 	context_t * target;
-	const gchar * id;
+	const char * id;
 
 	id = luaL_checkstring(L, -1);
 	target = context_find(id);
@@ -212,7 +208,7 @@ Output: ID of the map where the character is
 static int l_character_get_map( lua_State* L)
 {
 	context_t * target;
-	const gchar * id;
+	const char * id;
 
 	id = luaL_checkstring(L, -1);
 	target = context_find(id);
@@ -232,7 +228,7 @@ Output: Width of the map
 static int l_character_get_map_x( lua_State* L)
 {
 	context_t * target;
-	const gchar * id;
+	const char * id;
 
 	id = luaL_checkstring(L, -1);
 	target = context_find(id);
@@ -252,7 +248,7 @@ Output: Height of the map
 static int l_character_get_map_y( lua_State* L)
 {
 	context_t * target;
-	const gchar * id;
+	const char * id;
 
 	id = luaL_checkstring(L, -1);
 	target = context_find(id);
@@ -272,7 +268,7 @@ Output: X coordinate of the character
 static int l_character_get_x( lua_State* L)
 {
 	context_t * target;
-	const gchar * id;
+	const char * id;
 
 	id = luaL_checkstring(L, -1);
 	target = context_find(id);
@@ -292,7 +288,7 @@ Output: Y coordinate of the character
 static int l_character_get_y( lua_State* L)
 {
 	context_t * target;
-	const gchar * id;
+	const char * id;
 
 	id = luaL_checkstring(L, -1);
 	target = context_find(id);
@@ -312,7 +308,7 @@ Output: Name of the character
 static int l_character_get_name( lua_State* L)
 {
 	context_t * target;
-	const gchar * id;
+	const char * id;
 
 	id = luaL_checkstring(L, -1);
 	target = context_find(id);
@@ -332,7 +328,7 @@ Output: Type of the character
 static int l_character_get_type( lua_State* L)
 {
 	context_t * target;
-	const gchar * id;
+	const char * id;
 
 	id = luaL_checkstring(L, -1);
 	target = context_find(id);
@@ -354,8 +350,8 @@ Output:
 */
 static int l_character_disconnect( lua_State* L)
 {
-	const gchar * id;
-	gint res;
+	const char * id;
+	int res;
 
 	id = luaL_checkstring(L, -1);
 	res = character_disconnect(id);
@@ -373,8 +369,8 @@ Output:
 */
 static int l_character_delete( lua_State* L)
 {
-	const gchar * id;
-	gint res;
+	const char * id;
+	int res;
 
 	id = luaL_checkstring(L, -1);
 	res = entry_destroy(id);
@@ -396,11 +392,11 @@ Output:
 */
 static int l_character_set_pos( lua_State* L)
 {
-	const gchar * id;
-	const gchar * map;
-	gint x;
-	gint y;
-	gint res;
+	const char * id;
+	const char * map;
+	int x;
+	int y;
+	int res;
 	context_t * ctx;
 
 	id = luaL_checkstring(L, -4);
@@ -425,9 +421,9 @@ Output:
 */
 static int l_character_set_npc( lua_State* L)
 {
-	const gchar * id;
-	gint npc;
-	gint res;
+	const char * id;
+	int npc;
+	int res;
 
 	id = luaL_checkstring(L, -2);
 	npc = luaL_checkint(L, -1);
@@ -451,21 +447,21 @@ Output: New map ID
 */
 static int l_map_new( lua_State* L)
 {
-	gchar * map_name;
-	gint x;
-	gint y;
-	gint tile_x;
-	gint tile_y;
-	const gchar * default_tile;
+	char * map_name;
+	int x;
+	int y;
+	int tile_x;
+	int tile_y;
+	const char * default_tile;
 
 	x = luaL_checkint(L, -5);
 	y = luaL_checkint(L, -4);
 	tile_x = luaL_checkint(L, -3);
 	tile_y = luaL_checkint(L, -2);
 	default_tile = luaL_checkstring(L, -1);
-	map_name = map_new(x,y,tile_x,tile_y,(gchar *)default_tile);
+	map_name = map_new(x,y,tile_x,tile_y,(char *)default_tile);
 	lua_pushstring(L, map_name);
-	g_free(map_name);
+	free(map_name);
 	return 1;  /* number of results */
 }
 
@@ -482,11 +478,11 @@ Output:
 */
 static int l_map_set_tile( lua_State* L)
 {
-	const gchar * map;
-	const gchar * tile;
-	gint x;
-	gint y;
-	gint res;
+	const char * map;
+	const char * tile;
+	int x;
+	int y;
+	int res;
 
 	map = luaL_checkstring(L, -4);
 	tile = luaL_checkstring(L, -3);
@@ -508,8 +504,8 @@ Output:
 */
 static int l_print_text_id( lua_State* L)
 {
-	const gchar * id;
-	const gchar * string;
+	const char * id;
+	const char * string;
 
 	id = luaL_checkstring(L, -2);
 	string = luaL_checkstring(L, -1);
@@ -529,8 +525,8 @@ Output:
 */
 static int l_print_text_map( lua_State* L)
 {
-	const gchar * map;
-	const gchar * string;
+	const char * map;
+	const char * string;
 
 	map = luaL_checkstring(L, -2);
 	string = luaL_checkstring(L, -1);
@@ -549,7 +545,7 @@ Output:
 */
 static int l_print_text_server( lua_State* L)
 {
-	const gchar * string;
+	const char * string;
 
 	string = luaL_checkstring(L, -1);
 	/* add a trailing \n */
@@ -567,7 +563,7 @@ Output:
 */
 static int l_print_text_debug( lua_State* L)
 {
-	const gchar * string;
+	const char * string;
 
 	string = luaL_checkstring(L, -1);
 	wlog(LOGDEV,(char*)string);
@@ -587,11 +583,11 @@ Output:
 */
 static int l_map_add_item( lua_State* L)
 {
-	const gchar * map;
-	const gchar * item;
-	gint x;
-	gint y;
-	gint res;
+	const char * map;
+	const char * item;
+	int x;
+	int y;
+	int res;
 
 	map = luaL_checkstring(L, -4);
 	item = luaL_checkstring(L, -3);
@@ -614,10 +610,10 @@ Output:
 */
 static int l_map_delete_item( lua_State* L)
 {
-	const gchar * map;
-	gint x;
-	gint y;
-	gchar * res;
+	const char * map;
+	int x;
+	int y;
+	char * res;
 
 	map = luaL_checkstring(L, -3);
 	x = luaL_checkint(L, -2);
@@ -625,7 +621,7 @@ static int l_map_delete_item( lua_State* L)
 	res = map_delete_item(map,x,y);
 	lua_pushstring(L, res);
 	if(res) {
-		g_free(res);
+		free(res);
 	}
 	return 1;  /* number of results */
 }
@@ -643,11 +639,11 @@ Output: Event ID
 */
 static int l_map_add_event( lua_State* L)
 {
-	const gchar * map;
-	const gchar * script;
-	gint x;
-	gint y;
-	gchar *res;
+	const char * map;
+	const char * script;
+	int x;
+	int y;
+	char *res;
 
 	map = luaL_checkstring(L, -4);
 	script = luaL_checkstring(L, -3);
@@ -656,7 +652,7 @@ static int l_map_add_event( lua_State* L)
 	res = map_add_event(map,script,x,y);
 	lua_pushstring(L, res);
 	if(res) {
-		g_free(res);
+		free(res);
 	}
 	return 1;  /* number of results */
 }
@@ -673,10 +669,10 @@ Output:
 */
 static int l_map_add_event_param( lua_State* L)
 {
-	const gchar * map;
-	const gchar * event_id;
-	const gchar * param;
-	gint res;
+	const char * map;
+	const char * event_id;
+	const char * param;
+	int res;
 
 	map = luaL_checkstring(L, -3);
 	event_id = luaL_checkstring(L, -2);
@@ -699,11 +695,11 @@ Output:
 */
 static int l_map_delete_event( lua_State* L)
 {
-	const gchar * map;
-	const gchar * script;
-	gint x;
-	gint y;
-	gint res;
+	const char * map;
+	const char * script;
+	int x;
+	int y;
+	int res;
 
 	map = luaL_checkstring(L, -4);
 	script = luaL_checkstring(L, -3);
@@ -725,9 +721,9 @@ Output:
 */
 static int l_inventory_delete( lua_State* L)
 {
-	const gchar * id;
-	const gchar * item;
-	gint res;
+	const char * id;
+	const char * item;
+	int res;
 
 	id = luaL_checkstring(L, -2);
 	item = luaL_checkstring(L, -1);
@@ -747,9 +743,9 @@ Output:
 */
 static int l_inventory_add( lua_State* L)
 {
-	const gchar * id;
-	const gchar * item;
-	gint res;
+	const char * id;
+	const char * item;
+	int res;
 
 	id = luaL_checkstring(L, -2);
 	item = luaL_checkstring(L, -1);
@@ -769,16 +765,16 @@ Output: ID of an item of that type
 */
 static int l_inventory_get_by_name( lua_State* L)
 {
-	const gchar * id;
-	const gchar * item_name;
-	gchar * res;
+	const char * id;
+	const char * item_name;
+	char * res;
 
 	id = luaL_checkstring(L, -2);
 	item_name = luaL_checkstring(L, -1);
 	res = inventory_get_by_name(id,item_name);
 	lua_pushstring(L, res);
 	if( res) {
-		g_free(res);
+		free(res);
 	}
 	return 1;  /* number of results */
 }
@@ -792,12 +788,12 @@ Output: ID of a new item
 */
 static int l_item_create_empty( lua_State* L)
 {
-	gchar * res;
+	char * res;
 
 	res = item_create_empty();
 	lua_pushstring(L, res);
 	if( res) {
-		g_free(res);
+		free(res);
 	}
 	return 1;  /* number of results */
 }
@@ -811,14 +807,14 @@ Output: ID of a new item
 */
 static int l_item_create_from_template( lua_State* L)
 {
-	const gchar * item;
-	gchar * res;
+	const char * item;
+	char * res;
 
 	item = luaL_checkstring(L, -1);
 	res = item_create_from_template(item);
 	lua_pushstring(L, res);
 	if( res) {
-		g_free(res);
+		free(res);
 	}
 	return 1;  /* number of results */
 }
@@ -833,8 +829,8 @@ Output: Quantity of that item
 */
 static int l_item_get_quantity( lua_State* L)
 {
-	const gchar * item;
-	gint res;
+	const char * item;
+	int res;
 
 	item = luaL_checkstring(L, -1);
 	res = item_get_quantity(item);
@@ -853,9 +849,9 @@ Output: -1 on error
 */
 static int l_item_set_quantity( lua_State* L)
 {
-	const gchar * item;
-	gint quantity;
-	gint res;
+	const char * item;
+	int quantity;
+	int res;
 
 	item = luaL_checkstring(L, -2);
 	quantity = luaL_checkint(L, -1);
@@ -875,8 +871,8 @@ Output:
 */
 static int l_item_destroy( lua_State* L)
 {
-	const gchar * item;
-	gint res;
+	const char * item;
+	int res;
 
 	item = luaL_checkstring(L, -1);
 	res = item_destroy(item);
@@ -896,10 +892,10 @@ Output: ID of the tile
 */
 static int l_map_get_tile( lua_State* L)
 {
-	const gchar * map;
-	gint x;
-	gint y;
-	gchar * res;
+	const char * map;
+	int x;
+	int y;
+	char * res;
 
 	map = luaL_checkstring(L, -3);
 	x = luaL_checkint(L, -2);
@@ -907,7 +903,7 @@ static int l_map_get_tile( lua_State* L)
 	res = map_get_tile(map,x,y);
 	lua_pushstring(L, res);
 	if( res) {
-		g_free(res);
+		free(res);
 	}
 	return 1;  /* number of results */
 }
@@ -924,10 +920,10 @@ Output: type of the tile
 */
 static int l_map_get_tile_type( lua_State* L)
 {
-	const gchar * map;
-	gint x;
-	gint y;
-	const gchar * res;
+	const char * map;
+	int x;
+	int y;
+	const char * res;
 
 	map = luaL_checkstring(L, -3);
 	x = luaL_checkint(L, -2);
@@ -949,11 +945,11 @@ Output: Array of characters on that tile
 */
 static int l_map_get_character( lua_State* L)
 {
-	const gchar * map;
-	gint x;
-	gint y;
-	gchar ** res;
-	gchar ** cur_res;
+	const char * map;
+	int x;
+	int y;
+	char ** res;
+	char ** cur_res;
 	int res_num = 0;
 
 	map = luaL_checkstring(L, -3);
@@ -964,7 +960,7 @@ static int l_map_get_character( lua_State* L)
 	if( res) {
 		cur_res = res;
 		while(*cur_res != NULL) {
-wlog(LOGDEBUG,"Pushing %s",*cur_res);
+//			wlog(LOGDEBUG,"Pushing %s",*cur_res);
 			lua_pushstring(L, *cur_res);
 			free(*cur_res);
 			res_num++;
@@ -973,7 +969,7 @@ wlog(LOGDEBUG,"Pushing %s",*cur_res);
 		free(res);
 	}
 
-wlog(LOGDEBUG,"returning %d",res_num);
+//wlog(LOGDEBUG,"returning %d",res_num);
 	return res_num;  /* number of results */
 }
 
@@ -989,10 +985,10 @@ Output:
 */
 static int l_character_attribute_change( lua_State* L)
 {
-	const gchar * id;
-	const gchar * attribute;
-	gint value;
-	gint res;
+	const char * id;
+	const char * attribute;
+	int value;
+	int res;
 	context_t * context;
 
 	id = luaL_checkstring(L, -3);
@@ -1019,9 +1015,9 @@ Output: Value of the given attribute
 */
 static int l_character_attribute_get( lua_State* L)
 {
-	const gchar * id;
-	const gchar * attribute;
-	gint res;
+	const char * id;
+	const char * attribute;
+	int res;
 
 	id = luaL_checkstring(L, -2);
 	attribute = luaL_checkstring(L, -1);
@@ -1042,10 +1038,10 @@ Output:
 */
 static int l_character_attribute_set( lua_State* L)
 {
-	const gchar * id;
-	const gchar * attribute;
-	gint value;
-	gint res;
+	const char * id;
+	const char * attribute;
+	int value;
+	int res;
 
 	id = luaL_checkstring(L, -3);
 	attribute = luaL_checkstring(L, -2);
@@ -1066,9 +1062,9 @@ Output:
 */
 static int l_equipment_slot_delete_item( lua_State* L)
 {
-	const gchar * id;
-	const gchar * slot;
-	gint res;
+	const char * id;
+	const char * slot;
+	int res;
 
 	id = luaL_checkstring(L, -2);
 	slot = luaL_checkstring(L, -1);
@@ -1089,10 +1085,10 @@ Output:
 */
 static int l_equipment_slot_add_item( lua_State* L)
 {
-	const gchar * id;
-	const gchar * slot;
-	const gchar * item;
-	gint res;
+	const char * id;
+	const char * slot;
+	const char * item;
+	int res;
 
 	id = luaL_checkstring(L, -3);
 	slot = luaL_checkstring(L, -2);
@@ -1113,9 +1109,9 @@ Output: ID of an item
 */
 static int l_equipment_slot_get_item_id( lua_State* L)
 {
-	const gchar * id;
-	const gchar * slot;
-	const gchar * item;
+	const char * id;
+	const char * slot;
+	const char * item;
 
 	id = luaL_checkstring(L, -2);
 	slot = luaL_checkstring(L, -1);
@@ -1239,33 +1235,43 @@ void register_lua_functions(context_t * context)
 	lua_setglobal (L, LUAVM_CONTEXT);
 }
 
-static void action_chat(context_t * context, const gchar * text)
+/**************************************
+**************************************/
+static void action_chat(context_t * context, const char * text)
 {
-	gchar * new_text;
+	char new_text[512] = "";
 
-	new_text = g_strconcat(context->character_name,": ",text,NULL);
+	strcat(new_text,context->character_name);
+	strcat(new_text,":");
+	strcat(new_text,text);
+
 	network_broadcast_text(context,new_text);
-	g_free(new_text);
 }
 
 /**************************************
 return -1 if the script do not return something
 **************************************/
-
-gint action_execute_script(context_t * context, const gchar * script, gchar ** parameters)
+int action_execute_script(context_t * context, const char * script, char ** parameters)
 {
-	gchar * filename;
-	gint param_num = 0;
-	gint return_value;
+	char filename[512] = "";
+	int param_num = 0;
+	int return_value;
 
 	/* Special case for chat */
-	if( g_strcmp0(script,WOG_CHAT)==0) {
+	if( strcmp(script,WOG_CHAT)==0) {
 		action_chat(context,parameters[0]);
 		return -1;
 	}
 
 	/* Load script */
-	filename = g_strconcat( g_getenv("HOME"),"/", base_directory, "/", SCRIPT_TABLE, "/", script, NULL);
+	strcat(filename,getenv("HOME"));
+	strcat(filename,"/");
+	strcat(filename,base_directory);
+	strcat(filename,"/");
+	strcat(filename,SCRIPT_TABLE);
+	strcat(filename,"/");
+	strcat(filename,script);
+
 	if (luaL_loadfile(context->luaVM, filename) != 0 ) {
 		/* If something went wrong, error message is at the top of */
 		/* the stack */
@@ -1293,8 +1299,6 @@ gint action_execute_script(context_t * context, const gchar * script, gchar ** p
 		return -1;
 	}
 
-	g_free(filename);
-
 	/* retrieve result */
 	if (!lua_isnumber(context->luaVM, -1)) {
 		lua_pop(context->luaVM, 1);
@@ -1304,3 +1308,4 @@ gint action_execute_script(context_t * context, const gchar * script, gchar ** p
 	lua_pop(context->luaVM, 1);
 	return return_value;
 }
+
