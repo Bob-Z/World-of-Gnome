@@ -19,5 +19,6 @@
 
 #include "../sdl_item/anim.h"
 
-anim_t * imageDB_get_anim(context_t * context, const gchar * image_name);
+anim_t * imageDB_get_anim(context_t * context, const char * image_name);
 void image_DB_remove(char * filename);
+

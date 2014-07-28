@@ -17,8 +17,6 @@
    Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
-#include <glib.h>
-#include <gio/gio.h>
 #include "../common/common.h"
 #include "scr_select.h"
 #include "file.h"
@@ -26,14 +24,11 @@
 #include "textview.h"
 #include "screen.h"
 
-/* parse_incoming_data
-Return FALSE on error, TRUE if OK */
-gboolean parse_incoming_data(context_t * context, guint32 command, guint32 command_size, gchar * data)
+/***********************************
+ Return FALSE on error, TRUE if OK
+***********************************/
+int parse_incoming_data(context_t * context, Uint32 command, Uint32 command_size, char * data)
 {
-	if(context == NULL) {
-		//show_login_window();
-	}
-
 	switch(command) {
 	case CMD_LOGIN_OK :
 		wlog(LOGDEBUG,"Received CMD_LOGIN_OK");

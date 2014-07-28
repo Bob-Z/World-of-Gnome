@@ -19,8 +19,6 @@
 
 #include "config.h"
 #include "../common/common.h"
-#include <glib.h>
-#include <glib/gstdio.h>
 #include "imageDB.h"
 #include "file.h"
 #include "../sdl_item/anim.h"
@@ -39,13 +37,14 @@ typedef struct {
 	anim_t * anim;
 } character_t;
 
-static pthread_mutex_t character_mutex = PTHREAD_MUTEX_INITIALIZER;
 static character_t * character_list = NULL;
 static int character_num = 0;
 static item_t * item_list = NULL;
 static character_t * current_character = NULL;
 static item_t * current_item = NULL;
 
+/**********************************
+**********************************/
 static void cb_show_item(void * arg)
 {
 	item_t * item = (item_t*)arg;
@@ -54,6 +53,8 @@ static void cb_show_item(void * arg)
 	sdl_set_virtual_y(item->rect.y + item->rect.h/2);
 }
 
+/**********************************
+**********************************/
 static void cb_select_click(void * arg)
 {
 	context_t * ctx = (context_t*)arg;
@@ -72,6 +73,8 @@ static void cb_select_click(void * arg)
 	screen_compose();
 }
 
+/**********************************
+**********************************/
 static void cb_over(void * arg)
 {
 	character_t * c = (character_t*)arg;
@@ -79,6 +82,8 @@ static void cb_over(void * arg)
 	current_character = c;
 }
 
+/**********************************
+**********************************/
 static void cb_wheel_up(void * arg)
 {
 	if( current_item == NULL ) {
@@ -90,6 +95,8 @@ static void cb_wheel_up(void * arg)
 	}
 }
 
+/**********************************
+**********************************/
 static void cb_wheel_down(void * arg)
 {
 	item_t * i;
@@ -137,7 +144,7 @@ item_t * scr_select_compose(context_t * context)
 		item_list = NULL;
 	}
 
-	pthread_mutex_lock(&character_mutex);
+	SDL_LockMutex(character_select_mutex);
 
 	wlog(LOGDEBUG,"Composing %d characters",character_num);
 
@@ -217,13 +224,13 @@ item_t * scr_select_compose(context_t * context)
 		init = 0;
 	}
 
-	pthread_mutex_unlock(&character_mutex);
+	SDL_UnlockMutex(character_select_mutex);
 
 	return item_list;
 }
 
 /*************************
- add a character to the list
+Add a character to the list
 the data is a list a 3 strings, the first string is the id of the character (its file name) the second one is the type of the character, the third is the name of the character.
 the list ends with an empty string
 *************************/
@@ -231,7 +238,7 @@ void scr_select_add_user_character(context_t * context, char * data)
 {
 	char * current_string = data;
 
-	pthread_mutex_lock(&character_mutex);
+	SDL_LockMutex(character_select_mutex);
 
 	while(current_string[0] != 0) {
 
@@ -250,7 +257,8 @@ void scr_select_add_user_character(context_t * context, char * data)
 		wlog(LOGDEBUG,"Character %s / %s /%s added",character_list[character_num-1].id,character_list[character_num-1].type,character_list[character_num-1].name);
 	}
 
-	pthread_mutex_unlock(&character_mutex);
+	SDL_UnlockMutex(character_select_mutex);
 
 	wlog(LOGDEV,"Received character %s of type %s",character_list[character_num-1].name,character_list[character_num-1].type);
 }
+

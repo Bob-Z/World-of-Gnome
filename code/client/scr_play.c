@@ -19,8 +19,6 @@
 
 #include "config.h"
 #include "../common/common.h"
-#include <glib.h>
-#include <glib/gstdio.h>
 #include "imageDB.h"
 #include "file.h"
 #include "../sdl_item/anim.h"
@@ -40,7 +38,6 @@
 static char ** attribute_string = NULL;
 static char text_buffer[2048];
 
-//static pthread_mutex_t character_mutex = PTHREAD_MUTEX_INITIALIZER;
 static item_t * item_list = NULL;
 static int change_map = 0;
 
@@ -50,26 +47,36 @@ static char * last_action_script = NULL;
 
 static void cb_action(void * arg);
 
-//Keynoard callback
-
+/****************************
+Keyboard callback
+****************************/
 static void key_up(void * arg)
 {
 	context_t * ctx = context_get_list_first();
 
 	network_send_action(ctx,"move_up.lua",NULL);
 }
+
+/**************************************
+**************************************/
 static void key_down(void * arg)
 {
 	context_t * ctx = context_get_list_first();
 
 	network_send_action(ctx,"move_down.lua",NULL);
 }
+
+/**************************************
+**************************************/
 static void key_left(void * arg)
 {
 	context_t * ctx = context_get_list_first();
 
 	network_send_action(ctx,"move_left.lua",NULL);
 }
+
+/**************************************
+**************************************/
 static void key_right(void * arg)
 {
 	context_t * ctx = context_get_list_first();
@@ -77,11 +84,15 @@ static void key_right(void * arg)
 	network_send_action(ctx,"move_right.lua",NULL);
 }
 
+/**************************************
+**************************************/
 static void show_inventory(void * arg)
 {
 	screen_set_screen(SCREEN_INVENTORY);
 }
 
+/**************************************
+**************************************/
 static void keyboard_text(void * arg)
 {
 	char * text = (char*)arg;
@@ -91,6 +102,8 @@ static void keyboard_text(void * arg)
 	screen_compose();
 }
 
+/**************************************
+**************************************/
 static void cb_select_map(void *arg)
 {
 	item_t * item = (item_t*)arg;
@@ -101,6 +114,8 @@ static void cb_select_map(void *arg)
 	network_send_context(ctx);
 }
 
+/**************************************
+**************************************/
 static void cb_redo_map(void *arg)
 {
 	cb_select_map(arg);
@@ -113,7 +128,6 @@ Compose the map
 static void compose_map(context_t * ctx)
 {
 	int i;
-	char ** orig_value = NULL;
 	char ** value = NULL;
 	int x = 0;
         int y = 0;
@@ -121,80 +135,65 @@ static void compose_map(context_t * ctx)
 	anim_t * anim;
 	item_t * item;
 
-        if( ctx->tile_x == -1 ) {
-                if(!read_int(MAP_TABLE, ctx->map, &i,MAP_KEY_TILE_SIZE_X,NULL)){
-                        return;
-                }
-                context_set_tile_x( ctx, i);
-        }
-        if( ctx->tile_y == -1 ) {
-                if(!read_int(MAP_TABLE, ctx->map,&i,MAP_KEY_TILE_SIZE_Y,NULL)){
-                        return;
-                }
-                context_set_tile_y( ctx, i);
-        }
-        if(!read_list(MAP_TABLE, ctx->map, &orig_value,MAP_KEY_SET,NULL)) {
-                return;
-        }
-
-	/* Save list to be able to release the file lock so that imageDB_get_anim can get it back when reading a file image */
-	i=0;
-        while(orig_value[i] != NULL ) {
-		value = realloc(value,sizeof(char*)*(i+2));
-		value[i] = strdup(orig_value[i]);
-		value[i+1]=NULL;
-		i++;
+	if( ctx->tile_x == -1 ) {
+		if(!read_int(MAP_TABLE, ctx->map, &i,MAP_KEY_TILE_SIZE_X,NULL)){
+			return;
+		}
+		context_set_tile_x( ctx, i);
 	}
-	free(orig_value);
+	if( ctx->tile_y == -1 ) {
+		if(!read_int(MAP_TABLE, ctx->map,&i,MAP_KEY_TILE_SIZE_Y,NULL)){
+			return;
+		}
+		context_set_tile_y( ctx, i);
+	}
+	if(!read_list(MAP_TABLE, ctx->map, &value,MAP_KEY_SET,NULL)) {
+		return;
+	}
 
 	/* Parse map string */
 	i=0;
-        while(value[i] != NULL ) {
-		if(!read_string(TILE_TABLE,value[i],&tile_image,TILE_KEY_IMAGE,NULL)) {
-			goto map_continue;
-		}
+	while(value[i] != NULL ) {
+		if(read_string(TILE_TABLE,value[i],&tile_image,TILE_KEY_IMAGE,NULL)) {
 #if 0
-		/* Save description for caller */
-		read_string(TILE_TABLE,tile_name,description,TILE_KEY_TEXT,NULL);
+			/* Save description for caller */
+			read_string(TILE_TABLE,tile_name,description,TILE_KEY_TEXT,NULL);
 #endif
-		item = item_list_add(item_list);
-		if(item_list == NULL) {
-			item_list = item;
+			item = item_list_add(item_list);
+			if(item_list == NULL) {
+				item_list = item;
+			}
+
+			anim = imageDB_get_anim(ctx,tile_image);
+
+			item_set_anim(item,x*ctx->tile_x,y*ctx->tile_y,anim);
+			item_set_tile(item,x,y);
+			item_set_click_left(item,cb_select_map,item);
+			item_set_click_right(item,cb_redo_map,item);
 		}
 
-		anim = imageDB_get_anim(ctx,tile_image);
-
-		item_set_anim(item,x*ctx->tile_x,y*ctx->tile_y,anim);
-		item_set_tile(item,x,y);
-		item_set_click_left(item,cb_select_map,item);
-		item_set_click_right(item,cb_redo_map,item);
-map_continue:
 		x++;
 		if(x>=ctx->map_x) {
 			x=0;
 			y++;
 		}
 		i++;
-        }
-
-	/* Free the copied value list */
-	i=0;
-        while(value[i] != NULL ) {
-		free(value[i]);
-		i++;
 	}
-	free(value);
 }
 
+/**********************************
+**********************************/
 static void cb_select_sprite(void *arg)
 {
 	char * id = (char*)arg;
 
 	context_t * ctx = context_get_list_first();
-        ctx->selection.id= id;
+	ctx->selection.id= id;
 	network_send_context(ctx);
 }
 
+/**********************************
+**********************************/
 static void cb_redo_sprite(void *arg)
 {
 	cb_select_sprite(arg);
@@ -253,9 +252,6 @@ static void compose_item(context_t * ctx)
 			}
 		}
 
-		quantity = item_get_quantity(item_id[i]);
-		sprintf(buf,"%d",quantity);
-
 		item = item_list_add(item_list);
 		if(item_list == NULL) {
 			item_list = item;
@@ -269,8 +265,12 @@ static void compose_item(context_t * ctx)
 		y -= (anim->h-ctx->tile_y)/2;
 
 		item_set_anim(item,x,y,anim);
-		item_set_string(item,buf);
-		item_set_font(item,font);
+		if(font) {
+			quantity = item_get_quantity(item_id[i]);
+			sprintf(buf,"%d",quantity);
+			item_set_string(item,buf);
+			item_set_font(item,font);
+		}
 
 		i++;
 	}
@@ -295,7 +295,7 @@ static void compose_sprite(context_t * ctx)
 
 	context_lock_list();
 
-        while(ctx != NULL ) {
+	while(ctx != NULL ) {
 		if( ctx->map == NULL ) {
 			ctx = ctx->next;
 			continue;
@@ -388,6 +388,9 @@ static void compose_attribute(context_t * ctx)
 	if ( font == NULL ) {
 		font = TTF_OpenFont(FONT, FONT_SIZE);
 	}
+	if ( font == NULL ) {
+		return;
+	}
 
 	if(attribute_string) {
 		index = 0;
@@ -438,6 +441,8 @@ static void compose_attribute(context_t * ctx)
 	free(name_list);
 }
 
+/**********************************
+**********************************/
 static void cb_action(void * arg)
 {
 	char * script = (char *)arg;
@@ -454,8 +459,8 @@ static void compose_action(context_t * ctx)
 {
 	char ** action_list = NULL;
 	const char * text;
-        const char * icon;
-        const char * script;
+	const char * icon;
+	const char * script;
 	anim_t * anim;
 	item_t * item;
 	int sw = 0;
@@ -467,32 +472,26 @@ static void compose_action(context_t * ctx)
 	action_bar_height = 0;
 
 	/* Read action list for current user */
-        if(!read_list(CHARACTER_TABLE,ctx->id,&action_list,CHARACTER_KEY_ACTION,NULL)) {
-                return;
-        }
+	if(!read_list(CHARACTER_TABLE,ctx->id,&action_list,CHARACTER_KEY_ACTION,NULL)) {
+		return;
+	}
 
-        while(*action_list != NULL ) {
-                if(!read_string(ACTION_TABLE,*action_list,&text,ACTION_KEY_TEXT,NULL)) {
-			action_list ++;
-                        continue;
-                }
-
-                if(!read_string(ACTION_TABLE,*action_list,&icon,ACTION_KEY_ICON,NULL)) {
-			action_list ++;
-                        continue;
-                }
-		if(!read_string(ACTION_TABLE,*action_list,&script,ACTION_KEY_SCRIPT,NULL)) {
-			action_list ++;
-                        continue;
-		}
-
-
-		/* load image */
-		anim = imageDB_get_anim(ctx, icon);
-		if(anim == NULL) {
+	while(*action_list != NULL ) {
+		if(!read_string(ACTION_TABLE,*action_list,&text,ACTION_KEY_TEXT,NULL)) {
 			action_list ++;
 			continue;
 		}
+		if(!read_string(ACTION_TABLE,*action_list,&icon,ACTION_KEY_ICON,NULL)) {
+			action_list ++;
+			continue;
+		}
+		if(!read_string(ACTION_TABLE,*action_list,&script,ACTION_KEY_SCRIPT,NULL)) {
+			action_list ++;
+			continue;
+		}
+
+		/* load image */
+		anim = imageDB_get_anim(ctx, icon);
 
 		item = item_list_add(item_list);
 		if(item_list == NULL) {
@@ -508,10 +507,11 @@ static void compose_action(context_t * ctx)
 		}
 
 		action_list ++;
-        }
-
+	}
 }
 
+/**********************************
+**********************************/
 static void cb_select_slot(void * arg)
 {
 	char * id = (char*)arg;
@@ -537,7 +537,9 @@ static void compose_equipment(context_t * ctx)
 	int x=0;
 	int h1;
 	int index;
-//	char * name;
+#if 0
+	char * name;
+#endif
 	const char * icon_name;
 	const char * equipped_name;
 	const char * equipped_text;
@@ -552,14 +554,14 @@ static void compose_equipment(context_t * ctx)
 
 	index=0;
 	while( name_list[index] != NULL) {
+#if 0
 		/* Get the slot name */
-/*
 		if(!read_string(CHARACTER_TABLE,ctx->id,&item_name,EQUIPMENT_GROUP,name_list[index],EQUIPMENT_NAME,NULL)) {
 			name = strdup(name_list[index]);
 		} else {
 			name = strdup(item_name);
 		}
-*/
+#endif
 		h1 = 0;
 		/* Get the slot icon */
 		if(!read_string(CHARACTER_TABLE,ctx->id,&icon_name,EQUIPMENT_GROUP,name_list[index],EQUIPMENT_ICON,NULL)) {
@@ -567,10 +569,6 @@ static void compose_equipment(context_t * ctx)
 		} else {
 			/* load image */
 			anim = imageDB_get_anim(ctx, icon_name);
-			if(anim == NULL) {
-				index ++;
-				continue;
-			}
 
 			item = item_list_add(item_list);
 			if(item_list == NULL) {
@@ -601,13 +599,12 @@ static void compose_equipment(context_t * ctx)
 				}
 
 				anim2 = imageDB_get_anim(ctx, equipped_icon_name);
-				if(anim2 != NULL) {
-					item_set_overlay(item,1);
-					item_set_anim(item,x-anim->w,y,anim2);
-					item_set_click_left(item,cb_select_slot,name_list[index]);
-					if(h1 < anim->h) {
-						h1 = anim->h;
-					}
+
+				item_set_overlay(item,1);
+				item_set_anim(item,x-anim->w,y,anim2);
+				item_set_click_left(item,cb_select_slot,name_list[index]);
+				if(h1 < anim->h) {
+					h1 = anim->h;
 				}
 			}
 		}
@@ -616,16 +613,15 @@ static void compose_equipment(context_t * ctx)
 		if( ctx->selection.equipment != NULL) {
 			if( !strcmp(ctx->selection.equipment,name_list[index]) ) {
 				anim3 = imageDB_get_anim(ctx,CURSOR_EQUIP_FILE);
-				if(anim3 != NULL) {
-					item = item_list_add(item_list);
-					if(item_list == NULL) {
-						item_list = item;
-					}
 
-					/* Center on icon */
-					item_set_overlay(item,1);
-					item_set_anim(item,x - (anim3->w-anim->w)/2, y - (anim3->h-anim->w)/2, anim3);
+				item = item_list_add(item_list);
+				if(item_list == NULL) {
+					item_list = item;
 				}
+
+				/* Center on icon */
+				item_set_overlay(item,1);
+				item_set_anim(item,x - (anim3->w-anim->w)/2, y - (anim3->h-anim->w)/2, anim3);
 			}
 		}
 
@@ -650,6 +646,7 @@ static void compose_equipment(context_t * ctx)
 				}
 
 				anim = imageDB_get_anim(ctx, inventory_icon_name);
+
 				item_set_overlay(item,1);
 				item_set_anim(item,sw-anim->w,y,anim);
 				item_set_click_left(item,show_inventory,NULL);
@@ -679,6 +676,9 @@ static void compose_text(context_t * ctx)
 
 	if ( font == NULL ) {
 		font = TTF_OpenFont(TEXT_FONT, TEXT_FONT_SIZE);
+	}
+	if ( font == NULL ) {
+		return;
 	}
 
 	SDL_GetRendererOutputSize(ctx->render,&sw,&sh);
@@ -754,9 +754,6 @@ static void compose_select(context_t * ctx)
 	int y;
 
 	anim = imageDB_get_anim(ctx,CURSOR_SPRITE_FILE);
-	if(anim == NULL) {
-		return;
-	}
 
 	/* Tile selection */
 	x = ctx->selection.map_coord[0];
@@ -860,3 +857,4 @@ item_t * scr_play_compose(context_t * ctx)
 
 	return item_list;
 }
+

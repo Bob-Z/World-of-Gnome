@@ -17,98 +17,148 @@
    Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
-#include <glib.h>
-#include <glib/gstdio.h>
 #include "../common/common.h"
 #include <dirent.h>
 #include "imageDB.h"
 #include "screen.h"
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <string.h>
 
-/* return 0 if directory was successfully created */
-int create_directory(gchar * filename)
+/***************************************************
+ return 0 if directory was successfully created
+****************************************************/
+static int mkdir_all(const char * pathname)
 {
-	gchar * directory = g_strdup(filename);
-	gint i;
-	for( i = g_utf8_strlen(directory,-1); i > 0; i--) {
+	char * token;
+	char * source;
+	int ret = -1;
+
+	if(pathname == NULL) {
+		return -1;
+	}
+
+	source = strdup(pathname);
+
+	token =  strtok(source,"/");
+
+	while( token != NULL ) {
+		ret = mkdir(token,0775);
+		token =  strtok(NULL,"/");
+	}
+
+	free(source);
+
+	return ret;
+}
+/***************************************************
+ create the path of fullname.
+ fullname is a path + a file name. Only the path is
+ created here, not the file itself.
+ return 0 if directory was successfully created
+****************************************************/
+static int create_directory(char * fullname)
+{
+	char * directory = strdup(fullname);
+	int i;
+	int ret;
+
+	/* Remove file name, just kee directory name */
+	for( i = strlen(directory); i > 0; i--) {
 		if(directory[i] == '/') {
 			directory[i]=0;
 			break;
 		}
 	}
 
-	gboolean res = g_mkdir_with_parents(directory,0777);
+	ret = mkdir_all(directory);
 
-	g_free(directory);
+	free(directory);
 
-	return res;
+	return ret;
 }
 
-
-/* return 0 on success */
-int file_add(context_t * context,gchar * data,guint32 command_size)
+/*************************************
+ return 0 on success
+**************************************/
+int file_add(context_t * context,char * data,Uint32 command_size)
 {
+	char * ptr = data;
+	Uint32 filename_size;
+	char * filename = NULL;
+	char fullname[512] = "";
+	int res;
+
 	/* Get the data from the network frame */
-	gchar * ptr = data;
 	/* First 4 bytes are the size of the file name*/
-	if( command_size < sizeof(guint32) ) {
+	if( command_size < sizeof(Uint32) ) {
 		werr(LOGDEV,"Invalid file received");
-		return 1;
+		return -1;
 	}
-	guint32 file_name_size = *((guint32 *)ptr);
+	filename_size = *((Uint32 *)ptr);
 
 	/* Following bytes are the file name, relative to the application base directory ( $HOME/.config/wog/client/ ) */
-	ptr += sizeof(guint32);
-	gchar * file_name = NULL;
-	file_name = g_memdup(ptr,file_name_size);
-	wlog(LOGDEBUG,"Received file %s",file_name);
-	if( file_name == NULL ) {
-		werr(LOGDEV,"Unable to allocate %d bytes for file name",file_name_size);
-		return 1;
+	ptr += sizeof(Uint32);
+	filename = malloc(filename_size);
+	memcpy(filename,ptr,filename_size);
+	wlog(LOGDEBUG,"Received file %s",filename);
+	if( filename == NULL ) {
+		werr(LOGDEV,"Unable to allocate %d bytes for file name",filename_size);
+		return -1;
 	}
 
-	/* Next is a guint32 representing the size of the file's data */
-	ptr += file_name_size;
-	guint32 file_data_size = *((guint32 *)ptr);
+	/* Next is a Uint32 representing the size of the file's data */
+	ptr += filename_size;
+	Uint32 filedata_size = *((Uint32 *)ptr);
 
 	/* Finally are the data bytes */
-	ptr += sizeof(guint32);
+	ptr += sizeof(Uint32);
 
 	/* Write the data to disk */
-	gchar * full_name = NULL;
-	full_name = g_strconcat( g_getenv("HOME"),"/", base_directory, "/",file_name, NULL);
+	strcat(fullname,getenv("HOME"));
+	strcat(fullname,"/");
+	strcat(fullname,base_directory);
+	strcat(fullname,"/");
+	strcat(fullname,filename);
 
-	if( create_directory(full_name)) {
-		g_free(full_name);
-		werr(LOGDEV,"Can't create directory for %s", full_name);
-		return 1;
+	if( create_directory(fullname)) {
+		werr(LOGDEV,"Can't create directory for %s", fullname);
+		return -1;
 	}
-	gboolean res = file_set_contents(file_name,ptr,file_data_size);
+
+	res = file_set_contents(filename,ptr,filedata_size);
 	if( res == FALSE ) {
-		werr(LOGDEV,"Error writing file %s with size %d",full_name, file_data_size);
-		return 1;
+		werr(LOGDEV,"Error writing file %s with size %d",fullname, filedata_size);
+		return -1;
 	}
 
-	wlog(LOGDEBUG,"write file %s",full_name);
+	wlog(LOGDEBUG,"write file %s",fullname);
 
 	/* Update the entry DB */
-	entry_remove(file_name);
+	entry_remove(filename);
 	/* Update the image DB */
-	image_DB_remove(file_name);
-
+	image_DB_remove(filename);
+	/* Make sure the new file is drawn (if needed) */
 	screen_compose();
 
-	g_free(file_name);
-	g_free(full_name);
+	free(filename);
 	return 0;
 }
 
-/* Remove character file to be sure they are always downloaded at start-up time */
-/* called by client */
+/*********************************************************************************
+ Remove character file to be sure they are always downloaded at start-up time
+**********************************************************************************/
 void file_clean(context_t * context)
 {
-	gchar * filename;
+	char filename[512] = "";
 
-	filename = g_strconcat( g_getenv("HOME"),"/", base_directory, "/",CHARACTER_TABLE,"/",context->id, NULL);
-	g_unlink(filename);
-	g_free( filename);
+	strcat(filename,getenv("HOME"));
+	strcat(filename,"/");
+	strcat(filename,base_directory);
+	strcat(filename,"/");
+	strcat(filename,CHARACTER_TABLE);
+	strcat(filename,"/");
+	strcat(filename,context->id);
+
+	unlink(filename);
 }

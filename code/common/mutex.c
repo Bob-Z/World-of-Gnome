@@ -26,6 +26,7 @@ SDL_mutex* map_mutex = NULL;
 SDL_mutex* file_list_mutex = NULL;
 SDL_mutex* imageDB_mutex = NULL;
 SDL_mutex* entry_mutex = NULL;
+SDL_mutex* character_select_mutex = NULL;
 
 void common_mutex_init()
 {
@@ -36,4 +37,6 @@ void common_mutex_init()
 	file_list_mutex = SDL_CreateMutex();
 	imageDB_mutex = SDL_CreateMutex();
 	entry_mutex = SDL_CreateMutex();
+	character_select_mutex = SDL_CreateMutex();
 }
+

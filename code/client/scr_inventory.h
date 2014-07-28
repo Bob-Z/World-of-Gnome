@@ -20,3 +20,4 @@
 #include "../sdl_item/item.h"
 
 item_t * scr_inventory_compose(context_t * context);
+
