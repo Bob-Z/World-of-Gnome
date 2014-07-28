@@ -17,18 +17,16 @@
    Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
-#include <glib.h>
-#include <glib/gprintf.h>
-#include <gio/gio.h>
 #include "../common/common.h"
 #include <dirent.h>
 #include <string.h>
 #include "action.h"
 
-/*****************************/
-/* Delete the selected item from the character's equipment slot */
-/* return -1 if fails */
-gint equipment_delete(const gchar *id, const gchar * slot)
+/*****************************************************************
+Delete the selected item from the character's equipment slot
+return -1 if fails
+*****************************************************************/
+int equipment_delete(const char *id, const char * slot)
 {
 	context_t * context = context_find(id);
 	if( context == NULL ) {
@@ -45,10 +43,11 @@ gint equipment_delete(const gchar *id, const gchar * slot)
 	return -1;
 }
 
-/*****************************/
-/* Add the passed item to the character's equipment slot */
-/* return -1 if fails */
-gint equipment_add(const gchar *id, const gchar * slot, const gchar * item)
+/**********************************************************************
+Add the passed item to the character's equipment slot
+return -1 if fails
+**********************************************************************/
+int equipment_add(const char *id, const char * slot, const char * item)
 {
 	context_t * context = context_find(id);
 	if( context == NULL ) {
@@ -65,12 +64,13 @@ gint equipment_add(const gchar *id, const gchar * slot, const gchar * item)
 	return -1;
 }
 
-/*****************************/
-/* Return the name of the item in character's specified equipment slot*/
-/* return NULL if fails */
-const char * equipment_get_item_id(const gchar *id, const gchar * slot)
+/***********************************************************************
+Return the name of the item in character's specified equipment slot
+return NULL if fails
+***********************************************************************/
+const char * equipment_get_item_id(const char *id, const char * slot)
 {
-	const gchar * item;
+	const char * item;
 	context_t * context = context_find(id);
 	if( context == NULL ) {
 		werr(LOGDEV,"Could not find context %s",id);
@@ -83,3 +83,4 @@ const char * equipment_get_item_id(const gchar *id, const gchar * slot)
 
 	return item;
 }
+

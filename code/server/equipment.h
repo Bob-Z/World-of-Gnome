@@ -17,7 +17,7 @@
    Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
-gint equipment_add(const gchar *id, const gchar * slot, const gchar * item);
-gint equipment_delete(const gchar *id, const gchar * slot);
-const gchar * equipment_get_item_id(const gchar *id, const gchar * slot);
+int equipment_add(const char *id, const char * slot, const char * item);
+int equipment_delete(const char *id, const char * slot);
+const char * equipment_get_item_id(const char *id, const char * slot);
 
