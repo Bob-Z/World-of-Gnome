@@ -32,6 +32,8 @@ int parse_incoming_data(context_t * context, Uint32 command, Uint32 command_size
 	char * elements[512];
 	char * cksum;
 	int i;
+	char *saveptr1;
+	char *saveptr2;
 
 	//wlog(LOGDEBUG,"Received command : %d, command_size : %d", command, command_size);
 
@@ -75,10 +77,10 @@ int parse_incoming_data(context_t * context, Uint32 command, Uint32 command_size
 		break;
 	case CMD_REQ_FILE :
 		i = 0;
-		elements[i] = strtok(data,NETWORK_DELIMITER);
+		elements[i] = strtok_r(data,NETWORK_DELIMITER,&saveptr1);
 		while(elements[i]) {
 			i++;
-			elements[i] = strtok(NULL,NETWORK_DELIMITER);
+			elements[i] = strtok_r(NULL,NETWORK_DELIMITER,&saveptr1);
 		}
 
 		if(elements[0]==NULL || elements[1]==NULL) {
@@ -128,13 +130,14 @@ int parse_incoming_data(context_t * context, Uint32 command, Uint32 command_size
 		wlog(LOGDEBUG,"Received CMD_SEND_CONTEXT for %s /%s",context->user_name,context->character_name);
 		break;
 	case CMD_SEND_ACTION :
-		wlog(LOGDEBUG,"Received CMD_SEND_ACTION");
 		i = 0;
-		elements[i] = strtok(data,NETWORK_DELIMITER);
+		elements[i] = strtok_r(data,NETWORK_DELIMITER,&saveptr2);
 		while(elements[i]) {
 			i++;
-			elements[i] = strtok(NULL,NETWORK_DELIMITER);
+			elements[i] = strtok_r(NULL,NETWORK_DELIMITER,&saveptr2);
 		}
+
+		wlog(LOGDEBUG,"Received CMD_SEND_ACTION %s from %s /%s",elements[0],context->user_name,context->character_name);
 
 		action_execute_script(context,elements[0],&elements[1]);
 		break;

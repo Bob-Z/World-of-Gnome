@@ -272,6 +272,7 @@ static int mkdir_all(const char * pathname)
         char * source;
         int ret = -1;
         char directory[512] = "";
+	char *saveptr;
 
         if(pathname == NULL) {
                 return -1;
@@ -279,13 +280,13 @@ static int mkdir_all(const char * pathname)
 
         source = strdup(pathname);
 
-        token =  strtok(source,"/");
+        token =  strtok_r(source,"/",&saveptr);
 
         while( token != NULL ) {
                 strcat(directory,"/");
                 strcat(directory,token);
                 ret = mkdir(directory,0775);
-                token =  strtok(NULL,"/");
+                token =  strtok_r(NULL,"/",&saveptr);
         }
 
         free(source);

@@ -1242,8 +1242,9 @@ int entry_update(char * data)
 	char * token;
 	int index = 0;
 	int ret = -1;
+	char *saveptr;
 
-	token = strtok(data,NETWORK_DELIMITER);
+	token = strtok_r(data,NETWORK_DELIMITER,&saveptr);
 	while( token != NULL ) {
 		elements[index] = strdup(token);
 		index++;
@@ -1251,7 +1252,7 @@ int entry_update(char * data)
 			werr(LOGDEV,"Split string error");
 			goto entry_update_cleanup;
 		}
-		token = strtok(NULL,NETWORK_DELIMITER);
+		token = strtok_r(NULL,NETWORK_DELIMITER,&saveptr);
 	}
 
 	config = get_config(elements[1],elements[2]);
