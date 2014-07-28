@@ -60,13 +60,11 @@ static void write_config(const config_t * config,const char * table, const char 
 }
 /*********************
 *********************/
-#if 0
 static void free_config(config_t * config)
 {
 	config_destroy(config);
 	free(config);
 }
-#endif
 /*********************
 *********************/
 static const config_t * load_config(char * filename)
@@ -1299,16 +1297,28 @@ return -1 if fails
 ***********************************************/
 int entry_destroy(const char * id)
 {
-	char fullname[512];
+	char filename[512] = "";
+	char fullname[512] = "";
 	int res;
+	const config_t * old_config;
+
+	strcat(filename,CHARACTER_TABLE);
+	strcat(filename,"/");
+	strcat(filename,id);
+
+        SDL_LockMutex(entry_mutex);
+        old_config = list_find(entry_list,filename);
+        if( old_config ) {
+                free_config((config_t*)old_config);
+	}
+        entry_list = list_update(entry_list,filename,NULL);
+        SDL_UnlockMutex(entry_mutex);
 
 	strcat(fullname,getenv("HOME"));
 	strcat(fullname,"/");
 	strcat(fullname,base_directory);
 	strcat(fullname,"/");
-	strcat(fullname,CHARACTER_TABLE);
-	strcat(fullname,"/");
-	strcat(fullname,id);
+	strcat(fullname,filename);
 
 	res = unlink(fullname);
 	if(res != 0 ) {
@@ -1317,3 +1327,4 @@ int entry_destroy(const char * id)
 
 	return res;
 }
+

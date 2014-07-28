@@ -160,26 +160,26 @@ char * character_create_from_template(context_t * ctx,const char * template,cons
 
 	/* Check if new character is allowed to be created here */
 	if(!map_check_tile(ctx,new_name,map,x,y)) {
-		unlink(newfilename);
+		entry_destroy(new_name);
 		free(new_name);
 		return NULL;
 	}
 
 	/* Write position */
 	if(!write_string(CHARACTER_TABLE,new_name,map,CHARACTER_KEY_MAP,NULL)) {
-		unlink(newfilename);
+		entry_destroy(new_name);
 		free(new_name);
 		return NULL;
 	}
 
 	if(!write_int(CHARACTER_TABLE,new_name,x,CHARACTER_KEY_POS_X,NULL)) {
-		unlink(newfilename);
+		entry_destroy(new_name);
 		free(new_name);
 		return NULL;
 	}
 
 	if(!write_int(CHARACTER_TABLE,new_name,y,CHARACTER_KEY_POS_Y,NULL)) {
-		unlink(newfilename);
+		entry_destroy(new_name);
 		free(new_name);
 		return NULL;
 	}
