@@ -271,6 +271,7 @@ void character_update_aggro(context_t * context)
 }
 
 /******************************************************
+return 0 if new position OK or if position has not changed.
 return -1 if the position was not set (because tile not allowed or out of bound)
 ******************************************************/
 int character_set_pos(context_t * ctx, char * map, int x, int y)
@@ -283,6 +284,11 @@ int character_set_pos(context_t * ctx, char * map, int x, int y)
 
 	if(ctx == NULL) {
 		return -1;
+	}
+
+	/* Do nothing if no move */
+	if(!strcmp(ctx->map, map) && ctx->pos_x == x && ctx->pos_y == y) {
+		return 0;
 	}
 
 	/* Check if this character is allowed to go to the target tile */
