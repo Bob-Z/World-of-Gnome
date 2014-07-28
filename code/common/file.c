@@ -139,6 +139,8 @@ char * file_new(char * table)
 		}
 	}
 
+	closedir(dir);
+
 	strcat(filename,dirname);
 	strcat(filename,"/");
 	strcat(filename,tag);
