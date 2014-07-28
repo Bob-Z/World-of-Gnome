@@ -1235,7 +1235,6 @@ return -1 if fails
 *********************************************/
 int entry_update(char * data)
 {
-	char * source;
 	char * elements[5] = {NULL,NULL,NULL,NULL,NULL};
 	config_setting_t * setting;
 	const config_t * config= NULL;
@@ -1244,15 +1243,15 @@ int entry_update(char * data)
 	int index = 0;
 	int ret = -1;
 
-	source = strdup(data);
 	token = strtok(data,NETWORK_DELIMITER);
 	while( token != NULL ) {
 		elements[index] = strdup(token);
 		index++;
 		if(index>=5) {
-			werr(LOGDEV,"Split sting error of : %s",source);
+			werr(LOGDEV,"Split string error");
 			goto entry_update_cleanup;
 		}
+		token = strtok(NULL,NETWORK_DELIMITER);
 	}
 
 	config = get_config(elements[1],elements[2]);
@@ -1284,7 +1283,6 @@ int entry_update(char * data)
 	ret = 0;
 
 entry_update_cleanup:
-	free(source);
 	for(index=0;index<5;index++) {
 		if(elements[index]) {
 			free(elements[index]);
