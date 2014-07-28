@@ -17,18 +17,16 @@
    Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
-#include <glib.h>
-#include <glib/gprintf.h>
-#include <gio/gio.h>
 #include "../common/common.h"
 #include <dirent.h>
 #include <string.h>
 #include "action.h"
 
-/*****************************/
-/* Delete the requested item from the character's inventory */
-/* return -1 if fails */
-gint inventory_delete(const gchar * id, const gchar * item)
+/*************************************************************
+Delete the requested item from the character's inventory
+return -1 if fails
+*************************************************************/
+int inventory_delete(const char * id, const char * item)
 {
 	context_t * context = context_find(id);
 	if( context == NULL ) {
@@ -46,10 +44,11 @@ gint inventory_delete(const gchar * id, const gchar * item)
 	return 0;
 }
 
-/*****************************/
-/* Add the requested item to the character's inventory */
-/* return -1 if fails */
-gint inventory_add(const gchar * ctx_id, const gchar * item_id)
+/********************************************************
+Add the requested item to the character's inventory
+return -1 if fails
+********************************************************/
+int inventory_add(const char * ctx_id, const char * item_id)
 {
 	context_t * context = context_find(ctx_id);
 	const char * template;
@@ -115,12 +114,12 @@ gint inventory_add(const gchar * ctx_id, const gchar * item_id)
  return an item ID of an item in inventory with specified name
  the returned string must be freed
 ***************************************************************************/
-gchar * inventory_get_by_name(const gchar * id, const gchar * item_name)
+char * inventory_get_by_name(const char * id, const char * item_name)
 {
-	gint index;
-	gchar ** name_list;
-	const gchar * name;
-	gchar * res;
+	int index;
+	char ** name_list;
+	const char * name;
+	char * res;
 
 	context_t * context = context_find(id);
 	if( context == NULL ) {
@@ -135,15 +134,16 @@ gchar * inventory_get_by_name(const gchar * id, const gchar * item_name)
 	index=0;
 	while( name_list[index] != NULL) {
 		if( (name=item_get_name(name_list[index])) != NULL ) {
-			if( g_strcmp0(item_name,name) == 0 ) {
-				res = g_strdup(name_list[index]);
-				g_free(name_list);
+			if( strcmp(item_name,name) == 0 ) {
+				res = strdup(name_list[index]);
+				free(name_list);
 				return res;
 			}
 		}
 		index++;
 	}
 
-	g_free(name_list);
+	free(name_list);
 	return NULL;
 }
+

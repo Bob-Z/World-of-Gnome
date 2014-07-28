@@ -17,6 +17,7 @@
    Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
-gint inventory_delete(const gchar * id, const gchar * item);
-gint inventory_add(const gchar * id, const gchar * item);
-gchar * inventory_get_by_name(const gchar * id, const gchar * item_name);
+int inventory_delete(const char * id, const char * item);
+int inventory_add(const char * id, const char * item);
+char * inventory_get_by_name(const char * id, const char * item_name);
+
