@@ -25,3 +25,5 @@ void file_update(context_t * context, char * filename);
 char * file_new(char * table);
 int file_get_contents(const char *filename,char **contents,int *length);
 int file_set_contents(const char *filename,const char *contents,int length);
+void file_copy(char * src_name, char * dst_name);
+int file_create_directory(char * fullname);

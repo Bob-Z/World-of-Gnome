@@ -25,62 +25,6 @@
 #include <sys/types.h>
 #include <string.h>
 
-/***************************************************
- return 0 if directory was successfully created
-****************************************************/
-static int mkdir_all(const char * pathname)
-{
-	char * token;
-	char * source;
-	int ret = -1;
-	char directory[512] = "";
-
-	if(pathname == NULL) {
-		return -1;
-	}
-
-	source = strdup(pathname);
-
-	token =  strtok(source,"/");
-
-	while( token != NULL ) {
-		strcat(directory,"/");
-		strcat(directory,token);
-		ret = mkdir(directory,0775);
-		token =  strtok(NULL,"/");
-	}
-
-	free(source);
-
-	return ret;
-}
-/***************************************************
- create the path of fullname.
- fullname is a path + a file name. Only the path is
- created here, not the file itself.
- return 0 if directory was successfully created
-****************************************************/
-static int create_directory(char * fullname)
-{
-	char * directory = strdup(fullname);
-	int i;
-	int ret;
-
-	/* Remove file name, just kee directory name */
-	for( i = strlen(directory); i > 0; i--) {
-		if(directory[i] == '/') {
-			directory[i]=0;
-			break;
-		}
-	}
-
-	ret = mkdir_all(directory);
-
-	free(directory);
-
-	return ret;
-}
-
 /*************************************
  return 0 on success
 **************************************/
@@ -124,7 +68,7 @@ int file_add(context_t * context,char * data,Uint32 command_size)
 	strcat(fullname,"/");
 	strcat(fullname,filename);
 
-	create_directory(fullname);
+	file_create_directory(fullname);
 
 	res = file_set_contents(filename,ptr,filedata_size);
 	if( res == FALSE ) {
