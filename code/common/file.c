@@ -122,6 +122,8 @@ char * file_new(char * table)
 	strcat(dirname,"/");
 	strcat(dirname,table);
 
+	SDL_LockMutex(character_dir_mutex);
+
 	dir = opendir(dirname);
 
 	while(( ent = readdir(dir)) != NULL ) {
@@ -147,6 +149,8 @@ char * file_new(char * table)
 
 	fd = creat(filename, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH);
 	close(fd);
+
+	SDL_UnlockMutex(character_dir_mutex);
 
 	return strdup(tag);
 }

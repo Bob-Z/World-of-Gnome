@@ -31,6 +31,7 @@ extern SDL_mutex* file_list_mutex;
 extern SDL_mutex* imageDB_mutex;
 extern SDL_mutex* entry_mutex;
 extern SDL_mutex* character_select_mutex;
+extern SDL_mutex* character_dir_mutex;
 
 void common_mutex_init();
 
