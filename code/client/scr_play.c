@@ -538,14 +538,15 @@ static void compose_equipment(context_t * ctx)
 	int x=0;
 	int h1;
 	int index;
+	const char * template = NULL;
 #if 0
 	char * name;
 #endif
-	const char * icon_name;
-	const char * equipped_name;
-	const char * equipped_text;
-	const char * equipped_icon_name;
-	const char * inventory_icon_name;
+	const char * icon_name = NULL;
+	const char * equipped_name = NULL;
+	const char * equipped_text = NULL;
+	const char * equipped_icon_name = NULL;
+	const char * inventory_icon_name = NULL;
 
 	SDL_GetRendererOutputSize(ctx->render,&sw,&sh);
 
@@ -638,20 +639,31 @@ static void compose_equipment(context_t * ctx)
 
 	/* Draw selected item */
 	if( ctx->selection.inventory != NULL) {
+		template = item_is_resource(ctx->selection.inventory);
+
+		if ( template == NULL ) {
 			if(!read_string(ITEM_TABLE,ctx->selection.inventory,&inventory_icon_name,ITEM_ICON,NULL)) {
-				werr(LOGDEV,"Can't read object %s icon (selected in inventory)",ctx->selection.inventory);
-			} else {
-				item = item_list_add(item_list);
-				if(item_list == NULL) {
-					item_list = item;
-				}
-
-				anim = imageDB_get_anim(ctx, inventory_icon_name);
-
-				item_set_overlay(item,1);
-				item_set_anim(item,sw-anim->w,y,anim);
-				item_set_click_left(item,show_inventory,NULL);
+				werr(LOGDEV,"Can't read item %s icon name",ctx->selection.inventory);
 			}
+		}
+		else {
+			if(!read_string(ITEM_TEMPLATE_TABLE,template,&inventory_icon_name,ITEM_ICON,NULL)) {
+				werr(LOGDEV,"Can't read item %s icon name (template: %s)",ctx->selection.inventory,template);
+			}
+		}
+
+		if( inventory_icon_name ) {
+			item = item_list_add(item_list);
+			if(item_list == NULL) {
+				item_list = item;
+			}
+
+			anim = imageDB_get_anim(ctx, inventory_icon_name);
+
+			item_set_overlay(item,1);
+			item_set_anim(item,sw-anim->w,y,anim);
+			item_set_click_left(item,show_inventory,NULL);
+		}
 	}
 
 	free(name_list);
