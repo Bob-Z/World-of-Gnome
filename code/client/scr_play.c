@@ -308,7 +308,8 @@ static void compose_sprite(context_t * ctx)
 		/* compute the sprite file name */
 		if(!read_string(CHARACTER_TABLE,ctx->id,&sprite_name,CHARACTER_KEY_SPRITE,NULL)) {
 			werr(LOGDEV,"ID=%s. Can't read sprite name for \"%s\" type",ctx->id,ctx->type);
-			break;;
+			ctx = ctx->next;
+			continue;
 		}
 
 		anim = imageDB_get_anim(player_context,sprite_name);
