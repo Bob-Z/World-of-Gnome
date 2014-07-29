@@ -27,9 +27,10 @@
 
 context_t * context_list_start = NULL;
 
-/* context_init
-  Initialize a context_t struct
-*/
+/*************************************
+context_init
+Initialize a context_t struct
+*************************************/
 void context_init(context_t * context)
 {
 	context->user_name = NULL;
@@ -41,7 +42,7 @@ void context_init(context_t * context)
 	context->input_data_stream = NULL;
 	context->output_data_stream = NULL;
 	context->hostname = NULL;
-	context->send_thread = NULL;
+	context->send_mutex = SDL_CreateMutex();
 
 	context->render = NULL;
 	context->window = NULL;
@@ -79,7 +80,9 @@ void context_init(context_t * context)
 	context->next = NULL;
 }
 
-/* Add a new context to the list */
+/**************************************
+Add a new context to the list
+**************************************/
 context_t * context_new(void)
 {
 	context_t * ctx;
@@ -106,9 +109,10 @@ context_t * context_new(void)
 	return ctx->next;
 }
 
-/* context_free
-  Deep free of a context_t struct
-*/
+/*************************************
+context_free
+Deep free of a context_t struct
+*************************************/
 void context_free(context_t * context)
 {
 	char filename[512] = "";
@@ -116,10 +120,6 @@ void context_free(context_t * context)
 	context_t * ctx;
 
 	SDL_LockMutex(context_list_mutex);
-
-	
-// We should not erase the file's data from memory until it's dumped to disk, so comment this line
-//	entry_destroy(context->id);
 
 	free(context->user_name);
 	context->user_name = NULL;
@@ -138,9 +138,9 @@ void context_free(context_t * context)
 	context->output_stream = NULL;
 	context->input_data_stream = NULL;
 	context->output_data_stream = NULL;
+	SDL_DestroyMutex(context->send_mutex);
 	free(context->hostname);
 	context->hostname = NULL;
-	context->send_thread = NULL;
 	free(context->character_name);
 	context->character_name = NULL;
 	free(context->map);
@@ -210,26 +210,30 @@ void context_free(context_t * context)
 	}
 }
 
+/***********************
+***********************/
 void context_lock_list()
 {
 	SDL_LockMutex(context_list_mutex);
 }
 
+/***********************
+***********************/
 void context_unlock_list()
 {
 	SDL_UnlockMutex(context_list_mutex);
 }
 
+/***********************
+***********************/
 context_t * context_get_list_first()
 {
 	return context_list_start;
 }
 
-/* context_set_username
-  Set user_name
-
+/**************************
   Returns FALSE if error
-*/
+**************************/
 int context_set_username(context_t * context, const char * name)
 {
 	SDL_LockMutex(context_list_mutex);
@@ -245,18 +249,17 @@ int context_set_username(context_t * context, const char * name)
 	return TRUE;
 }
 
-/* context_set_connected
-  Set connected flag
-*/
+/**************************************
+**************************************/
 void context_set_connected(context_t * context, int connected)
 {
 	SDL_LockMutex(context_list_mutex);
 	context->connected = connected;
 	SDL_UnlockMutex(context_list_mutex);
 }
-/* context_get_connected
-  Get connection flag
-*/
+
+/**************************************
+**************************************/
 int context_get_connected(context_t * context)
 {
 	int conn = FALSE;
@@ -268,6 +271,8 @@ int context_get_connected(context_t * context)
 	return conn;
 }
 
+/**************************************
+**************************************/
 void context_set_input_stream(context_t * context, GInputStream * stream)
 {
 	SDL_LockMutex(context_list_mutex);
@@ -275,6 +280,8 @@ void context_set_input_stream(context_t * context, GInputStream * stream)
 	SDL_UnlockMutex(context_list_mutex);
 }
 
+/**************************************
+**************************************/
 GInputStream * context_get_input_stream(context_t * context)
 {
 	GInputStream * conn = NULL;
@@ -286,6 +293,8 @@ GInputStream * context_get_input_stream(context_t * context)
 	return conn;
 }
 
+/**************************************
+**************************************/
 void context_set_output_stream(context_t * context, GOutputStream * stream)
 {
 	SDL_LockMutex(context_list_mutex);
@@ -293,6 +302,8 @@ void context_set_output_stream(context_t * context, GOutputStream * stream)
 	SDL_UnlockMutex(context_list_mutex);
 }
 
+/**************************************
+**************************************/
 GOutputStream * context_get_output_stream(context_t * context)
 {
 	GOutputStream * conn = NULL;
@@ -305,6 +316,8 @@ GOutputStream * context_get_output_stream(context_t * context)
 	return conn;
 }
 
+/**************************************
+**************************************/
 void context_set_connection(context_t * context, GSocketConnection * connection)
 {
 	SDL_LockMutex(context_list_mutex);
@@ -312,6 +325,8 @@ void context_set_connection(context_t * context, GSocketConnection * connection)
 	SDL_UnlockMutex(context_list_mutex);
 }
 
+/**************************************
+**************************************/
 GSocketConnection * context_get_connection(context_t * context)
 {
 	GSocketConnection * conn = NULL;
@@ -322,11 +337,10 @@ GSocketConnection * context_get_connection(context_t * context)
 
 	return conn;
 }
-/* context_set_character_name
-  Set name
 
-  Returns FALSE if error
-*/
+/**************************************
+Returns FALSE if error
+**************************************/
 int context_set_character_name(context_t * context, const char * name)
 {
 	int ret = TRUE;
@@ -341,11 +355,10 @@ int context_set_character_name(context_t * context, const char * name)
 
 	return ret;
 }
-/* context_set_map
-  Set map name
 
-  Returns FALSE if error
-*/
+/**************************************
+Returns FALSE if error
+**************************************/
 static int _context_set_map(context_t * context, const char * map)
 {
 	int map_x;
@@ -380,6 +393,9 @@ static int _context_set_map(context_t * context, const char * map)
 
 	return TRUE;
 }
+
+/**************************************
+**************************************/
 int context_set_map(context_t * context, const char * map)
 {
 	int ret;
@@ -390,11 +406,10 @@ int context_set_map(context_t * context, const char * map)
 
 	return ret;
 }
-/* context_set_type
-  Set type name
 
-  Returns FALSE if error
-*/
+/**************************************
+Returns FALSE if error
+**************************************/
 int context_set_type(context_t * context, const char * type)
 {
 	int ret = TRUE;
@@ -410,9 +425,8 @@ int context_set_type(context_t * context, const char * type)
 	return ret;
 }
 
-/* context_set_pos_x
-  Set pos_x
-*/
+/**************************************
+**************************************/
 void context_set_pos_x(context_t * context, unsigned int pos)
 {
 	SDL_LockMutex(context_list_mutex);
@@ -420,9 +434,8 @@ void context_set_pos_x(context_t * context, unsigned int pos)
 	SDL_UnlockMutex(context_list_mutex);
 }
 
-/* context_set_pos_y
-  Set pos_y
-*/
+/**************************************
+**************************************/
 void context_set_pos_y(context_t * context, unsigned int pos)
 {
 	SDL_LockMutex(context_list_mutex);
@@ -430,9 +443,8 @@ void context_set_pos_y(context_t * context, unsigned int pos)
 	SDL_UnlockMutex(context_list_mutex);
 }
 
-/* context_set_tile_x
-  Set tile_x
-*/
+/**************************************
+**************************************/
 void context_set_tile_x(context_t * context, unsigned int pos)
 {
 	SDL_LockMutex(context_list_mutex);
@@ -440,9 +452,8 @@ void context_set_tile_x(context_t * context, unsigned int pos)
 	SDL_UnlockMutex(context_list_mutex);
 }
 
-/* context_set_tile_y
-  Set tile_y
-*/
+/**************************************
+**************************************/
 void context_set_tile_y(context_t * context, unsigned int pos)
 {
 	SDL_LockMutex(context_list_mutex);
@@ -450,11 +461,8 @@ void context_set_tile_y(context_t * context, unsigned int pos)
 	SDL_UnlockMutex(context_list_mutex);
 }
 
-/* context_set_id
-  Set id
-
-  Returns FALSE if error
-*/
+/**************************************
+**************************************/
 int context_set_id(context_t * context, const char * name)
 {
 	SDL_LockMutex(context_list_mutex);
@@ -470,12 +478,17 @@ int context_set_id(context_t * context, const char * name)
 	return TRUE;
 }
 
+/**************************************
+**************************************/
 #ifdef SERVER
 void register_lua_functions( context_t * context);
 #else
 /* Client do not use LUA for now */
 void register_lua_functions( context_t * context) {}
 #endif
+
+/**************************************
+**************************************/
 void context_new_VM(context_t * context)
 {
 	SDL_LockMutex(context_list_mutex);
@@ -489,6 +502,7 @@ void context_new_VM(context_t * context)
 	register_lua_functions(context);
 	SDL_UnlockMutex(context_list_mutex);
 }
+
 /*******************************
 Update the memory context by reading the client's character data file on disk
 *******************************/
@@ -581,7 +595,7 @@ int context_write_to_file(context_t * context)
 }
 
 /*******************************
-Find a context in memroy from its id
+Find a context in memory from its id
 *******************************/
 context_t * context_find(const char * id)
 {
@@ -706,7 +720,9 @@ int context_update_from_network_frame(context_t * context, char * frame)
 	return TRUE;
 }
 
-/* Spread the data of a context to all connected context */
+/**************************************
+Spread the data of a context to all connected context
+**************************************/
 void context_spread(context_t * context)
 {
 	context_t * ctx = NULL;
@@ -745,7 +761,7 @@ void context_spread(context_t * context)
 	} while( (ctx=ctx->next)!= NULL );
 
 	/* The existing context on the previous map should have
-	been deleted, we don't need this anymore -> this will
+	been deleted, we don't need this any more -> this will
 	generate less network request */
 	free(context->prev_map);
 	context->prev_map = NULL;
@@ -753,9 +769,10 @@ void context_spread(context_t * context)
 	SDL_UnlockMutex(context_list_mutex);
 }
 
-/*if "map" == NULL : server sends a message to all connected client
- if "map" != NULL : server sends a message to all connected clients on the map
-*/
+/**************************************
+if "map" == NULL : server sends a message to all connected client
+if "map" != NULL : server sends a message to all connected clients on the map
+**************************************/
 void context_broadcast_text(const char * map, const char * text)
 {
 	context_t * ctx = NULL;
@@ -794,8 +811,10 @@ void context_broadcast_text(const char * map, const char * text)
 	SDL_UnlockMutex(context_list_mutex);
 }
 
-/* Send the data of all existing context to the passed context */
-/* Useful at start time */
+/**************************************
+Send the data of all existing context to the passed context
+Useful at start time
+**************************************/
 void context_request_other_context(context_t * context)
 {
 	context_t * ctx = NULL;
@@ -829,7 +848,9 @@ void context_request_other_context(context_t * context)
 	SDL_UnlockMutex(context_list_mutex);
 }
 
-/* Called from client */
+/**************************************
+Called from client
+**************************************/
 void context_add_or_update_from_network_frame(context_t * context,char * data)
 {
 	context_t * ctx = NULL;
@@ -939,7 +960,9 @@ void context_add_or_update_from_network_frame(context_t * context,char * data)
 	free(type);
 }
 
-/* Broadcast upload of a file to all connected context */
+/**************************************
+Broadcast upload of a file to all connected context
+**************************************/
 void context_broadcast_file(const char * table, const char * file, int same_map_only)
 {
 	context_t * ctx = NULL;
@@ -977,7 +1000,9 @@ void context_broadcast_file(const char * table, const char * file, int same_map_
 	SDL_UnlockMutex(context_list_mutex);
 }
 
-/* Return the distance between two contexts */
+/**************************************
+Return the distance between two contexts
+**************************************/
 int context_distance(context_t * ctx1, context_t * ctx2)
 {
 	int distx;
@@ -995,8 +1020,10 @@ int context_distance(context_t * ctx1, context_t * ctx2)
 	return (distx>disty?distx:disty);
 }
 
-/* Reset all contexts position information used for smooth animation */
-/* Called on screen switch */
+/**************************************
+Reset all contexts position information used for smooth animation
+Called on screen switch
+**************************************/
 void context_reset_all_position()
 {
 	context_t * ctx = context_get_list_first();

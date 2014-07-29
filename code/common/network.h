@@ -25,25 +25,26 @@
 
 void network_init(void);
 int network_open_data_connection(context_t * context);
-void network_send_command(context_t * context, guint32 command, gsize count, const gchar *data,gboolean is_data);
+void network_send_command(context_t * context, Uint32 command, long int count, const char *data, int is_data);
 void network_send_character_file(context_t * context);
-gboolean network_connect(context_t * context, const gchar * hostname);
-void network_login(context_t * context, const gchar * name, const gchar * password);
+int network_connect(context_t * context, const char * hostname);
+void network_login(context_t * context, const char * name, const char * password);
 void network_request_character_list(context_t * context);
-void network_request_character_marquee(context_t * context, gchar * character_name);
+void network_request_character_marquee(context_t * context, char * character_name);
 void network_request_user_character_list(context_t * context);
 void network_request_character_data(context_t * context);
 void network_send_context(context_t * context);
 void network_send_context_to_context(context_t * dest_ctx, context_t * src_ctx);
-void network_send_text(const gchar * id, const gchar * string);
-void network_broadcast_text(context_t * context, const gchar * text);
-void network_send_action(context_t * context, gchar * frame,...);
-int network_send_file(context_t * context, gchar * filename);
+void network_send_text(const char * id, const char * string);
+void network_broadcast_text(context_t * context, const char * text);
+void network_send_action(context_t * context, char * frame,...);
+int network_send_file(context_t * context, char * filename);
 int network_send_table_file(context_t * context, char * table, char * filename);
-void network_send_req_file(context_t * context, gchar * file);
-void network_send_entry_int(context_t * context, const gchar * table, const gchar * file, const gchar *path, int value);
-void network_broadcast_entry_int(const gchar * table, const gchar * file, const gchar * path, gint value, gboolean same_map_only);
+void network_send_req_file(context_t * context, char * file);
+void network_send_entry_int(context_t * context, const char * table, const char * file, const char *path, int value);
+void network_broadcast_entry_int(const char * table, const char * file, const char * path, int value, int same_map_only);
 
 /* The code of this function is in parser.c in both client and server directory */
-gboolean parse_incoming_data(context_t * context, guint32 command, guint32 command_size, gchar * data);
+int parse_incoming_data(context_t * context, Uint32 command, Uint32 command_size, char * data);
 #endif
+

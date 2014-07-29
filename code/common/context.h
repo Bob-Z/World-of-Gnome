@@ -42,9 +42,8 @@ typedef struct context {
 	GSocketConnection * data_connection;
 	GInputStream * 	input_data_stream;
 	GOutputStream * output_data_stream;
+	SDL_mutex*		send_mutex; /* Asynchronous network send */
 	char *		hostname;
-	GThreadPool *	send_thread;
-	GMutex		send_mutex;
 
 	SDL_Renderer * render;
 	SDL_Window * window;
