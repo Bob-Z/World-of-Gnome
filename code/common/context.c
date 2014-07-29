@@ -121,7 +121,9 @@ void context_free(context_t * context)
 
 	SDL_LockMutex(context_list_mutex);
 
-	free(context->user_name);
+	if( context->user_name ) {
+		free(context->user_name);
+	}
 	context->user_name = NULL;
 	context->connected = FALSE;
 	if( context->connection != NULL) {
@@ -139,25 +141,41 @@ void context_free(context_t * context)
 	context->input_data_stream = NULL;
 	context->output_data_stream = NULL;
 	SDL_DestroyMutex(context->send_mutex);
-	free(context->hostname);
+	if( context->hostname ) {
+		free(context->hostname);
+	}
 	context->hostname = NULL;
-	free(context->character_name);
+	if( context->character_name ) {
+		free(context->character_name);
+	}
 	context->character_name = NULL;
-	free(context->map);
+	if( context->map ) {
+		free(context->map);
+	}
 	context->map = NULL;
-	free(context->type);
+	if( context->type ) {
+		free(context->type);
+	}
 	context->type = NULL;
 	context->selection.id = NULL;
 	context->selection.map_coord[0] = -1;
 	context->selection.map_coord[1] = -1;
 	context->selection.map = NULL;
-	free(context->selection.inventory);
+	if( context->selection.inventory ) {
+		free(context->selection.inventory);
+	}
 	context->selection.inventory = NULL;
-	free(context->selection.equipment);
+	if( context->selection.equipment ) {
+		free(context->selection.equipment);
+	}
 	context->selection.equipment = NULL;
-	free(context->id);
+	if( context->id ) {
+		free(context->id);
+	}
 	context->id = NULL;
-	free(context->prev_map);
+	if( context->prev_map ) {
+		free(context->prev_map);
+	}
 	context->prev_map = NULL;
 	if( context->luaVM != NULL) {
 		lua_close(context->luaVM);
@@ -467,7 +485,9 @@ int context_set_id(context_t * context, const char * name)
 {
 	SDL_LockMutex(context_list_mutex);
 
-	free( context->id );
+	if( context->id ) {
+		free( context->id );
+	}
 	context->id = strdup(name);
 	if( context->id == NULL ) {
 		SDL_UnlockMutex(context_list_mutex);
@@ -903,10 +923,15 @@ void context_add_or_update_from_network_frame(context_t * context,char * data)
 
 	while( ctx != NULL ) {
 		if( strcmp( id, ctx->id) == 0 ) {
+			free(id);
 			if( connected != FALSE ) {
 				wlog(LOGDEBUG,"Updating context %s / %s",user_name,name);
+				free(user_name);
+				free(name);
+
 				/* do not call context_set_* function since we already have the lock */
 				_context_set_map(ctx,map);
+				free(map);
 
 				ctx->pos_x = pos_x;
 				ctx->pos_y = pos_y;
@@ -916,10 +941,6 @@ void context_add_or_update_from_network_frame(context_t * context,char * data)
 
 				free(ctx->type);
 				ctx->type = type;
-
-				free(user_name);
-				free(name);
-				free(id);
 
 				SDL_UnlockMutex(context_list_mutex);
 			} else {
@@ -958,6 +979,7 @@ void context_add_or_update_from_network_frame(context_t * context,char * data)
 	free(name);
 	free(map);
 	free(type);
+	free(id);
 }
 
 /**************************************
