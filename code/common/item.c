@@ -17,51 +17,54 @@
    Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
-#include <glib.h>
-#include <glib/gprintf.h>
-#include <glib/gstdio.h>
-#include <gio/gio.h>
 #include "../common/common.h"
 #include <dirent.h>
 #include <string.h>
 
-/******************************
+/********************************************
  Create an empty new item
  return the id of the newly created item
  the returned string must be freed by caller
  return NULL if fails
-*******************************/
-gchar * item_create_empty()
+********************************************/
+char * item_create_empty()
 {
 	return file_new(ITEM_TABLE);
 }
 
-/*****************************
+/**************************************************
  Create a new item based on the specified template
  return the id of the newly created item
  the returned string must be freed by caller
  return NULL if fails
-*****************************/
-gchar * item_create_from_template(const gchar * template)
+**************************************************/
+char * item_create_from_template(const char * template)
 {
-	gchar * new_name;
-	gchar * templatename;
-	gchar * newfilename;
-	GFile * templatefile;
-	GFile * newfile;
+	char * new_name;
+	char templatename[512] = "";
+	char newfilename[512] = "";
 
 	new_name = file_new(ITEM_TABLE);
 
-	templatename = g_strconcat( g_getenv("HOME"),"/", base_directory, "/", ITEM_TEMPLATE_TABLE, "/", template,  NULL);
-	templatefile = g_file_new_for_path(templatename);
+	strcat(templatename,getenv("HOME"));
+	strcat(templatename,"/");
+	strcat(templatename,base_directory);
+	strcat(templatename,"/");
+	strcat(templatename,ITEM_TEMPLATE_TABLE);
+	strcat(templatename,"/");
+	strcat(templatename,template);
 
-	newfilename = g_strconcat( g_getenv("HOME"),"/", base_directory, "/", ITEM_TABLE, "/", new_name,  NULL);
-	newfile = g_file_new_for_path(newfilename);
+	strcat(newfilename,getenv("HOME"));
+	strcat(newfilename,"/");
+	strcat(newfilename,base_directory);
+	strcat(newfilename,"/");
+	strcat(newfilename,ITEM_TABLE);
+	strcat(newfilename,"/");
+	strcat(newfilename,new_name);
 
-	if( g_file_copy(templatefile,newfile, G_FILE_COPY_OVERWRITE,NULL,NULL,NULL,NULL) == FALSE ) {
-		g_free(new_name);
-		return NULL;
-	}
+	file_copy(templatename,newfilename);
+
+	free(new_name);
 
 	return new_name;
 }
@@ -70,51 +73,57 @@ gchar * item_create_from_template(const gchar * template)
 Remove an item file
 return -1 if fails
 *****************************/
-gint item_destroy(const gchar * item_id)
+int item_destroy(const char * item_id)
 {
-	gchar * filename;
+	char filename[512] = "";
 
-	filename = g_strconcat( g_getenv("HOME"),"/", base_directory, "/", ITEM_TABLE, "/", item_id, NULL);
+	strcat(filename,ITEM_TABLE);
+	strcat(filename,"/");
+	strcat(filename,item_id);
 
-	g_remove(filename);
+	entry_destroy(filename);
 
 	return 0;
 }
 
-/*****************************
+/***********************************************************
  Create a new item resource based on the specified template
  with the specified quantity
  return the id of the newly created item
  the returned string must be freed by caller
  return NULL if fails
-*****************************/
+***********************************************************/
 char * item_resource_new(const char * template, int quantity)
 {
-	char * new_name;
+	char * new_id;
+	char filename[512] = "";
 
-	new_name = item_create_empty();
-	if( new_name == NULL ) {
+	new_id = item_create_empty();
+	if( new_id == NULL ) {
 		return NULL;
 	}
 
-	if(!write_string(ITEM_TABLE,new_name,template,ITEM_TEMPLATE, NULL)) {
-		free(new_name);
+	strcat(filename,ITEM_TABLE);
+	strcat(filename,"/");
+	strcat(filename,new_id);
+
+	if(!write_string(ITEM_TABLE,new_id,template,ITEM_TEMPLATE, NULL)) {
+		entry_destroy(new_id);
 		return NULL;
 	}
 
-	if(!write_int(ITEM_TABLE,new_name,quantity,ITEM_QUANTITY, NULL)) {
-		free(new_name);
+	if(!write_int(ITEM_TABLE,new_id,quantity,ITEM_QUANTITY, NULL)) {
+		entry_destroy(new_id);
 		return NULL;
 	}
 
-	return new_name;
+	return new_id;
 }
 
-/************************************************
+/*****************************************************
  return template name of resource
  return NULL  if item is unique (i.e. not a resource)
- if not NULL, MUST BE FREED by caller
-************************************************/
+ *****************************************************/
 const char * item_is_resource(const char * item_id)
 {
 	const char * template = NULL;
@@ -164,7 +173,7 @@ int item_set_quantity(const char * item_id, int quantity)
 }
 
 /*****************************
- Retrun the name of an item
+ Return the name of an item
  return NULL on error
 *****************************/
 const char * item_get_name(const char * item_id)

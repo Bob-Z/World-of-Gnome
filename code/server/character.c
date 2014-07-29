@@ -134,11 +134,12 @@ return NULL if fails
 *******************************************************/
 char * character_create_from_template(context_t * ctx,const char * template,const char * map, int x, int y)
 {
-	char * new_name;
+	char * new_id;
 	char templatename[512] = "";
-	char newfilename[512] = "";
+	char fullname[512] = "";
+	char filename[512] = "";
 
-	new_name = file_new(CHARACTER_TABLE);
+	new_id = file_new(CHARACTER_TABLE);
 
 	strcat(templatename,getenv("HOME"));
 	strcat(templatename,"/");
@@ -148,43 +149,45 @@ char * character_create_from_template(context_t * ctx,const char * template,cons
 	strcat(templatename,"/");
 	strcat(templatename,template);
 
-	strcat(newfilename,getenv("HOME"));
-	strcat(newfilename,"/");
-	strcat(newfilename,base_directory);
-	strcat(newfilename,"/");
-	strcat(newfilename,CHARACTER_TABLE);
-	strcat(newfilename,"/");
-	strcat(newfilename,new_name);
+	strcat(filename,CHARACTER_TABLE);
+	strcat(filename,"/");
+	strcat(filename,new_id);
 
-	file_copy(templatename,newfilename);
+	strcat(fullname,getenv("HOME"));
+	strcat(fullname,"/");
+	strcat(fullname,base_directory);
+	strcat(fullname,"/");
+	strcat(fullname,filename);
+
+	file_copy(templatename,fullname);
 
 	/* Check if new character is allowed to be created here */
-	if(!map_check_tile(ctx,new_name,map,x,y)) {
-		entry_destroy(new_name);
-		free(new_name);
+	if(!map_check_tile(ctx,new_id,map,x,y)) {
+		entry_destroy(filename);
+		free(new_id);
 		return NULL;
 	}
 
 	/* Write position */
-	if(!write_string(CHARACTER_TABLE,new_name,map,CHARACTER_KEY_MAP,NULL)) {
-		entry_destroy(new_name);
-		free(new_name);
+	if(!write_string(CHARACTER_TABLE,new_id,map,CHARACTER_KEY_MAP,NULL)) {
+		entry_destroy(filename);
+		free(new_id);
 		return NULL;
 	}
 
-	if(!write_int(CHARACTER_TABLE,new_name,x,CHARACTER_KEY_POS_X,NULL)) {
-		entry_destroy(new_name);
-		free(new_name);
+	if(!write_int(CHARACTER_TABLE,new_id,x,CHARACTER_KEY_POS_X,NULL)) {
+		entry_destroy(filename);
+		free(new_id);
 		return NULL;
 	}
 
-	if(!write_int(CHARACTER_TABLE,new_name,y,CHARACTER_KEY_POS_Y,NULL)) {
-		entry_destroy(new_name);
-		free(new_name);
+	if(!write_int(CHARACTER_TABLE,new_id,y,CHARACTER_KEY_POS_Y,NULL)) {
+		entry_destroy(filename);
+		free(new_id);
 		return NULL;
 	}
 
-	return new_name;
+	return new_id;
 }
 
 /***********************************************************************
@@ -354,4 +357,3 @@ int character_set_npc(const char * id, int npc)
 
 	return 0;
 }
-
