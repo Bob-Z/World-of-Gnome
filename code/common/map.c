@@ -63,6 +63,7 @@ char * map_new(int x,int y, int tile_x, int tile_y, char * default_tile)
 	for(i=0; i<(x*y); i++) {
 		tile_array[i] = default_tile;
 	}
+	tile_array[i] = NULL; /* End of list */
 	if (!write_list(MAP_TABLE,map_name,tile_array,MAP_KEY_SET, NULL) ) {
 		free(map_name);
 		return NULL;
