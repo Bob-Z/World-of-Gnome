@@ -934,23 +934,6 @@ void context_add_or_update_from_network_frame(context_t * context,char * data)
 				_context_set_map(ctx,map);
 				free(map);
 
-				/* compute sprite direction */
-				if( ctx->pos_x != pos_x || ctx->pos_y != pos_y ) {
-					ctx->direction = 0;
-				}
-				if( pos_x > ctx->pos_x ) {
-					ctx->direction |= DIRECTION_E;
-				}
-				if( pos_x < ctx->pos_x ) {
-					ctx->direction |= DIRECTION_W;
-				}
-				if( pos_y > ctx->pos_y ) {
-					ctx->direction |= DIRECTION_S;
-				}
-				if( pos_y < ctx->pos_y ) {
-					ctx->direction |= DIRECTION_N;
-				}
-
 				ctx->pos_x = pos_x;
 				ctx->pos_y = pos_y;
 

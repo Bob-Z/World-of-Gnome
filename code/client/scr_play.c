@@ -35,6 +35,11 @@
 #define ITEM_FONT "/usr/share/fonts/truetype/ubuntu-font-family/Ubuntu-C.ttf"
 #define ITEM_FONT_SIZE 15
 
+#define NORTH (1<<0)
+#define SOUTH (1<<1)
+#define EAST (1<<2)
+#define WEST (1<<3)
+
 static char ** attribute_string = NULL;
 static char text_buffer[2048];
 
@@ -291,6 +296,8 @@ static void compose_sprite(context_t * ctx)
 	int ox;
 	int oy;
 	Uint32 timer;
+	int angle;
+	int flip;
 	context_t * player_context = context_get_list_first();
 
 	context_lock_list();
@@ -341,12 +348,84 @@ static void compose_sprite(context_t * ctx)
 		if( ctx->pos_tick + VIRTUAL_ANIM_DURATION < timer ) {
 			ctx->old_pos_x = ctx->cur_pos_x;
 			ctx->old_pos_y = ctx->cur_pos_y;
+		}
+
 		/* Detect sprite movement, initiate animation */
-			if(ctx->pos_x != ctx->old_pos_x||ctx->pos_y != ctx->old_pos_y){
-				ctx->pos_tick = timer;
-				ctx->cur_pos_x = ctx->pos_x;
-				ctx->cur_pos_y = ctx->pos_y;
+		if(ctx->pos_x != ctx->cur_pos_x||ctx->pos_y != ctx->cur_pos_y){
+			ctx->pos_tick = timer;
+
+			/* Compute direction */
+			ctx->direction = 0;
+			if( ctx->pos_x > ctx->cur_pos_x ) {
+				ctx->direction |= EAST;
 			}
+			if( ctx->pos_x < ctx->cur_pos_x ) {
+				ctx->direction |= WEST;
+			}
+			if( ctx->pos_y > ctx->cur_pos_y ) {
+				ctx->direction |= SOUTH;
+			}
+			if( ctx->pos_y < ctx->cur_pos_y ) {
+				ctx->direction |= NORTH;
+			}
+
+			ctx->cur_pos_x = ctx->pos_x;
+			ctx->cur_pos_y = ctx->pos_y;
+		}
+
+		/* Get flip configuration */
+		if( ctx->direction & NORTH ) {
+			read_int(CHARACTER_TABLE,ctx->id,&flip,CHARACTER_KEY_DIR_N_FLIP,NULL);
+		}
+		if( ctx->direction & SOUTH ) {
+			read_int(CHARACTER_TABLE,ctx->id,&flip,CHARACTER_KEY_DIR_S_FLIP,NULL);
+		}
+		if( ctx->direction & WEST ) {
+			read_int(CHARACTER_TABLE,ctx->id,&flip,CHARACTER_KEY_DIR_W_FLIP,NULL);
+		}
+		if( ctx->direction & EAST ) {
+			read_int(CHARACTER_TABLE,ctx->id,&flip,CHARACTER_KEY_DIR_E_FLIP,NULL);
+		}
+
+		switch(flip) {
+			case 1: item_set_flip(item,SDL_FLIP_HORIZONTAL);break;
+			case 2: item_set_flip(item,SDL_FLIP_VERTICAL);break;
+			case 3: item_set_flip(item,SDL_FLIP_HORIZONTAL|SDL_FLIP_VERTICAL);break;
+			default: item_set_flip(item,SDL_FLIP_NONE);
+		}
+
+		/* Get rotation configuration */
+		if( ctx->direction & NORTH && ctx->direction & EAST ) {
+			read_int(CHARACTER_TABLE,ctx->id,&angle,CHARACTER_KEY_DIR_NE_ROT,NULL);
+			item_set_angle(item,(double)angle);
+		}
+		else if ( ctx->direction & SOUTH && ctx->direction & EAST ) {
+			read_int(CHARACTER_TABLE,ctx->id,&angle,CHARACTER_KEY_DIR_SE_ROT,NULL);
+			item_set_angle(item,(double)angle);
+		}
+		else if ( ctx->direction & SOUTH && ctx->direction & WEST ) {
+			read_int(CHARACTER_TABLE,ctx->id,&angle,CHARACTER_KEY_DIR_SW_ROT,NULL);
+			item_set_angle(item,(double)angle);
+		}
+		else if ( ctx->direction & NORTH && ctx->direction & WEST ) {
+			read_int(CHARACTER_TABLE,ctx->id,&angle,CHARACTER_KEY_DIR_NW_ROT,NULL);
+			item_set_angle(item,(double)angle);
+		}
+		else if ( ctx->direction & NORTH ) {
+			read_int(CHARACTER_TABLE,ctx->id,&angle,CHARACTER_KEY_DIR_N_ROT,NULL);
+			item_set_angle(item,(double)angle);
+		}
+		else if ( ctx->direction & SOUTH ) {
+			read_int(CHARACTER_TABLE,ctx->id,&angle,CHARACTER_KEY_DIR_S_ROT,NULL);
+			item_set_angle(item,(double)angle);
+		}
+		else if ( ctx->direction & WEST ) {
+			read_int(CHARACTER_TABLE,ctx->id,&angle,CHARACTER_KEY_DIR_W_ROT,NULL);
+			item_set_angle(item,(double)angle);
+		}
+		else if ( ctx->direction & EAST ) {
+			read_int(CHARACTER_TABLE,ctx->id,&angle,CHARACTER_KEY_DIR_E_ROT,NULL);
+			item_set_angle(item,(double)angle);
 		}
 
 		/* Get position in pixel */

@@ -25,11 +25,6 @@
 #include <lua.h>
 #include <SDL2/SDL.h>
 
-#define DIRECTION_N (1<<0)
-#define DIRECTION_S (1<<1)
-#define DIRECTION_W (1<<2)
-#define DIRECTION_E (1<<3)
-
 typedef struct selection {
 	char *		id;	/* a character id */
 	int		map_coord[2];	/* a tile map */

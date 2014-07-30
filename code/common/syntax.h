@@ -65,6 +65,19 @@
 #define CHARACTER_KEY_AI_PARAMS	"ai_params"
 #define CHARACTER_KEY_AGGRO_DIST	"aggro_dist"
 #define CHARACTER_KEY_AGGRO_SCRIPT	"aggro_script"
+#define CHARACTER_KEY_DIR_N_ROT		"dir_n_rot"
+#define CHARACTER_KEY_DIR_NE_ROT	"dir_ne_rot"
+#define CHARACTER_KEY_DIR_E_ROT		"dir_e_rot"
+#define CHARACTER_KEY_DIR_SE_ROT	"dir_se_rot"
+#define CHARACTER_KEY_DIR_S_ROT		"dir_s_rot"
+#define CHARACTER_KEY_DIR_SW_ROT	"dir_sw_rot"
+#define CHARACTER_KEY_DIR_W_ROT		"dir_w_rot"
+#define CHARACTER_KEY_DIR_NW_ROT	"dir_nw_rot"
+/* flip : 1 = horizontal, 2 = vertical, 3 = both */
+#define CHARACTER_KEY_DIR_N_FLIP	"dir_n_flip"
+#define CHARACTER_KEY_DIR_S_FLIP	"dir_s_flip"
+#define CHARACTER_KEY_DIR_W_FLIP	"dir_w_flip"
+#define CHARACTER_KEY_DIR_E_FLIP	"dir_e_flip"
 
 #define CHARACTER_TEMPLATE_TABLE	"character_template"
 
