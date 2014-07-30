@@ -355,17 +355,20 @@ static void compose_sprite(context_t * ctx)
 			ctx->pos_tick = timer;
 
 			/* Compute direction */
-			ctx->direction = 0;
 			if( ctx->pos_x > ctx->cur_pos_x ) {
+				ctx->direction &= ~WEST;
 				ctx->direction |= EAST;
 			}
 			if( ctx->pos_x < ctx->cur_pos_x ) {
+				ctx->direction &= ~WEST;
 				ctx->direction |= WEST;
 			}
 			if( ctx->pos_y > ctx->cur_pos_y ) {
+				ctx->direction &= ~NORTH;
 				ctx->direction |= SOUTH;
 			}
 			if( ctx->pos_y < ctx->cur_pos_y ) {
+				ctx->direction &= ~SOUTH;
 				ctx->direction |= NORTH;
 			}
 
