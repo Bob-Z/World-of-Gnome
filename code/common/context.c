@@ -76,6 +76,7 @@ void context_init(context_t * context)
 	context->luaVM = NULL;
 	context->cond = NULL;
 	context->cond_mutex = NULL;
+	context->direction = 0;
 	context->previous = NULL;
 	context->next = NULL;
 }
@@ -932,6 +933,23 @@ void context_add_or_update_from_network_frame(context_t * context,char * data)
 				/* do not call context_set_* function since we already have the lock */
 				_context_set_map(ctx,map);
 				free(map);
+
+				/* compute sprite direction */
+				if( ctx->pos_x != pos_x || ctx->pos_y != pos_y ) {
+					ctx->direction = 0;
+				}
+				if( pos_x > ctx->pos_x ) {
+					ctx->direction |= DIRECTION_E;
+				}
+				if( pos_x < ctx->pos_x ) {
+					ctx->direction |= DIRECTION_W;
+				}
+				if( pos_y > ctx->pos_y ) {
+					ctx->direction |= DIRECTION_S;
+				}
+				if( pos_y < ctx->pos_y ) {
+					ctx->direction |= DIRECTION_N;
+				}
 
 				ctx->pos_x = pos_x;
 				ctx->pos_y = pos_y;
