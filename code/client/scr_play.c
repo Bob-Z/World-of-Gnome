@@ -360,7 +360,7 @@ static void compose_sprite(context_t * ctx)
 				ctx->direction |= EAST;
 			}
 			if( ctx->pos_x < ctx->cur_pos_x ) {
-				ctx->direction &= ~WEST;
+				ctx->direction &= ~EAST;
 				ctx->direction |= WEST;
 			}
 			if( ctx->pos_y > ctx->cur_pos_y ) {
