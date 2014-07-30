@@ -387,28 +387,6 @@ static void compose_sprite(context_t * ctx)
 			ctx->cur_pos_y = ctx->pos_y;
 		}
 
-		/* Get flip configuration */
-		flip = 0;
-		if( ctx->direction & NORTH ) {
-			read_int(CHARACTER_TABLE,ctx->id,&flip,CHARACTER_KEY_DIR_N_FLIP,NULL);
-		}
-		if( ctx->direction & SOUTH ) {
-			read_int(CHARACTER_TABLE,ctx->id,&flip,CHARACTER_KEY_DIR_S_FLIP,NULL);
-		}
-		if( ctx->direction & WEST ) {
-			read_int(CHARACTER_TABLE,ctx->id,&flip,CHARACTER_KEY_DIR_W_FLIP,NULL);
-		}
-		if( ctx->direction & EAST ) {
-			read_int(CHARACTER_TABLE,ctx->id,&flip,CHARACTER_KEY_DIR_E_FLIP,NULL);
-		}
-
-		switch(flip) {
-			case 1: item_set_flip(item,SDL_FLIP_HORIZONTAL);break;
-			case 2: item_set_flip(item,SDL_FLIP_VERTICAL);break;
-			case 3: item_set_flip(item,SDL_FLIP_HORIZONTAL|SDL_FLIP_VERTICAL);break;
-			default: item_set_flip(item,SDL_FLIP_NONE);
-		}
-
 		/* Get rotation configuration */
 		angle = 0;
 		if( ctx->orientation & NORTH && ctx->orientation & EAST ) {
@@ -442,6 +420,30 @@ static void compose_sprite(context_t * ctx)
 		else if ( ctx->orientation & EAST ) {
 			read_int(CHARACTER_TABLE,ctx->id,&angle,CHARACTER_KEY_DIR_E_ROT,NULL);
 			item_set_angle(item,(double)angle);
+		}
+
+		/* Get flip configuration */
+		flip = 0;
+		if( angle == 0 ) {
+			if( ctx->direction & NORTH ) {
+				read_int(CHARACTER_TABLE,ctx->id,&flip,CHARACTER_KEY_DIR_N_FLIP,NULL);
+			}
+			if( ctx->direction & SOUTH ) {
+				read_int(CHARACTER_TABLE,ctx->id,&flip,CHARACTER_KEY_DIR_S_FLIP,NULL);
+			}
+			if( ctx->direction & WEST ) {
+				read_int(CHARACTER_TABLE,ctx->id,&flip,CHARACTER_KEY_DIR_W_FLIP,NULL);
+			}
+			if( ctx->direction & EAST ) {
+				read_int(CHARACTER_TABLE,ctx->id,&flip,CHARACTER_KEY_DIR_E_FLIP,NULL);
+			}
+
+			switch(flip) {
+				case 1: item_set_flip(item,SDL_FLIP_HORIZONTAL);break;
+				case 2: item_set_flip(item,SDL_FLIP_VERTICAL);break;
+				case 3: item_set_flip(item,SDL_FLIP_HORIZONTAL|SDL_FLIP_VERTICAL);break;
+				default: item_set_flip(item,SDL_FLIP_NONE);
+			}
 		}
 
 		/* Get position in pixel */
