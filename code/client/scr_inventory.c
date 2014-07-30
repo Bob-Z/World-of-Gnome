@@ -232,9 +232,9 @@ item_t * scr_inventory_compose(context_t * ctx)
 	compose_select(ctx);
 
 	sdl_free_keycb(NULL);
-	sdl_add_keycb(SDL_SCANCODE_I,key_close);
-	sdl_add_keycb(SDL_SCANCODE_ESCAPE,key_close);
-	sdl_add_keycb(SDL_SCANCODE_SPACE,key_close);
+	sdl_add_keycb(SDL_SCANCODE_I,key_close,NULL,NULL);
+	sdl_add_keycb(SDL_SCANCODE_ESCAPE,key_close,NULL,NULL);
+	sdl_add_keycb(SDL_SCANCODE_SPACE,key_close,NULL,NULL);
 
 	return item_list;
 }

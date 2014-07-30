@@ -862,11 +862,11 @@ item_t * scr_play_compose(context_t * ctx)
 	}
 
 	sdl_free_keycb(NULL);
-	sdl_add_keycb(SDL_SCANCODE_UP,key_up);
-	sdl_add_keycb(SDL_SCANCODE_DOWN,key_down);
-	sdl_add_keycb(SDL_SCANCODE_LEFT,key_left);
-	sdl_add_keycb(SDL_SCANCODE_RIGHT,key_right);
-	sdl_add_keycb(SDL_SCANCODE_I,show_inventory);
+	sdl_add_keycb(SDL_SCANCODE_UP,key_up,NULL,NULL);
+	sdl_add_keycb(SDL_SCANCODE_DOWN,key_down,NULL,NULL);
+	sdl_add_keycb(SDL_SCANCODE_LEFT,key_left,NULL,NULL);
+	sdl_add_keycb(SDL_SCANCODE_RIGHT,key_right,NULL,NULL);
+	sdl_add_keycb(SDL_SCANCODE_I,show_inventory,NULL,NULL);
 
 	return item_list;
 }
