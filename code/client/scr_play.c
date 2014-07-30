@@ -354,22 +354,33 @@ static void compose_sprite(context_t * ctx)
 		if(ctx->pos_x != ctx->cur_pos_x||ctx->pos_y != ctx->cur_pos_y){
 			ctx->pos_tick = timer;
 
+			/* flip need to remember previous direction to avoid resetting a
+			east -> west flip when a sprite goes to north for instance.
+			On the contrary rotation must not remember previous state, or
+			the rotation will be wrong.
+			Hence the distinction between orientation (no memory) and
+			direction (memory). */
+			ctx->orientation = 0;
 			/* Compute direction */
 			if( ctx->pos_x > ctx->cur_pos_x ) {
 				ctx->direction &= ~WEST;
 				ctx->direction |= EAST;
+				ctx->orientation |= EAST;
 			}
 			if( ctx->pos_x < ctx->cur_pos_x ) {
 				ctx->direction &= ~EAST;
 				ctx->direction |= WEST;
+				ctx->orientation |= WEST;
 			}
 			if( ctx->pos_y > ctx->cur_pos_y ) {
 				ctx->direction &= ~NORTH;
 				ctx->direction |= SOUTH;
+				ctx->orientation |= SOUTH;
 			}
 			if( ctx->pos_y < ctx->cur_pos_y ) {
 				ctx->direction &= ~SOUTH;
 				ctx->direction |= NORTH;
+				ctx->orientation |= NORTH;
 			}
 
 			ctx->cur_pos_x = ctx->pos_x;
@@ -400,35 +411,35 @@ static void compose_sprite(context_t * ctx)
 
 		/* Get rotation configuration */
 		angle = 0;
-		if( ctx->direction & NORTH && ctx->direction & EAST ) {
+		if( ctx->orientation & NORTH && ctx->orientation & EAST ) {
 			read_int(CHARACTER_TABLE,ctx->id,&angle,CHARACTER_KEY_DIR_NE_ROT,NULL);
 			item_set_angle(item,(double)angle);
 		}
-		else if ( ctx->direction & SOUTH && ctx->direction & EAST ) {
+		else if ( ctx->orientation & SOUTH && ctx->orientation & EAST ) {
 			read_int(CHARACTER_TABLE,ctx->id,&angle,CHARACTER_KEY_DIR_SE_ROT,NULL);
 			item_set_angle(item,(double)angle);
 		}
-		else if ( ctx->direction & SOUTH && ctx->direction & WEST ) {
+		else if ( ctx->orientation & SOUTH && ctx->orientation & WEST ) {
 			read_int(CHARACTER_TABLE,ctx->id,&angle,CHARACTER_KEY_DIR_SW_ROT,NULL);
 			item_set_angle(item,(double)angle);
 		}
-		else if ( ctx->direction & NORTH && ctx->direction & WEST ) {
+		else if ( ctx->orientation & NORTH && ctx->orientation & WEST ) {
 			read_int(CHARACTER_TABLE,ctx->id,&angle,CHARACTER_KEY_DIR_NW_ROT,NULL);
 			item_set_angle(item,(double)angle);
 		}
-		else if ( ctx->direction & NORTH ) {
+		else if ( ctx->orientation & NORTH ) {
 			read_int(CHARACTER_TABLE,ctx->id,&angle,CHARACTER_KEY_DIR_N_ROT,NULL);
 			item_set_angle(item,(double)angle);
 		}
-		else if ( ctx->direction & SOUTH ) {
+		else if ( ctx->orientation & SOUTH ) {
 			read_int(CHARACTER_TABLE,ctx->id,&angle,CHARACTER_KEY_DIR_S_ROT,NULL);
 			item_set_angle(item,(double)angle);
 		}
-		else if ( ctx->direction & WEST ) {
+		else if ( ctx->orientation & WEST ) {
 			read_int(CHARACTER_TABLE,ctx->id,&angle,CHARACTER_KEY_DIR_W_ROT,NULL);
 			item_set_angle(item,(double)angle);
 		}
-		else if ( ctx->direction & EAST ) {
+		else if ( ctx->orientation & EAST ) {
 			read_int(CHARACTER_TABLE,ctx->id,&angle,CHARACTER_KEY_DIR_E_ROT,NULL);
 			item_set_angle(item,(double)angle);
 		}

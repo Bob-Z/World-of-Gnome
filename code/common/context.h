@@ -69,6 +69,7 @@ typedef struct context {
 	lua_State*	luaVM; /* LUA state */
 	SDL_cond*	cond;	/* async condition for npc */
 	SDL_mutex*	cond_mutex;/* mutex for async condition for npc */
+	int		orientation; /* Bit field for sprite orientation (north east, south...)*/
 	int		direction; /* Bit field for sprite direction (north, south...)*/
 
 	struct context*	previous;
