@@ -377,6 +377,7 @@ static void compose_sprite(context_t * ctx)
 		}
 
 		/* Get flip configuration */
+		flip = 0;
 		if( ctx->direction & NORTH ) {
 			read_int(CHARACTER_TABLE,ctx->id,&flip,CHARACTER_KEY_DIR_N_FLIP,NULL);
 		}
@@ -398,6 +399,7 @@ static void compose_sprite(context_t * ctx)
 		}
 
 		/* Get rotation configuration */
+		angle = 0;
 		if( ctx->direction & NORTH && ctx->direction & EAST ) {
 			read_int(CHARACTER_TABLE,ctx->id,&angle,CHARACTER_KEY_DIR_NE_ROT,NULL);
 			item_set_angle(item,(double)angle);
