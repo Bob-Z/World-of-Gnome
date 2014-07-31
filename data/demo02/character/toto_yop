@@ -6,7 +6,7 @@ type = "human";
 map = "test";
 pos_x = 1;
 pos_y = 6;
-dir_w_flip = 1;
+flip_w = 1;
 action = [ "add_white", "add_black", "get", "drop_item", "get_apple", "eat_apple", "remove_life", "hit", "wear_equip", "remove_equip", "set_trap", "disarm_trap" ];
 allowed_tile = "ground";
 attribute : 
