@@ -130,10 +130,7 @@ static void compose_inventory(context_t * ctx)
 	       quantity = item_get_quantity(inventory_list[i]);
 	       sprintf(buf,"%d",quantity);
 
-		item = item_list_add(item_list);
-		if(item_list == NULL) {
-			item_list = item;
-		}
+		item = item_list_add(&item_list);
 
 		item_set_anim(item,x,0,anim);
 		item_set_string(item,buf);
@@ -186,10 +183,7 @@ static void compose_select(context_t * ctx)
 	}
 
 	if(inventory_list[i]) {
-		item = item_list_add(item_list);
-		if(item_list == NULL) {
-			item_list = item;
-		}
+		item = item_list_add(&item_list);
 		item_set_anim(item,x,0,anim);
 	}
 }

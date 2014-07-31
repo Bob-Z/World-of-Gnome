@@ -164,10 +164,7 @@ static void compose_map(context_t * ctx)
 			/* Save description for caller */
 			read_string(TILE_TABLE,tile_name,description,TILE_KEY_TEXT,NULL);
 #endif
-			item = item_list_add(item_list);
-			if(item_list == NULL) {
-				item_list = item;
-			}
+			item = item_list_add(&item_list);
 
 			anim = imageDB_get_anim(ctx,tile_image);
 
@@ -257,10 +254,7 @@ static void compose_item(context_t * ctx)
 			}
 		}
 
-		item = item_list_add(item_list);
-		if(item_list == NULL) {
-			item_list = item;
-		}
+		item = item_list_add(&item_list);
 
 		anim = imageDB_get_anim(ctx,sprite_name);
 		x = x*ctx->tile_x;
@@ -321,10 +315,7 @@ static void compose_sprite(context_t * ctx)
 
 		anim = imageDB_get_anim(player_context,sprite_name);
 
-		item = item_list_add(item_list);
-		if(item_list == NULL) {
-			item_list = item;
-		}
+		item = item_list_add(&item_list);
 
 		timer = SDL_GetTicks();
 
@@ -518,10 +509,7 @@ static void compose_attribute(context_t * ctx)
 		attribute_string[num_attr-1] = strdup(buf);
 		attribute_string[num_attr]=NULL;
 
-		item = item_list_add(item_list);
-		if(item_list == NULL) {
-			item_list = item;
-		}
+		item = item_list_add(&item_list);
 
 		item_set_overlay(item,1);
 		item_set_string(item,attribute_string[num_attr-1]);
@@ -591,10 +579,7 @@ static void compose_action(context_t * ctx)
 		/* load image */
 		anim = imageDB_get_anim(ctx, icon);
 
-		item = item_list_add(item_list);
-		if(item_list == NULL) {
-			item_list = item;
-		}
+		item = item_list_add(&item_list);
 
 		item_set_overlay(item,1);
 		item_set_anim(item,x,sh-anim->h,anim);
@@ -669,10 +654,7 @@ static void compose_equipment(context_t * ctx)
 			/* load image */
 			anim = imageDB_get_anim(ctx, icon_name);
 
-			item = item_list_add(item_list);
-			if(item_list == NULL) {
-				item_list = item;
-			}
+			item = item_list_add(&item_list);
 
 			x = sw-anim->w;
 			h1 = anim->h;
@@ -692,10 +674,7 @@ static void compose_equipment(context_t * ctx)
 			if(!read_string(ITEM_TABLE,equipped_name,&equipped_icon_name,ITEM_ICON,NULL)) {
 				werr(LOGDEV,"Can't read object %s icon in equipment slot %s",equipped_name,name_list[index]);
 			} else {
-				item = item_list_add(item_list);
-				if(item_list == NULL) {
-					item_list = item;
-				}
+				item = item_list_add(&item_list);
 
 				anim2 = imageDB_get_anim(ctx, equipped_icon_name);
 
@@ -713,10 +692,7 @@ static void compose_equipment(context_t * ctx)
 			if( !strcmp(ctx->selection.equipment,name_list[index]) ) {
 				anim3 = imageDB_get_anim(ctx,CURSOR_EQUIP_FILE);
 
-				item = item_list_add(item_list);
-				if(item_list == NULL) {
-					item_list = item;
-				}
+				item = item_list_add(&item_list);
 
 				/* Center on icon */
 				item_set_overlay(item,1);
@@ -750,10 +726,7 @@ static void compose_equipment(context_t * ctx)
 		}
 
 		if( inventory_icon_name ) {
-			item = item_list_add(item_list);
-			if(item_list == NULL) {
-				item_list = item;
-			}
+			item = item_list_add(&item_list);
 
 			anim = imageDB_get_anim(ctx, inventory_icon_name);
 
@@ -795,10 +768,7 @@ static void compose_text(context_t * ctx)
 	current_y = sh - action_bar_height;
 
 	/* Draw edit box */
-	item = item_list_add(item_list);
-	if(item_list == NULL) {
-		item_list = item;
-	}
+	item = item_list_add(&item_list);
 
 	item_set_overlay(item,1);
 	item_set_string(item,text_buffer);
@@ -834,10 +804,7 @@ static void compose_text(context_t * ctx)
 			return;
 		}
 
-		item = item_list_add(item_list);
-		if(item_list == NULL) {
-			item_list = item;
-		}
+		item = item_list_add(&item_list);
 
 		item_set_overlay(item,1);
 		item_set_string(item,hist->text);
@@ -870,10 +837,7 @@ static void compose_select(context_t * ctx)
 	y = ctx->selection.map_coord[1];
 
 	if( x != -1 && y != -1) {
-		item = item_list_add(item_list);
-		if(item_list == NULL) {
-			item_list = item;
-		}
+		item = item_list_add(&item_list);
 
 		/* get pixel coordiante from tile coordianate */
 		x = x * ctx->tile_x;
@@ -888,10 +852,7 @@ static void compose_select(context_t * ctx)
 
 	/* Sprite selection */
 	if( ctx->selection.id != NULL) {
-		item = item_list_add(item_list);
-		if(item_list == NULL) {
-			item_list = item;
-		}
+		item = item_list_add(&item_list);
 
                 if(!read_int(CHARACTER_TABLE,ctx->selection.id,&x,CHARACTER_KEY_POS_X,NULL)) {
                         return;

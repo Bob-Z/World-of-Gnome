@@ -167,11 +167,8 @@ item_t * scr_select_compose(context_t * context)
 		}
 
 		/* Character picture */
-		item = item_list_add(item_list);
+		item = item_list_add(&item_list);
 		item_image = item;
-		if(item_list == NULL) {
-			item_list = item;
-		}
 
 		if (current_item == NULL ) {
 			current_item = item;
@@ -191,7 +188,7 @@ item_t * scr_select_compose(context_t * context)
 			font_name = TTF_OpenFont(FONT, FONT_SIZE);
 		}
 		if( font_name ) {
-			item = item_list_add(item_list);
+			item = item_list_add(&item_list);
 			item_set_string(item,character_list[i].name);
 			item_set_font(item,font_name);
 			/* display string just above the picture */
@@ -207,7 +204,7 @@ item_t * scr_select_compose(context_t * context)
 			font_type = TTF_OpenFont(FONT, FONT_SIZE);
 		}
 		if( font_type ) {
-			item = item_list_add(item_list);
+			item = item_list_add(&item_list);
 			item_set_string(item,character_list[i].type);
 			item_set_font(item,font_type);
 			/* display string just below the picture */
