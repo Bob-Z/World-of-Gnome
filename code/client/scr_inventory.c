@@ -92,10 +92,6 @@ static void compose_inventory(context_t * ctx)
 		       }
 		       /* load image */
 		       anim = imageDB_get_anim(ctx, value);
-		       if(anim == NULL) {
-			       i++;
-			       continue;
-		       }
 
 		       if(!read_string(ITEM_TABLE,inventory_list[i],&value,ITEM_NAME,NULL)) {
 			       label = strdup(inventory_list[i]);
@@ -117,10 +113,6 @@ static void compose_inventory(context_t * ctx)
 		       }
 		       /* load image */
 		       anim = imageDB_get_anim(ctx, value);
-		       if(anim == NULL) {
-			       i++;
-			       continue;
-		       }
 
 		       if(!read_string(ITEM_TEMPLATE_TABLE,template,&value,ITEM_NAME,NULL)) {
 			       label = strdup(inventory_list[i]);
@@ -175,9 +167,6 @@ static void compose_select(context_t * ctx)
 	}
 
 	anim = imageDB_get_anim(ctx,CURSOR_SPRITE_FILE);
-	if(anim == NULL) {
-		return;
-	}
 
 	if (inventory_list) {
 		free(inventory_list);
