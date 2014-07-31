@@ -41,22 +41,19 @@ static void config_print_error(char * file, const config_t * config)
 *********************/
 static void write_config(const config_t * config,const char * table, const char * file)
 {
-	char filename[512] = "";
-	char fullname[512] = "";
+	char * filename;
+	char * fullname;
 
-	strcat(filename,table);
-	strcat(filename,"/");
-	strcat(filename,file);
+	filename = strconcat(table,"/",file,NULL);
 
-	strcat(fullname,getenv("HOME"));
-	strcat(fullname,"/");
-	strcat(fullname,base_directory);
-	strcat(fullname,"/");
-	strcat(fullname,filename);
+	fullname = strconcat(getenv("HOME"),"/",base_directory,"/",filename,NULL);
 
 	file_lock(filename);
 	config_write_file((config_t*)config,fullname);
 	file_unlock(filename);
+
+	free(filename);
+	free(fullname);
 }
 /*********************
 *********************/
@@ -72,16 +69,13 @@ static const config_t * load_config(char * filename)
 	int ret;
 	config_t * config = NULL;
 	struct stat sts;
-	char fullname[512] = "";
+	char * fullname;
 
-	strcat(fullname,getenv("HOME"));
-	strcat(fullname,"/");
-	strcat(fullname,base_directory);
-	strcat(fullname,"/");
-	strcat(fullname,filename);
+	fullname = strconcat(getenv("HOME"),"/",base_directory,"/",filename,NULL);
 
 	config = malloc(sizeof(config_t));
 	if(config == NULL) {
+		free(fullname);
 		return NULL;
 	}
 	bzero(config,sizeof(config_t));
@@ -93,9 +87,11 @@ static const config_t * load_config(char * filename)
 		if(stat(fullname,&sts) != -1 || client_server == SERVER) {
 			config_print_error(fullname,config);
 		}
+		free(fullname);
 		return NULL;
 	}
 
+	free(fullname);
 	return config;
 }
 
@@ -131,12 +127,10 @@ returned config MUST BE config_destroy and FREED
 *********************/
 static const config_t * get_config(const char * table, const char * file)
 {
-	char filename[512] = "";
+	char * filename;
 	const config_t * config;
 
-	strcat(filename,table);
-	strcat(filename,"/");
-	strcat(filename,file);
+	filename = strconcat(table,"/",file,NULL);
 
 //	wlog(LOGDEBUG,"Entry get : %s",filename);
 
@@ -145,6 +139,7 @@ static const config_t * get_config(const char * table, const char * file)
 
 	if(config) {
 //		wlog(LOGDEBUG,"Entry found : %s",filename);
+		free(filename);
 		SDL_UnlockMutex(entry_mutex);
 		return config;
 	}
@@ -156,6 +151,7 @@ static const config_t * get_config(const char * table, const char * file)
 
 	if( (config=load_config(filename)) == NULL ) {
 		file_unlock(filename);
+		free(filename);
 		SDL_UnlockMutex(entry_mutex);
 		return NULL;
 	}
@@ -163,6 +159,7 @@ static const config_t * get_config(const char * table, const char * file)
 
 //	wlog(LOGDEBUG,"Entry loaded : %s",filename);
 	entry_list = list_update(entry_list,filename,(config_t*)config);
+	free(filename);
 	SDL_UnlockMutex(entry_mutex);
 
 	return config;
@@ -173,17 +170,15 @@ returned string MUST BE FREED
 *********************/
 static char * add_entry_to_path(char * path, char * entry)
 {
-	char new_path[512] = "";
+	char * new_path;
 
 	if( path == NULL ) {
 		return strdup(entry);
 	} else {
-		strcat(new_path,path);
-		strcat(new_path,".");
-		strcat(new_path,entry);
+		new_path = strconcat(path,".",entry,NULL);
 	}
 
-	return strdup(new_path);
+	return new_path;
 }
 
 /*********************
@@ -425,7 +420,7 @@ return FALSE on error
 static config_setting_t * create_tree(const config_t * config, config_setting_t * prev_setting, char * prev_entry, char * path, int type, va_list ap)
 {
 	char * entry = NULL;
-	char new_path[512] = "";
+	char * new_path;
 	config_setting_t * setting = NULL;
 
 	if( prev_setting == NULL) {
@@ -462,16 +457,13 @@ static config_setting_t * create_tree(const config_t * config, config_setting_t 
 
 	/* update path */
 	if( path ) {
-		strcat(new_path,path);
-		strcat(new_path,".");
-		strcat(new_path,entry);
+		new_path = strconcat(path,".",entry,NULL);
 		free(path);
-		path = strdup(new_path);
 	} else {
-		path = strdup(entry);
+		new_path = strdup(entry);
 	}
 
-	return create_tree(config,setting,entry,path,type,ap);
+	return create_tree(config,setting,entry,new_path,type,ap);
 }
 
 /*********************
@@ -1297,7 +1289,7 @@ return -1 if fails
 ***********************************************/
 int entry_destroy(const char * filename)
 {
-	char fullname[512] = "";
+	char * fullname;
 	int res;
 	const config_t * old_config;
 
@@ -1309,13 +1301,11 @@ int entry_destroy(const char * filename)
 	entry_list = list_update(entry_list,filename,NULL);
 	SDL_UnlockMutex(entry_mutex);
 
-	strcat(fullname,getenv("HOME"));
-	strcat(fullname,"/");
-	strcat(fullname,base_directory);
-	strcat(fullname,"/");
-	strcat(fullname,filename);
+	fullname = strconcat(getenv("HOME"),"/",base_directory,"/",filename,NULL);
 
 	res = unlink(fullname);
+	free(fullname);
+
 	if(res != 0 ) {
 		werr(LOGUSER,"Error deleting file \"%s\"",fullname);
 	}

@@ -21,10 +21,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-/* Return a string representing the checksum of the file or NULL on error */
-/* filename is the directory + name */
-/* The returned string MUST be FREED */
-
+/***************************************************************************
+Return a string representing the checksum of the file or NULL on error
+filename is the directory + name
+The returned string MUST be FREED
+***************************************************************************/
 char * checksum_file(const char * filename)
 {
 	FILE *fp;
@@ -51,4 +52,33 @@ char * checksum_file(const char * filename)
 	wlog(LOGDEBUG,"Checksum for %s is %s",filename,text);
 
 	return strdup(text);
+}
+
+/***************************************************************************
+the returned string MUST BE FREED
+***************************************************************************/
+char * strconcat(const char * str, ...)
+{
+	va_list ap;
+	char * res = NULL;
+	int size = 0;
+	char * entry;
+	
+	res = strdup(str);
+	size = strlen(res);
+	
+	va_start(ap, str);
+
+	entry=va_arg(ap,char*);
+	while( entry != NULL ) {
+		size += strlen(entry);
+		res = realloc(res,size+1);
+		strcat(res,entry);
+
+		entry=va_arg(ap,char*);
+	}
+	
+	va_end(ap);
+
+	return res;
 }

@@ -224,25 +224,20 @@ void network_send_action(context_t * context, char * script,...)
 {
 	va_list ap;
 	char * frame;
-	char new_frame[512] = "";
+	char * new_frame;
 	char * parameter;
 
 	frame = strdup(script);
 	va_start(ap, script);
 	while ( (parameter=va_arg(ap,char*)) != NULL ) {
-		new_frame[0] = 0;
-		strcat(new_frame,frame);
-		strcat(new_frame,NETWORK_DELIMITER);
-		strcat(new_frame,parameter);
-
+		new_frame = strconcat(frame,NETWORK_DELIMITER,parameter,NULL);
 		free(frame);
-		frame = strdup(new_frame);
+		frame = new_frame;
 	}
 	va_end(ap);
 
 	wlog(LOGDEBUG,"Send CMD_SEND_ACTION :%s",frame);
 	network_send_command(context, CMD_SEND_ACTION, strlen(frame)+1, frame,FALSE);
-
 	free(frame);
 }
 
@@ -251,7 +246,7 @@ Server send the full character's file to client
 *********************************************************************/
 void network_send_character_file(context_t * context)
 {
-	char filename[512] = "";
+	char * filename;
 
 	/* Check if this context is connected */
 	GOutputStream * stream = context_get_output_stream(context);
@@ -259,11 +254,9 @@ void network_send_character_file(context_t * context)
 		return;
 	}
 
-	strcat(filename,CHARACTER_TABLE);
-	strcat(filename,"/");
-	strcat(filename,context->id);
-
+	filename = strconcat(CHARACTER_TABLE,"/",context->id,NULL);
 	network_send_file(context,filename);
+	free(filename);
 }
 
 /*********************************************************************
@@ -271,23 +264,17 @@ Asks to update an int entry on  a context
 *********************************************************************/
 void network_send_entry_int(context_t * context, const char * table, const char * file, const char *path, int value)
 {
-	char frame[512];
+	char * frame;
 	char buf[SMALL_BUF];
 
 	sprintf(buf,"%d",value);
 
-	strcat(frame,ENTRY_TYPE_INT);
-	strcat(frame,NETWORK_DELIMITER);
-	strcat(frame,table);
-	strcat(frame,NETWORK_DELIMITER);
-	strcat(frame,file);
-	strcat(frame,NETWORK_DELIMITER);
-	strcat(frame,path);
-	strcat(frame,NETWORK_DELIMITER);
-	strcat(frame,buf);
+	frame = strconcat(ENTRY_TYPE_INT,NETWORK_DELIMITER,table,NETWORK_DELIMITER,file,NETWORK_DELIMITER,path,NETWORK_DELIMITER,buf,NULL);
 
 	wlog(LOGDEBUG,"Send CMD_SEND_ENTRY to %s :%s",context->id,frame);
 	network_send_command(context, CMD_SEND_ENTRY, strlen(frame)+1, frame,FALSE);
+
+	free(frame);
 }
 
 /*********************************************************************
@@ -338,9 +325,9 @@ It make sure there are a minimun time between to consecutive request on the same
 *********************************************************************/
 void network_send_req_file(context_t * context, char * file)
 {
-	char filename[512] = "";
+	char * filename;
 	char * cksum;
-	char frame[512] = "";
+	char * frame;
 
 	/* Sanity check */
 	if(file == NULL) {
@@ -349,23 +336,19 @@ void network_send_req_file(context_t * context, char * file)
 	}
 
 	/* Compute checksum of local file */
-	strcat(filename,getenv("HOME"));
-	strcat(filename,"/");
-	strcat(filename,base_directory);
-	strcat(filename,"/");
-	strcat(filename,file);
+	filename = strconcat(getenv("HOME"),"/",base_directory,"/",file,NULL);
 
 	cksum = checksum_file(filename);
 	if( cksum == NULL ) {
 		cksum = "0";
 	}
+	free(filename);
 
-	strcat(frame,file);
-	strcat(frame,NETWORK_DELIMITER);
-	strcat(frame,cksum);
+	frame = strconcat(file,NETWORK_DELIMITER,cksum,NULL);
 
 	wlog(LOGDEBUG,"Send CMD_REQ_FILE :%s",file);
 	network_send_command(context, CMD_REQ_FILE, strlen(frame)+1, frame,TRUE);
+	free(frame);
 
 	if(cksum[0] != '0' && cksum[1] != 0) {
 		free(cksum);
@@ -924,11 +907,12 @@ return 0 on success
 *********************************************************************/
 int network_send_table_file(context_t * context, char * table, char * id)
 {
-	char filename[512] = "";
+	char * filename;
+	int ret;
 
-	strcat(filename,table);
-	strcat(filename,"/");
-	strcat(filename,id);
+	filename = strconcat(table,"/",id,NULL);
+	ret = network_send_file(context,filename);
+	free(filename);
 
-	return network_send_file(context,filename);
+	return ret;
 }

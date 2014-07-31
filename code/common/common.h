@@ -20,7 +20,7 @@
 #ifndef WOG_COMMON_INCLUDE
 #define WOG_COMMON_INCLUDE
 
-#include "checksum.h"
+#include "util.h"
 #include "const.h"
 #include "list.h"
 #include "syntax.h"

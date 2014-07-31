@@ -28,7 +28,7 @@ Return FALSE on error, TRUE if OK
 int parse_incoming_data(context_t * context, Uint32 command, Uint32 command_size, char * data)
 {
 	const char * value = NULL;
-	char fullname[512] = "";
+	char * fullname;
 	char * elements[512];
 	char * cksum;
 	int i;
@@ -89,14 +89,10 @@ int parse_incoming_data(context_t * context, Uint32 command, Uint32 command_size
 		}
 		wlog(LOGDEBUG,"Received CMD_REQ_FILE for %s",elements[0]);
 		/* compare checksum */
-		fullname[0]=0;
-		strcat(fullname,getenv("HOME"));
-		strcat(fullname,"/");
-		strcat(fullname,base_directory);
-		strcat(fullname,"/");
-		strcat(fullname,elements[0]);
-
+		fullname = strconcat(getenv("HOME"),"/",base_directory,"/",elements[0],NULL);
+		
 		cksum = checksum_file(fullname);
+		free(fullname);
 
 		if( cksum == NULL) {
 			werr(LOGUSER,"Required file %s doesn't exists",elements[0]);

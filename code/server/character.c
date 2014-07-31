@@ -135,35 +135,26 @@ return NULL if fails
 char * character_create_from_template(context_t * ctx,const char * template,const char * map, int x, int y)
 {
 	char * new_id;
-	char templatename[512] = "";
-	char fullname[512] = "";
-	char filename[512] = "";
+	char * templatename;
+	char * fullname;
+	char * filename;
 
 	new_id = file_new(CHARACTER_TABLE);
 
-	strcat(templatename,getenv("HOME"));
-	strcat(templatename,"/");
-	strcat(templatename,base_directory);
-	strcat(templatename,"/");
-	strcat(templatename,CHARACTER_TEMPLATE_TABLE);
-	strcat(templatename,"/");
-	strcat(templatename,template);
+	templatename = strconcat(getenv("HOME"),"/",base_directory,"/",CHARACTER_TEMPLATE_TABLE,"/",template,NULL);
 
-	strcat(filename,CHARACTER_TABLE);
-	strcat(filename,"/");
-	strcat(filename,new_id);
+	filename = strconcat(CHARACTER_TABLE,"/",new_id,NULL);
 
-	strcat(fullname,getenv("HOME"));
-	strcat(fullname,"/");
-	strcat(fullname,base_directory);
-	strcat(fullname,"/");
-	strcat(fullname,filename);
+	fullname = strconcat(getenv("HOME"),"/",base_directory,"/",filename,NULL);
 
 	file_copy(templatename,fullname);
+	free(templatename);
+	free(fullname);
 
 	/* Check if new character is allowed to be created here */
 	if(!map_check_tile(ctx,new_id,map,x,y)) {
 		entry_destroy(filename);
+		free(filename);
 		free(new_id);
 		return NULL;
 	}
@@ -171,22 +162,27 @@ char * character_create_from_template(context_t * ctx,const char * template,cons
 	/* Write position */
 	if(!write_string(CHARACTER_TABLE,new_id,map,CHARACTER_KEY_MAP,NULL)) {
 		entry_destroy(filename);
+		free(filename);
 		free(new_id);
 		return NULL;
 	}
 
 	if(!write_int(CHARACTER_TABLE,new_id,x,CHARACTER_KEY_POS_X,NULL)) {
 		entry_destroy(filename);
+		free(filename);
 		free(new_id);
 		return NULL;
 	}
 
 	if(!write_int(CHARACTER_TABLE,new_id,y,CHARACTER_KEY_POS_Y,NULL)) {
 		entry_destroy(filename);
+		free(filename);
 		free(new_id);
 		return NULL;
 	}
 
+	free(filename);
+	
 	return new_id;
 }
 

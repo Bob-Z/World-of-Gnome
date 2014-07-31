@@ -68,17 +68,15 @@ static anim_t * default_anim(context_t * ctx)
 **************************/
 static anim_t * image_load(context_t * ctx, char * filename)
 {
-	char fullname[512] = "";
+	char * fullname;
 	anim_t * anim;
-	
-	strcat(fullname,getenv("HOME"));
-	strcat(fullname,"/");
-	strcat(fullname,base_directory);
-	strcat(fullname,"/");
-	strcat(fullname,filename);
+
+	fullname = strconcat(getenv("HOME"),"/",base_directory,"/",filename,NULL);
 
 	anim = anim_load(ctx->render, fullname);
-	
+
+	free(fullname);
+
 	return anim;
 }
 
@@ -89,11 +87,9 @@ image_name is the image file path and name in the IMAGE_TABLE directory
 anim_t * imageDB_get_anim(context_t * context, const char * image_name)
 {
 	anim_t * anim;
-	char filename[512] = "";
+	char * filename;
 
-	strcat(filename,IMAGE_TABLE);
-	strcat(filename,"/");
-	strcat(filename,image_name);
+	filename = strconcat(IMAGE_TABLE,"/",image_name,NULL);
 
 //	wlog(LOGDEBUG,"Image get: %s",filename);
 
@@ -102,6 +98,7 @@ anim_t * imageDB_get_anim(context_t * context, const char * image_name)
 	anim = list_find(image_list,filename);
 	if(anim) {
 //		wlog(LOGDEBUG,"Image find: %s",filename);
+		free(filename);
 		SDL_UnlockMutex(imageDB_mutex);
 		return anim;
 	}
@@ -115,6 +112,7 @@ anim_t * imageDB_get_anim(context_t * context, const char * image_name)
 //		wlog(LOGDEBUG,"Image loaded: %s",filename);
 		image_list = list_update(image_list,filename,anim);
 		file_unlock(filename);
+		free(filename);
 		SDL_UnlockMutex(imageDB_mutex);
 		return anim;
 	}
@@ -124,6 +122,7 @@ anim_t * imageDB_get_anim(context_t * context, const char * image_name)
 	file_update(context,filename);
 
 	file_unlock(filename);
+	free(filename);
 	SDL_UnlockMutex(imageDB_mutex);
 
 	return default_anim(context);

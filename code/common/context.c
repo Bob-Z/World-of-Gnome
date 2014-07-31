@@ -117,7 +117,7 @@ Deep free of a context_t struct
 *************************************/
 void context_free(context_t * context)
 {
-	char filename[512] = "";
+	char * filename;
 	int delete_file = TRUE;
 	context_t * ctx;
 
@@ -218,15 +218,9 @@ void context_free(context_t * context)
 	SDL_UnlockMutex(context_list_mutex);
 
 	if(delete_file) {
-		strcat(filename,getenv("HOME"));
-		strcat(filename,"/");
-		strcat(filename,base_directory);
-		strcat(filename,"/");
-		strcat(filename,CHARACTER_TABLE);
-		strcat(filename,"/");
-		strcat(filename,context->id);
-
+		filename = strconcat(getenv("HOME"),"/",base_directory,"/",CHARACTER_TABLE,"/",context->id,NULL);
 		unlink(filename);
+		free(filename);
 	}
 }
 
@@ -990,7 +984,7 @@ Broadcast upload of a file to all connected context
 void context_broadcast_file(const char * table, const char * file, int same_map_only)
 {
 	context_t * ctx = NULL;
-	char filename[512] = "";
+	char * filename;
 
 	SDL_LockMutex(context_list_mutex);
 
@@ -1001,9 +995,7 @@ void context_broadcast_file(const char * table, const char * file, int same_map_
 		return;
 	}
 
-	strcat(filename,table);
-	strcat(filename,"/");
-	strcat(filename,file);
+	filename = strconcat(table,"/",file,NULL);
 
 	do {
 		/* Skip if not connected (NPC) */
@@ -1020,6 +1012,8 @@ void context_broadcast_file(const char * table, const char * file, int same_map_
 		network_send_file(ctx,filename);
 
 	} while( (ctx=ctx->next)!= NULL );
+
+	free(filename);
 
 	SDL_UnlockMutex(context_list_mutex);
 }

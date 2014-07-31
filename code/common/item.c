@@ -41,29 +41,17 @@ char * item_create_empty()
 char * item_create_from_template(const char * template)
 {
 	char * new_name;
-	char templatename[512] = "";
-	char newfilename[512] = "";
+	char * templatename;
+	char * newfilename;
 
 	new_name = file_new(ITEM_TABLE);
 
-	strcat(templatename,getenv("HOME"));
-	strcat(templatename,"/");
-	strcat(templatename,base_directory);
-	strcat(templatename,"/");
-	strcat(templatename,ITEM_TEMPLATE_TABLE);
-	strcat(templatename,"/");
-	strcat(templatename,template);
-
-	strcat(newfilename,getenv("HOME"));
-	strcat(newfilename,"/");
-	strcat(newfilename,base_directory);
-	strcat(newfilename,"/");
-	strcat(newfilename,ITEM_TABLE);
-	strcat(newfilename,"/");
-	strcat(newfilename,new_name);
+	templatename = strconcat(getenv("HOME"),"/",base_directory,"/",ITEM_TEMPLATE_TABLE,"/",template,NULL);
+	newfilename = strconcat(getenv("HOME"),"/",base_directory,"/",ITEM_TABLE,"/",new_name,NULL);
 
 	file_copy(templatename,newfilename);
-
+	free(newfilename);
+	free(templatename);
 	free(new_name);
 
 	return new_name;
@@ -75,13 +63,11 @@ return -1 if fails
 *****************************/
 int item_destroy(const char * item_id)
 {
-	char filename[512] = "";
+	char * filename;
 
-	strcat(filename,ITEM_TABLE);
-	strcat(filename,"/");
-	strcat(filename,item_id);
-
+	filename = strconcat(ITEM_TABLE,"/",item_id,NULL);
 	entry_destroy(filename);
+	free(filename);
 
 	return 0;
 }
@@ -96,16 +82,11 @@ int item_destroy(const char * item_id)
 char * item_resource_new(const char * template, int quantity)
 {
 	char * new_id;
-	char filename[512] = "";
 
 	new_id = item_create_empty();
 	if( new_id == NULL ) {
 		return NULL;
 	}
-
-	strcat(filename,ITEM_TABLE);
-	strcat(filename,"/");
-	strcat(filename,new_id);
 
 	if(!write_string(ITEM_TABLE,new_id,template,ITEM_TEMPLATE, NULL)) {
 		entry_destroy(new_id);

@@ -1239,13 +1239,13 @@ void register_lua_functions(context_t * context)
 **************************************/
 static void action_chat(context_t * context, const char * text)
 {
-	char new_text[512] = "";
+	char * new_text;
 
-	strcat(new_text,context->character_name);
-	strcat(new_text,":");
-	strcat(new_text,text);
+	new_text = strconcat(context->character_name,":",text,NULL);
 
 	network_broadcast_text(context,new_text);
+	
+	free(new_text);
 }
 
 /**************************************
@@ -1253,7 +1253,7 @@ return -1 if the script do not return something
 **************************************/
 int action_execute_script(context_t * context, const char * script, char ** parameters)
 {
-	char filename[512] = "";
+	char * filename;
 	int param_num = 0;
 	int return_value;
 
@@ -1264,18 +1264,13 @@ int action_execute_script(context_t * context, const char * script, char ** para
 	}
 
 	/* Load script */
-	strcat(filename,getenv("HOME"));
-	strcat(filename,"/");
-	strcat(filename,base_directory);
-	strcat(filename,"/");
-	strcat(filename,SCRIPT_TABLE);
-	strcat(filename,"/");
-	strcat(filename,script);
+	filename = strconcat(getenv("HOME"),"/",base_directory,"/",SCRIPT_TABLE,"/",script,NULL);
 
 	if (luaL_loadfile(context->luaVM, filename) != 0 ) {
 		/* If something went wrong, error message is at the top of */
 		/* the stack */
 		werr(LOGUSER,"Couldn't load LUA script %s: %s\n", filename, lua_tostring(context->luaVM, -1));
+		free(filename);
 		return -1;
 	}
 
@@ -1296,8 +1291,10 @@ int action_execute_script(context_t * context, const char * script, char ** para
 	/* Ask Lua to call the f function with the given parameters */
 	if (lua_pcall(context->luaVM, param_num, 1, 0) != 0) {
 		werr(LOGUSER,"Failed to run LUA script %s: %s\n", filename, lua_tostring(context->luaVM, -1));
+		free(filename);
 		return -1;
 	}
+	free(filename);
 
 	/* retrieve result */
 	if (!lua_isnumber(context->luaVM, -1)) {
@@ -1308,4 +1305,3 @@ int action_execute_script(context_t * context, const char * script, char ** para
 	lua_pop(context->luaVM, 1);
 	return return_value;
 }
-

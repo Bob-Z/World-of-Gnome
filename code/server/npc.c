@@ -173,17 +173,14 @@ init non playing character
 void init_npc(void)
 {
 	DIR * dir;
-	char dirname[512] = "";
+	char * dirname;
 	struct dirent * ent;
 
 	// Read all files in npc directory
-	strcat(dirname,getenv("HOME"));
-	strcat(dirname,"/");
-	strcat(dirname,base_directory);
-	strcat(dirname,"/");
-	strcat(dirname,CHARACTER_TABLE);
+	dirname = strconcat(getenv("HOME"),"/",base_directory,"/",CHARACTER_TABLE,NULL);
 
 	dir = opendir(dirname);
+	free(dirname);
 	while(( ent = readdir(dir)) != NULL ) {
 		// skip hidden file
 		if(ent->d_name[0] == '.') {

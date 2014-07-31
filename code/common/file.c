@@ -108,19 +108,15 @@ char * file_new(char * table)
 {
 	DIR * dir;
 	struct dirent * ent;
-	char dirname[512] = "";
-	char filename[512] = "";
+	char * dirname;
+	char * filename;
 	char tag[10];
 	int index = 0;
 	int fd;
 
 	sprintf(tag,"A%05x",index);
 
-	strcat(dirname,getenv("HOME"));
-	strcat(dirname,"/");
-	strcat(dirname,base_directory);
-	strcat(dirname,"/");
-	strcat(dirname,table);
+	dirname = strconcat(getenv("HOME"),"/",base_directory,"/",table,NULL);
 
 	SDL_LockMutex(character_dir_mutex);
 
@@ -143,11 +139,11 @@ char * file_new(char * table)
 
 	closedir(dir);
 
-	strcat(filename,dirname);
-	strcat(filename,"/");
-	strcat(filename,tag);
+	filename = strconcat(dirname,"/",tag,NULL);
+	free(dirname);
 
 	fd = creat(filename, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH);
+	free(filename);
 	close(fd);
 
 	SDL_UnlockMutex(character_dir_mutex);
@@ -163,33 +159,32 @@ char * file_new(char * table)
  ****************************/
 int file_get_contents(const char *filename,char **contents,int *length)
 {
-	char fullname[512] = "";
+	char * fullname;
 	struct stat sts;
 	int fd;
 	ssize_t size;
 	char * buf;
 
-	strcat(fullname,getenv("HOME"));
-	strcat(fullname,"/");
-	strcat(fullname,base_directory);
-	strcat(fullname,"/");
-	strcat(fullname,filename);
+	fullname = strconcat(getenv("HOME"),"/",base_directory,"/",filename,NULL);
 
 	file_lock(filename);
 
 	if( stat(fullname, &sts) == -1) {
 		werr(LOGDEV,"Error stat on file %s\n",fullname);
+		free(fullname);
 		return FALSE;
 	}
 
 	fd = open(fullname,O_RDONLY);
 	if(fd == -1) {
 		werr(LOGDEV,"Error open on file %s\n",fullname);
+		free(fullname);
 		return FALSE;
 	}
 
 	buf = malloc(sts.st_size);
 	if( buf == NULL) {
+		free(fullname);
 		return FALSE;
 	}
 
@@ -197,8 +192,10 @@ int file_get_contents(const char *filename,char **contents,int *length)
 	if( size == -1) {
 		free(buf);
 		werr(LOGDEV,"Error read on file %s\n",fullname);
+		free(fullname);
 		return FALSE;
 	}
+	free(fullname);
 
 	close(fd);
 
@@ -216,29 +213,28 @@ int file_get_contents(const char *filename,char **contents,int *length)
  ****************************/
 int file_set_contents(const char *filename,const char *contents,int length)
 {
-	char fullname[512] = "";
+	char * fullname;
 	int fd;
 	ssize_t size;
 
-	strcat(fullname,getenv("HOME"));
-	strcat(fullname,"/");
-	strcat(fullname,base_directory);
-	strcat(fullname,"/");
-	strcat(fullname,filename);
+	fullname = strconcat(getenv("HOME"),"/",base_directory,"/",filename,NULL);
 
 	file_lock(filename);
 
 	fd = creat(fullname,S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH);
 	if(fd == -1) {
 		werr(LOGDEV,"Error open on file %s\n",fullname);
+		free(fullname);
 		return FALSE;
 	}
 
 	size = write(fd,contents,length);
 	if( size == -1) {
 		werr(LOGDEV,"Error write on file %s\n",fullname);
+		free(fullname);
 		return FALSE;
 	}
+	free(fullname);
 
 	close(fd);
 
@@ -275,7 +271,8 @@ static int mkdir_all(const char * pathname)
         char * token;
         char * source;
         int ret = -1;
-        char directory[512] = "";
+        char * directory = NULL;
+        char * new_directory = NULL;
 	char *saveptr;
 
         if(pathname == NULL) {
@@ -286,13 +283,16 @@ static int mkdir_all(const char * pathname)
 
         token =  strtok_r(source,"/",&saveptr);
 
+	directory = strdup("");
         while( token != NULL ) {
-                strcat(directory,"/");
-                strcat(directory,token);
+                new_directory = strconcat(directory,"/",token,NULL);
+		free(directory);
+		directory = new_directory;
                 ret = mkdir(directory,0775);
                 token =  strtok_r(NULL,"/",&saveptr);
         }
 
+	free(directory);
         free(source);
 
         return ret;

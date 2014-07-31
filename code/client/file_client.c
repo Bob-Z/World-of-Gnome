@@ -33,7 +33,7 @@ int file_add(context_t * context,char * data,Uint32 command_size)
 	char * ptr = data;
 	Uint32 filename_size;
 	char * filename = NULL;
-	char fullname[512] = "";
+	char * fullname;
 	int res;
 
 	/* Get the data from the network frame */
@@ -62,21 +62,19 @@ int file_add(context_t * context,char * data,Uint32 command_size)
 	ptr += sizeof(Uint32);
 
 	/* Write the data to disk */
-	strcat(fullname,getenv("HOME"));
-	strcat(fullname,"/");
-	strcat(fullname,base_directory);
-	strcat(fullname,"/");
-	strcat(fullname,filename);
+	fullname = strconcat(getenv("HOME"),"/",base_directory,"/",filename,NULL);
 
 	file_create_directory(fullname);
 
 	res = file_set_contents(filename,ptr,filedata_size);
 	if( res == FALSE ) {
 		werr(LOGDEV,"Error writing file %s with size %d",fullname, filedata_size);
+		free(fullname);
 		return -1;
 	}
 
 	wlog(LOGDEBUG,"write file %s",fullname);
+	free(fullname);
 
 	/* Update the entry DB */
 	entry_remove(filename);
@@ -94,15 +92,11 @@ int file_add(context_t * context,char * data,Uint32 command_size)
 **********************************************************************************/
 void file_clean(context_t * context)
 {
-	char filename[512] = "";
+	char * filename;
 
-	strcat(filename,getenv("HOME"));
-	strcat(filename,"/");
-	strcat(filename,base_directory);
-	strcat(filename,"/");
-	strcat(filename,CHARACTER_TABLE);
-	strcat(filename,"/");
-	strcat(filename,context->id);
+	filename = strconcat(getenv("HOME"),"/",base_directory,"/",CHARACTER_TABLE,"/",context->id,NULL);
 
 	unlink(filename);
+
+	free(filename);
 }

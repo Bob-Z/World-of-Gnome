@@ -20,4 +20,5 @@
 #ifndef CHECKSUM_H
 #define CHECKSUM_H
 char * checksum_file(const char * filename);
+char * strconcat(const char * str, ...);
 #endif
