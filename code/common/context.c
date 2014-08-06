@@ -386,13 +386,6 @@ static int _context_set_map(context_t * context, const char * map)
 		context->prev_map = NULL;
 	}
 
-	if(!read_int(MAP_TABLE,map,&map_x,MAP_KEY_SIZE_X,NULL)) {
-		return FALSE;
-	}
-	if(!read_int(MAP_TABLE,map,&map_y,MAP_KEY_SIZE_Y,NULL)) {
-		return FALSE;
-	}
-
 	if(context->map) {
 		context->prev_map = strdup(context->map);
 		free( context->map );
@@ -402,9 +395,18 @@ static int _context_set_map(context_t * context, const char * map)
 	if( context->map == NULL ) {
 		return FALSE;
 	}
+	context->change_map = 1;
+	context->map_x = -1;
+	context->map_y = -1;
+
+	if(!read_int(MAP_TABLE,map,&map_x,MAP_KEY_SIZE_X,NULL)) {
+		return FALSE;
+	}
+	if(!read_int(MAP_TABLE,map,&map_y,MAP_KEY_SIZE_Y,NULL)) {
+		return FALSE;
+	}
 	context->map_x = map_x;
 	context->map_y = map_y;
-	context->change_map = 1;
 
 	return TRUE;
 }
@@ -420,6 +422,28 @@ int context_set_map(context_t * context, const char * map)
 	SDL_UnlockMutex(context_list_mutex);
 
 	return ret;
+}
+
+/**************************************
+**************************************/
+int context_set_map_x(context_t * context, int size_x)
+{
+	SDL_LockMutex(context_list_mutex);
+	context->map_x = size_x;
+	SDL_UnlockMutex(context_list_mutex);
+
+	return TRUE;
+}
+
+/**************************************
+**************************************/
+int context_set_map_y(context_t * context, int size_y)
+{
+	SDL_LockMutex(context_list_mutex);
+	context->map_y = size_y;
+	SDL_UnlockMutex(context_list_mutex);
+
+	return TRUE;
 }
 
 /**************************************

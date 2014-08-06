@@ -91,13 +91,13 @@ void context_set_connection(context_t * context, GSocketConnection * connection)
 GSocketConnection * context_get_connection(context_t * context);
 int context_set_character_name(context_t * context, const char * name);
 int context_set_map(context_t * context, const char * name);
+int context_set_map_x(context_t * context, int size_x);
+int context_set_map_y(context_t * context, int size_y);
 int context_set_type(context_t * context, const char * name);
 void context_set_pos_x(context_t * context, unsigned int pos);
 void context_set_pos_y(context_t * context, unsigned int pos);
 void context_set_tile_x(context_t * context, unsigned int pos);
 void context_set_tile_y(context_t * context, unsigned int pos);
-void context_set_map_x(context_t * context, unsigned int pos);
-void context_set_map_y(context_t * context, unsigned int pos);
 void context_new_VM(context_t * context);
 int context_set_id(context_t * context, const char * name);
 int context_update_from_file(context_t * context);
