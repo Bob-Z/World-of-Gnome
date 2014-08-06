@@ -220,12 +220,12 @@ static int l_character_get_map( lua_State* L)
 	return 1;  /* number of results */
 }
 
-/* character_get_map_x
+/* character_get_map_w
 Input:
  - ID of a map
 Output: Width of the map
 */
-static int l_character_get_map_x( lua_State* L)
+static int l_character_get_map_w( lua_State* L)
 {
 	context_t * target;
 	const char * id;
@@ -236,16 +236,16 @@ static int l_character_get_map_x( lua_State* L)
 		werr(LOGDEV,"Cannot find context with ID %s",id);
 		return 0;  /* number of results */
 	}
-	lua_pushnumber(L, target->map_x);
+	lua_pushnumber(L, target->map_w);
 	return 1;  /* number of results */
 }
 
-/* character_get_map_y
+/* character_get_map_h
 Input:
  - ID of a map
 Output: Height of the map
 */
-static int l_character_get_map_y( lua_State* L)
+static int l_character_get_map_h( lua_State* L)
 {
 	context_t * target;
 	const char * id;
@@ -256,7 +256,7 @@ static int l_character_get_map_y( lua_State* L)
 		werr(LOGDEV,"Cannot find context with ID %s",id);
 		return 0;  /* number of results */
 	}
-	lua_pushnumber(L, target->map_y);
+	lua_pushnumber(L, target->map_h);
 	return 1;  /* number of results */
 }
 
@@ -1149,10 +1149,10 @@ void register_lua_functions(context_t * context)
 	lua_setglobal(L, "character_get_selected_character_id");
 	lua_pushcfunction(L, l_character_get_map);
 	lua_setglobal(L, "character_get_map");
-	lua_pushcfunction(L, l_character_get_map_x);
-	lua_setglobal(L, "character_get_map_x");
-	lua_pushcfunction(L, l_character_get_map_y);
-	lua_setglobal(L, "character_get_map_y");
+	lua_pushcfunction(L, l_character_get_map_w);
+	lua_setglobal(L, "character_get_map_w");
+	lua_pushcfunction(L, l_character_get_map_h);
+	lua_setglobal(L, "character_get_map_h");
 	lua_pushcfunction(L, l_character_get_x);
 	lua_setglobal(L, "character_get_x");
 	lua_pushcfunction(L, l_character_get_y);

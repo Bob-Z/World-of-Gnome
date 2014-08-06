@@ -93,8 +93,8 @@ void instantiate_npc(const char * id)
 	int y;
 	int tile_x;
 	int tile_y;
-	int map_x;
-	int map_y;
+	int map_w;
+	int map_h;
 	context_t * ctx;
 	char buf[512];
 
@@ -130,12 +130,12 @@ void instantiate_npc(const char * id)
 		return;
 	}
 
-	if(!read_int(MAP_TABLE,map,&map_x,MAP_KEY_SIZE_X,NULL)) {
+	if(!read_int(MAP_TABLE,map,&map_w,MAP_KEY_SIZE_X,NULL)) {
 		free(map);
 		return;
 	}
 
-	if(!read_int(MAP_TABLE,map,&map_y,MAP_KEY_SIZE_Y,NULL)) {
+	if(!read_int(MAP_TABLE,map,&map_h,MAP_KEY_SIZE_Y,NULL)) {
 		free(map);
 		return;
 	}
@@ -159,8 +159,8 @@ void instantiate_npc(const char * id)
 	context_set_map(ctx,map);
 	free(map);
 #if 0
-	context_set_map_x(ctx,map_x);
-	context_set_map_y(ctx,map_y);
+	context_set_map_w(ctx,map_w);
+	context_set_map_h(ctx,map_h);
 #endif
 	context_set_type(ctx,type);
 	free(type);

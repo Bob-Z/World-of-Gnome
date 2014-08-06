@@ -50,8 +50,8 @@ typedef struct context {
 
 	char *		character_name;
 	char *		map;	/* map name */
-	int		map_x;	/* map size */
-	int		map_y;	/* map size */
+	int		map_w;	/* map width , -1 is an invalid size*/
+	int		map_h;	/* map height , -1 is an invalid size*/
 	int		tile_x; /* size of a tile for the current map */
 	int		tile_y; /* size of a tile for the current map */
 	int		pos_x;	/* player position (in tile) */
@@ -91,8 +91,8 @@ void context_set_connection(context_t * context, GSocketConnection * connection)
 GSocketConnection * context_get_connection(context_t * context);
 int context_set_character_name(context_t * context, const char * name);
 int context_set_map(context_t * context, const char * name);
-int context_set_map_x(context_t * context, int size_x);
-int context_set_map_y(context_t * context, int size_y);
+int context_set_map_w(context_t * context, int width);
+int context_set_map_h(context_t * context, int height);
 int context_set_type(context_t * context, const char * name);
 void context_set_pos_x(context_t * context, unsigned int pos);
 void context_set_pos_y(context_t * context, unsigned int pos);

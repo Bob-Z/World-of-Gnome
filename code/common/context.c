@@ -49,8 +49,8 @@ void context_init(context_t * context)
 
 	context->character_name = NULL;
 	context->map = NULL;
-	context->map_x = -1;
-	context->map_y = -1;
+	context->map_w = -1;
+	context->map_h = -1;
 	context->tile_x = -1;
 	context->tile_y = -1;
 
@@ -375,8 +375,8 @@ Returns FALSE if error
 **************************************/
 static int _context_set_map(context_t * context, const char * map)
 {
-	int map_x;
-	int map_y;
+	int map_w;
+	int map_h;
 
 	if(context->prev_map != NULL) {
 		if(!strcmp(context->map,map)) {
@@ -396,17 +396,17 @@ static int _context_set_map(context_t * context, const char * map)
 		return FALSE;
 	}
 	context->change_map = 1;
-	context->map_x = -1;
-	context->map_y = -1;
+	context->map_w = -1;
+	context->map_h = -1;
 
-	if(!read_int(MAP_TABLE,map,&map_x,MAP_KEY_SIZE_X,NULL)) {
+	if(!read_int(MAP_TABLE,map,&map_w,MAP_KEY_SIZE_X,NULL)) {
 		return FALSE;
 	}
-	if(!read_int(MAP_TABLE,map,&map_y,MAP_KEY_SIZE_Y,NULL)) {
+	if(!read_int(MAP_TABLE,map,&map_h,MAP_KEY_SIZE_Y,NULL)) {
 		return FALSE;
 	}
-	context->map_x = map_x;
-	context->map_y = map_y;
+	context->map_w = map_w;
+	context->map_h = map_h;
 
 	return TRUE;
 }
@@ -426,10 +426,10 @@ int context_set_map(context_t * context, const char * map)
 
 /**************************************
 **************************************/
-int context_set_map_x(context_t * context, int size_x)
+int context_set_map_w(context_t * context, int width)
 {
 	SDL_LockMutex(context_list_mutex);
-	context->map_x = size_x;
+	context->map_w = width;
 	SDL_UnlockMutex(context_list_mutex);
 
 	return TRUE;
@@ -437,10 +437,10 @@ int context_set_map_x(context_t * context, int size_x)
 
 /**************************************
 **************************************/
-int context_set_map_y(context_t * context, int size_y)
+int context_set_map_h(context_t * context, int height)
 {
 	SDL_LockMutex(context_list_mutex);
-	context->map_y = size_y;
+	context->map_h = height;
 	SDL_UnlockMutex(context_list_mutex);
 
 	return TRUE;

@@ -145,17 +145,17 @@ static void compose_map(context_t * ctx)
 	anim_t * anim;
 	item_t * item;
 
-	if( ctx->map_x == -1 ) {
+	if( ctx->map_w == -1 ) {
 		if(!read_int(MAP_TABLE, ctx->map, &i,MAP_KEY_SIZE_X,NULL)){
 			return;
 		}
-		context_set_map_x( ctx, i);
+		context_set_map_w( ctx, i);
 	}
-	if( ctx->map_y == -1 ) {
+	if( ctx->map_h == -1 ) {
 		if(!read_int(MAP_TABLE, ctx->map, &i,MAP_KEY_SIZE_Y,NULL)){
 			return;
 		}
-		context_set_map_y( ctx, i);
+		context_set_map_h( ctx, i);
 	}
 	if( ctx->tile_x == -1 ) {
 		if(!read_int(MAP_TABLE, ctx->map, &i,MAP_KEY_TILE_SIZE_X,NULL)){
@@ -200,7 +200,7 @@ static void compose_map(context_t * ctx)
 		}
 
 		x++;
-		if(x>=ctx->map_x) {
+		if(x>=ctx->map_w) {
 			x=0;
 			y++;
 		}
