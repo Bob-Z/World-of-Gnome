@@ -306,8 +306,10 @@ void network_broadcast_entry_int(const char * table, const char * file, const ch
 			if( target == NULL ) {
 				continue;
 			}
-			if( strcmp(target->map,ctx->map) != 0 ) {
-				continue;
+			if( target->map && ctx->map ) {
+				if( strcmp(target->map,ctx->map) != 0 ) {
+					continue;
+				}
 			}
 		}
 
