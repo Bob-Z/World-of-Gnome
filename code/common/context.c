@@ -383,6 +383,7 @@ static int _context_set_map(context_t * context, const char * map)
 			return TRUE;
 		}
 		free( context->prev_map );
+		context->prev_map = NULL;
 	}
 
 	if(!read_int(MAP_TABLE,map,&map_x,MAP_KEY_SIZE_X,NULL)) {
