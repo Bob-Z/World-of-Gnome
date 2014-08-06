@@ -546,13 +546,14 @@ void context_new_VM(context_t * context)
 
 /*******************************
 Update the memory context by reading the client's character data file on disk
+Return FALSE if there is an error
 *******************************/
 int context_update_from_file(context_t * context)
 {
 	/* Don't call context_set_* functions here to avoid inter-blocking */
 
 	char * result;
-	int ret;
+	int ret  = TRUE;
 
 	SDL_LockMutex(context_list_mutex);
 
@@ -561,55 +562,42 @@ int context_update_from_file(context_t * context)
 		return FALSE;
 	}
 
-	if(!entry_read_string(CHARACTER_TABLE,context->id,&result, CHARACTER_KEY_NAME,NULL)) {
-		SDL_UnlockMutex(context_list_mutex);
-		return FALSE;
+	if(entry_read_string(CHARACTER_TABLE,context->id,&result, CHARACTER_KEY_NAME,NULL)) {
+		free( context->character_name );
+		context->character_name = result;
+	}
+	else {
+		ret = FALSE;
 	}
 
-	free( context->character_name );
-	context->character_name = result;
-	if( context->character_name == NULL ) {
-		SDL_UnlockMutex(context_list_mutex);
-		return FALSE;
+
+	if(entry_read_string(CHARACTER_TABLE,context->id,&result, CHARACTER_KEY_TYPE,NULL)) {
+		free( context->type );
+		context->type = result;
+	}
+	else {
+		ret = FALSE;
 	}
 
-	if(!entry_read_string(CHARACTER_TABLE,context->id,&result, CHARACTER_KEY_TYPE,NULL)) {
-		SDL_UnlockMutex(context_list_mutex);
-		return FALSE;
+	if(entry_read_string(CHARACTER_TABLE,context->id,&result, CHARACTER_KEY_MAP,NULL)) {
+		free( context->map );
+		ret = _context_set_map(context, result);
+		free(result);
 	}
-
-	free( context->type );
-	context->type = result;
-	if( context->type == NULL ) {
-		SDL_UnlockMutex(context_list_mutex);
-		return FALSE;
-	}
-
-	if(!entry_read_string(CHARACTER_TABLE,context->id,&result, CHARACTER_KEY_MAP,NULL)) {
-		SDL_UnlockMutex(context_list_mutex);
-		return FALSE;
-	}
-
-	free( context->map );
-	ret = _context_set_map(context, result);
-	free(result);
-	if( ret == FALSE ) {
-		SDL_UnlockMutex(context_list_mutex);
-		return FALSE;
+	else {
+		ret = FALSE;
 	}
 
 	if(!read_int(CHARACTER_TABLE,context->id,&context->pos_x, CHARACTER_KEY_POS_X,NULL)) {
-		SDL_UnlockMutex(context_list_mutex);
-		return FALSE;
+		ret = FALSE;
 	}
 
 	if(!read_int(CHARACTER_TABLE,context->id,&context->pos_y, CHARACTER_KEY_POS_Y,NULL)) {
-		SDL_UnlockMutex(context_list_mutex);
-		return FALSE;
+		ret = FALSE;
 	}
 
 	SDL_UnlockMutex(context_list_mutex);
-	return TRUE;
+	return ret;
 }
 
 /*******************************
