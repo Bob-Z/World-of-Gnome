@@ -27,11 +27,14 @@
 #include <string.h>
 #include <stdlib.h>
 
-const char optstring[] = "?l:f:F:";
+static int noNPC = 0;
+
+const char optstring[] = "?l:f:F:n";
 const struct option longopts[] = {
 	{ "log",required_argument,NULL,'l' },
 	{ "file",required_argument,NULL,'f' },
 	{ "func",required_argument,NULL,'F' },
+	{ "nonpc",no_argument,NULL,'n' },
 	{NULL,0,NULL,0}
 };
 
@@ -59,6 +62,9 @@ int main (int argc, char **argv)
 		case 'F':
 			log_add_func_filter(optarg);
 			break;
+		case 'n':
+			noNPC = 1;
+			break;
 		default:
 			printf("HELP:\n\n");
 			printf("-l --log: Set log level\n");
@@ -75,7 +81,9 @@ int main (int argc, char **argv)
 	mainLoop = g_main_loop_new(NULL,FALSE);
 
 	//init non playing character
-	init_npc();
+	if( ! noNPC ) {
+		init_npc();
+	}
 	//init network server
 	network_init();
 
