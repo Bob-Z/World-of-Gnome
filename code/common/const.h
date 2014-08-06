@@ -27,7 +27,7 @@
 #define SMALL_BUF 1024
 #define BIG_BUF 10240
 /* delay before two consecutive request of the same file (in milliseconds) */
-#define FILE_REQUEST_TIMEOUT (1000)
+#define FILE_REQUEST_TIMEOUT (5000)
 /* Max number of parameter for an action command */
 #define MAX_PARAMETER   32
 
