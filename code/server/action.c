@@ -923,13 +923,14 @@ static int l_map_get_tile_type( lua_State* L)
 	const char * map;
 	int x;
 	int y;
-	const char * res;
+	char * res;
 
 	map = luaL_checkstring(L, -3);
 	x = luaL_checkint(L, -2);
 	y = luaL_checkint(L, -1);
 	res = map_get_tile_type(map,x,y);
 	lua_pushstring(L, res);
+	free(res);
 	return 1;  /* number of results */
 }
 
@@ -1111,7 +1112,7 @@ static int l_equipment_slot_get_item_id( lua_State* L)
 {
 	const char * id;
 	const char * slot;
-	const char * item;
+	char * item;
 
 	id = luaL_checkstring(L, -2);
 	slot = luaL_checkstring(L, -1);
@@ -1120,6 +1121,7 @@ static int l_equipment_slot_get_item_id( lua_State* L)
 		return 0;  /* number of results */
 	}
 	lua_pushstring(L, item);
+	free(item);
 	return 1;  /* number of results */
 }
 
@@ -1256,6 +1258,10 @@ int action_execute_script(context_t * context, const char * script, char ** para
 	char * filename;
 	int param_num = 0;
 	int return_value;
+
+	if(script == NULL) {
+		return -1;
+	}
 
 	/* Special case for chat */
 	if( strcmp(script,WOG_CHAT)==0) {

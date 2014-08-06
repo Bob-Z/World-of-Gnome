@@ -526,7 +526,7 @@ int context_update_from_file(context_t * context)
 {
 	/* Don't call context_set_* functions here to avoid inter-blocking */
 
-	const char * result;
+	char * result;
 	int ret;
 
 	SDL_LockMutex(context_list_mutex);
@@ -536,37 +536,38 @@ int context_update_from_file(context_t * context)
 		return FALSE;
 	}
 
-	if(!read_string(CHARACTER_TABLE,context->id,&result, CHARACTER_KEY_NAME,NULL)) {
+	if(!entry_read_string(CHARACTER_TABLE,context->id,&result, CHARACTER_KEY_NAME,NULL)) {
 		SDL_UnlockMutex(context_list_mutex);
 		return FALSE;
 	}
 
 	free( context->character_name );
-	context->character_name = strdup(result);
+	context->character_name = result;
 	if( context->character_name == NULL ) {
 		SDL_UnlockMutex(context_list_mutex);
 		return FALSE;
 	}
 
-	if(!read_string(CHARACTER_TABLE,context->id,&result, CHARACTER_KEY_TYPE,NULL)) {
+	if(!entry_read_string(CHARACTER_TABLE,context->id,&result, CHARACTER_KEY_TYPE,NULL)) {
 		SDL_UnlockMutex(context_list_mutex);
 		return FALSE;
 	}
 
 	free( context->type );
-	context->type = strdup(result);
+	context->type = result;
 	if( context->type == NULL ) {
 		SDL_UnlockMutex(context_list_mutex);
 		return FALSE;
 	}
 
-	if(!read_string(CHARACTER_TABLE,context->id,&result, CHARACTER_KEY_MAP,NULL)) {
+	if(!entry_read_string(CHARACTER_TABLE,context->id,&result, CHARACTER_KEY_MAP,NULL)) {
 		SDL_UnlockMutex(context_list_mutex);
 		return FALSE;
 	}
 
 	free( context->map );
 	ret = _context_set_map(context, result);
+	free(result);
 	if( ret == FALSE ) {
 		SDL_UnlockMutex(context_list_mutex);
 		return FALSE;

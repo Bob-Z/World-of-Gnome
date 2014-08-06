@@ -63,12 +63,13 @@ manage_npc
 static int manage_npc(void * data)
 {
 	context_t * context = (context_t *)data;
-	const char * ai;
+	char * ai;
 	char ** parameters;
 
-	if(read_string(CHARACTER_TABLE,context->id,&ai,CHARACTER_KEY_AI,NULL)) {
+	if(entry_read_string(CHARACTER_TABLE,context->id,&ai,CHARACTER_KEY_AI,NULL)) {
 		read_list(CHARACTER_TABLE,context->id,&parameters,CHARACTER_KEY_AI_PARAMS,NULL);
-		npc_script(context,(char *)ai,parameters);
+		npc_script(context,ai,parameters);
+		free(ai);
 		if(parameters) {
 			free(parameters);
 		}
@@ -84,9 +85,9 @@ static int manage_npc(void * data)
 ***************************/
 void instantiate_npc(const char * id)
 {
-	const char * type;
-	const char * name;
-	const char * map;
+	char * type;
+	char * name;
+	char * map;
 	int is_npc;
 	int x;
 	int y;
@@ -107,10 +108,6 @@ void instantiate_npc(const char * id)
 	}
 
 	// read data of this npc
-	if(!read_string(CHARACTER_TABLE,id,&map,CHARACTER_KEY_MAP,NULL)) {
-		return;
-	}
-
 	if(!read_int(CHARACTER_TABLE,id,&x,CHARACTER_KEY_POS_X,NULL)) {
 		return;
 	}
@@ -118,28 +115,38 @@ void instantiate_npc(const char * id)
 	if(!read_int(CHARACTER_TABLE,id,&y,CHARACTER_KEY_POS_Y,NULL)) {
 		return;
 	}
+	
+	if(!entry_read_string(CHARACTER_TABLE,id,&map,CHARACTER_KEY_MAP,NULL)) {
+		return;
+	}
 
 	if(!read_int(MAP_TABLE,map,&tile_x,MAP_KEY_TILE_SIZE_X,NULL)) {
+		free(map);
 		return;
 	}
 
 	if(!read_int(MAP_TABLE,map,&tile_y,MAP_KEY_TILE_SIZE_Y,NULL)) {
+		free(map);
 		return;
 	}
 
 	if(!read_int(MAP_TABLE,map,&map_x,MAP_KEY_SIZE_X,NULL)) {
+		free(map);
 		return;
 	}
 
 	if(!read_int(MAP_TABLE,map,&map_y,MAP_KEY_SIZE_Y,NULL)) {
+		free(map);
 		return;
 	}
 
-	if(!read_string(CHARACTER_TABLE,id,&name,CHARACTER_KEY_NAME,NULL)) {
-		name = "";
+	if(!entry_read_string(CHARACTER_TABLE,id,&name,CHARACTER_KEY_NAME,NULL)) {
+		name = strdup("");
 	}
 
-	if(!read_string(CHARACTER_TABLE,id,&type,CHARACTER_KEY_TYPE,NULL)) {
+	if(!entry_read_string(CHARACTER_TABLE,id,&type,CHARACTER_KEY_TYPE,NULL)) {
+		free(map);
+		free(name);
 		return;
 	}
 
@@ -147,13 +154,16 @@ void instantiate_npc(const char * id)
 	ctx = context_new();
 	context_set_username(ctx,"CPU");
 	context_set_character_name(ctx,name);
+	free(name);
 	context_set_connected(ctx,1);
 	context_set_map(ctx,map);
+	free(map);
 #if 0
 	context_set_map_x(ctx,map_x);
 	context_set_map_y(ctx,map_y);
 #endif
 	context_set_type(ctx,type);
+	free(type);
 	context_set_pos_x(ctx,x);
 	context_set_pos_y(ctx,y);
 	context_set_tile_x(ctx,tile_x);

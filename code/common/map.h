@@ -25,7 +25,7 @@ int map_add_item(const char * map, const char * item, int x, int y);
 int map_check_tile(context_t * ctx,char * id,const char * map,int x,int y);
 int map_set_tile(const char * map,const char * tile,int x, int y);
 char * map_get_tile(const char * map,int x, int y);
-const char * map_get_tile_type(const char * map,int x, int y);
+char * map_get_tile_type(const char * map,int x, int y);
 char ** map_get_event(const char * map,int x, int y);
 char ** map_get_character(const char * map,int x, int y);
 char * map_add_event(const char * map, const char * script, int x, int y);

@@ -51,10 +51,10 @@ return -1 if fails
 int inventory_add(const char * ctx_id, const char * item_id)
 {
 	context_t * context = context_find(ctx_id);
-	const char * template;
+	char * template;
 	int index;
 	char ** name_list;
-	const char * current_template;
+	char * current_template;
 	int add_count;
 	int current_count;
 
@@ -82,9 +82,11 @@ int inventory_add(const char * ctx_id, const char * item_id)
 
 		index=0;
 		while( name_list[index] != NULL) {
-			if(read_string(ITEM_TABLE,name_list[index],&current_template,ITEM_TEMPLATE,NULL)) {
+			if(entry_read_string(ITEM_TABLE,name_list[index],&current_template,ITEM_TEMPLATE,NULL)) {
 				if( strcmp(template,current_template) == 0 ) {
 					if(read_int(ITEM_TABLE,name_list[index],&current_count,ITEM_QUANTITY,NULL)) {
+						free(current_template);
+						free(template);
 						add_count+=current_count;
 						item_set_quantity(name_list[index],add_count);
 						item_destroy(item_id);
@@ -92,9 +94,11 @@ int inventory_add(const char * ctx_id, const char * item_id)
 						return 0;
 					}
 				}
+				free(current_template);
 			}
 			index++;
 		}
+		free(template);
 
 		/* First time we add this type of resource to inventory */
 		if( name_list[index] == NULL ) {
@@ -118,7 +122,7 @@ char * inventory_get_by_name(const char * id, const char * item_name)
 {
 	int index;
 	char ** name_list;
-	const char * name;
+	char * name;
 	char * res;
 
 	context_t * context = context_find(id);
@@ -137,8 +141,10 @@ char * inventory_get_by_name(const char * id, const char * item_name)
 			if( strcmp(item_name,name) == 0 ) {
 				res = strdup(name_list[index]);
 				free(name_list);
+				free(name);
 				return res;
 			}
+			free(name);
 		}
 		index++;
 	}

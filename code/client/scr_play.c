@@ -135,8 +135,8 @@ static void compose_map(context_t * ctx)
 	int i;
 	char ** value = NULL;
 	int x = 0;
-        int y = 0;
-	const char * tile_image;
+	int y = 0;
+	char * tile_image = NULL;
 	anim_t * anim;
 	item_t * item;
 
@@ -159,19 +159,21 @@ static void compose_map(context_t * ctx)
 	/* Parse map string */
 	i=0;
 	while(value[i] != NULL ) {
-		if(read_string(TILE_TABLE,value[i],&tile_image,TILE_KEY_IMAGE,NULL)) {
+		if(entry_read_string(TILE_TABLE,value[i],&tile_image,TILE_KEY_IMAGE,NULL)) {
 #if 0
 			/* Save description for caller */
-			read_string(TILE_TABLE,tile_name,description,TILE_KEY_TEXT,NULL);
+			entry_read_string(TILE_TABLE,tile_name,description,TILE_KEY_TEXT,NULL);
+			free(description);
 #endif
 			item = item_list_add(&item_list);
 
 			anim = imageDB_get_anim(ctx,tile_image);
+			free(tile_image);
 
 			item_set_anim(item,x*ctx->tile_x,y*ctx->tile_y,anim);
 			item_set_tile(item,x,y);
-			item_set_click_left(item,cb_select_map,item);
-			item_set_click_right(item,cb_redo_map,item);
+			item_set_click_left(item,cb_select_map,item,NULL);
+			item_set_click_right(item,cb_redo_map,item,NULL);
 		}
 
 		x++;
@@ -207,7 +209,7 @@ Compose item on map
 **********************************/
 static void compose_item(context_t * ctx)
 {
-	const char * sprite_name = NULL;
+	char * sprite_name = NULL;
 	anim_t * anim;
 	item_t * item;
 	int x;
@@ -215,7 +217,7 @@ static void compose_item(context_t * ctx)
 	char ** item_id;
 	int i;
 	static TTF_Font * font = NULL;
-	const char * template;
+	char * template;
 	int quantity;
 	char buf[1024];
 
@@ -242,21 +244,25 @@ static void compose_item(context_t * ctx)
 		template = item_is_resource(item_id[i]);
 
 		if ( template == NULL ) {
-			if(!read_string(ITEM_TABLE,item_id[i],&sprite_name,ITEM_SPRITE,NULL)) {
+			if(!entry_read_string(ITEM_TABLE,item_id[i],&sprite_name,ITEM_SPRITE,NULL)) {
 				i++;
 				continue;
 			}
 		}
 		else {
-			if(!read_string(ITEM_TEMPLATE_TABLE,template,&sprite_name,ITEM_SPRITE,NULL)) {
+			if(!entry_read_string(ITEM_TEMPLATE_TABLE,template,&sprite_name,ITEM_SPRITE,NULL)) {
+				free(template);
 				i++;
 				continue;
 			}
+			free(template);
 		}
 
 		item = item_list_add(&item_list);
 
 		anim = imageDB_get_anim(ctx,sprite_name);
+		free(sprite_name);
+		
 		x = x*ctx->tile_x;
 		y = y*ctx->tile_y;
 		/* Center sprite on tile */
@@ -282,7 +288,7 @@ Compose sprites
 **********************************/
 static void compose_sprite(context_t * ctx)
 {
-	const char * sprite_name = NULL;
+	char * sprite_name = NULL;
 	anim_t * anim;
 	item_t * item;
 	int x;
@@ -307,13 +313,14 @@ static void compose_sprite(context_t * ctx)
 		}
 
 		/* compute the sprite file name */
-		if(!read_string(CHARACTER_TABLE,ctx->id,&sprite_name,CHARACTER_KEY_SPRITE,NULL)) {
+		if(!entry_read_string(CHARACTER_TABLE,ctx->id,&sprite_name,CHARACTER_KEY_SPRITE,NULL)) {
 			werr(LOGDEV,"ID=%s. Can't read sprite name for \"%s\" type",ctx->id,ctx->type);
 			ctx = ctx->next;
 			continue;
 		}
 
 		anim = imageDB_get_anim(player_context,sprite_name);
+		free(sprite_name);
 
 		item = item_list_add(&item_list);
 
@@ -450,8 +457,8 @@ static void compose_sprite(context_t * ctx)
 		oy -= (anim->h-ctx->tile_y)/2;
 
 		item_set_smooth_anim(item,x,y,ox,oy,ctx->pos_tick,anim);
-		item_set_click_left(item,cb_select_sprite,ctx->id);
-		item_set_click_right(item,cb_redo_sprite,item);
+		item_set_click_left(item,cb_select_sprite,ctx->id,NULL);
+		item_set_click_right(item,cb_redo_sprite,item,NULL);
 
 		ctx = ctx->next;
 	}
@@ -544,9 +551,9 @@ Compose action icon
 static void compose_action(context_t * ctx)
 {
 	char ** action_list = NULL;
-	const char * text;
-	const char * icon;
-	const char * script;
+	char * text = NULL;
+	char * icon = NULL;
+	char * script = NULL;
 	anim_t * anim;
 	item_t * item;
 	int sw = 0;
@@ -563,15 +570,19 @@ static void compose_action(context_t * ctx)
 	}
 
 	while(*action_list != NULL ) {
-		if(!read_string(ACTION_TABLE,*action_list,&text,ACTION_KEY_TEXT,NULL)) {
+		if(text) { free(text); };
+		if(icon) { free(icon); };
+		if(script) { free(script); };
+		
+		if(!entry_read_string(ACTION_TABLE,*action_list,&text,ACTION_KEY_TEXT,NULL)) {
 			action_list ++;
 			continue;
 		}
-		if(!read_string(ACTION_TABLE,*action_list,&icon,ACTION_KEY_ICON,NULL)) {
+		if(!entry_read_string(ACTION_TABLE,*action_list,&icon,ACTION_KEY_ICON,NULL)) {
 			action_list ++;
 			continue;
 		}
-		if(!read_string(ACTION_TABLE,*action_list,&script,ACTION_KEY_SCRIPT,NULL)) {
+		if(!entry_read_string(ACTION_TABLE,*action_list,&script,ACTION_KEY_SCRIPT,NULL)) {
 			action_list ++;
 			continue;
 		}
@@ -584,13 +595,17 @@ static void compose_action(context_t * ctx)
 		item_set_overlay(item,1);
 		item_set_anim(item,x,sh-anim->h,anim);
 		x += anim->w;
-		item_set_click_left(item,cb_action,(void*)script);
+		item_set_click_left(item,cb_action,(void*)strdup(script),free);
 		if( action_bar_height < anim->h ) {
 			action_bar_height = anim->h;
 		}
 
 		action_list ++;
 	}
+	
+	if(text) { free(text); };
+	if(icon) { free(icon); };
+	if(script) { free(script); };
 }
 
 /**********************************
@@ -620,15 +635,17 @@ static void compose_equipment(context_t * ctx)
 	int x=0;
 	int h1;
 	int index;
-	const char * template = NULL;
+	char * template = NULL;
 #if 0
 	char * name;
 #endif
-	const char * icon_name = NULL;
-	const char * equipped_name = NULL;
-	const char * equipped_text = NULL;
-	const char * equipped_icon_name = NULL;
-	const char * inventory_icon_name = NULL;
+	char * icon_name = NULL;
+	char * equipped_name = NULL;
+#if 0
+	char * equipped_text = NULL;
+#endif
+	char * equipped_icon_name = NULL;
+	char * inventory_icon_name = NULL;
 
 	SDL_GetRendererOutputSize(ctx->render,&sw,&sh);
 
@@ -640,19 +657,21 @@ static void compose_equipment(context_t * ctx)
 	while( name_list[index] != NULL) {
 #if 0
 		/* Get the slot name */
-		if(!read_string(CHARACTER_TABLE,ctx->id,&item_name,EQUIPMENT_GROUP,name_list[index],EQUIPMENT_NAME,NULL)) {
+		if(!entry_read_string(CHARACTER_TABLE,ctx->id,&item_name,EQUIPMENT_GROUP,name_list[index],EQUIPMENT_NAME,NULL)) {
 			name = strdup(name_list[index]);
 		} else {
-			name = strdup(item_name);
+			name = item_name;
 		}
+		free(item_name);
 #endif
 		h1 = 0;
 		/* Get the slot icon */
-		if(!read_string(CHARACTER_TABLE,ctx->id,&icon_name,EQUIPMENT_GROUP,name_list[index],EQUIPMENT_ICON,NULL)) {
+		if(!entry_read_string(CHARACTER_TABLE,ctx->id,&icon_name,EQUIPMENT_GROUP,name_list[index],EQUIPMENT_ICON,NULL)) {
 			/* Display nothing */
 		} else {
 			/* load image */
 			anim = imageDB_get_anim(ctx, icon_name);
+			free(icon_name);
 
 			item = item_list_add(&item_list);
 
@@ -661,30 +680,35 @@ static void compose_equipment(context_t * ctx)
 			item_set_overlay(item,1);
 			item_set_anim(item,x,y,anim);
 
-			item_set_click_left(item,cb_select_slot,name_list[index]);
+			item_set_click_left(item,cb_select_slot,strdup(name_list[index]),NULL);
 		}
 
 		/* Is there an equipped object ? */
-		if(read_string(CHARACTER_TABLE,ctx->id,&equipped_name,EQUIPMENT_GROUP,name_list[index],EQUIPMENT_EQUIPPED,NULL)) {
+		if(entry_read_string(CHARACTER_TABLE,ctx->id,&equipped_name,EQUIPMENT_GROUP,name_list[index],EQUIPMENT_EQUIPPED,NULL)) {
+#if 0
 			/* Get the equipped object name */
-			if(!read_string(ITEM_TABLE,equipped_name,&equipped_text,ITEM_NAME,NULL)) {
+			if(!entry_read_string(ITEM_TABLE,equipped_name,&equipped_text,ITEM_NAME,NULL)) {
 				werr(LOGDEV,"Can't read object %s name in equipment slot %s",equipped_name,name_list[index]);
 			}
+			free(equipped_text);
+#endif
 			/* Get it's icon */
-			if(!read_string(ITEM_TABLE,equipped_name,&equipped_icon_name,ITEM_ICON,NULL)) {
+			if(!entry_read_string(ITEM_TABLE,equipped_name,&equipped_icon_name,ITEM_ICON,NULL)) {
 				werr(LOGDEV,"Can't read object %s icon in equipment slot %s",equipped_name,name_list[index]);
 			} else {
 				item = item_list_add(&item_list);
 
 				anim2 = imageDB_get_anim(ctx, equipped_icon_name);
+				free(equipped_icon_name);
 
 				item_set_overlay(item,1);
 				item_set_anim(item,x-anim->w,y,anim2);
-				item_set_click_left(item,cb_select_slot,name_list[index]);
+				item_set_click_left(item,cb_select_slot,strdup(name_list[index]),NULL);
 				if(h1 < anim->h) {
 					h1 = anim->h;
 				}
 			}
+			free(equipped_name);
 		}
 
 		/* Draw selection cursor */
@@ -715,24 +739,26 @@ static void compose_equipment(context_t * ctx)
 		template = item_is_resource(ctx->selection.inventory);
 
 		if ( template == NULL ) {
-			if(!read_string(ITEM_TABLE,ctx->selection.inventory,&inventory_icon_name,ITEM_ICON,NULL)) {
+				if(!entry_read_string(ITEM_TABLE,ctx->selection.inventory,&inventory_icon_name,ITEM_ICON,NULL)) {
 				werr(LOGDEV,"Can't read item %s icon name",ctx->selection.inventory);
 			}
 		}
 		else {
-			if(!read_string(ITEM_TEMPLATE_TABLE,template,&inventory_icon_name,ITEM_ICON,NULL)) {
+			if(!entry_read_string(ITEM_TEMPLATE_TABLE,template,&inventory_icon_name,ITEM_ICON,NULL)) {
 				werr(LOGDEV,"Can't read item %s icon name (template: %s)",ctx->selection.inventory,template);
 			}
+			free(template);
 		}
 
 		if( inventory_icon_name ) {
 			item = item_list_add(&item_list);
 
 			anim = imageDB_get_anim(ctx, inventory_icon_name);
+			free(inventory_icon_name);
 
 			item_set_overlay(item,1);
 			item_set_anim(item,sw-anim->w,y,anim);
-			item_set_click_left(item,show_inventory,NULL);
+			item_set_click_left(item,show_inventory,NULL,NULL);
 		}
 	}
 

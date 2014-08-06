@@ -123,7 +123,7 @@ item_t * scr_select_compose(context_t * context)
 {
 	int i = 0;
 	int x = 0;
-	const char * marquee_name;
+	char * marquee_name;
 	static int max_h = 0;
 	static int init = 1;
 	item_t * item;
@@ -151,10 +151,12 @@ item_t * scr_select_compose(context_t * context)
 	/* Load all anim and compute the max height */
 	for(i=0;i<character_num;i++) {
 		/* Compute the marquee file name */
-		if(!read_string(CHARACTER_TABLE,character_list[i].id,&marquee_name,CHARACTER_KEY_MARQUEE,NULL)) {
+		if(!entry_read_string(CHARACTER_TABLE,character_list[i].id,&marquee_name,CHARACTER_KEY_MARQUEE,NULL)) {
 			continue;
 		}
 		character_list[i].anim  = imageDB_get_anim(context,marquee_name);
+		free(marquee_name);
+		
 		if(character_list[i].anim->h > max_h) {
 			max_h = character_list[i].anim->h;
 		}
@@ -175,12 +177,12 @@ item_t * scr_select_compose(context_t * context)
 		}
 
 		item_set_anim(item,x,max_h/2-character_list[i].anim->h/2,character_list[i].anim);
-		item_set_click_left(item,cb_show_item,(void *)item);
-		item_set_click_right(item,cb_select_click,(void *)context);
-		item_set_double_click_left(item,cb_select_click,(void *)context);
-		item_set_wheel_up(item,cb_wheel_up,(void *)context);
-		item_set_wheel_down(item,cb_wheel_down,(void *)context);
-		item_set_over(item,cb_over,(void *)&character_list[i]);
+		item_set_click_left(item,cb_show_item,(void *)item,NULL);
+		item_set_click_right(item,cb_select_click,(void *)context,NULL);
+		item_set_double_click_left(item,cb_select_click,(void *)context,NULL);
+		item_set_wheel_up(item,cb_wheel_up,(void *)context,NULL);
+		item_set_wheel_down(item,cb_wheel_down,(void *)context,NULL);
+		item_set_over(item,cb_over,(void *)&character_list[i],NULL);
 
 		x += character_list[i].anim->w + BORDER;
 		/* character name */

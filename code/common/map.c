@@ -78,14 +78,14 @@ return TRUE if the context is allowed to go to the tile at coord x,y
 *************************************/
 int map_check_tile(context_t * ctx,char * id, const char * map, int x,int y)
 {
-	const char * action;
+	char * action;
 	char sx[64];
 	char sy[64];
 	char * param[5];
 	int res;
 	char ** map_tiles;
 	char ** allowed_tile;
-	const char * tile_type;
+	char * tile_type;
 	int i=0;
 	int size_x = 0;
 	int size_y = 0;
@@ -103,7 +103,7 @@ int map_check_tile(context_t * ctx,char * id, const char * map, int x,int y)
 	}
 
 	/* If there is a allowed_tile_script, run it */
-	if(read_string(CHARACTER_TABLE,id,&action, CHARACTER_KEY_ALLOWED_TILE_SCRIPT, NULL)) {
+	if(entry_read_string(CHARACTER_TABLE,id,&action, CHARACTER_KEY_ALLOWED_TILE_SCRIPT, NULL)) {
 		param[0] = id;
 		param[1] = (char *)map;
 		sprintf(sx,"%d",x);
@@ -112,6 +112,7 @@ int map_check_tile(context_t * ctx,char * id, const char * map, int x,int y)
 		param[3] = sy;
 		param[4] = NULL;
 		res = action_execute_script(ctx,action,param);
+		free(action);
 		return res;
 	}
 
@@ -121,7 +122,7 @@ int map_check_tile(context_t * ctx,char * id, const char * map, int x,int y)
 	}
 
 	/* Check the tile has a type */
-	if(!read_string(TILE_TABLE,map_tiles[(size_x*y)+x],&tile_type,TILE_KEY_TYPE,NULL)) {
+	if(!entry_read_string(TILE_TABLE,map_tiles[(size_x*y)+x],&tile_type,TILE_KEY_TYPE,NULL)) {
 		free(map_tiles);
 		/* this tile has no type, allowed for everyone */
 		return TRUE;
@@ -134,6 +135,7 @@ int map_check_tile(context_t * ctx,char * id, const char * map, int x,int y)
 			if( strcmp(allowed_tile[i], tile_type) == 0 ) {
 				free(allowed_tile);
 				free(map_tiles);
+				free(tile_type);
 				return TRUE;
 			}
 			i++;
@@ -141,10 +143,11 @@ int map_check_tile(context_t * ctx,char * id, const char * map, int x,int y)
 
 		free(allowed_tile);
 		free(map_tiles);
-
+		free(tile_type);
 		return FALSE;
 	}
 
+	free(tile_type);
 	/* Allow all tiles by default */
 	return TRUE;
 }
@@ -338,13 +341,14 @@ char * map_get_tile(const char * map,int x, int y)
 
 /********************************************
  return the type of the tile on map at x,y
+ Returned string MUST BE FREED
 ********************************************/
-const char * map_get_tile_type(const char * map,int x, int y)
+char * map_get_tile_type(const char * map,int x, int y)
 {
 	char ** map_tiles;
 	int map_size_x;
 	char * tile;
-	const char * type;
+	char * type;
 
 	if( x<0 || y<0) {
 		return NULL;
@@ -360,7 +364,7 @@ const char * map_get_tile_type(const char * map,int x, int y)
 
 	tile = map_tiles[(map_size_x*y)+x];
 	if( tile ) {
-		if(!read_string(TILE_TABLE,tile,&type,TILE_KEY_TYPE,NULL)) {
+		if(!entry_read_string(TILE_TABLE,tile,&type,TILE_KEY_TYPE,NULL)) {
 			return NULL;
 		}
 
@@ -494,7 +498,7 @@ int map_delete_event(const char * map, const char * script, int x, int y)
 	int i=0;
 	int mapx;
 	int mapy;
-	const char * s;
+	char * map_script = NULL;
 	const char * id = NULL;
 
 	if( x<0 || y<0 ) {
@@ -518,14 +522,16 @@ int map_delete_event(const char * map, const char * script, int x, int y)
 			i++;
 			continue;
 		}
-		if( !read_string(MAP_TABLE,map,&s,MAP_ENTRY_EVENT_LIST,eventlist[i],MAP_EVENT_SCRIPT,NULL) ) {
+		if( !entry_read_string(MAP_TABLE,map,&map_script,MAP_ENTRY_EVENT_LIST,eventlist[i],MAP_EVENT_SCRIPT,NULL) ) {
 			i++;
 			continue;
 		}
-		if( x == mapx && y == mapy && !strcmp(s,script) ) {
+		if( x == mapx && y == mapy && !strcmp(map_script,script) ) {
 			id = eventlist[i];
+			free(map_script);
 			break;
 		}
+		free(map_script);
 		i++;
 	}
 

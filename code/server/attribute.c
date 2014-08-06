@@ -40,7 +40,7 @@ int attribute_change(context_t * context, const char * id, const char * attribut
 	int do_down_action = FALSE;
 	int do_max_action = FALSE;
 	int do_up_action = FALSE;
-	const char * action;
+	char * action;
 	char * min_action = NULL;
 	char * down_action = NULL;
 	char * max_action = NULL;
@@ -89,31 +89,31 @@ int attribute_change(context_t * context, const char * id, const char * attribut
 	/* Check automatic actions */
 	if( value < 0 ) {
 		if( do_min_action ) {
-			if(!read_string(CHARACTER_TABLE,id,&action,ATTRIBUTE_GROUP,attribute, ATTRIBUTE_ON_MIN, NULL)) {
+			if(!entry_read_string(CHARACTER_TABLE,id,&action,ATTRIBUTE_GROUP,attribute, ATTRIBUTE_ON_MIN, NULL)) {
 				do_min_action = FALSE;
 			} else {
-				min_action = strdup(action);
+				min_action = action;
 			}
 		}
 
-		if(read_string(CHARACTER_TABLE,id,&action,ATTRIBUTE_GROUP,attribute, ATTRIBUTE_ON_DOWN, NULL)) {
+		if(entry_read_string(CHARACTER_TABLE,id,&action,ATTRIBUTE_GROUP,attribute, ATTRIBUTE_ON_DOWN, NULL)) {
 			do_down_action = TRUE;
-			down_action = strdup(action);
+			down_action = action;
 		}
 	}
 
 	if( value > 0 ) {
 		if( do_max_action ) {
-			if(!read_string(CHARACTER_TABLE,id,&action,ATTRIBUTE_GROUP,attribute, ATTRIBUTE_ON_MAX, NULL)) {
+			if(!entry_read_string(CHARACTER_TABLE,id,&action,ATTRIBUTE_GROUP,attribute, ATTRIBUTE_ON_MAX, NULL)) {
 				do_max_action = FALSE;
 			} else {
-				max_action = strdup(action);
+				max_action = action;
 			}
 		}
 
-		if(read_string(CHARACTER_TABLE,id,&action,ATTRIBUTE_GROUP,attribute, ATTRIBUTE_ON_UP, NULL)) {
+		if(entry_read_string(CHARACTER_TABLE,id,&action,ATTRIBUTE_GROUP,attribute, ATTRIBUTE_ON_UP, NULL)) {
 			do_up_action = TRUE;
-			up_action = strdup(action);
+			up_action = action;
 		}
 	}
 

@@ -24,9 +24,9 @@ char * item_create_empty();
 char * item_create_from_template(const char * template);
 int item_destroy(const char * item_id);
 char * item_resource_new(const char * template, int quantity);
-const char * item_is_resource(const char * item_id);
+char * item_is_resource(const char * item_id);
 int item_get_quantity(const char * item_id);
 int item_set_quantity(const char * item_id, int quantity);
-const char * item_get_name(const char * item_id);
+char * item_get_name(const char * item_id);
 
 #endif

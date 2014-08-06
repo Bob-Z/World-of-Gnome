@@ -66,18 +66,19 @@ int equipment_add(const char *id, const char * slot, const char * item)
 
 /***********************************************************************
 Return the name of the item in character's specified equipment slot
+Returned string MUST BE FREED
 return NULL if fails
 ***********************************************************************/
-const char * equipment_get_item_id(const char *id, const char * slot)
+char * equipment_get_item_id(const char *id, const char * slot)
 {
-	const char * item;
+	char * item;
 	context_t * context = context_find(id);
 	if( context == NULL ) {
 		werr(LOGDEV,"Could not find context %s",id);
 		return NULL;
 	}
 
-	if(!read_string(CHARACTER_TABLE, context->id, &item, EQUIPMENT_GROUP, slot, EQUIPMENT_EQUIPPED, NULL)) {
+	if(!entry_read_string(CHARACTER_TABLE, context->id, &item, EQUIPMENT_GROUP, slot, EQUIPMENT_EQUIPPED, NULL)) {
 		return NULL;
 	}
 

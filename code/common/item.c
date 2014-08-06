@@ -103,13 +103,14 @@ char * item_resource_new(const char * template, int quantity)
 
 /*****************************************************
  return template name of resource
+ Returned string MUST BE FREED
  return NULL  if item is unique (i.e. not a resource)
  *****************************************************/
-const char * item_is_resource(const char * item_id)
+char * item_is_resource(const char * item_id)
 {
-	const char * template = NULL;
+	char * template = NULL;
 
-	read_string(ITEM_TABLE,item_id,&template,ITEM_TEMPLATE, NULL);
+	entry_read_string(ITEM_TABLE,item_id,&template,ITEM_TEMPLATE, NULL);
 
 	return template;
 }
@@ -121,12 +122,13 @@ const char * item_is_resource(const char * item_id)
 int item_get_quantity(const char * item_id)
 {
 	int quantity;
-	const char * template;
+	char * template;
 
 	if((template=item_is_resource(item_id))==NULL) {
 		return 1; /* unique item */
 	}
-
+	free(template);
+	
 	if(!read_int(ITEM_TABLE,item_id,&quantity,ITEM_QUANTITY, NULL)) {
 		return -1;
 	}
@@ -140,11 +142,12 @@ int item_get_quantity(const char * item_id)
 *****************************/
 int item_set_quantity(const char * item_id, int quantity)
 {
-	const char * template;
+	char * template;
 
 	if((template=item_is_resource(item_id))==NULL) {
 		return -1; /* unique item */
 	}
+	free(template);
 
 	if(!write_int(ITEM_TABLE,item_id,quantity,ITEM_QUANTITY, NULL)) {
 		return -1;
@@ -157,18 +160,20 @@ int item_set_quantity(const char * item_id, int quantity)
  Return the name of an item
  return NULL on error
 *****************************/
-const char * item_get_name(const char * item_id)
+char * item_get_name(const char * item_id)
 {
-	const char * template;
-	const char * name;
+	char * template;
+	char * name;
 
 	if( (template=item_is_resource(item_id)) != NULL ) {
-		if(read_string(ITEM_TEMPLATE_TABLE,template,&name,ITEM_NAME,NULL)) {
+		if(entry_read_string(ITEM_TEMPLATE_TABLE,template,&name,ITEM_NAME,NULL)) {
+			free(template);
 			return name;
 		}
+		free(template);
 	}
 	else {
-		if(read_string(ITEM_TABLE,item_id,&name,ITEM_NAME,NULL)) {
+		if(entry_read_string(ITEM_TABLE,item_id,&name,ITEM_NAME,NULL)) {
 			return name;
 		}
 	}

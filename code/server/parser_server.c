@@ -27,7 +27,7 @@ Return FALSE on error, TRUE if OK
 **************************************/
 int parse_incoming_data(context_t * context, Uint32 command, Uint32 command_size, char * data)
 {
-	const char * value = NULL;
+	char * value = NULL;
 	char * fullname;
 	char * elements[512];
 	char * cksum;
@@ -54,16 +54,18 @@ int parse_incoming_data(context_t * context, Uint32 command, Uint32 command_size
 		wlog(LOGDEBUG,"Received CMD_LOGIN_PASSWORD");
 		/* Read username / password pairs from file : FILE_USER_CONF */
 		/* Read password for username */
-		if(!read_string(PASSWD_TABLE, context->user_name, &value, PASSWD_KEY_PASSWORD,NULL)) {
+		if(!entry_read_string(PASSWD_TABLE, context->user_name, &value, PASSWD_KEY_PASSWORD,NULL)) {
 			return FALSE;
 		}
 		if( strcmp(value, data) != 0) {
+			free(value);
 			werr(LOGUSER,"Wrong login for %s",context->user_name);
 			/* send answer */
 			network_send_command(context, CMD_LOGIN_NOK, 0, NULL, FALSE);
 			/* force client disconnection*/
 			return FALSE;
 		} else {
+			free(value);
 			/* send answer */
 			network_send_command(context, CMD_LOGIN_OK, 0, NULL, FALSE);
 			wlog(LOGUSER,"%s successfully login",context->user_name);

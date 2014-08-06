@@ -255,12 +255,14 @@ int read_int(const char * table, const char * file, int * res, ...)
 return FALSE on error
 res MUST BE FREED by caller
 *********************/
-static int __read_string(const char * table, const char * file, const char ** res, va_list ap)
+static int __read_string(const char * table, const char * file, char ** res, va_list ap)
 {
 	const config_t * config = NULL;
 	char * path;
 	const char * result;
 
+	*res = NULL;
+	
 	config = get_config(table,file);
 	if(config==NULL) {
 		return FALSE;
@@ -277,15 +279,18 @@ static int __read_string(const char * table, const char * file, const char ** re
 		return FALSE;
 	}
 	free(path);
+	
 	*res = strdup(result);
 
 	return TRUE;
 }
 
 /*********************
+Fill res with a pointer to a string.
+This string MUST BE FREED by caller.
 return FALSE on error
 *********************/
-int read_string(const char * table, const char * file, const char ** res, ...)
+int entry_read_string(const char * table, const char * file, char ** res, ...)
 {
 	int ret;
 	va_list ap;

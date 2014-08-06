@@ -50,8 +50,8 @@ void character_user_send_list(context_t * context)
 	Uint32 data_size = 0;
 	Uint32 string_size = 0;
 	char ** character_list;
-	const char * type;
-	const char * name;
+	char * type;
+	char * name;
 	int i;
 
 	if(!read_list(USERS_TABLE, context->user_name,&character_list,USERS_CHARACTER_LIST,NULL)) {
@@ -62,12 +62,13 @@ void character_user_send_list(context_t * context)
 
 	data = strdup("");
 	while( character_list[i] != NULL ) {
-		if(!read_string(CHARACTER_TABLE, character_list[i], &type, CHARACTER_KEY_TYPE,NULL)) {
+		if(!entry_read_string(CHARACTER_TABLE, character_list[i], &type, CHARACTER_KEY_TYPE,NULL)) {
 			i++;
 			continue;
 		}
 
-		if(!read_string(CHARACTER_TABLE, character_list[i], &name, CHARACTER_KEY_NAME,NULL)) {
+		if(!entry_read_string(CHARACTER_TABLE, character_list[i], &name, CHARACTER_KEY_NAME,NULL)) {
+			free(type);
 			i++;
 			continue;
 		}
@@ -90,6 +91,9 @@ void character_user_send_list(context_t * context)
 		memcpy(data+data_size,name, string_size);
 		data_size += string_size;
 
+		free(type);
+		free(name);
+		
 		i++;
 	}
 
@@ -195,7 +199,7 @@ void character_update_aggro(context_t * context)
 	context_t * ctx2 = NULL;
 	int aggro_dist;
 	int dist;
-	const char * aggro_script;
+	char * aggro_script;
 	char * param[] = { NULL,NULL };
 	int no_aggro = 1;
 
@@ -225,7 +229,7 @@ void character_update_aggro(context_t * context)
 			continue;
 		}
 
-		if(!read_string(CHARACTER_TABLE,ctx->id,&aggro_script, CHARACTER_KEY_AGGRO_SCRIPT,NULL)) {
+		if(!entry_read_string(CHARACTER_TABLE,ctx->id,&aggro_script, CHARACTER_KEY_AGGRO_SCRIPT,NULL)) {
 			continue;
 		}
 
@@ -260,12 +264,16 @@ void character_update_aggro(context_t * context)
 			}
 		} while( (ctx2=ctx2->next)!= NULL );
 
+
 		/* Notify if no aggro available */
 		if( no_aggro ) {
 			param[0] = "";
 			param[1] = NULL;
 			action_execute_script(ctx,aggro_script,param);
 		}
+		
+		free(aggro_script);
+		
 	} while( (ctx=ctx->next)!= NULL );
 }
 
@@ -276,7 +284,7 @@ return -1 if the position was not set (because tile not allowed or out of bound)
 int character_set_pos(context_t * ctx, char * map, int x, int y)
 {
 	char ** event_id;
-	const char * script;
+	char * script;
 	char ** param;
 	int i;
 	int change_map = 0;
@@ -316,13 +324,14 @@ int character_set_pos(context_t * ctx, char * map, int x, int y)
 			i = 0;
 			while(event_id[i]) {
 				param=NULL;
-				if( !read_string(MAP_TABLE,map,&script,MAP_ENTRY_EVENT_LIST,event_id[i],MAP_EVENT_SCRIPT,NULL) ) {
+				if( !entry_read_string(MAP_TABLE,map,&script,MAP_ENTRY_EVENT_LIST,event_id[i],MAP_EVENT_SCRIPT,NULL) ) {
 					i++;
 					continue;
 				}
 				read_list(MAP_TABLE,map,&param,MAP_ENTRY_EVENT_LIST,event_id[i],MAP_EVENT_PARAM,NULL);
 
 				action_execute_script(ctx,script,param);
+				free(script);
 
 				i++;
 				free(param);
