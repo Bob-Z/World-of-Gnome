@@ -123,8 +123,13 @@ static void cb_select_map(void *arg)
 **************************************/
 static void cb_redo_map(void *arg)
 {
+	char * script = NULL;
+
 	cb_select_map(arg);
-	cb_action(last_action_script);
+
+	script = strdup(last_action_script);
+	cb_action(script);
+	free(script);
 }
 
 /**********************************
@@ -200,8 +205,13 @@ static void cb_select_sprite(void *arg)
 **********************************/
 static void cb_redo_sprite(void *arg)
 {
+	char * script = NULL;
+
 	cb_select_sprite(arg);
+
+	script = strdup(last_action_script);
 	cb_action(last_action_script);
+	free(script);
 }
 
 /**********************************
@@ -542,7 +552,17 @@ static void cb_action(void * arg)
 
 	network_send_action(context_get_list_first(),script,NULL);
 
-	last_action_script = arg;
+	if( last_action_script ) {
+		free(last_action_script);
+		last_action_script = NULL;
+	}
+
+	if( arg ) {
+		last_action_script = strdup(arg);
+	}
+	else {
+		last_action_script = NULL;
+	}
 }
 
 /**********************************
