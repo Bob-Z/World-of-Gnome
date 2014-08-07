@@ -684,6 +684,9 @@ static void compose_equipment(context_t * ctx)
 #endif
 	char * equipped_icon_name = NULL;
 	char * inventory_icon_name = NULL;
+	static anim_t * inventory_icon = NULL;
+	int max_h;
+	int max_w;
 
 	SDL_GetRendererOutputSize(ctx->render,&sw,&sh);
 
@@ -691,6 +694,8 @@ static void compose_equipment(context_t * ctx)
 		return;
 	}
 
+	max_w = 0;
+	max_h = 0;
 	index=0;
 	while( name_list[index] != NULL) {
 #if 0
@@ -719,6 +724,9 @@ static void compose_equipment(context_t * ctx)
 			item_set_anim(item,x,y,anim);
 
 			item_set_click_left(item,cb_select_slot,strdup(name_list[index]),NULL);
+
+			if(anim->w > max_w) max_w = anim->w;
+			if(anim->h > max_h) max_h = anim->h;
 		}
 
 		/* Is there an equipped object ? */
@@ -798,6 +806,20 @@ static void compose_equipment(context_t * ctx)
 			item_set_anim(item,sw-anim->w,y,anim);
 			item_set_click_left(item,show_inventory,NULL,NULL);
 		}
+	}
+	else {
+		if( max_w == 0) max_w = 32;
+		if( max_h == 0) max_h = 32;
+
+		if( inventory_icon == NULL ) {
+			inventory_icon = anim_create_color(ctx->render, max_w, max_h, 0x7f7f7f7f);
+		}
+
+		item = item_list_add(&item_list);
+
+		item_set_overlay(item,1);
+		item_set_anim(item,sw-anim->w,y,inventory_icon);
+		item_set_click_left(item,show_inventory,NULL,NULL);
 	}
 
 	free(name_list);
