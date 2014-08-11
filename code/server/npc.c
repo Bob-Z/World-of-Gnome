@@ -67,12 +67,10 @@ static int manage_npc(void * data)
 	char ** parameters;
 
 	if(entry_read_string(CHARACTER_TABLE,context->id,&ai,CHARACTER_KEY_AI,NULL)) {
-		read_list(CHARACTER_TABLE,context->id,&parameters,CHARACTER_KEY_AI_PARAMS,NULL);
+		entry_read_list(CHARACTER_TABLE,context->id,&parameters,CHARACTER_KEY_AI_PARAMS,NULL);
 		npc_script(context,ai,parameters);
 		free(ai);
-		if(parameters) {
-			free(parameters);
-		}
+		entry_deep_free(parameters);
 		return 0;
 	}
 

@@ -72,12 +72,10 @@ static void compose_inventory(context_t * ctx)
 		font = TTF_OpenFont(ITEM_FONT, ITEM_FONT_SIZE);
 	}
 
-	if (inventory_list) {
-		free(inventory_list);
-	}
+	entry_deep_free(inventory_list);
 
 	/* read data from file */
-	if(!read_list(CHARACTER_TABLE,ctx->id,&inventory_list, CHARACTER_KEY_INVENTORY,NULL)) {
+	if(!entry_read_list(CHARACTER_TABLE,ctx->id,&inventory_list, CHARACTER_KEY_INVENTORY,NULL)) {
 		return;
 	}
 
@@ -169,11 +167,10 @@ static void compose_select(context_t * ctx)
 
 	anim = imageDB_get_anim(ctx,CURSOR_SPRITE_FILE);
 
-	if (inventory_list) {
-		free(inventory_list);
-	}
+	entry_deep_free(inventory_list);
+
 	/* read data from file */
-	if(!read_list(CHARACTER_TABLE,ctx->id,&inventory_list, CHARACTER_KEY_INVENTORY,NULL)) {
+	if(!entry_read_list(CHARACTER_TABLE,ctx->id,&inventory_list, CHARACTER_KEY_INVENTORY,NULL)) {
 		return;
 	}
 

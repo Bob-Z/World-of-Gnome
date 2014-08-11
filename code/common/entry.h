@@ -22,10 +22,13 @@
 
 void entry_remove(char * filename);
 
+
+
 int read_int(const char * table, const char * file, int * res, ...);
 int entry_read_string(const char * table, const char * file, char ** res, ...);
-int read_list_index(const char * table, const char * file, const char ** res,int index, ...);
-int read_list(const char * table, const char * file, char *** res, ...);
+int entry_read_list_index(const char * table, const char * file, char ** res,int index, ...);
+int entry_read_list(const char * table, const char * file, char *** res, ...);
+void entry_deep_free(char ** to_delete);
 
 int write_int(const char * table, const char * file, int data, ...);
 int write_string(const char * table, const char * file,const char * data, ...);
@@ -34,7 +37,7 @@ int write_list(const char * table, const char * file, char ** data, ...);
 
 char * get_unused_list_entry(const char * table, const char * file, ...);
 char * get_unused_group(const char * table, const char * file, ...);
-int get_group_list(const char * table, const char * file, char *** res, ...);
+int entry_get_group_list(const char * table, const char * file, char *** res, ...);
 
 int add_to_list(const char * table, const char * file, const char * to_be_added, ...);
 int remove_group(const char * table, const char * file, const char * group, ...);

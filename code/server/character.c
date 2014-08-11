@@ -30,7 +30,7 @@ void character_send_list(context_t * context)
 	char ** character_list;
 	int i = 0;
 
-	if(!read_list(USERS_TABLE, context->user_name,&character_list,USERS_CHARACTER_LIST,NULL)) {
+	if(!entry_read_list(USERS_TABLE, context->user_name,&character_list,USERS_CHARACTER_LIST,NULL)) {
 		return;
 	}
 
@@ -39,7 +39,7 @@ void character_send_list(context_t * context)
 		i++;
 	}
 
-	free(character_list);
+	entry_deep_free(character_list);
 }
 
 /*********************************************
@@ -54,7 +54,7 @@ void character_user_send_list(context_t * context)
 	char * name;
 	int i;
 
-	if(!read_list(USERS_TABLE, context->user_name,&character_list,USERS_CHARACTER_LIST,NULL)) {
+	if(!entry_read_list(USERS_TABLE, context->user_name,&character_list,USERS_CHARACTER_LIST,NULL)) {
 		return;
 	}
 
@@ -97,7 +97,7 @@ void character_user_send_list(context_t * context)
 		i++;
 	}
 
-	free(character_list);
+	entry_deep_free(character_list);
 
 	/* Mark the end of the list */
 	data = realloc(data, data_size + 1);
@@ -285,7 +285,7 @@ int character_set_pos(context_t * ctx, char * map, int x, int y)
 {
 	char ** event_id;
 	char * script;
-	char ** param;
+	char ** param = NULL;
 	int i;
 	int change_map = 0;
 
@@ -323,20 +323,21 @@ int character_set_pos(context_t * ctx, char * map, int x, int y)
 		if(event_id) {
 			i = 0;
 			while(event_id[i]) {
-				param=NULL;
 				if( !entry_read_string(MAP_TABLE,map,&script,MAP_ENTRY_EVENT_LIST,event_id[i],MAP_EVENT_SCRIPT,NULL) ) {
 					i++;
 					continue;
 				}
-				read_list(MAP_TABLE,map,&param,MAP_ENTRY_EVENT_LIST,event_id[i],MAP_EVENT_PARAM,NULL);
+				entry_read_list(MAP_TABLE,map,&param,MAP_ENTRY_EVENT_LIST,event_id[i],MAP_EVENT_PARAM,NULL);
 
 				action_execute_script(ctx,script,param);
-				free(script);
 
+				free(script);
+				entry_deep_free(param);
+				param=NULL;
+				
 				i++;
-				free(param);
 			}
-			free(event_id);
+			entry_deep_free(event_id);
 		}
 
 		character_update_aggro(ctx);

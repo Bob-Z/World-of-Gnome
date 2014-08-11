@@ -117,32 +117,31 @@ int map_check_tile(context_t * ctx,char * id, const char * map, int x,int y)
 	}
 
 	/* Read tile list on this map */
-	if(!read_list(MAP_TABLE,map,&map_tiles,MAP_KEY_SET,NULL)) {
+	if(!entry_read_list(MAP_TABLE,map,&map_tiles,MAP_KEY_SET,NULL)) {
 		return FALSE;
 	}
 
 	/* Check the tile has a type */
 	if(!entry_read_string(TILE_TABLE,map_tiles[(size_x*y)+x],&tile_type,TILE_KEY_TYPE,NULL)) {
-		free(map_tiles);
+		entry_deep_free(map_tiles);
 		/* this tile has no type, allowed for everyone */
 		return TRUE;
 	}
+	entry_deep_free(map_tiles);
 
 	/* If there is allowed_tile list, check it */
-	if(read_list(CHARACTER_TABLE,id,&allowed_tile,CHARACTER_KEY_ALLOWED_TILE,NULL)) {
+	if(entry_read_list(CHARACTER_TABLE,id,&allowed_tile,CHARACTER_KEY_ALLOWED_TILE,NULL)) {
 		i=0;
 		while( allowed_tile[i] != NULL ) {
 			if( strcmp(allowed_tile[i], tile_type) == 0 ) {
-				free(allowed_tile);
-				free(map_tiles);
+				entry_deep_free(allowed_tile);
 				free(tile_type);
 				return TRUE;
 			}
 			i++;
 		}
 
-		free(allowed_tile);
-		free(map_tiles);
+		entry_deep_free(allowed_tile);
 		free(tile_type);
 		return FALSE;
 	}
@@ -152,7 +151,9 @@ int map_check_tile(context_t * ctx,char * id, const char * map, int x,int y)
 	return TRUE;
 }
 
-/* delete an item on context's map */
+/**************************************
+delete an item on context's map
+**************************************/
 char * map_delete_item(const char * map, int x, int y)
 {
 	char ** itemlist;
@@ -169,7 +170,7 @@ char * map_delete_item(const char * map, int x, int y)
 	/* Manage concurrent acces to map files */
 	SDL_LockMutex(map_mutex);
 	/* Search the items on the specified tile */
-	if(!get_group_list(MAP_TABLE,map,&itemlist,MAP_ENTRY_ITEM_LIST,NULL)) {
+	if(!entry_get_group_list(MAP_TABLE,map,&itemlist,MAP_ENTRY_ITEM_LIST,NULL)) {
 		SDL_UnlockMutex(map_mutex);
 		return NULL;
 	}
@@ -177,13 +178,13 @@ char * map_delete_item(const char * map, int x, int y)
 	while(itemlist[i] != NULL) {
 		if( !read_int(MAP_TABLE,map,&mapx,MAP_ENTRY_ITEM_LIST,itemlist[i],MAP_ITEM_POS_X,NULL) ) {
 			SDL_UnlockMutex(map_mutex);
-			free(itemlist);
+			entry_deep_free(itemlist);
 			return NULL;
 		}
 
 		if( !read_int(MAP_TABLE,map,&mapy,MAP_ENTRY_ITEM_LIST,itemlist[i],MAP_ITEM_POS_Y,NULL) ) {
 			SDL_UnlockMutex(map_mutex);
-			free(itemlist);
+			entry_deep_free(itemlist);
 			return NULL;
 		}
 
@@ -197,7 +198,7 @@ char * map_delete_item(const char * map, int x, int y)
 	}
 
 	if( id == NULL ) {
-		free(itemlist);
+		entry_deep_free(itemlist);
 		if( saved_item) {
 			free(saved_item);
 		}
@@ -207,13 +208,13 @@ char * map_delete_item(const char * map, int x, int y)
 
 	/* remove the item from the item list of the map */
 	if(!remove_group(MAP_TABLE,map,id,MAP_ENTRY_ITEM_LIST,NULL)) {
-		free(itemlist);
+		entry_deep_free(itemlist);
 		free(saved_item);
 		SDL_UnlockMutex(map_mutex);
 		return NULL;
 	}
 
-	free(itemlist);
+	entry_deep_free(itemlist);
 
 	SDL_UnlockMutex(map_mutex);
 
@@ -222,10 +223,10 @@ char * map_delete_item(const char * map, int x, int y)
 
 	return saved_item;
 }
-/******************************************/
-/* Add an item on map at given coordinate */
-/* return -1 if fails                      */
-/******************************************/
+/******************************************
+Add an item on map at given coordinate
+return -1 if fails
+******************************************/
 int map_add_item(const char * map, const char * id, int x, int y)
 {
 
@@ -253,14 +254,14 @@ int map_add_item(const char * map, const char * id, int x, int y)
 
 	return 0;
 }
-/************************************/
-/* Write a new tile into a map file */
-/* return -1 if fails */
-/************************************/
+/***********************************
+Write a new tile into a map file
+return -1 if fails
+***********************************/
 int map_set_tile(const char * map,const char * tile,int x, int y)
 {
 	/* Extract params */
-	const char * value = NULL;
+	char * value = NULL;
 	int sizex = -1;
 	int index;
 
@@ -285,16 +286,18 @@ int map_set_tile(const char * map,const char * tile,int x, int y)
 	index = sizex * y + x;
 
 	/* read map tile */
-	if(!read_list_index(MAP_TABLE,map,&value, index,MAP_KEY_SET,NULL)) {
+	if(!entry_read_list_index(MAP_TABLE,map,&value, index,MAP_KEY_SET,NULL)) {
 		SDL_UnlockMutex(map_mutex);
 		return -1;
 	}
 
 	/* Do not change the tile if it already the requested tile */
 	if( strcmp(value, tile) == 0 ) {
+		free(value);
 		SDL_UnlockMutex(map_mutex);
 		return 0;
 	}
+	free(value);
 
 	if( write_list_index(MAP_TABLE, map, tile,index, MAP_KEY_SET,NULL ) ) {
 		context_broadcast_file(MAP_TABLE,map,TRUE);
@@ -314,11 +317,8 @@ char * map_get_tile(const char * map,int x, int y)
 	char ** map_tiles;
 	int map_size_x;
 	int map_size_y;
+	char * ret = NULL;
 
-
-	if(!read_list(MAP_TABLE,map,&map_tiles,MAP_KEY_SET,NULL)) {
-		return NULL;
-	}
 
 	if(!read_int(MAP_TABLE,map,&map_size_x,MAP_KEY_SIZE_X,NULL)) {
 		return NULL;
@@ -332,9 +332,17 @@ char * map_get_tile(const char * map,int x, int y)
 		return NULL;
 	}
 
-	if( map_tiles[(map_size_x*y)+x] ) {
-		return strdup(map_tiles[(map_size_x*y)+x]);
+	if(!entry_read_list(MAP_TABLE,map,&map_tiles,MAP_KEY_SET,NULL)) {
+		return NULL;
 	}
+
+	if( map_tiles[(map_size_x*y)+x] ) {
+		ret = strdup(map_tiles[(map_size_x*y)+x]);
+		entry_deep_free(map_tiles);
+		return ret;
+	}
+
+	entry_deep_free(map_tiles);
 
 	return NULL;
 }
@@ -354,23 +362,26 @@ char * map_get_tile_type(const char * map,int x, int y)
 		return NULL;
 	}
 
-	if(!read_list(MAP_TABLE,map,&map_tiles,MAP_KEY_SET,NULL)) {
+	if(!read_int(MAP_TABLE,map,&map_size_x,MAP_KEY_SIZE_X,NULL)) {
 		return NULL;
 	}
 
-	if(!read_int(MAP_TABLE,map,&map_size_x,MAP_KEY_SIZE_X,NULL)) {
+	if(!entry_read_list(MAP_TABLE,map,&map_tiles,MAP_KEY_SET,NULL)) {
 		return NULL;
 	}
 
 	tile = map_tiles[(map_size_x*y)+x];
 	if( tile ) {
 		if(!entry_read_string(TILE_TABLE,tile,&type,TILE_KEY_TYPE,NULL)) {
+			entry_deep_free(map_tiles);
 			return NULL;
 		}
 
+		entry_deep_free(map_tiles);
 		return type;
 	}
 
+	entry_deep_free(map_tiles);
 	return NULL;
 }
 
@@ -394,7 +405,7 @@ char ** map_get_event(const char * map,int x, int y)
 	/* Manage concurrent acces to map files */
 	SDL_LockMutex(map_mutex);
 	/* Search the items on the specified tile */
-	if(!get_group_list(MAP_TABLE,map,&eventlist,MAP_ENTRY_EVENT_LIST,NULL)) {
+	if(!entry_get_group_list(MAP_TABLE,map,&eventlist,MAP_ENTRY_EVENT_LIST,NULL)) {
 		SDL_UnlockMutex(map_mutex);
 		return NULL;
 	}
@@ -413,12 +424,14 @@ char ** map_get_event(const char * map,int x, int y)
 		if( x == mapx && y == mapy ) {
 			event_id_num++;
 			event_id=realloc(event_id,sizeof(char*)*(event_id_num+1));
-			event_id[event_id_num-1] = eventlist[i];
+			event_id[event_id_num-1] = strdup(eventlist[i]);
 			event_id[event_id_num] = NULL;
 		}
 
 		i++;
 	}
+	entry_deep_free(eventlist);
+
 	SDL_UnlockMutex(map_mutex);
 
 	return event_id;
@@ -488,10 +501,10 @@ int map_add_event_param(const char * map, const char * event_id, const char * pa
 	return add_to_list(MAP_TABLE,map,param,MAP_ENTRY_EVENT_LIST,event_id,MAP_EVENT_PARAM,NULL);
 }
 
-/**********************************************/
-/* Delete an event on map at given coordinate */
-/* return -1 if fails                         */
-/**********************************************/
+/**********************************************
+Delete an event on map at given coordinate
+return -1 if fails
+**********************************************/
 int map_delete_event(const char * map, const char * script, int x, int y)
 {
 	char ** eventlist;
@@ -508,7 +521,7 @@ int map_delete_event(const char * map, const char * script, int x, int y)
 	/* Manage concurrent acces to map files */
 	SDL_LockMutex(map_mutex);
 	/* Search events on the specified tile */
-	if(!get_group_list(MAP_TABLE,map,&eventlist,MAP_ENTRY_EVENT_LIST,NULL)) {
+	if(!entry_get_group_list(MAP_TABLE,map,&eventlist,MAP_ENTRY_EVENT_LIST,NULL)) {
 		SDL_UnlockMutex(map_mutex);
 		return -1;
 	}
@@ -535,7 +548,6 @@ int map_delete_event(const char * map, const char * script, int x, int y)
 		i++;
 	}
 
-	free(eventlist);
 
 	if( id == NULL ) {
 		SDL_UnlockMutex(map_mutex);
@@ -547,6 +559,8 @@ int map_delete_event(const char * map, const char * script, int x, int y)
 		SDL_UnlockMutex(map_mutex);
 		return -1;
 	}
+
+	entry_deep_free(eventlist);
 
 	SDL_UnlockMutex(map_mutex);
 

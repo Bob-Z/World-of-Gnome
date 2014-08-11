@@ -175,7 +175,7 @@ static void compose_map(context_t * ctx)
 		}
 		context_set_tile_y( ctx, i);
 	}
-	if(!read_list(MAP_TABLE, ctx->map, &value,MAP_KEY_SET,NULL)) {
+	if(!entry_read_list(MAP_TABLE, ctx->map, &value,MAP_KEY_SET,NULL)) {
 		return;
 	}
 
@@ -206,6 +206,8 @@ static void compose_map(context_t * ctx)
 		}
 		i++;
 	}
+
+	entry_deep_free(value);
 }
 
 /**********************************
@@ -253,7 +255,7 @@ static void compose_item(context_t * ctx)
 		font = TTF_OpenFont(ITEM_FONT, ITEM_FONT_SIZE);
 	}
 
-	if(!get_group_list(MAP_TABLE,ctx->map,&item_id,MAP_ENTRY_ITEM_LIST,NULL)) {
+	if(!entry_get_group_list(MAP_TABLE,ctx->map,&item_id,MAP_ENTRY_ITEM_LIST,NULL)) {
 		return;
 	}
 
@@ -308,7 +310,7 @@ static void compose_item(context_t * ctx)
 		i++;
 	}
 
-	free(item_id);
+	entry_deep_free(item_id);
 }
 
 /**********************************
@@ -527,7 +529,7 @@ static void compose_attribute(context_t * ctx)
 		attribute_string=NULL;
 	}
 
-	if(!get_group_list(CHARACTER_TABLE,ctx->id,&name_list,ATTRIBUTE_GROUP,NULL) ) {
+	if(!entry_get_group_list(CHARACTER_TABLE,ctx->id,&name_list,ATTRIBUTE_GROUP,NULL) ) {
 		return;
 	}
 
@@ -559,7 +561,7 @@ static void compose_attribute(context_t * ctx)
 		index++;
 	}
 
-	free(name_list);
+	entry_deep_free(name_list);
 }
 
 /**********************************
@@ -603,7 +605,7 @@ static void compose_action(context_t * ctx)
 	action_bar_height = 0;
 
 	/* Read action list for current user */
-	if(!read_list(CHARACTER_TABLE,ctx->id,&action_list,CHARACTER_KEY_ACTION,NULL)) {
+	if(!entry_read_list(CHARACTER_TABLE,ctx->id,&action_list,CHARACTER_KEY_ACTION,NULL)) {
 		return;
 	}
 
@@ -640,6 +642,8 @@ static void compose_action(context_t * ctx)
 
 		action_list ++;
 	}
+	
+	entry_deep_free(action_list);
 	
 	if(text) { free(text); };
 	if(icon) { free(icon); };
@@ -690,7 +694,7 @@ static void compose_equipment(context_t * ctx)
 
 	SDL_GetRendererOutputSize(ctx->render,&sw,&sh);
 
-	if(!get_group_list(CHARACTER_TABLE,ctx->id,&name_list,EQUIPMENT_GROUP,NULL) ) {
+	if(!entry_get_group_list(CHARACTER_TABLE,ctx->id,&name_list,EQUIPMENT_GROUP,NULL) ) {
 		return;
 	}
 
@@ -822,7 +826,7 @@ static void compose_equipment(context_t * ctx)
 		item_set_click_left(item,show_inventory,NULL,NULL);
 	}
 
-	free(name_list);
+	entry_deep_free(name_list);
 }
 
 /**********************************

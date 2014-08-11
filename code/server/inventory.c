@@ -76,7 +76,7 @@ int inventory_add(const char * ctx_id, const char * item_id)
 		if(!read_int(ITEM_TABLE,item_id,&add_count,ITEM_QUANTITY,NULL)) {
 			return -1;
 		}
-		if(!read_list(CHARACTER_TABLE,context->id,&name_list,CHARACTER_KEY_INVENTORY,NULL) ) {
+		if(!entry_read_list(CHARACTER_TABLE,context->id,&name_list,CHARACTER_KEY_INVENTORY,NULL) ) {
 			return -1;
 		}
 
@@ -107,7 +107,7 @@ int inventory_add(const char * ctx_id, const char * item_id)
 			}
 		}
 
-		free(name_list);
+		entry_deep_free(name_list);
 	}
 
 	network_send_character_file(context);
@@ -131,7 +131,7 @@ char * inventory_get_by_name(const char * id, const char * item_name)
 		return NULL;
 	}
 
-	if(!read_list(CHARACTER_TABLE,context->id,&name_list,CHARACTER_KEY_INVENTORY,NULL) ) {
+	if(!entry_read_list(CHARACTER_TABLE,context->id,&name_list,CHARACTER_KEY_INVENTORY,NULL) ) {
 		return NULL;
 	}
 
@@ -140,7 +140,7 @@ char * inventory_get_by_name(const char * id, const char * item_name)
 		if( (name=item_get_name(name_list[index])) != NULL ) {
 			if( strcmp(item_name,name) == 0 ) {
 				res = strdup(name_list[index]);
-				free(name_list);
+				entry_deep_free(name_list);
 				free(name);
 				return res;
 			}
@@ -149,7 +149,7 @@ char * inventory_get_by_name(const char * id, const char * item_name)
 		index++;
 	}
 
-	free(name_list);
+	entry_deep_free(name_list);
 	return NULL;
 }
 

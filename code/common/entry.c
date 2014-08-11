@@ -123,7 +123,7 @@ void entry_remove(char * filename)
 }
 
 /*********************
-returned config MUST BE config_destroy and FREED
+returned config should not be freed
 *********************/
 static const config_t * get_config(const char * table, const char * file)
 {
@@ -204,6 +204,23 @@ static char * get_path(va_list ap)
 	}
 
 	return path;
+}
+
+/*********************
+Free a list of string returned by entry_read_list, get_group_list ...
+*********************/
+void entry_deep_free(char ** to_delete)
+{
+	char ** current = to_delete;
+
+	while(*current) {
+		free(*current);
+		current++;
+	}
+
+	if(to_delete) {
+		free(to_delete);
+	}
 }
 
 /*********************
@@ -306,7 +323,7 @@ int entry_read_string(const char * table, const char * file, char ** res, ...)
 return FALSE on error
 res MUST BE FREED by caller
 *********************/
-static int __read_list_index(const char * table, const char * file, const char ** res, int index, va_list ap)
+static int __read_list_index(const char * table, const char * file, char ** res, int index, va_list ap)
 {
 	const config_t * config = NULL;
 	config_setting_t * setting = NULL;
@@ -327,7 +344,6 @@ static int __read_list_index(const char * table, const char * file, const char *
 
 	setting = config_lookup (config, path);
 	if( setting == NULL ) {
-//		g_warning("%s: Can't read %s/%s/%s",__func__,table,file,path);
 		free(path);
 		return FALSE;
 	}
@@ -345,7 +361,7 @@ static int __read_list_index(const char * table, const char * file, const char *
 /*********************
 return FALSE on error
 *********************/
-int read_list_index(const char * table, const char * file, const char ** res,int index, ...)
+int entry_read_list_index(const char * table, const char * file, char ** res,int index, ...)
 {
 	int ret;
 	va_list ap;
@@ -359,7 +375,7 @@ int read_list_index(const char * table, const char * file, const char ** res,int
 
 /*********************
 return FALSE on error
-Each elements of res MUST BE FREED by caller
+res must be freed with entry_deep_free
 *********************/
 static int __read_list(const char * table, const char * file, char *** res, va_list ap)
 {
@@ -406,8 +422,9 @@ static int __read_list(const char * table, const char * file, char *** res, va_l
 
 /*********************
 return FALSE on error
+res must be freed with entry_deep_free
 *********************/
-int read_list(const char * table, const char * file, char *** res, ...)
+int entry_read_list(const char * table, const char * file, char *** res, ...)
 {
 	int ret;
 	va_list ap;
@@ -427,6 +444,7 @@ static config_setting_t * create_tree(const config_t * config, config_setting_t 
 	char * entry = NULL;
 	char * new_path;
 	config_setting_t * setting = NULL;
+	config_setting_t * ret = NULL;
 
 	if( prev_setting == NULL) {
 		prev_setting = config_root_setting(config);
@@ -442,7 +460,6 @@ static config_setting_t * create_tree(const config_t * config, config_setting_t 
 			/* create the leaf */
 			setting=config_setting_add(prev_setting, prev_entry,type);
 		}
-		free(path);
 		return setting;
 	}
 
@@ -454,7 +471,6 @@ static config_setting_t * create_tree(const config_t * config, config_setting_t 
 			/* create a group with previous path */
 			setting = config_setting_add(prev_setting, prev_entry, CONFIG_TYPE_GROUP);
 			if(setting == NULL) {
-				free(path);
 				return NULL;
 			}
 		}
@@ -463,12 +479,14 @@ static config_setting_t * create_tree(const config_t * config, config_setting_t 
 	/* update path */
 	if( path ) {
 		new_path = strconcat(path,".",entry,NULL);
-		free(path);
 	} else {
 		new_path = strdup(entry);
 	}
 
-	return create_tree(config,setting,entry,new_path,type,ap);
+	ret = create_tree(config,setting,entry,new_path,type,ap);
+	free(new_path);
+
+	return ret;
 }
 
 /*********************
@@ -859,12 +877,11 @@ char * __get_unused_group_on_path(const char * table, const char * file, char * 
 }
 
 /**********************
-get_group_list
 Return a list of the name of the elements in the specified group
-returned list must be freed  (g_free)
+res must be freed  (entry_deep_free)
  return FALSE on error
 **********************/
-int get_group_list(const char * table, const char * file, char *** res, ...)
+int entry_get_group_list(const char * table, const char * file, char *** res, ...)
 {
 	char * path;
 	const config_t * config;
