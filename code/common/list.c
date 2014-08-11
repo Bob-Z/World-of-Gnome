@@ -19,35 +19,51 @@
 
 #include "common.h"
 
+/****************************************
+Hash calculation
+*****************************************/
+static unsigned long calc_hash(const char * str)
+{
+	unsigned long hash = 5381;
+	int c;
+
+	while ( (c = *str++) ) {
+		hash = hash * 33 ^ c; // hash(i) = hash(i - 1) * 33 ^ str[i];
+		//hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
+	}
+
+	return hash;
+}
+
+/****************************************
+Return the list_t associated with the given key
+Return NULL if key does not match any list entry.
+*****************************************/
 static list_t * list_search(list_t * list, const char * key)
 {
 	list_t * current_list = list;
-	int i;
+	unsigned long hash;
+
+	if( list == NULL) {
+		return NULL;
+	}
+
+	hash = calc_hash(key);
 	
 	while(current_list) {
-		i = 0;
-		while(current_list->key[i] != 0 && key[i] != 0) {
-			if( current_list->key[i] != key[i] ) {
-				if( current_list->next == NULL ) {
-					return NULL;
-				}
-				break;
+		if(current_list->hash == hash) {
+			if(!strcmp(current_list->key,key)) {
+				return current_list;
 			}
-			i++;
+			wlog(LOGDEBUG,"Same hash for %s and %s",current_list->key,key);
 		}
-
-		/* Key is found */
-		if( current_list->key[i] == 0 && key[i] == 0 ) {
-			return current_list;
-		}
-		
 		current_list = current_list->next;
 	}
 	return NULL;
 }
 
 /****************************************
-Return the pointer associated with the given key
+Return the data pointer associated with the given key
 Return NULL if key does not match any list entry.
 *****************************************/
 void * list_find(list_t * list, const char * key)
@@ -85,6 +101,7 @@ list_t * list_update(list_t * list, const char *key, void * data)
 	new_list = malloc(sizeof(list_t));
 	new_list->key = strdup(key);
 	new_list->data = data;
+	new_list->hash = calc_hash(new_list->key);
 	new_list->next = NULL;
 	
 	if( list == NULL) {

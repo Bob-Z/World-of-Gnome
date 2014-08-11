@@ -23,6 +23,7 @@
 typedef struct list_tag {
 	const char * key;
 	void * data;
+	unsigned long hash;
 	struct list_tag * next;
 } list_t;
 
