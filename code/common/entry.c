@@ -100,21 +100,14 @@ Remove an entry from the DB
 ******************************************************/
 void entry_remove(char * filename)
 {
-	const config_t * old_config;
+	config_t * old_config;
 
 	wlog(LOGDEBUG,"Removing entry : %s",filename);
         /* Clean-up old anim if any */
         SDL_LockMutex(entry_mutex);
         old_config = list_find(entry_list,filename);
         if( old_config ) {
-		/* TODO: Since read_string (and some more) use const pointer to config_t data
-		we cannot delete a config_t structure freely because afterward, some functions
-		may point to freed (and corrupted)  string data.
-		This is a major memory leak which need a clever solution.
-		*/
-#if 0
                 free_config(old_config);
-#endif
         }
 
         entry_list = list_update(entry_list,filename,NULL);
