@@ -1270,7 +1270,7 @@ int action_execute_script(context_t * context, const char * script, char ** para
 	}
 
 	/* Load script */
-	filename = strconcat(getenv("HOME"),"/",base_directory,"/",SCRIPT_TABLE,"/",script,NULL);
+	filename = strconcat(base_directory,"/",SCRIPT_TABLE,"/",script,NULL);
 
 	if (luaL_loadfile(context->luaVM, filename) != 0 ) {
 		/* If something went wrong, error message is at the top of */

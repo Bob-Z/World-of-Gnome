@@ -46,8 +46,8 @@ char * item_create_from_template(const char * template)
 
 	new_name = file_new(ITEM_TABLE);
 
-	templatename = strconcat(getenv("HOME"),"/",base_directory,"/",ITEM_TEMPLATE_TABLE,"/",template,NULL);
-	newfilename = strconcat(getenv("HOME"),"/",base_directory,"/",ITEM_TABLE,"/",new_name,NULL);
+	templatename = strconcat(base_directory,"/",ITEM_TEMPLATE_TABLE,"/",template,NULL);
+	newfilename = strconcat(base_directory,"/",ITEM_TABLE,"/",new_name,NULL);
 
 	file_copy(templatename,newfilename);
 	free(newfilename);

@@ -91,7 +91,7 @@ int parse_incoming_data(context_t * context, Uint32 command, Uint32 command_size
 		}
 		wlog(LOGDEBUG,"Received CMD_REQ_FILE for %s",elements[0]);
 		/* compare checksum */
-		fullname = strconcat(getenv("HOME"),"/",base_directory,"/",elements[0],NULL);
+		fullname = strconcat(base_directory,"/",elements[0],NULL);
 		
 		cksum = checksum_file(fullname);
 		free(fullname);

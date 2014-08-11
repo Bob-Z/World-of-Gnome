@@ -23,6 +23,6 @@
 #define CLIENT 0
 #define SERVER 1
 extern int client_server;
-extern const char * base_directory;
+extern char * base_directory;
 
 #endif

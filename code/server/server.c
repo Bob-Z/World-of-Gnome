@@ -17,5 +17,5 @@
    Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
-const char * base_directory = ".config/wog/server";
+char * base_directory = 0;
 int client_server = 1;

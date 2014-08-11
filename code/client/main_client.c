@@ -48,6 +48,8 @@ int main (int argc, char **argv)
 	char * ip = NULL;
 	char * user = NULL;
 	char * pass = NULL;
+	
+	base_directory = strconcat(getenv("HOME"),"/.config/wog/client",NULL);
 
 	while((opt_ret = getopt_long(argc, argv, optstring, longopts, NULL))!=-1) {
 		switch(opt_ret) {
@@ -100,5 +102,7 @@ int main (int argc, char **argv)
 	//Run the main loop
 	screen_display(context);
 
+	free(base_directory);
+	
 	return 0;
 }

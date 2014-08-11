@@ -218,7 +218,7 @@ void context_free(context_t * context)
 	SDL_UnlockMutex(context_list_mutex);
 
 	if(delete_file) {
-		filename = strconcat(getenv("HOME"),"/",base_directory,"/",CHARACTER_TABLE,"/",context->id,NULL);
+		filename = strconcat(base_directory,"/",CHARACTER_TABLE,"/",context->id,NULL);
 		unlink(filename);
 		free(filename);
 	}

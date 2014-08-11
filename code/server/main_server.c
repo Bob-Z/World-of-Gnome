@@ -29,12 +29,13 @@
 
 static int noNPC = 0;
 
-const char optstring[] = "?l:f:F:n";
+const char optstring[] = "?l:f:F:ni:";
 const struct option longopts[] = {
 	{ "log",required_argument,NULL,'l' },
 	{ "file",required_argument,NULL,'f' },
 	{ "func",required_argument,NULL,'F' },
 	{ "nonpc",no_argument,NULL,'n' },
+	{ "input",required_argument,NULL,'i' },
 	{NULL,0,NULL,0}
 };
 
@@ -50,7 +51,7 @@ void sigint_handler(int sig)
 int main (int argc, char **argv)
 {
 	int opt_ret;
-
+	
 	while((opt_ret = getopt_long(argc, argv, optstring, longopts, NULL))!=-1) {
 		switch(opt_ret) {
 		case 'l':
@@ -65,13 +66,22 @@ int main (int argc, char **argv)
 		case 'n':
 			noNPC = 1;
 			break;
+		case 'i':
+			base_directory = strdup(optarg);
+			break;
 		default:
 			printf("HELP:\n\n");
 			printf("-l --log: Set log level\n");
 			printf("-f --file: Only display logs from this source file\n");
 			printf("-F --func: Only display logs from this function\n");
+			printf("-n --nonpc: Do not instantiate NPCs\n");
+			printf("-i --input: Input data directory (default value: ~/.config/wog/server)\n");
 			exit(0);
 		}
+	}
+	
+	if(base_directory == NULL) {
+		base_directory = strconcat(getenv("HOME"),"/.config/wog/server",NULL);
 	}
 
 	common_mutex_init();
@@ -91,6 +101,8 @@ int main (int argc, char **argv)
 
 	/* Run main loop */
 	g_main_loop_run(mainLoop);
+
+	free(base_directory);
 
 	return 0;
 }

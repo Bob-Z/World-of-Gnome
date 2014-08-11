@@ -187,7 +187,7 @@ void init_npc(void)
 	struct dirent * ent;
 
 	// Read all files in npc directory
-	dirname = strconcat(getenv("HOME"),"/",base_directory,"/",CHARACTER_TABLE,NULL);
+	dirname = strconcat(base_directory,"/",CHARACTER_TABLE,NULL);
 
 	dir = opendir(dirname);
 	free(dirname);

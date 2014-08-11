@@ -116,7 +116,7 @@ char * file_new(char * table)
 
 	sprintf(tag,"A%05x",index);
 
-	dirname = strconcat(getenv("HOME"),"/",base_directory,"/",table,NULL);
+	dirname = strconcat(base_directory,"/",table,NULL);
 
 	SDL_LockMutex(character_dir_mutex);
 
@@ -165,7 +165,7 @@ int file_get_contents(const char *filename,char **contents,int *length)
 	ssize_t size;
 	char * buf;
 
-	fullname = strconcat(getenv("HOME"),"/",base_directory,"/",filename,NULL);
+	fullname = strconcat(base_directory,"/",filename,NULL);
 
 	file_lock(filename);
 
@@ -217,7 +217,7 @@ int file_set_contents(const char *filename,const char *contents,int length)
 	int fd;
 	ssize_t size;
 
-	fullname = strconcat(getenv("HOME"),"/",base_directory,"/",filename,NULL);
+	fullname = strconcat(base_directory,"/",filename,NULL);
 
 	file_lock(filename);
 

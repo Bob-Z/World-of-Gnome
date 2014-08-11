@@ -62,7 +62,7 @@ int file_add(context_t * context,char * data,Uint32 command_size)
 	ptr += sizeof(Uint32);
 
 	/* Write the data to disk */
-	fullname = strconcat(getenv("HOME"),"/",base_directory,"/",filename,NULL);
+	fullname = strconcat(base_directory,"/",filename,NULL);
 
 	file_create_directory(fullname);
 
@@ -94,7 +94,7 @@ void file_clean(context_t * context)
 {
 	char * filename;
 
-	filename = strconcat(getenv("HOME"),"/",base_directory,"/",CHARACTER_TABLE,"/",context->id,NULL);
+	filename = strconcat(base_directory,"/",CHARACTER_TABLE,"/",context->id,NULL);
 
 	unlink(filename);
 

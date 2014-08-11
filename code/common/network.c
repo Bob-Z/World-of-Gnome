@@ -338,7 +338,7 @@ void network_send_req_file(context_t * context, char * file)
 	}
 
 	/* Compute checksum of local file */
-	filename = strconcat(getenv("HOME"),"/",base_directory,"/",file,NULL);
+	filename = strconcat(base_directory,"/",file,NULL);
 
 	cksum = checksum_file(filename);
 	if( cksum == NULL ) {

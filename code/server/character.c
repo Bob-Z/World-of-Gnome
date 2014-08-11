@@ -145,11 +145,11 @@ char * character_create_from_template(context_t * ctx,const char * template,cons
 
 	new_id = file_new(CHARACTER_TABLE);
 
-	templatename = strconcat(getenv("HOME"),"/",base_directory,"/",CHARACTER_TEMPLATE_TABLE,"/",template,NULL);
+	templatename = strconcat(base_directory,"/",CHARACTER_TEMPLATE_TABLE,"/",template,NULL);
 
 	filename = strconcat(CHARACTER_TABLE,"/",new_id,NULL);
 
-	fullname = strconcat(getenv("HOME"),"/",base_directory,"/",filename,NULL);
+	fullname = strconcat(base_directory,"/",filename,NULL);
 
 	file_copy(templatename,fullname);
 	free(templatename);

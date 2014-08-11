@@ -19,7 +19,7 @@
 
 #include "../common/common.h"
 
-const char * base_directory = ".config/wog/client";
+char * base_directory = NULL;
 int client_server = 0;
 /* Only needed by server, so empty function for client */
 void register_lua_functions( context_t * context) {};

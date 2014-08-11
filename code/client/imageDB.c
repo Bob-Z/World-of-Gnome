@@ -71,7 +71,7 @@ static anim_t * image_load(context_t * ctx, char * filename)
 	char * fullname;
 	anim_t * anim;
 
-	fullname = strconcat(getenv("HOME"),"/",base_directory,"/",filename,NULL);
+	fullname = strconcat(base_directory,"/",filename,NULL);
 
 	anim = anim_load(ctx->render, fullname);
 
