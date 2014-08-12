@@ -206,6 +206,10 @@ void entry_deep_free(char ** to_delete)
 {
 	char ** current = to_delete;
 
+	if( to_delete == NULL ) {
+		return;
+	}
+
 	while(*current) {
 		free(*current);
 		current++;
