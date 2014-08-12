@@ -552,7 +552,7 @@ static void compose_attribute(context_t * ctx)
 		item_set_string(item,attribute_string[num_attr-1]);
 		item_set_font(item,font);
 		sdl_get_string_size(item->font,item->string,&w,&h);
-		item_set_frame(item,0,y,NULL);
+		item_set_frame_shape(item,0,y,w,h);
 		y+=h;
 		if(attribute_height<y) {
 			attribute_height = y;
@@ -902,7 +902,7 @@ static void compose_text(context_t * ctx)
 		item_set_string(item,hist->text);
 		item_set_font(item,font);
 		sdl_get_string_size(item->font,item->string,&w,&h);
-		item_set_frame(item,0,current_y-h,NULL);
+		item_set_frame_shape(item,0,current_y-h,w,h);
 		current_y-=h;
 		if(attribute_height > current_y) {
 			return;

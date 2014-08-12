@@ -195,7 +195,7 @@ item_t * scr_select_compose(context_t * context)
 			item_set_font(item,font_name);
 			/* display string just above the picture */
 			sdl_get_string_size(item->font,item->string,&w,&h);
-			item_set_frame(item,item_image->rect.x + item_image->rect.w/2 - w/2, item_image->rect.y-h,NULL);
+			item_set_frame_shape(item,item_image->rect.x + item_image->rect.w/2 - w/2, item_image->rect.y-h,w,h);
 		}
 		else {
 			werr(LOGDEV,"Can't open TTF font %s",FONT);
@@ -211,7 +211,7 @@ item_t * scr_select_compose(context_t * context)
 			item_set_font(item,font_type);
 			/* display string just below the picture */
 			sdl_get_string_size(item->font,item->string,&w,&h);
-			item_set_frame(item,item_image->rect.x + item_image->rect.w/2 - w/2, item_image->rect.y+item_image->rect.h,NULL);
+			item_set_frame_shape(item,item_image->rect.x + item_image->rect.w/2 - w/2, item_image->rect.y+item_image->rect.h,w,h);
 		}
 		else {
 			werr(LOGDEV,"Can't open TTF font %s",FONT);
