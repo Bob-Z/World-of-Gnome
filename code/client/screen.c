@@ -99,7 +99,7 @@ void screen_display(context_t * ctx)
 				return;
 			}
 
-			sdl_screen_manager(ctx->window, ctx->render, &event);
+			compose |= sdl_screen_manager(ctx->window, ctx->render, &event);
 			sdl_mouse_manager(ctx->render,&event,item_list);
 			sdl_keyboard_manager(&event);
 		}
