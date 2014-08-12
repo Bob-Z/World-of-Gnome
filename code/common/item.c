@@ -52,7 +52,6 @@ char * item_create_from_template(const char * template)
 	file_copy(templatename,newfilename);
 	free(newfilename);
 	free(templatename);
-	free(new_name);
 
 	return new_name;
 }
