@@ -599,6 +599,7 @@ static void compose_action(context_t * ctx)
 	int sw = 0;
 	int sh = 0;
 	int x=0;
+	int i;
 
 	SDL_GetRendererOutputSize(ctx->render,&sw,&sh);
 
@@ -609,21 +610,22 @@ static void compose_action(context_t * ctx)
 		return;
 	}
 
-	while(*action_list != NULL ) {
+	i=0;
+	while(action_list[i] != NULL ) {
 		if(text) { free(text); };
 		if(icon) { free(icon); };
 		if(script) { free(script); };
 		
-		if(!entry_read_string(ACTION_TABLE,*action_list,&text,ACTION_KEY_TEXT,NULL)) {
-			action_list ++;
+		if(!entry_read_string(ACTION_TABLE,action_list[i],&text,ACTION_KEY_TEXT,NULL)) {
+			i++;
 			continue;
 		}
-		if(!entry_read_string(ACTION_TABLE,*action_list,&icon,ACTION_KEY_ICON,NULL)) {
-			action_list ++;
+		if(!entry_read_string(ACTION_TABLE,action_list[i],&icon,ACTION_KEY_ICON,NULL)) {
+			i++;
 			continue;
 		}
-		if(!entry_read_string(ACTION_TABLE,*action_list,&script,ACTION_KEY_SCRIPT,NULL)) {
-			action_list ++;
+		if(!entry_read_string(ACTION_TABLE,action_list[i],&script,ACTION_KEY_SCRIPT,NULL)) {
+			i++;
 			continue;
 		}
 
@@ -640,7 +642,7 @@ static void compose_action(context_t * ctx)
 			action_bar_height = anim->h;
 		}
 
-		action_list ++;
+		i++;
 	}
 	
 	entry_deep_free(action_list);
