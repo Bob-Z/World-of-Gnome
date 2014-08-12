@@ -45,9 +45,13 @@ static void key_close(void * arg)
 
 void cb_select(void * arg)
 {
+	context_t * player = context_get_list_first();
 	char * item_id = (char *)arg;
 
-	context_get_list_first()->selection.inventory = item_id;
+	if( player->selection.inventory ) {
+		free( player->selection.inventory );
+	}
+	context_get_list_first()->selection.inventory = strdup(item_id);
 	network_send_context(context_get_list_first());
 }
 
@@ -157,7 +161,10 @@ static void compose_select(context_t * ctx)
 	int x;
 	int i;
 
-	if(ctx->selection.inventory == NULL || ctx->selection.inventory[0] == 0) {
+	if(ctx->selection.inventory == NULL) {
+		return;
+	}
+	if(ctx->selection.inventory[0] == 0) {
 		return;
 	}
 
