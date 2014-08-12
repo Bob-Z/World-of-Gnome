@@ -909,7 +909,7 @@ int entry_get_group_list(const char * table, const char * file, char *** res, ..
 	while((elem_setting=config_setting_get_elem(setting,index))!= NULL ) {
 		index++;
 		*res = realloc(*res,(index+1)*sizeof(char *));
-		(*res)[index-1] = (char *)config_setting_name(elem_setting);
+		(*res)[index-1] = strdup(config_setting_name(elem_setting));
 		(*res)[index] = NULL;
 	}
 
