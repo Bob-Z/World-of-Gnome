@@ -22,6 +22,7 @@
 #include "equipment.h"
 #include "inventory.h"
 #include "attribute.h"
+#include "network_server.h"
 #include <lualib.h>
 #include <lauxlib.h>
 #include <stdlib.h>

@@ -20,6 +20,9 @@
 #include "../common/common.h"
 #include "npc.h"
 #include "action.h"
+#include <sys/types.h>
+#include <dirent.h>
+
 
 /**********************************
 npc_script

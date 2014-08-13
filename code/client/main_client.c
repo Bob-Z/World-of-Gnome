@@ -18,6 +18,7 @@
 */
 
 #include "../common/common.h"
+#include "network_client.h"
 #include "imageDB.h"
 #include "file.h"
 #include <getopt.h>
@@ -102,7 +103,9 @@ int main (int argc, char **argv)
 	//Run the main loop
 	screen_display(context);
 
+	SDLNet_Quit();
+
 	free(base_directory);
-	
+
 	return 0;
 }

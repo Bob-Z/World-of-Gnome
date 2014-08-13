@@ -18,6 +18,7 @@
 */
 
 #include "../common/common.h"
+#include "network_server.h"
 #include <dirent.h>
 #include <string.h>
 #include "action.h"
@@ -204,4 +205,3 @@ int attribute_set(const char * id, const char * attribute, int value)
 
 	return 0;
 }
-

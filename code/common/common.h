@@ -20,6 +20,11 @@
 #ifndef WOG_COMMON_INCLUDE
 #define WOG_COMMON_INCLUDE
 
+#define FALSE 0
+#define TRUE 1
+
+#include <SDL2/SDL_net.h>
+
 #include "util.h"
 #include "const.h"
 #include "list.h"

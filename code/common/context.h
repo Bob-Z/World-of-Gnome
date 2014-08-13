@@ -20,10 +20,9 @@
 #ifndef CONTEXT_H
 #define CONTEXT_H
 
-#include <glib.h>
-#include <gio/gio.h>
 #include <lua.h>
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_net.h>
 
 typedef struct selection {
 	char *		id;	/* a character id */
@@ -36,12 +35,8 @@ typedef struct selection {
 typedef struct context {
 	char *				user_name;
 	int					connected;
-	GSocketConnection * connection;
-	GInputStream * 	input_stream;
-	GOutputStream * output_stream;
-	GSocketConnection * data_connection;
-	GInputStream * 	input_data_stream;
-	GOutputStream * output_data_stream;
+	TCPsocket			socket;
+	TCPsocket			socket_data;
 	SDL_mutex*		send_mutex; /* Asynchronous network send */
 	char *		hostname;
 
@@ -80,15 +75,14 @@ typedef struct context {
 void context_init(context_t * context);
 context_t * context_new(void);
 void context_free(context_t * context);
+int context_set_hostname(context_t * context, const char * name);
 int context_set_username(context_t * context, const char * name);
 void context_set_connected(context_t * context, int connected);
 int context_get_connected(context_t * context);
-void context_set_input_stream(context_t * context, GInputStream * stream);
-GInputStream * context_get_input_stream(context_t * context);
-void context_set_output_stream(context_t * context, GOutputStream * stream);
-GOutputStream * context_get_output_stream(context_t * context);
-void context_set_connection(context_t * context, GSocketConnection * connection);
-GSocketConnection * context_get_connection(context_t * context);
+void context_set_socket(context_t * context, TCPsocket socket);
+TCPsocket context_get_socket(context_t * context);
+void context_set_socket_data(context_t * context, TCPsocket socket);
+TCPsocket context_get_socket_data(context_t * context);
 int context_set_character_name(context_t * context, const char * name);
 int context_set_map(context_t * context, const char * name);
 int context_set_map_w(context_t * context, int width);

@@ -18,6 +18,7 @@
 */
 
 #include "../common/common.h"
+#include "network_server.h"
 #include <dirent.h>
 #include <string.h>
 #include "action.h"
@@ -152,4 +153,3 @@ char * inventory_get_by_name(const char * id, const char * item_name)
 	entry_deep_free(name_list);
 	return NULL;
 }
-

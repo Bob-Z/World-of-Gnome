@@ -17,9 +17,8 @@
    Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
-#include <glib.h>
-#include <gio/gio.h>
 #include "../common/common.h"
+#include "network_server.h"
 #include <signal.h>
 #include <stdlib.h>
 #include <npc.h>
@@ -86,21 +85,15 @@ int main (int argc, char **argv)
 
 	common_mutex_init();
 
-	//init the main loop
-	GMainLoop * mainLoop = NULL;
-	mainLoop = g_main_loop_new(NULL,FALSE);
-
 	//init non playing character
 	if( ! noNPC ) {
 		init_npc();
 	}
+	
+	signal(SIGINT,sigint_handler);
+	
 	//init network server
 	network_init();
-
-	signal(SIGINT,sigint_handler);
-
-	/* Run main loop */
-	g_main_loop_run(mainLoop);
 
 	free(base_directory);
 

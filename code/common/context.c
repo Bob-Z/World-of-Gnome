@@ -18,11 +18,10 @@
 */
 
 #include <string.h>
-#include <glib.h>
 #include <stdlib.h>
 #include <lualib.h>
 #include <lauxlib.h>
-#include <glib/gstdio.h>
+#include <unistd.h>
 #include "common.h"
 
 context_t * context_list_start = NULL;
@@ -35,12 +34,8 @@ void context_init(context_t * context)
 {
 	context->user_name = NULL;
 	context->connected = FALSE;
-	context->connection = NULL;
-	context->input_stream = NULL;
-	context->output_stream = NULL;
-	context->data_connection = NULL;
-	context->input_data_stream = NULL;
-	context->output_data_stream = NULL;
+	context->socket = 0;
+	context->socket_data = 0;
 	context->hostname = NULL;
 	context->send_mutex = SDL_CreateMutex();
 
@@ -72,7 +67,7 @@ void context_init(context_t * context)
 
 	context->id = NULL;
 	context->prev_map = NULL;
-	context->change_map = 0;
+	context->change_map = FALSE;
 	context->luaVM = NULL;
 	context->cond = NULL;
 	context->cond_mutex = NULL;
@@ -128,20 +123,16 @@ void context_free(context_t * context)
 	}
 	context->user_name = NULL;
 	context->connected = FALSE;
-	if( context->connection != NULL) {
-		g_io_stream_close((GIOStream *)context->connection,NULL,NULL);
+	if( context->socket != 0) {
+		SDLNet_TCP_Close(context->socket);
 		delete_file = FALSE;
 	}
-	context->connection = NULL;
-	if( context->data_connection != NULL) {
-		g_io_stream_close((GIOStream *)context->data_connection,NULL,NULL);
+	context->socket = 0;
+	if( context->socket_data != 0) {
+		SDLNet_TCP_Close(context->socket_data);
 		delete_file = FALSE;
 	}
-	context->data_connection = NULL;
-	context->input_stream = NULL;
-	context->output_stream = NULL;
-	context->input_data_stream = NULL;
-	context->output_data_stream = NULL;
+	context->socket_data = 0;
 	SDL_DestroyMutex(context->send_mutex);
 	if( context->hostname ) {
 		free(context->hostname);
@@ -244,6 +235,26 @@ context_t * context_get_list_first()
 {
 	return context_list_start;
 }
+/**************************
+  Returns FALSE if error
+**************************/
+int context_set_hostname(context_t * context, const char * name)
+{
+	SDL_LockMutex(context_list_mutex);
+
+	if( context->hostname ) {
+		free( context->user_name );
+	}
+	
+	context->hostname = strdup(name);
+	if( context->hostname == NULL ) {
+		SDL_UnlockMutex(context_list_mutex);
+		return FALSE;
+	}
+
+	SDL_UnlockMutex(context_list_mutex);
+	return TRUE;
+}
 
 /**************************
   Returns FALSE if error
@@ -276,7 +287,7 @@ void context_set_connected(context_t * context, int connected)
 **************************************/
 int context_get_connected(context_t * context)
 {
-	int conn = FALSE;
+	int conn = 0;
 
 	SDL_LockMutex(context_list_mutex);
 	conn = context->connected;
@@ -287,69 +298,46 @@ int context_get_connected(context_t * context)
 
 /**************************************
 **************************************/
-void context_set_input_stream(context_t * context, GInputStream * stream)
+void context_set_socket(context_t * context, TCPsocket socket)
 {
 	SDL_LockMutex(context_list_mutex);
-	context->input_stream = stream;
+	context->socket = socket;
 	SDL_UnlockMutex(context_list_mutex);
 }
 
 /**************************************
 **************************************/
-GInputStream * context_get_input_stream(context_t * context)
+TCPsocket context_get_socket(context_t * context)
 {
-	GInputStream * conn = NULL;
+	TCPsocket socket = 0;
 
 	SDL_LockMutex(context_list_mutex);
-	conn = context->input_stream;
+	socket = context->socket;
 	SDL_UnlockMutex(context_list_mutex);
 
-	return conn;
+	return socket;
 }
 
 /**************************************
 **************************************/
-void context_set_output_stream(context_t * context, GOutputStream * stream)
+void context_set_socket_data(context_t * context, TCPsocket socket)
 {
 	SDL_LockMutex(context_list_mutex);
-	context->output_stream = stream;
-	SDL_UnlockMutex(context_list_mutex);
-}
-
-/**************************************
-**************************************/
-GOutputStream * context_get_output_stream(context_t * context)
-{
-	GOutputStream * conn = NULL;
-
-//FIXME
-//	SDL_LockMutex(context_list_mutex);
-	conn = context->output_stream;
-//	SDL_UnlockMutex(context_list_mutex);
-
-	return conn;
-}
-
-/**************************************
-**************************************/
-void context_set_connection(context_t * context, GSocketConnection * connection)
-{
-	SDL_LockMutex(context_list_mutex);
-	context->connection = connection;
+	context->socket_data = socket;
 	SDL_UnlockMutex(context_list_mutex);
 }
 
 /**************************************
 **************************************/
-GSocketConnection * context_get_connection(context_t * context)
+TCPsocket context_get_socket_data(context_t * context)
 {
-	GSocketConnection * conn = NULL;
+	TCPsocket socket = 0;
 
 	SDL_LockMutex(context_list_mutex);
-	conn = context->connection;
+	socket = context->socket_data;
 	SDL_UnlockMutex(context_list_mutex);
 
-	return conn;
+	return socket;
 }
 
 /**************************************
@@ -395,7 +383,7 @@ static int _context_set_map(context_t * context, const char * map)
 	if( context->map == NULL ) {
 		return FALSE;
 	}
-	context->change_map = 1;
+	context->change_map = TRUE;
 	context->map_w = -1;
 	context->map_h = -1;
 
@@ -768,7 +756,7 @@ void context_spread(context_t * context)
 
 	do {
 		/* Skip NPC */
-		if( ctx->output_stream == NULL ) {
+		if( ctx->socket == 0 ) {
 			continue;
 		}
 
@@ -818,7 +806,7 @@ void context_broadcast_text(const char * map, const char * text)
 
 	do {
 		/* Skip NPC */
-		if( ctx->output_stream == NULL ) {
+		if( ctx->socket == 0 ) {
 			continue;
 		}
 
@@ -1013,7 +1001,7 @@ void context_broadcast_file(const char * table, const char * file, int same_map_
 
 	do {
 		/* Skip if not connected (NPC) */
-		if( ctx->output_stream == NULL ) {
+		if( ctx->socket == 0 ) {
 			continue;
 		}
 		/* Skip if not on the same map */

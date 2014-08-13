@@ -24,6 +24,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <dirent.h>
+#include <unistd.h>
 
 list_t * file_list = NULL;
 

@@ -35,8 +35,6 @@ int parse_incoming_data(context_t * context, Uint32 command, Uint32 command_size
 	char *saveptr1;
 	char *saveptr2;
 
-	//wlog(LOGDEBUG,"Received command : %d, command_size : %d", command, command_size);
-
 	if( !context_get_connected(context) && command != CMD_LOGIN_USER && command != CMD_LOGIN_PASSWORD ) {
 		werr(LOGUSER,"Request from not authenticated client, close connection");
 		return FALSE;
@@ -146,4 +144,3 @@ int parse_incoming_data(context_t * context, Uint32 command, Uint32 command_size
 
 	return TRUE;
 }
-

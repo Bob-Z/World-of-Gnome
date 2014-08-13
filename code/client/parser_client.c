@@ -18,6 +18,7 @@
 */
 
 #include "../common/common.h"
+#include "network_client.h"
 #include "scr_select.h"
 #include "file.h"
 #include "imageDB.h"
@@ -83,4 +84,3 @@ int parse_incoming_data(context_t * context, Uint32 command, Uint32 command_size
 
 	return TRUE;
 }
-

@@ -24,9 +24,12 @@
 #include "action.h"
 
 /*********************************************
+Send playable character templates
 *********************************************/
 void character_send_list(context_t * context)
 {
+//TODO
+#if 0
 	char ** character_list;
 	int i = 0;
 
@@ -40,6 +43,7 @@ void character_send_list(context_t * context)
 	}
 
 	entry_deep_free(character_list);
+#endif
 }
 
 /*********************************************
@@ -117,7 +121,7 @@ int character_disconnect( const char * id)
 
 	ctx = context_find(id);
 	/* For NPC */
-	if( ctx->output_stream == NULL ) {
+	if( ctx->socket == NULL ) {
 		context_set_connected(ctx,FALSE);
 		/* Wake up NPC */
 		if( SDL_TryLockMutex (ctx->cond_mutex) == TRUE ) {

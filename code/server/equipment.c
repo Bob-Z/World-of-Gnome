@@ -18,6 +18,7 @@
 */
 
 #include "../common/common.h"
+#include "network_server.h"
 #include <dirent.h>
 #include <string.h>
 #include "action.h"
@@ -84,4 +85,3 @@ char * equipment_get_item_id(const char *id, const char * slot)
 
 	return item;
 }
-

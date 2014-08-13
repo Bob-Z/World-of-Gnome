@@ -42,9 +42,6 @@ AC_CHECK_FUNC(mknod)
 dnl Checks for typedefs, structures, and compiler characteristics.
 
 dnl Checks for library functions.
-PKG_CHECK_MODULES(GLIB, [glib-2.0])
-PKG_CHECK_MODULES(GTHREAD, [gthread-2.0])
-PKG_CHECK_MODULES(GIO, [gio-2.0])
 dnl Check for libconfig
 PKG_CHECK_MODULES([LIBCONFIG], [libconfig >= 0.20],,
   AC_MSG_ERROR([libconfig 0.20 or newer not found.])
@@ -52,26 +49,20 @@ PKG_CHECK_MODULES([LIBCONFIG], [libconfig >= 0.20],,
 dnl Check for liblua
 PKG_CHECK_MODULES([LIBLUA], [lualib50])
 PKG_CHECK_MODULES([LIBSDL2], [ sdl2 >= 2.0.0])
+PKG_CHECK_MODULES([LIBSDL2_NET], [ SDL2_net >= 2.0.0])
 
-CFLAGS+=" ${GLIB_CFLAGS}"
-CFLAGS+=" ${GTHREAD_CFLAGS}"
-CFLAGS+=" ${GIO_CFLAGS}"
 CFLAGS+=" ${LIBCONFIG_CFLAGS}"
 CFLAGS+=" ${LIBLUA_CFLAGS}"
 CFLAGS+=" ${LIBSDL2_CFLAGS}"
+CFLAGS+=" ${LIBSDL2_NET_CFLAGS}"
 
 ADD_LIB="$LIBCONFIG_LIBS"
 ADD_LIB+="$LIBLUA_LIBS"
 ADD_LIB+="$LIBSDL2_LIBS"
+ADD_LIB+="$LIBSDL2_NET_LIBS"
 
 
 AC_SUBST(SET_MAKE)
-
-dnl expand ${datadir} and write it out
-conftemp="${datadir}"
-eval conftemp=\"${conftemp}\"
-eval conftemp=\"${conftemp}\"
-AC_DEFINE_UNQUOTED(DATADIR, "${conftemp}",[Default path for data files])
 
 AC_SUBST(CFLAGS)
 AC_SUBST(LDFLAGS)
@@ -80,6 +71,8 @@ AC_SUBST(LIBCONFIG_CFLAGS)
 AC_SUBST(LIBCONFIG_LIBS)
 AC_SUBST(LIBSDL2_CFLAGS)
 AC_SUBST(LIBSDL2_LIBS)
+AC_SUBST(LIBSDL2_NET_CFLAGS)
+AC_SUBST(LIBSDL2_NET_LIBS)
 
 
 AC_OUTPUT(Makefile)

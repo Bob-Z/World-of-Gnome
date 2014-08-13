@@ -20,31 +20,18 @@
 #ifndef NETWORK_H
 #define NETWORK_H
 
-#include <glib.h>
 #include "context.h"
 
-void network_init(void);
-int network_open_data_connection(context_t * context);
+int network_read_bytes(TCPsocket socket, char * data, int size);
 void network_send_command(context_t * context, Uint32 command, long int count, const char *data, int is_data);
-void network_send_character_file(context_t * context);
-int network_connect(context_t * context, const char * hostname);
-void network_login(context_t * context, const char * name, const char * password);
-void network_request_character_list(context_t * context);
-void network_request_character_marquee(context_t * context, char * character_name);
-void network_request_user_character_list(context_t * context);
-void network_request_character_data(context_t * context);
 void network_send_context(context_t * context);
 void network_send_context_to_context(context_t * dest_ctx, context_t * src_ctx);
-void network_send_text(const char * id, const char * string);
-void network_broadcast_text(context_t * context, const char * text);
-void network_send_action(context_t * context, char * frame,...);
 int network_send_file(context_t * context, char * filename);
 int network_send_table_file(context_t * context, char * table, char * filename);
 void network_send_req_file(context_t * context, char * file);
 void network_send_entry_int(context_t * context, const char * table, const char * file, const char *path, int value);
-void network_broadcast_entry_int(const char * table, const char * file, const char * path, int value, int same_map_only);
+void network_send_text(const char * id, const char * string);
 
-/* The code of this function is in parser.c in both client and server directory */
+/* The code of this function is in parser_client.c and parser_server.c */
 int parse_incoming_data(context_t * context, Uint32 command, Uint32 command_size, char * data);
 #endif
-

@@ -25,6 +25,7 @@
 #include "../sdl_item/item.h"
 #include "../sdl_item/sdl.h"
 #include "screen.h"
+#include <limits.h>
 
 #define ITEM_FONT "/usr/share/fonts/truetype/ubuntu-font-family/Ubuntu-C.ttf"
 #define ITEM_FONT_SIZE 15

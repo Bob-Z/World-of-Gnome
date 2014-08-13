@@ -26,6 +26,7 @@
 #include "../sdl_item/sdl.h"
 #include "screen.h"
 #include "textview.h"
+#include "network_client.h"
 
 #define FONT "/usr/share/fonts/truetype/ubuntu-font-family/Ubuntu-C.ttf"
 #define FONT_SIZE 30
@@ -1020,4 +1021,3 @@ item_t * scr_play_compose(context_t * ctx)
 
 	return item_list;
 }
-
