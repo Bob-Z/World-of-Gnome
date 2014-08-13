@@ -176,7 +176,6 @@ static int new_connection(void * data)
 		}
 	}
 	
-	SDLNet_TCP_Close(socket);
 	wlog(LOGUSER,"Client disconnected");
 	context_spread(context);
 	context_write_to_file(context);
