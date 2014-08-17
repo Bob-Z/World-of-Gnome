@@ -280,6 +280,44 @@ void character_update_aggro(context_t * context)
 		
 	} while( (ctx=ctx->next)!= NULL );
 }
+/*************************************************************
+Move every context on the same coordinate as platform context
+*************************************************************/
+static void platform_move(context_t * platform,char * map, int x, int y, int change_map)
+{
+	context_t * current = context_get_list_first();
+	int is_platform;
+	
+	if(!read_int(CHARACTER_TABLE,platform->id,&is_platform, CHARACTER_KEY_PLATFORM,NULL)) {
+		return;
+	}
+	
+	if(!is_platform) {
+		return;
+	}
+	
+	while(current) {
+		if(current == platform) {
+			current = current->next;
+			continue;
+		}
+		if( platform->pos_x == current->pos_x && platform->pos_y == current->pos_y && !strcmp(platform->map, current->map) ) {
+			context_set_map(current,map);
+			context_set_pos_x(current,x);
+			context_set_pos_y(current,y);
+
+			write_string(CHARACTER_TABLE,current->id,map,CHARACTER_KEY_MAP,NULL);
+			write_int(CHARACTER_TABLE,current->id,x,CHARACTER_KEY_POS_X,NULL);
+			write_int(CHARACTER_TABLE,current->id,y,CHARACTER_KEY_POS_Y,NULL);
+
+			context_spread(current);
+			if(change_map) {
+				context_request_other_context(current);
+			}
+		}
+		current = current->next;
+	}
+}
 
 /******************************************************
 return 0 if new position OK or if position has not changed.
@@ -309,6 +347,9 @@ int character_set_pos(context_t * ctx, char * map, int x, int y)
 			change_map = 1;
 		}
 
+		/* Th eplatform must be the last one to move */
+		platform_move(ctx,map,x,y,change_map);
+
 		context_set_map(ctx,map);
 		context_set_pos_x(ctx,x);
 		context_set_pos_y(ctx,y);
@@ -321,7 +362,7 @@ int character_set_pos(context_t * ctx, char * map, int x, int y)
 		if(change_map) {
 			context_request_other_context(ctx);
 		}
-
+		
 		event_id = map_get_event(map,x,y);
 
 		if(event_id) {

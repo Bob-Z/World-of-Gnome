@@ -1,6 +1,7 @@
 marquee         = "marquee/.jpg";
 sprite          = "sprite/boat.gif";
 npc = 1;
+platform = 1;
 name = "boat";
 inventory = [ ];
 type = "boat";
