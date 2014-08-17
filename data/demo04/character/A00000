@@ -1,0 +1,12 @@
+marquee         = "marquee/.jpg";
+sprite          = "sprite/boat.gif";
+npc = 1;
+name = "boat";
+inventory = [ ];
+type = "boat";
+map = "village";
+pos_x = 9;
+pos_y = 18;
+action = [  ];
+allowed_tile = [ ];
+ai = "ai/ai_path.lua";

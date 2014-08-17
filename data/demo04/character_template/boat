@@ -1,0 +1,8 @@
+marquee         = "marquee/.jpg";
+sprite          = "sprite/boat.gif";
+map       = "village";
+pos_x         = 9;
+pos_y         = 18;
+#default action for this kind of avatar
+action          = [  ];
+allowed_tile	= [  ];
