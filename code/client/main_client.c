@@ -90,7 +90,7 @@ int main (int argc, char **argv)
 
 	context_set_username(context,user);
 
-	sdl_init(&context->render, &context->window, screen_compose);
+	sdl_init(TITLE_NAME, &context->render, &context->window, screen_compose);
 
 	/* connect to server */
         if( network_connect(context,ip) ) {
