@@ -43,6 +43,14 @@ static item_t * item_list = NULL;
 static character_t * current_character = NULL;
 static item_t * current_item = NULL;
 
+/****************************
+Keyboard callback
+****************************/
+static void cb_quit(void * arg)
+{
+	screen_quit();
+}
+
 /**********************************
 **********************************/
 static void cb_show_item(void * arg)
@@ -55,7 +63,7 @@ static void cb_show_item(void * arg)
 
 /**********************************
 **********************************/
-static void cb_select_click(void * arg)
+static void cb_select(void * arg)
 {
 	context_t * ctx = (context_t*)arg;
 
@@ -84,9 +92,10 @@ static void cb_over(void * arg)
 
 /**********************************
 **********************************/
-static void cb_wheel_up(void * arg)
+static void cb_next_character(void * arg)
 {
 	if( current_item == NULL ) {
+		current_item = item_list;
 		return;
 	}
 	if( current_item->next != NULL ) {
@@ -97,11 +106,12 @@ static void cb_wheel_up(void * arg)
 
 /**********************************
 **********************************/
-static void cb_wheel_down(void * arg)
+static void cb_previous_character(void * arg)
 {
 	item_t * i;
 
 	if( current_item == NULL ) {
+		current_item = item_list;
 		return;
 	}
 
@@ -178,10 +188,10 @@ item_t * scr_select_compose(context_t * context)
 
 		item_set_anim(item,x,max_h/2-character_list[i].anim->h/2,character_list[i].anim);
 		item_set_click_left(item,cb_show_item,(void *)item,NULL);
-		item_set_click_right(item,cb_select_click,(void *)context,NULL);
-		item_set_double_click_left(item,cb_select_click,(void *)context,NULL);
-		item_set_wheel_up(item,cb_wheel_up,(void *)context,NULL);
-		item_set_wheel_down(item,cb_wheel_down,(void *)context,NULL);
+		item_set_click_right(item,cb_select,(void *)context,NULL);
+		item_set_double_click_left(item,cb_select,(void *)context,NULL);
+		item_set_wheel_up(item,cb_next_character,(void *)context,NULL);
+		item_set_wheel_down(item,cb_previous_character,(void *)context,NULL);
 		item_set_over(item,cb_over,(void *)&character_list[i],NULL);
 
 		x += character_list[i].anim->w + BORDER;
@@ -225,6 +235,12 @@ item_t * scr_select_compose(context_t * context)
 
 	SDL_UnlockMutex(character_select_mutex);
 
+	sdl_free_keycb(NULL);
+	sdl_add_keycb(SDL_SCANCODE_ESCAPE,cb_quit,NULL,NULL);
+	sdl_add_keycb(SDL_SCANCODE_LEFT,cb_next_character,NULL,NULL);
+	sdl_add_keycb(SDL_SCANCODE_RIGHT,cb_previous_character,NULL,NULL);
+	sdl_add_keycb(SDL_SCANCODE_RETURN,cb_select,(void *)context,NULL);
+
 	return item_list;
 }
 
@@ -260,4 +276,3 @@ void scr_select_add_user_character(context_t * context, char * data)
 
 	wlog(LOGDEV,"Received character %s of type %s",character_list[character_num-1].name,character_list[character_num-1].type);
 }
-

@@ -56,6 +56,13 @@ static void cb_action(void * arg);
 /****************************
 Keyboard callback
 ****************************/
+static void cb_quit(void * arg)
+{
+	screen_set_screen(SCREEN_SELECT);
+}
+
+/****************************
+****************************/
 static void key_up(void * arg)
 {
 	context_t * ctx = context_get_list_first();
@@ -1018,6 +1025,7 @@ item_t * scr_play_compose(context_t * ctx)
 	sdl_add_keycb(SDL_SCANCODE_LEFT,key_left,NULL,NULL);
 	sdl_add_keycb(SDL_SCANCODE_RIGHT,key_right,NULL,NULL);
 	sdl_add_keycb(SDL_SCANCODE_I,show_inventory,NULL,NULL);
+	sdl_add_keycb(SDL_SCANCODE_ESCAPE,cb_quit,NULL,NULL);
 
 	return item_list;
 }

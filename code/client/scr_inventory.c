@@ -32,18 +32,16 @@
 
 static item_t * item_list = NULL;
 static char ** inventory_list = NULL;
-static int virtual_x;
-static int virtual_y;
 
-//Keynoard callback
-static void key_close(void * arg)
+/****************************
+****************************/
+static void cb_quit(void * arg)
 {
-	sdl_force_virtual_x(virtual_x);
-	sdl_force_virtual_y(virtual_y);
 	screen_set_screen(SCREEN_PLAY);
-	virtual_x = -INT_MAX;
 }
 
+/****************************
+****************************/
 void cb_select(void * arg)
 {
 	context_t * player = context_get_list_first();
@@ -212,11 +210,6 @@ item_t * scr_inventory_compose(context_t * ctx)
 
 	SDL_GetRendererOutputSize(ctx->render,&sw,&sh);
 
-	if(virtual_x == -INT_MAX) {
-		virtual_x = sdl_get_virtual_x();
-		virtual_y = sdl_get_virtual_y();
-	}
-
 	sdl_force_virtual_x(sw/2);
 	sdl_force_virtual_y(sh/2);
 
@@ -224,10 +217,9 @@ item_t * scr_inventory_compose(context_t * ctx)
 	compose_select(ctx);
 
 	sdl_free_keycb(NULL);
-	sdl_add_keycb(SDL_SCANCODE_I,key_close,NULL,NULL);
-	sdl_add_keycb(SDL_SCANCODE_ESCAPE,key_close,NULL,NULL);
-	sdl_add_keycb(SDL_SCANCODE_SPACE,key_close,NULL,NULL);
+	sdl_add_keycb(SDL_SCANCODE_I,cb_quit,NULL,NULL);
+	sdl_add_keycb(SDL_SCANCODE_ESCAPE,cb_quit,NULL,NULL);
+	sdl_add_keycb(SDL_SCANCODE_SPACE,cb_quit,NULL,NULL);
 
 	return item_list;
 }
-

@@ -20,10 +20,12 @@
 #include "../sdl_item/item.h"
 #include "../common/common.h"
 
-#define SCREEN_SELECT 0
-#define SCREEN_PLAY 1
-#define SCREEN_INVENTORY 2
+#define SCREEN_SELECT		0
+#define SCREEN_PLAY			1
+#define SCREEN_INVENTORY	2
+#define SCREEN_LAST			3
 
 void screen_display(context_t * ctx);
 void screen_compose();
 void screen_set_screen(int screen);
+void screen_quit();

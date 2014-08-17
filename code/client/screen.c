@@ -17,6 +17,7 @@
    Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
+#include <limits.h>
 #include <pthread.h>
 #include "../sdl_item/sdl.h"
 #include "screen.h"
@@ -28,7 +29,12 @@ static int screen_end = -1;
 static item_t * item_list = NULL;
 static int current_screen=SCREEN_SELECT;
 static int compose = 0;
+static int virtual_x[SCREEN_LAST];
+static int virtual_y[SCREEN_LAST];
+static double virtual_z[SCREEN_LAST];
 
+/******************************************************
+******************************************************/
 static void screen_select_compose(context_t * context)
 {
 	item_t * list;
@@ -38,6 +44,8 @@ static void screen_select_compose(context_t * context)
 	item_list = list;
 }
 
+/******************************************************
+******************************************************/
 static void screen_play_compose(context_t * context)
 {
 	item_t * list;
@@ -46,7 +54,8 @@ static void screen_play_compose(context_t * context)
 
 	item_list = list;
 }
-
+/******************************************************
+******************************************************/
 static void screen_inventory_compose(context_t * context)
 {
 	item_t * list;
@@ -57,9 +66,9 @@ static void screen_inventory_compose(context_t * context)
 }
 
 /***********************************************
-Called by other thread to request compose update
-composing create anim object.
-anim object has to be in the same thread that
+Called by other thread to request compose update.
+Composing creates anim object.
+Anim object has to be in the thread that
 created the renderer (or maybe the window ?)
 ***********************************************/
 void screen_compose()
@@ -91,14 +100,17 @@ Render the currently selected item list to screen
 void screen_display(context_t * ctx)
 {
 	SDL_Event event;
+	int i;
+
+	for(i=0;i<SCREEN_LAST;i++) {
+		virtual_x[i] = INT_MAX;
+		virtual_y[i] = INT_MAX;
+		virtual_z[i] = -1.0;
+	}
 
 	while( screen_end == -1) {
 
 		while (SDL_PollEvent(&event)) {
-			if(event.type==SDL_KEYDOWN && event.key.keysym.sym==SDLK_ESCAPE) {
-				return;
-			}
-
 			compose |= sdl_screen_manager(ctx->window, ctx->render, &event);
 			sdl_mouse_manager(ctx->render,&event,item_list);
 			sdl_keyboard_manager(&event);
@@ -120,12 +132,34 @@ void screen_display(context_t * ctx)
 
 	return;
 }
-
+/************************************************
+Select the screen to be rendered
+************************************************/
 void screen_set_screen(int screen)
 {
 	if(screen != current_screen) {
+		/* Save current virtual coordinates */
+		virtual_x[current_screen] = sdl_get_virtual_x();
+		virtual_y[current_screen] = sdl_get_virtual_y();
+		virtual_z[current_screen] = sdl_get_virtual_z();
+		
+		/* Restore previous virtual coordinate */
+		if( virtual_x[screen] != INT_MAX ) {
+			sdl_force_virtual_x(virtual_x[screen]);
+			sdl_force_virtual_y(virtual_y[screen]);
+			sdl_force_virtual_z(virtual_z[screen]);
+		}
+		
 		current_screen = screen;
 		context_reset_all_position();
 		screen_compose();
 	}
+}
+
+/************************************************
+End the rendering
+************************************************/
+void screen_quit()
+{
+	screen_end = 1;
 }
