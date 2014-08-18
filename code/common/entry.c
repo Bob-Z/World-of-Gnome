@@ -492,7 +492,7 @@ static int __write_int(const char * table, const char * file, int data, va_list 
 /*********************
 return FALSE on error
 *********************/
-int write_int(const char * table, const char * file,int data, ...)
+int entry_write_int(const char * table, const char * file,int data, ...)
 {
 	int ret;
 	va_list ap;
@@ -531,7 +531,7 @@ static int __write_string(const char * table, const char * file, const char * da
 /*********************
 return FALSE on error
 *********************/
-int write_string(const char * table, const char * file, const char * data, ...)
+int entry_write_string(const char * table, const char * file, const char * data, ...)
 {
 	int ret;
 	va_list ap;
@@ -569,7 +569,7 @@ static int __write_list_index(const char * table, const char * file, const char 
 /*********************
 return FALSE on error
 *********************/
-int write_list_index(const char * table, const char * file, const char * data, int index, ...)
+int entry_write_list_index(const char * table, const char * file, const char * data, int index, ...)
 {
 	int ret;
 	va_list ap;
@@ -612,7 +612,7 @@ static int __write_list(const char * table, const char * file, char ** data, va_
 /*********************
 return FALSE on error
 *********************/
-int write_list(const char * table, const char * file, char ** data, ...)
+int entry_write_list(const char * table, const char * file, char ** data, ...)
 {
 	int ret;
 	va_list ap;
@@ -662,7 +662,7 @@ static int __add_to_list(const char * table, const char * file, const char * to_
 /*********************
 return FALSE on error
 *********************/
-int add_to_list(const char * table, const char * file, const char * to_be_added, ...)
+int entry_add_to_list(const char * table, const char * file, const char * to_be_added, ...)
 {
 	int ret;
 	va_list ap;
@@ -713,7 +713,7 @@ static int __remove_group(const char * table, const char * file, const char * gr
 /*********************
 return FALSE on error
 *********************/
-int remove_group(const char * table, const char * file, const char * group, ...)
+int entry_remove_group(const char * table, const char * file, const char * group, ...)
 {
 	int ret;
 	va_list ap;
@@ -729,7 +729,7 @@ get_unused_list_entry
 find an unused tag in a list, add it to the list and return it.
 returned string must be freed
 **********************/
-char * get_unused_list_entry(const char * table, const char * file, ...)
+char * entry_get_unused_list_entry(const char * table, const char * file, ...)
 {
 	char **  list;
 	char tag[7];
@@ -804,7 +804,7 @@ get_unused_group
 find an unused group, create it and return its name
 returned string must be freed
 **********************/
-char * get_unused_group(const char * table, const char * file, ...)
+char * entry_get_unused_group(const char * table, const char * file, ...)
 {
 	char * ret;
 	va_list ap;
@@ -949,7 +949,7 @@ static int __remove_from_list(const char * table, const char * file, const char 
 /*********************
 return 0 on failure
 *********************/
-int remove_from_list(const char * table, const char * file, const char * to_be_removed, ...)
+int entry_remove_from_list(const char * table, const char * file, const char * to_be_removed, ...)
 {
 	int ret;
 	va_list ap;
@@ -963,8 +963,8 @@ int remove_from_list(const char * table, const char * file, const char * to_be_r
 /*********************
 return 0 on failure
 *********************/
-int copy_config(config_setting_t * source,config_setting_t * destination);
-int copy_aggregate(config_setting_t * source, config_setting_t * dest, int type)
+int entry_copy_config(config_setting_t * source,config_setting_t * destination);
+int entry_copy_aggregate(config_setting_t * source, config_setting_t * dest, int type)
 {
 	const char * setting_name;
 	config_setting_t * new_dest;
@@ -987,7 +987,7 @@ int copy_aggregate(config_setting_t * source, config_setting_t * dest, int type)
 		}
 	}
 
-	if(!copy_config(source,new_dest)) {
+	if(!entry_copy_config(source,new_dest)) {
 		config_setting_remove(dest,setting_name);
 		return 0;
 	}
@@ -997,7 +997,7 @@ int copy_aggregate(config_setting_t * source, config_setting_t * dest, int type)
 /*********************
 return 0 on failure
 *********************/
-int copy_config(config_setting_t * source, config_setting_t * dest)
+int entry_copy_config(config_setting_t * source, config_setting_t * dest)
 {
 	config_setting_t * new_source;
 	config_setting_t * new_dest;
@@ -1010,19 +1010,19 @@ int copy_config(config_setting_t * source, config_setting_t * dest)
 	while((new_source=config_setting_get_elem(source,index+1))!= NULL ) {
 		index++;
 		if(config_setting_is_group(new_source)) {
-			if(!copy_aggregate(new_source,dest,CONFIG_TYPE_GROUP)) {
+			if(!entry_copy_aggregate(new_source,dest,CONFIG_TYPE_GROUP)) {
 				return 0;
 			}
 		}
 
 		else if(config_setting_is_array(new_source)) {
-			if(!copy_aggregate(new_source,dest,CONFIG_TYPE_ARRAY)) {
+			if(!entry_copy_aggregate(new_source,dest,CONFIG_TYPE_ARRAY)) {
 				return 0;
 			}
 		}
 
 		else if(config_setting_is_list(new_source)) {
-			if(!copy_aggregate(new_source,dest,CONFIG_TYPE_LIST)) {
+			if(!entry_copy_aggregate(new_source,dest,CONFIG_TYPE_LIST)) {
 				return 0;
 			}
 		}
@@ -1084,7 +1084,7 @@ static int __list_create(const char * table, const char * file, va_list ap)
 /*********************
 return 0 on failure
 *********************/
-int list_create(const char * table, const char * file, ...)
+int entry_list_create(const char * table, const char * file, ...)
 {
 	int ret;
 	va_list ap;
@@ -1117,7 +1117,7 @@ static int __group_create(const char * table, const char * file, va_list ap)
 /*********************
 return 0 on failure
 *********************/
-int group_create(const char * table, const char * file, ...)
+int entry_group_create(const char * table, const char * file, ...)
 {
 	int ret;
 	va_list ap;
@@ -1191,7 +1191,7 @@ static char * __copy_group(const char * src_table, const char * src_file, const 
 
 	free(path);
 
-	if(!copy_config(src_setting,dst_setting)) {
+	if(!entry_copy_config(src_setting,dst_setting)) {
 		return NULL;
 	}
 
@@ -1206,7 +1206,7 @@ static char * __copy_group(const char * src_table, const char * src_file, const 
 return a copy of the name used for the destination
 MUST BE FREED !
 ***************************************/
-char * copy_group(const char * src_table, const char * src_file, const char * dst_table, const char * dst_file, const char * group_name, ...)
+char * entry_copy_group(const char * src_table, const char * src_file, const char * dst_table, const char * dst_file, const char * group_name, ...)
 {
 	char * ret;
 	va_list ap;

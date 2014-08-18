@@ -78,11 +78,11 @@ int attribute_change(context_t * context, const char * id, const char * attribut
 		}
 	}
 
-	if(!write_int(CHARACTER_TABLE,id,current,ATTRIBUTE_GROUP,attribute, ATTRIBUTE_CURRENT, NULL)) {
+	if(!entry_write_int(CHARACTER_TABLE,id,current,ATTRIBUTE_GROUP,attribute, ATTRIBUTE_CURRENT, NULL)) {
 		SDL_UnlockMutex(attribute_mutex);
 		return -1;
 	}
-	if(!write_int(CHARACTER_TABLE,id,old,ATTRIBUTE_GROUP,attribute, ATTRIBUTE_PREVIOUS, NULL)) {
+	if(!entry_write_int(CHARACTER_TABLE,id,old,ATTRIBUTE_GROUP,attribute, ATTRIBUTE_PREVIOUS, NULL)) {
 		SDL_UnlockMutex(attribute_mutex);
 		return -1;
 	}
@@ -196,7 +196,7 @@ int attribute_set(const char * id, const char * attribute, int value)
 
 	SDL_LockMutex(attribute_mutex);
 
-	if(!write_int(CHARACTER_TABLE,id,value,ATTRIBUTE_GROUP,attribute, ATTRIBUTE_CURRENT, NULL)) {
+	if(!entry_write_int(CHARACTER_TABLE,id,value,ATTRIBUTE_GROUP,attribute, ATTRIBUTE_CURRENT, NULL)) {
 		SDL_UnlockMutex(attribute_mutex);
 		return -1;
 	}

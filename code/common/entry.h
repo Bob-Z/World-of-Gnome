@@ -29,22 +29,22 @@ int entry_read_string(const char * table, const char * file, char ** res, ...);
 int entry_read_list_index(const char * table, const char * file, char ** res,int index, ...);
 int entry_read_list(const char * table, const char * file, char *** res, ...);
 
-int write_int(const char * table, const char * file, int data, ...);
-int write_string(const char * table, const char * file,const char * data, ...);
-int write_list_index(const char * table, const char * file, const char * data,int index, ...);
-int write_list(const char * table, const char * file, char ** data, ...);
+int entry_write_int(const char * table, const char * file, int data, ...);
+int entry_write_string(const char * table, const char * file,const char * data, ...);
+int entry_write_list_index(const char * table, const char * file, const char * data,int index, ...);
+int entry_write_list(const char * table, const char * file, char ** data, ...);
 
-char * get_unused_list_entry(const char * table, const char * file, ...);
-char * get_unused_group(const char * table, const char * file, ...);
+char * entry_get_unused_list_entry(const char * table, const char * file, ...);
+char * entry_get_unused_group(const char * table, const char * file, ...);
 int entry_get_group_list(const char * table, const char * file, char *** res, ...);
 
-int add_to_list(const char * table, const char * file, const char * to_be_added, ...);
-int remove_group(const char * table, const char * file, const char * group, ...);
+int entry_add_to_list(const char * table, const char * file, const char * to_be_added, ...);
+int entry_remove_group(const char * table, const char * file, const char * group, ...);
 
-int remove_from_list(const char * table, const char * file, const char * to_be_removed, ...);
-int list_create(const char * table, const char * file, ...);
-int group_create(const char * table, const char * file, ...);
-char * copy_group(const char * src_table, const char * src_file, const char * dst_table, const char * dst_file, const char * group_name, ...);
+int entry_remove_from_list(const char * table, const char * file, const char * to_be_removed, ...);
+int entry_list_create(const char * table, const char * file, ...);
+int entry_group_create(const char * table, const char * file, ...);
+char * entry_copy_group(const char * src_table, const char * src_file, const char * dst_table, const char * dst_file, const char * group_name, ...);
 int entry_update(char * data);
 int entry_destroy(const char * id);
 #endif

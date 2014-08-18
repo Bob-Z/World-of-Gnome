@@ -35,7 +35,7 @@ int equipment_delete(const char *id, const char * slot)
 		return -1;
 	}
 
-	if( remove_group(CHARACTER_TABLE, context->id, EQUIPMENT_EQUIPPED, EQUIPMENT_GROUP, slot, NULL)) {
+	if( entry_remove_group(CHARACTER_TABLE, context->id, EQUIPMENT_EQUIPPED, EQUIPMENT_GROUP, slot, NULL)) {
 		/* update client */
 		network_send_character_file(context);
 		return 0;
@@ -56,7 +56,7 @@ int equipment_add(const char *id, const char * slot, const char * item)
 		return -1;
 	}
 
-	if( write_string(CHARACTER_TABLE, context->id, item, EQUIPMENT_GROUP, slot, EQUIPMENT_EQUIPPED, NULL)) {
+	if( entry_write_string(CHARACTER_TABLE, context->id, item, EQUIPMENT_GROUP, slot, EQUIPMENT_EQUIPPED, NULL)) {
 		/* update client */
 		network_send_character_file(context);
 		return 0;

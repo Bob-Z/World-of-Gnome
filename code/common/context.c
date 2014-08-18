@@ -600,13 +600,13 @@ int context_write_to_file(context_t * context)
 		return FALSE;
 	}
 
-	write_string(CHARACTER_TABLE, context->id,context->type,CHARACTER_KEY_TYPE,NULL);
-	write_string(CHARACTER_TABLE, context->id,context->map,CHARACTER_KEY_MAP, NULL);
+	entry_write_string(CHARACTER_TABLE, context->id,context->type,CHARACTER_KEY_TYPE,NULL);
+	entry_write_string(CHARACTER_TABLE, context->id,context->map,CHARACTER_KEY_MAP, NULL);
 
 
-	write_int(CHARACTER_TABLE, context->id,context->pos_x,CHARACTER_KEY_POS_X, NULL);
+	entry_write_int(CHARACTER_TABLE, context->id,context->pos_x,CHARACTER_KEY_POS_X, NULL);
 
-	write_int(CHARACTER_TABLE, context->id,context->pos_y,CHARACTER_KEY_POS_Y, NULL);
+	entry_write_int(CHARACTER_TABLE, context->id,context->pos_y,CHARACTER_KEY_POS_Y, NULL);
 
 	SDL_UnlockMutex(context_list_mutex);
 	return TRUE;

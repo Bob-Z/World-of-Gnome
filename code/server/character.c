@@ -168,21 +168,21 @@ char * character_create_from_template(context_t * ctx,const char * template,cons
 	}
 
 	/* Write position */
-	if(!write_string(CHARACTER_TABLE,new_id,map,CHARACTER_KEY_MAP,NULL)) {
+	if(!entry_write_string(CHARACTER_TABLE,new_id,map,CHARACTER_KEY_MAP,NULL)) {
 		entry_destroy(filename);
 		free(filename);
 		free(new_id);
 		return NULL;
 	}
 
-	if(!write_int(CHARACTER_TABLE,new_id,x,CHARACTER_KEY_POS_X,NULL)) {
+	if(!entry_write_int(CHARACTER_TABLE,new_id,x,CHARACTER_KEY_POS_X,NULL)) {
 		entry_destroy(filename);
 		free(filename);
 		free(new_id);
 		return NULL;
 	}
 
-	if(!write_int(CHARACTER_TABLE,new_id,y,CHARACTER_KEY_POS_Y,NULL)) {
+	if(!entry_write_int(CHARACTER_TABLE,new_id,y,CHARACTER_KEY_POS_Y,NULL)) {
 		entry_destroy(filename);
 		free(filename);
 		free(new_id);
@@ -306,9 +306,9 @@ static void platform_move(context_t * platform,char * map, int x, int y, int cha
 			context_set_pos_x(current,x);
 			context_set_pos_y(current,y);
 
-			write_string(CHARACTER_TABLE,current->id,map,CHARACTER_KEY_MAP,NULL);
-			write_int(CHARACTER_TABLE,current->id,x,CHARACTER_KEY_POS_X,NULL);
-			write_int(CHARACTER_TABLE,current->id,y,CHARACTER_KEY_POS_Y,NULL);
+			entry_write_string(CHARACTER_TABLE,current->id,map,CHARACTER_KEY_MAP,NULL);
+			entry_write_int(CHARACTER_TABLE,current->id,x,CHARACTER_KEY_POS_X,NULL);
+			entry_write_int(CHARACTER_TABLE,current->id,y,CHARACTER_KEY_POS_Y,NULL);
 
 			context_spread(current);
 			if(change_map) {
@@ -354,9 +354,9 @@ int character_set_pos(context_t * ctx, char * map, int x, int y)
 		context_set_pos_x(ctx,x);
 		context_set_pos_y(ctx,y);
 
-		write_string(CHARACTER_TABLE,ctx->id,map,CHARACTER_KEY_MAP,NULL);
-		write_int(CHARACTER_TABLE,ctx->id,x,CHARACTER_KEY_POS_X,NULL);
-		write_int(CHARACTER_TABLE,ctx->id,y,CHARACTER_KEY_POS_Y,NULL);
+		entry_write_string(CHARACTER_TABLE,ctx->id,map,CHARACTER_KEY_MAP,NULL);
+		entry_write_int(CHARACTER_TABLE,ctx->id,x,CHARACTER_KEY_POS_X,NULL);
+		entry_write_int(CHARACTER_TABLE,ctx->id,y,CHARACTER_KEY_POS_Y,NULL);
 
 		context_spread(ctx);
 		if(change_map) {
@@ -398,7 +398,7 @@ int character_set_pos(context_t * ctx, char * map, int x, int y)
 *********************************************************/
 int character_set_npc(const char * id, int npc)
 {
-	if(!write_int(CHARACTER_TABLE,id,npc,CHARACTER_KEY_NPC,NULL)) {
+	if(!entry_write_int(CHARACTER_TABLE,id,npc,CHARACTER_KEY_NPC,NULL)) {
 		return -1;
 	}
 

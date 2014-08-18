@@ -42,19 +42,19 @@ char * map_new(int x,int y, int tile_x, int tile_y, char * default_tile)
 	}
 
 
-	if (!write_int(MAP_TABLE,map_name,x,MAP_KEY_SIZE_X, NULL) ) {
+	if (!entry_write_int(MAP_TABLE,map_name,x,MAP_KEY_SIZE_X, NULL) ) {
 		free(map_name);
 		return NULL;
 	}
-	if (!write_int(MAP_TABLE,map_name,y,MAP_KEY_SIZE_Y, NULL) ) {
+	if (!entry_write_int(MAP_TABLE,map_name,y,MAP_KEY_SIZE_Y, NULL) ) {
 		free(map_name);
 		return NULL;
 	}
-	if (!write_int(MAP_TABLE,map_name,tile_x,MAP_KEY_TILE_SIZE_X, NULL) ) {
+	if (!entry_write_int(MAP_TABLE,map_name,tile_x,MAP_KEY_TILE_SIZE_X, NULL) ) {
 		free(map_name);
 		return NULL;
 	}
-	if (!write_int(MAP_TABLE,map_name,tile_y,MAP_KEY_TILE_SIZE_Y, NULL) ) {
+	if (!entry_write_int(MAP_TABLE,map_name,tile_y,MAP_KEY_TILE_SIZE_Y, NULL) ) {
 		free(map_name);
 		return NULL;
 	}
@@ -64,7 +64,7 @@ char * map_new(int x,int y, int tile_x, int tile_y, char * default_tile)
 		tile_array[i] = default_tile;
 	}
 	tile_array[i] = NULL; /* End of list */
-	if (!write_list(MAP_TABLE,map_name,tile_array,MAP_KEY_SET, NULL) ) {
+	if (!entry_write_list(MAP_TABLE,map_name,tile_array,MAP_KEY_SET, NULL) ) {
 		free(map_name);
 		return NULL;
 	}
@@ -207,7 +207,7 @@ char * map_delete_item(const char * map, int x, int y)
 	}
 
 	/* remove the item from the item list of the map */
-	if(!remove_group(MAP_TABLE,map,id,MAP_ENTRY_ITEM_LIST,NULL)) {
+	if(!entry_remove_group(MAP_TABLE,map,id,MAP_ENTRY_ITEM_LIST,NULL)) {
 		deep_free(itemlist);
 		free(saved_item);
 		SDL_UnlockMutex(map_mutex);
@@ -236,13 +236,13 @@ int map_add_item(const char * map, const char * id, int x, int y)
 
 	SDL_LockMutex(map_mutex);
 
-	if (!write_int(MAP_TABLE,map,x,MAP_ENTRY_ITEM_LIST,id,MAP_ITEM_POS_X, NULL) ) {
-		remove_group(MAP_TABLE,map,id,MAP_ENTRY_ITEM_LIST,NULL);
+	if (!entry_write_int(MAP_TABLE,map,x,MAP_ENTRY_ITEM_LIST,id,MAP_ITEM_POS_X, NULL) ) {
+		entry_remove_group(MAP_TABLE,map,id,MAP_ENTRY_ITEM_LIST,NULL);
 		SDL_UnlockMutex(map_mutex);
 		return -1;
 	}
-	if (!write_int(MAP_TABLE,map,y,MAP_ENTRY_ITEM_LIST,id,MAP_ITEM_POS_Y, NULL) ) {
-		remove_group(MAP_TABLE,map,id,MAP_ENTRY_ITEM_LIST,NULL);
+	if (!entry_write_int(MAP_TABLE,map,y,MAP_ENTRY_ITEM_LIST,id,MAP_ITEM_POS_Y, NULL) ) {
+		entry_remove_group(MAP_TABLE,map,id,MAP_ENTRY_ITEM_LIST,NULL);
 		SDL_UnlockMutex(map_mutex);
 		return -1;
 	}
@@ -299,7 +299,7 @@ int map_set_tile(const char * map,const char * tile,int x, int y)
 	}
 	free(value);
 
-	if( write_list_index(MAP_TABLE, map, tile,index, MAP_KEY_SET,NULL ) ) {
+	if( entry_write_list_index(MAP_TABLE, map, tile,index, MAP_KEY_SET,NULL ) ) {
 		context_broadcast_file(MAP_TABLE,map,TRUE);
 	}
 
@@ -452,30 +452,30 @@ char * map_add_event(const char * map, const char * script, int x, int y )
 	}
 
 	/* Make sure the MAP_ENTRY_EVENT_LIST group exists */
-	group_create(MAP_TABLE,map,MAP_ENTRY_EVENT_LIST,NULL);
+	entry_group_create(MAP_TABLE,map,MAP_ENTRY_EVENT_LIST,NULL);
 
-	id = get_unused_group(MAP_TABLE,map,MAP_ENTRY_EVENT_LIST,NULL);
+	id = entry_get_unused_group(MAP_TABLE,map,MAP_ENTRY_EVENT_LIST,NULL);
 	if(id == NULL) {
 		return NULL;
 	}
 
 	SDL_LockMutex(map_mutex);
 
-	if (!write_int(MAP_TABLE,map,x,MAP_ENTRY_EVENT_LIST,id,MAP_EVENT_POS_X, NULL) ) {
-		remove_group(MAP_TABLE,map,id,MAP_ENTRY_EVENT_LIST,NULL);
+	if (!entry_write_int(MAP_TABLE,map,x,MAP_ENTRY_EVENT_LIST,id,MAP_EVENT_POS_X, NULL) ) {
+		entry_remove_group(MAP_TABLE,map,id,MAP_ENTRY_EVENT_LIST,NULL);
 		free(id);
 		SDL_UnlockMutex(map_mutex);
 		return NULL;
 	}
-	if (!write_int(MAP_TABLE,map,y,MAP_ENTRY_EVENT_LIST,id,MAP_EVENT_POS_Y, NULL) ) {
-		remove_group(MAP_TABLE,map,id,MAP_ENTRY_EVENT_LIST,NULL);
+	if (!entry_write_int(MAP_TABLE,map,y,MAP_ENTRY_EVENT_LIST,id,MAP_EVENT_POS_Y, NULL) ) {
+		entry_remove_group(MAP_TABLE,map,id,MAP_ENTRY_EVENT_LIST,NULL);
 		free(id);
 		SDL_UnlockMutex(map_mutex);
 		return NULL;
 	}
 
-	if (!write_string(MAP_TABLE,map,script,MAP_ENTRY_EVENT_LIST,id,MAP_EVENT_SCRIPT, NULL) ) {
-		remove_group(MAP_TABLE,map,id,MAP_ENTRY_EVENT_LIST,NULL);
+	if (!entry_write_string(MAP_TABLE,map,script,MAP_ENTRY_EVENT_LIST,id,MAP_EVENT_SCRIPT, NULL) ) {
+		entry_remove_group(MAP_TABLE,map,id,MAP_ENTRY_EVENT_LIST,NULL);
 		free(id);
 		SDL_UnlockMutex(map_mutex);
 		return NULL;
@@ -496,9 +496,9 @@ char * map_add_event(const char * map, const char * script, int x, int y )
 int map_add_event_param(const char * map, const char * event_id, const char * param)
 {
 	/* Make sure the param list exists */
-	list_create(MAP_TABLE,map,MAP_ENTRY_EVENT_LIST,event_id,MAP_EVENT_PARAM,NULL);
+	entry_list_create(MAP_TABLE,map,MAP_ENTRY_EVENT_LIST,event_id,MAP_EVENT_PARAM,NULL);
 
-	return add_to_list(MAP_TABLE,map,param,MAP_ENTRY_EVENT_LIST,event_id,MAP_EVENT_PARAM,NULL);
+	return entry_add_to_list(MAP_TABLE,map,param,MAP_ENTRY_EVENT_LIST,event_id,MAP_EVENT_PARAM,NULL);
 }
 
 /**********************************************
@@ -555,7 +555,7 @@ int map_delete_event(const char * map, const char * script, int x, int y)
 	}
 
 	/* remove the event from the events list of the map */
-	if(!remove_group(MAP_TABLE,map,id,MAP_ENTRY_EVENT_LIST,NULL)) {
+	if(!entry_remove_group(MAP_TABLE,map,id,MAP_ENTRY_EVENT_LIST,NULL)) {
 		SDL_UnlockMutex(map_mutex);
 		return -1;
 	}

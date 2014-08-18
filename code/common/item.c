@@ -87,12 +87,12 @@ char * item_resource_new(const char * template, int quantity)
 		return NULL;
 	}
 
-	if(!write_string(ITEM_TABLE,new_id,template,ITEM_TEMPLATE, NULL)) {
+	if(!entry_write_string(ITEM_TABLE,new_id,template,ITEM_TEMPLATE, NULL)) {
 		entry_destroy(new_id);
 		return NULL;
 	}
 
-	if(!write_int(ITEM_TABLE,new_id,quantity,ITEM_QUANTITY, NULL)) {
+	if(!entry_write_int(ITEM_TABLE,new_id,quantity,ITEM_QUANTITY, NULL)) {
 		entry_destroy(new_id);
 		return NULL;
 	}
@@ -148,7 +148,7 @@ int item_set_quantity(const char * item_id, int quantity)
 	}
 	free(template);
 
-	if(!write_int(ITEM_TABLE,item_id,quantity,ITEM_QUANTITY, NULL)) {
+	if(!entry_write_int(ITEM_TABLE,item_id,quantity,ITEM_QUANTITY, NULL)) {
 		return -1;
 	}
 

@@ -35,7 +35,7 @@ int inventory_delete(const char * id, const char * item)
 		return -1;
 	}
 
-	if( remove_from_list(CHARACTER_TABLE, context->id, item, CHARACTER_KEY_INVENTORY, NULL)) {
+	if( entry_remove_from_list(CHARACTER_TABLE, context->id, item, CHARACTER_KEY_INVENTORY, NULL)) {
 		/* update client */
 		network_send_character_file(context);
 		return 0;
@@ -65,11 +65,11 @@ int inventory_add(const char * ctx_id, const char * item_id)
 	}
 
 	/* Make sure the CHARACTER_KEY_INVENTORY list exists */
-	list_create(CHARACTER_TABLE,context->id,CHARACTER_KEY_INVENTORY,NULL);
+	entry_list_create(CHARACTER_TABLE,context->id,CHARACTER_KEY_INVENTORY,NULL);
 
 	template = item_is_resource(item_id);
 	if(template == NULL) {
-		if(!add_to_list(CHARACTER_TABLE,context->id,item_id, CHARACTER_KEY_INVENTORY, NULL)) {
+		if(!entry_add_to_list(CHARACTER_TABLE,context->id,item_id, CHARACTER_KEY_INVENTORY, NULL)) {
 			return -1;
 		}
 	}
@@ -103,7 +103,7 @@ int inventory_add(const char * ctx_id, const char * item_id)
 
 		/* First time we add this type of resource to inventory */
 		if( name_list[index] == NULL ) {
-			if(!add_to_list(CHARACTER_TABLE,context->id,item_id, CHARACTER_KEY_INVENTORY, NULL)) {
+			if(!entry_add_to_list(CHARACTER_TABLE,context->id,item_id, CHARACTER_KEY_INVENTORY, NULL)) {
 				return -1;
 			}
 		}
