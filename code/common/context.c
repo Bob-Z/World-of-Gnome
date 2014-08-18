@@ -245,7 +245,7 @@ int context_set_hostname(context_t * context, const char * name)
 	if( context->hostname ) {
 		free( context->user_name );
 	}
-	
+
 	context->hostname = strdup(name);
 	if( context->hostname == NULL ) {
 		SDL_UnlockMutex(context_list_mutex);
@@ -553,8 +553,7 @@ int context_update_from_file(context_t * context)
 	if(entry_read_string(CHARACTER_TABLE,context->id,&result, CHARACTER_KEY_NAME,NULL)) {
 		free( context->character_name );
 		context->character_name = result;
-	}
-	else {
+	} else {
 		ret = FALSE;
 	}
 
@@ -562,8 +561,7 @@ int context_update_from_file(context_t * context)
 	if(entry_read_string(CHARACTER_TABLE,context->id,&result, CHARACTER_KEY_TYPE,NULL)) {
 		free( context->type );
 		context->type = result;
-	}
-	else {
+	} else {
 		ret = FALSE;
 	}
 
@@ -571,8 +569,7 @@ int context_update_from_file(context_t * context)
 		free( context->map );
 		ret = _context_set_map(context, result);
 		free(result);
-	}
-	else {
+	} else {
 		ret = FALSE;
 	}
 

@@ -83,57 +83,56 @@ static void compose_inventory(context_t * ctx)
 	}
 
 	while( inventory_list[i] != NULL) {
-			template = item_is_resource(inventory_list[i]);
+		template = item_is_resource(inventory_list[i]);
 
-	       if( template == NULL ) {
-		       /* Icon is mandatory for now */
-		       if(!entry_read_string(ITEM_TABLE,inventory_list[i],&value,ITEM_ICON,NULL)) {
-			       i++;
-			       continue;
-		       }
-		       /* load image */
-		       anim = imageDB_get_anim(ctx, value);
-			   free(value);
+		if( template == NULL ) {
+			/* Icon is mandatory for now */
+			if(!entry_read_string(ITEM_TABLE,inventory_list[i],&value,ITEM_ICON,NULL)) {
+				i++;
+				continue;
+			}
+			/* load image */
+			anim = imageDB_get_anim(ctx, value);
+			free(value);
 
-		       if(!entry_read_string(ITEM_TABLE,inventory_list[i],&value,ITEM_NAME,NULL)) {
-			       label = strdup(inventory_list[i]);
-		       } else {
-			       label = value;
-		       }
+			if(!entry_read_string(ITEM_TABLE,inventory_list[i],&value,ITEM_NAME,NULL)) {
+				label = strdup(inventory_list[i]);
+			} else {
+				label = value;
+			}
 
-		       if(!entry_read_string(ITEM_TABLE,inventory_list[i],&value,ITEM_DESC,NULL)) {
-			       description = strdup("");;
-		       } else {
-			       description = value;
-		       }
-	       }
-	       else {
-		       /* Icon is mandatory for now */
-		       if(!entry_read_string(ITEM_TEMPLATE_TABLE,template,&value,ITEM_ICON,NULL)) {
-					i++;
-					free(template);
-			       continue;
-		       }
-		       /* load image */
-		       anim = imageDB_get_anim(ctx, value);
-			   free(value);
+			if(!entry_read_string(ITEM_TABLE,inventory_list[i],&value,ITEM_DESC,NULL)) {
+				description = strdup("");;
+			} else {
+				description = value;
+			}
+		} else {
+			/* Icon is mandatory for now */
+			if(!entry_read_string(ITEM_TEMPLATE_TABLE,template,&value,ITEM_ICON,NULL)) {
+				i++;
+				free(template);
+				continue;
+			}
+			/* load image */
+			anim = imageDB_get_anim(ctx, value);
+			free(value);
 
-		       if(!entry_read_string(ITEM_TEMPLATE_TABLE,template,&value,ITEM_NAME,NULL)) {
-			       label = strdup(inventory_list[i]);
-		       } else {
-			       label = value;
-		       }
+			if(!entry_read_string(ITEM_TEMPLATE_TABLE,template,&value,ITEM_NAME,NULL)) {
+				label = strdup(inventory_list[i]);
+			} else {
+				label = value;
+			}
 
-		       if(!entry_read_string(ITEM_TEMPLATE_TABLE,template,&value,ITEM_DESC,NULL)) {
-			       description = strdup("");;
-		       } else {
-			       description = value;
-		       }
-			   free(template);
-	       }
+			if(!entry_read_string(ITEM_TEMPLATE_TABLE,template,&value,ITEM_DESC,NULL)) {
+				description = strdup("");;
+			} else {
+				description = value;
+			}
+			free(template);
+		}
 
-	       quantity = item_get_quantity(inventory_list[i]);
-	       sprintf(buf,"%d",quantity);
+		quantity = item_get_quantity(inventory_list[i]);
+		sprintf(buf,"%d",quantity);
 
 		item = item_list_add(&item_list);
 

@@ -1247,7 +1247,7 @@ static void action_chat(context_t * context, const char * text)
 	new_text = strconcat(context->character_name,":",text,NULL);
 
 	network_broadcast_text(context,new_text);
-	
+
 	free(new_text);
 }
 

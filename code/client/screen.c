@@ -82,14 +82,14 @@ create a list of item for the currently selected screen
 static void compose_scr(context_t * context)
 {
 	switch(current_screen) {
-		case SCREEN_SELECT:
-			screen_select_compose(context);
+	case SCREEN_SELECT:
+		screen_select_compose(context);
 		break;
-		case SCREEN_PLAY:
-			screen_play_compose(context);
+	case SCREEN_PLAY:
+		screen_play_compose(context);
 		break;
-		case SCREEN_INVENTORY:
-			screen_inventory_compose(context);
+	case SCREEN_INVENTORY:
+		screen_inventory_compose(context);
 		break;
 	}
 }
@@ -102,7 +102,7 @@ void screen_display(context_t * ctx)
 	SDL_Event event;
 	int i;
 
-	for(i=0;i<SCREEN_LAST;i++) {
+	for(i=0; i<SCREEN_LAST; i++) {
 		virtual_x[i] = INT_MAX;
 		virtual_y[i] = INT_MAX;
 		virtual_z[i] = -1.0;
@@ -142,14 +142,14 @@ void screen_set_screen(int screen)
 		virtual_x[current_screen] = sdl_get_virtual_x();
 		virtual_y[current_screen] = sdl_get_virtual_y();
 		virtual_z[current_screen] = sdl_get_virtual_z();
-		
+
 		/* Restore previous virtual coordinate */
 		if( virtual_x[screen] != INT_MAX ) {
 			sdl_force_virtual_x(virtual_x[screen]);
 			sdl_force_virtual_y(virtual_y[screen]);
 			sdl_force_virtual_z(virtual_z[screen]);
 		}
-		
+
 		current_screen = screen;
 		context_reset_all_position();
 		screen_compose();

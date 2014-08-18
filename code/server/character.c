@@ -97,7 +97,7 @@ void character_user_send_list(context_t * context)
 
 		free(type);
 		free(name);
-		
+
 		i++;
 	}
 
@@ -190,7 +190,7 @@ char * character_create_from_template(context_t * ctx,const char * template,cons
 	}
 
 	free(filename);
-	
+
 	return new_id;
 }
 
@@ -275,9 +275,9 @@ void character_update_aggro(context_t * context)
 			param[1] = NULL;
 			action_execute_script(ctx,aggro_script,param);
 		}
-		
+
 		free(aggro_script);
-		
+
 	} while( (ctx=ctx->next)!= NULL );
 }
 /*************************************************************
@@ -287,15 +287,15 @@ static void platform_move(context_t * platform,char * map, int x, int y, int cha
 {
 	context_t * current = context_get_list_first();
 	int is_platform;
-	
+
 	if(!entry_read_int(CHARACTER_TABLE,platform->id,&is_platform, CHARACTER_KEY_PLATFORM,NULL)) {
 		return;
 	}
-	
+
 	if(!is_platform) {
 		return;
 	}
-	
+
 	while(current) {
 		if(current == platform) {
 			current = current->next;
@@ -362,7 +362,7 @@ int character_set_pos(context_t * ctx, char * map, int x, int y)
 		if(change_map) {
 			context_request_other_context(ctx);
 		}
-		
+
 		event_id = map_get_event(map,x,y);
 
 		if(event_id) {
@@ -379,7 +379,7 @@ int character_set_pos(context_t * ctx, char * map, int x, int y)
 				free(script);
 				deep_free(param);
 				param=NULL;
-				
+
 				i++;
 			}
 			deep_free(event_id);

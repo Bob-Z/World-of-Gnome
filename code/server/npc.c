@@ -116,7 +116,7 @@ void instantiate_npc(const char * id)
 	if(!entry_read_int(CHARACTER_TABLE,id,&y,CHARACTER_KEY_POS_Y,NULL)) {
 		return;
 	}
-	
+
 	if(!entry_read_string(CHARACTER_TABLE,id,&map,CHARACTER_KEY_MAP,NULL)) {
 		return;
 	}

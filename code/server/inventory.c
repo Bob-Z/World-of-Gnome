@@ -72,8 +72,7 @@ int inventory_add(const char * ctx_id, const char * item_id)
 		if(!entry_add_to_list(CHARACTER_TABLE,context->id,item_id, CHARACTER_KEY_INVENTORY, NULL)) {
 			return -1;
 		}
-	}
-	else {
+	} else {
 		if(!entry_read_int(ITEM_TABLE,item_id,&add_count,ITEM_QUANTITY,NULL)) {
 			return -1;
 		}

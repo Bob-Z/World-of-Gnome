@@ -127,7 +127,7 @@ static int new_connection(void * data)
 	Uint32 command = 0;
 	Uint32 command_size = 0;
 	char *buf = NULL;
-	
+
 	context = context_new();
 	if(context == NULL ) {
 		werr(LOGUSER,"Failed to create context");
@@ -175,7 +175,7 @@ static int new_connection(void * data)
 			buf = NULL;
 		}
 	}
-	
+
 	wlog(LOGUSER,"Client disconnected");
 	context_spread(context);
 	context_write_to_file(context);
@@ -192,34 +192,29 @@ void network_init(void)
 	IPaddress * remote_IP;
 	TCPsocket socket;
 	TCPsocket client_socket;
-	
-	if (SDLNet_Init() < 0)
-	{
+
+	if (SDLNet_Init() < 0) {
 		werr(LOGUSER, "Can't init SDL: %s\n", SDLNet_GetError());
 		return;
 	}
- 
+
 	/* Resolving the host using NULL make network interface to listen */
-	if (SDLNet_ResolveHost(&IP, NULL, PORT) < 0)
-	{
+	if (SDLNet_ResolveHost(&IP, NULL, PORT) < 0) {
 		werr(LOGUSER, "Cannot listen on port %d: %s\n", PORT, SDLNet_GetError());
 		return;
 	}
- 
+
 	/* Open a connection with the IP provided (listen on the host's port) */
-	if (!(socket = SDLNet_TCP_Open(&IP)))
-	{
+	if (!(socket = SDLNet_TCP_Open(&IP))) {
 		werr(LOGUSER, "Cannot open port %d: %s\n", PORT, SDLNet_GetError());
 		return;
 	}
- 
+
 	/* Wait for a connection */
-	while (TRUE)
-	{
+	while (TRUE) {
 		/* check for pending connection.
 		* If there is one, accept that, and open a new socket for communicating */
-		if ((client_socket = SDLNet_TCP_Accept(socket)))
-		{
+		if ((client_socket = SDLNet_TCP_Accept(socket))) {
 			/* Get the remote address */
 			if (!(remote_IP = SDLNet_TCP_GetPeerAddress(client_socket))) {
 				werr(LOGUSER,"Can't get peer adress: %s", SDLNet_GetError());
@@ -227,13 +222,13 @@ void network_init(void)
 
 			//wlog(LOGUSER,"Host connected: %s %d\n", SDLNet_Read32(&remote_IP->host), SDLNet_Read16(&remote_IP->port));
 			wlog(LOGUSER,"Host connected: %x %d\n", SDLNet_Read32(&remote_IP->host), SDLNet_Read16(&remote_IP->port));
- 
+
 			SDL_CreateThread(new_connection,"new_connection",(void*)client_socket);
 		}
 	}
- 
+
 	SDLNet_TCP_Close(socket);
 	SDLNet_Quit();
-		
+
 	return;
 }

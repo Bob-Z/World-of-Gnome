@@ -122,8 +122,8 @@ static void cb_select_map(void *arg)
 	item_t * item = (item_t*)arg;
 	context_t * ctx = context_get_list_first();
 
-        ctx->selection.map_coord[0]= item->tile_x;
-        ctx->selection.map_coord[1]= item->tile_y;
+	ctx->selection.map_coord[0]= item->tile_x;
+	ctx->selection.map_coord[1]= item->tile_y;
 	network_send_context(ctx);
 }
 
@@ -154,31 +154,31 @@ static void compose_map(context_t * ctx)
 	item_t * item;
 
 	if( ctx->map_w == -1 ) {
-		if(!entry_read_int(MAP_TABLE, ctx->map, &i,MAP_KEY_SIZE_X,NULL)){
+		if(!entry_read_int(MAP_TABLE, ctx->map, &i,MAP_KEY_SIZE_X,NULL)) {
 			return;
 		}
 		context_set_map_w( ctx, i);
 	}
 	if( ctx->map_h == -1 ) {
-		if(!entry_read_int(MAP_TABLE, ctx->map, &i,MAP_KEY_SIZE_Y,NULL)){
+		if(!entry_read_int(MAP_TABLE, ctx->map, &i,MAP_KEY_SIZE_Y,NULL)) {
 			return;
 		}
 		context_set_map_h( ctx, i);
 	}
 	if( ctx->tile_x == -1 ) {
-		if(!entry_read_int(MAP_TABLE, ctx->map, &i,MAP_KEY_TILE_SIZE_X,NULL)){
+		if(!entry_read_int(MAP_TABLE, ctx->map, &i,MAP_KEY_TILE_SIZE_X,NULL)) {
 			return;
 		}
 		context_set_tile_x( ctx, i);
 	}
 	if( ctx->tile_x == -1 ) {
-		if(!entry_read_int(MAP_TABLE, ctx->map, &i,MAP_KEY_TILE_SIZE_X,NULL)){
+		if(!entry_read_int(MAP_TABLE, ctx->map, &i,MAP_KEY_TILE_SIZE_X,NULL)) {
 			return;
 		}
 		context_set_tile_x( ctx, i);
 	}
 	if( ctx->tile_y == -1 ) {
-		if(!entry_read_int(MAP_TABLE, ctx->map,&i,MAP_KEY_TILE_SIZE_Y,NULL)){
+		if(!entry_read_int(MAP_TABLE, ctx->map,&i,MAP_KEY_TILE_SIZE_Y,NULL)) {
 			return;
 		}
 		context_set_tile_y( ctx, i);
@@ -286,8 +286,7 @@ static void compose_item(context_t * ctx)
 				i++;
 				continue;
 			}
-		}
-		else {
+		} else {
 			if(!entry_read_string(ITEM_TEMPLATE_TABLE,template,&sprite_name,ITEM_SPRITE,NULL)) {
 				free(template);
 				i++;
@@ -300,7 +299,7 @@ static void compose_item(context_t * ctx)
 
 		anim = imageDB_get_anim(ctx,sprite_name);
 		free(sprite_name);
-		
+
 		x = x*ctx->tile_x;
 		y = y*ctx->tile_y;
 		/* Center sprite on tile */
@@ -387,7 +386,7 @@ static void compose_sprite(context_t * ctx)
 		}
 
 		/* Detect sprite movement, initiate animation */
-		if(ctx->pos_x != ctx->cur_pos_x||ctx->pos_y != ctx->cur_pos_y){
+		if(ctx->pos_x != ctx->cur_pos_x||ctx->pos_y != ctx->cur_pos_y) {
 			ctx->pos_tick = timer;
 
 			/* flip need to remember previous direction to avoid resetting a
@@ -428,32 +427,25 @@ static void compose_sprite(context_t * ctx)
 		if( ctx->orientation & NORTH && ctx->orientation & EAST ) {
 			entry_read_int(CHARACTER_TABLE,ctx->id,&angle,CHARACTER_KEY_DIR_NE_ROT,NULL);
 			item_set_angle(item,(double)angle);
-		}
-		else if ( ctx->orientation & SOUTH && ctx->orientation & EAST ) {
+		} else if ( ctx->orientation & SOUTH && ctx->orientation & EAST ) {
 			entry_read_int(CHARACTER_TABLE,ctx->id,&angle,CHARACTER_KEY_DIR_SE_ROT,NULL);
 			item_set_angle(item,(double)angle);
-		}
-		else if ( ctx->orientation & SOUTH && ctx->orientation & WEST ) {
+		} else if ( ctx->orientation & SOUTH && ctx->orientation & WEST ) {
 			entry_read_int(CHARACTER_TABLE,ctx->id,&angle,CHARACTER_KEY_DIR_SW_ROT,NULL);
 			item_set_angle(item,(double)angle);
-		}
-		else if ( ctx->orientation & NORTH && ctx->orientation & WEST ) {
+		} else if ( ctx->orientation & NORTH && ctx->orientation & WEST ) {
 			entry_read_int(CHARACTER_TABLE,ctx->id,&angle,CHARACTER_KEY_DIR_NW_ROT,NULL);
 			item_set_angle(item,(double)angle);
-		}
-		else if ( ctx->orientation & NORTH ) {
+		} else if ( ctx->orientation & NORTH ) {
 			entry_read_int(CHARACTER_TABLE,ctx->id,&angle,CHARACTER_KEY_DIR_N_ROT,NULL);
 			item_set_angle(item,(double)angle);
-		}
-		else if ( ctx->orientation & SOUTH ) {
+		} else if ( ctx->orientation & SOUTH ) {
 			entry_read_int(CHARACTER_TABLE,ctx->id,&angle,CHARACTER_KEY_DIR_S_ROT,NULL);
 			item_set_angle(item,(double)angle);
-		}
-		else if ( ctx->orientation & WEST ) {
+		} else if ( ctx->orientation & WEST ) {
 			entry_read_int(CHARACTER_TABLE,ctx->id,&angle,CHARACTER_KEY_DIR_W_ROT,NULL);
 			item_set_angle(item,(double)angle);
-		}
-		else if ( ctx->orientation & EAST ) {
+		} else if ( ctx->orientation & EAST ) {
 			entry_read_int(CHARACTER_TABLE,ctx->id,&angle,CHARACTER_KEY_DIR_E_ROT,NULL);
 			item_set_angle(item,(double)angle);
 		}
@@ -475,10 +467,17 @@ static void compose_sprite(context_t * ctx)
 			}
 
 			switch(flip) {
-				case 1: item_set_flip(item,SDL_FLIP_HORIZONTAL);break;
-				case 2: item_set_flip(item,SDL_FLIP_VERTICAL);break;
-				case 3: item_set_flip(item,SDL_FLIP_HORIZONTAL|SDL_FLIP_VERTICAL);break;
-				default: item_set_flip(item,SDL_FLIP_NONE);
+			case 1:
+				item_set_flip(item,SDL_FLIP_HORIZONTAL);
+				break;
+			case 2:
+				item_set_flip(item,SDL_FLIP_VERTICAL);
+				break;
+			case 3:
+				item_set_flip(item,SDL_FLIP_HORIZONTAL|SDL_FLIP_VERTICAL);
+				break;
+			default:
+				item_set_flip(item,SDL_FLIP_NONE);
 			}
 		}
 
@@ -587,8 +586,7 @@ static void cb_action(void * arg)
 
 	if( arg ) {
 		last_action_script = strdup(arg);
-	}
-	else {
+	} else {
 		last_action_script = NULL;
 	}
 }
@@ -620,10 +618,19 @@ static void compose_action(context_t * ctx)
 
 	i=0;
 	while(action_list[i] != NULL ) {
-		if(text) { free(text); text = NULL;}
-		if(icon) { free(icon); icon = NULL;}
-		if(script) { free(script); script = NULL;}
-		
+		if(text) {
+			free(text);
+			text = NULL;
+		}
+		if(icon) {
+			free(icon);
+			icon = NULL;
+		}
+		if(script) {
+			free(script);
+			script = NULL;
+		}
+
 		if(!entry_read_string(ACTION_TABLE,action_list[i],&text,ACTION_KEY_TEXT,NULL)) {
 			i++;
 			continue;
@@ -652,12 +659,21 @@ static void compose_action(context_t * ctx)
 
 		i++;
 	}
-	
+
 	deep_free(action_list);
-	
-	if(text) { free(text); text = NULL;}
-	if(icon) { free(icon); icon = NULL;}
-	if(script) { free(script); script = NULL;}
+
+	if(text) {
+		free(text);
+		text = NULL;
+	}
+	if(icon) {
+		free(icon);
+		icon = NULL;
+	}
+	if(script) {
+		free(script);
+		script = NULL;
+	}
 }
 
 /**********************************
@@ -737,8 +753,12 @@ static void compose_equipment(context_t * ctx)
 
 			item_set_click_left(item,cb_select_slot,strdup(name_list[index]),NULL);
 
-			if(anim->w > max_w) max_w = anim->w;
-			if(anim->h > max_h) max_h = anim->h;
+			if(anim->w > max_w) {
+				max_w = anim->w;
+			}
+			if(anim->h > max_h) {
+				max_h = anim->h;
+			}
 		}
 
 		/* Is there an equipped object ? */
@@ -784,8 +804,7 @@ static void compose_equipment(context_t * ctx)
 
 		if(h1 > anim->h) {
 			y += h1;
-		}
-		else {
+		} else {
 			y += anim->h;
 		}
 
@@ -797,11 +816,10 @@ static void compose_equipment(context_t * ctx)
 		template = item_is_resource(ctx->selection.inventory);
 
 		if ( template == NULL ) {
-				if(!entry_read_string(ITEM_TABLE,ctx->selection.inventory,&inventory_icon_name,ITEM_ICON,NULL)) {
+			if(!entry_read_string(ITEM_TABLE,ctx->selection.inventory,&inventory_icon_name,ITEM_ICON,NULL)) {
 				werr(LOGDEV,"Can't read item %s icon name",ctx->selection.inventory);
 			}
-		}
-		else {
+		} else {
 			if(!entry_read_string(ITEM_TEMPLATE_TABLE,template,&inventory_icon_name,ITEM_ICON,NULL)) {
 				werr(LOGDEV,"Can't read item %s icon name (template: %s)",ctx->selection.inventory,template);
 			}
@@ -818,10 +836,13 @@ static void compose_equipment(context_t * ctx)
 			item_set_anim(item,sw-anim->w,y,anim);
 			item_set_click_left(item,show_inventory,NULL,NULL);
 		}
-	}
-	else {
-		if( max_w == 0) max_w = 32;
-		if( max_h == 0) max_h = 32;
+	} else {
+		if( max_w == 0) {
+			max_w = 32;
+		}
+		if( max_h == 0) {
+			max_h = 32;
+		}
 
 		if( inventory_icon == NULL ) {
 			inventory_icon = anim_create_color(ctx->render, max_w, max_h, 0x7f7f7f7f);
@@ -943,7 +964,7 @@ static void compose_select(context_t * ctx)
 
 		/* Center on tile */
 		x -= (anim->w-ctx->tile_x)/2;
-                y -= (anim->h-ctx->tile_y)/2;
+		y -= (anim->h-ctx->tile_y)/2;
 
 		item_set_anim(item,x,y,anim);
 	}
@@ -952,16 +973,16 @@ static void compose_select(context_t * ctx)
 	if( ctx->selection.id != NULL) {
 		item = item_list_add(&item_list);
 
-                if(!entry_read_int(CHARACTER_TABLE,ctx->selection.id,&x,CHARACTER_KEY_POS_X,NULL)) {
-                        return;
-                }
-                if(!entry_read_int(CHARACTER_TABLE,ctx->selection.id,&y,CHARACTER_KEY_POS_Y,NULL)) {
-                        return;
-                }
+		if(!entry_read_int(CHARACTER_TABLE,ctx->selection.id,&x,CHARACTER_KEY_POS_X,NULL)) {
+			return;
+		}
+		if(!entry_read_int(CHARACTER_TABLE,ctx->selection.id,&y,CHARACTER_KEY_POS_Y,NULL)) {
+			return;
+		}
 
 		/* Center on tile */
 		x -= (anim->w-ctx->tile_x)/2;
-                y -= (anim->h-ctx->tile_y)/2;
+		y -= (anim->h-ctx->tile_y)/2;
 
 		item_set_anim(item,x,y,anim);
 	}

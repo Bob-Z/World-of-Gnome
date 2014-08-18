@@ -49,7 +49,7 @@ static list_t * list_search(list_t * list, const char * key)
 	}
 
 	hash = calc_hash(key);
-	
+
 	while(current_list) {
 		if(current_list->hash == hash) {
 			if(!strcmp(current_list->key,key)) {
@@ -69,13 +69,13 @@ Return NULL if key does not match any list entry.
 void * list_find(list_t * list, const char * key)
 {
 	list_t * current_list;
-	
+
 	current_list = list_search(list,key);
 
 	if( current_list ) {
 		return current_list->data;
 	}
-	
+
 	return NULL;
 }
 
@@ -88,9 +88,9 @@ list_t * list_update(list_t * list, const char *key, void * data)
 {
 	list_t * current_list = list;
 	list_t * new_list;
-	
+
 	current_list = list_search(list,key);
-	
+
 	/* The key already exists, update the entry */
 	if( current_list ) {
 		current_list->data = data;
@@ -103,17 +103,17 @@ list_t * list_update(list_t * list, const char *key, void * data)
 	new_list->data = data;
 	new_list->hash = calc_hash(new_list->key);
 	new_list->next = NULL;
-	
+
 	if( list == NULL) {
 		return new_list;
 	}
 
-	current_list = list;	
+	current_list = list;
 	while(current_list->next != NULL) {
 		current_list = current_list->next;
 	}
 
 	current_list->next = new_list;
-	
+
 	return list;
 }

@@ -29,8 +29,8 @@
 list_t * file_list = NULL;
 
 typedef struct file_tag {
-        Uint32 timestamp;
-        SDL_mutex * mutex;
+	Uint32 timestamp;
+	SDL_mutex * mutex;
 } file_t;
 
 /****************************************
@@ -248,20 +248,19 @@ int file_set_contents(const char *filename,const char *contents,int length)
 ******************************************************/
 void file_copy(char * src_name, char * dst_name)
 {
-        FILE *src;
-        FILE *dst;
-        int i;
+	FILE *src;
+	FILE *dst;
+	int i;
 
-        src = fopen(src_name, "rb");
-        dst = fopen(dst_name, "wb");
+	src = fopen(src_name, "rb");
+	dst = fopen(dst_name, "wb");
 
-        for (i = getc(src); i != EOF; i = getc(src))
-        {
-                putc(i, dst);
-        }
+	for (i = getc(src); i != EOF; i = getc(src)) {
+		putc(i, dst);
+	}
 
-        fclose(dst);
-        fclose(src);
+	fclose(dst);
+	fclose(src);
 }
 
 /***************************************************
@@ -269,34 +268,34 @@ void file_copy(char * src_name, char * dst_name)
 ****************************************************/
 static int mkdir_all(const char * pathname)
 {
-        char * token;
-        char * source;
-        int ret = -1;
-        char * directory = NULL;
-        char * new_directory = NULL;
+	char * token;
+	char * source;
+	int ret = -1;
+	char * directory = NULL;
+	char * new_directory = NULL;
 	char *saveptr;
 
-        if(pathname == NULL) {
-                return -1;
-        }
+	if(pathname == NULL) {
+		return -1;
+	}
 
-        source = strdup(pathname);
+	source = strdup(pathname);
 
-        token =  strtok_r(source,"/",&saveptr);
+	token =  strtok_r(source,"/",&saveptr);
 
 	directory = strdup("");
-        while( token != NULL ) {
-                new_directory = strconcat(directory,"/",token,NULL);
+	while( token != NULL ) {
+		new_directory = strconcat(directory,"/",token,NULL);
 		free(directory);
 		directory = new_directory;
-                ret = mkdir(directory,0775);
-                token =  strtok_r(NULL,"/",&saveptr);
-        }
+		ret = mkdir(directory,0775);
+		token =  strtok_r(NULL,"/",&saveptr);
+	}
 
 	free(directory);
-        free(source);
+	free(source);
 
-        return ret;
+	return ret;
 }
 
 /***************************************************
@@ -307,22 +306,22 @@ static int mkdir_all(const char * pathname)
 ****************************************************/
 int file_create_directory(char * fullname)
 {
-        char * directory = strdup(fullname);
-        int i;
-        int ret;
+	char * directory = strdup(fullname);
+	int i;
+	int ret;
 
-        /* Remove file name, just kee directory name */
-        for( i = strlen(directory); i > 0; i--) {
-                if(directory[i] == '/') {
-                        directory[i]=0;
-                        break;
-                }
-        }
+	/* Remove file name, just kee directory name */
+	for( i = strlen(directory); i > 0; i--) {
+		if(directory[i] == '/') {
+			directory[i]=0;
+			break;
+		}
+	}
 
-        ret = mkdir_all(directory);
+	ret = mkdir_all(directory);
 
-        free(directory);
+	free(directory);
 
-        return ret;
+	return ret;
 }
 

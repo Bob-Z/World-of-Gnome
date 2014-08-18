@@ -159,21 +159,21 @@ item_t * scr_select_compose(context_t * context)
 	wlog(LOGDEBUG,"Composing %d characters",character_num);
 
 	/* Load all anim and compute the max height */
-	for(i=0;i<character_num;i++) {
+	for(i=0; i<character_num; i++) {
 		/* Compute the marquee file name */
 		if(!entry_read_string(CHARACTER_TABLE,character_list[i].id,&marquee_name,CHARACTER_KEY_MARQUEE,NULL)) {
 			continue;
 		}
 		character_list[i].anim  = imageDB_get_anim(context,marquee_name);
 		free(marquee_name);
-		
+
 		if(character_list[i].anim->h > max_h) {
 			max_h = character_list[i].anim->h;
 		}
 	}
 
 	/* Create item list */
-	for(i=0;i<character_num;i++) {
+	for(i=0; i<character_num; i++) {
 		if( character_list[i].anim == NULL ) {
 			continue;
 		}
@@ -206,8 +206,7 @@ item_t * scr_select_compose(context_t * context)
 			/* display string just above the picture */
 			sdl_get_string_size(item->font,item->string,&w,&h);
 			item_set_frame_shape(item,item_image->rect.x + item_image->rect.w/2 - w/2, item_image->rect.y-h,w,h);
-		}
-		else {
+		} else {
 			werr(LOGDEV,"Can't open TTF font %s",FONT);
 		}
 
@@ -222,8 +221,7 @@ item_t * scr_select_compose(context_t * context)
 			/* display string just below the picture */
 			sdl_get_string_size(item->font,item->string,&w,&h);
 			item_set_frame_shape(item,item_image->rect.x + item_image->rect.w/2 - w/2, item_image->rect.y+item_image->rect.h,w,h);
-		}
-		else {
+		} else {
 			werr(LOGDEV,"Can't open TTF font %s",FONT);
 		}
 	}

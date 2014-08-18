@@ -32,11 +32,10 @@ char * checksum_file(const char * filename)
 	int ch;
 	unsigned long int checksum = 0;
 	char text[128];
-	
+
 	fp = fopen(filename,"r"); // read mode
- 
-	if( fp == NULL )
-	{
+
+	if( fp == NULL ) {
 		return NULL;
 	}
 
@@ -46,7 +45,7 @@ char * checksum_file(const char * filename)
 	}
 
 	fclose(fp);
-	
+
 	snprintf(text,128,"%ld",checksum);
 
 	wlog(LOGDEBUG,"Checksum for %s is %s",filename,text);
@@ -63,10 +62,10 @@ char * strconcat(const char * str, ...)
 	char * res = NULL;
 	int size = 0;
 	char * entry;
-	
+
 	res = strdup(str);
 	size = strlen(res);
-	
+
 	va_start(ap, str);
 
 	entry=va_arg(ap,char*);
@@ -77,7 +76,7 @@ char * strconcat(const char * str, ...)
 
 		entry=va_arg(ap,char*);
 	}
-	
+
 	va_end(ap);
 
 	return res;
@@ -89,19 +88,19 @@ The last element of the list must be NULL
 *********************/
 void deep_free(char ** to_delete)
 {
-        char ** current = to_delete;
+	char ** current = to_delete;
 
-        if( to_delete == NULL ) {
-                return;
-        }
+	if( to_delete == NULL ) {
+		return;
+	}
 
-        while(*current) {
-                free(*current);
-                current++;
-        }
+	while(*current) {
+		free(*current);
+		current++;
+	}
 
-        if(to_delete) {
-                free(to_delete);
-        }
+	if(to_delete) {
+		free(to_delete);
+	}
 }
 

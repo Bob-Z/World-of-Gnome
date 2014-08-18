@@ -103,16 +103,16 @@ void entry_remove(char * filename)
 	config_t * old_config;
 
 	wlog(LOGDEBUG,"Removing entry : %s",filename);
-        /* Clean-up old anim if any */
-        SDL_LockMutex(entry_mutex);
-        old_config = list_find(entry_list,filename);
-        if( old_config ) {
-                free_config(old_config);
-        }
+	/* Clean-up old anim if any */
+	SDL_LockMutex(entry_mutex);
+	old_config = list_find(entry_list,filename);
+	if( old_config ) {
+		free_config(old_config);
+	}
 
-        entry_list = list_update(entry_list,filename,NULL);
+	entry_list = list_update(entry_list,filename,NULL);
 
-        SDL_UnlockMutex(entry_mutex);
+	SDL_UnlockMutex(entry_mutex);
 }
 
 /*********************
@@ -128,7 +128,7 @@ static const config_t * get_config(const char * table, const char * file)
 //	wlog(LOGDEBUG,"Entry get : %s",filename);
 
 	SDL_LockMutex(entry_mutex);
-        config = list_find(entry_list,filename);
+	config = list_find(entry_list,filename);
 
 	if(config) {
 //		wlog(LOGDEBUG,"Entry found : %s",filename);
@@ -255,7 +255,7 @@ static int __read_string(const char * table, const char * file, char ** res, va_
 	const char * result;
 
 	*res = NULL;
-	
+
 	config = get_config(table,file);
 	if(config==NULL) {
 		return FALSE;
@@ -272,7 +272,7 @@ static int __read_string(const char * table, const char * file, char ** res, va_
 		return FALSE;
 	}
 	free(path);
-	
+
 	*res = strdup(result);
 
 	return TRUE;
@@ -405,9 +405,9 @@ int entry_read_list(const char * table, const char * file, char *** res, ...)
 	int ret;
 	va_list ap;
 
-    va_start(ap, res);
+	va_start(ap, res);
 	ret = __read_list(table, file, res, ap);
-    va_end(ap);
+	va_end(ap);
 
 	return ret;
 }
@@ -1260,8 +1260,7 @@ int entry_update(char * data)
 		} else {
 			write_config(config,elements[1],elements[2]);
 		}
-	}
-	else if( strcmp(elements[0],ENTRY_TYPE_STRING) == 0 ) {
+	} else if( strcmp(elements[0],ENTRY_TYPE_STRING) == 0 ) {
 		if(config_setting_set_string (setting,elements[4]) == CONFIG_FALSE) {
 			werr(LOGUSER,"Errror setting %s/%s/%s to %s",elements[1],elements[2],elements[3],elements[4]);
 		} else {
@@ -1272,7 +1271,7 @@ int entry_update(char * data)
 	ret = 0;
 
 entry_update_cleanup:
-	for(index=0;index<5;index++) {
+	for(index=0; index<5; index++) {
 		if(elements[index]) {
 			free(elements[index]);
 		}

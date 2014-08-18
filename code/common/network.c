@@ -374,7 +374,7 @@ int network_send_file(context_t * context, char * filename)
 		return TRUE;
 	}
 
-	/* Read the file */ 
+	/* Read the file */
 	res = file_get_contents(filename,&file_data,&file_length);
 	if( res == FALSE) {
 		werr(LOGUSER,"send_file : Error reading file \"%s\"",filename);

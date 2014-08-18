@@ -127,7 +127,7 @@ int item_get_quantity(const char * item_id)
 		return 1; /* unique item */
 	}
 	free(template);
-	
+
 	if(!entry_read_int(ITEM_TABLE,item_id,&quantity,ITEM_QUANTITY, NULL)) {
 		return -1;
 	}
@@ -170,8 +170,7 @@ char * item_get_name(const char * item_id)
 			return name;
 		}
 		free(template);
-	}
-	else {
+	} else {
 		if(entry_read_string(ITEM_TABLE,item_id,&name,ITEM_NAME,NULL)) {
 			return name;
 		}

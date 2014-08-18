@@ -590,7 +590,7 @@ char ** map_get_character(const char * map,int x, int y)
 			ctx = ctx->next;
 			continue;
 		}
-		if(ctx->pos_x == x && ctx->pos_y == y && !strcmp(ctx->map,map)){
+		if(ctx->pos_x == x && ctx->pos_y == y && !strcmp(ctx->map,map)) {
 			character_num++;
 			character_list=realloc(character_list,sizeof(char*)*(character_num+1));
 			character_list[character_num-1] = strdup(ctx->id);

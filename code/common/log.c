@@ -61,17 +61,17 @@ return 1 if filter is found
 static int is_allowed_file(const char * file)
 {
 	int i;
-	
+
 	if( file_filter == NULL ) {
 		return 1;
 	}
-	
-	for(i=0;i<file_filter_num;i++) {
+
+	for(i=0; i<file_filter_num; i++) {
 		if( !strcmp(file_filter[i],file) ) {
 			return 1;
 		}
 	}
-	
+
 	return 0;
 }
 
@@ -86,7 +86,7 @@ static int is_allowed_func(const char * func)
 		return 1;
 	}
 
-	for(i=0;i<func_filter_num;i++) {
+	for(i=0; i<func_filter_num; i++) {
 		if( !strcmp(func_filter[i],func) ) {
 			return 1;
 		}

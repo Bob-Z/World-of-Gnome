@@ -49,7 +49,7 @@ int main (int argc, char **argv)
 	char * ip = NULL;
 	char * user = NULL;
 	char * pass = NULL;
-	
+
 	base_directory = strconcat(getenv("HOME"),"/.config/wog/client",NULL);
 
 	while((opt_ret = getopt_long(argc, argv, optstring, longopts, NULL))!=-1) {
@@ -93,12 +93,12 @@ int main (int argc, char **argv)
 	sdl_init(TITLE_NAME, &context->render, &context->window, screen_compose);
 
 	/* connect to server */
-        if( network_connect(context,ip) ) {
-                network_login(context, user, pass);
-        } else {
+	if( network_connect(context,ip) ) {
+		network_login(context, user, pass);
+	} else {
 		werr(LOGUSER,"Can't connect to server. Check server IP address. This error may be due to a service outage on server side. Re-try in a few seconds.\n");
 		return 0;
-        }
+	}
 
 	//Run the main loop
 	screen_display(context);

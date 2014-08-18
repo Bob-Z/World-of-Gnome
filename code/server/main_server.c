@@ -50,7 +50,7 @@ void sigint_handler(int sig)
 int main (int argc, char **argv)
 {
 	int opt_ret;
-	
+
 	while((opt_ret = getopt_long(argc, argv, optstring, longopts, NULL))!=-1) {
 		switch(opt_ret) {
 		case 'l':
@@ -78,7 +78,7 @@ int main (int argc, char **argv)
 			exit(0);
 		}
 	}
-	
+
 	if(base_directory == NULL) {
 		base_directory = strconcat(getenv("HOME"),"/.config/wog/server",NULL);
 	}
@@ -89,9 +89,9 @@ int main (int argc, char **argv)
 	if( ! noNPC ) {
 		init_npc();
 	}
-	
+
 	signal(SIGINT,sigint_handler);
-	
+
 	//init network server
 	network_init();
 

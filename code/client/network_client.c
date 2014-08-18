@@ -177,7 +177,7 @@ static int async_data_recv(void * data)
 	}
 
 	werr(LOGUSER,"Socket closed on server side.");
-	
+
 	context_set_connected(context,FALSE);
 	SDLNet_TCP_Close(context->socket);
 	SDLNet_TCP_Close(context->socket_data);
@@ -197,27 +197,24 @@ int network_connect(context_t * context, const char * hostname)
 	TCPsocket socket;
 
 	wlog(LOGUSER, "Trying to connect to %s:%d", hostname, PORT);
-	
-	if (SDLNet_Init() < 0)
-	{
+
+	if (SDLNet_Init() < 0) {
 		werr(LOGUSER, "Can't init SDLNet: %s\n", SDLNet_GetError());
 		return FALSE;
 	}
 
-	if (SDLNet_ResolveHost(&ip, hostname, PORT) < 0)
-	{
+	if (SDLNet_ResolveHost(&ip, hostname, PORT) < 0) {
 		werr(LOGUSER, "Can't resolve %s:%d : %s\n", hostname,PORT,SDLNet_GetError());
 		return FALSE;
 	}
- 
-	if (!(socket = SDLNet_TCP_Open(&ip)))
-	{
+
+	if (!(socket = SDLNet_TCP_Open(&ip))) {
 		werr(LOGUSER, "Can't connect to %s:%d : %s\n", hostname,PORT,SDLNet_GetError());
 		return FALSE;
 	}
-	
+
 	wlog(LOGUSER,"Connected to %s:%d",hostname,PORT);
-	
+
 	context_set_hostname(context,hostname);
 	context_set_socket(context, socket);
 
@@ -233,14 +230,12 @@ int network_open_data_connection(context_t * context)
 	IPaddress ip;
 	TCPsocket socket;
 
-	if (SDLNet_ResolveHost(&ip, context->hostname, PORT) < 0)
-	{
+	if (SDLNet_ResolveHost(&ip, context->hostname, PORT) < 0) {
 		werr(LOGUSER, "Can't resolve %s:%d : %s\n", context->hostname,PORT,SDLNet_GetError());
 		return FALSE;
 	}
- 
-	if (!(socket = SDLNet_TCP_Open(&ip)))
-	{
+
+	if (!(socket = SDLNet_TCP_Open(&ip))) {
 		werr(LOGUSER, "Can't open data connection to %s:%d : %s\n", context->hostname,PORT,SDLNet_GetError());
 		return FALSE;
 	}

@@ -34,7 +34,7 @@ static void free_anim(anim_t * anim)
 	int i;
 
 	if(anim->tex) {
-		for(i=0;i<anim->num_frame;i++) {
+		for(i=0; i<anim->num_frame; i++) {
 			SDL_DestroyTexture(anim->tex[i]);
 		}
 		free(anim->tex);
@@ -102,12 +102,12 @@ anim_t * imageDB_get_anim(context_t * context, const char * image_name)
 		SDL_UnlockMutex(imageDB_mutex);
 		return anim;
 	}
-	
+
 	/* Try to load from a file */
 	file_lock(filename);
-	
+
 	anim = image_load(context,filename);
-	
+
 	if(anim) {
 //		wlog(LOGDEBUG,"Image loaded: %s",filename);
 		image_list = list_update(image_list,filename,anim);
@@ -116,7 +116,7 @@ anim_t * imageDB_get_anim(context_t * context, const char * image_name)
 		SDL_UnlockMutex(imageDB_mutex);
 		return anim;
 	}
-	
+
 	/* Request an update to the server */
 //	wlog(LOGDEBUG,"Image asked: %s",filename);
 	file_update(context,filename);
