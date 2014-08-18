@@ -24,6 +24,7 @@
 #include "scr_select.h"
 #include "scr_play.h"
 #include "scr_inventory.h"
+#include "scr_speak.h"
 
 static int screen_end = -1;
 static item_t * item_list = NULL;
@@ -32,38 +33,6 @@ static int compose = 0;
 static int virtual_x[SCREEN_LAST];
 static int virtual_y[SCREEN_LAST];
 static double virtual_z[SCREEN_LAST];
-
-/******************************************************
-******************************************************/
-static void screen_select_compose(context_t * context)
-{
-	item_t * list;
-
-	list = scr_select_compose(context);
-
-	item_list = list;
-}
-
-/******************************************************
-******************************************************/
-static void screen_play_compose(context_t * context)
-{
-	item_t * list;
-
-	list = scr_play_compose(context);
-
-	item_list = list;
-}
-/******************************************************
-******************************************************/
-static void screen_inventory_compose(context_t * context)
-{
-	item_t * list;
-
-	list = scr_inventory_compose(context);
-
-	item_list = list;
-}
 
 /***********************************************
 Called by other thread to request compose update.
@@ -84,15 +53,19 @@ static void compose_scr(context_t * context)
 	SDL_SetRenderDrawColor(context->render, 0, 0, 0, 255);
 
 	switch(current_screen) {
-	case SCREEN_SELECT:
-		screen_select_compose(context);
+		case SCREEN_SELECT:
+			item_list = scr_select_compose(context);
 		break;
-	case SCREEN_PLAY:
-		screen_play_compose(context);
+		case SCREEN_PLAY:
+			item_list = scr_play_compose(context);
 		break;
-	case SCREEN_INVENTORY:
-		screen_inventory_compose(context);
+		case SCREEN_INVENTORY:
+			item_list = scr_inventory_compose(context);
 		break;
+		case SCREEN_SPEAK:
+			item_list = scr_speak_compose(context);
+		break;
+
 	}
 }
 

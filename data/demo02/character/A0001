@@ -3,6 +3,7 @@ sprite		= "goblin.gif";
 npc = 1;
 name = "glopglop";
 map = "village";
+speak = "npc_speak.lua"
 type = "gob";
 pos_x = 0;
 pos_y = 8;

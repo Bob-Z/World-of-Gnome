@@ -408,3 +408,19 @@ int character_set_npc(const char * id, int npc)
 
 	return 0;
 }
+
+/*********************************************************
+ Get "speak" parameter of character.
+ It's a LUA script.
+ returned value MUST BE FREED
+*********************************************************/
+char * character_get_speak(char * id)
+{
+	char * speak_script;
+	
+	if(!entry_read_string(CHARACTER_TABLE, id,&speak_script,CHARACTER_KEY_SPEAK,NULL)) {
+		return NULL;
+	}
+	
+	return speak_script;
+}

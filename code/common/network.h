@@ -22,6 +22,12 @@
 
 #include "context.h"
 
+typedef struct speak_entry {
+	char * icon;
+	char * text;
+	char * keyword;
+} speak_entry_t;
+
 int network_read_bytes(TCPsocket socket, char * data, int size);
 void network_send_command(context_t * context, Uint32 command, long int count, const char *data, int is_data);
 void network_send_context(context_t * context);

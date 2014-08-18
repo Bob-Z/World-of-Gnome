@@ -341,6 +341,29 @@ static int l_character_get_type( lua_State* L)
 	return 1;  /* number of results */
 }
 
+/* character_get_speak
+Input:
+ - ID of a character
+Output: speak script name
+*/
+static int l_character_get_speak( lua_State* L)
+{
+	context_t * target;
+	const char * id;
+	char * speak_script;
+
+	id = luaL_checkstring(L, -1);
+	target = context_find(id);
+	if( target == NULL ) {
+		werr(LOGDEV,"Cannot find context with ID %s",id);
+		return 0;  /* number of results */
+	}
+	speak_script = character_get_speak(target->id);
+	lua_pushstring(L, speak_script);
+	free(speak_script);
+	return 1;  /* number of results */
+}
+
 /* character_disconnect
 
 Disconnect a context
@@ -1163,6 +1186,37 @@ static int l_equipment_slot_get_item_id( lua_State* L)
 	return 1;  /* number of results */
 }
 
+/* speak_send
+
+Send a speak command to a context
+
+Input:
+ - ID of the speaker character
+ - ID of the listener character
+ - Text to display
+ - Array of icon/text/keyword
+Output: ID of an item
+*/
+static int l_speak_send( lua_State* L)
+{
+	const char * id;
+	const char * slot;
+	char * item;
+	int num_arg;
+
+	num_arg = lua_gettop(L);
+
+	id = luaL_checkstring(L, -2);
+	slot = luaL_checkstring(L, -1);
+	item = equipment_get_item_id(id,slot);
+	if( item == NULL ) {
+		return 0;  /* number of results */
+	}
+	lua_pushstring(L, item);
+	free(item);
+	return 1;  /* number of results */
+}
+
 void register_lua_functions(context_t * context)
 {
 	lua_State* L = context->luaVM;
@@ -1199,6 +1253,8 @@ void register_lua_functions(context_t * context)
 	lua_setglobal(L, "character_get_name");
 	lua_pushcfunction(L, l_character_get_type);
 	lua_setglobal(L, "character_get_type");
+	lua_pushcfunction(L, l_character_get_speak);
+	lua_setglobal(L, "character_get_speak");
 	lua_pushcfunction(L, l_character_set_pos);
 	lua_setglobal(L, "character_set_pos");
 	lua_pushcfunction(L, l_character_set_npc);
@@ -1262,6 +1318,9 @@ void register_lua_functions(context_t * context)
 	lua_setglobal(L, "equipment_slot_get_add_item");
 	lua_pushcfunction(L, l_equipment_slot_get_item_id);
 	lua_setglobal(L, "equipment_slot_get_item_id");
+	/* speak func */
+	lua_pushcfunction(L, l_speak_send);
+	lua_setglobal(L, "speak_send");
 	/* misc func */
 	lua_pushcfunction(L, l_print_text_id);
 	lua_setglobal(L, "print_text_id");

@@ -18,15 +18,7 @@
 */
 
 #include "../sdl_item/item.h"
-#include "../common/common.h"
 
-#define SCREEN_SELECT		0
-#define SCREEN_PLAY			1
-#define SCREEN_INVENTORY	2
-#define SCREEN_SPEAK		3
-#define SCREEN_LAST			4
+item_t * scr_speak_compose(context_t * context);
+void scr_speak_parse(context_t * context, char * frame);
 
-void screen_display(context_t * ctx);
-void screen_compose();
-void screen_set_screen(int screen);
-void screen_quit();
