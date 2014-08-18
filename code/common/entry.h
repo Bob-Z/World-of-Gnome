@@ -24,7 +24,7 @@ void entry_remove(char * filename);
 
 
 
-int read_int(const char * table, const char * file, int * res, ...);
+int entry_read_int(const char * table, const char * file, int * res, ...);
 int entry_read_string(const char * table, const char * file, char ** res, ...);
 int entry_read_list_index(const char * table, const char * file, char ** res,int index, ...);
 int entry_read_list(const char * table, const char * file, char *** res, ...);

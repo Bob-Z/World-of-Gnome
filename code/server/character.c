@@ -229,7 +229,7 @@ void character_update_aggro(context_t * context)
 		}
 
 		no_aggro = 1;
-		if(!read_int(CHARACTER_TABLE,ctx->id,&aggro_dist, CHARACTER_KEY_AGGRO_DIST,NULL)) {
+		if(!entry_read_int(CHARACTER_TABLE,ctx->id,&aggro_dist, CHARACTER_KEY_AGGRO_DIST,NULL)) {
 			continue;
 		}
 
@@ -288,7 +288,7 @@ static void platform_move(context_t * platform,char * map, int x, int y, int cha
 	context_t * current = context_get_list_first();
 	int is_platform;
 	
-	if(!read_int(CHARACTER_TABLE,platform->id,&is_platform, CHARACTER_KEY_PLATFORM,NULL)) {
+	if(!entry_read_int(CHARACTER_TABLE,platform->id,&is_platform, CHARACTER_KEY_PLATFORM,NULL)) {
 		return;
 	}
 	

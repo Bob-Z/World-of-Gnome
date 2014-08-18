@@ -74,7 +74,7 @@ int inventory_add(const char * ctx_id, const char * item_id)
 		}
 	}
 	else {
-		if(!read_int(ITEM_TABLE,item_id,&add_count,ITEM_QUANTITY,NULL)) {
+		if(!entry_read_int(ITEM_TABLE,item_id,&add_count,ITEM_QUANTITY,NULL)) {
 			return -1;
 		}
 		if(!entry_read_list(CHARACTER_TABLE,context->id,&name_list,CHARACTER_KEY_INVENTORY,NULL) ) {
@@ -85,7 +85,7 @@ int inventory_add(const char * ctx_id, const char * item_id)
 		while( name_list[index] != NULL) {
 			if(entry_read_string(ITEM_TABLE,name_list[index],&current_template,ITEM_TEMPLATE,NULL)) {
 				if( strcmp(template,current_template) == 0 ) {
-					if(read_int(ITEM_TABLE,name_list[index],&current_count,ITEM_QUANTITY,NULL)) {
+					if(entry_read_int(ITEM_TABLE,name_list[index],&current_count,ITEM_QUANTITY,NULL)) {
 						free(current_template);
 						free(template);
 						add_count+=current_count;

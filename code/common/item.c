@@ -128,7 +128,7 @@ int item_get_quantity(const char * item_id)
 	}
 	free(template);
 	
-	if(!read_int(ITEM_TABLE,item_id,&quantity,ITEM_QUANTITY, NULL)) {
+	if(!entry_read_int(ITEM_TABLE,item_id,&quantity,ITEM_QUANTITY, NULL)) {
 		return -1;
 	}
 

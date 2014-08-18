@@ -387,10 +387,10 @@ static int _context_set_map(context_t * context, const char * map)
 	context->map_w = -1;
 	context->map_h = -1;
 
-	if(!read_int(MAP_TABLE,map,&map_w,MAP_KEY_SIZE_X,NULL)) {
+	if(!entry_read_int(MAP_TABLE,map,&map_w,MAP_KEY_SIZE_X,NULL)) {
 		return FALSE;
 	}
-	if(!read_int(MAP_TABLE,map,&map_h,MAP_KEY_SIZE_Y,NULL)) {
+	if(!entry_read_int(MAP_TABLE,map,&map_h,MAP_KEY_SIZE_Y,NULL)) {
 		return FALSE;
 	}
 	context->map_w = map_w;
@@ -576,11 +576,11 @@ int context_update_from_file(context_t * context)
 		ret = FALSE;
 	}
 
-	if(!read_int(CHARACTER_TABLE,context->id,&context->pos_x, CHARACTER_KEY_POS_X,NULL)) {
+	if(!entry_read_int(CHARACTER_TABLE,context->id,&context->pos_x, CHARACTER_KEY_POS_X,NULL)) {
 		ret = FALSE;
 	}
 
-	if(!read_int(CHARACTER_TABLE,context->id,&context->pos_y, CHARACTER_KEY_POS_Y,NULL)) {
+	if(!entry_read_int(CHARACTER_TABLE,context->id,&context->pos_y, CHARACTER_KEY_POS_Y,NULL)) {
 		ret = FALSE;
 	}
 

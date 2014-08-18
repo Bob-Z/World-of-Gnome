@@ -49,16 +49,16 @@ int attribute_change(context_t * context, const char * id, const char * attribut
 
 	SDL_LockMutex(attribute_mutex);
 
-	if(!read_int(CHARACTER_TABLE,id,&current,ATTRIBUTE_GROUP,attribute, ATTRIBUTE_CURRENT, NULL)) {
+	if(!entry_read_int(CHARACTER_TABLE,id,&current,ATTRIBUTE_GROUP,attribute, ATTRIBUTE_CURRENT, NULL)) {
 		SDL_UnlockMutex(attribute_mutex);
 		return -1;
 	}
 
-	if(!read_int(CHARACTER_TABLE,id,&min,ATTRIBUTE_GROUP,attribute, ATTRIBUTE_MIN, NULL)) {
+	if(!entry_read_int(CHARACTER_TABLE,id,&min,ATTRIBUTE_GROUP,attribute, ATTRIBUTE_MIN, NULL)) {
 		min = -1;
 	}
 
-	if(!read_int(CHARACTER_TABLE,id,&max,ATTRIBUTE_GROUP,attribute, ATTRIBUTE_MAX, NULL)) {
+	if(!entry_read_int(CHARACTER_TABLE,id,&max,ATTRIBUTE_GROUP,attribute, ATTRIBUTE_MAX, NULL)) {
 		max = -1;
 	}
 
@@ -172,7 +172,7 @@ int attribute_get(const char *id, const char * attribute)
 
 	SDL_LockMutex(attribute_mutex);
 
-	if(!read_int(CHARACTER_TABLE,id,&current,ATTRIBUTE_GROUP,attribute, ATTRIBUTE_CURRENT, NULL)) {
+	if(!entry_read_int(CHARACTER_TABLE,id,&current,ATTRIBUTE_GROUP,attribute, ATTRIBUTE_CURRENT, NULL)) {
 		SDL_UnlockMutex(attribute_mutex);
 		return -1;
 	}

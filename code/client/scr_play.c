@@ -154,31 +154,31 @@ static void compose_map(context_t * ctx)
 	item_t * item;
 
 	if( ctx->map_w == -1 ) {
-		if(!read_int(MAP_TABLE, ctx->map, &i,MAP_KEY_SIZE_X,NULL)){
+		if(!entry_read_int(MAP_TABLE, ctx->map, &i,MAP_KEY_SIZE_X,NULL)){
 			return;
 		}
 		context_set_map_w( ctx, i);
 	}
 	if( ctx->map_h == -1 ) {
-		if(!read_int(MAP_TABLE, ctx->map, &i,MAP_KEY_SIZE_Y,NULL)){
+		if(!entry_read_int(MAP_TABLE, ctx->map, &i,MAP_KEY_SIZE_Y,NULL)){
 			return;
 		}
 		context_set_map_h( ctx, i);
 	}
 	if( ctx->tile_x == -1 ) {
-		if(!read_int(MAP_TABLE, ctx->map, &i,MAP_KEY_TILE_SIZE_X,NULL)){
+		if(!entry_read_int(MAP_TABLE, ctx->map, &i,MAP_KEY_TILE_SIZE_X,NULL)){
 			return;
 		}
 		context_set_tile_x( ctx, i);
 	}
 	if( ctx->tile_x == -1 ) {
-		if(!read_int(MAP_TABLE, ctx->map, &i,MAP_KEY_TILE_SIZE_X,NULL)){
+		if(!entry_read_int(MAP_TABLE, ctx->map, &i,MAP_KEY_TILE_SIZE_X,NULL)){
 			return;
 		}
 		context_set_tile_x( ctx, i);
 	}
 	if( ctx->tile_y == -1 ) {
-		if(!read_int(MAP_TABLE, ctx->map,&i,MAP_KEY_TILE_SIZE_Y,NULL)){
+		if(!entry_read_int(MAP_TABLE, ctx->map,&i,MAP_KEY_TILE_SIZE_Y,NULL)){
 			return;
 		}
 		context_set_tile_y( ctx, i);
@@ -269,12 +269,12 @@ static void compose_item(context_t * ctx)
 
 	i=0;
 	while( item_id[i] != NULL ) {
-		if(!read_int(MAP_TABLE,ctx->map,&x,MAP_ENTRY_ITEM_LIST,item_id[i],MAP_ITEM_POS_X,NULL)) {
+		if(!entry_read_int(MAP_TABLE,ctx->map,&x,MAP_ENTRY_ITEM_LIST,item_id[i],MAP_ITEM_POS_X,NULL)) {
 			i++;
 			continue;
 		}
 
-		if(!read_int(MAP_TABLE,ctx->map,&y,MAP_ENTRY_ITEM_LIST,item_id[i],MAP_ITEM_POS_Y,NULL)) {
+		if(!entry_read_int(MAP_TABLE,ctx->map,&y,MAP_ENTRY_ITEM_LIST,item_id[i],MAP_ITEM_POS_Y,NULL)) {
 			i++;
 			continue;
 		}
@@ -426,35 +426,35 @@ static void compose_sprite(context_t * ctx)
 		/* Get rotation configuration */
 		angle = 0;
 		if( ctx->orientation & NORTH && ctx->orientation & EAST ) {
-			read_int(CHARACTER_TABLE,ctx->id,&angle,CHARACTER_KEY_DIR_NE_ROT,NULL);
+			entry_read_int(CHARACTER_TABLE,ctx->id,&angle,CHARACTER_KEY_DIR_NE_ROT,NULL);
 			item_set_angle(item,(double)angle);
 		}
 		else if ( ctx->orientation & SOUTH && ctx->orientation & EAST ) {
-			read_int(CHARACTER_TABLE,ctx->id,&angle,CHARACTER_KEY_DIR_SE_ROT,NULL);
+			entry_read_int(CHARACTER_TABLE,ctx->id,&angle,CHARACTER_KEY_DIR_SE_ROT,NULL);
 			item_set_angle(item,(double)angle);
 		}
 		else if ( ctx->orientation & SOUTH && ctx->orientation & WEST ) {
-			read_int(CHARACTER_TABLE,ctx->id,&angle,CHARACTER_KEY_DIR_SW_ROT,NULL);
+			entry_read_int(CHARACTER_TABLE,ctx->id,&angle,CHARACTER_KEY_DIR_SW_ROT,NULL);
 			item_set_angle(item,(double)angle);
 		}
 		else if ( ctx->orientation & NORTH && ctx->orientation & WEST ) {
-			read_int(CHARACTER_TABLE,ctx->id,&angle,CHARACTER_KEY_DIR_NW_ROT,NULL);
+			entry_read_int(CHARACTER_TABLE,ctx->id,&angle,CHARACTER_KEY_DIR_NW_ROT,NULL);
 			item_set_angle(item,(double)angle);
 		}
 		else if ( ctx->orientation & NORTH ) {
-			read_int(CHARACTER_TABLE,ctx->id,&angle,CHARACTER_KEY_DIR_N_ROT,NULL);
+			entry_read_int(CHARACTER_TABLE,ctx->id,&angle,CHARACTER_KEY_DIR_N_ROT,NULL);
 			item_set_angle(item,(double)angle);
 		}
 		else if ( ctx->orientation & SOUTH ) {
-			read_int(CHARACTER_TABLE,ctx->id,&angle,CHARACTER_KEY_DIR_S_ROT,NULL);
+			entry_read_int(CHARACTER_TABLE,ctx->id,&angle,CHARACTER_KEY_DIR_S_ROT,NULL);
 			item_set_angle(item,(double)angle);
 		}
 		else if ( ctx->orientation & WEST ) {
-			read_int(CHARACTER_TABLE,ctx->id,&angle,CHARACTER_KEY_DIR_W_ROT,NULL);
+			entry_read_int(CHARACTER_TABLE,ctx->id,&angle,CHARACTER_KEY_DIR_W_ROT,NULL);
 			item_set_angle(item,(double)angle);
 		}
 		else if ( ctx->orientation & EAST ) {
-			read_int(CHARACTER_TABLE,ctx->id,&angle,CHARACTER_KEY_DIR_E_ROT,NULL);
+			entry_read_int(CHARACTER_TABLE,ctx->id,&angle,CHARACTER_KEY_DIR_E_ROT,NULL);
 			item_set_angle(item,(double)angle);
 		}
 
@@ -462,16 +462,16 @@ static void compose_sprite(context_t * ctx)
 		flip = 0;
 		if( angle == 0 ) {
 			if( ctx->direction & NORTH ) {
-				read_int(CHARACTER_TABLE,ctx->id,&flip,CHARACTER_KEY_DIR_N_FLIP,NULL);
+				entry_read_int(CHARACTER_TABLE,ctx->id,&flip,CHARACTER_KEY_DIR_N_FLIP,NULL);
 			}
 			if( ctx->direction & SOUTH ) {
-				read_int(CHARACTER_TABLE,ctx->id,&flip,CHARACTER_KEY_DIR_S_FLIP,NULL);
+				entry_read_int(CHARACTER_TABLE,ctx->id,&flip,CHARACTER_KEY_DIR_S_FLIP,NULL);
 			}
 			if( ctx->direction & WEST ) {
-				read_int(CHARACTER_TABLE,ctx->id,&flip,CHARACTER_KEY_DIR_W_FLIP,NULL);
+				entry_read_int(CHARACTER_TABLE,ctx->id,&flip,CHARACTER_KEY_DIR_W_FLIP,NULL);
 			}
 			if( ctx->direction & EAST ) {
-				read_int(CHARACTER_TABLE,ctx->id,&flip,CHARACTER_KEY_DIR_E_FLIP,NULL);
+				entry_read_int(CHARACTER_TABLE,ctx->id,&flip,CHARACTER_KEY_DIR_E_FLIP,NULL);
 			}
 
 			switch(flip) {
@@ -543,7 +543,7 @@ static void compose_attribute(context_t * ctx)
 
 	index=0;
 	while( name_list[index] != NULL) {
-		if(!read_int(CHARACTER_TABLE,ctx->id,&value,ATTRIBUTE_GROUP,name_list[index],ATTRIBUTE_CURRENT,NULL)) {
+		if(!entry_read_int(CHARACTER_TABLE,ctx->id,&value,ATTRIBUTE_GROUP,name_list[index],ATTRIBUTE_CURRENT,NULL)) {
 			index++;
 			continue;
 		}
@@ -952,10 +952,10 @@ static void compose_select(context_t * ctx)
 	if( ctx->selection.id != NULL) {
 		item = item_list_add(&item_list);
 
-                if(!read_int(CHARACTER_TABLE,ctx->selection.id,&x,CHARACTER_KEY_POS_X,NULL)) {
+                if(!entry_read_int(CHARACTER_TABLE,ctx->selection.id,&x,CHARACTER_KEY_POS_X,NULL)) {
                         return;
                 }
-                if(!read_int(CHARACTER_TABLE,ctx->selection.id,&y,CHARACTER_KEY_POS_Y,NULL)) {
+                if(!entry_read_int(CHARACTER_TABLE,ctx->selection.id,&y,CHARACTER_KEY_POS_Y,NULL)) {
                         return;
                 }
 

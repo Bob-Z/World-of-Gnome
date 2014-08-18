@@ -90,10 +90,10 @@ int map_check_tile(context_t * ctx,char * id, const char * map, int x,int y)
 	int size_x = 0;
 	int size_y = 0;
 
-	if(!read_int(MAP_TABLE,map,&size_x,MAP_KEY_SIZE_X,NULL)) {
+	if(!entry_read_int(MAP_TABLE,map,&size_x,MAP_KEY_SIZE_X,NULL)) {
 		return FALSE;
 	}
-	if(!read_int(MAP_TABLE,map,&size_y,MAP_KEY_SIZE_Y,NULL)) {
+	if(!entry_read_int(MAP_TABLE,map,&size_y,MAP_KEY_SIZE_Y,NULL)) {
 		return FALSE;
 	}
 
@@ -176,13 +176,13 @@ char * map_delete_item(const char * map, int x, int y)
 	}
 
 	while(itemlist[i] != NULL) {
-		if( !read_int(MAP_TABLE,map,&mapx,MAP_ENTRY_ITEM_LIST,itemlist[i],MAP_ITEM_POS_X,NULL) ) {
+		if( !entry_read_int(MAP_TABLE,map,&mapx,MAP_ENTRY_ITEM_LIST,itemlist[i],MAP_ITEM_POS_X,NULL) ) {
 			SDL_UnlockMutex(map_mutex);
 			deep_free(itemlist);
 			return NULL;
 		}
 
-		if( !read_int(MAP_TABLE,map,&mapy,MAP_ENTRY_ITEM_LIST,itemlist[i],MAP_ITEM_POS_Y,NULL) ) {
+		if( !entry_read_int(MAP_TABLE,map,&mapy,MAP_ENTRY_ITEM_LIST,itemlist[i],MAP_ITEM_POS_Y,NULL) ) {
 			SDL_UnlockMutex(map_mutex);
 			deep_free(itemlist);
 			return NULL;
@@ -278,7 +278,7 @@ int map_set_tile(const char * map,const char * tile,int x, int y)
 	SDL_LockMutex(map_mutex);
 
 	/* read size of map */
-	if(!read_int(MAP_TABLE,map,&sizex,MAP_KEY_SIZE_X,NULL)) {
+	if(!entry_read_int(MAP_TABLE,map,&sizex,MAP_KEY_SIZE_X,NULL)) {
 		SDL_UnlockMutex(map_mutex);
 		return -1;
 	}
@@ -320,11 +320,11 @@ char * map_get_tile(const char * map,int x, int y)
 	char * ret = NULL;
 
 
-	if(!read_int(MAP_TABLE,map,&map_size_x,MAP_KEY_SIZE_X,NULL)) {
+	if(!entry_read_int(MAP_TABLE,map,&map_size_x,MAP_KEY_SIZE_X,NULL)) {
 		return NULL;
 	}
 
-	if(!read_int(MAP_TABLE,map,&map_size_y,MAP_KEY_SIZE_Y,NULL)) {
+	if(!entry_read_int(MAP_TABLE,map,&map_size_y,MAP_KEY_SIZE_Y,NULL)) {
 		return NULL;
 	}
 
@@ -362,7 +362,7 @@ char * map_get_tile_type(const char * map,int x, int y)
 		return NULL;
 	}
 
-	if(!read_int(MAP_TABLE,map,&map_size_x,MAP_KEY_SIZE_X,NULL)) {
+	if(!entry_read_int(MAP_TABLE,map,&map_size_x,MAP_KEY_SIZE_X,NULL)) {
 		return NULL;
 	}
 
@@ -411,12 +411,12 @@ char ** map_get_event(const char * map,int x, int y)
 	}
 
 	while(eventlist[i] != NULL) {
-		if( !read_int(MAP_TABLE,map,&mapx,MAP_ENTRY_EVENT_LIST,eventlist[i],MAP_EVENT_POS_X,NULL) ) {
+		if( !entry_read_int(MAP_TABLE,map,&mapx,MAP_ENTRY_EVENT_LIST,eventlist[i],MAP_EVENT_POS_X,NULL) ) {
 			i++;
 			continue;
 		}
 
-		if( !read_int(MAP_TABLE,map,&mapy,MAP_ENTRY_EVENT_LIST,eventlist[i],MAP_EVENT_POS_Y,NULL) ) {
+		if( !entry_read_int(MAP_TABLE,map,&mapy,MAP_ENTRY_EVENT_LIST,eventlist[i],MAP_EVENT_POS_Y,NULL) ) {
 			i++;
 			continue;
 		}
@@ -527,11 +527,11 @@ int map_delete_event(const char * map, const char * script, int x, int y)
 	}
 
 	while(eventlist[i] != NULL) {
-		if( !read_int(MAP_TABLE,map,&mapx,MAP_ENTRY_EVENT_LIST,eventlist[i],MAP_EVENT_POS_X,NULL) ) {
+		if( !entry_read_int(MAP_TABLE,map,&mapx,MAP_ENTRY_EVENT_LIST,eventlist[i],MAP_EVENT_POS_X,NULL) ) {
 			i++;
 			continue;
 		}
-		if( !read_int(MAP_TABLE,map,&mapy,MAP_ENTRY_EVENT_LIST,eventlist[i],MAP_EVENT_POS_Y,NULL) ) {
+		if( !entry_read_int(MAP_TABLE,map,&mapy,MAP_ENTRY_EVENT_LIST,eventlist[i],MAP_EVENT_POS_Y,NULL) ) {
 			i++;
 			continue;
 		}

@@ -100,7 +100,7 @@ void instantiate_npc(const char * id)
 	char buf[512];
 
 	// check if it's a NPC
-	if(!read_int(CHARACTER_TABLE,id,&is_npc,CHARACTER_KEY_NPC,NULL)) {
+	if(!entry_read_int(CHARACTER_TABLE,id,&is_npc,CHARACTER_KEY_NPC,NULL)) {
 		return;
 	}
 
@@ -109,11 +109,11 @@ void instantiate_npc(const char * id)
 	}
 
 	// read data of this npc
-	if(!read_int(CHARACTER_TABLE,id,&x,CHARACTER_KEY_POS_X,NULL)) {
+	if(!entry_read_int(CHARACTER_TABLE,id,&x,CHARACTER_KEY_POS_X,NULL)) {
 		return;
 	}
 
-	if(!read_int(CHARACTER_TABLE,id,&y,CHARACTER_KEY_POS_Y,NULL)) {
+	if(!entry_read_int(CHARACTER_TABLE,id,&y,CHARACTER_KEY_POS_Y,NULL)) {
 		return;
 	}
 	
@@ -121,22 +121,22 @@ void instantiate_npc(const char * id)
 		return;
 	}
 
-	if(!read_int(MAP_TABLE,map,&tile_x,MAP_KEY_TILE_SIZE_X,NULL)) {
+	if(!entry_read_int(MAP_TABLE,map,&tile_x,MAP_KEY_TILE_SIZE_X,NULL)) {
 		free(map);
 		return;
 	}
 
-	if(!read_int(MAP_TABLE,map,&tile_y,MAP_KEY_TILE_SIZE_Y,NULL)) {
+	if(!entry_read_int(MAP_TABLE,map,&tile_y,MAP_KEY_TILE_SIZE_Y,NULL)) {
 		free(map);
 		return;
 	}
 
-	if(!read_int(MAP_TABLE,map,&map_w,MAP_KEY_SIZE_X,NULL)) {
+	if(!entry_read_int(MAP_TABLE,map,&map_w,MAP_KEY_SIZE_X,NULL)) {
 		free(map);
 		return;
 	}
 
-	if(!read_int(MAP_TABLE,map,&map_h,MAP_KEY_SIZE_Y,NULL)) {
+	if(!entry_read_int(MAP_TABLE,map,&map_h,MAP_KEY_SIZE_Y,NULL)) {
 		free(map);
 		return;
 	}

@@ -232,7 +232,7 @@ static int __read_int(const char * table, const char * file, int * res, va_list 
 /*********************
 return FALSE on error
 *********************/
-int read_int(const char * table, const char * file, int * res, ...)
+int entry_read_int(const char * table, const char * file, int * res, ...)
 {
 	int ret;
 	va_list ap;
