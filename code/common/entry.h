@@ -28,7 +28,6 @@ int read_int(const char * table, const char * file, int * res, ...);
 int entry_read_string(const char * table, const char * file, char ** res, ...);
 int entry_read_list_index(const char * table, const char * file, char ** res,int index, ...);
 int entry_read_list(const char * table, const char * file, char *** res, ...);
-void entry_deep_free(char ** to_delete);
 
 int write_int(const char * table, const char * file, int data, ...);
 int write_string(const char * table, const char * file,const char * data, ...);

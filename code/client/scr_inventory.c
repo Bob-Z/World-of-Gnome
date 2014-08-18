@@ -75,7 +75,7 @@ static void compose_inventory(context_t * ctx)
 		font = TTF_OpenFont(ITEM_FONT, ITEM_FONT_SIZE);
 	}
 
-	entry_deep_free(inventory_list);
+	deep_free(inventory_list);
 
 	/* read data from file */
 	if(!entry_read_list(CHARACTER_TABLE,ctx->id,&inventory_list, CHARACTER_KEY_INVENTORY,NULL)) {
@@ -173,7 +173,7 @@ static void compose_select(context_t * ctx)
 
 	anim = imageDB_get_anim(ctx,CURSOR_SPRITE_FILE);
 
-	entry_deep_free(inventory_list);
+	deep_free(inventory_list);
 
 	/* read data from file */
 	if(!entry_read_list(CHARACTER_TABLE,ctx->id,&inventory_list, CHARACTER_KEY_INVENTORY,NULL)) {

@@ -73,7 +73,7 @@ static int manage_npc(void * data)
 		entry_read_list(CHARACTER_TABLE,context->id,&parameters,CHARACTER_KEY_AI_PARAMS,NULL);
 		npc_script(context,ai,parameters);
 		free(ai);
-		entry_deep_free(parameters);
+		deep_free(parameters);
 		return 0;
 	}
 

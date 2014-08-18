@@ -82,3 +82,26 @@ char * strconcat(const char * str, ...)
 
 	return res;
 }
+
+/*********************
+Free an array of element ( returned by entry_read_list, get_group_list ...)
+The last element of the list must be NULL
+*********************/
+void deep_free(char ** to_delete)
+{
+        char ** current = to_delete;
+
+        if( to_delete == NULL ) {
+                return;
+        }
+
+        while(*current) {
+                free(*current);
+                current++;
+        }
+
+        if(to_delete) {
+                free(to_delete);
+        }
+}
+

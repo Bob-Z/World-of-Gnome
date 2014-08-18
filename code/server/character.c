@@ -42,7 +42,7 @@ void character_send_list(context_t * context)
 		i++;
 	}
 
-	entry_deep_free(character_list);
+	deep_free(character_list);
 #endif
 }
 
@@ -101,7 +101,7 @@ void character_user_send_list(context_t * context)
 		i++;
 	}
 
-	entry_deep_free(character_list);
+	deep_free(character_list);
 
 	/* Mark the end of the list */
 	data = realloc(data, data_size + 1);
@@ -377,12 +377,12 @@ int character_set_pos(context_t * ctx, char * map, int x, int y)
 				action_execute_script(ctx,script,param);
 
 				free(script);
-				entry_deep_free(param);
+				deep_free(param);
 				param=NULL;
 				
 				i++;
 			}
-			entry_deep_free(event_id);
+			deep_free(event_id);
 		}
 
 		character_update_aggro(ctx);

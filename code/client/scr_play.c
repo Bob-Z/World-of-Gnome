@@ -215,7 +215,7 @@ static void compose_map(context_t * ctx)
 		i++;
 	}
 
-	entry_deep_free(value);
+	deep_free(value);
 }
 
 /**********************************
@@ -318,7 +318,7 @@ static void compose_item(context_t * ctx)
 		i++;
 	}
 
-	entry_deep_free(item_id);
+	deep_free(item_id);
 }
 
 /**********************************
@@ -569,7 +569,7 @@ static void compose_attribute(context_t * ctx)
 		index++;
 	}
 
-	entry_deep_free(name_list);
+	deep_free(name_list);
 }
 
 /**********************************
@@ -653,7 +653,7 @@ static void compose_action(context_t * ctx)
 		i++;
 	}
 	
-	entry_deep_free(action_list);
+	deep_free(action_list);
 	
 	if(text) { free(text); text = NULL;}
 	if(icon) { free(icon); icon = NULL;}
@@ -834,7 +834,7 @@ static void compose_equipment(context_t * ctx)
 		item_set_click_left(item,show_inventory,NULL,NULL);
 	}
 
-	entry_deep_free(name_list);
+	deep_free(name_list);
 }
 
 /**********************************

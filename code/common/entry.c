@@ -200,27 +200,6 @@ static char * get_path(va_list ap)
 }
 
 /*********************
-Free a list of string returned by entry_read_list, get_group_list ...
-*********************/
-void entry_deep_free(char ** to_delete)
-{
-	char ** current = to_delete;
-
-	if( to_delete == NULL ) {
-		return;
-	}
-
-	while(*current) {
-		free(*current);
-		current++;
-	}
-
-	if(to_delete) {
-		free(to_delete);
-	}
-}
-
-/*********************
 return FALSE on error
 *********************/
 static int __read_int(const char * table, const char * file, int * res, va_list ap)
@@ -372,7 +351,7 @@ int entry_read_list_index(const char * table, const char * file, char ** res,int
 
 /*********************
 return FALSE on error
-res must be freed with entry_deep_free
+res must be freed with deep_free
 *********************/
 static int __read_list(const char * table, const char * file, char *** res, va_list ap)
 {
@@ -419,7 +398,7 @@ static int __read_list(const char * table, const char * file, char *** res, va_l
 
 /*********************
 return FALSE on error
-res must be freed with entry_deep_free
+res must be freed with deep_free
 *********************/
 int entry_read_list(const char * table, const char * file, char *** res, ...)
 {
@@ -875,7 +854,7 @@ char * __get_unused_group_on_path(const char * table, const char * file, char * 
 
 /**********************
 Return a list of the name of the elements in the specified group
-res must be freed  (entry_deep_free)
+res must be freed  (deep_free)
  return FALSE on error
 **********************/
 int entry_get_group_list(const char * table, const char * file, char *** res, ...)

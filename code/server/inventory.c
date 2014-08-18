@@ -108,7 +108,7 @@ int inventory_add(const char * ctx_id, const char * item_id)
 			}
 		}
 
-		entry_deep_free(name_list);
+		deep_free(name_list);
 	}
 
 	network_send_character_file(context);
@@ -141,7 +141,7 @@ char * inventory_get_by_name(const char * id, const char * item_name)
 		if( (name=item_get_name(name_list[index])) != NULL ) {
 			if( strcmp(item_name,name) == 0 ) {
 				res = strdup(name_list[index]);
-				entry_deep_free(name_list);
+				deep_free(name_list);
 				free(name);
 				return res;
 			}
@@ -150,6 +150,6 @@ char * inventory_get_by_name(const char * id, const char * item_name)
 		index++;
 	}
 
-	entry_deep_free(name_list);
+	deep_free(name_list);
 	return NULL;
 }
