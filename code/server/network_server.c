@@ -192,6 +192,7 @@ void network_init(void)
 	IPaddress * remote_IP;
 	TCPsocket socket;
 	TCPsocket client_socket;
+	SDLNet_SocketSet server_set;
 
 	if (SDLNet_Init() < 0) {
 		werr(LOGUSER, "Can't init SDL: %s\n", SDLNet_GetError());
@@ -210,8 +211,12 @@ void network_init(void)
 		return;
 	}
 
+	server_set = SDLNet_AllocSocketSet(1);
+	SDLNet_TCP_AddSocket(server_set, socket);
+
 	/* Wait for a connection */
 	while (TRUE) {
+		SDLNet_CheckSockets(server_set, -1);
 		/* check for pending connection.
 		* If there is one, accept that, and open a new socket for communicating */
 		if ((client_socket = SDLNet_TCP_Accept(socket))) {
