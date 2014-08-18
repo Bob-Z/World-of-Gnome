@@ -620,9 +620,9 @@ static void compose_action(context_t * ctx)
 
 	i=0;
 	while(action_list[i] != NULL ) {
-		if(text) { free(text); };
-		if(icon) { free(icon); };
-		if(script) { free(script); };
+		if(text) { free(text); text = NULL;}
+		if(icon) { free(icon); icon = NULL;}
+		if(script) { free(script); script = NULL;}
 		
 		if(!entry_read_string(ACTION_TABLE,action_list[i],&text,ACTION_KEY_TEXT,NULL)) {
 			i++;
@@ -655,9 +655,9 @@ static void compose_action(context_t * ctx)
 	
 	entry_deep_free(action_list);
 	
-	if(text) { free(text); };
-	if(icon) { free(icon); };
-	if(script) { free(script); };
+	if(text) { free(text); text = NULL;}
+	if(icon) { free(icon); icon = NULL;}
+	if(script) { free(script); script = NULL;}
 }
 
 /**********************************
@@ -704,14 +704,12 @@ static void compose_equipment(context_t * ctx)
 
 	SDL_GetRendererOutputSize(ctx->render,&sw,&sh);
 
-	if(!entry_get_group_list(CHARACTER_TABLE,ctx->id,&name_list,EQUIPMENT_GROUP,NULL) ) {
-		return;
-	}
+	entry_get_group_list(CHARACTER_TABLE,ctx->id,&name_list,EQUIPMENT_GROUP,NULL);
 
 	max_w = 0;
 	max_h = 0;
 	index=0;
-	while( name_list[index] != NULL) {
+	while( name_list && name_list[index] != NULL) {
 #if 0
 		/* Get the slot name */
 		if(!entry_read_string(CHARACTER_TABLE,ctx->id,&item_name,EQUIPMENT_GROUP,name_list[index],EQUIPMENT_NAME,NULL)) {
@@ -832,7 +830,7 @@ static void compose_equipment(context_t * ctx)
 		item = item_list_add(&item_list);
 
 		item_set_overlay(item,1);
-		item_set_anim(item,sw-anim->w,y,inventory_icon);
+		item_set_anim(item,sw-inventory_icon->w,y,inventory_icon);
 		item_set_click_left(item,show_inventory,NULL,NULL);
 	}
 
