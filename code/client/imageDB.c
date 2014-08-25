@@ -110,7 +110,7 @@ anim_t * imageDB_get_anim(context_t * context, const char * image_name)
 
 	if(anim) {
 //		wlog(LOGDEBUG,"Image loaded: %s",filename);
-		image_list = list_update(image_list,filename,anim);
+		list_update(&image_list,filename,anim);
 		file_unlock(filename);
 		free(filename);
 		SDL_UnlockMutex(imageDB_mutex);
@@ -143,7 +143,7 @@ void image_DB_remove(char * filename)
 		free_anim(old_anim);
 	}
 
-	image_list = list_update(image_list,filename,NULL);
+	list_update(&image_list,filename,NULL);
 
 	SDL_UnlockMutex(imageDB_mutex);
 }

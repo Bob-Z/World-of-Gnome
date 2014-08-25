@@ -110,7 +110,7 @@ void entry_remove(char * filename)
 		free_config(old_config);
 	}
 
-	entry_list = list_update(entry_list,filename,NULL);
+	list_update(&entry_list,filename,NULL);
 
 	SDL_UnlockMutex(entry_mutex);
 }
@@ -151,7 +151,7 @@ static const config_t * get_config(const char * table, const char * file)
 	file_unlock(filename);
 
 //	wlog(LOGDEBUG,"Entry loaded : %s",filename);
-	entry_list = list_update(entry_list,filename,(config_t*)config);
+	list_update(&entry_list,filename,(config_t*)config);
 	free(filename);
 	SDL_UnlockMutex(entry_mutex);
 
@@ -1295,7 +1295,7 @@ int entry_destroy(const char * filename)
 	if( old_config ) {
 		free_config((config_t*)old_config);
 	}
-	entry_list = list_update(entry_list,filename,NULL);
+	list_update(&entry_list,filename,NULL);
 	SDL_UnlockMutex(entry_mutex);
 
 	fullname = strconcat(base_directory,"/",filename,NULL);

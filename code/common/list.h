@@ -20,15 +20,18 @@
 #ifndef LIST_H
 #define LIST_H
 
+#define HASH_TABLE_SIZE 65536
+
 typedef struct list_tag {
 	const char * key;
 	void * data;
 	unsigned long hash;
 	struct list_tag * next;
-} list_t;
+} list_entry_t;
+
+typedef list_entry_t * list_t;
 
 void * list_find(list_t * list, const char * key);
-list_t * list_update(list_t * list, const char *key, void * data);
-list_t * list_del(list_t * list, const char *key);
+void list_update(list_t ** list, const char *key, void * data);
 
 #endif

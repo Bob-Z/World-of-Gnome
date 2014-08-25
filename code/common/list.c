@@ -39,25 +39,26 @@ static unsigned long calc_hash(const char * str)
 Return the list_t associated with the given key
 Return NULL if key does not match any list entry.
 *****************************************/
-static list_t * list_search(list_t * list, const char * key)
+static list_entry_t * search_entry(list_t * list, const char * key)
 {
-	list_t * current_list = list;
+	list_entry_t * current_entry;
 	unsigned long hash;
+	int index;
 
-	if( list == NULL) {
+	if( list == NULL ) {
 		return NULL;
 	}
 
 	hash = calc_hash(key);
+	index = hash % HASH_TABLE_SIZE;
 
-	while(current_list) {
-		if(current_list->hash == hash) {
-			if(!strcmp(current_list->key,key)) {
-				return current_list;
-			}
-			wlog(LOGDEBUG,"Same hash for %s and %s",current_list->key,key);
+	current_entry = list[index];
+	
+	while(current_entry) {
+		if(current_entry->hash == hash) {
+			return current_entry;
 		}
-		current_list = current_list->next;
+		current_entry = current_entry->next;
 	}
 	return NULL;
 }
@@ -68,12 +69,16 @@ Return NULL if key does not match any list entry.
 *****************************************/
 void * list_find(list_t * list, const char * key)
 {
-	list_t * current_list;
+	list_entry_t * current_entry;
+	
+	if( list == NULL ) {
+		return NULL;
+	}
 
-	current_list = list_search(list,key);
+	current_entry = search_entry(list,key);
 
-	if( current_list ) {
-		return current_list->data;
+	if( current_entry ) {
+		return current_entry->data;
 	}
 
 	return NULL;
@@ -82,38 +87,51 @@ void * list_find(list_t * list, const char * key)
 /****************************************
 Add or update an entry into the given list.
 key and data pointers are copied in the list. The user should not free them.
-Return the head of the list.
 *****************************************/
-list_t * list_update(list_t * list, const char *key, void * data)
+void list_update(list_t ** list, const char *key, void * data)
 {
-	list_t * current_list = list;
-	list_t * new_list;
-
-	current_list = list_search(list,key);
+	list_entry_t * entry;
+	list_entry_t * new_entry;
+	int index;
+	
+	entry = search_entry(*list,key);
 
 	/* The key already exists, update the entry */
-	if( current_list ) {
-		current_list->data = data;
-		return list;
+	if( entry ) {
+		entry->data = data;
+		return;
 	}
 
 	/* The key doesn't exists; create it */
-	new_list = malloc(sizeof(list_t));
-	new_list->key = strdup(key);
-	new_list->data = data;
-	new_list->hash = calc_hash(new_list->key);
-	new_list->next = NULL;
+	new_entry = malloc(sizeof(list_entry_t));
+	new_entry->key = strdup(key);
+	new_entry->data = data;
+	new_entry->hash = calc_hash(new_entry->key);
+	new_entry->next = NULL;
 
-	if( list == NULL) {
-		return new_list;
+	index = new_entry->hash % HASH_TABLE_SIZE;
+	
+	/* list does not exist */
+	if( *list == NULL) {
+		*list = malloc( HASH_TABLE_SIZE * sizeof(list_entry_t *));
+		memset(*list,0,HASH_TABLE_SIZE * sizeof(list_entry_t *));
+		(*list)[index] = new_entry;
+		return;
 	}
 
-	current_list = list;
-	while(current_list->next != NULL) {
-		current_list = current_list->next;
+	/* list exists and the hash table index is already occupied */
+	if( (*list)[index] != NULL ) {
+		entry = (*list)[index];
+		while(entry->next != NULL) {
+			entry = entry->next;
+		}
+		
+		entry->next = new_entry;
+	}
+	/* list exists and hash table index is free */
+	else {
+		(*list)[index] = new_entry;
 	}
 
-	current_list->next = new_list;
-
-	return list;
+	return;
 }

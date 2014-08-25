@@ -47,7 +47,7 @@ void file_lock(const char * filename)
 		file_data->timestamp = 0;
 		file_data->mutex = SDL_CreateMutex();
 
-		file_list = list_update(file_list,filename,file_data);
+		list_update(&file_list,filename,file_data);
 	}
 	SDL_UnlockMutex(file_list_mutex);
 
