@@ -738,7 +738,7 @@ static void compose_equipment(context_t * ctx)
 		h1 = 0;
 		/* Get the slot icon */
 		if(!entry_read_string(CHARACTER_TABLE,ctx->id,&icon_name,EQUIPMENT_GROUP,name_list[index],EQUIPMENT_ICON,NULL)) {
-			/* Display nothing */
+			continue;
 		} else {
 			/* load image */
 			anim = imageDB_get_anim(ctx, icon_name);
