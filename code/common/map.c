@@ -26,7 +26,7 @@
 Create a new map.
 Return the name of the new map
 *************************************/
-char * map_new(int w,int h, int tile_w, int tile_h, char * default_tile)
+char * map_new(int w,int h, int tile_w, int tile_h, const char * default_tile, const char * default_type)
 {
 	char * map_name;
 	char ** tile_array;
@@ -60,13 +60,26 @@ char * map_new(int w,int h, int tile_w, int tile_h, char * default_tile)
 	}
 
 	tile_array=malloc(((w*h)+1)*sizeof(char *));
+
+	/* Write default tile */
 	for(i=0; i<(w*h); i++) {
-		tile_array[i] = default_tile;
+		tile_array[i] = (char *)default_tile;
 	}
 	tile_array[i] = NULL; /* End of list */
 	
 	sprintf(buf,"%s0",MAP_KEY_SET);
 	if (!entry_write_list(MAP_TABLE,map_name,tile_array,buf, NULL) ) {
+		free(map_name);
+		return NULL;
+	}
+
+	/* Write default type */
+	for(i=0; i<(w*h); i++) {
+		tile_array[i] = (char *)default_type;
+	}
+	tile_array[i] = NULL; /* End of list */
+	
+	if (!entry_write_list(MAP_TABLE,map_name,tile_array,MAP_KEY_TYPE, NULL) ) {
 		free(map_name);
 		return NULL;
 	}

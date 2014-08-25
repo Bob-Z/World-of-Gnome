@@ -19,7 +19,7 @@
 
 #ifndef MAP_H
 #define MAP_H
-char * map_new(int w,int h, int tile_w, int tile_h, char * default_tile);
+char * map_new(int w,int h, int tile_w, int tile_h, const char * default_tile,const char * default_type);
 char * map_delete_item(const char * map, int x, int y);
 int map_add_item(const char * map, const char * item, int x, int y);
 int map_check_tile(context_t * ctx,char * id,const char * map,int x,int y);

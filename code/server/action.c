@@ -443,7 +443,8 @@ Input:
  - Height of map
  - Width of tile (in pixels)
  - Height of tile (in pixels)
- - ID of default tile (new map is filled with)
+ - default tile (new map is filled with)
+ - default type (new map is filled with)
 Output: New map ID
 */
 static int l_map_new( lua_State* L)
@@ -454,13 +455,15 @@ static int l_map_new( lua_State* L)
 	int tile_x;
 	int tile_y;
 	const char * default_tile;
+	const char * default_type;
 
-	x = luaL_checkint(L, -5);
-	y = luaL_checkint(L, -4);
-	tile_x = luaL_checkint(L, -3);
-	tile_y = luaL_checkint(L, -2);
-	default_tile = luaL_checkstring(L, -1);
-	map_name = map_new(x,y,tile_x,tile_y,(char *)default_tile);
+	x = luaL_checkint(L, -6);
+	y = luaL_checkint(L, -5);
+	tile_x = luaL_checkint(L, -4);
+	tile_y = luaL_checkint(L, -3);
+	default_tile = luaL_checkstring(L, -2);
+	default_type = luaL_checkstring(L, -1);
+	map_name = map_new(x,y,tile_x,tile_y,default_tile,default_type);
 	lua_pushstring(L, map_name);
 	free(map_name);
 	return 1;  /* number of results */

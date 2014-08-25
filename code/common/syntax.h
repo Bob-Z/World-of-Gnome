@@ -90,15 +90,15 @@
 #define MAP_ENTRY_ITEM_LIST 	"item_list"
 #define MAP_ENTRY_EVENT_LIST 	"event_list"
 /* Tile set definition file : property of each tile (starting with it's associated picture) */
-#define MAP_DESCRIPTION			"description"
+#define MAP_DESCRIPTION		"description"
 #define MAP_KEY_SPRITE_LEVEL	"sprite_level"
-#define MAP_KEY_WIDTH			"width"
-#define MAP_KEY_HEIGHT			"height"
-#define MAP_KEY_TILE_WIDTH		"tile_width"
-#define MAP_KEY_TILE_HEIGHT		"tile_height"
-#define MAP_KEY_SET				"set"
-#define MAP_KEY_LIST			"list"
-#define MAP_KEY_TYPE			"type"
+#define MAP_KEY_WIDTH		"width"
+#define MAP_KEY_HEIGHT		"height"
+#define MAP_KEY_TILE_WIDTH	"tile_width"
+#define MAP_KEY_TILE_HEIGHT	"tile_height"
+#define MAP_KEY_SET		"set"
+#define MAP_KEY_LIST		"list"
+#define MAP_KEY_TYPE		"type"
 
 /* items on map */
 #define MAP_ITEM_POS_X		"pos_x"
