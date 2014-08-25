@@ -1,8 +1,9 @@
-size_x = 3;
-size_y = 3;
-tile_size_x = 64;
-tile_size_y = 64;
-set = [ "1", "0", "2", "0", "0", "0", "1", "0", "0" ];
+width = 3;
+height = 3;
+tile_width = 64;
+tile_height = 64;
+set0 = [ "white.jpg", "black.jpg", "barre2.jpg", "black.jpg", "black.jpg", "black.jpg", "white.jpg", "black.jpg", "black.jpg" ];
+type = [ "mud", "ground", "ground", "ground", "ground", "ground", "mud", "ground", "ground" ];
 item_list : {
 	A0002 : 
 	{

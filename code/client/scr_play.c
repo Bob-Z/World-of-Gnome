@@ -115,109 +115,6 @@ static void keyboard_text(void * arg)
 	screen_compose();
 }
 
-/**************************************
-**************************************/
-static void cb_select_map(void *arg)
-{
-	item_t * item = (item_t*)arg;
-	context_t * ctx = context_get_list_first();
-
-	ctx->selection.map_coord[0]= item->tile_x;
-	ctx->selection.map_coord[1]= item->tile_y;
-	network_send_context(ctx);
-}
-
-/**************************************
-**************************************/
-static void cb_redo_map(void *arg)
-{
-	char * script = NULL;
-
-	cb_select_map(arg);
-
-	script = strdup(last_action_script);
-	cb_action(script);
-	free(script);
-}
-
-/**********************************
-Compose the map
-**********************************/
-static void compose_map(context_t * ctx)
-{
-	int i;
-	char ** value = NULL;
-	int x = 0;
-	int y = 0;
-	char * tile_image = NULL;
-	anim_t * anim;
-	item_t * item;
-
-	if( ctx->map_w == -1 ) {
-		if(!entry_read_int(MAP_TABLE, ctx->map, &i,MAP_KEY_SIZE_X,NULL)) {
-			return;
-		}
-		context_set_map_w( ctx, i);
-	}
-	if( ctx->map_h == -1 ) {
-		if(!entry_read_int(MAP_TABLE, ctx->map, &i,MAP_KEY_SIZE_Y,NULL)) {
-			return;
-		}
-		context_set_map_h( ctx, i);
-	}
-	if( ctx->tile_x == -1 ) {
-		if(!entry_read_int(MAP_TABLE, ctx->map, &i,MAP_KEY_TILE_SIZE_X,NULL)) {
-			return;
-		}
-		context_set_tile_x( ctx, i);
-	}
-	if( ctx->tile_x == -1 ) {
-		if(!entry_read_int(MAP_TABLE, ctx->map, &i,MAP_KEY_TILE_SIZE_X,NULL)) {
-			return;
-		}
-		context_set_tile_x( ctx, i);
-	}
-	if( ctx->tile_y == -1 ) {
-		if(!entry_read_int(MAP_TABLE, ctx->map,&i,MAP_KEY_TILE_SIZE_Y,NULL)) {
-			return;
-		}
-		context_set_tile_y( ctx, i);
-	}
-	if(!entry_read_list(MAP_TABLE, ctx->map, &value,MAP_KEY_SET,NULL)) {
-		return;
-	}
-
-	/* Parse map string */
-	i=0;
-	while(value[i] != NULL ) {
-		if(entry_read_string(TILE_TABLE,value[i],&tile_image,TILE_KEY_IMAGE,NULL)) {
-#if 0
-			/* Save description for caller */
-			entry_read_string(TILE_TABLE,tile_name,description,TILE_KEY_TEXT,NULL);
-			free(description);
-#endif
-			item = item_list_add(&item_list);
-
-			anim = imageDB_get_anim(ctx,tile_image);
-			free(tile_image);
-
-			item_set_anim(item,x*ctx->tile_x,y*ctx->tile_y,anim);
-			item_set_tile(item,x,y);
-			item_set_click_left(item,cb_select_map,item,NULL);
-			item_set_click_right(item,cb_redo_map,item,NULL);
-		}
-
-		x++;
-		if(x>=ctx->map_w) {
-			x=0;
-			y++;
-		}
-		i++;
-	}
-
-	deep_free(value);
-}
-
 /**********************************
 **********************************/
 static void cb_select_sprite(void *arg)
@@ -240,84 +137,6 @@ static void cb_redo_sprite(void *arg)
 	script = strdup(last_action_script);
 	cb_action(last_action_script);
 	free(script);
-}
-
-/**********************************
-Compose item on map
-**********************************/
-static void compose_item(context_t * ctx)
-{
-	char * sprite_name = NULL;
-	anim_t * anim;
-	item_t * item;
-	int x;
-	int y;
-	char ** item_id;
-	int i;
-	static TTF_Font * font = NULL;
-	char * template;
-	int quantity;
-	char buf[1024];
-
-	if ( font == NULL ) {
-		font = TTF_OpenFont(ITEM_FONT, ITEM_FONT_SIZE);
-	}
-
-	if(!entry_get_group_list(MAP_TABLE,ctx->map,&item_id,MAP_ENTRY_ITEM_LIST,NULL)) {
-		return;
-	}
-
-	i=0;
-	while( item_id[i] != NULL ) {
-		if(!entry_read_int(MAP_TABLE,ctx->map,&x,MAP_ENTRY_ITEM_LIST,item_id[i],MAP_ITEM_POS_X,NULL)) {
-			i++;
-			continue;
-		}
-
-		if(!entry_read_int(MAP_TABLE,ctx->map,&y,MAP_ENTRY_ITEM_LIST,item_id[i],MAP_ITEM_POS_Y,NULL)) {
-			i++;
-			continue;
-		}
-
-		template = item_is_resource(item_id[i]);
-
-		if ( template == NULL ) {
-			if(!entry_read_string(ITEM_TABLE,item_id[i],&sprite_name,ITEM_SPRITE,NULL)) {
-				i++;
-				continue;
-			}
-		} else {
-			if(!entry_read_string(ITEM_TEMPLATE_TABLE,template,&sprite_name,ITEM_SPRITE,NULL)) {
-				free(template);
-				i++;
-				continue;
-			}
-			free(template);
-		}
-
-		item = item_list_add(&item_list);
-
-		anim = imageDB_get_anim(ctx,sprite_name);
-		free(sprite_name);
-
-		x = x*ctx->tile_x;
-		y = y*ctx->tile_y;
-		/* Center sprite on tile */
-		x -= (anim->w-ctx->tile_x)/2;
-		y -= (anim->h-ctx->tile_y)/2;
-
-		item_set_anim(item,x,y,anim);
-		if(font) {
-			quantity = item_get_quantity(item_id[i]);
-			sprintf(buf,"%d",quantity);
-			item_set_string(item,buf);
-			item_set_font(item,font);
-		}
-
-		i++;
-	}
-
-	deep_free(item_id);
 }
 
 /**********************************
@@ -501,6 +320,276 @@ static void compose_sprite(context_t * ctx)
 	}
 
 	context_unlock_list();
+}
+
+/**********************************
+Compose item on map
+**********************************/
+static void compose_item(context_t * ctx)
+{
+	char * sprite_name = NULL;
+	anim_t * anim;
+	item_t * item;
+	int x;
+	int y;
+	char ** item_id;
+	int i;
+	static TTF_Font * font = NULL;
+	char * template;
+	int quantity;
+	char buf[1024];
+
+	if ( font == NULL ) {
+		font = TTF_OpenFont(ITEM_FONT, ITEM_FONT_SIZE);
+	}
+
+	if(!entry_get_group_list(MAP_TABLE,ctx->map,&item_id,MAP_ENTRY_ITEM_LIST,NULL)) {
+		return;
+	}
+
+	i=0;
+	while( item_id[i] != NULL ) {
+		if(!entry_read_int(MAP_TABLE,ctx->map,&x,MAP_ENTRY_ITEM_LIST,item_id[i],MAP_ITEM_POS_X,NULL)) {
+			i++;
+			continue;
+		}
+
+		if(!entry_read_int(MAP_TABLE,ctx->map,&y,MAP_ENTRY_ITEM_LIST,item_id[i],MAP_ITEM_POS_Y,NULL)) {
+			i++;
+			continue;
+		}
+
+		template = item_is_resource(item_id[i]);
+
+		if ( template == NULL ) {
+			if(!entry_read_string(ITEM_TABLE,item_id[i],&sprite_name,ITEM_SPRITE,NULL)) {
+				i++;
+				continue;
+			}
+		} else {
+			if(!entry_read_string(ITEM_TEMPLATE_TABLE,template,&sprite_name,ITEM_SPRITE,NULL)) {
+				free(template);
+				i++;
+				continue;
+			}
+			free(template);
+		}
+
+		item = item_list_add(&item_list);
+
+		anim = imageDB_get_anim(ctx,sprite_name);
+		free(sprite_name);
+
+		x = x*ctx->tile_x;
+		y = y*ctx->tile_y;
+		/* Center sprite on tile */
+		x -= (anim->w-ctx->tile_x)/2;
+		y -= (anim->h-ctx->tile_y)/2;
+
+		item_set_anim(item,x,y,anim);
+		if(font) {
+			quantity = item_get_quantity(item_id[i]);
+			sprintf(buf,"%d",quantity);
+			item_set_string(item,buf);
+			item_set_font(item,font);
+		}
+
+		i++;
+	}
+
+	deep_free(item_id);
+}
+
+/**************************************
+**************************************/
+static void cb_select_map(void *arg)
+{
+	item_t * item = (item_t*)arg;
+	context_t * ctx = context_get_list_first();
+
+	ctx->selection.map_coord[0]= item->tile_x;
+	ctx->selection.map_coord[1]= item->tile_y;
+	network_send_context(ctx);
+}
+
+/**************************************
+**************************************/
+static void cb_redo_map(void *arg)
+{
+	char * script = NULL;
+
+	cb_select_map(arg);
+
+	script = strdup(last_action_script);
+	cb_action(script);
+	free(script);
+}
+
+/**********************************
+Set sdl_item item for mouse button callback
+**********************************/
+static void compose_map_button(context_t * ctx)
+{
+	int x = 0;
+	int y = 0;
+	item_t * item;
+
+	for( y=0 ; y < ctx->map_h ; y++ ) {
+		for ( x=0 ; x < ctx->map_w ; x++ ) {
+			item = item_list_add(&item_list);
+			item_set_frame_shape(item,x*ctx->tile_x,y*ctx->tile_y,ctx->tile_x,ctx->tile_y);
+			item_set_tile(item,x,y);
+			item_set_click_left(item,cb_select_map,item,NULL);
+			item_set_click_right(item,cb_redo_map,item,NULL);
+		}
+	}
+}
+
+/**********************************
+Draw a map from a "set" keyword
+return 1 if a map has been drawn
+**********************************/
+static int compose_map_set(context_t * ctx, int level)
+{
+	int i = 0;
+	int x = 0;
+	int y = 0;
+	int map_w = ctx->map_w;
+	int map_h = ctx->map_h;
+	int tile_w = ctx->tile_x;
+	int tile_h = ctx->tile_y;
+
+	anim_t * anim;
+	item_t * item;
+	char buf[SMALL_BUF];
+	char ** value = NULL;
+
+	sprintf(buf,"%s%d",MAP_KEY_SET,level);
+	if(!entry_read_list(MAP_TABLE, ctx->map, &value,buf,NULL)) {
+		return 0;
+	}
+	sprintf(buf,"%s%d",MAP_KEY_WIDTH,level);
+	entry_read_int(MAP_TABLE, ctx->map, &map_w,buf,NULL);
+	sprintf(buf,"%s%d",MAP_KEY_HEIGHT,level);
+	entry_read_int(MAP_TABLE, ctx->map, &map_h,buf,NULL);
+	sprintf(buf,"%s%d",MAP_KEY_TILE_WIDTH,level);
+	entry_read_int(MAP_TABLE, ctx->map, &tile_w,buf,NULL);
+	sprintf(buf,"%s%d",MAP_KEY_TILE_HEIGHT,level);
+	entry_read_int(MAP_TABLE, ctx->map, &tile_h,buf,NULL);
+
+	while(value[i] != NULL ) {
+		item = item_list_add(&item_list);
+		anim = imageDB_get_anim(ctx,value[i]);
+		item_set_anim(item, x*tile_w, y*tile_h, anim);
+
+		x++;
+		if(x>=map_w) {
+			x=0;
+			y++;
+		}
+		i++;
+	}
+
+	deep_free(value);
+	return 1;
+}
+
+/**********************************
+Draw a map from a "list" keyword
+return 1 if a map has been drawn
+**********************************/
+static int compose_map_list(context_t * ctx, int level)
+{
+	int i = 0;
+	int x = 0;
+	int y = 0;
+	anim_t * anim;
+	item_t * item;
+	char buf[SMALL_BUF];
+	char ** value = NULL;
+
+	sprintf(buf,"%s%d",MAP_KEY_LIST,level);
+	if(!entry_read_list(MAP_TABLE, ctx->map, &value,buf,NULL)) {
+		return 0;
+	}
+
+	while(value[i] != NULL ) {
+		x = atoi(value[i]);
+		i++;
+		y = atoi(value[i]);
+		i++;
+		
+		anim = imageDB_get_anim(ctx,value[i]);
+
+		item = item_list_add(&item_list);
+		item_set_anim(item, x, y, anim);
+		//item_set_anim(item, x*ctx->tile_x, y*ctx->tile_y, anim);
+
+		i++;
+	}
+
+	deep_free(value);
+	return 1;
+}
+
+/**********************************
+Compose the map
+**********************************/
+static void compose_map(context_t * ctx)
+{
+	int sprite_level = 0;
+	int current_level = 0;
+	int map_drawn = 0;
+	int i = 0;
+	
+	entry_read_int(MAP_TABLE, ctx->map, &sprite_level,MAP_KEY_SPRITE_LEVEL,NULL);
+
+	if( ctx->map_w == -1 ) {
+		if(!entry_read_int(MAP_TABLE, ctx->map, &i,MAP_KEY_WIDTH,NULL)) {
+			return;
+		}
+		context_set_map_w( ctx, i);
+	}
+	if( ctx->map_h == -1 ) {
+		if(!entry_read_int(MAP_TABLE, ctx->map, &i,MAP_KEY_HEIGHT,NULL)) {
+			return;
+		}
+		context_set_map_h( ctx, i);
+	}
+	if( ctx->tile_x == -1 ) {
+		if(!entry_read_int(MAP_TABLE, ctx->map, &i,MAP_KEY_TILE_WIDTH,NULL)) {
+			return;
+		}
+		context_set_tile_x( ctx, i);
+	}
+	if( ctx->tile_y == -1 ) {
+		if(!entry_read_int(MAP_TABLE, ctx->map,&i,MAP_KEY_TILE_HEIGHT,NULL)) {
+			return;
+		}
+		context_set_tile_y( ctx, i);
+	}
+
+	/* Set mouse callback */
+	compose_map_button(ctx);
+	
+	/* Draw all maps */
+	while(TRUE) {
+		/* Draw sprite */
+		if ( sprite_level < current_level ) {
+			compose_item(ctx);
+			compose_sprite(ctx);
+		}
+
+		map_drawn = 0;
+		map_drawn |= compose_map_set(ctx,current_level);
+		map_drawn |= compose_map_list(ctx,current_level);
+		
+		if( map_drawn == 0 ) {
+			return;
+		}
+
+		current_level++;
+	}
 }
 
 /**********************************
@@ -1017,8 +1106,6 @@ item_t * scr_play_compose(context_t * ctx)
 	change_map = ctx->change_map;
 
 	compose_map(ctx);
-	compose_item(ctx);
-	compose_sprite(ctx);
 	compose_select(ctx);
 
 	/* Overlay */

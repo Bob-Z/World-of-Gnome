@@ -33,19 +33,19 @@ if tile_type ~= "ground" then
 	end
 end
 
-new_map = map_new(32,32,64,64,"dungeon_wall")
-tile = "dungeon_up"
-map_set_tile(new_map,tile,16,15)
-tile = "dungeon_ground"
-map_set_tile(new_map,tile,16,16)
+new_map = map_new(32,32,64,64,"tile/dungeon_wall.gif")
+map_set_tile(new_map,"tile/dungeon_stairs_up.gif",16,15,0)
+map_set_tile_type(new_map,"stair",16,15,0)
+map_set_tile(new_map,"tile/dungeon.gif",16,16,0)
+map_set_tile_type(new_map,"ground",16,16,0)
 	
 event = map_add_event(new_map,"goto.lua",16,15)
 map_add_event_param(new_map,event,map)
 map_add_event_param(new_map,event,cx)
 map_add_event_param(new_map,event,cy)
 
-tile = "dungeon_down"
-map_set_tile(map,tile,x,y)
+map_set_tile(map,"tile/dungeon_stairs_down.gif",x,y,0)
+map_set_tile_type(map,"stair",x,y,0)
 event = map_add_event(map,"goto.lua",x,y)
 map_add_event_param(map,event,new_map)
 map_add_event_param(map,event,16)

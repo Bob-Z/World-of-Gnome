@@ -26,13 +26,14 @@
 Create a new map.
 Return the name of the new map
 *************************************/
-char * map_new(int x,int y, int tile_x, int tile_y, char * default_tile)
+char * map_new(int w,int h, int tile_w, int tile_h, char * default_tile)
 {
 	char * map_name;
 	char ** tile_array;
 	int i;
+	char buf[SMALL_BUF];
 
-	if( x<0 || y<0 ) {
+	if( w<0 || h<0 ) {
 		return NULL;
 	}
 
@@ -41,30 +42,31 @@ char * map_new(int x,int y, int tile_x, int tile_y, char * default_tile)
 		return NULL;
 	}
 
+	if (!entry_write_int(MAP_TABLE,map_name,w,MAP_KEY_HEIGHT, NULL) ) {
+		free(map_name);
+		return NULL;
+	}
+	if (!entry_write_int(MAP_TABLE,map_name,h,MAP_KEY_WIDTH, NULL) ) {
+		free(map_name);
+		return NULL;
+	}
+	if (!entry_write_int(MAP_TABLE,map_name,tile_w,MAP_KEY_TILE_WIDTH, NULL) ) {
+		free(map_name);
+		return NULL;
+	}
+	if (!entry_write_int(MAP_TABLE,map_name,tile_h,MAP_KEY_TILE_HEIGHT, NULL) ) {
+		free(map_name);
+		return NULL;
+	}
 
-	if (!entry_write_int(MAP_TABLE,map_name,x,MAP_KEY_SIZE_X, NULL) ) {
-		free(map_name);
-		return NULL;
-	}
-	if (!entry_write_int(MAP_TABLE,map_name,y,MAP_KEY_SIZE_Y, NULL) ) {
-		free(map_name);
-		return NULL;
-	}
-	if (!entry_write_int(MAP_TABLE,map_name,tile_x,MAP_KEY_TILE_SIZE_X, NULL) ) {
-		free(map_name);
-		return NULL;
-	}
-	if (!entry_write_int(MAP_TABLE,map_name,tile_y,MAP_KEY_TILE_SIZE_Y, NULL) ) {
-		free(map_name);
-		return NULL;
-	}
-
-	tile_array=malloc(((x*y)+1)*sizeof(char *));
-	for(i=0; i<(x*y); i++) {
+	tile_array=malloc(((w*h)+1)*sizeof(char *));
+	for(i=0; i<(w*h); i++) {
 		tile_array[i] = default_tile;
 	}
 	tile_array[i] = NULL; /* End of list */
-	if (!entry_write_list(MAP_TABLE,map_name,tile_array,MAP_KEY_SET, NULL) ) {
+	
+	sprintf(buf,"%s0",MAP_KEY_SET);
+	if (!entry_write_list(MAP_TABLE,map_name,tile_array,buf, NULL) ) {
 		free(map_name);
 		return NULL;
 	}
@@ -83,22 +85,21 @@ int map_check_tile(context_t * ctx,char * id, const char * map, int x,int y)
 	char sy[64];
 	char * param[5];
 	int res;
-	char ** map_tiles;
-	char ** allowed_tile;
+	char ** map_type;
 	char * tile_type;
+	char ** allowed_tile;
 	int i=0;
-	int size_x = 0;
-	int size_y = 0;
+	int width = 0;
+	int height = 0;
 
-	if(!entry_read_int(MAP_TABLE,map,&size_x,MAP_KEY_SIZE_X,NULL)) {
+	if(!entry_read_int(MAP_TABLE,map,&width,MAP_KEY_WIDTH,NULL)) {
 		return FALSE;
 	}
-	if(!entry_read_int(MAP_TABLE,map,&size_y,MAP_KEY_SIZE_Y,NULL)) {
+	if(!entry_read_int(MAP_TABLE,map,&height,MAP_KEY_HEIGHT,NULL)) {
 		return FALSE;
 	}
 
-	/* sanity_check */
-	if( x < 0 || y < 0 || x >= size_x || y >= size_y ) {
+	if( x < 0 || y < 0 || x >= width || y >= height ) {
 		return FALSE;
 	}
 
@@ -117,17 +118,10 @@ int map_check_tile(context_t * ctx,char * id, const char * map, int x,int y)
 	}
 
 	/* Read tile list on this map */
-	if(!entry_read_list(MAP_TABLE,map,&map_tiles,MAP_KEY_SET,NULL)) {
+	if(!entry_read_list(MAP_TABLE,map,&map_type,MAP_KEY_TYPE,NULL)) {
 		return FALSE;
 	}
-
-	/* Check the tile has a type */
-	if(!entry_read_string(TILE_TABLE,map_tiles[(size_x*y)+x],&tile_type,TILE_KEY_TYPE,NULL)) {
-		deep_free(map_tiles);
-		/* this tile has no type, allowed for everyone */
-		return TRUE;
-	}
-	deep_free(map_tiles);
+	tile_type = map_type[(width*y)+x];
 
 	/* If there is allowed_tile list, check it */
 	if(entry_read_list(CHARACTER_TABLE,id,&allowed_tile,CHARACTER_KEY_ALLOWED_TILE,NULL)) {
@@ -135,18 +129,18 @@ int map_check_tile(context_t * ctx,char * id, const char * map, int x,int y)
 		while( allowed_tile[i] != NULL ) {
 			if( strcmp(allowed_tile[i], tile_type) == 0 ) {
 				deep_free(allowed_tile);
-				free(tile_type);
+				deep_free(map_type);
 				return TRUE;
 			}
 			i++;
 		}
 
 		deep_free(allowed_tile);
-		free(tile_type);
+		deep_free(map_type);
 		return FALSE;
 	}
 
-	free(tile_type);
+	deep_free(map_type);
 	/* Allow all tiles by default */
 	return TRUE;
 }
@@ -255,17 +249,16 @@ int map_add_item(const char * map, const char * id, int x, int y)
 	return 0;
 }
 /***********************************
-Write a new tile into a map file
+Write a new tile into a map set
 return -1 if fails
 ***********************************/
-int map_set_tile(const char * map,const char * tile,int x, int y)
+int map_set_tile(const char * map,const char * tile,int x, int y, int level)
 {
-	/* Extract params */
-	char * value = NULL;
-	int sizex = -1;
+	char * previous_tile = NULL;
+	int width = -1;
 	int index;
+	char buf[SMALL_BUF];
 
-	/* Check parameters sanity */
 	if(map == NULL || tile == NULL) {
 		return -1;
 	}
@@ -274,32 +267,35 @@ int map_set_tile(const char * map,const char * tile,int x, int y)
 		return -1;
 	}
 
-	/* Manage concurrent acces to map files */
+	/* Manage concurrent access to map files */
 	SDL_LockMutex(map_mutex);
 
 	/* read size of map */
-	if(!entry_read_int(MAP_TABLE,map,&sizex,MAP_KEY_SIZE_X,NULL)) {
+	if(!entry_read_int(MAP_TABLE,map,&width,MAP_KEY_WIDTH,NULL)) {
 		SDL_UnlockMutex(map_mutex);
 		return -1;
 	}
 
-	index = sizex * y + x;
+	index = width * y + x;
 
-	/* read map tile */
-	if(!entry_read_list_index(MAP_TABLE,map,&value, index,MAP_KEY_SET,NULL)) {
+	/* read previous map set */
+	sprintf(buf,"%s%d",MAP_KEY_SET,level);
+	if(!entry_read_list_index(MAP_TABLE,map,&previous_tile, index,buf,NULL)) {
 		SDL_UnlockMutex(map_mutex);
 		return -1;
 	}
 
-	/* Do not change the tile if it already the requested tile */
-	if( strcmp(value, tile) == 0 ) {
-		free(value);
+	/* Do not change the tile if it is already the requested tile 
+	Avoid calling useless context_broadcast_file */
+	if( strcmp(previous_tile, tile) == 0 ) {
+		free(previous_tile);
 		SDL_UnlockMutex(map_mutex);
 		return 0;
 	}
-	free(value);
+	free(previous_tile);
 
-	if( entry_write_list_index(MAP_TABLE, map, tile,index, MAP_KEY_SET,NULL ) ) {
+	sprintf(buf,"%s%d",MAP_KEY_SET,level);
+	if( entry_write_list_index(MAP_TABLE, map, tile,index, buf,NULL ) ) {
 		context_broadcast_file(MAP_TABLE,map,TRUE);
 	}
 
@@ -308,43 +304,88 @@ int map_set_tile(const char * map,const char * tile,int x, int y)
 	return 0;
 }
 
+/***********************************
+Write a new tile type into a map file
+return -1 if fails
+***********************************/
+int map_set_tile_type(const char * map,const char * type,int x, int y)
+{
+	char * previous_type = NULL;
+	int width = -1;
+	int index;
+
+	if(map == NULL || type == NULL) {
+		return -1;
+	}
+
+	if( x < 0 || y < 0) {
+		return -1;
+	}
+
+	/* Manage concurrent access to map files */
+	SDL_LockMutex(map_mutex);
+
+	/* read size of map */
+	if(!entry_read_int(MAP_TABLE,map,&width,MAP_KEY_WIDTH,NULL)) {
+		SDL_UnlockMutex(map_mutex);
+		return -1;
+	}
+
+	index = width * y + x;
+
+	/* read previous map type */
+	if(!entry_read_list_index(MAP_TABLE,map,&previous_type, index,MAP_KEY_TYPE,NULL)) {
+		SDL_UnlockMutex(map_mutex);
+		return -1;
+	}
+
+	/* Do not change the type if it already the requested type 
+	Avoid calling useless context_broadcast_file */
+	if( strcmp(previous_type, type) == 0 ) {
+		free(previous_type);
+		SDL_UnlockMutex(map_mutex);
+		return 0;
+	}
+	free(previous_type);
+
+	if( entry_write_list_index(MAP_TABLE, map, type,index, MAP_KEY_TYPE,NULL ) ) {
+		context_broadcast_file(MAP_TABLE,map,TRUE);
+	}
+
+	SDL_UnlockMutex(map_mutex);
+
+	return 0;
+}
+
+
 /********************************************
  return the name of the tile on map at x,y
  return must be freed by caller
 ********************************************/
-char * map_get_tile(const char * map,int x, int y)
+char * map_get_tile(const char * map,int x, int y, int level)
 {
-	char ** map_tiles;
-	int map_size_x;
-	int map_size_y;
-	char * ret = NULL;
+	char * map_tile = NULL;
+	int width;
+	int height;
+	char buf[SMALL_BUF];
 
 
-	if(!entry_read_int(MAP_TABLE,map,&map_size_x,MAP_KEY_SIZE_X,NULL)) {
+	if(!entry_read_int(MAP_TABLE,map,&width,MAP_KEY_WIDTH,NULL)) {
 		return NULL;
 	}
 
-	if(!entry_read_int(MAP_TABLE,map,&map_size_y,MAP_KEY_SIZE_Y,NULL)) {
+	if(!entry_read_int(MAP_TABLE,map,&height,MAP_KEY_HEIGHT,NULL)) {
 		return NULL;
 	}
 
-	if( x<0 || y<0 || x >= map_size_x || y >= map_size_y ) {
+	if( x<0 || y<0 || x >= width || y >= height ) {
 		return NULL;
 	}
 
-	if(!entry_read_list(MAP_TABLE,map,&map_tiles,MAP_KEY_SET,NULL)) {
-		return NULL;
-	}
+	sprintf(buf,"%s%d",MAP_KEY_SET,level);
+	entry_read_list_index(MAP_TABLE,map,&map_tile,(width*y)+x,buf,NULL);
 
-	if( map_tiles[(map_size_x*y)+x] ) {
-		ret = strdup(map_tiles[(map_size_x*y)+x]);
-		deep_free(map_tiles);
-		return ret;
-	}
-
-	deep_free(map_tiles);
-
-	return NULL;
+	return map_tile;
 }
 
 /********************************************
@@ -353,36 +394,25 @@ char * map_get_tile(const char * map,int x, int y)
 ********************************************/
 char * map_get_tile_type(const char * map,int x, int y)
 {
-	char ** map_tiles;
-	int map_size_x;
-	char * tile;
-	char * type;
+	char * map_type = NULL;
+	int width;
+	int height;
 
-	if( x<0 || y<0) {
+	if(!entry_read_int(MAP_TABLE,map,&width,MAP_KEY_WIDTH,NULL)) {
 		return NULL;
 	}
 
-	if(!entry_read_int(MAP_TABLE,map,&map_size_x,MAP_KEY_SIZE_X,NULL)) {
+	if(!entry_read_int(MAP_TABLE,map,&height,MAP_KEY_HEIGHT,NULL)) {
+		return NULL;
+	}
+	
+	if( x<0 || y<0 || x >= width || y >= height ) {
 		return NULL;
 	}
 
-	if(!entry_read_list(MAP_TABLE,map,&map_tiles,MAP_KEY_SET,NULL)) {
-		return NULL;
-	}
-
-	tile = map_tiles[(map_size_x*y)+x];
-	if( tile ) {
-		if(!entry_read_string(TILE_TABLE,tile,&type,TILE_KEY_TYPE,NULL)) {
-			deep_free(map_tiles);
-			return NULL;
-		}
-
-		deep_free(map_tiles);
-		return type;
-	}
-
-	deep_free(map_tiles);
-	return NULL;
+	entry_read_list_index(MAP_TABLE,map,&map_type,(width*y)+x,MAP_KEY_TYPE,NULL);
+	
+	return map_type;
 }
 
 /************************************************

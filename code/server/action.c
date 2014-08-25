@@ -475,6 +475,7 @@ Input:
  - ID of a tile
  - X coordinate of the tile to set
  - Y coordinate of the tile to set
+ - Map level
 Output:
 */
 static int l_map_set_tile( lua_State* L)
@@ -483,13 +484,43 @@ static int l_map_set_tile( lua_State* L)
 	const char * tile;
 	int x;
 	int y;
+	int level;
+	int res;
+
+	map = luaL_checkstring(L, -5);
+	tile = luaL_checkstring(L, -4);
+	x = luaL_checkint(L, -3);
+	y = luaL_checkint(L, -2);
+	level = luaL_checkint(L, -1);
+	res = map_set_tile(map, tile, x, y, level);
+	lua_pushnumber(L, res);
+	return 1;  /* number of results */
+}
+
+/* map_set_tile_type
+
+Set a type in a map
+
+Input:
+ - ID of a map
+ - type
+ - X coordinate of the tile to set
+ - Y coordinate of the tile to set
+Output:
+*/
+static int l_map_set_tile_type( lua_State* L)
+{
+	const char * map;
+	const char * type;
+	int x;
+	int y;
 	int res;
 
 	map = luaL_checkstring(L, -4);
-	tile = luaL_checkstring(L, -3);
+	type = luaL_checkstring(L, -3);
 	x = luaL_checkint(L, -2);
 	y = luaL_checkint(L, -1);
-	res = map_set_tile(map,tile,x,y);
+	res = map_set_tile_type(map, type, x, y);
 	lua_pushnumber(L, res);
 	return 1;  /* number of results */
 }
@@ -889,6 +920,7 @@ Input:
  - ID of a map
  - X coordinate (in tiles)
  - Y coordinate (in tiles)
+ - Map level
 Output: ID of the tile
 */
 static int l_map_get_tile( lua_State* L)
@@ -896,12 +928,14 @@ static int l_map_get_tile( lua_State* L)
 	const char * map;
 	int x;
 	int y;
+	int level;
 	char * res;
 
-	map = luaL_checkstring(L, -3);
-	x = luaL_checkint(L, -2);
-	y = luaL_checkint(L, -1);
-	res = map_get_tile(map,x,y);
+	map = luaL_checkstring(L, -4);
+	x = luaL_checkint(L, -3);
+	y = luaL_checkint(L, -2);
+	level = luaL_checkint(L, -1);
+	res = map_get_tile(map,x,y,level);
 	lua_pushstring(L, res);
 	if( res) {
 		free(res);
@@ -1175,6 +1209,8 @@ void register_lua_functions(context_t * context)
 	lua_setglobal(L, "map_new");
 	lua_pushcfunction(L, l_map_set_tile);
 	lua_setglobal(L, "map_set_tile");
+	lua_pushcfunction(L, l_map_set_tile_type);
+	lua_setglobal(L, "map_set_tile_type");
 	lua_pushcfunction(L, l_map_add_item);
 	lua_setglobal(L, "map_add_item");
 	lua_pushcfunction(L, l_map_delete_item);

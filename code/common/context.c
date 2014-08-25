@@ -387,10 +387,10 @@ static int _context_set_map(context_t * context, const char * map)
 	context->map_w = -1;
 	context->map_h = -1;
 
-	if(!entry_read_int(MAP_TABLE,map,&map_w,MAP_KEY_SIZE_X,NULL)) {
+	if(!entry_read_int(MAP_TABLE,map,&map_w,MAP_KEY_WIDTH,NULL)) {
 		return FALSE;
 	}
-	if(!entry_read_int(MAP_TABLE,map,&map_h,MAP_KEY_SIZE_Y,NULL)) {
+	if(!entry_read_int(MAP_TABLE,map,&map_h,MAP_KEY_HEIGHT,NULL)) {
 		return FALSE;
 	}
 	context->map_w = map_w;

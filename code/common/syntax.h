@@ -41,12 +41,6 @@
 #define ATTRIBUTE_ON_UP		"on_up"
 #define ATTRIBUTE_ON_DOWN	"on_down"
 
-/* tile data */
-#define TILE_TABLE 		"tile"
-#define TILE_KEY_IMAGE 		"image"
-#define TILE_KEY_TEXT 		"text"
-#define TILE_KEY_TYPE 		"type"
-
 /* character data */
 #define CHARACTER_TABLE		"character"
 #define CHARACTER_KEY_MARQUEE 	"marquee"
@@ -96,12 +90,15 @@
 #define MAP_ENTRY_ITEM_LIST 	"item_list"
 #define MAP_ENTRY_EVENT_LIST 	"event_list"
 /* Tile set definition file : property of each tile (starting with it's associated picture) */
-#define MAP_DESCRIPTION 	"description"
-#define MAP_KEY_SIZE_X		"size_x"
-#define MAP_KEY_SIZE_Y		"size_y"
-#define MAP_KEY_TILE_SIZE_X	"tile_size_x"
-#define MAP_KEY_TILE_SIZE_Y	"tile_size_y"
-#define MAP_KEY_SET		"set"
+#define MAP_DESCRIPTION			"description"
+#define MAP_KEY_SPRITE_LEVEL	"sprite_level"
+#define MAP_KEY_WIDTH			"width"
+#define MAP_KEY_HEIGHT			"height"
+#define MAP_KEY_TILE_WIDTH		"tile_width"
+#define MAP_KEY_TILE_HEIGHT		"tile_height"
+#define MAP_KEY_SET				"set"
+#define MAP_KEY_LIST			"list"
+#define MAP_KEY_TYPE			"type"
 
 /* items on map */
 #define MAP_ITEM_POS_X		"pos_x"
