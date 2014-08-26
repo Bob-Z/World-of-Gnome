@@ -132,7 +132,7 @@ int map_check_tile(context_t * ctx,char * id, const char * map, int x,int y)
 
 	/* Read tile list on this map */
 	if(!entry_read_list(MAP_TABLE,map,&map_type,MAP_KEY_TYPE,NULL)) {
-		return FALSE;
+		return TRUE;
 	}
 	tile_type = map_type[(width*y)+x];
 
