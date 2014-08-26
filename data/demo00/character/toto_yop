@@ -51,12 +51,12 @@ equipment:
 		icon = "apple.png";
 		equipped = "A0009";
 	};
-	right_hand :
-	{
-		name = "right hand";
-	};
-	left_hand :
-	{
-		name = "left hand";
-	};
+#	right_hand :
+#	{
+#		name = "right hand";
+#	};
+#	left_hand :
+#	{
+#		name = "left hand";
+#	};
 };

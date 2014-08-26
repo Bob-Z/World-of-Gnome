@@ -99,6 +99,9 @@
 #define MAP_KEY_SET		"set"
 #define MAP_KEY_LIST		"list"
 #define MAP_KEY_TYPE		"type"
+#define MAP_KEY_BG_RED		"bg_red"
+#define MAP_KEY_BG_BLUE		"bg_blue"
+#define MAP_KEY_BG_GREEN	"bg_green"
 
 /* items on map */
 #define MAP_ITEM_POS_X		"pos_x"

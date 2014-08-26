@@ -1083,6 +1083,9 @@ Compose the character select screen
 item_t * scr_play_compose(context_t * ctx)
 {
 	static int init = 1;
+	int bg_red = 0;
+	int bg_blue = 0;
+	int bg_green = 0;
 
 	if(item_list) {
 		item_list_free(item_list);
@@ -1132,6 +1135,11 @@ item_t * scr_play_compose(context_t * ctx)
 	sdl_add_keycb(SDL_SCANCODE_RIGHT,key_right,NULL,NULL);
 	sdl_add_keycb(SDL_SCANCODE_I,show_inventory,NULL,NULL);
 	sdl_add_keycb(SDL_SCANCODE_ESCAPE,cb_quit,NULL,NULL);
+
+	entry_read_int(MAP_TABLE,ctx->map,&bg_red,MAP_KEY_BG_RED,NULL);
+	entry_read_int(MAP_TABLE,ctx->map,&bg_blue,MAP_KEY_BG_BLUE,NULL);
+	entry_read_int(MAP_TABLE,ctx->map,&bg_green,MAP_KEY_BG_GREEN,NULL);
+	SDL_SetRenderDrawColor(ctx->render, bg_red, bg_blue, bg_green, 255);
 
 	return item_list;
 }

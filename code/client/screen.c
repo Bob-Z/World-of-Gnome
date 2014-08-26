@@ -81,6 +81,8 @@ create a list of item for the currently selected screen
 ******************************************************/
 static void compose_scr(context_t * context)
 {
+	SDL_SetRenderDrawColor(context->render, 0, 0, 0, 255);
+
 	switch(current_screen) {
 	case SCREEN_SELECT:
 		screen_select_compose(context);
@@ -120,6 +122,7 @@ void screen_display(context_t * ctx)
 			compose = 0;
 			compose_scr(ctx);
 		}
+
 
 		SDL_RenderClear(ctx->render);
 
