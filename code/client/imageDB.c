@@ -26,23 +26,6 @@ static list_t * image_list = NULL;
 
 static anim_t * def_anim = NULL;
 
-/* TODO : move this to sdl_item */
-/**************************
-**************************/
-static void free_anim(anim_t * anim)
-{
-	int i;
-
-	if(anim->tex) {
-		for(i=0; i<anim->num_frame; i++) {
-			SDL_DestroyTexture(anim->tex[i]);
-		}
-		free(anim->tex);
-	}
-
-	free(anim);
-}
-
 /**************************
 **************************/
 static anim_t * default_anim(context_t * ctx)
@@ -140,7 +123,7 @@ void image_DB_remove(char * filename)
 	SDL_LockMutex(imageDB_mutex);
 	old_anim = list_find(image_list,filename);
 	if( old_anim ) {
-		free_anim(old_anim);
+		si_anim_free(old_anim);
 	}
 
 	list_update(&image_list,filename,NULL);
