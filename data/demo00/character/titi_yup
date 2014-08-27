@@ -1,5 +1,6 @@
 marquee		= "marquee/white_ball.jpg";
-sprite		= "sprite.png";name = "yup";
+sprite		= "sprite/white_ball.png";
+name = "yup";
 inventory : [ "A0005" ];
 type = "gob";
 map = "test2";

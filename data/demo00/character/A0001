@@ -1,5 +1,6 @@
 marquee		= "marquee/gray_ball.jpg";
-sprite		= "sprite.png";npc = 1;
+sprite		= "sprite/gray_ball.png";
+npc = 1;
 name = "glopglop";
 map = "test2";
 type = "gob";

@@ -1,5 +1,5 @@
 marquee         = "marquee/black_ball.jpg";
-sprite          = "sprite.png";
+sprite          = "sprite/black_ball.png";
 name = "yep";
 inventory : [ "A0004" ];
 type = "human";
