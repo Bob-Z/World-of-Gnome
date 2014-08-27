@@ -1,4 +1,4 @@
-marquee		= "marquee.png";
+marquee		= "marquee/black_ball.jpg";
 sprite		= "sprite.png";name = "yip";
 inventory : [ "A0006" ];
 type = "gob";

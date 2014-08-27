@@ -1,4 +1,4 @@
-marquee		= "marquee.png";
+marquee		= "marquee/gray_ball.jpg";
 sprite		= "sprite.png";npc = 1;
 name = "glipglip";
 map = "test";
