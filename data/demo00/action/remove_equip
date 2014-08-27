@@ -1,3 +1,3 @@
 text		= "Remove an equipment";
-icon		= "white.jpg";
+icon		= "icon/white.jpg";
 script		= "remove_equip.lua";

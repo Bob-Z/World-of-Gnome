@@ -5,7 +5,7 @@ tile_height = 64;
 bg_red = 192;
 bg_blue = 192;
 bg_green = 192;
-set0 = [ "white.jpg", "black.jpg", "barre2.jpg", "black.jpg", "black.jpg", "black.jpg", "white.jpg", "black.jpg", "black.jpg" ];
+set0 = [ "tile/white.jpg", "tile/black.jpg", "barre2.jpg", "tile/black.jpg", "tile/black.jpg", "tile/black.jpg", "tile/white.jpg", "tile/black.jpg", "tile/black.jpg" ];
 type = [ "mud", "ground", "ground", "ground", "ground", "ground", "mud", "ground", "ground" ];
 item_list : {
 	A0002 : 
@@ -25,7 +25,7 @@ event_list: {
         {
                 pos_x = 2;
                 pos_y = 0;
-                script = "goto_test.lua";
+                script = "goto_map1.lua";
 
         };
         A0001 :
