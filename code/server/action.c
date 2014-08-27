@@ -1336,7 +1336,7 @@ int action_execute_script(context_t * context, const char * script, char ** para
 
 	/* Ask Lua to call the f function with the given parameters */
 	if (lua_pcall(context->luaVM, param_num, 1, 0) != 0) {
-		werr(LOGUSER,"Failed to run LUA script %s: %s\n", filename, lua_tostring(context->luaVM, -1));
+		werr(LOGUSER,"Error running LUA script %s: %s\n", filename, lua_tostring(context->luaVM, -1));
 		free(filename);
 		return -1;
 	}
