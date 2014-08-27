@@ -1,3 +1,5 @@
+function f ()
+
 id = player_get_id()
 
 aggro_id = parameter0
@@ -12,3 +14,4 @@ else
 	end
 end
 
+end

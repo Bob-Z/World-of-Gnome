@@ -1,3 +1,5 @@
+function f ()
+
 id = player_get_id()
 x = character_get_selected_map_tile_x(id)
 y = character_get_selected_map_tile_y(id)
@@ -8,3 +10,5 @@ end
 map = character_get_map(id)
 map_set_tile(map,"black.jpg",x,y,0)
 map_set_tile(map,"ground",x,y)
+
+end

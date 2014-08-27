@@ -1,3 +1,5 @@
+function f ()
+
 id = player_get_id()
 map = character_get_map(id)
 x = character_get_x(id)
@@ -11,3 +13,5 @@ if tile == "0" then
 end
 
 print_text_id(id, "You are not on a black tile")
+
+end
