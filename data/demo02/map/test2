@@ -1,3 +1,9 @@
+width1 = 3;
+height1 = 3;
+tile_width1 = 600;
+tile_height1 = 401;
+set1 = [ "map/fog.png","map/fog.png","map/fog.png","map/fog.png","map/fog.png","map/fog.png","map/fog.png","map/fog.png","map/fog.png"];
+
 width = 28;
 height = 17;
 tile_width = 64;
