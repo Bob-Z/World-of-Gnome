@@ -35,13 +35,13 @@ typedef struct {
 	char * name;
 	char * type;
 	anim_t * anim;
+	item_t * item;
 } character_t;
 
 static character_t * character_list = NULL;
 static int character_num = 0;
 static item_t * item_list = NULL;
-static character_t * current_character = NULL;
-static item_t * current_item = NULL;
+static long current_character = -1;
 
 /****************************
 Keyboard callback
@@ -66,13 +66,16 @@ static void cb_show_item(void * arg)
 static void cb_select(void * arg)
 {
 	context_t * ctx = (context_t*)arg;
+	character_t  *character;
 
-	if (current_character == NULL ) {
+	if (current_character == -1 ) {
 		return;
 	}
 
-	context_set_id(ctx,current_character->id);
-	context_set_character_name(ctx, current_character->name);
+	character = &(character_list[current_character]);
+
+	context_set_id(ctx,character->id);
+	context_set_character_name(ctx, character->name);
 
 	file_clean(ctx);
 
@@ -85,45 +88,39 @@ static void cb_select(void * arg)
 **********************************/
 static void cb_over(void * arg)
 {
-	character_t * c = (character_t*)arg;
-
-	current_character = c;
+	current_character = (long)arg;
 }
 
 /**********************************
 **********************************/
 static void cb_next_character(void * arg)
 {
-	if( current_item == NULL ) {
-		current_item = item_list;
-		return;
+	if ( current_character == -1 ) {
+		current_character = 0;
 	}
-	if( current_item->next != NULL ) {
-		current_item = current_item->next;
-		cb_show_item(current_item);
+
+	current_character++;
+	if( current_character >= character_num ) {
+		current_character = character_num - 1;
 	}
+
+	cb_show_item(character_list[current_character].item);
 }
 
 /**********************************
 **********************************/
 static void cb_previous_character(void * arg)
 {
-	item_t * i;
-
-	if( current_item == NULL ) {
-		current_item = item_list;
-		return;
+	if ( current_character == -1 ) {
+		current_character = 0;
 	}
 
-	i = item_list;
-	while( i->next != current_item && i->next != NULL ) {
-		i = i->next;
+	current_character--;
+	if( current_character <= 0 ) {
+		current_character = 0;
 	}
 
-	if( i->next != NULL ) {
-		current_item = i;
-		cb_show_item(current_item);
-	}
+	cb_show_item(character_list[current_character].item);
 }
 
 /**********************************
@@ -131,7 +128,7 @@ Compose the character select screen
 **********************************/
 item_t * scr_select_compose(context_t * context)
 {
-	int i = 0;
+	long i = 0;
 	int x = 0;
 	char * marquee_name;
 	static int max_h = 0;
@@ -181,10 +178,7 @@ item_t * scr_select_compose(context_t * context)
 		/* Character picture */
 		item = item_list_add(&item_list);
 		item_image = item;
-
-		if (current_item == NULL ) {
-			current_item = item;
-		}
+		character_list[i].item = item;
 
 		item_set_anim(item,x,max_h/2-character_list[i].anim->h/2,character_list[i].anim);
 		item_set_click_left(item,cb_show_item,(void *)item,NULL);
@@ -192,7 +186,7 @@ item_t * scr_select_compose(context_t * context)
 		item_set_double_click_left(item,cb_select,(void *)context,NULL);
 		item_set_wheel_up(item,cb_next_character,(void *)context,NULL);
 		item_set_wheel_down(item,cb_previous_character,(void *)context,NULL);
-		item_set_over(item,cb_over,(void *)&character_list[i],NULL);
+		item_set_over(item,cb_over,(void *)i,NULL);
 
 		x += character_list[i].anim->w + BORDER;
 		/* character name */
@@ -235,9 +229,9 @@ item_t * scr_select_compose(context_t * context)
 
 	sdl_free_keycb(NULL);
 	sdl_add_keycb(SDL_SCANCODE_ESCAPE,cb_quit,NULL,NULL);
-	sdl_add_keycb(SDL_SCANCODE_LEFT,cb_next_character,NULL,NULL);
-	sdl_add_keycb(SDL_SCANCODE_RIGHT,cb_previous_character,NULL,NULL);
-	sdl_add_keycb(SDL_SCANCODE_RETURN,cb_select,(void *)context,NULL);
+	sdl_add_keycb(SDL_SCANCODE_RIGHT,cb_next_character,NULL,NULL);
+	sdl_add_keycb(SDL_SCANCODE_LEFT,cb_previous_character,NULL,NULL);
+	sdl_add_keycb(SDL_SCANCODE_RETURN,cb_select,NULL,(void *)context);
 
 	return item_list;
 }
