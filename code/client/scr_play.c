@@ -540,6 +540,7 @@ static void compose_map(context_t * ctx)
 	int sprite_level = 0;
 	int current_level = 0;
 	int map_drawn = 0;
+	int sprite_drawn = 0;
 	int i = 0;
 	
 	entry_read_int(MAP_TABLE, ctx->map, &sprite_level,MAP_KEY_SPRITE_LEVEL,NULL);
@@ -575,9 +576,10 @@ static void compose_map(context_t * ctx)
 	/* Draw all maps */
 	while(TRUE) {
 		/* Draw sprite */
-		if ( sprite_level < current_level ) {
+		if ( !sprite_drawn && sprite_level < current_level ) {
 			compose_item(ctx);
 			compose_sprite(ctx);
+			sprite_drawn = 1;
 		}
 
 		map_drawn = 0;
