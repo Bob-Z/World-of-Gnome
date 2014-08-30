@@ -1,5 +1,3 @@
-Sprite:
-
  - knight: http://www.pixeljoint.com/pixelart/61993.htm
  - goblin: http://www.pixeljoint.com/forum/forum_posts.asp?TID=1477
  - map: http://www.desura.com/games/prospekt-reborn/images/starting-map
