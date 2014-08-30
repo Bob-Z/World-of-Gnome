@@ -184,8 +184,8 @@ item_t * scr_select_compose(context_t * context)
 		item_set_click_left(item,cb_show_item,(void *)item,NULL);
 		item_set_click_right(item,cb_select,(void *)context,NULL);
 		item_set_double_click_left(item,cb_select,(void *)context,NULL);
-		item_set_wheel_up(item,cb_next_character,(void *)context,NULL);
-		item_set_wheel_down(item,cb_previous_character,(void *)context,NULL);
+		item_set_wheel_up(item,cb_previous_character,(void *)context,NULL);
+		item_set_wheel_down(item,cb_next_character,(void *)context,NULL);
 		item_set_over(item,cb_over,(void *)i,NULL);
 
 		x += character_list[i].anim->w + BORDER;
