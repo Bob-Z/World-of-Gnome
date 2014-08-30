@@ -12,7 +12,7 @@ event_list :
   {
     pos_x = 0;
     pos_y = 6;
-    script = "goto_test2.lua";
+    script = "goto_forest.lua";
   };
   A0001 : 
   {

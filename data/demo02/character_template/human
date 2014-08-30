@@ -1,6 +1,6 @@
 marquee         = "knight_marquee.jpg";
 sprite          = "knight.gif";
-map       = "test";
+map       = "village";
 pos_x         = 0;
 pos_y         = 0;
 #default action for this kind of avatar

@@ -23,6 +23,6 @@ event_list :
   {
     pos_x = 5;
     pos_y = 16;
-    script = "goto_test.lua";
+    script = "goto_village.lua";
   };
 };

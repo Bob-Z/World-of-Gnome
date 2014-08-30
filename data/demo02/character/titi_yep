@@ -3,7 +3,7 @@ sprite          = "knight.gif";
 name = "yep";
 inventory : [ "A0004" ];
 type = "human";
-map = "test2";
+map = "forest";
 pos_x = 2;
 pos_y = 2;
 action = [ "add_white", "add_black", "get", "drop_item", "get_apple", "eat_apple" ];
