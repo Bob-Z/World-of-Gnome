@@ -140,6 +140,27 @@ static void cb_redo_sprite(void *arg)
 }
 
 /**********************************
+**********************************/
+static void cb_zoom(void *arg)
+{
+	double zoom;
+
+	zoom = sdl_get_virtual_z();
+
+	sdl_set_virtual_z(zoom*1.1);
+}
+
+/**********************************
+**********************************/
+static void cb_unzoom(void *arg)
+{
+	double zoom;
+
+	zoom = sdl_get_virtual_z();
+
+	sdl_set_virtual_z(zoom/1.1);
+}
+/**********************************
 Compose sprites
 **********************************/
 static void compose_sprite(context_t * ctx)
@@ -441,6 +462,8 @@ static void compose_map_button(context_t * ctx)
 			item_set_tile(item,x,y);
 			item_set_click_left(item,cb_select_map,item,NULL);
 			item_set_click_right(item,cb_redo_map,item,NULL);
+			item_set_wheel_up(item,cb_zoom,NULL,NULL);
+			item_set_wheel_down(item,cb_unzoom,NULL,NULL);
 		}
 	}
 }
