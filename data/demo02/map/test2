@@ -1,7 +1,7 @@
 width1 = 3;
 height1 = 3;
-tile_width1 = 600;
-tile_height1 = 401;
+tile_width1 = 598;
+tile_height1 = 363;
 set1 = [ "map/fog.png","map/fog.png","map/fog.png","map/fog.png","map/fog.png","map/fog.png","map/fog.png","map/fog.png","map/fog.png"];
 
 width = 28;
