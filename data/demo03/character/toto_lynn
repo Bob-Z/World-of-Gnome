@@ -1,0 +1,13 @@
+marquee         = "marquee/warrior.jpg";
+sprite          = "sprite/warrior.png";
+name = "Lynn";
+inventory = [ ];
+type = "warrior";
+map = "cliff";
+pos_x = 14;
+pos_y = 7;
+action = [  ];
+allowed_tile = [ ];
+attribute : 
+{
+};

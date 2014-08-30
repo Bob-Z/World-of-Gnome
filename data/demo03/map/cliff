@@ -1,0 +1,5 @@
+width = 16;
+height = 8;
+tile_width = 50;
+tile_height = 50;
+list0 = ["0","0","map/cliff.jpg" ];

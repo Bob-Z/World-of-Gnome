@@ -1,0 +1,33 @@
+marquee		= "sprite/hippo.png";
+sprite		= "sprite/hippo.png";
+npc = 1;
+name = "Pouet";
+map = "cliff";
+type = "Hippo";
+pos_x = 0;
+pos_y = 6;
+flip_e = 1;
+ai = "ai/ai_random.lua";
+#aggro_dist = 1;
+#aggro_script = "aggro_say_hello.lua";
+#attribute : 
+#{
+#  life : 
+#  {
+#    min = 0;
+#    max = 10;
+#    current = 10;
+#    previous = 10;
+#    on_min = "kill.lua";
+#  };
+#  agility : 
+#  {
+#    current = 10;
+#    previous = 10;
+#    on_min = "kill.lua";
+#  };
+#  already_aggro : 
+#  {
+#    current = 0;
+#  };
+#};
