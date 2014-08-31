@@ -93,6 +93,7 @@
 /* Tile set definition file : property of each tile (starting with it's associated picture) */
 #define MAP_DESCRIPTION		"description"
 #define MAP_KEY_SPRITE_LEVEL	"sprite_level"
+#define MAP_KEY_SPRITE_ZOOM	"sprite_zoom"
 #define MAP_KEY_WIDTH		"width"
 #define MAP_KEY_HEIGHT		"height"
 #define MAP_KEY_TILE_WIDTH	"tile_width"

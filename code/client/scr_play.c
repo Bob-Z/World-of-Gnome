@@ -176,7 +176,8 @@ static void compose_sprite(context_t * ctx)
 	int angle;
 	int flip;
 	char * zoom_str = NULL;
-	double zoom = 0;
+	double zoom = 1.0;
+	double map_zoom = 0.0;
 	context_t * player_context = context_get_list_first();
 
 	context_lock_list();
@@ -189,6 +190,14 @@ static void compose_sprite(context_t * ctx)
 		if( strcmp(ctx->map,player_context->map)) {
 			ctx = ctx->next;
 			continue;
+		}
+
+		if( map_zoom == 0.0 ) {
+			map_zoom = 1.0;
+			if(entry_read_string(MAP_TABLE,ctx->map,&zoom_str,MAP_KEY_SPRITE_ZOOM,NULL)) {
+				map_zoom = atof(zoom_str);
+				free(zoom_str);
+			}
 		}
 
 		/* compute the sprite file name */
@@ -330,21 +339,23 @@ static void compose_sprite(context_t * ctx)
 		oy = ctx->old_pos_y * ctx->tile_y;
 
 		/* Center sprite on tile */
-		x -= (anim->w-ctx->tile_x)/2;
-		y -= (anim->h-ctx->tile_y)/2;
-		ox -= (anim->w-ctx->tile_x)/2;
-		oy -= (anim->h-ctx->tile_y)/2;
+		x -= ((anim->w*map_zoom)-ctx->tile_x)/2;
+		y -= ((anim->h*map_zoom)-ctx->tile_y)/2;
+		ox -= ((anim->w*map_zoom)-ctx->tile_x)/2;
+		oy -= ((anim->h*map_zoom)-ctx->tile_y)/2;
 
 		item_set_smooth_anim(item,x,y,ox,oy,ctx->pos_tick,anim);
 		item_set_click_left(item,cb_select_sprite,ctx->id,NULL);
 		item_set_click_right(item,cb_redo_sprite,item,NULL);
 
+		/* Get per psrite zoom */
 		if(entry_read_string(CHARACTER_TABLE,ctx->id,&zoom_str,CHARACTER_KEY_ZOOM,NULL)) {
 			zoom = atof(zoom_str);
 			free(zoom_str);
-			item_set_zoom_x(item,zoom);
-			item_set_zoom_y(item,zoom);
 		}
+
+		item_set_zoom_x(item,zoom * map_zoom );
+		item_set_zoom_y(item,zoom * map_zoom );
 
 		ctx = ctx->next;
 	}
