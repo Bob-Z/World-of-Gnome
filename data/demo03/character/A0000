@@ -1,5 +1,6 @@
 marquee		= "sprite/hippo.png";
 sprite		= "sprite/hippo.png";
+zoom = "2.0";
 npc = 1;
 name = "Pouet";
 map = "cliff";

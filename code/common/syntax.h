@@ -45,6 +45,7 @@
 #define CHARACTER_TABLE		"character"
 #define CHARACTER_KEY_MARQUEE 	"marquee"
 #define CHARACTER_KEY_SPRITE	"sprite"
+#define CHARACTER_KEY_ZOOM	"zoom"
 #define CHARACTER_KEY_TYPE	"type"
 #define CHARACTER_KEY_MAP	"map"
 #define	CHARACTER_KEY_POS_X	"pos_x"

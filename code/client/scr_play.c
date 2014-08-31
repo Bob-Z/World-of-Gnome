@@ -175,6 +175,8 @@ static void compose_sprite(context_t * ctx)
 	Uint32 timer;
 	int angle;
 	int flip;
+	char * zoom_str = NULL;
+	double zoom = 0;
 	context_t * player_context = context_get_list_first();
 
 	context_lock_list();
@@ -336,6 +338,13 @@ static void compose_sprite(context_t * ctx)
 		item_set_smooth_anim(item,x,y,ox,oy,ctx->pos_tick,anim);
 		item_set_click_left(item,cb_select_sprite,ctx->id,NULL);
 		item_set_click_right(item,cb_redo_sprite,item,NULL);
+
+		if(entry_read_string(CHARACTER_TABLE,ctx->id,&zoom_str,CHARACTER_KEY_ZOOM,NULL)) {
+			zoom = atof(zoom_str);
+			free(zoom_str);
+			item_set_zoom_x(item,zoom);
+			item_set_zoom_y(item,zoom);
+		}
 
 		ctx = ctx->next;
 	}
