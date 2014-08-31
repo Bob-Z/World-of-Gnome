@@ -338,21 +338,21 @@ static void compose_sprite(context_t * ctx)
 		ox = ctx->old_pos_x * ctx->tile_x;
 		oy = ctx->old_pos_y * ctx->tile_y;
 
-		/* Center sprite on tile */
-		x -= ((anim->w*map_zoom)-ctx->tile_x)/2;
-		y -= ((anim->h*map_zoom)-ctx->tile_y)/2;
-		ox -= ((anim->w*map_zoom)-ctx->tile_x)/2;
-		oy -= ((anim->h*map_zoom)-ctx->tile_y)/2;
-
-		item_set_smooth_anim(item,x,y,ox,oy,ctx->pos_tick,anim);
-		item_set_click_left(item,cb_select_sprite,ctx->id,NULL);
-		item_set_click_right(item,cb_redo_sprite,item,NULL);
-
 		/* Get per psrite zoom */
 		if(entry_read_string(CHARACTER_TABLE,ctx->id,&zoom_str,CHARACTER_KEY_ZOOM,NULL)) {
 			zoom = atof(zoom_str);
 			free(zoom_str);
 		}
+
+		/* Center sprite on tile */
+		x -= ((anim->w*map_zoom*zoom)-ctx->tile_x)/2;
+		y -= ((anim->h*map_zoom*zoom)-ctx->tile_y)/2;
+		ox -= ((anim->w*map_zoom*zoom)-ctx->tile_x)/2;
+		oy -= ((anim->h*map_zoom*zoom)-ctx->tile_y)/2;
+
+		item_set_smooth_anim(item,x,y,ox,oy,ctx->pos_tick,anim);
+		item_set_click_left(item,cb_select_sprite,ctx->id,NULL);
+		item_set_click_right(item,cb_redo_sprite,item,NULL);
 
 		item_set_zoom_x(item,zoom * map_zoom );
 		item_set_zoom_y(item,zoom * map_zoom );
