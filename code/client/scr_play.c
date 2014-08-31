@@ -474,6 +474,9 @@ static void compose_map_button(context_t * ctx)
 	int x = 0;
 	int y = 0;
 	item_t * item;
+	anim_t * anim;
+
+	anim = imageDB_get_anim(ctx,CURSOR_OVER_TILE_FILE);
 
 	for( y=0 ; y < ctx->map_h ; y++ ) {
 		for ( x=0 ; x < ctx->map_w ; x++ ) {
@@ -484,6 +487,7 @@ static void compose_map_button(context_t * ctx)
 			item_set_click_right(item,cb_redo_map,item,NULL);
 			item_set_wheel_up(item,cb_zoom,NULL,NULL);
 			item_set_wheel_down(item,cb_unzoom,NULL,NULL);
+			item_set_anim_over(item,anim);
 		}
 	}
 }
@@ -613,9 +617,6 @@ static void compose_map(context_t * ctx)
 		context_set_tile_y( ctx, i);
 	}
 
-	/* Set mouse callback */
-	compose_map_button(ctx);
-	
 	/* Draw all maps */
 	while(TRUE) {
 		/* Draw sprite */
@@ -630,11 +631,15 @@ static void compose_map(context_t * ctx)
 		map_drawn |= compose_map_list(ctx,current_level);
 		
 		if( map_drawn == 0 ) {
-			return;
+			break;
 		}
 
 		current_level++;
 	}
+
+	/* Set mouse callback */
+	compose_map_button(ctx);
+
 }
 
 /**********************************
@@ -1083,13 +1088,13 @@ static void compose_select(context_t * ctx)
 	int x;
 	int y;
 
-	anim = imageDB_get_anim(ctx,CURSOR_SPRITE_FILE);
-
 	/* Tile selection */
 	x = ctx->selection.map_coord[0];
 	y = ctx->selection.map_coord[1];
 
 	if( x != -1 && y != -1) {
+		anim = imageDB_get_anim(ctx,CURSOR_TILE_FILE);
+
 		item = item_list_add(&item_list);
 
 		/* get pixel coordiante from tile coordianate */
@@ -1105,6 +1110,8 @@ static void compose_select(context_t * ctx)
 
 	/* Sprite selection */
 	if( ctx->selection.id != NULL) {
+		anim = imageDB_get_anim(ctx,CURSOR_SPRITE_FILE);
+
 		item = item_list_add(&item_list);
 
 		if(!entry_read_int(CHARACTER_TABLE,ctx->selection.id,&x,CHARACTER_KEY_POS_X,NULL)) {

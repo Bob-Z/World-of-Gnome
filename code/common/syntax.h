@@ -81,6 +81,7 @@
 #define CURSOR_SPRITE_FILE 	"cursor.png"
 #define CURSOR_TILE_FILE 	"cursor.png"
 #define CURSOR_EQUIP_FILE 	"cursor.png"
+#define CURSOR_OVER_TILE_FILE 	"over_tile_cursor.png"
 
 /* image DB */
 #define IMAGE_TABLE 		"image"

@@ -112,17 +112,18 @@ void screen_display(context_t * ctx)
 
 	while( screen_end == -1) {
 
+		if(compose) {
+			compose = 0;
+			compose_scr(ctx);
+		}
+
 		while (SDL_PollEvent(&event)) {
 			compose |= sdl_screen_manager(ctx->window, ctx->render, &event);
 			sdl_mouse_manager(ctx->render,&event,item_list);
 			sdl_keyboard_manager(&event);
 		}
 
-		if(compose) {
-			compose = 0;
-			compose_scr(ctx);
-		}
-
+		sdl_mouse_position_manager(ctx->render,item_list);
 
 		SDL_RenderClear(ctx->render);
 
