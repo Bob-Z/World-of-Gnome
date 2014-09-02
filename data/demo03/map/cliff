@@ -11,6 +11,25 @@ type = [
 	"sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky",
 	"sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky",
 	"rok","rok","rok","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","sky","sky","sky",
-	"grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd",
-	"grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd"
+	"goo","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd",
+	"goo","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd"
 ];
+
+event_list :
+{
+        go_to_desert_1 :
+        {
+                pos_x = 0;
+                pos_y = 6;
+                script = "goto.lua";
+                param = ( "desert", "14", "7" );
+        };
+        go_to_desert_2 :
+        {
+                pos_x = 0;
+                pos_y = 7;
+                script = "goto.lua";
+                param = ( "desert", "14", "8" );
+        };
+};
+
