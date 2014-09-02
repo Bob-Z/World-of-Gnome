@@ -4,3 +4,13 @@ height = 8;
 tile_width = 50;
 tile_height = 48;
 list0 = ["0","0","map/cliff.jpg" ];
+type = [
+	"sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky",
+	"sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky",
+	"sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky",
+	"sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky",
+	"sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky",
+	"rok","rok","rok","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","sky","sky","sky",
+	"grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd",
+	"grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd"
+];

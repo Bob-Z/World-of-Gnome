@@ -1,8 +1,8 @@
-marquee		= "";
+marquee		= "sprite/hippo.png";
 sprite		= "sprite/hippo.png";
 npc = 1;
 map = "cliff";
-type = "Hippo";
+type = "hippo";
 pos_x = 0;
 pos_y = 6;
 ai = "ai_random.lua";
