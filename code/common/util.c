@@ -30,7 +30,7 @@ char * checksum_file(const char * filename)
 {
 	FILE *fp;
 	int ch;
-	unsigned long int checksum = 0;
+	unsigned long long checksum = 5381;
 	char text[128];
 
 	fp = fopen(filename,"r"); // read mode
@@ -39,14 +39,13 @@ char * checksum_file(const char * filename)
 		return NULL;
 	}
 
-	/* TODO: implement a safer crc calculation */
-	while( ( ch = fgetc(fp) ) != EOF ) {
-		checksum += ch;
+	while ( ( ch = fgetc(fp) ) != EOF ) {
+		checksum = checksum * 33 ^ ch;
 	}
 
 	fclose(fp);
 
-	snprintf(text,128,"%ld",checksum);
+	snprintf(text,128,"%llu",checksum);
 
 	wlog(LOGDEBUG,"Checksum for %s is %s",filename,text);
 
