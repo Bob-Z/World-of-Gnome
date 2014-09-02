@@ -1,0 +1,33 @@
+marquee		= "sprite/elephant.png";
+sprite		= "sprite/elephant.png";
+zoom = "2.0";
+npc = 1;
+map = "cliff";
+type = "elephant";
+pos_x = 6;
+pos_y = 6;
+flip_e = 1;
+ai = "ai/ai_random.lua";
+#aggro_dist = 1;
+#aggro_script = "aggro_say_hello.lua";
+#attribute : 
+#{
+#  life : 
+#  {
+#    min = 0;
+#    max = 10;
+#    current = 10;
+#    previous = 10;
+#    on_min = "kill.lua";
+#  };
+#  agility : 
+#  {
+#    current = 10;
+#    previous = 10;
+#    on_min = "kill.lua";
+#  };
+#  already_aggro : 
+#  {
+#    current = 0;
+#  };
+#};
