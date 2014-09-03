@@ -104,6 +104,7 @@ int map_check_tile(context_t * ctx,char * id, const char * map, int x,int y)
 	int i=0;
 	int width = 0;
 	int height = 0;
+	int num_elem;
 
 	if(!entry_read_int(MAP_TABLE,map,&width,MAP_KEY_WIDTH,NULL)) {
 		return FALSE;
@@ -134,6 +135,17 @@ int map_check_tile(context_t * ctx,char * id, const char * map, int x,int y)
 	if(!entry_read_list(MAP_TABLE,map,&map_type,MAP_KEY_TYPE,NULL)) {
 		return TRUE;
 	}
+
+	/* Config file sanity check */
+	num_elem=0;
+	while( map_type[num_elem] != NULL ) {
+		num_elem++;
+	}
+	if( num_elem != width*height ) {
+		werr(LOGUSER,"File %s/%s: Wrong number of elements for \"%s\" entry. Expected %d (%d*%d), got %d. All tiles allowed.",MAP_TABLE,map,MAP_KEY_TYPE,width*height,width,height,num_elem);
+		return TRUE;
+	}
+
 	tile_type = map_type[(width*y)+x];
 
 	/* If there is allowed_tile list, check it */
