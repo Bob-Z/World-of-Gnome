@@ -140,8 +140,6 @@ item_t * scr_select_compose(context_t * context)
 	static TTF_Font * font_name = NULL;
 	static TTF_Font * font_type = NULL;
 
-	wlog(LOGDEBUG,"Composing select character screen");
-
 	if(character_num==0) {
 		return NULL;
 	}
