@@ -1,18 +1,18 @@
 sprite_zoom = "0.07";
-width = 16;
+width = 17;
 height = 8;
 tile_width = 50;
 tile_height = 48;
-list0 = ["0","0","map/cliff.jpg" ];
+list0 = ["50","0","map/cliff.jpg" ];
 type = [
-	"sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky",
-	"sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky",
-	"sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky",
-	"sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky",
-	"sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky",
-	"rok","rok","rok","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","sky","sky","sky",
-	"goo","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd",
-	"goo","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd"
+	"no","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky",
+	"no","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky",
+	"no","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky",
+	"no","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky",
+	"no","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky",
+	"no","rok","rok","rok","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","sky","sky","sky",
+	"goo","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd",
+	"goo","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd"
 ];
 
 event_list :
@@ -22,14 +22,14 @@ event_list :
                 pos_x = 0;
                 pos_y = 6;
                 script = "goto.lua";
-                param = ( "desert", "14", "7" );
+                param = ( "desert", "15", "7" );
         };
         go_to_desert_2 :
         {
                 pos_x = 0;
                 pos_y = 7;
                 script = "goto.lua";
-                param = ( "desert", "14", "8" );
+                param = ( "desert", "15", "8" );
         };
 };
 

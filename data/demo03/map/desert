@@ -1,48 +1,48 @@
 sprite_zoom = "0.07";
-width = 16;
+width = 17;
 height = 10;
 tile_width = 50;
 tile_height = 48;
 list0 = ["0","0","map/desert.jpg" ];
 type = [
-	"sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky",
-	"sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky",
-	"sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky",
-	"sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky",
-	"sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky",
-	"sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky",
-	"grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd",
-	"grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd",
-	"grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","goo",
-	"grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","goo"
+	"sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","no",
+	"sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","no",
+	"sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","no",
+	"sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","no",
+	"sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","no",
+	"sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","no",
+	"grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","goo",
+	"grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","goo",
+	"grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","goo","goo",
+	"grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","goo","goo"
 ];
 
 event_list :
 {
         go_to_cliff_1 :
         {
-                pos_x = 15;
+                pos_x = 16;
                 pos_y = 6;
                 script = "goto.lua";
                 param = ( "cliff", "1", "6" );
         };
         go_to_cliff_2 :
         {
-                pos_x = 15;
+                pos_x = 16;
                 pos_y = 7;
                 script = "goto.lua";
                 param = ( "cliff", "1", "6" );
         };
         go_to_cliff_3 :
         {
-                pos_x = 15;
+                pos_x = 16;
                 pos_y = 8;
                 script = "goto.lua";
                 param = ( "cliff", "1", "7" );
         };
         go_to_cliff_4 :
         {
-                pos_x = 15;
+                pos_x = 16;
                 pos_y = 9;
                 script = "goto.lua";
                 param = ( "cliff", "1", "7" );
