@@ -47,7 +47,7 @@ static int async_send(void * user_data)
 	}
 
 	if( socket == 0 ) {
-		wlog(LOGDEBUG, "Not connected %s is trying to send command %d",context->id, data->command);
+		wlog(LOGDEBUG, "Trying to send data to not connected client");
 		return FALSE;
 	}
 
@@ -272,6 +272,10 @@ void network_send_context(context_t * context)
 int network_read_bytes(TCPsocket socket, char * data, int size)
 {
 	int bytes_read = 0;
+
+	if( socket == 0 ) {
+		return FALSE;
+	}
 
 	bytes_read = SDLNet_TCP_Recv(socket, data, size);
 	if( bytes_read != size ) {
