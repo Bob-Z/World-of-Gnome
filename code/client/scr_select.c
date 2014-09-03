@@ -153,8 +153,6 @@ item_t * scr_select_compose(context_t * context)
 
 	SDL_LockMutex(character_select_mutex);
 
-	wlog(LOGDEBUG,"Composing %d characters",character_num);
-
 	/* Load all anim and compute the max height */
 	for(i=0; i<character_num; i++) {
 		/* Compute the marquee file name */
