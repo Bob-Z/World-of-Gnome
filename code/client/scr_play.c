@@ -202,7 +202,7 @@ static void compose_sprite(context_t * ctx)
 
 		/* compute the sprite file name */
 		if(!entry_read_string(CHARACTER_TABLE,ctx->id,&sprite_name,CHARACTER_KEY_SPRITE,NULL)) {
-			werr(LOGDEV,"ID=%s. Can't read sprite name for \"%s\" type",ctx->id,ctx->type);
+			werr(LOGDEV,"Can't read sprite name for \"%s\"",ctx->id);
 			ctx = ctx->next;
 			continue;
 		}
