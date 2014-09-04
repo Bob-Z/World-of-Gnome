@@ -100,6 +100,7 @@ static void compose_screen(context_t * ctx)
 	static TTF_Font * font = NULL;
 	int w;
 	int h;
+	anim_t * anim;
 
 	if ( font == NULL ) {
 		font = TTF_OpenFont(FONT, FONT_SIZE);
@@ -121,28 +122,22 @@ static void compose_screen(context_t * ctx)
 	
 	for ( i = 0; i < speak_num; i++) {
 		item = item_list_add(&item_list);
-		item_set_string(item,speak[i].icon);
-		item_set_font(item,font);
-		sdl_get_string_size(item->font,item->string,&w,&h);
-		item_set_frame_shape(item,0,y,w,h);
+		anim = imageDB_get_anim(ctx,speak[i].icon);
+		item_set_anim(item,0,y,anim);
 		item_set_click_left(item,cb_speak,(void*)speak[i].keyword,NULL);
-		y += h;
 		
 		item = item_list_add(&item_list);
 		item_set_string(item,speak[i].text);
 		item_set_font(item,font);
 		sdl_get_string_size(item->font,item->string,&w,&h);
-		item_set_frame_shape(item,0,y,w,h);
+		item_set_frame_shape(item,anim->w,y,w,h);
 		item_set_click_left(item,cb_speak,(void*)speak[i].keyword,NULL);
-		y += h;
-
-		item = item_list_add(&item_list);
-		item_set_string(item,speak[i].keyword);
-		item_set_font(item,font);
-		sdl_get_string_size(item->font,item->string,&w,&h);
-		item_set_frame_shape(item,0,y,w,h);
-		item_set_click_left(item,cb_speak,(void*)speak[i].keyword,NULL);
-		y += h;
+		if( h > anim->w ) {
+			y += h;
+		}
+		else {
+			y += anim->w;
+		}
 	}
 }
 
