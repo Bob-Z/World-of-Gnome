@@ -15,6 +15,6 @@ if keyword == nil then
 	keyword = "start"
 end
 
-call_script("npc_speak.lua",keyword);
+call_script("npc_speak.lua",target,id,keyword);
 
 end

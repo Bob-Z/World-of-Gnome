@@ -241,7 +241,7 @@ void network_init(void)
 /*********************************************************************
 NPC sends speak screen data to player
 *********************************************************************/
-void network_send_speak(char * speaker, char * listener, char * text,...)
+void network_send_speak(const char * speaker, const char * listener, const char * text,...)
 {
 	va_list ap;
 	speak_entry_t * speak = NULL;
@@ -251,7 +251,9 @@ void network_send_speak(char * speaker, char * listener, char * text,...)
 
 	target = context_find(listener);
 
-	frame = strconcat(speaker,NETWORK_DELIMITER,text,NULL);
+	frame = strdup(speaker);
+	new_frame = strconcat(frame,NETWORK_DELIMITER,text,NULL);
+	frame = new_frame;
 
 	va_start(ap, text);
 	while ( (speak=va_arg(ap,speak_entry_t*)) != NULL ) {
@@ -262,6 +264,6 @@ void network_send_speak(char * speaker, char * listener, char * text,...)
 	va_end(ap);
 
 	wlog(LOGDEBUG,"Send CMD_SEND_SPEAK : npc %s speak to %s",speaker,listener);
-	network_send_command(target, CMD_SEND_ACTION, strlen(frame)+1, frame,FALSE);
+	network_send_command(target, CMD_SEND_SPEAK, strlen(frame)+1, frame,FALSE);
 	free(frame);
 }

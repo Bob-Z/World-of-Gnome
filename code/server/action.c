@@ -1195,25 +1195,30 @@ Input:
  - ID of the listener character
  - Text to display
  - Array of icon/text/keyword
-Output: ID of an item
+Output: -1 on error, 0 otherwise
 */
 static int l_speak_send( lua_State* L)
 {
-	const char * id;
-	const char * slot;
-	char * item;
 	int num_arg;
+	const char **arg = NULL;
+	int i;
 
 	num_arg = lua_gettop(L);
-
-	id = luaL_checkstring(L, -2);
-	slot = luaL_checkstring(L, -1);
-	item = equipment_get_item_id(id,slot);
-	if( item == NULL ) {
-		return 0;  /* number of results */
+	if(num_arg == 0) {
+		lua_pushnumber(L, -1);
+		return 1;  /* number of results */
 	}
-	lua_pushstring(L, item);
-	free(item);
+
+	arg = malloc(sizeof(char*)*num_arg+1);
+	for(i=0;i<num_arg;i++) {
+		arg[i] = luaL_checkstring(L, -num_arg+i);
+	}
+	arg[i] = NULL; /* End of list */
+
+	network_send_speak(arg[0],arg[1],arg[2],NULL);
+
+	free(arg);
+	lua_pushnumber(L, 0);
 	return 1;  /* number of results */
 }
 
