@@ -29,7 +29,7 @@
 #include "network_client.h"
 
 #define FONT "/usr/share/fonts/truetype/ubuntu-font-family/Ubuntu-C.ttf"
-#define FONT_SIZE 15
+#define FONT_SIZE 32
 
 static item_t * item_list = NULL;
 static char * name = NULL;
@@ -102,10 +102,19 @@ static void compose_screen(context_t * ctx)
 	int h;
 	anim_t * anim;
 
-	if ( font == NULL ) {
-		font = TTF_OpenFont(FONT, FONT_SIZE);
+	if ( font != NULL ) {
+		TTF_CloseFont(font);
+		font = NULL;
 	}
 	
+	if( speak && speak[0].icon ) {
+		anim = imageDB_get_anim(ctx,speak[i].icon);
+		font = TTF_OpenFont(FONT, anim->h);
+	}
+	else {
+		font = TTF_OpenFont(FONT, FONT_SIZE );
+	}
+
 	item = item_list_add(&item_list);
 	item_set_string(item,name);
 	item_set_font(item,font);
@@ -125,7 +134,7 @@ static void compose_screen(context_t * ctx)
 		anim = imageDB_get_anim(ctx,speak[i].icon);
 		item_set_anim(item,0,y,anim);
 		item_set_click_left(item,cb_speak,(void*)speak[i].keyword,NULL);
-		
+
 		item = item_list_add(&item_list);
 		item_set_string(item,speak[i].text);
 		item_set_font(item,font);
