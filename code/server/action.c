@@ -1221,7 +1221,12 @@ static int l_speak_send( lua_State* L)
 	}
 	arg[i]=NULL;
 
-	network_send_speak(arg[0],arg[1],arg[2],NULL);
+	if(num_arg > 3) {
+		network_send_speak(arg[0],arg[1],arg[2],&arg[3]);
+	}
+	else {
+		network_send_speak(arg[0],arg[1],arg[2],NULL);
+	}
 
 	free(arg);
 	lua_pushnumber(L, 0);

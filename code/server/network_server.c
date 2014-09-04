@@ -240,11 +240,11 @@ void network_init(void)
 
 /*********************************************************************
 NPC sends speak screen data to player
+dialog is an array of triplet of string. 
+Each triplet is: "icon name","text to display", "keyword to foolow"
 *********************************************************************/
-void network_send_speak(const char * speaker, const char * listener, const char * text,...)
+void network_send_speak(const char * speaker, const char * listener, const char * text,char ** dialog)
 {
-	va_list ap;
-	char * arg = NULL;
 	char * frame = NULL;
 	char * new_frame = NULL;
 	context_t * target;
@@ -255,13 +255,14 @@ void network_send_speak(const char * speaker, const char * listener, const char 
 	new_frame = strconcat(frame,NETWORK_DELIMITER,text,NULL);
 	frame = new_frame;
 
-	va_start(ap, text);
-	while ( (arg=va_arg(ap,char*)) != NULL ) {
-		new_frame = strconcat(frame,NETWORK_DELIMITER,arg,NULL);
-		free(frame);
-		frame = new_frame;
+	if(dialog) {
+		while ( *dialog != NULL ) {
+			new_frame = strconcat(frame,NETWORK_DELIMITER,*dialog,NULL);
+			free(frame);
+			frame = new_frame;
+			dialog++;
+		}
 	}
-	va_end(ap);
 
 	wlog(LOGDEBUG,"Send CMD_SEND_SPEAK : npc %s speaks to %s",speaker,listener);
 	network_send_command(target, CMD_SEND_SPEAK, strlen(frame)+1, frame,FALSE);
