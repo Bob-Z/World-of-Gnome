@@ -9,6 +9,6 @@ if x == -1 or y == -1 then
 end
 map = character_get_map(id)
 tile = "0"
-map_set_tile(map,tile,x,y)
+map_set_tile(map,tile,x,y,0)
 
 end
