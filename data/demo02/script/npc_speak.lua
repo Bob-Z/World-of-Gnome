@@ -5,11 +5,11 @@ if keyword == nil then
 end
 
 if keyword == "start" then
-	speak_send(npc,player,"Hello","icon/reddot.png","How are you ?","how","icon/reddot.png","Goodbye","bye")
+	speak_send(npc,player,"Hello","icon/greendot.gif","How are you ?","how","icon/greendot.gif","Goodbye","bye")
 end
 
 if keyword == "how" then
-	speak_send(npc,player,"Fine thank you","icon/reddot.png","Goodbye","bye")
+	speak_send(npc,player,"Fine thank you","icon/greendot.gif","Goodbye","bye")
 end
 
 if keyword == "bye" then
