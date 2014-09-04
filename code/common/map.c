@@ -142,7 +142,7 @@ int map_check_tile(context_t * ctx,char * id, const char * map, int x,int y)
 		num_elem++;
 	}
 	if( num_elem != width*height ) {
-		werr(LOGUSER,"File %s/%s: Wrong number of elements for \"%s\" entry. Expected %d (%d*%d), got %d. All tiles allowed.",MAP_TABLE,map,MAP_KEY_TYPE,width*height,width,height,num_elem);
+		werr(LOGDEV,"File %s/%s: Wrong number of elements for \"%s\" entry. Expected %d (%d*%d), got %d. All tiles allowed.",MAP_TABLE,map,MAP_KEY_TYPE,width*height,width,height,num_elem);
 		return TRUE;
 	}
 
