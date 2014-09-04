@@ -1204,7 +1204,13 @@ static int l_speak_send( lua_State* L)
 	int i;
 
 	num_arg = lua_gettop(L);
-	if(num_arg == 0) {
+	if(num_arg < 3) {
+		werr(LOGDEV,"Not enough parameters for \"speak_send\" command. Need at least 3, only got %d.\n", num_arg);
+		lua_pushnumber(L, -1);
+		return 1;  /* number of results */
+	}
+	if(num_arg % 3 != 0) {
+		werr(LOGDEV,"Wrong number of parameters for \"speak_send\" command. %d parameters missing.\n", num_arg % 3);
 		lua_pushnumber(L, -1);
 		return 1;  /* number of results */
 	}
@@ -1213,7 +1219,7 @@ static int l_speak_send( lua_State* L)
 	for(i=0;i<num_arg;i++) {
 		arg[i] = luaL_checkstring(L, -num_arg+i);
 	}
-	arg[i] = NULL; /* End of list */
+	arg[i]=NULL;
 
 	network_send_speak(arg[0],arg[1],arg[2],NULL);
 

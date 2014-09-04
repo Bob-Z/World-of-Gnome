@@ -244,7 +244,7 @@ NPC sends speak screen data to player
 void network_send_speak(const char * speaker, const char * listener, const char * text,...)
 {
 	va_list ap;
-	speak_entry_t * speak = NULL;
+	char * arg = NULL;
 	char * frame = NULL;
 	char * new_frame = NULL;
 	context_t * target;
@@ -256,14 +256,14 @@ void network_send_speak(const char * speaker, const char * listener, const char 
 	frame = new_frame;
 
 	va_start(ap, text);
-	while ( (speak=va_arg(ap,speak_entry_t*)) != NULL ) {
-		new_frame = strconcat(frame,NETWORK_DELIMITER,speak->icon,NETWORK_DELIMITER,speak->text,NETWORK_DELIMITER,speak->keyword,NULL);
+	while ( (arg=va_arg(ap,char*)) != NULL ) {
+		new_frame = strconcat(frame,NETWORK_DELIMITER,arg,NULL);
 		free(frame);
 		frame = new_frame;
 	}
 	va_end(ap);
 
-	wlog(LOGDEBUG,"Send CMD_SEND_SPEAK : npc %s speak to %s",speaker,listener);
+	wlog(LOGDEBUG,"Send CMD_SEND_SPEAK : npc %s speaks to %s",speaker,listener);
 	network_send_command(target, CMD_SEND_SPEAK, strlen(frame)+1, frame,FALSE);
 	free(frame);
 }
