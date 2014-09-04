@@ -159,10 +159,10 @@ void scr_speak_parse(int total_size, char * frame)
 	
 	clean_up();
 	
-	name = strtok_r(frame,NETWORK_DELIMITER,&saveptr1);
+	name = strdup(strtok_r(frame,NETWORK_DELIMITER,&saveptr1));
 	size += strlen(name);
 	size += strlen(NETWORK_DELIMITER);
-	text = strtok_r(NULL,NETWORK_DELIMITER,&saveptr1);
+	text = strdup(strtok_r(NULL,NETWORK_DELIMITER,&saveptr1));
 	size += strlen(text);
 	size += strlen(NETWORK_DELIMITER);
 	while( size < total_size ) {

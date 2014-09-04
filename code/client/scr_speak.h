@@ -20,5 +20,5 @@
 #include "../sdl_item/item.h"
 
 item_t * scr_speak_compose(context_t * context);
-void scr_speak_parse(context_t * context, char * frame);
+void scr_speak_parse(int frame_size, char * frame);
 
