@@ -11,22 +11,10 @@ end
 
 script = character_get_speak(target);
 
---loaded_func = loadfile(script);
-loaded_func, cError = loadfile("/home/fred/.config/wog/server/demo02/script/npc_speak.lua")
-
-if cError ~= nil then
-	error(cError,1)
-end
-
---text = string.format("loaded_func = %s",loaded_func)
---print_text_debug(text)
-
 if keyword == nil then
 	keyword = "start"
 end
 
-print_text_debug("calling func")
---pcall(loaded_func,target,id,keyword);
-pcall(loaded_func,target,id,keyword);
+call_script("npc_speak.lua",keyword);
 
 end
