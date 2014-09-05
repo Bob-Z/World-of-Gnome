@@ -47,7 +47,7 @@ static int async_send(void * user_data)
 	}
 
 	if( socket == 0 ) {
-		wlog(LOGDEBUG, "Trying to send data to not connected client");
+		wlog(LOGDEBUG, "socket %d is disconnected",socket);
 		return FALSE;
 	}
 
@@ -272,14 +272,19 @@ void network_send_context(context_t * context)
 int network_read_bytes(TCPsocket socket, char * data, int size)
 {
 	int bytes_read = 0;
+	int total_bytes = 0;
 
 	if( socket == 0 ) {
 		return FALSE;
 	}
 
-	bytes_read = SDLNet_TCP_Recv(socket, data, size);
-	if( bytes_read != size ) {
-		werr(LOGDEV,"Read error: waiting %d bytes, read %d bytes", size, bytes_read);
+	while( total_bytes != size && bytes_read != -1 ) {
+		bytes_read = SDLNet_TCP_Recv(socket, data+total_bytes, size);
+		total_bytes += bytes_read;
+	}
+
+	if( bytes_read == -1 ) {
+		werr(LOGDEBUG,"Read error on socket %d",socket);
 		return FALSE;
 	}
 
