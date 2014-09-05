@@ -9,7 +9,7 @@ type = [
 	"no","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky",
 	"no","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky",
 	"no","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky",
-	"no","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky",
+	"no","sky","sky","sky","grd","grd","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky",
 	"no","rok","rok","rok","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","sky","sky","sky",
 	"goo","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd",
 	"goo","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd"
@@ -17,19 +17,19 @@ type = [
 
 event_list :
 {
-        go_to_desert_1 :
+        go_to_1 :
         {
                 pos_x = 0;
                 pos_y = 6;
                 script = "goto.lua";
-                param = ( "desert", "15", "7" );
+                param = ( "desert", "16", "7" );
         };
-        go_to_desert_2 :
+        go_to_2 :
         {
                 pos_x = 0;
                 pos_y = 7;
                 script = "goto.lua";
-                param = ( "desert", "15", "8" );
+                param = ( "desert", "16", "8" );
         };
 };
 
