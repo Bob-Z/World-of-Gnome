@@ -162,10 +162,6 @@ void context_free(context_t * context)
 		free(context->selection.equipment);
 	}
 	context->selection.equipment = NULL;
-	if( context->id ) {
-		free(context->id);
-	}
-	context->id = NULL;
 	if( context->prev_map ) {
 		free(context->prev_map);
 	}
@@ -193,7 +189,7 @@ void context_free(context_t * context)
 		}
 	}
 
-	/* Remove this context if it was selected */
+	/* Remove this context from other context's selection */
 	ctx = context_list_start;
 	while( ctx != NULL ) {
 		if( context->id && ctx->selection.id ) {
@@ -202,6 +198,26 @@ void context_free(context_t * context)
 			}
 		}
 		ctx = ctx->next;
+	}
+
+	if( context->id ) {
+		free(context->id);
+	}
+	context->id = NULL;
+
+	/* Remove this context from the list */
+	if( context == context_list_start ) {
+		context_list_start = context->next;
+	}
+	else {
+		ctx = context_list_start;
+		while( ctx != NULL ) {
+			if( ctx->next == context ) {
+				ctx->next = context->next;
+				break;
+			}
+			ctx = ctx->next;
+		}
 	}
 
 	free(context);
