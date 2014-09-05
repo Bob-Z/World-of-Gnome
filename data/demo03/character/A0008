@@ -1,0 +1,35 @@
+marquee		= "sprite/frog.png";
+sprite		= "sprite/old_frog.png";
+zoom = "0.25";
+npc = 1;
+name = "foo";
+map = "lake";
+type = "frog";
+pos_x = 13;
+pos_y = 2;
+flip_e = 1;
+ai = "ai/ai_random.lua";
+allowed_tile = [ "grd" ];
+#aggro_dist = 1;
+#aggro_script = "aggro_say_hello.lua";
+#attribute : 
+#{
+#  life : 
+#  {
+#    min = 0;
+#    max = 10;
+#    current = 10;
+#    previous = 10;
+#    on_min = "kill.lua";
+#  };
+#  agility : 
+#  {
+#    current = 10;
+#    previous = 10;
+#    on_min = "kill.lua";
+#  };
+#  already_aggro : 
+#  {
+#    current = 0;
+#  };
+#};
