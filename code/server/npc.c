@@ -22,7 +22,10 @@
 #include "action.h"
 #include <sys/types.h>
 #include <dirent.h>
+#include <stdlib.h>
+#include <unistd.h>
 
+#define NPC_TIMEOUT	(2000)
 
 /**********************************
 npc_script
@@ -30,6 +33,9 @@ npc_script
 static void npc_script(context_t * context, char * script, char ** parameters)
 {
 	Uint32 timeout_ms;
+
+	/* Do not start every NPC at the same moment */
+	usleep( (random()%NPC_TIMEOUT) * 1000);
 
 	context_new_VM(context);
 
