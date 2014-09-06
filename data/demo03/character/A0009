@@ -1,0 +1,13 @@
+marquee		= "sprite/oracle.png";
+sprite		= "sprite/oracle.png";
+zoom = "1.25";
+npc = 1;
+name = "Yezul";
+map = "lake";
+type = "oracle";
+pos_x = 6;
+pos_y = 0;
+ai = "ai/ai_dontmove.lua";
+allowed_tile = [ "grd" ];
+aggro_dist = 2;
+aggro_script = "aggro/say_hello.lua";
