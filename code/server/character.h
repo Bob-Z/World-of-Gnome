@@ -24,5 +24,6 @@ int character_set_pos(context_t * ctx,const char * map, int x, int y);
 char * character_create_from_template(context_t * ctx,const char * template,const char * map, int x, int y);
 void character_update_aggro(context_t * context);
 int character_set_npc(const char * ctx, int npc);
+int character_get_npc(const char * id);
 char * character_get_speak(char * id);
 

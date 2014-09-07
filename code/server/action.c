@@ -457,6 +457,28 @@ static int l_character_set_npc( lua_State* L)
 	return 1;  /* number of results */
 }
 
+/* character_get_npc
+
+Get a characters npc attribute.
+
+Input:
+ - ID of a character
+Output:
+ - 0 if not NPC
+ - 1 if NPC
+*/
+static int l_character_get_npc( lua_State* L)
+{
+	const char * id;
+	int res;
+
+	id = luaL_checkstring(L, -1);
+
+	res = character_get_npc(id);
+	lua_pushnumber(L, res);
+	return 1;  /* number of results */
+}
+
 /* map_new
 
 Create a map
@@ -1392,6 +1414,8 @@ void register_lua_functions(context_t * context)
 	lua_setglobal(L, "character_set_pos");
 	lua_pushcfunction(L, l_character_set_npc);
 	lua_setglobal(L, "character_set_npc");
+	lua_pushcfunction(L, l_character_get_npc);
+	lua_setglobal(L, "character_get_npc");
 	lua_pushcfunction(L, l_character_disconnect);
 	lua_setglobal(L, "character_disconnect");
 	lua_pushcfunction(L, l_character_delete);

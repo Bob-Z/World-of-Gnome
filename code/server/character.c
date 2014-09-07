@@ -22,6 +22,7 @@
 #include <string.h>
 #include "npc.h"
 #include "action.h"
+#include "character.h"
 
 /*********************************************
 Send playable character templates
@@ -195,95 +196,132 @@ char * character_create_from_template(context_t * ctx,const char * template,cons
 }
 
 /***********************************************************************
+***********************************************************************/
+static void execute_aggro(context_t * agressor, context_t * target, char * script, int aggro_dist)
+{
+	int dist;
+	char * param[] = { NULL,NULL,NULL };
+
+	dist = context_distance(agressor,target);
+
+	if(dist <= aggro_dist) {
+		param[1] = "1";
+	}
+	else {
+		param[1] = "0";
+	}
+
+	param[0] = target->id;
+	param[2] = NULL;
+	action_execute_script(agressor,script,param);
+
+}
+/***********************************************************************
 Call aggro script for each context in every npc context aggro dist
 ***********************************************************************/
-void character_update_aggro(context_t * context)
+void character_update_aggro(context_t * agressor)
 {
-	context_t * ctx = NULL;
-	context_t * ctx2 = NULL;
+	context_t * target = NULL;
+	context_t * npc = NULL;
 	int aggro_dist;
-	int dist;
 	char * aggro_script;
-	char * param[] = { NULL,NULL };
-	int no_aggro = 1;
 
-	ctx = context_get_list_first();
-
-	if( ctx == NULL ) {
+	if( agressor == NULL ) {
 		return;
 	}
 
-	if( ctx->map == NULL ) {
+	if( agressor->map == NULL ) {
 		return;
 	}
 
-	/*For each context: check dist of every other context on the same map*/
-	/*For each context at aggro distance, execute the accro script */
-	do {
-		if(!ctx->id) {
+	if( agressor->id == NULL ) {
+		return;
+	}
+
+	if( agressor->luaVM == NULL ) {
+		return;
+	}
+
+	/* If the current context is an NPC it might be an aggressor: compute its aggro */
+	if( character_get_npc(agressor->id) ) {
+		if(entry_read_int(CHARACTER_TABLE,agressor->id,&aggro_dist, CHARACTER_KEY_AGGRO_DIST,NULL)) {
+			if(entry_read_string(CHARACTER_TABLE,agressor->id,&aggro_script, CHARACTER_KEY_AGGRO_SCRIPT,NULL)) {
+				target = context_get_list_first();
+
+				while( target != NULL ) {
+					/* Skip current context */
+					if( agressor == target) {
+						target = target->next;
+						continue;
+					}
+					if(target->id == NULL) {
+						target = target->next;
+						continue;
+					}
+					if(target->map == NULL) {
+						target = target->next;
+						continue;
+					}
+					/* Skip if not on the same map */
+					if( strcmp(agressor->map,target->map) != 0 ) {
+						target = target->next;
+						continue;
+					}
+					execute_aggro(agressor,target,aggro_script,aggro_dist);
+					target = target->next;
+				}
+				free(aggro_script);
+			}
+		}
+	}
+
+	/* Compute aggro of all other NPC to the current context */
+	target = agressor;
+	npc = context_get_list_first();
+
+	while( npc != NULL ) {
+		/* Skip current context */
+		if( target == npc) {
+			npc = npc->next;
+			continue;
+		}
+		if(npc->id == NULL) {
+			npc = npc->next;
+			continue;
+		}
+		if(npc->map == NULL) {
+			npc = npc->next;
+			continue;
+		}
+		if( npc->luaVM == NULL ) {
+			npc = npc->next;
+			continue;
+		}
+		/* Skip if not on the same map */
+		if( strcmp(npc->map,target->map) != 0 ) {
+			npc = npc->next;
+			continue;
+		}
+		if(!entry_read_int(CHARACTER_TABLE,npc->id,&aggro_dist, CHARACTER_KEY_AGGRO_DIST,NULL)) {
+			npc = npc->next;
+			continue;
+		}
+		if(!entry_read_string(CHARACTER_TABLE,npc->id,&aggro_script, CHARACTER_KEY_AGGRO_SCRIPT,NULL)) {
+			npc = npc->next;
 			continue;
 		}
 
-		if( ctx->luaVM == NULL ) {
-			continue;
-		}
-
-		no_aggro = 1;
-		if(!entry_read_int(CHARACTER_TABLE,ctx->id,&aggro_dist, CHARACTER_KEY_AGGRO_DIST,NULL)) {
-			continue;
-		}
-
-		if(!entry_read_string(CHARACTER_TABLE,ctx->id,&aggro_script, CHARACTER_KEY_AGGRO_SCRIPT,NULL)) {
-			continue;
-		}
-
-		ctx2 = context_get_list_first();
-
-		do {
-			/* Skip current context */
-			if( ctx == ctx2) {
-				continue;
-			}
-
-			if(ctx2->id == NULL) {
-				continue;
-			}
-
-			if(ctx2->map == NULL) {
-				continue;
-			}
-
-			/* Skip if not on the same map */
-			if( strcmp(ctx->map,ctx2->map) != 0 ) {
-				continue;
-			}
-
-			dist = context_distance(ctx,ctx2);
-
-			if(dist <= aggro_dist) {
-				param[0] = ctx2->id;
-				param[1] = NULL;
-				action_execute_script(ctx,aggro_script,param);
-				no_aggro = 0;
-			}
-		} while( (ctx2=ctx2->next)!= NULL );
-
-
-		/* Notify if no aggro available */
-		if( no_aggro ) {
-			param[0] = "";
-			param[1] = NULL;
-			action_execute_script(ctx,aggro_script,param);
-		}
+		execute_aggro(npc,target,aggro_script,aggro_dist);
 
 		free(aggro_script);
 
-	} while( (ctx=ctx->next)!= NULL );
+		npc = npc->next;
+	}
 }
 /*************************************************************
 Move every context on the same coordinate as platform context
 *************************************************************/
-static void platform_move(context_t * platform,char * map, int x, int y, int change_map)
+static void platform_move(context_t * platform,const char * map, int x, int y, int change_map)
 {
 	context_t * current = context_get_list_first();
 	int is_platform;
@@ -323,7 +361,7 @@ static void platform_move(context_t * platform,char * map, int x, int y, int cha
 return 0 if new position OK or if position has not changed.
 return -1 if the position was not set (because tile not allowed or out of bound)
 ******************************************************/
-int character_set_pos(context_t * ctx, char * map, int x, int y)
+int character_set_pos(context_t * ctx, const char * map, int x, int y)
 {
 	char ** event_id;
 	char * script;
@@ -407,6 +445,22 @@ int character_set_npc(const char * id, int npc)
 	}
 
 	return 0;
+}
+
+/*********************************************************
+ Get NPC value.
+ return 0 if not NPC
+ return 1 if NPC
+*********************************************************/
+int character_get_npc(const char * id)
+{
+	int npc;
+
+	if(!entry_read_int(CHARACTER_TABLE,id,&npc,CHARACTER_KEY_NPC,NULL)) {
+		return 0;
+	}
+
+	return npc;
 }
 
 /*********************************************************
