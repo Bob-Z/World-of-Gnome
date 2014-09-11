@@ -38,6 +38,8 @@ void context_init(context_t * context)
 	context->socket_data = 0;
 	context->hostname = NULL;
 	context->send_mutex = SDL_CreateMutex();
+	context->async_send_num = 0;
+	context->async_send_mutex = SDL_CreateMutex();
 
 	context->render = NULL;
 	context->window = NULL;
@@ -134,6 +136,10 @@ void context_free(context_t * context)
 	}
 	context->socket_data = 0;
 	SDL_DestroyMutex(context->send_mutex);
+
+	SDL_DestroyMutex(context->async_send_mutex);
+	context->async_send_num = 0;
+
 	if( context->hostname ) {
 		free(context->hostname);
 	}

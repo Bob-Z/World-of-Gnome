@@ -33,12 +33,14 @@ typedef struct selection {
 } selection_t;
 
 typedef struct context {
-	char *				user_name;
-	int					connected;
-	TCPsocket			socket;
-	TCPsocket			socket_data;
-	SDL_mutex*		send_mutex; /* Asynchronous network send */
+	char *		user_name;
+	int		connected;
+	TCPsocket	socket;
+	TCPsocket	socket_data;
+	SDL_mutex*	send_mutex; /* Asynchronous network send */
 	char *		hostname;
+	int		async_send_num;/* Number of asynchronous data sending thread */
+	SDL_mutex*	async_send_mutex;/* mutex for previous data */
 
 	SDL_Renderer * render;
 	SDL_Window * window;
