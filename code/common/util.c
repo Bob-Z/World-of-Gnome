@@ -103,3 +103,26 @@ void deep_free(char ** to_delete)
 	}
 }
 
+/*********************
+Extract token from string
+dWorks just like strsep but delim is afull string, not separate characters
+*********************/
+char * _strsep(char **stringp, const char *delim)
+{
+	char * next_delim;
+	char * start = *stringp;
+
+	if(*stringp == NULL) {
+		return NULL;
+	}
+
+	next_delim = strstr(*stringp,delim);
+	if(next_delim) {
+		*next_delim = 0;
+		*stringp = next_delim + strlen(delim);
+	}
+	else {
+		*stringp = NULL;
+	}
+	return start;
+}

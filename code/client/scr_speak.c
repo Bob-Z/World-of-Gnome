@@ -96,10 +96,12 @@ static void compose_screen(context_t * ctx)
 {
 	item_t * item;
 	int i = 0;
+	int x = 0;
 	int y = 0;
 	static TTF_Font * font = NULL;
 	int w;
 	int h;
+	int max_h;
 	anim_t * anim;
 
 	if ( font != NULL ) {
@@ -130,23 +132,35 @@ static void compose_screen(context_t * ctx)
 	y += h;
 	
 	for ( i = 0; i < speak_num; i++) {
-		item = item_list_add(&item_list);
-		anim = imageDB_get_anim(ctx,speak[i].icon);
-		item_set_anim(item,0,y,anim);
-		item_set_click_left(item,cb_speak,(void*)speak[i].keyword,NULL);
+		x = 0;
+		max_h = 0;
 
-		item = item_list_add(&item_list);
-		item_set_string(item,speak[i].text);
-		item_set_font(item,font);
-		sdl_get_string_size(item->font,item->string,&w,&h);
-		item_set_frame_shape(item,anim->w,y,w,h);
-		item_set_click_left(item,cb_speak,(void*)speak[i].keyword,NULL);
-		if( h > anim->w ) {
-			y += h;
+		if( speak[i].icon ) {
+			item = item_list_add(&item_list);
+			anim = imageDB_get_anim(ctx,speak[i].icon);
+			item_set_anim(item,0,y,anim);
+			if ( speak[i].keyword ) {
+				item_set_click_left(item,cb_speak,(void*)speak[i].keyword,NULL);
+			}
+			x = anim->w;
+			max_h = anim->h;
 		}
-		else {
-			y += anim->w;
+
+		if( speak[i].text ) {
+			item = item_list_add(&item_list);
+			item_set_string(item,speak[i].text);
+			item_set_font(item,font);
+			sdl_get_string_size(item->font,item->string,&w,&h);
+			item_set_frame_shape(item,x,y,w,h);
+			if( speak[i].keyword ) {
+				item_set_click_left(item,cb_speak,(void*)speak[i].keyword,NULL);
+			}
+			if( max_h < h ) {
+				max_h = h;
+			}
 		}
+
+		y += max_h;
 	}
 }
 
@@ -155,7 +169,6 @@ Parse network frame and generate a speak screen
 **********************************/
 void scr_speak_parse(int total_size, char * frame)
 {
-	char *saveptr1 = NULL;
 	char * s_icon = NULL;
 	char * s_text = NULL;
 	char * s_keyword = NULL;
@@ -163,14 +176,14 @@ void scr_speak_parse(int total_size, char * frame)
 	
 	clean_up();
 	
-	name = strdup(strtok_r(frame,NETWORK_DELIMITER,&saveptr1));
+	name = strdup(_strsep(&frame,NETWORK_DELIMITER));
 	size += strlen(name);
 	size += strlen(NETWORK_DELIMITER);
-	text = strdup(strtok_r(NULL,NETWORK_DELIMITER,&saveptr1));
+	text = strdup(_strsep(&frame,NETWORK_DELIMITER));
 	size += strlen(text);
 	size += strlen(NETWORK_DELIMITER);
 	while( size < total_size ) {
-		s_icon = strtok_r(NULL,NETWORK_DELIMITER,&saveptr1);
+		s_icon = _strsep(&frame,NETWORK_DELIMITER);
 		if(s_icon == NULL) {
 			werr(LOGDEBUG,"Parsing error",NULL);
 			return;
@@ -178,7 +191,7 @@ void scr_speak_parse(int total_size, char * frame)
 		size += strlen(s_icon);
 		size += strlen(NETWORK_DELIMITER);
 		
-		s_text = strtok_r(NULL,NETWORK_DELIMITER,&saveptr1);
+		s_text = _strsep(&frame,NETWORK_DELIMITER);
 		if(s_text == NULL) {
 			werr(LOGDEBUG,"Parsing error",NULL);
 			return;
@@ -186,7 +199,7 @@ void scr_speak_parse(int total_size, char * frame)
 		size += strlen(s_text);
 		size += strlen(NETWORK_DELIMITER);
 		
-		s_keyword = strtok_r(NULL,NETWORK_DELIMITER,&saveptr1);
+		s_keyword = _strsep(&frame,NETWORK_DELIMITER);
 		if(s_keyword == NULL) {
 			werr(LOGDEBUG,"Parsing error",NULL);
 			return;
@@ -196,9 +209,24 @@ void scr_speak_parse(int total_size, char * frame)
 
 		speak_num++;
 		speak = realloc(speak,speak_num*sizeof(speak_entry_t));
-		speak[speak_num-1].icon = strdup(s_icon);
-		speak[speak_num-1].text = strdup(s_text);
-		speak[speak_num-1].keyword = strdup(s_keyword);
+		if( *s_icon != 0 ) {
+			speak[speak_num-1].icon = strdup(s_icon);
+		}
+		else {
+			speak[speak_num-1].icon = NULL;
+		}
+		if(*s_text != 0) {
+			speak[speak_num-1].text = strdup(s_text);
+		}
+		else {
+			speak[speak_num-1].text = NULL;
+		}
+		if(*s_keyword != 0) {
+			speak[speak_num-1].keyword = strdup(s_keyword);
+		}
+		else {
+			speak[speak_num-1].keyword = NULL;
+		}
 	}
 	
 	screen_set_screen(SCREEN_SPEAK);

@@ -22,5 +22,6 @@
 char * checksum_file(const char * filename);
 char * strconcat(const char * str, ...);
 void deep_free(char ** to_delete);
+char * _strsep(char **stringp, const char *delim);
 #endif
 

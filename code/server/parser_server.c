@@ -32,8 +32,6 @@ int parse_incoming_data(context_t * context, Uint32 command, Uint32 command_size
 	char * elements[512];
 	char * cksum;
 	int i;
-	char *saveptr1;
-	char *saveptr2;
 
 	if( !context_get_connected(context) && command != CMD_LOGIN_USER && command != CMD_LOGIN_PASSWORD ) {
 		werr(LOGUSER,"Request from not authenticated client, close connection");
@@ -77,10 +75,10 @@ int parse_incoming_data(context_t * context, Uint32 command, Uint32 command_size
 		break;
 	case CMD_REQ_FILE :
 		i = 0;
-		elements[i] = strtok_r(data,NETWORK_DELIMITER,&saveptr1);
+		elements[i] = _strsep(&data,NETWORK_DELIMITER);
 		while(elements[i]) {
 			i++;
-			elements[i] = strtok_r(NULL,NETWORK_DELIMITER,&saveptr1);
+			elements[i] = _strsep(&data,NETWORK_DELIMITER);
 		}
 
 		if(elements[0]==NULL || elements[1]==NULL) {
@@ -127,10 +125,10 @@ int parse_incoming_data(context_t * context, Uint32 command, Uint32 command_size
 		break;
 	case CMD_SEND_ACTION :
 		i = 0;
-		elements[i] = strtok_r(data,NETWORK_DELIMITER,&saveptr2);
+		elements[i] = _strsep(&data,NETWORK_DELIMITER);
 		while(elements[i]) {
 			i++;
-			elements[i] = strtok_r(NULL,NETWORK_DELIMITER,&saveptr2);
+			elements[i] = _strsep(&data,NETWORK_DELIMITER);
 		}
 
 		wlog(LOGDEBUG,"Received CMD_SEND_ACTION %s from %s /%s",elements[0],context->user_name,context->character_name);
