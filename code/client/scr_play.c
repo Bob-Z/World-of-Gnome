@@ -369,6 +369,8 @@ Compose item on map
 static void compose_item(context_t * ctx)
 {
 	char * sprite_name = NULL;
+	double map_zoom = 1.0;
+	char * zoom_str;
 	anim_t * anim;
 	item_t * item;
 	int x;
@@ -386,6 +388,11 @@ static void compose_item(context_t * ctx)
 
 	if(!entry_get_group_list(MAP_TABLE,ctx->map,&item_id,MAP_ENTRY_ITEM_LIST,NULL)) {
 		return;
+	}
+
+	if(entry_read_string(MAP_TABLE,ctx->map,&zoom_str,MAP_KEY_SPRITE_ZOOM,NULL)) {
+		map_zoom = atof(zoom_str);
+		free(zoom_str);
 	}
 
 	i=0;
@@ -424,10 +431,12 @@ static void compose_item(context_t * ctx)
 		x = x*ctx->tile_x;
 		y = y*ctx->tile_y;
 		/* Center sprite on tile */
-		x -= (anim->w-ctx->tile_x)/2;
-		y -= (anim->h-ctx->tile_y)/2;
+		x -= ((anim->w*map_zoom)-ctx->tile_x)/2;
+		y -= ((anim->h*map_zoom)-ctx->tile_y)/2;
 
 		item_set_anim(item,x,y,anim);
+		item_set_zoom_x(item, map_zoom );
+		item_set_zoom_y(item, map_zoom );
 		if(font) {
 			quantity = item_get_quantity(item_id[i]);
 			sprintf(buf,"%d",quantity);
