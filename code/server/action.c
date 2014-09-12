@@ -1044,7 +1044,6 @@ static int l_map_get_character( lua_State* L)
 	if( res) {
 		cur_res = res;
 		while(*cur_res != NULL) {
-//			wlog(LOGDEBUG,"Pushing %s",*cur_res);
 			lua_pushstring(L, *cur_res);
 			free(*cur_res);
 			res_num++;
@@ -1053,7 +1052,44 @@ static int l_map_get_character( lua_State* L)
 		free(res);
 	}
 
-//wlog(LOGDEBUG,"returning %d",res_num);
+	return res_num;  /* number of results */
+}
+
+/* map_get_item
+
+Get list of item on a tile
+
+Input:
+ - ID of a map
+ - X coordinate (in tiles)
+ - Y coordinate (in tiles)
+Output: Array of item on that tile
+*/
+static int l_map_get_item( lua_State* L)
+{
+	const char * map;
+	int x;
+	int y;
+	char ** res;
+	char ** cur_res;
+	int res_num = 0;
+
+	map = luaL_checkstring(L, -3);
+	x = luaL_checkint(L, -2);
+	y = luaL_checkint(L, -1);
+
+	res = map_get_item(map,x,y);
+	if( res) {
+		cur_res = res;
+		while(*cur_res != NULL) {
+			lua_pushstring(L, *cur_res);
+			free(*cur_res);
+			res_num++;
+			cur_res++;
+		}
+		free(res);
+	}
+
 	return res_num;  /* number of results */
 }
 
@@ -1437,6 +1473,8 @@ void register_lua_functions(context_t * context)
 	lua_setglobal(L, "map_get_tile_type");
 	lua_pushcfunction(L, l_map_get_character);
 	lua_setglobal(L, "map_get_character");
+	lua_pushcfunction(L, l_map_get_item);
+	lua_setglobal(L, "map_get_item");
 	lua_pushcfunction(L, l_map_add_event);
 	lua_setglobal(L, "map_add_event");
 	lua_pushcfunction(L, l_map_add_event_param);

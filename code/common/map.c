@@ -658,3 +658,50 @@ char ** map_get_character(const char * map,int x, int y)
 
 	return character_list;
 }
+
+/************************************************
+ return an array of item id on given map at x,y
+ This array AND its content MUST be freed by caller
+************************************************/
+char ** map_get_item(const char * map,int map_x, int map_y)
+{
+	char ** item_id = NULL;
+	char ** item_list= NULL;
+	int item_num = 0;
+	int x;
+	int y;
+	int i;
+
+	if( x<0 || y<0 ) {
+		return NULL;
+	}
+
+	if(!entry_get_group_list(MAP_TABLE,map,&item_id,MAP_ENTRY_ITEM_LIST,NULL)) {
+                return NULL;
+        }
+
+	i=0;
+        while( item_id[i] != NULL ) {
+                if(!entry_read_int(MAP_TABLE,map,&x,MAP_ENTRY_ITEM_LIST,item_id[i],MAP_ITEM_POS_X,NULL)) {
+                        i++;
+                        continue;
+                }
+
+                if(!entry_read_int(MAP_TABLE,map,&y,MAP_ENTRY_ITEM_LIST,item_id[i],MAP_ITEM_POS_Y,NULL)) {
+                        i++;
+                        continue;
+                }
+
+		if ( x == map_x && y == map_y ) {
+			item_num++;
+			item_list=realloc(item_list,sizeof(char*)*(item_num+1));
+			item_list[item_num-1] = strdup(item_id[i]);
+			item_list[item_num] = NULL;
+		}
+                i++;
+        }
+
+        deep_free(item_id);
+
+	return item_list;
+}

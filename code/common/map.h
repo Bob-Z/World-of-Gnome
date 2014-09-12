@@ -29,6 +29,7 @@ char * map_get_tile(const char * map,int x, int y, int level);
 char * map_get_tile_type(const char * map,int x, int y);
 char ** map_get_event(const char * map,int x, int y);
 char ** map_get_character(const char * map,int x, int y);
+char ** map_get_item(const char * map,int x, int y);
 char * map_add_event(const char * map, const char * script, int x, int y);
 int map_add_event_param(const char * map, const char * event_id, const char * param);
 int map_delete_event(const char * map, const char * script, int x, int y);
