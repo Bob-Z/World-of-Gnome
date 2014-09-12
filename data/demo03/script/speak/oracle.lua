@@ -13,6 +13,8 @@ if keyword == "start" then
 end
 
 if keyword == "yes" then
+	item = item_create_from_template("artefact")
+	map_add_item("cliff",item,5,5);
 	text = string.format("Thanks %s, please go fetch the holy artefact !",player_name)
 	speak_send(npc,player,text)
 end

@@ -1,0 +1,4 @@
+name =  "artefact";
+sprite =  "item/artefact.png";
+icon = "item/artefact.png";
+description = "the holy artefact";
