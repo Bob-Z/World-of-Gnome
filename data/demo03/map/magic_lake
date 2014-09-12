@@ -1,0 +1,45 @@
+sprite_zoom = "0.14";
+width = 17;
+height = 4;
+tile_width = 50;
+tile_height = 48;
+list0 = ["0","-336","map/magic_lake.jpg" ];
+type = [
+	"grd","grd","grd","grd","wtr","wtr","wtr","wtr","wtr","grd","grd","grd","grd","grd","grd","grd","goo",
+	"grd","grd","grd","grd","wtr","wtr","wtr","wtr","wtr","grd","grd","grd","grd","grd","grd","grd","goo",
+	"grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","goo",
+	"grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","grd","goo"
+];
+
+event_list :
+{
+        go_to_1 :
+        {
+                pos_x = 16;
+                pos_y = 0;
+                script = "goto.lua";
+                param = ( "desert", "1", "6" );
+        };
+        go_to_2 :
+        {
+                pos_x = 16;
+                pos_y = 1;
+                script = "goto.lua";
+                param = ( "desert", "1", "7" );
+        };
+        go_to_3 :
+        {
+                pos_x = 16;
+                pos_y = 2;
+                script = "goto.lua";
+                param = ( "desert", "1", "8" );
+        };
+        go_to_4 :
+        {
+                pos_x = 16;
+                pos_y = 3;
+                script = "goto.lua";
+                param = ( "desert", "1", "9" );
+        };
+};
+
