@@ -1,0 +1,12 @@
+marquee		= "sprite/dog.png";
+sprite		= "sprite/dog.png";
+zoom = "1.0";
+npc = 1;
+name = "foo";
+map = "magic_lake";
+type = "dog";
+pos_x = 1;
+pos_y = 1;
+flip_w = 1;
+ai = "ai/ai_random.lua";
+allowed_tile = [ "grd" ];
