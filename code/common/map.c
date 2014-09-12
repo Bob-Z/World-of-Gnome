@@ -672,7 +672,7 @@ char ** map_get_item(const char * map,int map_x, int map_y)
 	int y;
 	int i;
 
-	if( x<0 || y<0 ) {
+	if( map_x<0 || map_y<0 ) {
 		return NULL;
 	}
 
