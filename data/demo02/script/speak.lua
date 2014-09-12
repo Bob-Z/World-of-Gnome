@@ -1,4 +1,4 @@
-function f (keyword)
+function f (listner_id, keyword)
 
 id = player_get_id()
 
