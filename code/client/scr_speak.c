@@ -32,6 +32,7 @@
 #define FONT_SIZE 32
 
 static item_t * item_list = NULL;
+static char * speaker_id = NULL;
 static char * name = NULL;
 //static anim_t * icon = NULL;
 static char * text = NULL;
@@ -44,6 +45,10 @@ static void clean_up()
 {
 	int i;
 
+	if( speaker_id ) {
+		free(speaker_id);
+		speaker_id = NULL;
+	}
 	if( name ) {
 		free(name);
 		name = NULL;
@@ -86,7 +91,7 @@ void cb_speak(void * arg)
 		return;
 	}
 
-	network_send_action(player, speak_script,keyword);
+	network_send_action(player, speak_script,speaker_id,keyword,NULL);
 }
 
 /**********************************
@@ -117,12 +122,14 @@ static void compose_screen(context_t * ctx)
 		font = TTF_OpenFont(FONT, FONT_SIZE );
 	}
 
-	item = item_list_add(&item_list);
-	item_set_string(item,name);
-	item_set_font(item,font);
-	sdl_get_string_size(item->font,item->string,&w,&h);
-	item_set_frame_shape(item,0,y,w,h);
-	y += h;
+	if( name ) {
+		item = item_list_add(&item_list);
+		item_set_string(item,name);
+		item_set_font(item,font);
+		sdl_get_string_size(item->font,item->string,&w,&h);
+		item_set_frame_shape(item,0,y,w,h);
+		y += h;
+	}
 
 	item = item_list_add(&item_list);
 	item_set_string(item,text);
@@ -173,11 +180,17 @@ void scr_speak_parse(int total_size, char * frame)
 	char * s_text = NULL;
 	char * s_keyword = NULL;
 	int size = 0;
+	context_t * speaker_ctx;
 	
 	clean_up();
 	
-	name = strdup(_strsep(&frame,NETWORK_DELIMITER));
-	size += strlen(name);
+	speaker_id = strdup(_strsep(&frame,NETWORK_DELIMITER));
+	speaker_ctx = context_find(speaker_id);
+	if( speaker_ctx->character_name ) {
+		name = strdup(speaker_ctx->character_name);
+	}
+
+	size += strlen(speaker_id);
 	size += strlen(NETWORK_DELIMITER);
 	text = strdup(_strsep(&frame,NETWORK_DELIMITER));
 	size += strlen(text);
