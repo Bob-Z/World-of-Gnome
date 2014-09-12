@@ -10,4 +10,5 @@ pos_y = 0;
 ai = "ai/ai_dontmove.lua";
 allowed_tile = [ "grd" ];
 aggro_dist = 3;
-aggro_script = "aggro/say_hello.lua";
+aggro_script = "aggro/oracle.lua";
+speak_script = "speak/oracle.lua";
