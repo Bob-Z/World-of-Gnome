@@ -59,7 +59,7 @@
 #define CHARACTER_KEY_AI	"ai"
 #define CHARACTER_KEY_AI_PARAMS	"ai_params"
 #define CHARACTER_KEY_AGGRO_DIST	"aggro_dist"
-#define CHARACTER_KEY_AGGRO_SCRIPT	"aggro_script"
+#define CHARACTER_KEY_AGGRO_SCRIPT	"aggro_script" /* Called with param: target id, 1 if in aggro, 0 if out of aggro */
 #define CHARACTER_KEY_DIR_N_ROT		"rot_n"
 #define CHARACTER_KEY_DIR_NE_ROT	"rot_ne"
 #define CHARACTER_KEY_DIR_E_ROT		"rot_e"
@@ -74,7 +74,7 @@
 #define CHARACTER_KEY_DIR_W_FLIP	"flip_w"
 #define CHARACTER_KEY_DIR_E_FLIP	"flip_e"
 #define CHARACTER_KEY_PLATFORM		"platform"
-#define CHARACTER_KEY_SPEAK			"speak"
+#define CHARACTER_KEY_SPEAK		"speak_script"
 
 #define CHARACTER_TEMPLATE_TABLE	"character_template"
 
