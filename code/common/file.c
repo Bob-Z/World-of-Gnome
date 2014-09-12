@@ -99,6 +99,41 @@ void file_update(context_t * context, char * filename)
 	file_data->timestamp = current_time;
 }
 
+/***************************************************
+ return 0 if directory was successfully created
+****************************************************/
+static int mkdir_all(const char * pathname)
+{
+	char * token;
+	char * source;
+	int ret = -1;
+	char * directory = NULL;
+	char * new_directory = NULL;
+	char *saveptr;
+
+	if(pathname == NULL) {
+		return -1;
+	}
+
+	source = strdup(pathname);
+
+	token =  strtok_r(source,"/",&saveptr);
+
+	directory = strdup("");
+	while( token != NULL ) {
+		new_directory = strconcat(directory,"/",token,NULL);
+		free(directory);
+		directory = new_directory;
+		ret = mkdir(directory,0775);
+		token =  strtok_r(NULL,"/",&saveptr);
+	}
+
+	free(directory);
+	free(source);
+
+	return ret;
+}
+
 /****************************
   Parameter 1: Name of the table to create the new file
   return the name of an available empty file
@@ -122,6 +157,14 @@ char * file_new(char * table)
 	SDL_LockMutex(character_dir_mutex);
 
 	dir = opendir(dirname);
+
+	if( dir == NULL ) {
+		mkdir_all(dirname);
+		dir = opendir(dirname);
+		if(dir == NULL) {
+			return NULL;
+		}
+	}
 
 	while(( ent = readdir(dir)) != NULL ) {
 		if( strcmp(ent->d_name,".") == 0 ) {
@@ -261,41 +304,6 @@ void file_copy(char * src_name, char * dst_name)
 
 	fclose(dst);
 	fclose(src);
-}
-
-/***************************************************
- return 0 if directory was successfully created
-****************************************************/
-static int mkdir_all(const char * pathname)
-{
-	char * token;
-	char * source;
-	int ret = -1;
-	char * directory = NULL;
-	char * new_directory = NULL;
-	char *saveptr;
-
-	if(pathname == NULL) {
-		return -1;
-	}
-
-	source = strdup(pathname);
-
-	token =  strtok_r(source,"/",&saveptr);
-
-	directory = strdup("");
-	while( token != NULL ) {
-		new_directory = strconcat(directory,"/",token,NULL);
-		free(directory);
-		directory = new_directory;
-		ret = mkdir(directory,0775);
-		token =  strtok_r(NULL,"/",&saveptr);
-	}
-
-	free(directory);
-	free(source);
-
-	return ret;
 }
 
 /***************************************************
