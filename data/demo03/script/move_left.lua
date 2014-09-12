@@ -17,4 +17,13 @@ end
 
 character_set_pos(id,map,new_pos_x,new_pos_y)
 
+--Get all item on the current tile
+found_item = {map_get_item(map,new_pos_x,new_pos_y)}
+i=1
+while found_item[i] ~= nil do
+        map_delete_item(map,new_pos_x,new_pos_y)
+        inventory_add(id,found_item[i])
+        i = i+1
+end
+
 end
