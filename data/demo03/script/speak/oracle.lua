@@ -13,7 +13,7 @@ if keyword == "start" then
 end
 
 if keyword == "yes" then
-	text = string.format("Thanks %s, please go fetch the holy item !",player_name)
+	text = string.format("Thanks %s, please go fetch the holy artefact !",player_name)
 	speak_send(npc,player,text)
 end
 
