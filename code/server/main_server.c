@@ -25,6 +25,8 @@
 #include <getopt.h>
 #include <string.h>
 #include <stdlib.h>
+#include <sys/types.h>
+#include <dirent.h>
 
 static int noNPC = 0;
 
@@ -50,6 +52,7 @@ void sigint_handler(int sig)
 int main (int argc, char **argv)
 {
 	int opt_ret;
+	DIR * dir;
 
 	while((opt_ret = getopt_long(argc, argv, optstring, longopts, NULL))!=-1) {
 		switch(opt_ret) {
@@ -81,6 +84,14 @@ int main (int argc, char **argv)
 
 	if(base_directory == NULL) {
 		base_directory = strconcat(getenv("HOME"),"/.config/wog/server",NULL);
+	}
+	else {
+		dir = opendir(base_directory);
+		if(dir == NULL) {
+			werr(LOGUSER,"Cannot find %s directory",base_directory);
+			return -1;
+		}
+		closedir(dir);
 	}
 
 	common_mutex_init();
