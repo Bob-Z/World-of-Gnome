@@ -1,3 +1,3 @@
 text            = "Get an item from the field";
-icon            = "icon/gray.jpg";
+icon            = "icon/get.png";
 script		= "get.lua";
