@@ -741,9 +741,12 @@ Compose select cursor
 static void compose_inventory_select(context_t * ctx,item_t * item_list)
 {
         item_t * item;
-        anim_t * anim;
         int x;
         int i;
+	char * icon_name;
+	anim_t * anim;
+	anim_t * icon_anim;
+	char * template;
 
         if(ctx->selection.inventory == NULL) {
                 return;
@@ -767,10 +770,24 @@ static void compose_inventory_select(context_t * ctx,item_t * item_list)
 
         i = 0;
         x = 0;
-        item = item_list;
         while( inventory_list[i] && strcmp(inventory_list[i],ctx->selection.inventory) ) {
-                x += item->anim->w;
-                item=item->next;
+                template = item_is_resource(ctx->selection.inventory);
+
+                if ( template == NULL ) {
+                        if(!entry_read_string(ITEM_TABLE,inventory_list[i],&icon_name,ITEM_ICON,NULL)) {
+                                werr(LOGDEV,"Can't read item %s icon name",inventory_list[i]);
+                        }
+                } else {
+                        if(!entry_read_string(ITEM_TEMPLATE_TABLE,template,&icon_name,ITEM_ICON,NULL)) {
+                                werr(LOGDEV,"Can't read item %s icon name (template: %s)",inventory_list[i],template);
+                        }
+                        free(template);
+                }
+
+		icon_anim = imageDB_get_anim(ctx,icon_name);
+		free(icon_name);
+
+                x += icon_anim->w;
                 i++;
         }
 
@@ -837,6 +854,8 @@ void cb_speak(void * arg)
         }
 
         network_send_action(player, speak_script,speaker_id,keyword,NULL);
+
+	free(speak_script);
 }
 
 /**********************************
