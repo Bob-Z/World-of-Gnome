@@ -24,7 +24,7 @@
 #include "imageDB.h"
 #include "textview.h"
 #include "screen.h"
-#include "scr_speak.h"
+#include "ui_play.h"
 
 /***********************************
  Return FALSE on error, TRUE if OK
@@ -79,7 +79,7 @@ int parse_incoming_data(context_t * context, Uint32 command, Uint32 command_size
 		break;
 	case CMD_SEND_SPEAK :
 		wlog(LOGDEBUG,"Received CMD_SEND_SPEAK");
-		scr_speak_parse(command_size,data);
+		ui_play_speak_parse(command_size,data);
 		break;
 	default:
 		werr(LOGDEV,"Unknown request from server");

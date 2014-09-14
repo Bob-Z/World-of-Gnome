@@ -29,3 +29,5 @@ char * ui_play_get_last_action_script();
 void ui_play_cb_action(void * arg);
 void ui_play_compose(context_t * ctx, item_t * item_list);
 void ui_play_init();
+void ui_play_speak_parse(int total_size, char * frame);
+

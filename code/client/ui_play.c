@@ -40,7 +40,7 @@
 #define SPEAK_FONT "/usr/share/fonts/truetype/ubuntu-font-family/Ubuntu-C.ttf"
 #define SPEAK_FONT_SIZE 32
 
-#define BACKGROUND_COLOR (0xFF01017f)
+#define BACKGROUND_COLOR (0x000000C0)
 
 static int current_ui = UI_MAIN;
 static char * last_action_script = NULL;
@@ -921,8 +921,9 @@ static void compose_speak(context_t * ctx,item_t * item_list)
 
 /**********************************
 Parse network frame and generate a speak screen
+TODO: put this in network files ?
 **********************************/
-void scr_speak_parse(int total_size, char * frame)
+void ui_play_speak_parse(int total_size, char * frame)
 {
         char * s_icon = NULL;
         char * s_text = NULL;
