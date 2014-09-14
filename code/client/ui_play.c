@@ -550,6 +550,7 @@ static void compose_text(context_t * ctx, item_t * item_list)
 
         item_set_overlay(item,1);
         item_set_string(item,text_buffer);
+        item_set_string_bg(item,BACKGROUND_COLOR);
         item_set_font(item,font);
         item_set_editable(item,1);
         item_set_edit_cb(item,keyboard_text);
@@ -586,6 +587,7 @@ static void compose_text(context_t * ctx, item_t * item_list)
 
                 item_set_overlay(item,1);
                 item_set_string(item,hist->text);
+		item_set_string_bg(item,BACKGROUND_COLOR);
                 item_set_font(item,font);
                 sdl_get_string_size(item->font,item->string,&w,&h);
                 item_set_frame_shape(item,0,current_y-h,w,h);
