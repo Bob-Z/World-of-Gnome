@@ -1235,7 +1235,7 @@ int entry_update(char * data)
 	while( token != NULL ) {
 		elements[index] = strdup(token);
 		index++;
-		if(index>=5) {
+		if(index>5) {
 			werr(LOGDEV,"Split string error");
 			goto entry_update_cleanup;
 		}
