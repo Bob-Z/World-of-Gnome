@@ -829,6 +829,10 @@ void context_broadcast_text(const char * map, const char * text)
 			continue;
 		}
 
+		if( ctx->map == 0 ) {
+			continue;
+		}
+
 		if(map) {
 			/* Skip if not on the same map */
 			if( strcmp(map,ctx->map) != 0 ) {
