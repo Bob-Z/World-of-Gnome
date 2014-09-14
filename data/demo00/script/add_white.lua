@@ -8,7 +8,7 @@ if x == -1 or y == -1 then
 	return
 end
 map = character_get_map(id)
-map_set_tile(map,"white.jpg",x,y,0)
+map_set_tile(map,"tile/white.jpg",x,y,0)
 map_set_tile_type(map,"mud",x,y)
 
 end
