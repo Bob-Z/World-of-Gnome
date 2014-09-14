@@ -21,10 +21,8 @@
 #include "../common/common.h"
 
 #define SCREEN_SELECT		0
-#define SCREEN_PLAY			1
-#define SCREEN_INVENTORY	2
-#define SCREEN_SPEAK		3
-#define SCREEN_LAST			4
+#define SCREEN_PLAY		1
+#define SCREEN_LAST		2
 
 void screen_display(context_t * ctx);
 void screen_compose();

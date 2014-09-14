@@ -19,5 +19,13 @@
 
 #include "../sdl_item/item.h"
 
-item_t * scr_inventory_compose(context_t * context);
+#define UI_MAIN         0
+#define UI_INVENTORY    1
+#define UI_SPEAK        2
 
+void ui_play_set(int ui_type);
+int ui_play_get();
+char * ui_play_get_last_action_script();
+void ui_play_cb_action(void * arg);
+void ui_play_compose(context_t * ctx, item_t * item_list);
+void ui_play_init();
