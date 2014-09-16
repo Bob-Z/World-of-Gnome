@@ -32,28 +32,28 @@ int parse_incoming_data(context_t * context, Uint32 command, Uint32 command_size
 	char * elements[512];
 	char * cksum;
 	int i;
+	char * user_name;
+	char * password;
 
-	if( !context_get_connected(context) && command != CMD_LOGIN_USER && command != CMD_LOGIN_PASSWORD ) {
+	if( !context_get_connected(context) && command != CMD_LOGIN ) {
 		werr(LOGUSER,"Request from not authenticated client, close connection");
 		return FALSE;
 	}
 
 	switch(command) {
-	case CMD_LOGIN_USER :
-		wlog(LOGDEBUG,"Received CMD_LOGIN_USER");
-		if( !context_set_username(context, data) ) {
+	case CMD_LOGIN:
+		wlog(LOGDEBUG,"Received CMD_LOGIN");
+		user_name = _strsep(&data,NETWORK_DELIMITER);
+		password = _strsep(&data,NETWORK_DELIMITER);
+
+		if( !context_set_username(context, user_name) ) {
 			return FALSE;
 		}
-		wlog(LOGDEBUG,"Successfully set username to %s",data);
-		break;
-	case CMD_LOGIN_PASSWORD :
-		wlog(LOGDEBUG,"Received CMD_LOGIN_PASSWORD");
-		/* Read username / password pairs from file : FILE_USER_CONF */
-		/* Read password for username */
+
 		if(!entry_read_string(PASSWD_TABLE, context->user_name, &value, PASSWD_KEY_PASSWORD,NULL)) {
 			return FALSE;
 		}
-		if( strcmp(value, data) != 0) {
+		if( strcmp(value, password) != 0) {
 			free(value);
 			werr(LOGUSER,"Wrong login for %s",context->user_name);
 			/* send answer */
@@ -64,7 +64,7 @@ int parse_incoming_data(context_t * context, Uint32 command, Uint32 command_size
 			free(value);
 			/* send answer */
 			network_send_command(context, CMD_LOGIN_OK, 0, NULL, FALSE);
-			wlog(LOGUSER,"%s successfully login",context->user_name);
+			wlog(LOGUSER,"Login successful for user %s",context->user_name);
 			context_set_connected(context, TRUE);
 		}
 		break;

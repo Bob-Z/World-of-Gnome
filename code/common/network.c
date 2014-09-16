@@ -101,8 +101,7 @@ void network_send_command(context_t * context, Uint32 command, long int count, c
 	send_data_t * send_data;
 
 	/* Client still connected ? */
-	if( command != CMD_LOGIN_USER &&
-		command != CMD_LOGIN_PASSWORD &&
+	if( command != CMD_LOGIN &&
 		! context_get_connected(context) ) {
 		if( context->async_send_num == 0 ) {
 /*  TODO / FIXME : a single context should be associated to both 

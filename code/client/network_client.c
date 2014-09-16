@@ -22,12 +22,15 @@
 /*********************************************************************
 sends a login request, the answer is asynchronously read by async_recv
 **********************************************************************/
-void network_login(context_t * context, const char * name, const char * password)
+void network_login(context_t * context, const char * user_name, const char * password)
 {
-	wlog(LOGDEBUG,"Send CMD_LOGIN_USER");
-	network_send_command(context, CMD_LOGIN_USER, strlen(name) + 1, name,FALSE);
-	wlog(LOGDEBUG,"Send CMD_LOGIN_PASSWORD");
-	network_send_command(context, CMD_LOGIN_PASSWORD, strlen(password) + 1, password,FALSE);
+	char * frame;
+
+	frame = strconcat(user_name,NETWORK_DELIMITER,password,NULL);
+
+	wlog(LOGDEBUG,"Send CMD_LOGIN");
+	network_send_command(context, CMD_LOGIN, strlen(frame) + 1, frame,FALSE);
+	free(frame);
 }
 
 /*********************************************************************
