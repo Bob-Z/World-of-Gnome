@@ -265,7 +265,7 @@ int context_set_hostname(context_t * context, const char * name)
 	SDL_LockMutex(context_list_mutex);
 
 	if( context->hostname ) {
-		free( context->user_name );
+		free( context->hostname );
 	}
 
 	context->hostname = strdup(name);
