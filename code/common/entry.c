@@ -140,7 +140,7 @@ static const config_t * get_config(const char * table, const char * file)
 	file_lock(filename);
 
 //	wlog(LOGDEBUG,"Entry asked : %s",filename);
-	file_update(context_get_list_first(),filename);
+	file_update(context_get_player(),filename);
 
 	if( (config=load_config(filename)) == NULL ) {
 		file_unlock(filename);

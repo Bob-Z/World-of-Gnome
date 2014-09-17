@@ -112,7 +112,7 @@ static void cb_main_quit(void * arg)
 ****************************/
 static void key_up(void * arg)
 {
-        context_t * ctx = context_get_list_first();
+        context_t * ctx = context_get_player();
 
         network_send_action(ctx,"move_up.lua",NULL);
 }
@@ -121,7 +121,7 @@ static void key_up(void * arg)
 **************************************/
 static void key_down(void * arg)
 {
-        context_t * ctx = context_get_list_first();
+        context_t * ctx = context_get_player();
 
         network_send_action(ctx,"move_down.lua",NULL);
 }
@@ -130,7 +130,7 @@ static void key_down(void * arg)
 **************************************/
 static void key_left(void * arg)
 {
-        context_t * ctx = context_get_list_first();
+        context_t * ctx = context_get_player();
 
         network_send_action(ctx,"move_left.lua",NULL);
 }
@@ -139,7 +139,7 @@ static void key_left(void * arg)
 **************************************/
 static void key_right(void * arg)
 {
-        context_t * ctx = context_get_list_first();
+        context_t * ctx = context_get_player();
 
         network_send_action(ctx,"move_right.lua",NULL);
 }
@@ -218,7 +218,7 @@ void ui_play_cb_action(void * arg)
 {
         char * script = (char *)arg;
 
-        network_send_action(context_get_list_first(),script,NULL);
+        network_send_action(context_get_player(),script,NULL);
 
         if( last_action_script ) {
                 free(last_action_script);
@@ -322,7 +322,7 @@ static void compose_action(context_t * ctx,item_t * item_list)
 static void cb_select_slot(void * arg)
 {
         char * id = (char*)arg;
-        context_t * ctx = context_get_list_first();
+        context_t * ctx = context_get_player();
 
         ctx->selection.equipment = id;
         network_send_context(ctx);
@@ -512,7 +512,7 @@ static void keyboard_text(void * arg)
 {
         char * text = (char*)arg;
 
-        network_send_action(context_get_list_first(),WOG_CHAT,text,NULL);
+        network_send_action(context_get_player(),WOG_CHAT,text,NULL);
         text_buffer[0]=0;
         screen_compose();
 }
@@ -627,14 +627,14 @@ static void cb_inventory_quit(void * arg)
 ****************************/
 void cb_inventory_select(void * arg)
 {
-        context_t * player = context_get_list_first();
+        context_t * player = context_get_player();
         char * item_id = (char *)arg;
 
         if( player->selection.inventory ) {
                 free( player->selection.inventory );
         }
-        context_get_list_first()->selection.inventory = strdup(item_id);
-        network_send_context(context_get_list_first());
+        player->selection.inventory = strdup(item_id);
+        network_send_context(player);
 }
 
 /**********************************
@@ -845,7 +845,7 @@ static void speak_cleanup()
 ****************************/
 void cb_speak(void * arg)
 {
-        context_t * player = context_get_list_first();
+        context_t * player = context_get_player();
         char * keyword = (char *)arg;
         char * speak_script = NULL;
 

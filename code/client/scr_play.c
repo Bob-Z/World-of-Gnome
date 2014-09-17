@@ -46,7 +46,7 @@ static void cb_select_sprite(void *arg)
 {
 	char * id = (char*)arg;
 
-	context_t * ctx = context_get_list_first();
+	context_t * ctx = context_get_player();
 	ctx->selection.id= id;
 	network_send_context(ctx);
 }
@@ -103,7 +103,7 @@ static void compose_sprite(context_t * ctx)
 	char * zoom_str = NULL;
 	double zoom = 1.0;
 	double map_zoom = 0.0;
-	context_t * player_context = context_get_list_first();
+	context_t * player_context = context_get_player();
 
 	context_lock_list();
 
@@ -380,7 +380,7 @@ static void compose_item(context_t * ctx)
 static void cb_select_map(void *arg)
 {
 	item_t * item = (item_t*)arg;
-	context_t * ctx = context_get_list_first();
+	context_t * ctx = context_get_player();
 
 	ctx->selection.map_coord[0]= item->tile_x;
 	ctx->selection.map_coord[1]= item->tile_y;

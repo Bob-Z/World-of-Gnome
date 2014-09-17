@@ -633,7 +633,7 @@ char ** map_get_character(const char * map,int x, int y)
 {
 	char ** character_list = NULL;
 	int character_num = 0;
-	context_t * ctx = context_get_list_first();
+	context_t * ctx = context_get_first();
 
 	if( x<0 || y<0 ) {
 		return NULL;

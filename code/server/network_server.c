@@ -28,7 +28,7 @@ void network_broadcast_text(context_t * context, const char * text)
 
 	SDL_LockMutex(context_list_mutex);
 
-	ctx = context_get_list_first();
+	ctx = context_get_first();
 
 	if( ctx == NULL ) {
 		SDL_UnlockMutex(context_list_mutex);
@@ -87,7 +87,7 @@ void network_broadcast_entry_int(const char * table, const char * file, const ch
 
 	SDL_LockMutex(context_list_mutex);
 
-	ctx = context_get_list_first();
+	ctx = context_get_first();
 
 	if( ctx == NULL ) {
 		SDL_UnlockMutex(context_list_mutex);

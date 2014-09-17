@@ -253,7 +253,13 @@ void context_unlock_list()
 
 /***********************
 ***********************/
-context_t * context_get_list_first()
+context_t * context_get_first()
+{
+	return context_list_start;
+}
+/***********************
+***********************/
+context_t * context_get_player()
 {
 	return context_list_start;
 }
@@ -1069,7 +1075,7 @@ Called on screen switch
 **************************************/
 void context_reset_all_position()
 {
-	context_t * ctx = context_get_list_first();
+	context_t * ctx = context_get_first();
 
 	SDL_LockMutex(context_list_mutex);
 	while(ctx != NULL ) {

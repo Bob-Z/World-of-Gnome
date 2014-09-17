@@ -246,7 +246,7 @@ void character_update_aggro(context_t * agressor)
 	if( character_get_npc(agressor->id) ) {
 		if(entry_read_int(CHARACTER_TABLE,agressor->id,&aggro_dist, CHARACTER_KEY_AGGRO_DIST,NULL)) {
 			if(entry_read_string(CHARACTER_TABLE,agressor->id,&aggro_script, CHARACTER_KEY_AGGRO_SCRIPT,NULL)) {
-				target = context_get_list_first();
+				target = context_get_first();
 
 				while( target != NULL ) {
 					/* Skip current context */
@@ -277,7 +277,7 @@ void character_update_aggro(context_t * agressor)
 
 	/* Compute aggro of all other NPC to the current context */
 	target = agressor;
-	npc = context_get_list_first();
+	npc = context_get_first();
 
 	while( npc != NULL ) {
 		/* Skip current context */
@@ -323,7 +323,7 @@ Move every context on the same coordinate as platform context
 *************************************************************/
 static void platform_move(context_t * platform,const char * map, int x, int y, int change_map)
 {
-	context_t * current = context_get_list_first();
+	context_t * current = context_get_first();
 	int is_platform;
 
 	if(!entry_read_int(CHARACTER_TABLE,platform->id,&is_platform, CHARACTER_KEY_PLATFORM,NULL)) {
