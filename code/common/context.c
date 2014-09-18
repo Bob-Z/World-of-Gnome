@@ -26,6 +26,19 @@
 
 context_t * context_list_start = NULL;
 
+/***********************
+***********************/
+void context_unlock_list()
+{
+	SDL_UnlockMutex(context_list_mutex);
+}
+
+/***********************
+***********************/
+context_t * context_get_first()
+{
+	return context_list_start;
+}
 /*************************************
 context_init
 Initialize a context_t struct
@@ -86,12 +99,12 @@ context_t * context_new(void)
 {
 	context_t * ctx;
 
-	SDL_LockMutex(context_list_mutex);
+	context_lock_list();
 	if ( context_list_start == NULL ) {
 		context_list_start = malloc(sizeof(context_t));
 		memset(context_list_start,0,sizeof(context_t));
 		context_init(context_list_start);
-		SDL_UnlockMutex(context_list_mutex);
+		context_unlock_list();
 		return context_list_start;
 	}
 
@@ -104,7 +117,7 @@ context_t * context_new(void)
 	memset(ctx->next,0,sizeof(context_t));
 	context_init(ctx->next);
 	ctx->next->previous = ctx;
-	SDL_UnlockMutex(context_list_mutex);
+	context_unlock_list();
 	return ctx->next;
 }
 
@@ -118,7 +131,7 @@ void context_free(context_t * context)
 	int delete_file = TRUE;
 	context_t * ctx;
 
-	SDL_LockMutex(context_list_mutex);
+	context_lock_list();
 
 	if( context->user_name ) {
 		free(context->user_name);
@@ -228,7 +241,7 @@ void context_free(context_t * context)
 
 	free(context);
 
-	SDL_UnlockMutex(context_list_mutex);
+	context_unlock_list();
 
 	if(delete_file) {
 		filename = strconcat(base_directory,"/",CHARACTER_TABLE,"/",context->id,NULL);
@@ -246,19 +259,6 @@ void context_lock_list()
 
 /***********************
 ***********************/
-void context_unlock_list()
-{
-	SDL_UnlockMutex(context_list_mutex);
-}
-
-/***********************
-***********************/
-context_t * context_get_first()
-{
-	return context_list_start;
-}
-/***********************
-***********************/
 context_t * context_get_player()
 {
 	return context_list_start;
@@ -268,7 +268,7 @@ context_t * context_get_player()
 **************************/
 int context_set_hostname(context_t * context, const char * name)
 {
-	SDL_LockMutex(context_list_mutex);
+	context_lock_list();
 
 	if( context->hostname ) {
 		free( context->hostname );
@@ -276,11 +276,11 @@ int context_set_hostname(context_t * context, const char * name)
 
 	context->hostname = strdup(name);
 	if( context->hostname == NULL ) {
-		SDL_UnlockMutex(context_list_mutex);
+		context_unlock_list();
 		return FALSE;
 	}
 
-	SDL_UnlockMutex(context_list_mutex);
+	context_unlock_list();
 	return TRUE;
 }
 
@@ -289,16 +289,16 @@ int context_set_hostname(context_t * context, const char * name)
 **************************/
 int context_set_username(context_t * context, const char * name)
 {
-	SDL_LockMutex(context_list_mutex);
+	context_lock_list();
 
 	free( context->user_name );
 	context->user_name = strdup(name);
 	if( context->user_name == NULL ) {
-		SDL_UnlockMutex(context_list_mutex);
+		context_unlock_list();
 		return FALSE;
 	}
 
-	SDL_UnlockMutex(context_list_mutex);
+	context_unlock_list();
 	return TRUE;
 }
 
@@ -306,9 +306,9 @@ int context_set_username(context_t * context, const char * name)
 **************************************/
 void context_set_connected(context_t * context, int connected)
 {
-	SDL_LockMutex(context_list_mutex);
+	context_lock_list();
 	context->connected = connected;
-	SDL_UnlockMutex(context_list_mutex);
+	context_unlock_list();
 }
 
 /**************************************
@@ -317,9 +317,9 @@ int context_get_connected(context_t * context)
 {
 	int conn = 0;
 
-	SDL_LockMutex(context_list_mutex);
+	context_lock_list();
 	conn = context->connected;
-	SDL_UnlockMutex(context_list_mutex);
+	context_unlock_list();
 
 	return conn;
 }
@@ -328,9 +328,9 @@ int context_get_connected(context_t * context)
 **************************************/
 void context_set_socket(context_t * context, TCPsocket socket)
 {
-	SDL_LockMutex(context_list_mutex);
+	context_lock_list();
 	context->socket = socket;
-	SDL_UnlockMutex(context_list_mutex);
+	context_unlock_list();
 }
 
 /**************************************
@@ -339,9 +339,9 @@ TCPsocket context_get_socket(context_t * context)
 {
 	TCPsocket socket = 0;
 
-	SDL_LockMutex(context_list_mutex);
+	context_lock_list();
 	socket = context->socket;
-	SDL_UnlockMutex(context_list_mutex);
+	context_unlock_list();
 
 	return socket;
 }
@@ -350,9 +350,9 @@ TCPsocket context_get_socket(context_t * context)
 **************************************/
 void context_set_socket_data(context_t * context, TCPsocket socket)
 {
-	SDL_LockMutex(context_list_mutex);
+	context_lock_list();
 	context->socket_data = socket;
-	SDL_UnlockMutex(context_list_mutex);
+	context_unlock_list();
 }
 
 /**************************************
@@ -361,9 +361,9 @@ TCPsocket context_get_socket_data(context_t * context)
 {
 	TCPsocket socket = 0;
 
-	SDL_LockMutex(context_list_mutex);
+	context_lock_list();
 	socket = context->socket_data;
-	SDL_UnlockMutex(context_list_mutex);
+	context_unlock_list();
 
 	return socket;
 }
@@ -375,13 +375,13 @@ int context_set_character_name(context_t * context, const char * name)
 {
 	int ret = TRUE;
 
-	SDL_LockMutex(context_list_mutex);
+	context_lock_list();
 	free( context->character_name );
 	context->character_name = strdup(name);
 	if( context->character_name == NULL ) {
 		ret = FALSE;
 	}
-	SDL_UnlockMutex(context_list_mutex);
+	context_unlock_list();
 
 	return ret;
 }
@@ -433,9 +433,9 @@ int context_set_map(context_t * context, const char * map)
 {
 	int ret;
 
-	SDL_LockMutex(context_list_mutex);
+	context_lock_list();
 	ret = _context_set_map(context,map);
-	SDL_UnlockMutex(context_list_mutex);
+	context_unlock_list();
 
 	return ret;
 }
@@ -444,9 +444,9 @@ int context_set_map(context_t * context, const char * map)
 **************************************/
 int context_set_map_w(context_t * context, int width)
 {
-	SDL_LockMutex(context_list_mutex);
+	context_lock_list();
 	context->map_w = width;
-	SDL_UnlockMutex(context_list_mutex);
+	context_unlock_list();
 
 	return TRUE;
 }
@@ -455,9 +455,9 @@ int context_set_map_w(context_t * context, int width)
 **************************************/
 int context_set_map_h(context_t * context, int height)
 {
-	SDL_LockMutex(context_list_mutex);
+	context_lock_list();
 	context->map_h = height;
-	SDL_UnlockMutex(context_list_mutex);
+	context_unlock_list();
 
 	return TRUE;
 }
@@ -469,13 +469,13 @@ int context_set_type(context_t * context, const char * type)
 {
 	int ret = TRUE;
 
-	SDL_LockMutex(context_list_mutex);
+	context_lock_list();
 	free( context->type );
 	context->type = strdup(type);
 	if( context->type == NULL ) {
 		ret = FALSE;
 	}
-	SDL_UnlockMutex(context_list_mutex);
+	context_unlock_list();
 
 	return ret;
 }
@@ -484,54 +484,54 @@ int context_set_type(context_t * context, const char * type)
 **************************************/
 void context_set_pos_x(context_t * context, unsigned int pos)
 {
-	SDL_LockMutex(context_list_mutex);
+	context_lock_list();
 	context->pos_x = pos;
-	SDL_UnlockMutex(context_list_mutex);
+	context_unlock_list();
 }
 
 /**************************************
 **************************************/
 void context_set_pos_y(context_t * context, unsigned int pos)
 {
-	SDL_LockMutex(context_list_mutex);
+	context_lock_list();
 	context->pos_y = pos;
-	SDL_UnlockMutex(context_list_mutex);
+	context_unlock_list();
 }
 
 /**************************************
 **************************************/
 void context_set_tile_x(context_t * context, unsigned int pos)
 {
-	SDL_LockMutex(context_list_mutex);
+	context_lock_list();
 	context->tile_x = pos;
-	SDL_UnlockMutex(context_list_mutex);
+	context_unlock_list();
 }
 
 /**************************************
 **************************************/
 void context_set_tile_y(context_t * context, unsigned int pos)
 {
-	SDL_LockMutex(context_list_mutex);
+	context_lock_list();
 	context->tile_y = pos;
-	SDL_UnlockMutex(context_list_mutex);
+	context_unlock_list();
 }
 
 /**************************************
 **************************************/
 int context_set_id(context_t * context, const char * name)
 {
-	SDL_LockMutex(context_list_mutex);
+	context_lock_list();
 
 	if( context->id ) {
 		free( context->id );
 	}
 	context->id = strdup(name);
 	if( context->id == NULL ) {
-		SDL_UnlockMutex(context_list_mutex);
+		context_unlock_list();
 		return FALSE;
 	}
 
-	SDL_UnlockMutex(context_list_mutex);
+	context_unlock_list();
 	return TRUE;
 }
 
@@ -548,7 +548,7 @@ void register_lua_functions( context_t * context) {}
 **************************************/
 void context_new_VM(context_t * context)
 {
-	SDL_LockMutex(context_list_mutex);
+	context_lock_list();
 	context->luaVM = lua_open();
 	lua_baselibopen(context->luaVM);
 	lua_tablibopen(context->luaVM);
@@ -557,7 +557,7 @@ void context_new_VM(context_t * context)
 	lua_mathlibopen(context->luaVM);
 
 	register_lua_functions(context);
-	SDL_UnlockMutex(context_list_mutex);
+	context_unlock_list();
 }
 
 /*******************************
@@ -571,10 +571,10 @@ int context_update_from_file(context_t * context)
 	char * result;
 	int ret  = TRUE;
 
-	SDL_LockMutex(context_list_mutex);
+	context_lock_list();
 
 	if( context->id == NULL ) {
-		SDL_UnlockMutex(context_list_mutex);
+		context_unlock_list();
 		return FALSE;
 	}
 
@@ -609,7 +609,7 @@ int context_update_from_file(context_t * context)
 		ret = FALSE;
 	}
 
-	SDL_UnlockMutex(context_list_mutex);
+	context_unlock_list();
 	return ret;
 }
 
@@ -618,10 +618,10 @@ Write a context to server's disk
 *******************************/
 int context_write_to_file(context_t * context)
 {
-	SDL_LockMutex(context_list_mutex);
+	context_lock_list();
 
 	if( context->id == NULL ) {
-		SDL_UnlockMutex(context_list_mutex);
+		context_unlock_list();
 		return FALSE;
 	}
 
@@ -633,7 +633,7 @@ int context_write_to_file(context_t * context)
 
 	entry_write_int(CHARACTER_TABLE, context->id,context->pos_y,CHARACTER_KEY_POS_Y, NULL);
 
-	SDL_UnlockMutex(context_list_mutex);
+	context_unlock_list();
 	return TRUE;
 }
 
@@ -667,7 +667,7 @@ int context_update_from_network_frame(context_t * context, char * frame)
 {
 	char * data = frame;
 
-	SDL_LockMutex(context_list_mutex);
+	context_lock_list();
 
 	if( context->user_name ) {
 		free( context->user_name );
@@ -758,7 +758,7 @@ int context_update_from_network_frame(context_t * context, char * frame)
 	}
 	data += (strlen(data)+1);
 
-	SDL_UnlockMutex(context_list_mutex);
+	context_unlock_list();
 
 	return TRUE;
 }
@@ -770,12 +770,12 @@ void context_spread(context_t * context)
 {
 	context_t * ctx = NULL;
 
-	SDL_LockMutex(context_list_mutex);
+	context_lock_list();
 
 	ctx = context_list_start;
 
 	if( ctx == NULL ) {
-		SDL_UnlockMutex(context_list_mutex);
+		context_unlock_list();
 		return;
 	}
 
@@ -809,7 +809,7 @@ void context_spread(context_t * context)
 	free(context->prev_map);
 	context->prev_map = NULL;
 
-	SDL_UnlockMutex(context_list_mutex);
+	context_unlock_list();
 }
 
 /**************************************
@@ -820,12 +820,12 @@ void context_broadcast_text(const char * map, const char * text)
 {
 	context_t * ctx = NULL;
 
-	SDL_LockMutex(context_list_mutex);
+	context_lock_list();
 
 	ctx = context_list_start;
 
 	if( ctx == NULL ) {
-		SDL_UnlockMutex(context_list_mutex);
+		context_unlock_list();
 		return;
 	}
 
@@ -855,7 +855,7 @@ void context_broadcast_text(const char * map, const char * text)
 
 	} while( (ctx=ctx->next)!= NULL );
 
-	SDL_UnlockMutex(context_list_mutex);
+	context_unlock_list();
 }
 
 /**************************************
@@ -866,12 +866,12 @@ void context_request_other_context(context_t * context)
 {
 	context_t * ctx = NULL;
 
-	SDL_LockMutex(context_list_mutex);
+	context_lock_list();
 
 	ctx = context_list_start;
 
 	if( ctx == NULL ) {
-		SDL_UnlockMutex(context_list_mutex);
+		context_unlock_list();
 		return;
 	}
 
@@ -892,7 +892,7 @@ void context_request_other_context(context_t * context)
 
 	} while( (ctx=ctx->next)!= NULL );
 
-	SDL_UnlockMutex(context_list_mutex);
+	context_unlock_list();
 }
 
 /**************************************
@@ -945,7 +945,7 @@ void context_add_or_update_from_network_frame(context_t * context,char * data)
 	data += (strlen(data)+1);
 
 	/* search for this context */
-	SDL_LockMutex(context_list_mutex);
+	context_lock_list();
 	ctx = context_list_start;
 
 	while( ctx != NULL ) {
@@ -969,7 +969,7 @@ void context_add_or_update_from_network_frame(context_t * context,char * data)
 				free(ctx->type);
 				ctx->type = type;
 
-				SDL_UnlockMutex(context_list_mutex);
+				context_unlock_list();
 			} else {
 				wlog(LOGDEBUG,"Deleting context %s / %s",user_name,name);
 				/* Delete selection if it was selected */
@@ -980,7 +980,7 @@ void context_add_or_update_from_network_frame(context_t * context,char * data)
 					}
 
 				}
-				SDL_UnlockMutex(context_list_mutex);
+				context_unlock_list();
 				context_free(ctx);
 			}
 			return;
@@ -988,7 +988,7 @@ void context_add_or_update_from_network_frame(context_t * context,char * data)
 		ctx = ctx->next;
 	}
 
-	SDL_UnlockMutex(context_list_mutex);
+	context_unlock_list();
 
 	wlog(LOGDEBUG,"Creating context %s / %s",user_name,name);
 	ctx = context_new();
@@ -1017,12 +1017,12 @@ void context_broadcast_file(const char * table, const char * file, int same_map_
 	context_t * ctx = NULL;
 	char * filename;
 
-	SDL_LockMutex(context_list_mutex);
+	context_lock_list();
 
 	ctx = context_list_start;
 
 	if( ctx == NULL ) {
-		SDL_UnlockMutex(context_list_mutex);
+		context_unlock_list();
 		return;
 	}
 
@@ -1046,7 +1046,7 @@ void context_broadcast_file(const char * table, const char * file, int same_map_
 
 	free(filename);
 
-	SDL_UnlockMutex(context_list_mutex);
+	context_unlock_list();
 }
 
 /**************************************
@@ -1077,12 +1077,12 @@ void context_reset_all_position()
 {
 	context_t * ctx = context_get_first();
 
-	SDL_LockMutex(context_list_mutex);
+	context_lock_list();
 	while(ctx != NULL ) {
 		ctx->old_pos_x = ctx->cur_pos_x;
 		ctx->old_pos_y = ctx->cur_pos_y;
 		ctx->pos_tick = 0;
 		ctx = ctx->next;
 	}
-	SDL_UnlockMutex(context_list_mutex);
+	context_unlock_list();
 }
