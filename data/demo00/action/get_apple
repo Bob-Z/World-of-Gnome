@@ -1,3 +1,3 @@
 text            = "Get an apple on black tile";
-icon            = "icon/black.jpg";
+icon            = "icon/get_apple.jpg";
 script		= "get_apple.lua";
