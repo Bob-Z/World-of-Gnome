@@ -143,8 +143,15 @@ int item_set_quantity(const char * item_id, int quantity)
 {
 	char * template;
 
+	/* unique item */
 	if((template=item_is_resource(item_id))==NULL) {
-		return -1; /* unique item */
+		if( quantity == 0 ) {
+			item_destroy(item_id);
+			return 0;
+		}
+		else {
+			return -1;
+		}
 	}
 	free(template);
 
