@@ -11,6 +11,9 @@ if tile == "tile/black.jpg" then
 	if( item_id ~= nil ) then
 		num_item = resource_get_quantity(item_id)
 		resource_set_quantity(item_id,num_item+1)
+	else
+		resource = resource_new("apple",1);
+		inventory_add(id,resource);
 	end
 	return
 end
