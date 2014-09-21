@@ -899,6 +899,32 @@ static int l_item_create_from_template( lua_State* L)
 	return 1;  /* number of results */
 }
 
+/* resource_new
+
+Create a new resource
+
+Input:
+ - Name of the template
+ - Quantity
+Output: ID of the new resource
+*/
+static int l_resource_new( lua_State* L)
+{
+	const char * template;
+	int quantity;
+	char * resource;
+
+	template = luaL_checkstring(L, -2);
+	quantity = luaL_checkint(L, -1);
+
+	resource = resource_new(template,quantity);
+	lua_pushstring(L, resource);
+	if( resource) {
+		free(resource);
+	}
+	return 1;  /* number of results */
+}
+
 /* resource_get_quantity
 
 Get the quantity of a resource
@@ -1497,6 +1523,8 @@ void register_lua_functions(context_t * context)
 	lua_setglobal(L, "item_create_empty");
 	lua_pushcfunction(L, l_item_create_from_template);
 	lua_setglobal(L, "item_create_from_template");
+	lua_pushcfunction(L, l_resource_new);
+	lua_setglobal(L, "resource_new");
 	lua_pushcfunction(L, l_resource_get_quantity);
 	lua_setglobal(L, "resource_get_quantity");
 	lua_pushcfunction(L, l_resource_set_quantity);

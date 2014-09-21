@@ -72,13 +72,13 @@ int item_destroy(const char * item_id)
 }
 
 /***********************************************************
- Create a new item resource based on the specified template
+ Create a new resource
  with the specified quantity
- return the id of the newly created item
+ return the id of the newly created resource
  the returned string must be freed by caller
  return NULL if fails
 ***********************************************************/
-char * item_resource_new(const char * template, int quantity)
+char * resource_new(const char * template, int quantity)
 {
 	char * new_id;
 
