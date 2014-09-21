@@ -139,7 +139,7 @@ int resource_get_quantity(const char * item_id)
  set the quantity of a resource
  return -1 on error
 *****************************/
-int resource_set_quantity(const char * item_id, int quantity)
+int resource_set_quantity(context_t * context, const char * item_id, int quantity)
 {
 	char * template;
 
@@ -152,6 +152,8 @@ int resource_set_quantity(const char * item_id, int quantity)
 	if(!entry_write_int(ITEM_TABLE,item_id,quantity,ITEM_QUANTITY, NULL)) {
 		return -1;
 	}
+
+	network_send_table_file(context,ITEM_TABLE,item_id);
 
 	return 0;
 }

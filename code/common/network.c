@@ -451,7 +451,7 @@ int network_send_file(context_t * context, char * filename)
 send table/file to a context
 return FALSE on success
 *********************************************************************/
-int network_send_table_file(context_t * context, char * table, char * id)
+int network_send_table_file(context_t * context, char * table, const char * id)
 {
 	char * filename;
 	int ret;

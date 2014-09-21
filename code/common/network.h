@@ -33,7 +33,7 @@ void network_send_command(context_t * context, Uint32 command, long int count, c
 void network_send_context(context_t * context);
 void network_send_context_to_context(context_t * dest_ctx, context_t * src_ctx);
 int network_send_file(context_t * context, char * filename);
-int network_send_table_file(context_t * context, char * table, char * filename);
+int network_send_table_file(context_t * context, char * table, const char * filename);
 void network_send_req_file(context_t * context, char * file);
 void network_send_entry_int(context_t * context, const char * table, const char * file, const char *path, int value);
 void network_send_text(const char * id, const char * string);

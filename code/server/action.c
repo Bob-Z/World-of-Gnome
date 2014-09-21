@@ -932,10 +932,15 @@ static int l_resource_set_quantity( lua_State* L)
 	const char * resource;
 	int quantity;
 	int res;
+	context_t * context;
+
+	lua_getglobal(L,LUAVM_CONTEXT);
+	context = lua_touserdata(L, -1);
+	lua_pop(L,1);
 
 	resource = luaL_checkstring(L, -2);
 	quantity = luaL_checkint(L, -1);
-	res = resource_set_quantity(resource,quantity);
+	res = resource_set_quantity(context,resource,quantity);
 	lua_pushnumber(L, res);
 	return 1;  /* number of results */
 }
