@@ -363,7 +363,7 @@ static void compose_item(context_t * ctx)
 		item_set_zoom_x(item, map_zoom );
 		item_set_zoom_y(item, map_zoom );
 		if(font) {
-			quantity = item_get_quantity(item_id[i]);
+			quantity = resource_get_quantity(item_id[i]);
 			sprintf(buf,"%d",quantity);
 			item_set_string(item,buf);
 			item_set_font(item,font);

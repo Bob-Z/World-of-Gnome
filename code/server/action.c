@@ -899,47 +899,46 @@ static int l_item_create_from_template( lua_State* L)
 	return 1;  /* number of results */
 }
 
-/* item_get_quantity
+/* resource_get_quantity
 
-Get the quantity of an item
+Get the quantity of a resource
 
 Input:
- - ID of an item
-Output: Quantity of that item
+ - ID of a resource
+Output: Quantity of that resource
 */
-static int l_item_get_quantity( lua_State* L)
+static int l_resource_get_quantity( lua_State* L)
 {
-	const char * item;
+	const char * resource;
 	int res;
 
-	item = luaL_checkstring(L, -1);
-	res = item_get_quantity(item);
+	resource = luaL_checkstring(L, -1);
+	res = resource_get_quantity(resource);
 	lua_pushnumber(L, res);
 	return 1;  /* number of results */
 }
 
-/* item_set_quantity
+/* resource_set_quantity
 
-Set the quantity of an item
+Set the quantity of a resource
 
 Input:
- - ID of an item
+ - ID of a resource
  - quantity to set
 Output: -1 on error
 */
-static int l_item_set_quantity( lua_State* L)
+static int l_resource_set_quantity( lua_State* L)
 {
-	const char * item;
+	const char * resource;
 	int quantity;
 	int res;
 
-	item = luaL_checkstring(L, -2);
+	resource = luaL_checkstring(L, -2);
 	quantity = luaL_checkint(L, -1);
-	res = item_set_quantity(item,quantity);
+	res = resource_set_quantity(resource,quantity);
 	lua_pushnumber(L, res);
 	return 1;  /* number of results */
 }
-
 
 /* item_destroy
 
@@ -1493,10 +1492,10 @@ void register_lua_functions(context_t * context)
 	lua_setglobal(L, "item_create_empty");
 	lua_pushcfunction(L, l_item_create_from_template);
 	lua_setglobal(L, "item_create_from_template");
-	lua_pushcfunction(L, l_item_get_quantity);
-	lua_setglobal(L, "item_get_quantity");
-	lua_pushcfunction(L, l_item_set_quantity);
-	lua_setglobal(L, "item_set_quantity");
+	lua_pushcfunction(L, l_resource_get_quantity);
+	lua_setglobal(L, "resource_get_quantity");
+	lua_pushcfunction(L, l_resource_set_quantity);
+	lua_setglobal(L, "resource_set_quantity");
 	lua_pushcfunction(L, l_item_destroy);
 	lua_setglobal(L, "item_destroy");
 	/* character attribute func */

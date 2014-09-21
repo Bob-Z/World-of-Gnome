@@ -716,7 +716,7 @@ static void compose_inventory(context_t * ctx,item_t * item_list)
                         free(template);
                 }
 
-                quantity = item_get_quantity(inventory_list[i]);
+                quantity = resource_get_quantity(inventory_list[i]);
                 sprintf(buf,"%d",quantity);
 
                 item = item_list_add(&item_list);

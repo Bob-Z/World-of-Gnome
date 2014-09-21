@@ -115,10 +115,10 @@ char * item_is_resource(const char * item_id)
 }
 
 /*****************************
- return the quantity of an item
+ return the quantity of a resource
  return -1 on error
 *****************************/
-int item_get_quantity(const char * item_id)
+int resource_get_quantity(const char * item_id)
 {
 	int quantity;
 	char * template;
@@ -136,22 +136,16 @@ int item_get_quantity(const char * item_id)
 }
 
 /*****************************
- set the quantity of a resource item
+ set the quantity of a resource
  return -1 on error
 *****************************/
-int item_set_quantity(const char * item_id, int quantity)
+int resource_set_quantity(const char * item_id, int quantity)
 {
 	char * template;
 
 	/* unique item */
 	if((template=item_is_resource(item_id))==NULL) {
-		if( quantity == 0 ) {
-			item_destroy(item_id);
-			return 0;
-		}
-		else {
-			return -1;
-		}
+		return -1;
 	}
 	free(template);
 

@@ -9,8 +9,8 @@ tile = map_get_tile(map,x,y,0)
 if tile == "tile/black.jpg" then
 	item_id = inventory_get_by_name(id,"apple")
 	if( item_id ~= nil ) then
-		num_item = item_get_quantity(item_id)
-		item_set_quantity(item_id,num_item+1)
+		num_item = resource_get_quantity(item_id)
+		resource_set_quantity(item_id,num_item+1)
 	end
 	return
 end

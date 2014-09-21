@@ -88,7 +88,7 @@ int inventory_add(const char * ctx_id, const char * item_id)
 						free(current_template);
 						free(template);
 						add_count+=current_count;
-						item_set_quantity(name_list[index],add_count);
+						resource_set_quantity(name_list[index],add_count);
 						item_destroy(item_id);
 						network_send_table_file(context,ITEM_TABLE,name_list[index]);
 						return 0;
