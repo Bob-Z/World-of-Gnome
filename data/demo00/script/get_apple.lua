@@ -7,11 +7,14 @@ y = character_get_y(id)
 tile = map_get_tile(map,x,y,0)
 
 if tile == "tile/black.jpg" then
-	new_item_id = item_create_from_template("apple")
-	inventory_add(id,new_item_id)
+	item_id = inventory_get_by_name(id,"apple")
+	if( item_id ~= nil ) then
+		num_item = item_get_quantity(item_id)
+		item_set_quantity(item_id,num_item+1)
+	end
 	return
 end
 
-print_text_id(id, "You are not on a black tile")
+print_text_id(id, "You must be on a black tile to get an apple")
 
 end
