@@ -100,10 +100,6 @@ int main (int argc, char **argv)
 		return 0;
 	}
 
-	if(network_open_data_connection(context)) {
-		network_login_data(context,user,pass);
-	}
-
 	//Run the main loop
 	screen_display(context);
 

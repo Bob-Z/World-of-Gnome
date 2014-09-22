@@ -36,10 +36,8 @@
 //List of command :
 
 // login with user name , followed by the user name itself, return OK if user exists
-#define CMD_LOGIN			0 /* user name followed by password in plain text FIXME */
-#define CMD_LOGIN_DATA			1 /* user name followed by password in plain text FIXME */
-#define CMD_LOGIN_OK			2
-#define CMD_LOGIN_DATA_OK		3
+#define CMD_LOGIN			1 /* user name followed by password in plain text FIXME */
+#define CMD_LOGIN_OK			3
 #define CMD_LOGIN_NOK			4
 #define CMD_REQ_CHARACTER_LIST		5  /* Request the available characters template on the server */
 #define CMD_SEND_CHARACTER		6  /* Add a character template to the list of available character */
