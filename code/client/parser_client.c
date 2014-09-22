@@ -34,13 +34,13 @@ int parse_incoming_data(context_t * context, Uint32 command, Uint32 command_size
 	switch(command) {
 	case CMD_LOGIN_OK :
 		wlog(LOGDEBUG,"Received CMD_LOGIN_OK");
-		if(!network_open_data_connection(context)) {
-			return FALSE;
-		}
 		context_set_connected(context, TRUE);
 		wlog(LOGUSER,"Successfully connected");
 		network_request_user_character_list(context);
 		wlog(LOGDEBUG,"Character list requested");
+		break;
+	case CMD_LOGIN_DATA_OK :
+		wlog(LOGDEBUG,"Received CMD_LOGIN_DATA_OK");
 		break;
 	case CMD_LOGIN_NOK :
 		wlog(LOGDEBUG,"Received CMD_LOGIN_NOK");

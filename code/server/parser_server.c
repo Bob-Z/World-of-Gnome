@@ -68,6 +68,32 @@ int parse_incoming_data(context_t * context, Uint32 command, Uint32 command_size
 			context_set_connected(context, TRUE);
 		}
 		break;
+	case CMD_LOGIN_DATA:
+		wlog(LOGDEBUG,"Received CMD_LOGIN_DATA");
+		user_name = _strsep(&data,NETWORK_DELIMITER);
+		password = _strsep(&data,NETWORK_DELIMITER);
+
+		if( !context_set_username(context, user_name) ) {
+			return FALSE;
+		}
+
+		if(!entry_read_string(PASSWD_TABLE, context->user_name, &value, PASSWD_KEY_PASSWORD,NULL)) {
+			return FALSE;
+		}
+		if( strcmp(value, password) != 0) {
+			free(value);
+			werr(LOGUSER,"Wrong login for %s",context->user_name);
+			/* send answer */
+			network_send_command(context, CMD_LOGIN_NOK, 0, NULL, FALSE);
+			/* force client disconnection*/
+			return FALSE;
+		} else {
+			free(value);
+			/* send answer */
+			network_send_command(context, CMD_LOGIN_DATA_OK, 0, NULL, FALSE);
+			wlog(LOGUSER,"Data login successful for user %s",context->user_name);
+		}
+		break;
 	case CMD_REQ_CHARACTER_LIST :
 		wlog(LOGDEBUG,"Received CMD_REQ_CHARACTER_LIST");
 		character_send_list(context);

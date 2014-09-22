@@ -34,6 +34,20 @@ void network_login(context_t * context, const char * user_name, const char * pas
 }
 
 /*********************************************************************
+sends a data login request, the answer is asynchronously read by async_recv
+**********************************************************************/
+void network_login_data(context_t * context, const char * user_name, const char * password)
+{
+	char * frame;
+
+	frame = strconcat(user_name,NETWORK_DELIMITER,password,NULL);
+
+	wlog(LOGDEBUG,"Send CMD_LOGIN");
+	network_send_command(context, CMD_LOGIN_DATA, strlen(frame) + 1, frame,TRUE);
+	free(frame);
+}
+
+/*********************************************************************
 *********************************************************************/
 void network_request_character_list(context_t * context)
 {

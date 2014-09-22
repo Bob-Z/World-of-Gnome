@@ -23,6 +23,7 @@
 #include "../common/common.h"
 
 void network_login(context_t * context, const char * name, const char * password);
+void network_login_data(context_t * context, const char * name, const char * password);
 void network_request_character_list(context_t * context);
 void network_request_user_character_list(context_t * context);
 void network_send_action(context_t * context, char * frame,...);
