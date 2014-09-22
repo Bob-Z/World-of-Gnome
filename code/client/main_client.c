@@ -107,6 +107,9 @@ int main (int argc, char **argv)
 	//Run the main loop
 	screen_display(context);
 
+	SDLNet_TCP_Close(context->socket_data);
+	SDLNet_TCP_Close(context->socket);
+
 	SDLNet_Quit();
 
 	free(base_directory);
