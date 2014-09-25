@@ -951,7 +951,7 @@ void context_add_or_update_from_network_frame(context_t * context,char * data)
 	while( ctx != NULL ) {
 		if( strcmp( id, ctx->id) == 0 ) {
 			free(id);
-			if( connected != FALSE ) {
+			if( connected == TRUE ) {
 				wlog(LOGDEBUG,"Updating context %s / %s",user_name,name);
 				free(user_name);
 				free(name);
