@@ -8,9 +8,14 @@ if target ~= nil then
 	text = string.format("%s named %s was killed on %s by %s",character_get_type(target), character_get_name(target), character_get_map(target), character_get_name(id))
 	print_text_map( character_get_map(target) , text)
 
+	x = character_get_x(target)
+	y = character_get_x(target)
+	map = character_get_map(target)
+
 	if character_disconnect(target) ~= -1 then
-	-- get an apple as a reward for this kill
-		inventory_add(id,"apple")
+	-- drop the loot
+		loot = resource_new("apple",1)
+		map_add_item(map,loot,x,y)
 	end
 else
 --else the kill was from environnment
