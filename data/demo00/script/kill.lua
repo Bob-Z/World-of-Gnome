@@ -9,7 +9,7 @@ if target ~= nil then
 	print_text_map( character_get_map(target) , text)
 
 	x = character_get_x(target)
-	y = character_get_x(target)
+	y = character_get_y(target)
 	map = character_get_map(target)
 
 	if character_disconnect(target) ~= -1 then
