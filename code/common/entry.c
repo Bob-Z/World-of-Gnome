@@ -1280,7 +1280,7 @@ entry_update_cleanup:
 }
 
 /***********************************************
-dELETE a character's file
+Delete a character's file
 return -1 if fails
 ***********************************************/
 int entry_destroy(const char * filename)
