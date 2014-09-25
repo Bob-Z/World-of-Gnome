@@ -124,6 +124,7 @@ int character_disconnect( const char * id)
 	/* For NPC */
 	if( ctx->socket == NULL ) {
 		context_set_connected(ctx,FALSE);
+		context_spread(ctx);
 		/* Wake up NPC */
 		if( SDL_TryLockMutex (ctx->cond_mutex) == TRUE ) {
 			SDL_CondSignal (ctx->cond);
