@@ -62,13 +62,7 @@ return -1 if fails
 *****************************/
 int item_destroy(const char * item_id)
 {
-	char * filename;
-
-	filename = strconcat(ITEM_TABLE,"/",item_id,NULL);
-	entry_destroy(filename);
-	free(filename);
-
-	return 0;
+	return entry_destroy(ITEM_TABLE,item_id);
 }
 
 /***********************************************************
@@ -88,12 +82,12 @@ char * resource_new(const char * template, int quantity)
 	}
 
 	if(!entry_write_string(ITEM_TABLE,new_id,template,ITEM_TEMPLATE, NULL)) {
-		entry_destroy(new_id);
+		entry_destroy(ITEM_TABLE,new_id);
 		return NULL;
 	}
 
 	if(!entry_write_int(ITEM_TABLE,new_id,quantity,ITEM_QUANTITY, NULL)) {
-		entry_destroy(new_id);
+		entry_destroy(ITEM_TABLE,new_id);
 		return NULL;
 	}
 

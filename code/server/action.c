@@ -393,11 +393,13 @@ Output:
 */
 static int l_character_delete( lua_State* L)
 {
+	const char * table;
 	const char * id;
 	int res;
 
+	table = luaL_checkstring(L, -2);
 	id = luaL_checkstring(L, -1);
-	res = entry_destroy(id);
+	res = entry_destroy(table,id);
 	lua_pushnumber(L, res);
 	return 1;  /* number of results */
 }

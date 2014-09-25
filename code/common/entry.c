@@ -1283,11 +1283,14 @@ entry_update_cleanup:
 Delete a character's file
 return -1 if fails
 ***********************************************/
-int entry_destroy(const char * filename)
+int entry_destroy(const char * table, const char * file)
 {
 	char * fullname;
+	char * filename;
 	int res;
 	const config_t * old_config;
+
+	filename = strconcat(table,"/",file,NULL);
 
 	SDL_LockMutex(entry_mutex);
 	old_config = list_find(entry_list,filename);
@@ -1301,6 +1304,7 @@ int entry_destroy(const char * filename)
 
 	res = unlink(fullname);
 	free(fullname);
+	free(filename);
 
 	if(res != 0 ) {
 		werr(LOGUSER,"Error deleting file \"%s\"",fullname);
