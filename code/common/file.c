@@ -333,3 +333,19 @@ int file_create_directory(char * fullname)
 	return ret;
 }
 
+/***************************************************
+ Delete a file from filesystem
+ return 0 if file was successfully deleted
+****************************************************/
+int file_delete(const char * table, const char * filename)
+{
+	char * fullname;
+	int res;
+
+	fullname = strconcat(base_directory,"/",table,"/",filename,NULL);
+	res = unlink(fullname);
+	free(fullname);
+
+	return res;
+}
+

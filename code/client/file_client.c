@@ -93,11 +93,5 @@ int file_add(context_t * context,char * data,Uint32 command_size)
 **********************************************************************************/
 void file_clean(context_t * context)
 {
-	char * filename;
-
-	filename = strconcat(base_directory,"/",CHARACTER_TABLE,"/",context->id,NULL);
-
-	unlink(filename);
-
-	free(filename);
+	file_delete(CHARACTER_TABLE,context->id);
 }

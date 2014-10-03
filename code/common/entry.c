@@ -1285,7 +1285,6 @@ return -1 if fails
 ***********************************************/
 int entry_destroy(const char * table, const char * file)
 {
-	char * fullname;
 	char * filename;
 	int res;
 	const config_t * old_config;
@@ -1300,14 +1299,12 @@ int entry_destroy(const char * table, const char * file)
 	list_update(&entry_list,filename,NULL);
 	SDL_UnlockMutex(entry_mutex);
 
-	fullname = strconcat(base_directory,"/",filename,NULL);
-
-	res = unlink(fullname);
-	free(fullname);
 	free(filename);
 
+	res = file_delete(table,file);
+
 	if(res != 0 ) {
-		werr(LOGUSER,"Error deleting file \"%s\"",fullname);
+		werr(LOGUSER,"Error deleting file \"%s/%s\"",table,file);
 	}
 
 	return res;
