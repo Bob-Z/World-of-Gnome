@@ -127,8 +127,6 @@ Deep free of a context_t struct
 *************************************/
 void context_free(context_t * context)
 {
-	char * filename;
-	int delete_file = TRUE;
 	context_t * ctx;
 
 	context_lock_list();
@@ -140,12 +138,10 @@ void context_free(context_t * context)
 	context->connected = FALSE;
 	if( context->socket != 0) {
 		SDLNet_TCP_Close(context->socket);
-		delete_file = FALSE;
 	}
 	context->socket = 0;
 	if( context->socket_data != 0) {
 		SDLNet_TCP_Close(context->socket_data);
-		delete_file = FALSE;
 	}
 	context->socket_data = 0;
 	SDL_DestroyMutex(context->send_mutex);
@@ -242,12 +238,6 @@ void context_free(context_t * context)
 	free(context);
 
 	context_unlock_list();
-
-	if(delete_file) {
-		filename = strconcat(base_directory,"/",CHARACTER_TABLE,"/",context->id,NULL);
-		unlink(filename);
-		free(filename);
-	}
 }
 
 /***********************
