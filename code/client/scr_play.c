@@ -112,6 +112,10 @@ static void compose_sprite(context_t * ctx)
 			ctx = ctx->next;
 			continue;
 		}
+		if( ctx->in_game == false ) {
+			ctx = ctx->next;
+			continue;
+		}
 		if( strcmp(ctx->map,player_context->map)) {
 			ctx = ctx->next;
 			continue;

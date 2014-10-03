@@ -162,7 +162,8 @@ void instantiate_npc(const char * id)
 	context_set_username(ctx,"CPU");
 	context_set_character_name(ctx,name);
 	free(name);
-	context_set_connected(ctx,1);
+	context_set_in_game(ctx,true);
+	context_set_connected(ctx,true);
 	context_set_map(ctx,map);
 	free(map);
 #if 0

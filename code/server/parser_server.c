@@ -35,7 +35,7 @@ int parse_incoming_data(context_t * context, Uint32 command, Uint32 command_size
 	char * user_name;
 	char * password;
 
-	if( !context_get_connected(context) && command != CMD_LOGIN ) {
+	if( !context_get_connected(context) && ( command != CMD_LOGIN  && command != CMD_REQ_FILE) ) {
 		werr(LOGUSER,"Request from not authenticated client, close connection");
 		return FALSE;
 	}

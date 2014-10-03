@@ -101,8 +101,7 @@ void network_send_command(context_t * context, Uint32 command, long int count, c
 	send_data_t * send_data;
 
 	/* Client still connected ? */
-	if( command != CMD_LOGIN &&
-		! context_get_connected(context) ) {
+	if( command != CMD_LOGIN && context_get_connected(context) == false ) {
 		if( context->async_send_num == 0 ) {
 /*  TODO / FIXME : a single context should be associated to both 
 	its command and data socket for proper disconnection. */
@@ -202,6 +201,11 @@ void network_send_context(context_t * context)
 
 	size = strlen(context->map)+1;
 	memcpy(data+data_size, context->map, size);
+	data_size += size;
+
+	snprintf(itoa,sizeof(itoa),"%d",context->in_game);
+	size = strlen(itoa)+1;
+	memcpy(data+data_size, itoa, size);
 	data_size += size;
 
 	snprintf(itoa,sizeof(itoa),"%d",context->connected);
@@ -338,6 +342,11 @@ void network_send_context_to_context(context_t * dest_ctx, context_t * src_ctx)
 	memcpy(data+data_size, src_ctx->map, size);
 	data_size += size;
 
+	snprintf(itoa,sizeof(itoa),"%d",src_ctx->in_game);
+	size = strlen(itoa)+1;
+	memcpy(data+data_size, itoa, size);
+	data_size += size;
+
 	snprintf(itoa,sizeof(itoa),"%d",src_ctx->connected);
 	size = strlen(itoa)+1;
 	memcpy(data+data_size, itoa, size);
@@ -379,7 +388,7 @@ void network_send_context_to_context(context_t * dest_ctx, context_t * src_ctx)
 filename is relative to the data dir
 
 send a file to a context
-return FALSE on success
+return 0 on success
 *********************************************************************/
 int network_send_file(context_t * context, char * filename)
 {
@@ -391,23 +400,23 @@ int network_send_file(context_t * context, char * filename)
 	char * ptr = NULL;
 	TCPsocket socket = 0;
 
-	/* Check if this context is connected */
+	/* Check if NPC */
 	socket = context_get_socket(context);
 	if( socket == 0 ) {
-		return TRUE;
+		return -1;
 	}
 
 	/* Never send files with password */
 	if ( strstr(filename,PASSWD_TABLE) != NULL ) {
 		werr(LOGUSER,"send_file : Do not serve hazardous file  \"%s\"",filename);
-		return TRUE;
+		return -1;
 	}
 
 	/* Read the file */
 	res = file_get_contents(filename,&file_data,&file_length);
 	if( res == FALSE) {
 		werr(LOGUSER,"send_file : Error reading file \"%s\"",filename);
-		return TRUE;
+		return -1;
 	}
 
 	/* Prepare the frame = file_name_size + file_name + file_data_size + file_data*/
@@ -416,7 +425,7 @@ int network_send_file(context_t * context, char * filename)
 	if( frame == NULL) {
 		free(file_data);
 		werr(LOGUSER,"send_file : Error allocating memory");
-		return TRUE;
+		return -1;
 	}
 
 	/* first the filename size */
@@ -443,7 +452,7 @@ int network_send_file(context_t * context, char * filename)
 
 	free(frame);
 
-	return FALSE;
+	return 0;
 }
 
 /*********************************************************************

@@ -114,7 +114,10 @@ void character_user_send_list(context_t * context)
 }
 
 /*****************************
- disconnect a character
+ Kick a character out of the game
+ It does not disconnect it.
+ An NPC could re pop from an out of game state.
+ A player can go back in game after choosing a new character id
 return -1 if fails
 *****************************/
 int character_disconnect( const char * id)
@@ -122,18 +125,18 @@ int character_disconnect( const char * id)
 	context_t * ctx;
 
 	ctx = context_find(id);
+	context_set_in_game(ctx,FALSE);
+	context_spread(ctx);
+
 	/* For NPC */
 	if( ctx->socket == NULL ) {
-		context_set_connected(ctx,FALSE);
-		context_spread(ctx);
 		/* Wake up NPC */
 		if( SDL_TryLockMutex (ctx->cond_mutex) == TRUE ) {
 			SDL_CondSignal (ctx->cond);
 			SDL_UnlockMutex (ctx->cond_mutex);
 		}
 	}
-	/* For player */
-	/* TODO */
+
 	return 0;
 }
 
@@ -376,7 +379,7 @@ int character_set_pos(context_t * ctx, const char * map, int x, int y)
 			change_map = 1;
 		}
 
-		/* Th eplatform must be the last one to move */
+		/* Th platform must be the last one to move */
 		platform_move(ctx,map,x,y,change_map);
 
 		context_set_map(ctx,map);

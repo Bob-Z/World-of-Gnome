@@ -47,6 +47,7 @@ void context_init(context_t * context)
 {
 	context->user_name = NULL;
 	context->connected = FALSE;
+	context->in_game = FALSE;
 	context->socket = 0;
 	context->socket_data = 0;
 	context->hostname = NULL;
@@ -135,6 +136,7 @@ void context_free(context_t * context)
 		free(context->user_name);
 	}
 	context->user_name = NULL;
+	context->in_game = FALSE;
 	context->connected = FALSE;
 	if( context->socket != 0) {
 		SDLNet_TCP_Close(context->socket);
@@ -290,6 +292,28 @@ int context_set_username(context_t * context, const char * name)
 
 	context_unlock_list();
 	return TRUE;
+}
+
+/**************************************
+**************************************/
+void context_set_in_game(context_t * context, int in_game)
+{
+	context_lock_list();
+	context->in_game = in_game;
+	context_unlock_list();
+}
+
+/**************************************
+**************************************/
+int context_get_in_game(context_t * context)
+{
+	int in_game = 0;
+
+	context_lock_list();
+	in_game = context->in_game;
+	context_unlock_list();
+
+	return in_game;
 }
 
 /**************************************
@@ -675,6 +699,9 @@ int context_update_from_network_frame(context_t * context, char * frame)
 	_context_set_map(context,data);
 	data += (strlen(data)+1);
 
+	context->in_game = atoi(data);
+	data += (strlen(data)+1);
+
 	context->connected = atoi(data);
 	data += (strlen(data)+1);
 
@@ -754,7 +781,7 @@ int context_update_from_network_frame(context_t * context, char * frame)
 }
 
 /**************************************
-Spread the data of a context to all connected context
+Spread the data of a context to all in_game context
 **************************************/
 void context_spread(context_t * context)
 {
@@ -770,6 +797,11 @@ void context_spread(context_t * context)
 	}
 
 	do {
+		/* Skip if not in game */
+		if( ctx->in_game == false ) {
+			continue;
+		}
+
 		/* Skip NPC */
 		if( ctx->socket == 0 ) {
 			continue;
@@ -781,11 +813,6 @@ void context_spread(context_t * context)
 					strcmp(context->prev_map,ctx->map) != 0 ) {
 				continue;
 			}
-		}
-
-		/* Skip if the player has not selected its character (not yet entered in the game)  */
-		if( ctx->id == NULL ) {
-			continue;
 		}
 
 		network_send_context_to_context(ctx, context);
@@ -820,8 +847,18 @@ void context_broadcast_text(const char * map, const char * text)
 	}
 
 	do {
+		/* Skip if not in game */
+		if( ctx->in_game == false ) {
+			continue;
+		}
+
 		/* Skip NPC */
 		if( ctx->socket == 0 ) {
+			continue;
+		}
+
+		/* Skip if the player has not selected its character */
+		if( ctx->id == NULL ) {
 			continue;
 		}
 
@@ -832,11 +869,6 @@ void context_broadcast_text(const char * map, const char * text)
 		if(map) {
 			/* Skip if not on the same map */
 			if( strcmp(map,ctx->map) != 0 ) {
-				continue;
-			}
-
-			/* Skip if the player has not selected its character */
-			if( ctx->id == NULL ) {
 				continue;
 			}
 		}
@@ -871,6 +903,11 @@ void context_request_other_context(context_t * context)
 			continue;
 		}
 
+		/* Skip if not in game */
+		if( ctx->in_game == false ) {
+			continue;
+		}
+
 		/* Skip if not on the same map */
 		if( ctx->map ) {
 			if( strcmp(context->map,ctx->map) != 0 ) {
@@ -894,6 +931,7 @@ void context_add_or_update_from_network_frame(context_t * context,char * data)
 	char * user_name = NULL;
 	char * name = NULL;
 	char * map = NULL;
+	int in_game;
 	int connected;
 	int pos_x;
 	int pos_y;
@@ -911,6 +949,9 @@ void context_add_or_update_from_network_frame(context_t * context,char * data)
 	data += (strlen(data)+1);
 
 	map = strdup(data);
+	data += (strlen(data)+1);
+
+	in_game = atoi(data);
 	data += (strlen(data)+1);
 
 	connected = atoi(data);
@@ -940,15 +981,13 @@ void context_add_or_update_from_network_frame(context_t * context,char * data)
 
 	while( ctx != NULL ) {
 		if( strcmp( id, ctx->id) == 0 ) {
-			free(id);
-			if( connected == TRUE ) {
-				wlog(LOGDEBUG,"Updating context %s / %s",user_name,name);
-				free(user_name);
-				free(name);
+			ctx->in_game = in_game;
+			ctx->connected = connected;
 
+			if( in_game == TRUE ) {
+				wlog(LOGDEBUG,"Updating context %s / %s",user_name,name);
 				/* do not call context_set_* function since we already have the lock */
 				_context_set_map(ctx,map);
-				free(map);
 
 				ctx->pos_x = pos_x;
 				ctx->pos_y = pos_y;
@@ -957,10 +996,10 @@ void context_add_or_update_from_network_frame(context_t * context,char * data)
 				ctx->tile_y = tile_y;
 
 				free(ctx->type);
-				ctx->type = type;
+				ctx->type = strdup(type);
+			}
 
-				context_unlock_list();
-			} else {
+			if( connected == FALSE ) {
 				wlog(LOGDEBUG,"Deleting context %s / %s",user_name,name);
 				/* Delete selection if it was selected */
 				if( context->selection.id != NULL ) {
@@ -970,10 +1009,11 @@ void context_add_or_update_from_network_frame(context_t * context,char * data)
 					}
 
 				}
-				context_unlock_list();
 				context_free(ctx);
 			}
-			return;
+			context_unlock_list();
+
+			goto  context_add_or_update_from_network_frame_free;
 		}
 		ctx = ctx->next;
 	}
@@ -992,6 +1032,7 @@ void context_add_or_update_from_network_frame(context_t * context,char * data)
 	context_set_tile_y(ctx,tile_y);
 	context_set_id(ctx,id);
 
+context_add_or_update_from_network_frame_free:
 	free(user_name);
 	free(name);
 	free(map);
@@ -1000,7 +1041,7 @@ void context_add_or_update_from_network_frame(context_t * context,char * data)
 }
 
 /**************************************
-Broadcast upload of a file to all connected context
+Broadcast upload of a file to all in_game context
 **************************************/
 void context_broadcast_file(const char * table, const char * file, int same_map_only)
 {
@@ -1019,10 +1060,16 @@ void context_broadcast_file(const char * table, const char * file, int same_map_
 	filename = strconcat(table,"/",file,NULL);
 
 	do {
-		/* Skip if not connected (NPC) */
+		/* Skip if NPC */
 		if( ctx->socket == 0 ) {
 			continue;
 		}
+
+		/* Skip if not in game */
+		if( ctx->in_game == false ) {
+			continue;
+		}
+
 		/* Skip if not on the same map */
 		if( same_map_only && ctx->map) {
 			if( strcmp(file,ctx->map) != 0 ) {

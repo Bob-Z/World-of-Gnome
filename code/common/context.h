@@ -34,7 +34,8 @@ typedef struct selection {
 
 typedef struct context {
 	char *		user_name;
-	int		connected;
+	int		connected; /* User logged with the correct password, or NPC activated */
+	int		in_game;
 	TCPsocket	socket;
 	TCPsocket	socket_data;
 	SDL_mutex*	send_mutex; /* Asynchronous network send */
@@ -79,6 +80,8 @@ context_t * context_new(void);
 void context_free(context_t * context);
 int context_set_hostname(context_t * context, const char * name);
 int context_set_username(context_t * context, const char * name);
+void context_set_in_game(context_t * context, int in_game);
+int context_get_in_game(context_t * context);
 void context_set_connected(context_t * context, int connected);
 int context_get_connected(context_t * context);
 void context_set_socket(context_t * context, TCPsocket socket);

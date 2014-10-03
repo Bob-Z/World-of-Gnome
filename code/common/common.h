@@ -21,7 +21,9 @@
 #define WOG_COMMON_INCLUDE
 
 #define FALSE 0
+#define false 0
 #define TRUE 1
+#define true 1
 
 #include <SDL2/SDL_net.h>
 

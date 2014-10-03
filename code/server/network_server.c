@@ -20,7 +20,7 @@
 #include "../common/common.h"
 
 /*********************************************************************
-Broadcast text to all connected players
+Broadcast text to all in game players
 *********************************************************************/
 void network_broadcast_text(context_t * context, const char * text)
 {
@@ -36,12 +36,17 @@ void network_broadcast_text(context_t * context, const char * text)
 	}
 
 	do {
-		/* Skip if not connected (NPC) */
+		/* Skip if NPC */
 		if( context_get_socket(ctx) == 0 ) {
 			continue;
 		}
 
-		/* Skip data transmission network */
+		/* Skip if not in game */
+		if( context_get_in_game(ctx) == false ) {
+			continue;
+		}
+
+		/* Skip data context */
 		if( ctx->user_name == NULL ) {
 			continue;
 		}
@@ -76,7 +81,7 @@ void network_send_character_file(context_t * context)
 }
 
 /*********************************************************************
-Asks to update an int entry on all connected contexts
+Asks to update an int entry on all in_game players
 *********************************************************************/
 void network_broadcast_entry_int(const char * table, const char * file, const char * path, int value, int same_map_only)
 {
@@ -95,8 +100,12 @@ void network_broadcast_entry_int(const char * table, const char * file, const ch
 	}
 
 	do {
-		/* Skip if not connected (NPC) */
+		/* Skip if NPC */
 		if( context_get_socket(ctx) == 0 ) {
+			continue;
+		}
+		/* Skip if not in game */
+		if( context_get_in_game(ctx) == false ) {
 			continue;
 		}
 		/* Skip if not on the same map */
@@ -138,9 +147,7 @@ static int new_connection(void * data)
 
 	context_new_VM(context);
 
-	context_set_connected(context,TRUE);
-
-	while(context_get_connected(context)) {
+	while(context_get_socket(context)) {
 		/* Read a command code */
 		if( !network_read_bytes(socket,(char *)&command, sizeof(Uint32))) {
 			context_set_connected(context,FALSE);

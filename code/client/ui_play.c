@@ -104,6 +104,7 @@ char * ui_play_get_last_action_script()
 static void cb_main_quit(void * arg)
 {
         if( ui_play_get() == UI_MAIN ) {
+		context_set_in_game(context_get_player(),false);
                 screen_set_screen(SCREEN_SELECT);
         }
 }
