@@ -16,12 +16,14 @@ if target ~= nil then
 	-- drop the loot
 		loot = resource_new("apple",1)
 		map_add_item(map,loot,x,y)
+		character_delete(target)
 	end
 else
 --else the kill was from environnment
 	text = string.format("%s named %s die on %s",character_get_type(id), character_get_name(id), character_get_map(id))
 	print_text_map( character_get_map(id) , text)
 	character_disconnect(id)
+	character_delete(id)
 end
 
 end

@@ -1280,13 +1280,12 @@ entry_update_cleanup:
 }
 
 /***********************************************
-Delete a character's file
+Delete a character's entry
 return -1 if fails
 ***********************************************/
 int entry_destroy(const char * table, const char * file)
 {
 	char * filename;
-	int res;
 	const config_t * old_config;
 
 	filename = strconcat(table,"/",file,NULL);
@@ -1301,11 +1300,5 @@ int entry_destroy(const char * table, const char * file)
 
 	free(filename);
 
-	res = file_delete(table,file);
-
-	if(res != 0 ) {
-		werr(LOGUSER,"Error deleting file \"%s/%s\"",table,file);
-	}
-
-	return res;
+	return 0;
 }

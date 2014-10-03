@@ -385,21 +385,23 @@ static int l_character_disconnect( lua_State* L)
 
 /* character_delete
 
-Delete the data file of a character
+Delete the memory and file used by a character
 
 Input:
  - ID of a character
 Output:
+0 if success
 */
 static int l_character_delete( lua_State* L)
 {
-	const char * table;
 	const char * id;
 	int res;
 
-	table = luaL_checkstring(L, -2);
 	id = luaL_checkstring(L, -1);
-	res = entry_destroy(table,id);
+	res = entry_destroy(CHARACTER_TABLE,id);
+	if( res == 0 ) {
+		res = file_delete(CHARACTER_TABLE,id);
+	}
 	lua_pushnumber(L, res);
 	return 1;  /* number of results */
 }

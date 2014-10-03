@@ -113,9 +113,10 @@ void character_user_send_list(context_t * context)
 	free(data);
 }
 
-/*****************************/
-/* disconnect a character */
-/* return -1 if fails */
+/*****************************
+ disconnect a character
+return -1 if fails
+*****************************/
 int character_disconnect( const char * id)
 {
 	context_t * ctx;
