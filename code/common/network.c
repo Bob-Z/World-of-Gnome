@@ -87,10 +87,6 @@ async_send_end:
 	free(data->data);
 	free(data);
 
-	SDL_LockMutex(context->async_send_mutex);
-	context->async_send_num--;
-	SDL_UnlockMutex(context->async_send_mutex);
-
 	return FALSE;
 }
 
@@ -100,15 +96,6 @@ void network_send_command(context_t * context, Uint32 command, long int count, c
 {
 	send_data_t * send_data;
 
-	/* Client still connected ? */
-	if( command != CMD_LOGIN && context_get_connected(context) == false ) {
-		if( context->async_send_num == 0 ) {
-/*  TODO / FIXME : a single context should be associated to both 
-	its command and data socket for proper disconnection. */
-			//context_free(context);
-		}
-	}
-
 	send_data = malloc(sizeof(send_data_t));
 	send_data->command = command;
 	send_data->count = count;
@@ -116,10 +103,6 @@ void network_send_command(context_t * context, Uint32 command, long int count, c
 	memcpy(send_data->data,data,count);
 	send_data->is_data = is_data;
 	send_data->context = context;
-
-	SDL_LockMutex(context->async_send_mutex);
-	context->async_send_num++;
-	SDL_UnlockMutex(context->async_send_mutex);
 
 	SDL_CreateThread(async_send,"async_send",(void*)send_data);
 }
