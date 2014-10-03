@@ -26,12 +26,12 @@ void network_broadcast_text(context_t * context, const char * text)
 {
 	context_t * ctx = NULL;
 
-	SDL_LockMutex(context_list_mutex);
+	context_lock_list();
 
 	ctx = context_get_first();
 
 	if( ctx == NULL ) {
-		SDL_UnlockMutex(context_list_mutex);
+		context_unlock_list();
 		return;
 	}
 
@@ -65,7 +65,7 @@ void network_broadcast_text(context_t * context, const char * text)
 		network_send_text(ctx->id,text);
 	} while( (ctx=ctx->next)!= NULL );
 
-	SDL_UnlockMutex(context_list_mutex);
+	context_unlock_list();
 }
 
 /*********************************************************************
@@ -90,12 +90,12 @@ void network_broadcast_entry_int(const char * table, const char * file, const ch
 
 	target = context_find(file);
 
-	SDL_LockMutex(context_list_mutex);
+	context_lock_list();
 
 	ctx = context_get_first();
 
 	if( ctx == NULL ) {
-		SDL_UnlockMutex(context_list_mutex);
+		context_unlock_list();
 		return;
 	}
 
@@ -124,7 +124,7 @@ void network_broadcast_entry_int(const char * table, const char * file, const ch
 
 	} while( (ctx=ctx->next)!= NULL );
 
-	SDL_UnlockMutex(context_list_mutex);
+	context_unlock_list();
 }
 
 /*********************************************************************
