@@ -364,9 +364,29 @@ static int l_character_get_speak( lua_State* L)
 	return 1;  /* number of results */
 }
 
+/* character_out_of_game
+
+Kick a context out of the game.
+This does not disconnect it.
+
+Input:
+ - ID of a character
+Output:
+*/
+static int l_character_out_of_game( lua_State* L)
+{
+	const char * id;
+	int res;
+
+	id = luaL_checkstring(L, -1);
+	res = character_out_of_game(id);
+	lua_pushnumber(L, res);
+	return 1;  /* number of results */
+}
 /* character_disconnect
 
 Disconnect a context
+This kills a NPC AI
 
 Input:
  - ID of a character
@@ -1486,6 +1506,8 @@ void register_lua_functions(context_t * context)
 	lua_setglobal(L, "character_set_npc");
 	lua_pushcfunction(L, l_character_get_npc);
 	lua_setglobal(L, "character_get_npc");
+	lua_pushcfunction(L, l_character_out_of_game);
+	lua_setglobal(L, "character_out_of_game");
 	lua_pushcfunction(L, l_character_disconnect);
 	lua_setglobal(L, "character_disconnect");
 	lua_pushcfunction(L, l_character_delete);
