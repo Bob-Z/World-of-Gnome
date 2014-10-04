@@ -218,7 +218,7 @@ void context_free(context_t * context)
 	context->id = NULL;
 
 	/* Remove this context from the list */
-	if( context == context_list_start ) {
+	if( context == context_get_first() ) {
 		context_list_start = context->next;
 	}
 	else {

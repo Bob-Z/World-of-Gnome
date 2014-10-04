@@ -104,9 +104,19 @@ char * ui_play_get_last_action_script()
 ****************************/
 static void cb_main_quit(void * arg)
 {
+	context_t * current_ctx;
+
         if( ui_play_get() == UI_MAIN ) {
 		context_set_in_game(context_get_player(),false);
 		network_send_context(context_get_player());
+		current_ctx = context_get_first();
+		while( current_ctx != NULL ) {
+			if( current_ctx != context_get_player() ) {
+				context_free(current_ctx);
+			}
+			current_ctx = current_ctx->next;
+		}
+
 		scr_play_init(true);
                 screen_set_screen(SCREEN_SELECT);
         }
