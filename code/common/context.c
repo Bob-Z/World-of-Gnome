@@ -898,11 +898,6 @@ void context_request_other_context(context_t * context)
 			continue;
 		}
 
-		/* Skip if not in game */
-		if( ctx->in_game == false ) {
-			continue;
-		}
-
 		/* Skip if not on the same map */
 		if( ctx->map ) {
 			if( strcmp(context->map,ctx->map) != 0 ) {
