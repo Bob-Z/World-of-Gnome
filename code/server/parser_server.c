@@ -114,7 +114,7 @@ int parse_incoming_data(context_t * context, Uint32 command, Uint32 command_size
 		wlog(LOGDEBUG,"user %s's character list sent",context->user_name);
 		break;
 	case CMD_SEND_CONTEXT :
-		if( context->type == NULL ) { /* First time a context send its data */
+		if( context->in_game == false ) { /* First time a context send its data */
 			context_update_from_network_frame(context,data);
 			context_spread(context);
 			context_request_other_context(context);
