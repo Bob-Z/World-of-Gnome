@@ -46,8 +46,8 @@ Initialize a context_t struct
 void context_init(context_t * context)
 {
 	context->user_name = NULL;
-	context->connected = FALSE;
-	context->in_game = FALSE;
+	context->connected = false;
+	context->in_game = false;
 	context->socket = 0;
 	context->socket_data = 0;
 	context->hostname = NULL;
@@ -81,7 +81,7 @@ void context_init(context_t * context)
 
 	context->id = NULL;
 	context->prev_map = NULL;
-	context->change_map = FALSE;
+	context->change_map = false;
 	context->luaVM = NULL;
 	context->cond = NULL;
 	context->cond_mutex = NULL;
@@ -134,8 +134,8 @@ void context_free(context_t * context)
 		free(context->user_name);
 	}
 	context->user_name = NULL;
-	context->in_game = FALSE;
-	context->connected = FALSE;
+	context->in_game = false;
+	context->connected = false;
 	if( context->socket != 0) {
 		SDLNet_TCP_Close(context->socket);
 	}
@@ -251,7 +251,7 @@ context_t * context_get_player()
 	return context_list_start;
 }
 /**************************
-  Returns FALSE if error
+  Returns false if error
 **************************/
 int context_set_hostname(context_t * context, const char * name)
 {
@@ -264,15 +264,15 @@ int context_set_hostname(context_t * context, const char * name)
 	context->hostname = strdup(name);
 	if( context->hostname == NULL ) {
 		context_unlock_list();
-		return FALSE;
+		return false;
 	}
 
 	context_unlock_list();
-	return TRUE;
+	return true;
 }
 
 /**************************
-  Returns FALSE if error
+  Returns false if error
 **************************/
 int context_set_username(context_t * context, const char * name)
 {
@@ -282,11 +282,11 @@ int context_set_username(context_t * context, const char * name)
 	context->user_name = strdup(name);
 	if( context->user_name == NULL ) {
 		context_unlock_list();
-		return FALSE;
+		return false;
 	}
 
 	context_unlock_list();
-	return TRUE;
+	return true;
 }
 
 /**************************************
@@ -378,17 +378,17 @@ TCPsocket context_get_socket_data(context_t * context)
 }
 
 /**************************************
-Returns FALSE if error
+Returns false if error
 **************************************/
 int context_set_character_name(context_t * context, const char * name)
 {
-	int ret = TRUE;
+	int ret = true;
 
 	context_lock_list();
 	free( context->character_name );
 	context->character_name = strdup(name);
 	if( context->character_name == NULL ) {
-		ret = FALSE;
+		ret = false;
 	}
 	context_unlock_list();
 
@@ -396,7 +396,7 @@ int context_set_character_name(context_t * context, const char * name)
 }
 
 /**************************************
-Returns FALSE if error
+Returns false if error
 **************************************/
 static int _context_set_map(context_t * context, const char * map)
 {
@@ -405,7 +405,7 @@ static int _context_set_map(context_t * context, const char * map)
 
 	if(context->prev_map != NULL) {
 		if(!strcmp(context->map,map)) {
-			return TRUE;
+			return true;
 		}
 		free( context->prev_map );
 		context->prev_map = NULL;
@@ -418,22 +418,22 @@ static int _context_set_map(context_t * context, const char * map)
 
 	context->map = strdup(map);
 	if( context->map == NULL ) {
-		return FALSE;
+		return false;
 	}
-	context->change_map = TRUE;
+	context->change_map = true;
 	context->map_w = -1;
 	context->map_h = -1;
 
 	if(!entry_read_int(MAP_TABLE,map,&map_w,MAP_KEY_WIDTH,NULL)) {
-		return FALSE;
+		return false;
 	}
 	if(!entry_read_int(MAP_TABLE,map,&map_h,MAP_KEY_HEIGHT,NULL)) {
-		return FALSE;
+		return false;
 	}
 	context->map_w = map_w;
 	context->map_h = map_h;
 
-	return TRUE;
+	return true;
 }
 
 /**************************************
@@ -457,7 +457,7 @@ int context_set_map_w(context_t * context, int width)
 	context->map_w = width;
 	context_unlock_list();
 
-	return TRUE;
+	return true;
 }
 
 /**************************************
@@ -468,21 +468,21 @@ int context_set_map_h(context_t * context, int height)
 	context->map_h = height;
 	context_unlock_list();
 
-	return TRUE;
+	return true;
 }
 
 /**************************************
-Returns FALSE if error
+Returns false if error
 **************************************/
 int context_set_type(context_t * context, const char * type)
 {
-	int ret = TRUE;
+	int ret = true;
 
 	context_lock_list();
 	free( context->type );
 	context->type = strdup(type);
 	if( context->type == NULL ) {
-		ret = FALSE;
+		ret = false;
 	}
 	context_unlock_list();
 
@@ -537,11 +537,11 @@ int context_set_id(context_t * context, const char * name)
 	context->id = strdup(name);
 	if( context->id == NULL ) {
 		context_unlock_list();
-		return FALSE;
+		return false;
 	}
 
 	context_unlock_list();
-	return TRUE;
+	return true;
 }
 
 /**************************************
@@ -571,27 +571,27 @@ void context_new_VM(context_t * context)
 
 /*******************************
 Update the memory context by reading the client's character data file on disk
-Return FALSE if there is an error
+Return false if there is an error
 *******************************/
 int context_update_from_file(context_t * context)
 {
 	/* Don't call context_set_* functions here to avoid inter-blocking */
 
 	char * result;
-	int ret  = TRUE;
+	int ret  = true;
 
 	context_lock_list();
 
 	if( context->id == NULL ) {
 		context_unlock_list();
-		return FALSE;
+		return false;
 	}
 
 	if(entry_read_string(CHARACTER_TABLE,context->id,&result, CHARACTER_KEY_NAME,NULL)) {
 		free( context->character_name );
 		context->character_name = result;
 	} else {
-		ret = FALSE;
+		ret = false;
 	}
 
 
@@ -599,7 +599,7 @@ int context_update_from_file(context_t * context)
 		free( context->type );
 		context->type = result;
 	} else {
-		ret = FALSE;
+		ret = false;
 	}
 
 	if(entry_read_string(CHARACTER_TABLE,context->id,&result, CHARACTER_KEY_MAP,NULL)) {
@@ -607,15 +607,15 @@ int context_update_from_file(context_t * context)
 		ret = _context_set_map(context, result);
 		free(result);
 	} else {
-		ret = FALSE;
+		ret = false;
 	}
 
 	if(!entry_read_int(CHARACTER_TABLE,context->id,&context->pos_x, CHARACTER_KEY_POS_X,NULL)) {
-		ret = FALSE;
+		ret = false;
 	}
 
 	if(!entry_read_int(CHARACTER_TABLE,context->id,&context->pos_y, CHARACTER_KEY_POS_Y,NULL)) {
-		ret = FALSE;
+		ret = false;
 	}
 
 	context_unlock_list();
@@ -631,7 +631,7 @@ int context_write_to_file(context_t * context)
 
 	if( context->id == NULL ) {
 		context_unlock_list();
-		return FALSE;
+		return false;
 	}
 
 	entry_write_string(CHARACTER_TABLE, context->id,context->type,CHARACTER_KEY_TYPE,NULL);
@@ -643,7 +643,7 @@ int context_write_to_file(context_t * context)
 	entry_write_int(CHARACTER_TABLE, context->id,context->pos_y,CHARACTER_KEY_POS_Y, NULL);
 
 	context_unlock_list();
-	return TRUE;
+	return true;
 }
 
 /*******************************
@@ -772,7 +772,7 @@ int context_update_from_network_frame(context_t * context, char * frame)
 
 	context_unlock_list();
 
-	return TRUE;
+	return true;
 }
 
 /**************************************
@@ -974,7 +974,7 @@ void context_add_or_update_from_network_frame(context_t * context,char * data)
 			ctx->in_game = in_game;
 			ctx->connected = connected;
 
-			if( in_game == TRUE ) {
+			if( in_game == true ) {
 				wlog(LOGDEBUG,"Updating context %s / %s",user_name,name);
 				/* do not call context_set_* function since we already have the lock */
 				_context_set_map(ctx,map);
@@ -989,7 +989,7 @@ void context_add_or_update_from_network_frame(context_t * context,char * data)
 				ctx->type = strdup(type);
 			}
 
-			if( connected == FALSE ) {
+			if( connected == false ) {
 				wlog(LOGDEBUG,"Deleting context %s / %s",user_name,name);
 				/* Delete selection if it was selected */
 				if( context->selection.id != NULL ) {
