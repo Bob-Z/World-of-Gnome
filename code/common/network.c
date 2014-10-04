@@ -381,11 +381,9 @@ int network_send_file(context_t * context, char * filename)
 	Uint32 count = 0;
 	char * frame = NULL;
 	char * ptr = NULL;
-	TCPsocket socket = 0;
 
 	/* Check if NPC */
-	socket = context_get_socket(context);
-	if( socket == 0 ) {
+	if( context_is_npc(context) == true ) {
 		return -1;
 	}
 

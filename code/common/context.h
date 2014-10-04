@@ -113,5 +113,6 @@ context_t * context_find(const char * id);
 void context_broadcast_text(const char * map, const char * text);
 int context_distance(context_t * ctx1, context_t * ctx2);
 void context_reset_all_position();
+int context_is_npc(context_t * ctx);
 
 #endif

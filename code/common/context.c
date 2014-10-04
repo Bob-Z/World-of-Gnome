@@ -797,8 +797,7 @@ void context_spread(context_t * context)
 			continue;
 		}
 
-		/* Skip NPC */
-		if( ctx->socket == 0 ) {
+		if( context_is_npc(ctx) == true ) {
 			continue;
 		}
 
@@ -847,8 +846,7 @@ void context_broadcast_text(const char * map, const char * text)
 			continue;
 		}
 
-		/* Skip NPC */
-		if( ctx->socket == 0 ) {
+		if( context_is_npc(ctx) == true ) {
 			continue;
 		}
 
@@ -1050,8 +1048,7 @@ void context_broadcast_file(const char * table, const char * file, int same_map_
 	filename = strconcat(table,"/",file,NULL);
 
 	do {
-		/* Skip if NPC */
-		if( ctx->socket == 0 ) {
+		if( context_is_npc(ctx) == true ) {
 			continue;
 		}
 
@@ -1112,4 +1109,16 @@ void context_reset_all_position()
 		ctx = ctx->next;
 	}
 	context_unlock_list();
+}
+
+/**************************************
+Return true is context is an NPC
+**************************************/
+int context_is_npc(context_t * ctx)
+{
+	if( ctx->socket == NULL && ctx->connected == true) {
+		return true;
+	}
+
+	return false;
 }

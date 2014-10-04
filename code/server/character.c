@@ -129,8 +129,7 @@ int character_disconnect( const char * id)
 	context_set_connected(ctx,false);
 	context_spread(ctx);
 
-	/* For NPC */
-	if( ctx->socket == NULL ) {
+	if( context_is_npc(ctx) == true ) {
 		/* Wake up NPC */
 		if( SDL_TryLockMutex (ctx->cond_mutex) == 0 ) {
 			SDL_CondSignal (ctx->cond);
@@ -157,8 +156,7 @@ int character_out_of_game( const char * id)
 	context_set_in_game(ctx,false);
 	context_spread(ctx);
 
-	/* For NPC */
-	if( ctx->socket == NULL ) {
+	if( context_is_npc(ctx) == true ) {
 		/* Wake up NPC */
 		if( SDL_TryLockMutex (ctx->cond_mutex) == 0 ) {
 			SDL_CondSignal (ctx->cond);

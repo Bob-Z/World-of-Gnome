@@ -36,8 +36,7 @@ void network_broadcast_text(context_t * context, const char * text)
 	}
 
 	do {
-		/* Skip if NPC */
-		if( context_get_socket(ctx) == 0 ) {
+		if( context_is_npc(ctx) == true ) {
 			continue;
 		}
 
@@ -100,8 +99,7 @@ void network_broadcast_entry_int(const char * table, const char * file, const ch
 	}
 
 	do {
-		/* Skip if NPC */
-		if( context_get_socket(ctx) == 0 ) {
+		if( context_is_npc(ctx) == true ) {
 			continue;
 		}
 		/* Skip if not in game */
