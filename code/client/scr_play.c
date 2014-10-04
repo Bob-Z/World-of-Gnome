@@ -103,7 +103,7 @@ static void compose_sprite(context_t * ctx)
 	int y;
 	int ox;
 	int oy;
-	Uint32 timer;
+	Uint32 current_time;
 	int angle;
 	int flip;
 	char * zoom_str = NULL;
@@ -147,7 +147,7 @@ static void compose_sprite(context_t * ctx)
 
 		item = item_list_add(&item_list);
 
-		timer = SDL_GetTicks();
+		current_time = SDL_GetTicks();
 
 		/* Force position when the player has changed map */
 		if(change_map) {
@@ -166,14 +166,14 @@ static void compose_sprite(context_t * ctx)
 		}
 
 		/* If previous animation has ended */
-		if( ctx->pos_tick + VIRTUAL_ANIM_DURATION < timer ) {
+		if( ctx->pos_tick + VIRTUAL_ANIM_DURATION < current_time ) {
 			ctx->old_pos_x = ctx->cur_pos_x;
 			ctx->old_pos_y = ctx->cur_pos_y;
 		}
 
 		/* Detect sprite movement, initiate animation */
 		if(ctx->pos_x != ctx->cur_pos_x||ctx->pos_y != ctx->cur_pos_y) {
-			ctx->pos_tick = timer;
+			ctx->pos_tick = current_time;
 
 			/* flip need to remember previous direction to avoid resetting a
 			east -> west flip when a sprite goes to north for instance.
