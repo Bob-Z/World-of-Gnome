@@ -645,6 +645,7 @@ item_t * scr_play_compose(context_t * ctx)
 	int bg_red = 0;
 	int bg_blue = 0;
 	int bg_green = 0;
+	char * map_filename;
 
 	if(item_list) {
 		item_list_free(item_list);
@@ -667,6 +668,12 @@ item_t * scr_play_compose(context_t * ctx)
 	sdl_free_keycb(NULL);
 
 	change_map = ctx->change_map;
+	/* Check if map has changed */
+	if( change_map ) {
+		map_filename = strconcat( MAP_TABLE,"/",ctx->map,NULL);
+		network_send_req_file(ctx,map_filename);
+		free(map_filename);
+	}
 
 	compose_map(ctx);
 	compose_select(ctx);
