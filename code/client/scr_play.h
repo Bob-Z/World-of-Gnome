@@ -20,4 +20,4 @@
 #include "../sdl_item/item.h"
 
 item_t * scr_play_compose(context_t * context);
-
+void scr_play_init(int init);

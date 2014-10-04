@@ -39,6 +39,12 @@
 
 static item_t * item_list = NULL;
 static int change_map = 0;
+static int init = true;
+
+void scr_play_init(int init_value)
+{
+	init = init_value;
+}
 
 /**********************************
 **********************************/
@@ -636,7 +642,6 @@ Compose the character select screen
 **********************************/
 item_t * scr_play_compose(context_t * ctx)
 {
-	static int init = 1;
 	int bg_red = 0;
 	int bg_blue = 0;
 	int bg_green = 0;
@@ -656,7 +661,7 @@ item_t * scr_play_compose(context_t * ctx)
 		/* Register this character to receive server notifications */
 		network_send_context(ctx);
 		ui_play_init();
-		init = 0;
+		init = false;
 	}
 
 	sdl_free_keycb(NULL);

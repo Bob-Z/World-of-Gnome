@@ -24,6 +24,7 @@
 #include "network_client.h"
 #include "imageDB.h"
 #include "screen.h"
+#include "scr_play.h"
 #include "textview.h"
 
 #define UI_MAIN		0
@@ -105,6 +106,8 @@ static void cb_main_quit(void * arg)
 {
         if( ui_play_get() == UI_MAIN ) {
 		context_set_in_game(context_get_player(),false);
+		network_send_context(context_get_player());
+		scr_play_init(true);
                 screen_set_screen(SCREEN_SELECT);
         }
 }
