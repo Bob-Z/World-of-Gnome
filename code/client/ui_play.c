@@ -105,16 +105,19 @@ char * ui_play_get_last_action_script()
 static void cb_main_quit(void * arg)
 {
 	context_t * current_ctx;
+	context_t * next_ctx;
 
         if( ui_play_get() == UI_MAIN ) {
 		context_set_in_game(context_get_player(),false);
 		network_send_context(context_get_player());
 		current_ctx = context_get_first();
 		while( current_ctx != NULL ) {
+			/* Save next before freeing the current context */
+			next_ctx = current_ctx->next;
 			if( current_ctx != context_get_player() ) {
 				context_free(current_ctx);
 			}
-			current_ctx = current_ctx->next;
+			current_ctx = next_ctx;
 		}
 
 		scr_play_init(true);
