@@ -340,6 +340,24 @@ void character_update_aggro(context_t * agressor)
 	}
 }
 /*************************************************************
+*************************************************************/
+static void do_set_pos(context_t * ctx,const char * map, int x, int y, int change_map)
+{
+	context_set_map(ctx,map);
+	context_set_pos_x(ctx,x);
+	context_set_pos_y(ctx,y);
+
+	entry_write_string(CHARACTER_TABLE,ctx->id,map,CHARACTER_KEY_MAP,NULL);
+	entry_write_int(CHARACTER_TABLE,ctx->id,x,CHARACTER_KEY_POS_X,NULL);
+	entry_write_int(CHARACTER_TABLE,ctx->id,y,CHARACTER_KEY_POS_Y,NULL);
+
+	context_spread(ctx);
+	if(change_map) {
+		context_request_other_context(ctx);
+	}
+}
+
+/*************************************************************
 Move every context on the same coordinate as platform context
 *************************************************************/
 static void platform_move(context_t * platform,const char * map, int x, int y, int change_map)
@@ -361,18 +379,7 @@ static void platform_move(context_t * platform,const char * map, int x, int y, i
 			continue;
 		}
 		if( platform->pos_x == current->pos_x && platform->pos_y == current->pos_y && !strcmp(platform->map, current->map) ) {
-			context_set_map(current,map);
-			context_set_pos_x(current,x);
-			context_set_pos_y(current,y);
-
-			entry_write_string(CHARACTER_TABLE,current->id,map,CHARACTER_KEY_MAP,NULL);
-			entry_write_int(CHARACTER_TABLE,current->id,x,CHARACTER_KEY_POS_X,NULL);
-			entry_write_int(CHARACTER_TABLE,current->id,y,CHARACTER_KEY_POS_Y,NULL);
-
-			context_spread(current);
-			if(change_map) {
-				context_request_other_context(current);
-			}
+			do_set_pos(current,map,x,y,change_map);
 		}
 		current = current->next;
 	}
@@ -409,18 +416,7 @@ int character_set_pos(context_t * ctx, const char * map, int x, int y)
 		/* Th platform must be the last one to move */
 		platform_move(ctx,map,x,y,change_map);
 
-		context_set_map(ctx,map);
-		context_set_pos_x(ctx,x);
-		context_set_pos_y(ctx,y);
-
-		entry_write_string(CHARACTER_TABLE,ctx->id,map,CHARACTER_KEY_MAP,NULL);
-		entry_write_int(CHARACTER_TABLE,ctx->id,x,CHARACTER_KEY_POS_X,NULL);
-		entry_write_int(CHARACTER_TABLE,ctx->id,y,CHARACTER_KEY_POS_Y,NULL);
-
-		context_spread(ctx);
-		if(change_map) {
-			context_request_other_context(ctx);
-		}
+		do_set_pos(ctx,map,x,y,change_map);
 
 		event_id = map_get_event(map,x,y);
 
