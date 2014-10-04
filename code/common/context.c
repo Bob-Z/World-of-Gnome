@@ -1019,6 +1019,8 @@ void context_add_or_update_from_network_frame(context_t * context,char * data)
 	context_set_tile_x(ctx,tile_x);
 	context_set_tile_y(ctx,tile_y);
 	context_set_id(ctx,id);
+	context_set_connected(ctx,connected);
+	context_set_in_game(ctx,in_game);
 
 context_add_or_update_from_network_frame_free:
 	free(user_name);
