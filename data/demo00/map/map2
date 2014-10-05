@@ -5,7 +5,7 @@ tile_height = 64;
 bg_red = 192;
 bg_blue = 192;
 bg_green = 192;
-set0 = [ "tile/white.jpg", "tile/black.jpg", "barre2.jpg", "tile/black.jpg", "tile/black.jpg", "tile/black.jpg", "tile/white.jpg", "tile/black.jpg", "tile/black.jpg" ];
+set0 = [ "tile/white.jpg", "tile/black.jpg", "tile/exit.gif", "tile/black.jpg", "tile/black.jpg", "tile/black.jpg", "tile/white.jpg", "tile/black.jpg", "tile/black.jpg" ];
 type = [ "mud", "ground", "ground", "ground", "ground", "ground", "mud", "ground", "ground" ];
 item_list : {
 	A0002 : 
