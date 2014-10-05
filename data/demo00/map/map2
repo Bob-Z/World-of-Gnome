@@ -28,11 +28,5 @@ event_list: {
                 script = "goto_map1.lua";
 
         };
-        A0001 :
-        {
-                pos_x = 2;
-                pos_y = 0;
-                script = "trap.lua";
-	};
 };
 
