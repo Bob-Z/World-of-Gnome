@@ -6,6 +6,14 @@ bg_red = 192;
 bg_blue = 192;
 bg_green = 192;
 set0 = [ "tile/white.jpg", "tile/black.jpg", "tile/black.jpg", "tile/black.jpg", "tile/black.jpg", "tile/white.jpg", "tile/black.jpg", "tile/black.jpg", "tile/black.jpg", "tile/black.jpg", "tile/black.jpg", "tile/black.jpg", "tile/white.jpg", "tile/black.jpg", "tile/black.jpg", "tile/black.jpg", "tile/black.jpg", "tile/white.jpg", "tile/black.jpg", "tile/black.jpg", "tile/black.jpg", "tile/black.jpg", "tile/black.jpg", "tile/black.jpg", "tile/white.jpg", "tile/black.jpg", "tile/black.jpg", "tile/black.jpg", "tile/black.jpg", "tile/white.jpg", "tile/white.jpg", "tile/black.jpg",  "tile/black.jpg", "tile/black.jpg", "tile/black.jpg", "tile/exit.gif" ];
+
+set1 = [ "tile/trap.png","","","","","",
+	"","","","","","",
+	"","","","","","",
+	"","","","","","",
+	"","","","","","",
+	"","","","","",""];
+
 type = [ "mud","ground","ground","ground","ground","mud","ground","ground","ground","ground","ground","ground","mud","ground","ground","ground","ground","mud","ground","ground","ground","ground","ground","ground","mud","ground","ground","ground","ground","mud","mud","ground","ground","ground","ground","ground" ];
 
 item_list: {
