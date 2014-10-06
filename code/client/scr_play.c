@@ -469,9 +469,12 @@ static int compose_map_set(context_t * ctx, int level)
 	entry_read_int(MAP_TABLE, ctx->map, &tile_h,buf,NULL);
 
 	while(value[i] != NULL ) {
-		item = item_list_add(&item_list);
-		anim = imageDB_get_anim(ctx,value[i]);
-		item_set_anim(item, x*tile_w, y*tile_h, anim);
+		/* Skip empty tile */
+		if( value[i][0] != 0 ) {
+			item = item_list_add(&item_list);
+			anim = imageDB_get_anim(ctx,value[i]);
+			item_set_anim(item, x*tile_w, y*tile_h, anim);
+		}
 
 		x++;
 		if(x>=map_w) {
