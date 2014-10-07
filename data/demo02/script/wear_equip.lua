@@ -25,7 +25,7 @@ end
 
 -- put item from inventory to equipment
 if inventory_delete(id,item) ~= 1 then
-	equipment_slot_get_add_item(id,slot,item)
+	equipment_slot_set_item(id,slot,item)
 end
 
 end

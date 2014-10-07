@@ -1257,7 +1257,7 @@ Input:
  - ID of an item
 Output:
 */
-static int l_equipment_slot_add_item( lua_State* L)
+static int l_equipment_slot_set_item( lua_State* L)
 {
 	const char * id;
 	const char * slot;
@@ -1567,8 +1567,8 @@ void register_lua_functions(context_t * context)
 	/* equipment func */
 	lua_pushcfunction(L, l_equipment_slot_delete_item);
 	lua_setglobal(L, "equipment_slot_delete_item");
-	lua_pushcfunction(L, l_equipment_slot_add_item);
-	lua_setglobal(L, "equipment_slot_get_add_item");
+	lua_pushcfunction(L, l_equipment_slot_set_item);
+	lua_setglobal(L, "equipment_slot_set_item");
 	lua_pushcfunction(L, l_equipment_slot_get_item_id);
 	lua_setglobal(L, "equipment_slot_get_item_id");
 	/* speak func */
