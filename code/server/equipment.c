@@ -70,7 +70,7 @@ Return the name of the item in character's specified equipment slot
 Returned string MUST BE FREED
 return NULL if fails
 ***********************************************************************/
-char * equipment_get_item_id(const char *id, const char * slot)
+char * equipment_get_item(const char *id, const char * slot)
 {
 	char * item;
 	context_t * context = context_find(id);

@@ -1272,7 +1272,7 @@ static int l_equipment_slot_set_item( lua_State* L)
 	return 1;  /* number of results */
 }
 
-/* equipment_slot_get_item_id
+/* equipment_slot_get_item
 
 Get the item's ID of an equipment slot
 
@@ -1281,7 +1281,7 @@ Input:
  - ID of an equipment slot
 Output: ID of an item
 */
-static int l_equipment_slot_get_item_id( lua_State* L)
+static int l_equipment_slot_get_item( lua_State* L)
 {
 	const char * id;
 	const char * slot;
@@ -1289,7 +1289,7 @@ static int l_equipment_slot_get_item_id( lua_State* L)
 
 	id = luaL_checkstring(L, -2);
 	slot = luaL_checkstring(L, -1);
-	item = equipment_get_item_id(id,slot);
+	item = equipment_get_item(id,slot);
 	if( item == NULL ) {
 		return 0;  /* number of results */
 	}
@@ -1569,8 +1569,8 @@ void register_lua_functions(context_t * context)
 	lua_setglobal(L, "equipment_slot_delete_item");
 	lua_pushcfunction(L, l_equipment_slot_set_item);
 	lua_setglobal(L, "equipment_slot_set_item");
-	lua_pushcfunction(L, l_equipment_slot_get_item_id);
-	lua_setglobal(L, "equipment_slot_get_item_id");
+	lua_pushcfunction(L, l_equipment_slot_get_item);
+	lua_setglobal(L, "equipment_slot_get_item");
 	/* speak func */
 	lua_pushcfunction(L, l_speak_send);
 	lua_setglobal(L, "speak_send");
