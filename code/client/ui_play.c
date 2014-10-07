@@ -357,7 +357,7 @@ Compose equipment icon
 **********************************/
 static void compose_equipment(context_t * ctx, item_t * item_list)
 {
-        char ** name_list = NULL;
+        char ** slot_list = NULL;
         anim_t * anim;
         anim_t * anim2;
         anim_t * anim3;
@@ -385,16 +385,16 @@ static void compose_equipment(context_t * ctx, item_t * item_list)
 
         SDL_GetRendererOutputSize(ctx->render,&sw,&sh);
 
-        entry_get_group_list(CHARACTER_TABLE,ctx->id,&name_list,EQUIPMENT_GROUP,NULL);
+        entry_get_group_list(CHARACTER_TABLE,ctx->id,&slot_list,EQUIPMENT_GROUP,NULL);
 
         max_w = 0;
         max_h = 0;
         index=0;
-        while( name_list && name_list[index] != NULL) {
+        while( slot_list && slot_list[index] != NULL) {
 #if 0
                 /* Get the slot name */
-                if(!entry_read_string(CHARACTER_TABLE,ctx->id,&item_name,EQUIPMENT_GROUP,name_list[index],EQUIPMENT_NAME,NULL)) {
-                        name = strdup(name_list[index]);
+                if(!entry_read_string(CHARACTER_TABLE,ctx->id,&item_name,EQUIPMENT_GROUP,slot_list[index],EQUIPMENT_NAME,NULL)) {
+                        name = strdup(slot_list[index]);
                 } else {
                         name = item_name;
                 }
@@ -402,7 +402,7 @@ static void compose_equipment(context_t * ctx, item_t * item_list)
 #endif
                 h1 = 0;
                 /* Get the slot icon */
-                if(!entry_read_string(CHARACTER_TABLE,ctx->id,&icon_name,EQUIPMENT_GROUP,name_list[index],EQUIPMENT_ICON,NULL)) {
+                if(!entry_read_string(CHARACTER_TABLE,ctx->id,&icon_name,EQUIPMENT_GROUP,slot_list[index],EQUIPMENT_ICON,NULL)) {
                         continue;
                 } else {
                         /* load image */
@@ -416,7 +416,7 @@ static void compose_equipment(context_t * ctx, item_t * item_list)
                         item_set_overlay(item,1);
                         item_set_anim(item,x,y,anim);
 
-                        item_set_click_left(item,cb_select_slot,strdup(name_list[index]),NULL);
+                        item_set_click_left(item,cb_select_slot,strdup(slot_list[index]),NULL);
 
                         if(anim->w > max_w) {
                                 max_w = anim->w;
@@ -427,36 +427,47 @@ static void compose_equipment(context_t * ctx, item_t * item_list)
                 }
 
                 /* Is there an equipped object ? */
-                if(entry_read_string(CHARACTER_TABLE,ctx->id,&equipped_name,EQUIPMENT_GROUP,name_list[index],EQUIPMENT_EQUIPPED,NULL) && equipped_name[0]!=0 ) {
+                if(entry_read_string(CHARACTER_TABLE,ctx->id,&equipped_name,EQUIPMENT_GROUP,slot_list[index],EQUIPMENT_EQUIPPED,NULL) && equipped_name[0]!=0 ) {
 #if 0
                         /* Get the equipped object name */
                         if(!entry_read_string(ITEM_TABLE,equipped_name,&equipped_text,ITEM_NAME,NULL)) {
-                                werr(LOGDEV,"Can't read object %s name in equipment slot %s",equipped_name,name_list[index]);
+                                werr(LOGDEV,"Can't read object %s name in equipment slot %s",equipped_name,slot_list[index]);
                         }
                         free(equipped_text);
 #endif
-                        /* Get its icon */
-                        if(!entry_read_string(ITEM_TABLE,equipped_name,&equipped_icon_name,ITEM_ICON,NULL)) {
-                                werr(LOGDEV,"Can't read object %s icon in equipment slot %s",equipped_name,name_list[index]);
-                        } else {
-                                item = item_list_add(&item_list);
+			/* Get its icon */
+			template = item_is_resource(equipped_name);
 
-                                anim2 = imageDB_get_anim(ctx, equipped_icon_name);
-                                free(equipped_icon_name);
+			if ( template == NULL ) {
+				if(!entry_read_string(ITEM_TABLE,equipped_name,&equipped_icon_name,ITEM_ICON,NULL)) {
+					werr(LOGDEV,"Can't read object %s icon in equipment slot %s",equipped_name,slot_list[index]);
+				}
+			} else {
+				if(!entry_read_string(ITEM_TEMPLATE_TABLE,template,&equipped_icon_name,ITEM_ICON,NULL)) {
+					werr(LOGDEV,"Can't read item %s icon name (template: %s)",equipped_name,template);
+				}
+				free(template);
+			}
 
-                                item_set_overlay(item,1);
-                                item_set_anim(item,x-anim->w,y,anim2);
-                                item_set_click_left(item,cb_select_slot,strdup(name_list[index]),NULL);
-                                if(h1 < anim->h) {
-                                        h1 = anim->h;
-                                }
-                        }
-                        free(equipped_name);
-                }
+			if( equipped_icon_name ) {
+				item = item_list_add(&item_list);
+
+				anim2 = imageDB_get_anim(ctx, equipped_icon_name);
+				free(equipped_icon_name);
+
+				item_set_overlay(item,1);
+				item_set_anim(item,x-anim->w,y,anim2);
+				item_set_click_left(item,cb_select_slot,strdup(slot_list[index]),NULL);
+				if(h1 < anim->h) {
+					h1 = anim->h;
+				}
+			}
+			free(equipped_name);
+		}
 
                 /* Draw selection cursor */
                 if( ctx->selection.equipment != NULL) {
-                        if( !strcmp(ctx->selection.equipment,name_list[index]) ) {
+                        if( !strcmp(ctx->selection.equipment,slot_list[index]) ) {
                                 anim3 = imageDB_get_anim(ctx,CURSOR_EQUIP_FILE);
 
                                 item = item_list_add(&item_list);
@@ -475,6 +486,7 @@ static void compose_equipment(context_t * ctx, item_t * item_list)
 
                 index++;
         }
+        deep_free(slot_list);
 
         /* Draw selected item */
         if( ctx->selection.inventory != NULL) {
@@ -519,8 +531,6 @@ static void compose_equipment(context_t * ctx, item_t * item_list)
                 item_set_anim(item,sw-inventory_icon->w,y,inventory_icon);
                 item_set_click_left(item,show_inventory,NULL,NULL);
         }
-
-        deep_free(name_list);
 }
 
 /**************************************
