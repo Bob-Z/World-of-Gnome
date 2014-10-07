@@ -45,10 +45,10 @@ int equipment_delete(const char *id, const char * slot)
 }
 
 /**********************************************************************
-Add the passed item to the character's equipment slot
+Set the passed item to the character's equipment slot
 return -1 if fails
 **********************************************************************/
-int equipment_add(const char *id, const char * slot, const char * item)
+int equipment_set_item(const char *id, const char * slot, const char * item)
 {
 	context_t * context = context_find(id);
 	if( context == NULL ) {

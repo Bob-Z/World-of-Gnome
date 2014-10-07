@@ -1267,7 +1267,7 @@ static int l_equipment_slot_set_item( lua_State* L)
 	id = luaL_checkstring(L, -3);
 	slot = luaL_checkstring(L, -2);
 	item = luaL_checkstring(L, -1);
-	res = equipment_add(id,slot,item);
+	res = equipment_set_item(id,slot,item);
 	lua_pushnumber(L, res);
 	return 1;  /* number of results */
 }
