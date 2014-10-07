@@ -23,27 +23,6 @@
 #include <string.h>
 #include "action.h"
 
-/*****************************************************************
-Delete the selected item from the character's equipment slot
-return -1 if fails
-*****************************************************************/
-int equipment_delete(const char *id, const char * slot)
-{
-	context_t * context = context_find(id);
-	if( context == NULL ) {
-		werr(LOGDEV,"Could not find context %s",id);
-		return -1;
-	}
-
-	if( entry_remove_group(CHARACTER_TABLE, context->id, EQUIPMENT_EQUIPPED, EQUIPMENT_GROUP, slot, NULL)) {
-		/* update client */
-		network_send_character_file(context);
-		return 0;
-	}
-
-	return -1;
-}
-
 /**********************************************************************
 Set the passed item to the character's equipment slot
 return -1 if fails

@@ -18,6 +18,5 @@
 */
 
 int equipment_set_item(const char *id, const char * slot, const char * item);
-int equipment_delete(const char *id, const char * slot);
 char * equipment_get_item(const char *id, const char * slot);
 

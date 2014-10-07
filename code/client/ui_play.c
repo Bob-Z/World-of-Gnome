@@ -427,7 +427,7 @@ static void compose_equipment(context_t * ctx, item_t * item_list)
                 }
 
                 /* Is there an equipped object ? */
-                if(entry_read_string(CHARACTER_TABLE,ctx->id,&equipped_name,EQUIPMENT_GROUP,name_list[index],EQUIPMENT_EQUIPPED,NULL)) {
+                if(entry_read_string(CHARACTER_TABLE,ctx->id,&equipped_name,EQUIPMENT_GROUP,name_list[index],EQUIPMENT_EQUIPPED,NULL) && equipped_name[0]!=0 ) {
 #if 0
                         /* Get the equipped object name */
                         if(!entry_read_string(ITEM_TABLE,equipped_name,&equipped_text,ITEM_NAME,NULL)) {
@@ -435,7 +435,7 @@ static void compose_equipment(context_t * ctx, item_t * item_list)
                         }
                         free(equipped_text);
 #endif
-                        /* Get it's icon */
+                        /* Get its icon */
                         if(!entry_read_string(ITEM_TABLE,equipped_name,&equipped_icon_name,ITEM_ICON,NULL)) {
                                 werr(LOGDEV,"Can't read object %s icon in equipment slot %s",equipped_name,name_list[index]);
                         } else {

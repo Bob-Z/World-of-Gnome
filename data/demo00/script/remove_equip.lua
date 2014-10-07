@@ -9,7 +9,7 @@ if slot == nil or slot == "" then
 end
 item = equipment_slot_get_item(id,slot)
 
-if equipment_slot_delete_item(id,slot) ~= -1 then
+if equipment_slot_set_item(id,slot,"") ~= -1 then
 	inventory_add(id,item)
 end
 

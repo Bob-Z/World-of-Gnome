@@ -17,7 +17,7 @@ end
 --remove previously equipped item
 to_add_to_inventory = equipment_slot_get_item(id,slot)
 if to_add_to_inventory ~= nil and to_add_to_inventory ~= "" then
-	if equipment_slot_delete_item(id,slot) == -1 then
+	if equipment_slot_set_item(id,slot,"") == -1 then
 		text = string.format("Cannot remove %s from your %s",to_add_to_inventory,slot)
 	end
 	inventory_add(id,to_add_to_inventory)

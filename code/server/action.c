@@ -1225,28 +1225,6 @@ static int l_character_attribute_set( lua_State* L)
 	return 1;  /* number of results */
 }
 
-/* equipment_slot_delete_item
-
-Delete an item from an equipment slot
-
-Input:
- - ID of a character
- - ID of an equipment slot
-Output:
-*/
-static int l_equipment_slot_delete_item( lua_State* L)
-{
-	const char * id;
-	const char * slot;
-	int res;
-
-	id = luaL_checkstring(L, -2);
-	slot = luaL_checkstring(L, -1);
-	res = equipment_delete(id,slot);
-	lua_pushnumber(L, res);
-	return 1;  /* number of results */
-}
-
 /* equipment_slot_add_item
 
 Add an item to an equipment slot
@@ -1565,8 +1543,6 @@ void register_lua_functions(context_t * context)
 	lua_pushcfunction(L, l_character_attribute_set);
 	lua_setglobal(L, "character_attribute_set");
 	/* equipment func */
-	lua_pushcfunction(L, l_equipment_slot_delete_item);
-	lua_setglobal(L, "equipment_slot_delete_item");
 	lua_pushcfunction(L, l_equipment_slot_set_item);
 	lua_setglobal(L, "equipment_slot_set_item");
 	lua_pushcfunction(L, l_equipment_slot_get_item);
