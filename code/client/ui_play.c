@@ -788,7 +788,7 @@ static void compose_inventory_select(context_t * ctx,item_t * item_list)
         i = 0;
         x = 0;
         while( inventory_list[i] && strcmp(inventory_list[i],ctx->selection.inventory) ) {
-                template = item_is_resource(ctx->selection.inventory);
+                template = item_is_resource(inventory_list[i]);
 
                 if ( template == NULL ) {
                         if(!entry_read_string(ITEM_TABLE,inventory_list[i],&icon_name,ITEM_ICON,NULL)) {
