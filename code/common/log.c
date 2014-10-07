@@ -97,7 +97,7 @@ static int is_allowed_func(const char * func)
 
 /**************************************************
 **************************************************/
-void log_print(const char * file,const char * func,int line,FILE *stream,int level,char * format, ...)
+void log_print(int type,const char * file,const char * func,int line,FILE *stream,int level,char * format, ...)
 {
 	va_list ap;
 	char buf[10000];
@@ -118,13 +118,23 @@ void log_print(const char * file,const char * func,int line,FILE *stream,int lev
 	vsnprintf(buf,sizeof(buf),format,ap);
 	va_end(ap);
 
-	if(log_level == LOGDEBUG) {
-		fprintf(stream,"%09d|%ld|%s(%d):%s|%s\n",SDL_GetTicks(),SDL_ThreadID(),file,line,func,buf);
-	} else if(log_level == LOGDEV) {
-		fprintf(stream,"%09d|%s\n",SDL_GetTicks(),buf);
-	} else if(log_level == LOGUSER) {
-		fprintf(stream,"%s\n",buf);
+	if( type == TYPEERR ) {
+		fprintf(stream,"\e[31m");
 	}
+
+	if(log_level == LOGDEBUG) {
+		fprintf(stream,"%09d|%ld|%s(%d):%s|%s",SDL_GetTicks(),SDL_ThreadID(),file,line,func,buf);
+	} else if(log_level == LOGDEV) {
+		fprintf(stream,"%09d|%s",SDL_GetTicks(),buf);
+	} else if(log_level == LOGUSER) {
+		fprintf(stream,"%s",buf);
+	}
+
+	if( type == TYPEERR ) {
+		fprintf(stream,"\e[0m");
+	}
+
+	fprintf(stream,"\n");
 }
 
 /**************************************************

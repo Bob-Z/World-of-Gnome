@@ -25,12 +25,15 @@
 void log_set_level(char * log_level);
 void log_add_file_filter(const char * file);
 void log_add_func_filter(const char * func);
-void log_print(const char * file,const char * func, int line,FILE *stream,int level,char * format, ...);
+void log_print(int type,const char * file,const char * func, int line,FILE *stream,int level,char * format, ...);
 
 #define LOGUSER		0
 #define LOGDEV		1
 #define LOGDEBUG	2
 
-#define wlog(level,str,args...) log_print(__FILE__,__func__,__LINE__,stdout,level,str, ## args)
-#define werr(level,str,args...) log_print(__FILE__,__func__,__LINE__,stderr,level,str, ## args)
+#define TYPELOG		0
+#define TYPEERR		1
+
+#define wlog(level,str,args...) log_print(TYPELOG,__FILE__,__func__,__LINE__,stdout,level,str, ## args)
+#define werr(level,str,args...) log_print(TYPEERR,__FILE__,__func__,__LINE__,stderr,level,str, ## args)
 #endif
