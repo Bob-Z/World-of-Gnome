@@ -189,6 +189,7 @@ char * character_create_from_template(context_t * ctx,const char * template,cons
 
 	/* Check if new character is allowed to be created here */
 	if(!map_check_tile(ctx,new_id,map,x,y)) {
+		entry_destroy(CHARACTER_TABLE,new_id);
 		file_delete(CHARACTER_TABLE,new_id);
 		free(new_id);
 		return NULL;
@@ -196,18 +197,21 @@ char * character_create_from_template(context_t * ctx,const char * template,cons
 
 	/* Write position */
 	if(!entry_write_string(CHARACTER_TABLE,new_id,map,CHARACTER_KEY_MAP,NULL)) {
+		entry_destroy(CHARACTER_TABLE,new_id);
 		file_delete(CHARACTER_TABLE,new_id);
 		free(new_id);
 		return NULL;
 	}
 
 	if(!entry_write_int(CHARACTER_TABLE,new_id,x,CHARACTER_KEY_POS_X,NULL)) {
+		entry_destroy(CHARACTER_TABLE,new_id);
 		file_delete(CHARACTER_TABLE,new_id);
 		free(new_id);
 		return NULL;
 	}
 
 	if(!entry_write_int(CHARACTER_TABLE,new_id,y,CHARACTER_KEY_POS_Y,NULL)) {
+		entry_destroy(CHARACTER_TABLE,new_id);
 		file_delete(CHARACTER_TABLE,new_id);
 		free(new_id);
 		return NULL;
