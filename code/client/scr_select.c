@@ -57,6 +57,10 @@ static void cb_show_item(void * arg)
 {
 	item_t * item = (item_t*)arg;
 
+	if( item == 0 ) {
+		return;
+	}
+
 	sdl_set_virtual_x(item->rect.x + item->rect.w/2);
 	sdl_set_virtual_y(item->rect.y + item->rect.h/2);
 }
@@ -217,9 +221,12 @@ item_t * scr_select_compose(context_t * context)
 		}
 	}
 
-	if(init && item_list) {
-		cb_show_item(&item_list[0]);
+	if(init) {
 		init = 0;
+	}
+
+	if( current_character == -1 ) {
+		cb_show_item(character_list[0].item);
 	}
 
 	SDL_UnlockMutex(character_select_mutex);
@@ -257,6 +264,7 @@ void scr_select_add_user_character(context_t * context, char * data)
 		character_list[character_num-1].name = strdup(current_string);
 		current_string += strlen(current_string)+1;
 		character_list[character_num-1].anim = NULL;
+		character_list[character_num-1].item = NULL;
 
 		wlog(LOGDEBUG,"Character %s / %s /%s added",character_list[character_num-1].id,character_list[character_num-1].type,character_list[character_num-1].name);
 	}
