@@ -598,6 +598,7 @@ static void compose_select(context_t * ctx)
 	anim_t * anim;
 	int x;
 	int y;
+	char * map;
 
 	/* Tile selection */
 	x = ctx->selection.map_coord[0];
@@ -631,6 +632,15 @@ static void compose_select(context_t * ctx)
 		if(!entry_read_int(CHARACTER_TABLE,ctx->selection.id,&y,CHARACTER_KEY_POS_Y,NULL)) {
 			return;
 		}
+		if(!entry_read_string(CHARACTER_TABLE,ctx->selection.id,&map,CHARACTER_KEY_MAP,NULL)) {
+			return;
+		}
+
+		if( strcmp(map,ctx->map) ) {
+			free(map);
+			return;
+		}
+		free(map);
 
 		x *= ctx->tile_x;
 		y *= ctx->tile_y;
@@ -639,6 +649,7 @@ static void compose_select(context_t * ctx)
 		y -= (anim->h-ctx->tile_y)/2;
 
 		item_set_anim(item,x,y,anim);
+
 	}
 }
 
