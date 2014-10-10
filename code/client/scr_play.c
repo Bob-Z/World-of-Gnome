@@ -92,9 +92,10 @@ static void cb_unzoom(void *arg)
 	sdl_set_virtual_z(zoom/1.1);
 }
 /**********************************
-Compose sprites
+Draw a single sprite
+if image_file_name is not NULL, this file is used as an image rather than the normal sprite image
 **********************************/
-static void compose_sprite(context_t * ctx)
+static void draw_sprite(context_t * ctx, const char * image_file_name)
 {
 	char * sprite_name = NULL;
 	anim_t * anim;
@@ -109,150 +110,148 @@ static void compose_sprite(context_t * ctx)
 	char * zoom_str = NULL;
 	double zoom = 1.0;
 	double map_zoom = 0.0;
+
 	context_t * player_context = context_get_player();
 
-	context_lock_list();
+	if( ctx->map == NULL ) {
+		return;
+	}
+	if( ctx->in_game == false ) {
+		return;
+	}
+	if( strcmp(ctx->map,player_context->map)) {
+		return;
+	}
 
-	while(ctx != NULL ) {
-		if( ctx->map == NULL ) {
-			ctx = ctx->next;
-			continue;
+	if( map_zoom == 0.0 ) {
+		map_zoom = 1.0;
+		if(entry_read_string(MAP_TABLE,ctx->map,&zoom_str,MAP_KEY_SPRITE_ZOOM,NULL)) {
+			map_zoom = atof(zoom_str);
+			free(zoom_str);
 		}
-		if( ctx->in_game == false ) {
-			ctx = ctx->next;
-			continue;
-		}
-		if( strcmp(ctx->map,player_context->map)) {
-			ctx = ctx->next;
-			continue;
-		}
+	}
 
-		if( map_zoom == 0.0 ) {
-			map_zoom = 1.0;
-			if(entry_read_string(MAP_TABLE,ctx->map,&zoom_str,MAP_KEY_SPRITE_ZOOM,NULL)) {
-				map_zoom = atof(zoom_str);
-				free(zoom_str);
-			}
-		}
-
-		/* compute the sprite file name */
+	if( image_file_name ) {
+		anim = imageDB_get_anim(player_context,image_file_name);
+	}
+	else {
 		if(!entry_read_string(CHARACTER_TABLE,ctx->id,&sprite_name,CHARACTER_KEY_SPRITE,NULL)) {
 			werr(LOGDEV,"Can't read sprite name for \"%s\"",ctx->id);
-			ctx = ctx->next;
-			continue;
+			return;
 		}
 
 		anim = imageDB_get_anim(player_context,sprite_name);
 		free(sprite_name);
+	}
 
-		item = item_list_add(&item_list);
+	item = item_list_add(&item_list);
 
-		current_time = SDL_GetTicks();
+	current_time = SDL_GetTicks();
 
-		/* Force position when the player has changed map */
-		if(change_map) {
-			ctx->pos_tick = 0;
+	/* Force position when the player has changed map */
+	if(change_map) {
+		ctx->pos_tick = 0;
+	}
+	/* Force position when this context has changed map */
+	if(ctx->change_map) {
+		ctx->pos_tick = 0;
+		ctx->change_map = 0;
+	}
+
+	if( ctx->pos_tick == 0 ) {
+		ctx->cur_pos_x = ctx->pos_x;
+		ctx->cur_pos_y = ctx->pos_y;
+		ctx->pos_tick = 1;
+	}
+
+	/* If previous animation has ended */
+	if( ctx->pos_tick + VIRTUAL_ANIM_DURATION < current_time ) {
+		ctx->old_pos_x = ctx->cur_pos_x;
+		ctx->old_pos_y = ctx->cur_pos_y;
+	}
+
+	/* Detect sprite movement, initiate animation */
+	if(ctx->pos_x != ctx->cur_pos_x||ctx->pos_y != ctx->cur_pos_y) {
+		ctx->pos_tick = current_time;
+
+		/* flip need to remember previous direction to avoid resetting a
+		   east -> west flip when a sprite goes to north for instance.
+		   On the contrary rotation must not remember previous state, or
+		   the rotation will be wrong.
+		   Hence the distinction between orientation (no memory) and
+		   direction (memory). */
+		ctx->orientation = 0;
+		/* Compute direction */
+		if( ctx->pos_x > ctx->cur_pos_x ) {
+			ctx->direction &= ~WEST;
+			ctx->direction |= EAST;
+			ctx->orientation |= EAST;
 		}
-		/* Force position when this context has changed map */
-		if(ctx->change_map) {
-			ctx->pos_tick = 0;
-			ctx->change_map = 0;
+		if( ctx->pos_x < ctx->cur_pos_x ) {
+			ctx->direction &= ~EAST;
+			ctx->direction |= WEST;
+			ctx->orientation |= WEST;
 		}
-
-		if( ctx->pos_tick == 0 ) {
-			ctx->cur_pos_x = ctx->pos_x;
-			ctx->cur_pos_y = ctx->pos_y;
-			ctx->pos_tick = 1;
+		if( ctx->pos_y > ctx->cur_pos_y ) {
+			ctx->direction &= ~NORTH;
+			ctx->direction |= SOUTH;
+			ctx->orientation |= SOUTH;
 		}
-
-		/* If previous animation has ended */
-		if( ctx->pos_tick + VIRTUAL_ANIM_DURATION < current_time ) {
-			ctx->old_pos_x = ctx->cur_pos_x;
-			ctx->old_pos_y = ctx->cur_pos_y;
-		}
-
-		/* Detect sprite movement, initiate animation */
-		if(ctx->pos_x != ctx->cur_pos_x||ctx->pos_y != ctx->cur_pos_y) {
-			ctx->pos_tick = current_time;
-
-			/* flip need to remember previous direction to avoid resetting a
-			east -> west flip when a sprite goes to north for instance.
-			On the contrary rotation must not remember previous state, or
-			the rotation will be wrong.
-			Hence the distinction between orientation (no memory) and
-			direction (memory). */
-			ctx->orientation = 0;
-			/* Compute direction */
-			if( ctx->pos_x > ctx->cur_pos_x ) {
-				ctx->direction &= ~WEST;
-				ctx->direction |= EAST;
-				ctx->orientation |= EAST;
-			}
-			if( ctx->pos_x < ctx->cur_pos_x ) {
-				ctx->direction &= ~EAST;
-				ctx->direction |= WEST;
-				ctx->orientation |= WEST;
-			}
-			if( ctx->pos_y > ctx->cur_pos_y ) {
-				ctx->direction &= ~NORTH;
-				ctx->direction |= SOUTH;
-				ctx->orientation |= SOUTH;
-			}
-			if( ctx->pos_y < ctx->cur_pos_y ) {
-				ctx->direction &= ~SOUTH;
-				ctx->direction |= NORTH;
-				ctx->orientation |= NORTH;
-			}
-
-			ctx->cur_pos_x = ctx->pos_x;
-			ctx->cur_pos_y = ctx->pos_y;
+		if( ctx->pos_y < ctx->cur_pos_y ) {
+			ctx->direction &= ~SOUTH;
+			ctx->direction |= NORTH;
+			ctx->orientation |= NORTH;
 		}
 
-		/* Get rotation configuration */
-		angle = 0;
-		if( ctx->orientation & NORTH && ctx->orientation & EAST ) {
-			entry_read_int(CHARACTER_TABLE,ctx->id,&angle,CHARACTER_KEY_DIR_NE_ROT,NULL);
-			item_set_angle(item,(double)angle);
-		} else if ( ctx->orientation & SOUTH && ctx->orientation & EAST ) {
-			entry_read_int(CHARACTER_TABLE,ctx->id,&angle,CHARACTER_KEY_DIR_SE_ROT,NULL);
-			item_set_angle(item,(double)angle);
-		} else if ( ctx->orientation & SOUTH && ctx->orientation & WEST ) {
-			entry_read_int(CHARACTER_TABLE,ctx->id,&angle,CHARACTER_KEY_DIR_SW_ROT,NULL);
-			item_set_angle(item,(double)angle);
-		} else if ( ctx->orientation & NORTH && ctx->orientation & WEST ) {
-			entry_read_int(CHARACTER_TABLE,ctx->id,&angle,CHARACTER_KEY_DIR_NW_ROT,NULL);
-			item_set_angle(item,(double)angle);
-		} else if ( ctx->orientation & NORTH ) {
-			entry_read_int(CHARACTER_TABLE,ctx->id,&angle,CHARACTER_KEY_DIR_N_ROT,NULL);
-			item_set_angle(item,(double)angle);
-		} else if ( ctx->orientation & SOUTH ) {
-			entry_read_int(CHARACTER_TABLE,ctx->id,&angle,CHARACTER_KEY_DIR_S_ROT,NULL);
-			item_set_angle(item,(double)angle);
-		} else if ( ctx->orientation & WEST ) {
-			entry_read_int(CHARACTER_TABLE,ctx->id,&angle,CHARACTER_KEY_DIR_W_ROT,NULL);
-			item_set_angle(item,(double)angle);
-		} else if ( ctx->orientation & EAST ) {
-			entry_read_int(CHARACTER_TABLE,ctx->id,&angle,CHARACTER_KEY_DIR_E_ROT,NULL);
-			item_set_angle(item,(double)angle);
+		ctx->cur_pos_x = ctx->pos_x;
+		ctx->cur_pos_y = ctx->pos_y;
+	}
+
+	/* Get rotation configuration */
+	angle = 0;
+	if( ctx->orientation & NORTH && ctx->orientation & EAST ) {
+		entry_read_int(CHARACTER_TABLE,ctx->id,&angle,CHARACTER_KEY_DIR_NE_ROT,NULL);
+		item_set_angle(item,(double)angle);
+	} else if ( ctx->orientation & SOUTH && ctx->orientation & EAST ) {
+		entry_read_int(CHARACTER_TABLE,ctx->id,&angle,CHARACTER_KEY_DIR_SE_ROT,NULL);
+		item_set_angle(item,(double)angle);
+	} else if ( ctx->orientation & SOUTH && ctx->orientation & WEST ) {
+		entry_read_int(CHARACTER_TABLE,ctx->id,&angle,CHARACTER_KEY_DIR_SW_ROT,NULL);
+		item_set_angle(item,(double)angle);
+	} else if ( ctx->orientation & NORTH && ctx->orientation & WEST ) {
+		entry_read_int(CHARACTER_TABLE,ctx->id,&angle,CHARACTER_KEY_DIR_NW_ROT,NULL);
+		item_set_angle(item,(double)angle);
+	} else if ( ctx->orientation & NORTH ) {
+		entry_read_int(CHARACTER_TABLE,ctx->id,&angle,CHARACTER_KEY_DIR_N_ROT,NULL);
+		item_set_angle(item,(double)angle);
+	} else if ( ctx->orientation & SOUTH ) {
+		entry_read_int(CHARACTER_TABLE,ctx->id,&angle,CHARACTER_KEY_DIR_S_ROT,NULL);
+		item_set_angle(item,(double)angle);
+	} else if ( ctx->orientation & WEST ) {
+		entry_read_int(CHARACTER_TABLE,ctx->id,&angle,CHARACTER_KEY_DIR_W_ROT,NULL);
+		item_set_angle(item,(double)angle);
+	} else if ( ctx->orientation & EAST ) {
+		entry_read_int(CHARACTER_TABLE,ctx->id,&angle,CHARACTER_KEY_DIR_E_ROT,NULL);
+		item_set_angle(item,(double)angle);
+	}
+
+	/* Get flip configuration */
+	flip = 0;
+	if( angle == 0 ) {
+		if( ctx->direction & NORTH ) {
+			entry_read_int(CHARACTER_TABLE,ctx->id,&flip,CHARACTER_KEY_DIR_N_FLIP,NULL);
+		}
+		if( ctx->direction & SOUTH ) {
+			entry_read_int(CHARACTER_TABLE,ctx->id,&flip,CHARACTER_KEY_DIR_S_FLIP,NULL);
+		}
+		if( ctx->direction & WEST ) {
+			entry_read_int(CHARACTER_TABLE,ctx->id,&flip,CHARACTER_KEY_DIR_W_FLIP,NULL);
+		}
+		if( ctx->direction & EAST ) {
+			entry_read_int(CHARACTER_TABLE,ctx->id,&flip,CHARACTER_KEY_DIR_E_FLIP,NULL);
 		}
 
-		/* Get flip configuration */
-		flip = 0;
-		if( angle == 0 ) {
-			if( ctx->direction & NORTH ) {
-				entry_read_int(CHARACTER_TABLE,ctx->id,&flip,CHARACTER_KEY_DIR_N_FLIP,NULL);
-			}
-			if( ctx->direction & SOUTH ) {
-				entry_read_int(CHARACTER_TABLE,ctx->id,&flip,CHARACTER_KEY_DIR_S_FLIP,NULL);
-			}
-			if( ctx->direction & WEST ) {
-				entry_read_int(CHARACTER_TABLE,ctx->id,&flip,CHARACTER_KEY_DIR_W_FLIP,NULL);
-			}
-			if( ctx->direction & EAST ) {
-				entry_read_int(CHARACTER_TABLE,ctx->id,&flip,CHARACTER_KEY_DIR_E_FLIP,NULL);
-			}
-
-			switch(flip) {
+		switch(flip) {
 			case 1:
 				item_set_flip(item,SDL_FLIP_HORIZONTAL);
 				break;
@@ -264,33 +263,44 @@ static void compose_sprite(context_t * ctx)
 				break;
 			default:
 				item_set_flip(item,SDL_FLIP_NONE);
-			}
 		}
+	}
 
-		/* Get position in pixel */
-		x = ctx->cur_pos_x * ctx->tile_x;
-		y = ctx->cur_pos_y * ctx->tile_y;
-		ox = ctx->old_pos_x * ctx->tile_x;
-		oy = ctx->old_pos_y * ctx->tile_y;
+	/* Get position in pixel */
+	x = ctx->cur_pos_x * ctx->tile_x;
+	y = ctx->cur_pos_y * ctx->tile_y;
+	ox = ctx->old_pos_x * ctx->tile_x;
+	oy = ctx->old_pos_y * ctx->tile_y;
 
-		/* Get per psrite zoom */
-		if(entry_read_string(CHARACTER_TABLE,ctx->id,&zoom_str,CHARACTER_KEY_ZOOM,NULL)) {
-			zoom = atof(zoom_str);
-			free(zoom_str);
-		}
+	/* Get per psrite zoom */
+	if(entry_read_string(CHARACTER_TABLE,ctx->id,&zoom_str,CHARACTER_KEY_ZOOM,NULL)) {
+		zoom = atof(zoom_str);
+		free(zoom_str);
+	}
 
-		/* Center sprite on tile */
-		x -= ((anim->w*map_zoom*zoom)-ctx->tile_x)/2;
-		y -= ((anim->h*map_zoom*zoom)-ctx->tile_y)/2;
-		ox -= ((anim->w*map_zoom*zoom)-ctx->tile_x)/2;
-		oy -= ((anim->h*map_zoom*zoom)-ctx->tile_y)/2;
+	/* Center sprite on tile */
+	x -= ((anim->w*map_zoom*zoom)-ctx->tile_x)/2;
+	y -= ((anim->h*map_zoom*zoom)-ctx->tile_y)/2;
+	ox -= ((anim->w*map_zoom*zoom)-ctx->tile_x)/2;
+	oy -= ((anim->h*map_zoom*zoom)-ctx->tile_y)/2;
 
-		item_set_smooth_anim(item,x,y,ox,oy,ctx->pos_tick,anim);
-		item_set_click_left(item,cb_select_sprite,ctx->id,NULL);
-		item_set_click_right(item,cb_redo_sprite,item,NULL);
+	item_set_smooth_anim(item,x,y,ox,oy,ctx->pos_tick,anim);
+	item_set_click_left(item,cb_select_sprite,ctx->id,NULL);
+	item_set_click_right(item,cb_redo_sprite,item,NULL);
 
-		item_set_zoom_x(item,zoom * map_zoom );
-		item_set_zoom_y(item,zoom * map_zoom );
+	item_set_zoom_x(item,zoom * map_zoom );
+	item_set_zoom_y(item,zoom * map_zoom );
+}
+
+/**********************************
+Compose sprites
+**********************************/
+static void compose_sprite(context_t * ctx)
+{
+	context_lock_list();
+
+	while(ctx != NULL ) {
+		draw_sprite(ctx,NULL);
 
 		ctx = ctx->next;
 	}
@@ -598,7 +608,7 @@ static void compose_select(context_t * ctx)
 	anim_t * anim;
 	int x;
 	int y;
-	char * map;
+	context_t * selected_context = NULL;
 
 	/* Tile selection */
 	x = ctx->selection.map_coord[0];
@@ -622,34 +632,12 @@ static void compose_select(context_t * ctx)
 
 	/* Sprite selection */
 	if( ctx->selection.id != NULL) {
-		anim = imageDB_get_anim(ctx,CURSOR_SPRITE_FILE);
-
-		item = item_list_add(&item_list);
-
-		if(!entry_read_int(CHARACTER_TABLE,ctx->selection.id,&x,CHARACTER_KEY_POS_X,NULL)) {
-			return;
-		}
-		if(!entry_read_int(CHARACTER_TABLE,ctx->selection.id,&y,CHARACTER_KEY_POS_Y,NULL)) {
-			return;
-		}
-		if(!entry_read_string(CHARACTER_TABLE,ctx->selection.id,&map,CHARACTER_KEY_MAP,NULL)) {
+		selected_context = context_find(ctx->selection.id);
+		if( selected_context == NULL ) {
 			return;
 		}
 
-		if( strcmp(map,ctx->map) ) {
-			free(map);
-			return;
-		}
-		free(map);
-
-		x *= ctx->tile_x;
-		y *= ctx->tile_y;
-		/* Center on tile */
-		x -= (anim->w-ctx->tile_x)/2;
-		y -= (anim->h-ctx->tile_y)/2;
-
-		item_set_anim(item,x,y,anim);
-
+		draw_sprite(selected_context, CURSOR_SPRITE_FILE);
 	}
 }
 
