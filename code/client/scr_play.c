@@ -632,6 +632,8 @@ static void compose_select(context_t * ctx)
 			return;
 		}
 
+		x *= ctx->tile_x;
+		y *= ctx->tile_y;
 		/* Center on tile */
 		x -= (anim->w-ctx->tile_x)/2;
 		y -= (anim->h-ctx->tile_y)/2;
