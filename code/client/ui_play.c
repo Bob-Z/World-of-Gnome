@@ -627,6 +627,18 @@ static void compose_text(context_t * ctx, item_t * item_list)
         }
 }
 
+/****************************
+****************************/
+static void cb_print_coord(void * arg)
+{
+	char buf[SMALL_BUF];
+
+	sprintf(buf,"x=%d y=%d",scr_play_get_current_x(),scr_play_get_current_y());
+	textview_add_line(buf);
+
+	screen_compose();
+}
+
 /**********************************
 **********************************/
 static void main_compose(context_t * ctx, item_t * item_list) {
@@ -641,6 +653,7 @@ static void main_compose(context_t * ctx, item_t * item_list) {
         sdl_add_keycb(SDL_SCANCODE_LEFT,key_left,NULL,NULL);
         sdl_add_keycb(SDL_SCANCODE_RIGHT,key_right,NULL,NULL);
         sdl_add_keycb(SDL_SCANCODE_ESCAPE,cb_main_quit,NULL,NULL);
+        sdl_add_keycb(SDL_SCANCODE_SCROLLLOCK,cb_print_coord,NULL,NULL);
 }
 
 /****************************

@@ -40,10 +40,29 @@
 static item_t * item_list = NULL;
 static int change_map = 0;
 static int init = true;
+static int current_map_x = -1;
+static int current_map_y = -1;
 
+/**********************************
+**********************************/
 void scr_play_init(int init_value)
 {
 	init = init_value;
+}
+
+
+/**********************************
+**********************************/
+int scr_play_get_current_x()
+{
+	return current_map_x;
+}
+
+/**********************************
+**********************************/
+int scr_play_get_current_y()
+{
+	return current_map_y;
 }
 
 /**********************************
@@ -420,6 +439,16 @@ static void cb_redo_map(void *arg)
 	free(script);
 }
 
+/**************************************
+**************************************/
+static void cb_over(void *arg)
+{
+	item_t * item = (item_t*)arg;
+
+	current_map_x = item->tile_x;
+	current_map_y = item->tile_y;
+}
+
 /**********************************
 Set sdl_item item for mouse button callback
 **********************************/
@@ -441,6 +470,7 @@ static void compose_map_button(context_t * ctx)
 			item_set_click_right(item,cb_redo_map,item,NULL);
 			item_set_wheel_up(item,cb_zoom,NULL,NULL);
 			item_set_wheel_down(item,cb_unzoom,NULL,NULL);
+			item_set_over(item,cb_over,item,NULL);
 			item_set_anim_over(item,anim);
 		}
 	}
