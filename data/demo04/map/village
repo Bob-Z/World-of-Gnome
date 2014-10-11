@@ -91,9 +91,16 @@ event_list: {
         to_house_0 :
         {
                 pos_x = 22;
-                pos_y = 11;
+                pos_y = 10;
                 script = "goto.lua";
                 param = ( "house0_level0", "5", "11" );
+        };
+        to_house_1 :
+        {
+                pos_x = 22;
+                pos_y = 34;
+                script = "goto.lua";
+                param = ( "house1", "7", "9" );
         };
 };
 
