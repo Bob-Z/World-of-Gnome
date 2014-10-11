@@ -7,7 +7,7 @@ map = "village";
 pos_x = 1;
 pos_y = 6;
 action = [  ];
-allowed_tile = [ ];
+allowed_tile = [ "g" ];
 attribute : 
 {
   life : 
