@@ -86,4 +86,13 @@ type = [
 "g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","w","w","w","w","w","w","w","w","w","w","w","w","w","w","w","w","w"
  ];
 
+event_list: {
+        to_house_0 :
+        {
+                pos_x = 22;
+                pos_y = 11;
+                script = "goto.lua";
+                param = ( "house0_level0", "5", "11" );
+        };
+};
 
