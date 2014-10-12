@@ -22,6 +22,7 @@
 #include "../common/common.h"
 
 void action_parse_frame(context_t * context, char * frame);
+int action_execute(context_t * context, const char * action, char ** parameters);
 int action_execute_script(context_t * context, const char * script, char ** parameters);
 void register_lua_functions(context_t * context);
 

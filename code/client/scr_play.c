@@ -84,7 +84,7 @@ static void cb_redo_sprite(void *arg)
 
 	cb_select_sprite(arg);
 
-	script = strdup(ui_play_get_last_action_script());
+	script = strdup(ui_play_get_last_action());
 	ui_play_cb_action(script);
 	free(script);
 }
@@ -434,7 +434,7 @@ static void cb_redo_map(void *arg)
 
 	cb_select_map(arg);
 
-	script = strdup(ui_play_get_last_action_script());
+	script = strdup(ui_play_get_last_action());
 	ui_play_cb_action(script);
 	free(script);
 }

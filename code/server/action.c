@@ -1337,9 +1337,10 @@ static void action_chat(context_t * context, const char * text)
 }
 
 /**************************************
+Execute a LUA script file
 return -1 if the script do not return something
 **************************************/
-int action_execute_script(context_t * context, const char * script, const char ** parameters)
+int action_execute_script(context_t * context, const char * script, char ** parameters)
 {
 	char * filename;
 	int param_num = 0;
@@ -1398,6 +1399,32 @@ int action_execute_script(context_t * context, const char * script, const char *
 	return return_value;
 }
 
+/**************************************
+Execute an action configuration file
+return -1 if the script do not return something
+**************************************/
+int action_execute(context_t * context, const char * action, char ** parameters)
+{
+	char * script;
+	char ** params;
+	char ** all_params;
+	int ret;
+
+	if(!entry_read_string(ACTION_TABLE,action,&script,ACTION_KEY_SCRIPT,NULL)) {
+                        return -1;
+	}
+	entry_read_list(ACTION_TABLE,action,&params,ACTION_KEY_PARAM,NULL);
+
+	all_params = add_array(params,parameters);
+
+	ret = action_execute_script(context,script,all_params);
+
+	deep_free(params);
+	free(all_params);
+
+	return ret;
+}
+
 /***************************************************
 Call another script
 
@@ -1410,7 +1437,7 @@ static int l_call_script( lua_State* L)
 {
 	const char * script;
 	int num_arg;
-	const char **arg = NULL;
+	char **arg = NULL;
 	int i;
 	int res;
 	context_t * context;
@@ -1424,7 +1451,7 @@ static int l_call_script( lua_State* L)
 	if(num_arg > 1 ) {
 		arg = malloc(sizeof(char*)*num_arg);
 		for(i=0;i<num_arg-1;i++) {
-			arg[i] = luaL_checkstring(L, -num_arg+1+i);
+			arg[i] = (char *)luaL_checkstring(L, -num_arg+1+i); /* FIXME wrong casting ? */
 		}
 		arg[i] = NULL; /* End of list */
 	}

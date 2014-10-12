@@ -44,7 +44,7 @@
 #define BACKGROUND_COLOR (0x000000C0)
 
 static int current_ui = UI_MAIN;
-static char * last_action_script = NULL;
+static char * last_action = NULL;
 /* main ui */
 static char ** attribute_string = NULL;
 static int action_bar_height;
@@ -95,9 +95,9 @@ int ui_play_get()
 
 /**********************************
 **********************************/
-char * ui_play_get_last_action_script()
+char * ui_play_get_last_action()
 {
-	return last_action_script;
+	return last_action;
 }
 
 /****************************
@@ -131,7 +131,7 @@ static void key_up(void * arg)
 {
         context_t * ctx = context_get_player();
 
-        network_send_action(ctx,"move_up.lua",NULL);
+        network_send_action(ctx,"move_up",NULL);
 }
 
 /**************************************
@@ -140,7 +140,7 @@ static void key_down(void * arg)
 {
         context_t * ctx = context_get_player();
 
-        network_send_action(ctx,"move_down.lua",NULL);
+        network_send_action(ctx,"move_down",NULL);
 }
 
 /**************************************
@@ -149,7 +149,7 @@ static void key_left(void * arg)
 {
         context_t * ctx = context_get_player();
 
-        network_send_action(ctx,"move_left.lua",NULL);
+        network_send_action(ctx,"move_left",NULL);
 }
 
 /**************************************
@@ -158,7 +158,7 @@ static void key_right(void * arg)
 {
         context_t * ctx = context_get_player();
 
-        network_send_action(ctx,"move_right.lua",NULL);
+        network_send_action(ctx,"move_right",NULL);
 }
 
 /**********************************
@@ -233,19 +233,19 @@ static void compose_attribute(context_t * ctx, item_t * item_list)
 **********************************/
 void ui_play_cb_action(void * arg)
 {
-        char * script = (char *)arg;
+        char * action = (char *)arg;
 
-        network_send_action(context_get_player(),script,NULL);
+        network_send_action(context_get_player(),action,NULL);
 
-        if( last_action_script ) {
-                free(last_action_script);
-                last_action_script = NULL;
+        if( last_action ) {
+                free(last_action);
+                last_action = NULL;
         }
 
         if( arg ) {
-                last_action_script = strdup(arg);
+                last_action = strdup(arg);
         } else {
-                last_action_script = NULL;
+                last_action = NULL;
         }
 }
 
@@ -297,10 +297,6 @@ static void compose_action(context_t * ctx,item_t * item_list)
                         i++;
                         continue;
                 }
-                if(!entry_read_string(ACTION_TABLE,action_list[i],&script,ACTION_KEY_SCRIPT,NULL)) {
-                        i++;
-                        continue;
-                }
 
                 /* load image */
                 anim = imageDB_get_anim(ctx, icon);
@@ -310,7 +306,7 @@ static void compose_action(context_t * ctx,item_t * item_list)
                 item_set_overlay(item,1);
                 item_set_anim(item,x,sh-anim->h,anim);
                 x += anim->w;
-                item_set_click_left(item,ui_play_cb_action,(void*)strdup(script),free);
+                item_set_click_left(item,ui_play_cb_action,(void*)strdup(action_list[i]),free);
                 if( action_bar_height < anim->h ) {
                         action_bar_height = anim->h;
                 }

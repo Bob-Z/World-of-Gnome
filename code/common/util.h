@@ -23,5 +23,6 @@ char * checksum_file(const char * filename);
 char * strconcat(const char * str, ...);
 void deep_free(char ** to_delete);
 char * _strsep(char **stringp, const char *delim);
+char ** add_array(char ** array1, char ** array2);
 #endif
 

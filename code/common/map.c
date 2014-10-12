@@ -126,7 +126,7 @@ int map_check_tile(context_t * ctx,char * id, const char * map, int x,int y)
 		param[2] = sx;
 		param[3] = sy;
 		param[4] = NULL;
-		res = action_execute_script(ctx,action,param);
+		res = action_execute(ctx,action,param);
 		free(action);
 		return res;
 	}

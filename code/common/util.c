@@ -126,3 +126,41 @@ char * _strsep(char **stringp, const char *delim)
 	}
 	return start;
 }
+
+/********************************
+Add two arrays
+Return pointer must free (not deep_free)
+********************************/
+char ** add_array(char ** array1, char ** array2)
+{
+	int array_index = 0;
+	char ** current_array = NULL;
+	char ** ret_array = NULL;
+
+	if( array1 != NULL ) {
+		current_array = array1;
+		while( *current_array != NULL ) {
+			array_index++;
+			ret_array = realloc( ret_array, array_index * sizeof(char*) );
+			ret_array[array_index-1] = *current_array;
+			current_array++;
+		}
+	}
+
+	if( array2 != NULL ) {
+		current_array = array2;
+		while( *current_array != NULL ) {
+			array_index++;
+			ret_array = realloc( ret_array, array_index * sizeof(char*) );
+			ret_array[array_index-1] = *current_array;
+			current_array++;
+		}
+	}
+
+	/* Terminal NULL */
+	array_index++;
+	ret_array = realloc( ret_array, array_index * sizeof(char*) );
+	ret_array[array_index-1] = NULL;
+
+	return ret_array;
+}
