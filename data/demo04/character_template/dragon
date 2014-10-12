@@ -1,0 +1,8 @@
+marquee         = "marquee/dragon.gif";
+sprite          = "sprite/dragon.gif";
+map       = "village";
+pos_x         = 0;
+pos_y         = 0;
+#default action for this kind of avatar
+action          = [  ];
+allowed_tile	= [  ];

@@ -1,0 +1,27 @@
+marquee         = "marquee/dragon.gif";
+sprite          = "sprite/dragon.gif";
+name = "yop";
+inventory = [ ];
+type = "dragon";
+map = "village";
+pos_x = 1;
+pos_y = 6;
+action = [  ];
+allowed_tile = [ ];
+#attribute : 
+#{
+#  life : 
+#  {
+#    min = 0;
+#    max = 10;
+#    current = 10;
+#    previous = 10;
+#  };
+#  agility : 
+#  {
+#    min = 0;
+#    max = 10;
+#    current = 10;
+#    previous = 10;
+#  };
+#};
