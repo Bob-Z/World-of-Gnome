@@ -1,4 +1,4 @@
-function f ()
+function f (tile_type)
 
 id = player_get_id()
 x = character_get_selected_map_tile_x(id)
@@ -8,6 +8,6 @@ if x == -1 or y == -1 then
 	return
 end
 map = character_get_map(id)
-map_set_tile_type(map,"g",x,y)
+map_set_tile_type(map,tile_type,x,y)
 
 end
