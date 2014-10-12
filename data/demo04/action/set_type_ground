@@ -1,0 +1,3 @@
+text		= "Set tile type to ground";
+icon		= "icon/set_type_ground.gif";
+script		= "set_type_ground.lua";

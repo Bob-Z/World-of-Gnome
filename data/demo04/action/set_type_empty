@@ -1,0 +1,3 @@
+text		= "Set tile type to empty";
+icon		= "icon/set_type_empty.gif";
+script		= "set_type_empty.lua";
