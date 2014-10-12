@@ -119,13 +119,10 @@
 
 /* action data */
 #define ACTION_TABLE		"action"
-#define ACTION_KEY_LIST		"action_list"
 #define ACTION_KEY_SCRIPT	"script"
-#define ACTION_KEY_TYPE		"type"
 #define ACTION_KEY_TEXT		"text"
 #define ACTION_KEY_ICON		"icon"
 #define ACTION_KEY_PARAM	"params"
-#define ACTION_KEY_OPTION	"options"
 
 /* item data */
 #define ITEM_TABLE		"item"
