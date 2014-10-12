@@ -632,8 +632,12 @@ static void compose_text(context_t * ctx, item_t * item_list)
 static void cb_print_coord(void * arg)
 {
 	char buf[SMALL_BUF];
+	char *type;
 
-	sprintf(buf,"x=%d y=%d",scr_play_get_current_x(),scr_play_get_current_y());
+	
+	entry_read_list_index(MAP_TABLE,context_get_player()->map,&type,scr_play_get_current_x()+scr_play_get_current_y()*context_get_player()->map_w,MAP_KEY_TYPE,NULL);
+	sprintf(buf,"x=%d y=%d type=%s",scr_play_get_current_x(),scr_play_get_current_y(),type);
+	free(type);
 	textview_add_line(buf);
 
 	screen_compose();
