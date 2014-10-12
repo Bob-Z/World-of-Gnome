@@ -1,6 +1,7 @@
 Sprite:
 
  - knight: http://www.spriters-resource.com/ds/rondoofswords/sheet/42665/
+ - dragon: http://www.spriters-resource.com/fullview/4463/
 
 Map:
 
