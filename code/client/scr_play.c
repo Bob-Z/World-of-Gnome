@@ -222,9 +222,31 @@ static void draw_sprite(context_t * ctx, const char * image_file_name)
 			ctx->orientation |= NORTH;
 		}
 
+		ctx->old_pos_x = ctx->cur_pos_x;
+		ctx->old_pos_y = ctx->cur_pos_y;
 		ctx->cur_pos_x = ctx->pos_x;
 		ctx->cur_pos_y = ctx->pos_y;
 	}
+
+	/* Get position in pixel */
+	x = ctx->cur_pos_x * ctx->tile_x;
+	y = ctx->cur_pos_y * ctx->tile_y;
+	ox = ctx->old_pos_x * ctx->tile_x;
+	oy = ctx->old_pos_y * ctx->tile_y;
+
+	/* Get per sprite zoom */
+	if(entry_read_string(CHARACTER_TABLE,ctx->id,&zoom_str,CHARACTER_KEY_ZOOM,NULL)) {
+		zoom = atof(zoom_str);
+		free(zoom_str);
+	}
+
+	/* Center sprite on tile */
+	x -= ((anim->w*map_zoom*zoom)-ctx->tile_x)/2;
+	y -= ((anim->h*map_zoom*zoom)-ctx->tile_y)/2;
+	ox -= ((anim->w*map_zoom*zoom)-ctx->tile_x)/2;
+	oy -= ((anim->h*map_zoom*zoom)-ctx->tile_y)/2;
+
+	item_set_smooth_anim(item,x,y,ox,oy,ctx->pos_tick,anim);
 
 	/* Get rotation configuration */
 	angle = 0;
@@ -285,25 +307,6 @@ static void draw_sprite(context_t * ctx, const char * image_file_name)
 		}
 	}
 
-	/* Get position in pixel */
-	x = ctx->cur_pos_x * ctx->tile_x;
-	y = ctx->cur_pos_y * ctx->tile_y;
-	ox = ctx->old_pos_x * ctx->tile_x;
-	oy = ctx->old_pos_y * ctx->tile_y;
-
-	/* Get per sprite zoom */
-	if(entry_read_string(CHARACTER_TABLE,ctx->id,&zoom_str,CHARACTER_KEY_ZOOM,NULL)) {
-		zoom = atof(zoom_str);
-		free(zoom_str);
-	}
-
-	/* Center sprite on tile */
-	x -= ((anim->w*map_zoom*zoom)-ctx->tile_x)/2;
-	y -= ((anim->h*map_zoom*zoom)-ctx->tile_y)/2;
-	ox -= ((anim->w*map_zoom*zoom)-ctx->tile_x)/2;
-	oy -= ((anim->h*map_zoom*zoom)-ctx->tile_y)/2;
-
-	item_set_smooth_anim(item,x,y,ox,oy,ctx->pos_tick,anim);
 	item_set_click_left(item,cb_select_sprite,ctx->id,NULL);
 	item_set_click_right(item,cb_redo_sprite,item,NULL);
 
