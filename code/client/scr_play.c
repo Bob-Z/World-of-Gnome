@@ -722,7 +722,7 @@ item_t * scr_play_compose(context_t * ctx)
 		sdl_force_virtual_x(ctx->pos_x * ctx->tile_x + ctx->tile_x/2);
 		sdl_force_virtual_y(ctx->pos_y * ctx->tile_y + ctx->tile_y/2);
 	}
-	/* set virtual coordiante on the same map */
+	/* set virtual coordinate on the same map */
 	else {
 		sdl_set_virtual_x(ctx->cur_pos_x * ctx->tile_x + ctx->tile_x/2);
 		sdl_set_virtual_y(ctx->cur_pos_y * ctx->tile_y + ctx->tile_y/2);
