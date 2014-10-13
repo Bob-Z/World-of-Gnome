@@ -291,7 +291,7 @@ static void draw_sprite(context_t * ctx, const char * image_file_name)
 	ox = ctx->old_pos_x * ctx->tile_x;
 	oy = ctx->old_pos_y * ctx->tile_y;
 
-	/* Get per psrite zoom */
+	/* Get per sprite zoom */
 	if(entry_read_string(CHARACTER_TABLE,ctx->id,&zoom_str,CHARACTER_KEY_ZOOM,NULL)) {
 		zoom = atof(zoom_str);
 		free(zoom_str);
