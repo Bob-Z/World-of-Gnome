@@ -359,19 +359,16 @@ int map_set_tile_type(const char * map,const char * type,int x, int y)
 	index = width * y + x;
 
 	/* read previous map type */
-	if(!entry_read_list_index(MAP_TABLE,map,&previous_type, index,MAP_KEY_TYPE,NULL)) {
-		SDL_UnlockMutex(map_mutex);
-		return -1;
-	}
-
-	/* Do not change the type if it already the requested type 
-	Avoid calling useless context_broadcast_file */
-	if( strcmp(previous_type, type) == 0 ) {
+	if(entry_read_list_index(MAP_TABLE,map,&previous_type, index,MAP_KEY_TYPE,NULL)) {
+		/* Do not change the type if it already the requested type 
+		   Avoid calling useless context_broadcast_file */
+		if( strcmp(previous_type, type) == 0 ) {
+			free(previous_type);
+			SDL_UnlockMutex(map_mutex);
+			return 0;
+		}
 		free(previous_type);
-		SDL_UnlockMutex(map_mutex);
-		return 0;
 	}
-	free(previous_type);
 
 	if( entry_write_list_index(MAP_TABLE, map, type,index, MAP_KEY_TYPE,NULL ) ) {
 		context_broadcast_file(MAP_TABLE,map,TRUE);

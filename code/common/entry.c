@@ -550,6 +550,8 @@ static int __write_list_index(const char * table, const char * file, const char 
 {
 	config_setting_t * setting = NULL;
 	const config_t * config;
+	int list_size;
+	
 
 	config = get_config(table,file);
 	if(config==NULL) {
@@ -557,6 +559,15 @@ static int __write_list_index(const char * table, const char * file, const char 
 	}
 
 	setting = create_tree(config,NULL,NULL,NULL,CONFIG_TYPE_ARRAY,ap);
+
+	/* Create empty entry before index */
+	list_size = config_setting_length (setting);
+	while( list_size <= index ) {
+		if(config_setting_set_string_elem(setting,-1,"")==NULL) {
+			return FALSE;
+		}
+		list_size++;
+	}
 
 	if(config_setting_set_string_elem(setting,index,data)==NULL) {
 		return FALSE;

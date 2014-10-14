@@ -639,7 +639,6 @@ Show tiles types
 **********************************/
 static void compose_type(context_t * ctx)
 {
-	char ** type_list;
 	int x = 0;
 	int y = 0;
 	item_t * item;
@@ -659,15 +658,13 @@ static void compose_type(context_t * ctx)
                 return;
         }
 
-	if( !entry_read_list(MAP_TABLE,ctx->map,&type_list,MAP_KEY_TYPE,NULL) ) {
-		return;
-	}
-
 	for( x=0; x<ctx->map_w; x++) {
 		for( y=0; y<ctx->map_h; y++) {
-			type = type_list[ x + y * ctx->map_w ];
+			if(!entry_read_list_index(MAP_TABLE,ctx->map,&type,x + y * ctx->map_w,MAP_KEY_TYPE,NULL)) {
+				continue;
+			}
 
-			if( type == NULL ) {
+			if( type[0] == 0 ) {
 				continue;
 			}
 
@@ -679,10 +676,6 @@ static void compose_type(context_t * ctx)
 			item_set_frame_shape(item,x*ctx->tile_x,y*ctx->tile_y,w,h);
 		}
 	}
-
-	
-	deep_free(type_list);
-
 }
 
 /**********************************
