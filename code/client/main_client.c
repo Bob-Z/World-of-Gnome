@@ -26,8 +26,9 @@
 #include <stdlib.h>
 #include "../sdl_item/sdl.h"
 #include "screen.h"
+#include "option_client.h"
 
-const char optstring[] = "?i:u:p:l:f:F:";
+const char optstring[] = "?i:u:p:l:f:F:t";
 const struct option longopts[] = {
 	{ "ip",required_argument,NULL,'i' },
 	{ "user",required_argument,NULL,'u' },
@@ -35,6 +36,7 @@ const struct option longopts[] = {
 	{ "log",required_argument,NULL,'l' },
 	{ "file",required_argument,NULL,'f' },
 	{ "func",required_argument,NULL,'F' },
+	{ "type",no_argument,NULL,'t' },
 	{NULL,0,NULL,0}
 };
 
@@ -49,6 +51,10 @@ int main (int argc, char **argv)
 	char * ip = NULL;
 	char * user = NULL;
 	char * pass = NULL;
+	option_t * option;
+
+	option_init();
+	option = option_get();
 
 	base_directory = strconcat(getenv("HOME"),"/.config/wog/client",NULL);
 
@@ -72,6 +78,9 @@ int main (int argc, char **argv)
 		case 'F':
 			log_add_func_filter(optarg);
 			break;
+		case 't':
+			option->show_tile_type = true;
+			break;
 		default:
 			printf("HELP:\n\n");
 			printf("-i --ip : Set a server IP\n");
@@ -80,6 +89,7 @@ int main (int argc, char **argv)
 			printf("-l --log: Set log level\n");
 			printf("-f --file: Only display logs from this source file\n");
 			printf("-F --func: Only display logs from this function\n");
+			printf("-t --type: Show tile type on map\n");
 			exit(0);
 		}
 	}

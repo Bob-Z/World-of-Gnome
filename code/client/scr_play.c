@@ -28,6 +28,7 @@
 #include "textview.h"
 #include "network_client.h"
 #include "ui_play.h"
+#include "option_client.h"
 
 #define ITEM_FONT "/usr/share/fonts/truetype/ubuntu-font-family/Ubuntu-C.ttf"
 #define ITEM_FONT_SIZE 15
@@ -42,6 +43,7 @@ static int change_map = 0;
 static int init = true;
 static int current_map_x = -1;
 static int current_map_y = -1;
+static option_t * option;
 
 /**********************************
 **********************************/
@@ -646,14 +648,18 @@ static void compose_type(context_t * ctx)
 	int w;
 	int h;
 
-	if ( font == NULL ) {
+	if( option->show_tile_type == false) {
+		return;
+	}
+
+	if( font == NULL ) {
 		font = TTF_OpenFont(ITEM_FONT, ITEM_FONT_SIZE);
         }
-        if ( font == NULL ) {
+        if( font == NULL ) {
                 return;
         }
 
-	if(!entry_read_list(MAP_TABLE,ctx->map,&type_list,MAP_KEY_TYPE,NULL)) {
+	if( !entry_read_list(MAP_TABLE,ctx->map,&type_list,MAP_KEY_TYPE,NULL) ) {
 		return;
 	}
 
@@ -730,6 +736,8 @@ item_t * scr_play_compose(context_t * ctx)
 	int bg_blue = 0;
 	int bg_green = 0;
 	char * map_filename;
+
+	option = option_get();
 
 	if(item_list) {
 		item_list_free(item_list);
