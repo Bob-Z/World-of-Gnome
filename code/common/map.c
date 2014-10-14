@@ -98,13 +98,11 @@ int map_check_tile(context_t * ctx,char * id, const char * map, int x,int y)
 	char sy[64];
 	char * param[5];
 	int res;
-	char ** map_type;
 	char * tile_type;
 	char ** allowed_tile;
 	int i=0;
 	int width = 0;
 	int height = 0;
-	int num_elem;
 
 	if(!entry_read_int(MAP_TABLE,map,&width,MAP_KEY_WIDTH,NULL)) {
 		return FALSE;
@@ -131,22 +129,15 @@ int map_check_tile(context_t * ctx,char * id, const char * map, int x,int y)
 		return res;
 	}
 
-	/* Read tile list on this map */
-	if(!entry_read_list(MAP_TABLE,map,&map_type,MAP_KEY_TYPE,NULL)) {
+	/* Read tile at given index on this map */
+	if(!entry_read_list_index(MAP_TABLE,map,&tile_type, (width*y)+x, MAP_KEY_TYPE,NULL)) {
 		return TRUE;
 	}
 
-	/* Config file sanity check */
-	num_elem=0;
-	while( map_type[num_elem] != NULL ) {
-		num_elem++;
-	}
-	if( num_elem != width*height ) {
-		werr(LOGDEV,"File %s/%s: Wrong number of elements for \"%s\" entry. Expected %d (%d*%d), got %d. All tiles allowed.",MAP_TABLE,map,MAP_KEY_TYPE,width*height,width,height,num_elem);
+	/* Allow tile if its type is empty (i.e. "") */
+	if( tile_type[0] == 0 ) {
 		return TRUE;
 	}
-
-	tile_type = map_type[(width*y)+x];
 
 	/* If there is allowed_tile list, check it */
 	if(entry_read_list(CHARACTER_TABLE,id,&allowed_tile,CHARACTER_KEY_ALLOWED_TILE,NULL)) {
@@ -154,18 +145,15 @@ int map_check_tile(context_t * ctx,char * id, const char * map, int x,int y)
 		while( allowed_tile[i] != NULL ) {
 			if( strcmp(allowed_tile[i], tile_type) == 0 ) {
 				deep_free(allowed_tile);
-				deep_free(map_type);
 				return TRUE;
 			}
 			i++;
 		}
 
 		deep_free(allowed_tile);
-		deep_free(map_type);
 		return FALSE;
 	}
 
-	deep_free(map_type);
 	/* Allow all tiles by default */
 	return TRUE;
 }
