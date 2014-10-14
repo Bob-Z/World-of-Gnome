@@ -1,0 +1,25 @@
+width = 23;
+height = 13;
+tile_width = 16;
+tile_height = 16;
+list0 = ["0","0","map/house2_level0.gif" ];
+type = [
+ ];
+
+event_list: {
+        to_village :
+        {
+                pos_x = 14;
+                pos_y = 12;
+                script = "goto.lua";
+                param = ( "village", "34", "35" );
+        };
+        to_level1 :
+        {
+                pos_x = 17;
+                pos_y = 0;
+                script = "goto.lua";
+                param = ( "house2_level1", "11", "1" );
+        };
+};
+
