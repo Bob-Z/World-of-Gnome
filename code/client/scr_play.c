@@ -633,6 +633,53 @@ static void compose_map(context_t * ctx)
 }
 
 /**********************************
+Show tiles types
+**********************************/
+static void compose_type(context_t * ctx)
+{
+	char ** type_list;
+	int x = 0;
+	int y = 0;
+	item_t * item;
+	char * type;
+	static TTF_Font * font = NULL;
+	int w;
+	int h;
+
+	if ( font == NULL ) {
+		font = TTF_OpenFont(ITEM_FONT, ITEM_FONT_SIZE);
+        }
+        if ( font == NULL ) {
+                return;
+        }
+
+	if(!entry_read_list(MAP_TABLE,ctx->map,&type_list,MAP_KEY_TYPE,NULL)) {
+		return;
+	}
+
+	for( x=0; x<ctx->map_w; x++) {
+		for( y=0; y<ctx->map_h; y++) {
+			type = type_list[ x + y * ctx->map_w ];
+
+			if( type == NULL ) {
+				continue;
+			}
+
+			item = item_list_add(&item_list);
+
+			item_set_string(item,type);
+			item_set_font(item,font);
+			sdl_get_string_size(item->font,item->string,&w,&h);
+			item_set_frame_shape(item,x*ctx->tile_x,y*ctx->tile_y,w,h);
+		}
+	}
+
+	
+	deep_free(type_list);
+
+}
+
+/**********************************
 Compose select cursor
 **********************************/
 static void compose_select(context_t * ctx)
@@ -713,6 +760,7 @@ item_t * scr_play_compose(context_t * ctx)
 	}
 
 	compose_map(ctx);
+	compose_type(ctx);
 	compose_select(ctx);
 
 	ui_play_compose(ctx,item_list);
