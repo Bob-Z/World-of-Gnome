@@ -35,4 +35,11 @@ event_list :
 		script = "goto.lua";
 		param = ( "house3", "9", "15" );
 	};
+	to_house_4 : 
+	{
+		pos_x = 42;
+		pos_y = 50;
+		script = "goto.lua";
+		param = ( "house4", "10", "11" );
+	};
 };
