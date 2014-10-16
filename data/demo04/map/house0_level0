@@ -10,14 +10,14 @@ event_list: {
         to_village :
         {
                 pos_x = 5;
-                pos_y = 12;
+                pos_y = 13;
                 script = "goto.lua";
                 param = ( "village", "22", "11" );
         };
         to_level1 :
         {
                 pos_x = 15;
-                pos_y = 1;
+                pos_y = 0;
                 script = "goto.lua";
                 param = ( "house0_level1", "11", "1" );
         };

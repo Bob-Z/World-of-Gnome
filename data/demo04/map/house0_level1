@@ -12,7 +12,7 @@ event_list: {
                 pos_x = 11;
                 pos_y = 0;
                 script = "goto.lua";
-                param = ( "house0_level0", "15", "2" );
+                param = ( "house0_level0", "15", "1" );
         };
 };
 
