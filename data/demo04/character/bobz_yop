@@ -1,7 +1,7 @@
 marquee         = "marquee/knight_marquee.jpg";
 sprite          = "sprite/knight.gif";
 name = "yop";
-inventory = [ "A0009", "A0007", "A0000", "A0002" ];
+inventory = [ ];
 type = "human";
 map = "village";
 pos_x = 1;
