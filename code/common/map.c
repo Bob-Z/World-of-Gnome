@@ -93,7 +93,7 @@ return TRUE if the context is allowed to go to the tile at coord x,y
 *************************************/
 int map_check_tile(context_t * ctx,char * id, const char * map, int x,int y)
 {
-	char * action;
+	char * script;
 	char sx[64];
 	char sy[64];
 	char * param[5];
@@ -116,7 +116,7 @@ int map_check_tile(context_t * ctx,char * id, const char * map, int x,int y)
 	}
 
 	/* If there is a allowed_tile_script, run it */
-	if(entry_read_string(CHARACTER_TABLE,id,&action, CHARACTER_KEY_ALLOWED_TILE_SCRIPT, NULL)) {
+	if(entry_read_string(CHARACTER_TABLE,id,&script, CHARACTER_KEY_ALLOWED_TILE_SCRIPT, NULL)) {
 		param[0] = id;
 		param[1] = (char *)map;
 		sprintf(sx,"%d",x);
@@ -124,8 +124,8 @@ int map_check_tile(context_t * ctx,char * id, const char * map, int x,int y)
 		param[2] = sx;
 		param[3] = sy;
 		param[4] = NULL;
-		res = action_execute(ctx,action,param);
-		free(action);
+		res = action_execute_script(ctx,script,param);
+		free(script);
 		return res;
 	}
 
