@@ -12,6 +12,7 @@ new_pos_y = pos_y + math.random(-1,1)
 character_set_pos(id,map,new_pos_x,new_pos_y)
 
 -- return the time in ms before the next NPC AI action
-return 1000
+delay = math.random(100,1000)
+return delay
 
 end
