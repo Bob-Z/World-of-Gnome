@@ -2,17 +2,15 @@ width = 13;
 height = 9;
 tile_width = 16;
 tile_height = 16;
-list0 = ["0","0","map/house0_level1.gif" ];
-type = [
- ];
-
-event_list: {
-        to_level0 :
-        {
-                pos_x = 11;
-                pos_y = 0;
-                script = "goto.lua";
-                param = ( "house0_level0", "15", "1" );
-        };
+list0 = [ "0", "0", "map/house0_level1.gif" ];
+type = [ "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "", "e", "e", "", "", "", "", "", "", "", "", "", "", "", "e", "e", "", "", "", "", "", "", "", "", "", "", "", "e", "e", "", "", "", "", "", "", "", "e", "e", "e", "e", "e", "e", "", "", "", "", "e", "e", "e", "e", "e", "e", "e", "e", "e", "", "", "", "", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e", "e" ];
+event_list : 
+{
+	to_level0 : 
+	{
+		pos_x = 11;
+		pos_y = 0;
+		script = "goto.lua";
+		param = ( "house0_level0", "15", "1" );
+	};
 };
-
