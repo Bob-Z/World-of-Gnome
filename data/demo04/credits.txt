@@ -3,6 +3,7 @@ Sprite:
  - knight: http://www.spriters-resource.com/ds/rondoofswords/sheet/42665/
  - dragon: http://www.spriters-resource.com/fullview/4463/
  - flying cat: http://www.spriters-resource.com/game_boy_advance/lunarleg/sheet/4501/
+ - old man: http://www.spriters-resource.com/game_boy_advance/lunarleg/sheet/4497/
 
 Map:
 
