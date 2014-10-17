@@ -6,8 +6,8 @@ type = "dragon";
 map = "village";
 pos_x = 1;
 pos_y = 6;
-action          = [ "set_type_empty", "set_type_water", "set_type_ground" ];
-allowed_tile = [ ];
+action          = [ "set_type_empty", "set_type_water", "set_type_ground" , "set_type_door" ];
+allowed_tile = ["g","w"];
 #attribute : 
 #{
 #  life : 
