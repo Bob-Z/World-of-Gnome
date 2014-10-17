@@ -1,0 +1,4 @@
+text		= "Speak to the Oracle";
+icon		= "none";
+script		= "speak/oracle.lua";
+#param		= ( "0" , "-1" );

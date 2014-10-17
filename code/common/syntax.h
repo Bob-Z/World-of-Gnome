@@ -74,7 +74,7 @@
 #define CHARACTER_KEY_DIR_W_FLIP	"flip_w"
 #define CHARACTER_KEY_DIR_E_FLIP	"flip_e"
 #define CHARACTER_KEY_PLATFORM		"platform"
-#define CHARACTER_KEY_SPEAK		"speak_script"
+#define CHARACTER_KEY_SPEAK		"speak_action"
 
 #define CHARACTER_TEMPLATE_TABLE	"character_template"
 

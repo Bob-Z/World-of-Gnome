@@ -887,15 +887,15 @@ void cb_speak(void * arg)
 {
         context_t * player = context_get_player();
         char * keyword = (char *)arg;
-        char * speak_script = NULL;
+        char * speak_action = NULL;
 
-        if(!entry_read_string(CHARACTER_TABLE, player->id,&speak_script,CHARACTER_KEY_SPEAK,NULL)) {
+        if(!entry_read_string(CHARACTER_TABLE, player->id,&speak_action,CHARACTER_KEY_SPEAK,NULL)) {
                 return;
         }
 
-        network_send_action(player, speak_script,speaker_id,keyword,NULL);
+        network_send_action(player, speak_action,speaker_id,keyword,NULL);
 
-	free(speak_script);
+	free(speak_action);
 }
 
 /**********************************

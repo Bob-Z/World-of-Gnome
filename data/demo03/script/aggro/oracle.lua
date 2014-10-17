@@ -10,8 +10,8 @@ end
 
 speaker_id = "yezul"
 
-script = character_get_speak(speaker_id);
+action = character_get_speak(speaker_id)
 
-call_script(script,speaker_id,target_id);
+call_action(action,speaker_id,target_id)
 
 end

@@ -344,13 +344,13 @@ static int l_character_get_type( lua_State* L)
 /* character_get_speak
 Input:
  - ID of a character
-Output: speak script name
+Output: speak action name
 */
 static int l_character_get_speak( lua_State* L)
 {
 	context_t * target;
 	const char * id;
-	char * speak_script;
+	char * speak_action;
 
 	id = luaL_checkstring(L, -1);
 	target = context_find(id);
@@ -358,9 +358,9 @@ static int l_character_get_speak( lua_State* L)
 		werr(LOGDEV,"Cannot find context with ID %s",id);
 		return 0;  /* number of results */
 	}
-	speak_script = character_get_speak(target->id);
-	lua_pushstring(L, speak_script);
-	free(speak_script);
+	speak_action = character_get_speak(target->id);
+	lua_pushstring(L, speak_action);
+	free(speak_action);
 	return 1;  /* number of results */
 }
 
@@ -1466,6 +1466,46 @@ static int l_call_script( lua_State* L)
 }
 
 /***************************************************
+Call an action
+
+Input:
+ - action name
+ - Array of parameters
+Output: -1 on script error, if no error script return value
+***************************************************/
+static int l_call_action( lua_State* L)
+{
+	const char * action;
+	int num_arg;
+	char **arg = NULL;
+	int i;
+	int res;
+	context_t * context;
+
+	lua_getglobal(L,LUAVM_CONTEXT);
+	context = lua_touserdata(L, -1);
+	lua_pop(L,1);
+
+	num_arg = lua_gettop(L);
+	action = luaL_checkstring(L, -num_arg);
+	if(num_arg > 1 ) {
+		arg = malloc(sizeof(char*)*num_arg);
+		for(i=0;i<num_arg-1;i++) {
+			arg[i] = (char *)luaL_checkstring(L, -num_arg+1+i); /* FIXME wrong casting ? */
+		}
+		arg[i] = NULL; /* End of list */
+	}
+
+	res = action_execute(context, action, arg);
+
+	if(arg) {
+		free(arg);
+	}
+	lua_pushnumber(L, res);
+	return 1;  /* number of results */
+}
+
+/***************************************************
 ***************************************************/
 void register_lua_functions(context_t * context)
 {
@@ -1588,6 +1628,8 @@ void register_lua_functions(context_t * context)
 	lua_setglobal(L, "print_text_debug");
 	lua_pushcfunction(L, l_call_script);
 	lua_setglobal(L, "call_script");
+	lua_pushcfunction(L, l_call_action);
+	lua_setglobal(L, "call_action");
 
 	/* push the context on lua VM stack */
 	lua_pushlightuserdata(L,context);
