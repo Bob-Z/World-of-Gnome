@@ -1,6 +1,6 @@
 marquee         = "marquee/dragon.gif";
 sprite          = "sprite/dragon.gif";
-name = "yop";
+name = "Rubean";
 inventory = [ ];
 type = "dragon";
 map = "village";
