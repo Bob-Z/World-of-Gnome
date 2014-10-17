@@ -1,0 +1,30 @@
+name = "Taben";
+type = "human";
+marquee         = ".gif";
+sprite          = "sprite/old_man.gif";
+flip_w = 1;
+inventory = [ ];
+map = "house1";
+pos_x = 5;
+pos_y = 5;
+npc = 1;
+ai = "ai/ai_random.lua";
+#action = [ "set_type_empty", "set_type_water", "set_type_ground" ];
+allowed_tile = [ "g" ];
+attribute : 
+{
+  life : 
+  {
+    min = 0;
+    max = 10;
+    current = 10;
+    previous = 10;
+  };
+  agility : 
+  {
+    min = 0;
+    max = 10;
+    current = 10;
+    previous = 10;
+  };
+};
