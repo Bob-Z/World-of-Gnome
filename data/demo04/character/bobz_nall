@@ -1,0 +1,28 @@
+name = "Nall";
+type = "flying cat";
+marquee         = "marquee/flying_cat.gif";
+sprite          = "sprite/flying_cat.gif";
+flip_e = 1;
+inventory = [ ];
+map = "village";
+pos_x = 1;
+pos_y = 6;
+action = [ "set_type_empty", "set_type_water", "set_type_ground" ];
+allowed_tile = [ "g", "w" ];
+attribute : 
+{
+  life : 
+  {
+    min = 0;
+    max = 10;
+    current = 10;
+    previous = 10;
+  };
+  agility : 
+  {
+    min = 0;
+    max = 10;
+    current = 10;
+    previous = 10;
+  };
+};
