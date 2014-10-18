@@ -84,8 +84,7 @@ int main (int argc, char **argv)
 
 	if(base_directory == NULL) {
 		base_directory = strconcat(getenv("HOME"),"/.config/wog/server",NULL);
-	}
-	else {
+	} else {
 		dir = opendir(base_directory);
 		if(dir == NULL) {
 			werr(LOGUSER,"Cannot find %s directory",base_directory);

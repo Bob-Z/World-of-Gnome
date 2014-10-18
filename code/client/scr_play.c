@@ -154,8 +154,7 @@ static void draw_sprite(context_t * ctx, const char * image_file_name)
 
 	if( image_file_name ) {
 		anim = imageDB_get_anim(player_context,image_file_name);
-	}
-	else {
+	} else {
 		if(!entry_read_string(CHARACTER_TABLE,ctx->id,&sprite_name,CHARACTER_KEY_SPRITE,NULL)) {
 			werr(LOGDEV,"Can't read sprite name for \"%s\"",ctx->id);
 			return;
@@ -295,17 +294,17 @@ static void draw_sprite(context_t * ctx, const char * image_file_name)
 		}
 
 		switch(flip) {
-			case 1:
-				item_set_flip(item,SDL_FLIP_HORIZONTAL);
-				break;
-			case 2:
-				item_set_flip(item,SDL_FLIP_VERTICAL);
-				break;
-			case 3:
-				item_set_flip(item,SDL_FLIP_HORIZONTAL|SDL_FLIP_VERTICAL);
-				break;
-			default:
-				item_set_flip(item,SDL_FLIP_NONE);
+		case 1:
+			item_set_flip(item,SDL_FLIP_HORIZONTAL);
+			break;
+		case 2:
+			item_set_flip(item,SDL_FLIP_VERTICAL);
+			break;
+		case 3:
+			item_set_flip(item,SDL_FLIP_HORIZONTAL|SDL_FLIP_VERTICAL);
+			break;
+		default:
+			item_set_flip(item,SDL_FLIP_NONE);
 		}
 	}
 
@@ -557,7 +556,7 @@ static int compose_map_list(context_t * ctx, int level)
 		i++;
 		y = atoi(value[i]);
 		i++;
-		
+
 		anim = imageDB_get_anim(ctx,value[i]);
 
 		item = item_list_add(&item_list);
@@ -581,7 +580,7 @@ static void compose_map(context_t * ctx)
 	int map_drawn = 0;
 	int sprite_drawn = 0;
 	int i = 0;
-	
+
 	entry_read_int(MAP_TABLE, ctx->map, &sprite_level,MAP_KEY_SPRITE_LEVEL,NULL);
 
 	if( ctx->map_w == -1 ) {
@@ -621,7 +620,7 @@ static void compose_map(context_t * ctx)
 		map_drawn = 0;
 		map_drawn |= compose_map_set(ctx,current_level);
 		map_drawn |= compose_map_list(ctx,current_level);
-		
+
 		if( map_drawn == 0 ) {
 			break;
 		}
@@ -653,10 +652,10 @@ static void compose_type(context_t * ctx)
 
 	if( font == NULL ) {
 		font = TTF_OpenFont(ITEM_FONT, ITEM_FONT_SIZE);
-        }
-        if( font == NULL ) {
-                return;
-        }
+	}
+	if( font == NULL ) {
+		return;
+	}
 
 	for( x=0; x<ctx->map_w; x++) {
 		for( y=0; y<ctx->map_h; y++) {

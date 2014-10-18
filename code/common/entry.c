@@ -551,7 +551,7 @@ static int __write_list_index(const char * table, const char * file, const char 
 	config_setting_t * setting = NULL;
 	const config_t * config;
 	int list_size;
-	
+
 
 	config = get_config(table,file);
 	if(config==NULL) {

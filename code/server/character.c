@@ -231,8 +231,7 @@ static void execute_aggro(context_t * agressor, context_t * target, char * scrip
 
 	if(dist <= aggro_dist) {
 		param[1] = "1";
-	}
-	else {
+	} else {
 		param[1] = "0";
 	}
 
@@ -492,10 +491,10 @@ int character_get_npc(const char * id)
 char * character_get_speak(char * id)
 {
 	char * speak_action;
-	
+
 	if(!entry_read_string(CHARACTER_TABLE, id,&speak_action,CHARACTER_KEY_SPEAK,NULL)) {
 		return NULL;
 	}
-	
+
 	return speak_action;
 }

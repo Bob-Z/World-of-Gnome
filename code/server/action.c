@@ -1306,15 +1306,14 @@ static int l_speak_send( lua_State* L)
 	}
 
 	arg = malloc(sizeof(char*)*num_arg+1);
-	for(i=0;i<num_arg;i++) {
+	for(i=0; i<num_arg; i++) {
 		arg[i] = luaL_checkstring(L, -num_arg+i);
 	}
 	arg[i]=NULL;
 
 	if(num_arg > 3) {
 		network_send_speak(arg[0],arg[1],arg[2],&arg[3]);
-	}
-	else {
+	} else {
 		network_send_speak(arg[0],arg[1],arg[2],NULL);
 	}
 
@@ -1411,7 +1410,7 @@ int action_execute(context_t * context, const char * action, char ** parameters)
 	int ret;
 
 	if(!entry_read_string(ACTION_TABLE,action,&script,ACTION_KEY_SCRIPT,NULL)) {
-                        return -1;
+		return -1;
 	}
 	entry_read_list(ACTION_TABLE,action,&params,ACTION_KEY_PARAM,NULL);
 
@@ -1450,7 +1449,7 @@ static int l_call_script( lua_State* L)
 	script = luaL_checkstring(L, -num_arg);
 	if(num_arg > 1 ) {
 		arg = malloc(sizeof(char*)*num_arg);
-		for(i=0;i<num_arg-1;i++) {
+		for(i=0; i<num_arg-1; i++) {
 			arg[i] = (char *)luaL_checkstring(L, -num_arg+1+i); /* FIXME wrong casting ? */
 		}
 		arg[i] = NULL; /* End of list */
@@ -1490,7 +1489,7 @@ static int l_call_action( lua_State* L)
 	action = luaL_checkstring(L, -num_arg);
 	if(num_arg > 1 ) {
 		arg = malloc(sizeof(char*)*num_arg);
-		for(i=0;i<num_arg-1;i++) {
+		for(i=0; i<num_arg-1; i++) {
 			arg[i] = (char *)luaL_checkstring(L, -num_arg+1+i); /* FIXME wrong casting ? */
 		}
 		arg[i] = NULL; /* End of list */

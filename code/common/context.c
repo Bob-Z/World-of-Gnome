@@ -220,8 +220,7 @@ void context_free(context_t * context)
 	/* Remove this context from the list */
 	if( context == context_get_first() ) {
 		context_list_start = context->next;
-	}
-	else {
+	} else {
 		ctx = context_list_start;
 		while( ctx != NULL ) {
 			if( ctx->next == context ) {

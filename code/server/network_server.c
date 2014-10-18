@@ -245,7 +245,7 @@ void network_init(void)
 
 /*********************************************************************
 NPC sends speak screen data to player
-dialog is an array of triplet of string. 
+dialog is an array of triplet of string.
 Each triplet is: "icon name","text to display", "keyword to foolow"
 *********************************************************************/
 void network_send_speak(const char * speaker, const char * listener, const char * text,char ** dialog)

@@ -66,7 +66,7 @@ char * map_new(int w,int h, int tile_w, int tile_h, const char * default_tile, c
 		tile_array[i] = (char *)default_tile;
 	}
 	tile_array[i] = NULL; /* End of list */
-	
+
 	sprintf(buf,"%s0",MAP_KEY_SET);
 	if (!entry_write_list(MAP_TABLE,map_name,tile_array,buf, NULL) ) {
 		free(map_name);
@@ -78,7 +78,7 @@ char * map_new(int w,int h, int tile_w, int tile_h, const char * default_tile, c
 		tile_array[i] = (char *)default_type;
 	}
 	tile_array[i] = NULL; /* End of list */
-	
+
 	if (!entry_write_list(MAP_TABLE,map_name,tile_array,MAP_KEY_TYPE, NULL) ) {
 		free(map_name);
 		return NULL;
@@ -298,7 +298,7 @@ int map_set_tile(const char * map,const char * tile,int x, int y, int level)
 		return -1;
 	}
 
-	/* Do not change the tile if it is already the requested tile 
+	/* Do not change the tile if it is already the requested tile
 	Avoid calling useless context_broadcast_file */
 	if( strcmp(previous_tile, tile) == 0 ) {
 		free(previous_tile);
@@ -348,7 +348,7 @@ int map_set_tile_type(const char * map,const char * type,int x, int y)
 
 	/* read previous map type */
 	if(entry_read_list_index(MAP_TABLE,map,&previous_type, index,MAP_KEY_TYPE,NULL)) {
-		/* Do not change the type if it already the requested type 
+		/* Do not change the type if it already the requested type
 		   Avoid calling useless context_broadcast_file */
 		if( strcmp(previous_type, type) == 0 ) {
 			free(previous_type);
@@ -415,13 +415,13 @@ char * map_get_tile_type(const char * map,int x, int y)
 	if(!entry_read_int(MAP_TABLE,map,&height,MAP_KEY_HEIGHT,NULL)) {
 		return NULL;
 	}
-	
+
 	if( x<0 || y<0 || x >= width || y >= height ) {
 		return NULL;
 	}
 
 	entry_read_list_index(MAP_TABLE,map,&map_type,(width*y)+x,MAP_KEY_TYPE,NULL);
-	
+
 	return map_type;
 }
 
@@ -662,20 +662,20 @@ char ** map_get_item(const char * map,int map_x, int map_y)
 	}
 
 	if(!entry_get_group_list(MAP_TABLE,map,&item_id,MAP_ENTRY_ITEM_LIST,NULL)) {
-                return NULL;
-        }
+		return NULL;
+	}
 
 	i=0;
-        while( item_id[i] != NULL ) {
-                if(!entry_read_int(MAP_TABLE,map,&x,MAP_ENTRY_ITEM_LIST,item_id[i],MAP_ITEM_POS_X,NULL)) {
-                        i++;
-                        continue;
-                }
+	while( item_id[i] != NULL ) {
+		if(!entry_read_int(MAP_TABLE,map,&x,MAP_ENTRY_ITEM_LIST,item_id[i],MAP_ITEM_POS_X,NULL)) {
+			i++;
+			continue;
+		}
 
-                if(!entry_read_int(MAP_TABLE,map,&y,MAP_ENTRY_ITEM_LIST,item_id[i],MAP_ITEM_POS_Y,NULL)) {
-                        i++;
-                        continue;
-                }
+		if(!entry_read_int(MAP_TABLE,map,&y,MAP_ENTRY_ITEM_LIST,item_id[i],MAP_ITEM_POS_Y,NULL)) {
+			i++;
+			continue;
+		}
 
 		if ( x == map_x && y == map_y ) {
 			item_num++;
@@ -683,10 +683,10 @@ char ** map_get_item(const char * map,int map_x, int map_y)
 			item_list[item_num-1] = strdup(item_id[i]);
 			item_list[item_num] = NULL;
 		}
-                i++;
-        }
+		i++;
+	}
 
-        deep_free(item_id);
+	deep_free(item_id);
 
 	return item_list;
 }

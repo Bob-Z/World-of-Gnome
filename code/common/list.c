@@ -53,7 +53,7 @@ static list_entry_t * search_entry(list_t * list, const char * key)
 	index = hash % HASH_TABLE_SIZE;
 
 	current_entry = list[index];
-	
+
 	while(current_entry) {
 		if(current_entry->hash == hash) {
 			return current_entry;
@@ -70,7 +70,7 @@ Return NULL if key does not match any list entry.
 void * list_find(list_t * list, const char * key)
 {
 	list_entry_t * current_entry;
-	
+
 	if( list == NULL ) {
 		return NULL;
 	}
@@ -93,7 +93,7 @@ void list_update(list_t ** list, const char *key, void * data)
 	list_entry_t * entry;
 	list_entry_t * new_entry;
 	int index;
-	
+
 	entry = search_entry(*list,key);
 
 	/* The key already exists, update the entry */
@@ -110,7 +110,7 @@ void list_update(list_t ** list, const char *key, void * data)
 	new_entry->next = NULL;
 
 	index = new_entry->hash % HASH_TABLE_SIZE;
-	
+
 	/* list does not exist */
 	if( *list == NULL) {
 		*list = malloc( HASH_TABLE_SIZE * sizeof(list_entry_t *));
@@ -125,7 +125,7 @@ void list_update(list_t ** list, const char *key, void * data)
 		while(entry->next != NULL) {
 			entry = entry->next;
 		}
-		
+
 		entry->next = new_entry;
 	}
 	/* list exists and hash table index is free */

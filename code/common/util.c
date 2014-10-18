@@ -120,8 +120,7 @@ char * _strsep(char **stringp, const char *delim)
 	if(next_delim) {
 		*next_delim = 0;
 		*stringp = next_delim + strlen(delim);
-	}
-	else {
+	} else {
 		*stringp = NULL;
 	}
 	return start;

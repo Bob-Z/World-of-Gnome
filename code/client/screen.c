@@ -51,11 +51,11 @@ static void compose_scr(context_t * context)
 	SDL_SetRenderDrawColor(context->render, 0, 0, 0, 255);
 
 	switch(current_screen) {
-		case SCREEN_SELECT:
-			item_list = scr_select_compose(context);
+	case SCREEN_SELECT:
+		item_list = scr_select_compose(context);
 		break;
-		case SCREEN_PLAY:
-			item_list = scr_play_compose(context);
+	case SCREEN_PLAY:
+		item_list = scr_play_compose(context);
 		break;
 	}
 }

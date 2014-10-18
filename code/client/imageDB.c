@@ -122,9 +122,9 @@ void image_DB_remove(char * filename)
 	/* Clean-up old anim if any */
 	SDL_LockMutex(imageDB_mutex);
 	old_anim = list_find(image_list,filename);
-/* TODO Fix memory leak here */
-/* If we free the anim, it may still be used by the screen renderer and cause a crash */
-/* Try to postpone deletion ?? */
+	/* TODO Fix memory leak here */
+	/* If we free the anim, it may still be used by the screen renderer and cause a crash */
+	/* Try to postpone deletion ?? */
 	if( old_anim ) {
 //		si_anim_free(old_anim);
 	}
