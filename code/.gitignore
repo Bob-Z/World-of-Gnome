@@ -21,3 +21,4 @@ config.status
 stamp-h1
 
 *.orig
+*.swp
