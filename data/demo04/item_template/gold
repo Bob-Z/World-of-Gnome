@@ -1,0 +1,4 @@
+name =  "gold";
+sprite =  "item/gold.gif";
+icon = "item/gold.gif";
+description = "gold";

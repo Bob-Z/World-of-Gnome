@@ -1,0 +1,4 @@
+name =  "Magic";
+sprite =  "item/magic.gif";
+icon = "item/magic.gif";
+description = "a magic";

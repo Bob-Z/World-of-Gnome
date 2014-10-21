@@ -1,0 +1,4 @@
+name =  "Bag";
+sprite =  "item/bag.gif";
+icon = "item/bag.gif";
+description = "a bag";

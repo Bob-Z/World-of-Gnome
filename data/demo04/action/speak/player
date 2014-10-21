@@ -1,0 +1,3 @@
+icon		= ".gif";
+script		= "speak/player.lua";
+#param		= ( "0" , "-1" );

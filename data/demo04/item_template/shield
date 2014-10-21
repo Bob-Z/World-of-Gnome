@@ -1,0 +1,4 @@
+name =  "Shield";
+sprite =  "item/shield.gif";
+icon = "item/shield.gif";
+description = "a shield";

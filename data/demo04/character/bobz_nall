@@ -2,12 +2,14 @@ name = "Nall";
 type = "flying cat";
 marquee         = "marquee/flying_cat.gif";
 sprite          = "sprite/flying_cat.gif";
+portrait	= "portrait/flying_cat.gif";
+speak_action	= "speak/player";
 flip_e = 1;
-inventory = [ ];
+inventory = [ "nall_gold" ];
 map = "village";
 pos_x = 1;
 pos_y = 6;
-action = [ "set_type_empty", "set_type_water", "set_type_ground" , "set_type_door" ];
+action = [ "set_type_empty", "set_type_water", "set_type_ground" , "set_type_door" , "speak/start" ];
 allowed_tile = [ "g","w","d"];
 attribute : 
 {

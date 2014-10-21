@@ -1,0 +1,4 @@
+name =  "Sword";
+sprite =  "item/sword.gif";
+icon = "item/sword.gif";
+description = "a sword";
