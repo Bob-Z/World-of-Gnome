@@ -922,6 +922,7 @@ static void compose_speak(context_t * ctx,item_t * item_list)
 	int max_h;
 	anim_t * anim;
 	char * listener_portrait = NULL;
+	int center_text;
 
 	draw_background(ctx,item_list);
 
@@ -945,6 +946,7 @@ static void compose_speak(context_t * ctx,item_t * item_list)
 		y += anim->h;
 		text_x = anim->w;
 		text_y = 0;
+		center_text = anim->w / 2;
 	}
 
 	if( speaker_name && speaker_name[0] != 0) {
@@ -952,7 +954,10 @@ static void compose_speak(context_t * ctx,item_t * item_list)
 		item_set_string(item,speaker_name);
 		item_set_font(item,font);
 		sdl_get_string_size(item->font,item->string,&w,&h);
-		item_set_frame_shape(item,0,y,w,h);
+		if( w < text_x ) {
+			x = center_text - ( w/2 );
+		}
+		item_set_frame_shape(item,x,y,w,h);
 		item_set_overlay(item,1);
 		y += h;
 		if(w > text_x) {
@@ -975,6 +980,7 @@ static void compose_speak(context_t * ctx,item_t * item_list)
 
 	text_x = 0;
 	text_y = y;
+	center_text = 0;
 
 	if(entry_read_string(CHARACTER_TABLE, ctx->id,&listener_portrait,CHARACTER_KEY_PORTRAIT,NULL)) {
 		item = item_list_add(&item_list);
@@ -983,13 +989,17 @@ static void compose_speak(context_t * ctx,item_t * item_list)
 		item_set_overlay(item,1);
 		y += anim->h;
 		text_x = anim->w;
+		center_text = anim->w / 2;
 	}
 
 	item = item_list_add(&item_list);
 	item_set_string(item,ctx->character_name);
 	item_set_font(item,font);
 	sdl_get_string_size(item->font,item->string,&w,&h);
-	item_set_frame_shape(item,0,y,w,h);
+	if( w < text_x ) {
+		x = center_text - ( w/2 );
+	}
+	item_set_frame_shape(item,x,y,w,h);
 	item_set_overlay(item,1);
 	if( text_x == 0 ) {
 		text_y += h;
