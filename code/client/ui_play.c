@@ -1013,7 +1013,7 @@ static void compose_speak(context_t * ctx,item_t * item_list)
 		x = text_x;
 		max_h = 0;
 
-		if( speech[i].icon ) {
+		if( speech[i].icon && speech[i].icon[0] != 0 ) {
 			item = item_list_add(&item_list);
 			anim = imageDB_get_anim(ctx,speech[i].icon);
 			item_set_anim(item,x,y,anim);
@@ -1021,7 +1021,7 @@ static void compose_speak(context_t * ctx,item_t * item_list)
 			if ( speech[i].keyword ) {
 				item_set_click_left(item,cb_speak,(void*)speech[i].keyword,NULL);
 			}
-			x = anim->w;
+			x += anim->w;
 			max_h = anim->h;
 		}
 		if( speech[i].text ) {
