@@ -8,3 +8,7 @@ Sprite:
 Map:
 
  - village: http://www.spriters-resource.com/game_boy_advance/lunarleg/
+
+Item:
+
+ - sword, shield, bag, magic, gold: http://www.spriters-resource.com/game_boy_advance/lunarleg/sheet/4465/
