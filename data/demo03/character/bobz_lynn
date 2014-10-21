@@ -9,6 +9,7 @@ pos_y = 7;
 action = [  ];
 allowed_tile = [ "grd", "goo" ];
 speak_action = "speak/player";
+portrait = "portrait/warrior.jpg";
 attribute : 
 {
 };
