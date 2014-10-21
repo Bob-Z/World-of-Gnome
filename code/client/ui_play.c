@@ -921,6 +921,7 @@ static void compose_speak(context_t * ctx,item_t * item_list)
 	int h;
 	int max_h;
 	anim_t * anim;
+	char * listener_portrait = NULL;
 
 	draw_background(ctx,item_list);
 
@@ -975,8 +976,7 @@ static void compose_speak(context_t * ctx,item_t * item_list)
 	text_x = 0;
 	text_y = y;
 
-#if 0
-	if( listener_portrait && listener_portrait[0] != 0) {
+	if(entry_read_string(CHARACTER_TABLE, ctx->id,&listener_portrait,CHARACTER_KEY_PORTRAIT,NULL)) {
 		item = item_list_add(&item_list);
 		anim = imageDB_get_anim(ctx,listener_portrait);
 		item_set_anim(item,0,y,anim);
@@ -984,7 +984,6 @@ static void compose_speak(context_t * ctx,item_t * item_list)
 		y += anim->h;
 		text_x = anim->w;
 	}
-#endif
 
 	item = item_list_add(&item_list);
 	item_set_string(item,ctx->character_name);
