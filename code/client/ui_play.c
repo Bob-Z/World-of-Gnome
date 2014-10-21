@@ -54,6 +54,7 @@ static char text_buffer[2048];
 static char ** inventory_list = NULL;
 /* speak ui */
 static char * speaker_id = NULL;
+static char * speaker_portrait = NULL;
 static char * speaker_name = NULL;
 static char * speaker_text = NULL;
 static speak_entry_t * speech = NULL;
@@ -861,6 +862,10 @@ static void speak_cleanup()
 		free(speaker_id);
 		speaker_id = NULL;
 	}
+	if( speaker_portrait ) {
+		free(speaker_portrait);
+		speaker_portrait = NULL;
+	}
 	if( speaker_name ) {
 		free(speaker_name);
 		speaker_name = NULL;
@@ -909,6 +914,8 @@ static void compose_speak(context_t * ctx,item_t * item_list)
 	int i = 0;
 	int x = 0;
 	int y = 0;
+	int text_x = 0;
+	int text_y = -1;
 	static TTF_Font * font = NULL;
 	int w;
 	int h;
@@ -929,7 +936,17 @@ static void compose_speak(context_t * ctx,item_t * item_list)
 		font = TTF_OpenFont(SPEAK_FONT, SPEAK_FONT_SIZE );
 	}
 
-	if( speaker_name ) {
+	if( speaker_portrait && speaker_portrait[0] != 0) {
+		item = item_list_add(&item_list);
+		anim = imageDB_get_anim(ctx,speaker_portrait);
+		item_set_anim(item,0,y,anim);
+		item_set_overlay(item,1);
+		y += anim->h;
+		text_x = anim->w;
+		text_y = 0;
+	}
+
+	if( speaker_name && speaker_name[0] != 0) {
 		item = item_list_add(&item_list);
 		item_set_string(item,speaker_name);
 		item_set_font(item,font);
@@ -937,24 +954,60 @@ static void compose_speak(context_t * ctx,item_t * item_list)
 		item_set_frame_shape(item,0,y,w,h);
 		item_set_overlay(item,1);
 		y += h;
+		if(w > text_x) {
+			text_x = w;
+		}
+		if( text_y == -1) {
+			text_y = h;
+		}
 	}
 
 	item = item_list_add(&item_list);
 	item_set_string(item,speaker_text);
 	item_set_font(item,font);
 	sdl_get_string_size(item->font,item->string,&w,&h);
+	item_set_frame_shape(item,text_x,text_y,w,h);
+	item_set_overlay(item,1);
+	if( text_y != 0 ) {
+		y += h;
+	}
+
+	text_x = 0;
+	text_y = y;
+
+#if 0
+	if( listener_portrait && listener_portrait[0] != 0) {
+		item = item_list_add(&item_list);
+		anim = imageDB_get_anim(ctx,listener_portrait);
+		item_set_anim(item,0,y,anim);
+		item_set_overlay(item,1);
+		y += anim->h;
+		text_x = anim->w;
+	}
+#endif
+
+	item = item_list_add(&item_list);
+	item_set_string(item,ctx->character_name);
+	item_set_font(item,font);
+	sdl_get_string_size(item->font,item->string,&w,&h);
 	item_set_frame_shape(item,0,y,w,h);
 	item_set_overlay(item,1);
-	y += h;
+	if( text_x == 0 ) {
+		text_y += h;
+	}
+	if(w > text_x) {
+		text_x = w;
+	}
 
+	y = text_y;
 	for ( i = 0; i < speech_num; i++) {
-		x = 0;
+		x = text_x;
 		max_h = 0;
 
 		if( speech[i].icon ) {
 			item = item_list_add(&item_list);
 			anim = imageDB_get_anim(ctx,speech[i].icon);
-			item_set_anim(item,0,y,anim);
+			item_set_anim(item,x,y,anim);
 			item_set_overlay(item,1);
 			if ( speech[i].keyword ) {
 				item_set_click_left(item,cb_speak,(void*)speech[i].keyword,NULL);
@@ -1002,6 +1055,9 @@ void ui_play_speak_parse(int total_size, char * frame)
 	}
 
 	size += strlen(speaker_id);
+	size += strlen(NETWORK_DELIMITER);
+	speaker_portrait = strdup(_strsep(&frame,NETWORK_DELIMITER));
+	size += strlen(speaker_portrait);
 	size += strlen(NETWORK_DELIMITER);
 	speaker_text = strdup(_strsep(&frame,NETWORK_DELIMITER));
 	size += strlen(speaker_text);

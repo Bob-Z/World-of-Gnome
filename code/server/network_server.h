@@ -26,6 +26,7 @@ void network_broadcast_text(context_t * context, const char * text);
 void network_send_character_file(context_t * context);
 void network_broadcast_entry_int(const char * table, const char * file, const char * path, int value, int same_map_only);
 void network_init(void);
-void network_send_speak(const char * speaker, const char * listener, const char * text,...);
+void network_send_speak(const char * speaker_id, const char * speaker_portrait, const char * listener_id, const char * text,const char ** dialog);
+
 
 #endif

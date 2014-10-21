@@ -1282,6 +1282,7 @@ Send a speak command to a context
 
 Input:
  - ID of the speaker character
+ - portrait of the speaker character
  - ID of the listener character
  - Text to display
  - Array of icon/text/keyword
@@ -1289,18 +1290,19 @@ Output: -1 on error, 0 otherwise
 */
 static int l_speak_send( lua_State* L)
 {
+#define SPEAK_SEND_MIN_ARG_NUM (4)
 	int num_arg;
 	const char **arg = NULL;
 	int i;
 
 	num_arg = lua_gettop(L);
-	if(num_arg < 3) {
-		werr(LOGDEV,"Not enough parameters for \"speak_send\" command. Need at least 3, only got %d.\n", num_arg);
+	if(num_arg < SPEAK_SEND_MIN_ARG_NUM) {
+		werr(LOGDEV,"Not enough parameters for \"speak_send\" command. Need at least %s, only got %d.\n", SPEAK_SEND_MIN_ARG_NUM,num_arg);
 		lua_pushnumber(L, -1);
 		return 1;  /* number of results */
 	}
-	if(num_arg % 3 != 0) {
-		werr(LOGDEV,"Wrong number of parameters for \"speak_send\" command. %d parameters missing.\n", num_arg % 3);
+	if((num_arg-SPEAK_SEND_MIN_ARG_NUM) % 3 != 0) {
+		werr(LOGDEV,"Wrong number of parameters for \"speak_send\" command. %d parameters missing.\n", (num_arg-SPEAK_SEND_MIN_ARG_NUM) % 3);
 		lua_pushnumber(L, -1);
 		return 1;  /* number of results */
 	}
@@ -1311,10 +1313,10 @@ static int l_speak_send( lua_State* L)
 	}
 	arg[i]=NULL;
 
-	if(num_arg > 3) {
-		network_send_speak(arg[0],arg[1],arg[2],&arg[3]);
+	if(num_arg > SPEAK_SEND_MIN_ARG_NUM) {
+		network_send_speak(arg[0],arg[1],arg[2],arg[3],&arg[4]);
 	} else {
-		network_send_speak(arg[0],arg[1],arg[2],NULL);
+		network_send_speak(arg[0],arg[1],arg[2],arg[3],NULL);
 	}
 
 	free(arg);
