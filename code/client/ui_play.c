@@ -695,6 +695,8 @@ static void compose_inventory(context_t * ctx,item_t * item_list)
 	char * template;
 	int quantity;
 	char buf[1024];
+	int w;
+	int h;
 
 	if ( font == NULL ) {
 		font = TTF_OpenFont(ITEM_FONT, ITEM_FONT_SIZE);
@@ -756,20 +758,31 @@ static void compose_inventory(context_t * ctx,item_t * item_list)
 				description = value;
 			}
 			free(template);
+
 		}
 
 		quantity = resource_get_quantity(inventory_list[i]);
-		sprintf(buf,"%d",quantity);
 
-		item = item_list_add(&item_list);
-
-		item_set_anim(item,x,0,anim);
-		item_set_string(item,buf);
-		item_set_font(item,font);
-		item_set_overlay(item,1);
-
-		x += anim->w;
-		item_set_click_left(item,cb_inventory_select,(void*)strdup(inventory_list[i]),free);
+		if( quantity > 0 ) {
+			w = 0;
+			item = item_list_add(&item_list);
+			item_set_anim(item,x,0,anim);
+			if( quantity > 1 ) {
+				sprintf(buf,"%d",quantity);
+				item_set_string(item,buf);
+				item_set_string_bg(item,BACKGROUND_COLOR);
+				item_set_font(item,font);
+				sdl_get_string_size(item->font,item->string,&w,&h);
+			}
+			item_set_overlay(item,1);
+			if( w > anim->w ) {
+				x += w;
+			}
+			else {
+				x += anim->w;
+			}
+			item_set_click_left(item,cb_inventory_select,(void*)strdup(inventory_list[i]),free);
+		}
 
 		free(description);
 		free(label);
