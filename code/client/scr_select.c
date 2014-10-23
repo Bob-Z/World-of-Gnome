@@ -36,6 +36,7 @@ typedef struct {
 	char * type;
 	anim_t * anim;
 	item_t * item;
+	int width;
 } character_t;
 
 static character_t * character_list = NULL;
@@ -154,9 +155,16 @@ item_t * scr_select_compose(context_t * context)
 		item_list = NULL;
 	}
 
+	if(font_name == NULL) {
+		font_name = TTF_OpenFont(FONT, FONT_SIZE);
+	}
+	if(font_type == NULL) {
+		font_type = TTF_OpenFont(FONT, FONT_SIZE);
+	}
+
 	SDL_LockMutex(character_select_mutex);
 
-	/* Load all anim and compute the max height */
+	/* Load all anim compute max height and width of anim + string */
 	for(i=0; i<character_num; i++) {
 		/* Compute the marquee file name */
 		if(!entry_read_string(CHARACTER_TABLE,character_list[i].id,&marquee_name,CHARACTER_KEY_MARQUEE,NULL)) {
@@ -167,6 +175,20 @@ item_t * scr_select_compose(context_t * context)
 
 		if(character_list[i].anim->h > max_h) {
 			max_h = character_list[i].anim->h;
+		}
+
+		if( font_name ) {
+			sdl_get_string_size(font_name,character_list[i].name,&w,&h);
+			character_list[i].width = w;
+		}
+		if( font_type ) {
+			sdl_get_string_size(font_type,character_list[i].type,&w,&h);
+			if( w > character_list[i].width ) {
+				character_list[i].width = w;
+			}
+		}
+		if(character_list[i].anim->w > character_list[i].width) {
+			character_list[i].width = character_list[i].anim->w;
 		}
 	}
 
@@ -181,7 +203,8 @@ item_t * scr_select_compose(context_t * context)
 		item_image = item;
 		character_list[i].item = item;
 
-		item_set_anim(item,x,max_h/2-character_list[i].anim->h/2,character_list[i].anim);
+		item_set_anim(item,x+character_list[i].width/2-character_list[i].anim->w/2,
+				max_h/2-character_list[i].anim->h/2,character_list[i].anim);
 		item_set_click_left(item,cb_show_item,(void *)item,NULL);
 		item_set_click_right(item,cb_select,(void *)context,NULL);
 		item_set_double_click_left(item,cb_select,(void *)context,NULL);
@@ -189,11 +212,8 @@ item_t * scr_select_compose(context_t * context)
 		item_set_wheel_down(item,cb_next_character,(void *)context,NULL);
 		item_set_over(item,cb_over,(void *)i,NULL);
 
-		x += character_list[i].anim->w + BORDER;
+		x += character_list[i].width + BORDER;
 		/* character name */
-		if(font_name == NULL) {
-			font_name = TTF_OpenFont(FONT, FONT_SIZE);
-		}
 		if( font_name ) {
 			item = item_list_add(&item_list);
 			item_set_string(item,character_list[i].name);
@@ -206,9 +226,6 @@ item_t * scr_select_compose(context_t * context)
 		}
 
 		/* character type */
-		if(font_type == NULL) {
-			font_type = TTF_OpenFont(FONT, FONT_SIZE);
-		}
 		if( font_type ) {
 			item = item_list_add(&item_list);
 			item_set_string(item,character_list[i].type);
@@ -265,6 +282,7 @@ void scr_select_add_user_character(context_t * context, char * data)
 		current_string += strlen(current_string)+1;
 		character_list[character_num-1].anim = NULL;
 		character_list[character_num-1].item = NULL;
+		character_list[character_num-1].width = 0;
 
 		wlog(LOGDEBUG,"Character %s / %s /%s added",character_list[character_num-1].id,character_list[character_num-1].type,character_list[character_num-1].name);
 	}
