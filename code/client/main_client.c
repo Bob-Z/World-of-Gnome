@@ -53,10 +53,10 @@ int main (int argc, char **argv)
 	char * pass = NULL;
 	option_t * option;
 
+	base_directory = strconcat(getenv("HOME"),"/.config/wog/client",NULL);
+
 	option_init();
 	option = option_get();
-
-	base_directory = strconcat(getenv("HOME"),"/.config/wog/client",NULL);
 
 	while((opt_ret = getopt_long(argc, argv, optstring, longopts, NULL))!=-1) {
 		switch(opt_ret) {

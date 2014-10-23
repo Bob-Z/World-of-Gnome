@@ -26,6 +26,7 @@
 #include "screen.h"
 #include "scr_play.h"
 #include "textview.h"
+#include "option_client.h"
 
 #define UI_MAIN		0
 #define UI_INVENTORY	1
@@ -379,6 +380,7 @@ static void compose_equipment(context_t * ctx, item_t * item_list)
 	static anim_t * inventory_icon = NULL;
 	int max_h;
 	int max_w;
+	option_t * option = option_get();
 
 	SDL_GetRendererOutputSize(ctx->render,&sw,&sh);
 
@@ -464,14 +466,16 @@ static void compose_equipment(context_t * ctx, item_t * item_list)
 
 		/* Draw selection cursor */
 		if( ctx->selection.equipment != NULL) {
-			if( !strcmp(ctx->selection.equipment,slot_list[index]) ) {
-				anim3 = imageDB_get_anim(ctx,CURSOR_EQUIP_FILE);
+			if( option && option->cursor_equipment ) {
+				if( !strcmp(ctx->selection.equipment,slot_list[index]) ) {
+					anim3 = imageDB_get_anim(ctx,option->cursor_equipment);
 
-				item = item_list_add(&item_list);
+					item = item_list_add(&item_list);
 
-				/* Center on icon */
-				item_set_overlay(item,1);
-				item_set_anim(item,x - (anim3->w-anim->w)/2, y - (anim3->h-anim->w)/2, anim3);
+					/* Center on icon */
+					item_set_overlay(item,1);
+					item_set_anim(item,x - (anim3->w-anim->w)/2, y - (anim3->h-anim->w)/2, anim3);
+				}
 			}
 		}
 
@@ -802,6 +806,7 @@ static void compose_inventory_select(context_t * ctx,item_t * item_list)
 	anim_t * anim;
 	anim_t * icon_anim;
 	char * template;
+	option_t * option = option_get();
 
 	if(ctx->selection.inventory == NULL) {
 		return;
@@ -814,7 +819,11 @@ static void compose_inventory_select(context_t * ctx,item_t * item_list)
 		return;
 	}
 
-	anim = imageDB_get_anim(ctx,CURSOR_SPRITE_FILE);
+	if ( option == NULL || option->cursor_inventory == NULL ) {
+		return;
+	}
+
+	anim = imageDB_get_anim(ctx,option->cursor_inventory);
 
 	deep_free(inventory_list);
 

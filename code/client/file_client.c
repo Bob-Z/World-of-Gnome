@@ -21,6 +21,7 @@
 #include <dirent.h>
 #include "imageDB.h"
 #include "screen.h"
+#include "option_client.h"
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <string.h>
@@ -81,6 +82,8 @@ int file_add(context_t * context,char * data,Uint32 command_size)
 	entry_remove(filename);
 	/* Update the image DB */
 	image_DB_remove(filename);
+	/* Update options if needed */
+	option_get();
 	/* Make sure the new file is drawn (if needed) */
 	screen_compose();
 

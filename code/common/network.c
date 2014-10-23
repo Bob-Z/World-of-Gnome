@@ -31,6 +31,8 @@ typedef struct send_data {
 } send_data_t;
 
 /*********************************************************************
+return -1 on error
+return 0 on success
 *********************************************************************/
 static int async_send(void * user_data)
 {
@@ -40,6 +42,10 @@ static int async_send(void * user_data)
 	send_data_t * data = (send_data_t *)user_data;
 	context_t * context = data->context;
 
+	if( context == NULL ) {
+		return RET_FAIL;
+	}
+
 	if(data->is_data ) {
 		socket = context_get_socket_data(context);
 	} else {
@@ -48,7 +54,7 @@ static int async_send(void * user_data)
 
 	if( socket == 0 ) {
 		wlog(LOGDEBUG, "socket %d is disconnected",socket);
-		return FALSE;
+		return RET_SUCCESS;
 	}
 
 	SDL_LockMutex(context->send_mutex);
@@ -87,7 +93,7 @@ async_send_end:
 	free(data->data);
 	free(data);
 
-	return FALSE;
+	return RET_SUCCESS;
 }
 
 /*******************************

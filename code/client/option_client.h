@@ -21,6 +21,11 @@
 
 typedef struct option_struct {
 	int show_tile_type;
+	char * cursor_over_tile;
+	char * cursor_sprite;
+	char * cursor_tile;
+	char * cursor_equipment;
+	char * cursor_inventory;
 } option_t;
 
 void option_init();

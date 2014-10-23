@@ -20,10 +20,13 @@
 #ifndef WOG_COMMON_INCLUDE
 #define WOG_COMMON_INCLUDE
 
-#define FALSE 0
-#define false 0
-#define TRUE 1
-#define true 1
+#define FALSE	(0)
+#define false	(0)
+#define TRUE	(1)
+#define true	(1)
+
+#define RET_SUCCESS	(0)
+#define RET_FAIL	(-1)
 
 #include <SDL2/SDL_net.h>
 

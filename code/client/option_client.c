@@ -20,17 +20,48 @@
 #include "option_client.h"
 
 option_t option;
+int already_parsed = 0;
 
 /**************************************
 **************************************/
 void option_init()
 {
 	option.show_tile_type = false;
+	option.cursor_over_tile = NULL;
+	option.cursor_sprite = NULL;
+	option.cursor_tile = NULL;
+	option.cursor_equipment = NULL;
+	option.cursor_inventory = NULL;
+}
+
+/**************************************
+**************************************/
+static void parse_client_conf()
+{
+	int version;
+
+	if( already_parsed ) {
+		return;
+	}
+
+	if (!entry_read_int(NULL,CLIENT_CONF_FILE,&version,CLIENT_KEY_VERSION,NULL)) {
+		return;
+	}
+
+	entry_read_string(NULL,CLIENT_CONF_FILE,&option.cursor_over_tile,CLIENT_KEY_CURSOR_OVER_TILE,NULL);
+	entry_read_string(NULL,CLIENT_CONF_FILE,&option.cursor_sprite,CLIENT_KEY_CURSOR_SPRITE,NULL);
+	entry_read_string(NULL,CLIENT_CONF_FILE,&option.cursor_tile,CLIENT_KEY_CURSOR_TILE,NULL);
+	entry_read_string(NULL,CLIENT_CONF_FILE,&option.cursor_equipment,CLIENT_KEY_CURSOR_EQUIPMENT,NULL);
+	entry_read_string(NULL,CLIENT_CONF_FILE,&option.cursor_inventory,CLIENT_KEY_CURSOR_INVENTORY,NULL);
+
+	already_parsed = 1;
 }
 
 /**************************************
 **************************************/
 option_t * option_get()
 {
+	parse_client_conf();
+
 	return &option;
 }

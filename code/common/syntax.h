@@ -79,12 +79,6 @@
 
 #define CHARACTER_TEMPLATE_TABLE	"character_template"
 
-/* misc data */
-#define CURSOR_SPRITE_FILE 	"cursor.png"
-#define CURSOR_TILE_FILE 	"cursor.png"
-#define CURSOR_EQUIP_FILE 	"cursor.png"
-#define CURSOR_OVER_TILE_FILE 	"over_tile_cursor.png"
-
 /* image DB */
 #define IMAGE_TABLE 		"image"
 
@@ -144,5 +138,14 @@
 #define EQUIPMENT_ICON		"icon"
 #define EQUIPMENT_NAME		"name"
 #define EQUIPMENT_EQUIPPED	"equipped"
+
+/* client configuration */
+#define CLIENT_CONF_FILE		"client.conf"
+#define CLIENT_KEY_VERSION		"version"
+#define CLIENT_KEY_CURSOR_OVER_TILE	"cursor_over_tile"
+#define CLIENT_KEY_CURSOR_SPRITE 	"cursor_sprite"
+#define CLIENT_KEY_CURSOR_TILE	 	"cursor_tile"
+#define CLIENT_KEY_CURSOR_EQUIPMENT 	"cursor_equipment"
+#define CLIENT_KEY_CURSOR_INVENTORY 	"cursor_inventory"
 
 #endif
