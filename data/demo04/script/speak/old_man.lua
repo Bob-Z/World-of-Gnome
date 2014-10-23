@@ -1,4 +1,4 @@
-price_list = { sword = 200, shield = 150, bag = 25 }
+price_list = { sword = 200, shield = 150, bag = 25, magic = 500 }
 
 function trade (player,item)
 	gold = inventory_get_by_name(player,"gold")
