@@ -498,3 +498,24 @@ char * character_get_speak(char * id)
 
 	return speak_action;
 }
+
+/*********************************************************
+return -1 if error
+*********************************************************/
+int character_set_portrait(const char * id,const char * portrait)
+{
+        context_t * ctx;
+        char * filename;
+        int res;
+
+        if(!entry_write_string(CHARACTER_TABLE,id,portrait,CHARACTER_KEY_PORTRAIT,NULL)) {
+                return -1;
+        }
+
+        ctx = context_find(id);
+        filename = strconcat(CHARACTER_TABLE,"/",id,NULL);
+        res = network_send_file(ctx,filename);
+        free(filename);
+
+        return res;
+}
