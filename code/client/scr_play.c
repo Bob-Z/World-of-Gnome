@@ -749,7 +749,7 @@ item_t * scr_play_compose(context_t * ctx)
 		init = false;
 	}
 
-	sdl_free_keycb(NULL);
+	sdl_free_keycb();
 
 	change_map = ctx->change_map;
 	/* Check if map has changed */

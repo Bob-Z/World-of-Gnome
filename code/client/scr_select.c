@@ -85,6 +85,8 @@ static void cb_select(void * arg)
 
 	file_clean(ctx);
 
+	sdl_free_mousecb();
+
 	screen_set_screen(SCREEN_PLAY);
 
 	screen_compose();
@@ -130,6 +132,20 @@ static void cb_previous_character(void * arg)
 }
 
 /**********************************
+**********************************/
+static void cb_wheel_up(Uint32 y, Uint32 unused)
+{
+	cb_previous_character(NULL);
+}
+
+/**********************************
+**********************************/
+static void cb_wheel_down(Uint32 y, Uint32 unused)
+{
+	cb_next_character(NULL);
+}
+
+/**********************************
 Compose the character select screen
 **********************************/
 item_t * scr_select_compose(context_t * context)
@@ -161,6 +177,10 @@ item_t * scr_select_compose(context_t * context)
 	if(font_type == NULL) {
 		font_type = TTF_OpenFont(FONT, FONT_SIZE);
 	}
+
+	sdl_free_mousecb();
+	sdl_add_mousecb(MOUSE_WHEEL_UP,cb_wheel_up);
+	sdl_add_mousecb(MOUSE_WHEEL_DOWN,cb_wheel_down);
 
 	SDL_LockMutex(character_select_mutex);
 
@@ -208,8 +228,6 @@ item_t * scr_select_compose(context_t * context)
 		item_set_click_left(item,cb_show_item,(void *)item,NULL);
 		item_set_click_right(item,cb_select,(void *)context,NULL);
 		item_set_double_click_left(item,cb_select,(void *)context,NULL);
-		item_set_wheel_up(item,cb_previous_character,(void *)context,NULL);
-		item_set_wheel_down(item,cb_next_character,(void *)context,NULL);
 		item_set_over(item,cb_over,(void *)i,NULL);
 
 		x += character_list[i].width + BORDER;
@@ -248,7 +266,7 @@ item_t * scr_select_compose(context_t * context)
 
 	SDL_UnlockMutex(character_select_mutex);
 
-	sdl_free_keycb(NULL);
+	sdl_free_keycb();
 	sdl_add_keycb(SDL_SCANCODE_ESCAPE,cb_quit,NULL,NULL);
 	sdl_add_keycb(SDL_SCANCODE_RIGHT,cb_next_character,NULL,NULL);
 	sdl_add_keycb(SDL_SCANCODE_LEFT,cb_previous_character,NULL,NULL);
