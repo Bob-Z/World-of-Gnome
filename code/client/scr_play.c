@@ -473,8 +473,8 @@ static void compose_map_button(context_t * ctx)
 	for( y=0 ; y < ctx->map_h ; y++ ) {
 		for ( x=0 ; x < ctx->map_w ; x++ ) {
 			item = item_list_add(&item_list);
-			item_set_frame_shape(item,x*ctx->tile_x+ctx->tile_x/2-anim->w/2,
-				y*ctx->tile_y+ctx->tile_y/2-anim->h/2,ctx->tile_x,ctx->tile_y);
+			item_set_frame_shape(item,x*ctx->tile_x,
+				y*ctx->tile_y,ctx->tile_x,ctx->tile_y);
 			item_set_tile(item,x,y);
 			item_set_click_left(item,cb_select_map,item,NULL);
 			item_set_click_right(item,cb_redo_map,item,NULL);
