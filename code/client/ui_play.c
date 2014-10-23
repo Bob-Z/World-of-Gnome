@@ -704,12 +704,12 @@ static void compose_inventory(context_t * ctx,item_t * item_list)
 
 	deep_free(inventory_list);
 
+	draw_background(ctx,item_list);
+
 	/* read data from file */
 	if(!entry_read_list(CHARACTER_TABLE,ctx->id,&inventory_list, CHARACTER_KEY_INVENTORY,NULL)) {
 		return;
 	}
-
-	draw_background(ctx,item_list);
 
 	while( inventory_list[i] != NULL) {
 		template = item_is_resource(inventory_list[i]);
