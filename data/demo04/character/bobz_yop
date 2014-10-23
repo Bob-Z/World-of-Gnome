@@ -1,5 +1,7 @@
 marquee         = "marquee/knight_marquee.jpg";
 sprite          = "sprite/knight.gif";
+portrait          = "sprite/knight.gif";
+speak_action    = "speak/player";
 name = "yop";
 inventory = [ ];
 type = "human";
