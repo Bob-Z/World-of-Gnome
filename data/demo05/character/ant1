@@ -1,0 +1,12 @@
+name = "Ant One";
+type = "Ant";
+marquee         = "sprite/ant.png";
+sprite          = "sprite/ant.png";
+portrait	= "sprite/ant.png";
+flip_e = 1;
+inventory = [ ];
+map = "map1";
+pos_x = 16;
+pos_y = 1;
+action = [ ];
+allowed_tile = [ "g","d","b" ];
