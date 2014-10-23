@@ -2,6 +2,12 @@ price_list = { sword = 200, shield = 150, bag = 25, magic = 500 }
 
 function trade (player,item)
 	gold = inventory_get_by_name(player,"gold")
+	if gold == nil then
+		text = string.format("You don't have gold, get out of here !")
+		portrait = "portrait/old_man_angry.gif"
+		return text,portrait
+	end
+
 	gold_qty = resource_get_quantity(gold)
 	price = price_list[item]
 	if gold_qty >= price then
@@ -10,11 +16,11 @@ function trade (player,item)
 		inventory_add(player,new_item)
 		text = string.format("You got a new %s. What do you need ?",item)
 		portrait = "portrait/old_man_happy.gif"
-	else
-		text = string.format("You don't have enough gold, get out !")
-		portrait = "portrait/old_man_angry.gif"
+		return text,portrait
 	end
 
+	text = string.format("You don't have enough gold, get out !")
+	portrait = "portrait/old_man_angry.gif"
 	return text,portrait
 end
 
