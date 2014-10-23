@@ -93,7 +93,7 @@ static void cb_redo_sprite(void *arg)
 
 /**********************************
 **********************************/
-static void cb_zoom(void *arg)
+static void cb_zoom(Uint32 y,Uint32 unused)
 {
 	double zoom;
 
@@ -104,7 +104,7 @@ static void cb_zoom(void *arg)
 
 /**********************************
 **********************************/
-static void cb_unzoom(void *arg)
+static void cb_unzoom(Uint32 y,Uint32 unused)
 {
 	double zoom;
 
@@ -478,8 +478,6 @@ static void compose_map_button(context_t * ctx)
 			item_set_tile(item,x,y);
 			item_set_click_left(item,cb_select_map,item,NULL);
 			item_set_click_right(item,cb_redo_map,item,NULL);
-			item_set_wheel_up(item,cb_zoom,NULL,NULL);
-			item_set_wheel_down(item,cb_unzoom,NULL,NULL);
 			item_set_over(item,cb_over,item,NULL);
 			item_set_anim_over(item,anim);
 		}
@@ -761,6 +759,9 @@ item_t * scr_play_compose(context_t * ctx)
 	}
 
 	sdl_free_keycb();
+        sdl_free_mousecb();
+        sdl_add_mousecb(MOUSE_WHEEL_UP,cb_unzoom);
+        sdl_add_mousecb(MOUSE_WHEEL_DOWN,cb_zoom);
 
 	change_map = ctx->change_map;
 	/* Check if map has changed */
