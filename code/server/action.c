@@ -437,6 +437,7 @@ Input:
  - X cooridnate in the map
  - Y cooridnate in the map
 Output:
+ return -1 if the position can not be set.
 */
 static int l_character_set_pos( lua_State* L)
 {
