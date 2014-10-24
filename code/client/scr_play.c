@@ -760,8 +760,8 @@ item_t * scr_play_compose(context_t * ctx)
 
 	sdl_free_keycb();
         sdl_free_mousecb();
-        sdl_add_mousecb(MOUSE_WHEEL_UP,cb_unzoom);
-        sdl_add_mousecb(MOUSE_WHEEL_DOWN,cb_zoom);
+        sdl_add_mousecb(MOUSE_WHEEL_UP,cb_zoom);
+        sdl_add_mousecb(MOUSE_WHEEL_DOWN,cb_unzoom);
 
 	change_map = ctx->change_map;
 	/* Check if map has changed */
