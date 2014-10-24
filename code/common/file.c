@@ -160,7 +160,7 @@ char * file_new(char * table, const char * suggested_name)
 	SDL_LockMutex(character_dir_mutex);
 
 	if( suggested_name && suggested_name[0] != 0) {
-		fullname = strconcat(dirname,"/",suggested_name );
+		fullname = strconcat(dirname,"/",suggested_name,NULL );
 		if( stat(fullname, &sts) != -1) {
 			SDL_UnlockMutex(character_dir_mutex);
 			free(dirname);
