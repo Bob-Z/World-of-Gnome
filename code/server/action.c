@@ -1196,7 +1196,7 @@ static int l_character_attribute_change( lua_State* L)
 	context = lua_touserdata(L, -1);
 	lua_pop(L,1);
 
-	res = attribute_change(context,id,attribute,value);
+	res = attribute_change(context,CHARACTER_TABLE,id,attribute,value);
 	lua_pushnumber(L, res);
 	return 1;  /* number of results */
 }
@@ -1218,7 +1218,7 @@ static int l_character_attribute_get( lua_State* L)
 
 	id = luaL_checkstring(L, -2);
 	attribute = luaL_checkstring(L, -1);
-	res = attribute_get(id,attribute);
+	res = attribute_get(CHARACTER_TABLE,id,attribute);
 	lua_pushnumber(L, res);
 	return 1;  /* number of results */
 }
@@ -1243,7 +1243,85 @@ static int l_character_attribute_set( lua_State* L)
 	id = luaL_checkstring(L, -3);
 	attribute = luaL_checkstring(L, -2);
 	value = luaL_checkint(L, -1);
-	res = attribute_set(id,attribute,value);
+	res = attribute_set(CHARACTER_TABLE,id,attribute,value);
+	lua_pushnumber(L, res);
+	return 1;  /* number of results */
+}
+
+/* map_attribute_change
+
+Add (or remove) a value to the given attribute
+
+Input:
+ - ID of a map
+ - ID of an attribute
+ - value to add (may be negative)
+Output:
+*/
+static int l_map_attribute_change( lua_State* L)
+{
+	const char * id;
+	const char * attribute;
+	int value;
+	int res;
+	context_t * context;
+
+	id = luaL_checkstring(L, -3);
+	attribute = luaL_checkstring(L, -2);
+	value = luaL_checkint(L, -1);
+
+	lua_getglobal(L,LUAVM_CONTEXT);
+	context = lua_touserdata(L, -1);
+	lua_pop(L,1);
+
+	res = attribute_change(context,MAP_TABLE,id,attribute,value);
+	lua_pushnumber(L, res);
+	return 1;  /* number of results */
+}
+
+/* map_attribute_get
+
+Get the value of the given attribute
+
+Input:
+ - ID of a map
+ - ID of an attribute
+Output: Value of the given attribute
+*/
+static int l_map_attribute_get( lua_State* L)
+{
+	const char * id;
+	const char * attribute;
+	int res;
+
+	id = luaL_checkstring(L, -2);
+	attribute = luaL_checkstring(L, -1);
+	res = attribute_get(MAP_TABLE,id,attribute);
+	lua_pushnumber(L, res);
+	return 1;  /* number of results */
+}
+
+/* map_attribute_set
+
+Set an attribute to the given value
+
+Input:
+ - ID of a map
+ - ID of an attribute
+ - value
+Output:
+*/
+static int l_map_attribute_set( lua_State* L)
+{
+	const char * id;
+	const char * attribute;
+	int value;
+	int res;
+
+	id = luaL_checkstring(L, -3);
+	attribute = luaL_checkstring(L, -2);
+	value = luaL_checkint(L, -1);
+	res = attribute_set(MAP_TABLE,id,attribute,value);
 	lua_pushnumber(L, res);
 	return 1;  /* number of results */
 }
@@ -1635,6 +1713,13 @@ void register_lua_functions(context_t * context)
 	lua_setglobal(L, "character_attribute_get");
 	lua_pushcfunction(L, l_character_attribute_set);
 	lua_setglobal(L, "character_attribute_set");
+	/* map attribute func */
+	lua_pushcfunction(L, l_map_attribute_change);
+	lua_setglobal(L, "map_attribute_change");
+	lua_pushcfunction(L, l_map_attribute_get);
+	lua_setglobal(L, "map_attribute_get");
+	lua_pushcfunction(L, l_map_attribute_set);
+	lua_setglobal(L, "map_attribute_set");
 	/* equipment func */
 	lua_pushcfunction(L, l_equipment_slot_set_item);
 	lua_setglobal(L, "equipment_slot_set_item");
