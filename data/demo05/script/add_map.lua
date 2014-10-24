@@ -2,22 +2,14 @@ function f (map_name,map_x,map_y)
 
 new_map = map_new(map_name,32,32,32,32,"b.gif","b")
 
-for i=0,31 do
-	event = map_add_event(map_name,"goto.lua",0,i)
-	map_add_event_param(new_map,event,"-1")
-	map_add_event_param(new_map,event,"0")
+if map_y == "0" then
+	for i=0,31 do
+		map_set_tile(map_name,"s.gif",i,0,0)
+		map_set_tile_type(map_name,"s",i,0)
 
-	event = map_add_event(map_name,"goto.lua",31,i)
-	map_add_event_param(new_map,event,"1")
-	map_add_event_param(new_map,event,"0")
-
-	event = map_add_event(map_name,"goto.lua",i,0)
-	map_add_event_param(new_map,event,"0")
-	map_add_event_param(new_map,event,"-1")
-
-	event = map_add_event(map_name,"goto.lua",i,31)
-	map_add_event_param(new_map,event,"0")
-	map_add_event_param(new_map,event,"1")
+		map_set_tile(map_name,"g.gif",i,1,0)
+		map_set_tile_type(map_name,"g",i,1)
+	end
 end
 
 map_attribute_set(map_name,"x",map_x)

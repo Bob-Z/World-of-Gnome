@@ -12,15 +12,19 @@ new_pos_x = pos_x + move_x
 new_pos_y = pos_y + move_y
 
 if new_pos_x < 0 then
+	call_script("goto.lua","-1","0");
         return
 end
 if new_pos_x >= map_w then
+	call_script("goto.lua","1","0");
         return
 end
 if new_pos_y < 0 then
+	call_script("goto.lua","0","-1");
         return
 end
 if new_pos_y >= map_h then
+	call_script("goto.lua","0","1");
         return
 end
 
