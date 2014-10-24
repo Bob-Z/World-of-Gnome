@@ -179,7 +179,7 @@ char * character_create_from_template(context_t * ctx,const char * template,cons
 	char * templatename;
 	char * fullname;
 
-	new_id = file_new(CHARACTER_TABLE);
+	new_id = file_new(CHARACTER_TABLE,NULL);
 
 	templatename = strconcat(base_directory,"/",CHARACTER_TEMPLATE_TABLE,"/",template,NULL);
 	fullname = strconcat(base_directory,"/",CHARACTER_TABLE,"/",new_id,NULL);

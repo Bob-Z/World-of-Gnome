@@ -26,7 +26,7 @@
 Create a new map.
 Return the name of the new map
 *************************************/
-char * map_new(int w,int h, int tile_w, int tile_h, const char * default_tile, const char * default_type)
+char * map_new(const char *suggested_name,int w,int h, int tile_w, int tile_h, const char * default_tile, const char * default_type)
 {
 	char * map_name;
 	char ** tile_array;
@@ -37,7 +37,7 @@ char * map_new(int w,int h, int tile_w, int tile_h, const char * default_tile, c
 		return NULL;
 	}
 
-	map_name = file_new(MAP_TABLE);
+	map_name = file_new(MAP_TABLE,suggested_name);
 	if(map_name == NULL) {
 		return NULL;
 	}

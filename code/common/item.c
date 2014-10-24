@@ -29,7 +29,7 @@
 ********************************************/
 char * item_create_empty()
 {
-	return file_new(ITEM_TABLE);
+	return file_new(ITEM_TABLE,NULL);
 }
 
 /**************************************************
@@ -44,7 +44,7 @@ char * item_create_from_template(const char * template)
 	char * templatename;
 	char * newfilename;
 
-	new_name = file_new(ITEM_TABLE);
+	new_name = file_new(ITEM_TABLE,NULL);
 
 	templatename = strconcat(base_directory,"/",ITEM_TEMPLATE_TABLE,"/",template,NULL);
 	newfilename = strconcat(base_directory,"/",ITEM_TABLE,"/",new_name,NULL);

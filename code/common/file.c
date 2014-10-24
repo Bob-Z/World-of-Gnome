@@ -136,54 +136,76 @@ static int mkdir_all(const char * pathname)
 
 /****************************
   Parameter 1: Name of the table to create the new file
+  Parameter 2: Name of the file you want to create, if NULL an available file is created.
+		if the suggested name is not available the function return NULL
   return the name of an available empty file
   if success the file is created on disk
   the return string must be freed by caller
  ****************************/
-char * file_new(char * table)
+char * file_new(char * table, const char * suggested_name)
 {
 	DIR * dir;
 	struct dirent * ent;
 	char * dirname;
 	char * filename;
+	char * fullname;
 	char tag[10];
 	int index = 0;
 	int fd;
-
-	sprintf(tag,"A%05x",index);
+	struct stat sts;
+	const char * selected_name = NULL;
 
 	dirname = strconcat(base_directory,"/",table,NULL);
 
 	SDL_LockMutex(character_dir_mutex);
 
-	dir = opendir(dirname);
-
-	if( dir == NULL ) {
-		mkdir_all(dirname);
-		dir = opendir(dirname);
-		if(dir == NULL) {
+	if( suggested_name && suggested_name[0] != 0) {
+		fullname = strconcat(dirname,"/",suggested_name );
+		if( stat(fullname, &sts) != -1) {
+			SDL_UnlockMutex(character_dir_mutex);
+			free(dirname);
+			free(fullname);
+			/* File exists */
 			return NULL;
 		}
+		free(fullname);
+		selected_name = suggested_name;
+	}
+	else {
+
+		dir = opendir(dirname);
+
+		if( dir == NULL ) {
+			mkdir_all(dirname);
+			dir = opendir(dirname);
+			if(dir == NULL) {
+				return NULL;
+			}
+		}
+
+		sprintf(tag,"A%05x",index);
+
+		while(( ent = readdir(dir)) != NULL ) {
+			if( strcmp(ent->d_name,".") == 0 ) {
+				continue;
+			}
+			if( strcmp(ent->d_name,"..") == 0 ) {
+				continue;
+			}
+			if( strcmp(ent->d_name,tag) == 0 ) {
+				index++;
+				sprintf(tag,"A%05x",index);
+				rewinddir(dir);
+				continue;
+			}
+		}
+
+		closedir(dir);
+
+		selected_name = tag;
 	}
 
-	while(( ent = readdir(dir)) != NULL ) {
-		if( strcmp(ent->d_name,".") == 0 ) {
-			continue;
-		}
-		if( strcmp(ent->d_name,"..") == 0 ) {
-			continue;
-		}
-		if( strcmp(ent->d_name,tag) == 0 ) {
-			index++;
-			sprintf(tag,"A%05x",index);
-			rewinddir(dir);
-			continue;
-		}
-	}
-
-	closedir(dir);
-
-	filename = strconcat(dirname,"/",tag,NULL);
+	filename = strconcat(dirname,"/",selected_name,NULL);
 	free(dirname);
 
 	fd = creat(filename, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH);
@@ -192,7 +214,7 @@ char * file_new(char * table)
 
 	SDL_UnlockMutex(character_dir_mutex);
 
-	return strdup(tag);
+	return strdup(selected_name);
 }
 
 /****************************

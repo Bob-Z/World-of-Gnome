@@ -22,7 +22,7 @@
 void file_lock(const char * filename);
 void file_unlock(const char * filename);
 void file_update(context_t * context, char * filename);
-char * file_new(char * table);
+char * file_new(char * table,const char * suggested_name);
 int file_get_contents(const char *filename,char **contents,int *length);
 int file_set_contents(const char *filename,const char *contents,int length);
 void file_copy(char * src_name, char * dst_name);

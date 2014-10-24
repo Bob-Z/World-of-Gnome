@@ -531,6 +531,7 @@ static int l_character_set_portrait( lua_State* L)
 Create a map
 
 Input:
+ - Suggested file name (if empty an available name if automatically found)
  - Width of map
  - Height of map
  - Width of tile (in pixels)
@@ -542,6 +543,7 @@ Output: New map ID
 static int l_map_new( lua_State* L)
 {
 	char * map_name;
+	const char * suggested_name;
 	int x;
 	int y;
 	int tile_x;
@@ -549,13 +551,14 @@ static int l_map_new( lua_State* L)
 	const char * default_tile;
 	const char * default_type;
 
+	suggested_name = luaL_checkstring(L, -7);
 	x = luaL_checkint(L, -6);
 	y = luaL_checkint(L, -5);
 	tile_x = luaL_checkint(L, -4);
 	tile_y = luaL_checkint(L, -3);
 	default_tile = luaL_checkstring(L, -2);
 	default_type = luaL_checkstring(L, -1);
-	map_name = map_new(x,y,tile_x,tile_y,default_tile,default_type);
+	map_name = map_new(suggested_name,x,y,tile_x,tile_y,default_tile,default_type);
 	lua_pushstring(L, map_name);
 	free(map_name);
 	return 1;  /* number of results */
