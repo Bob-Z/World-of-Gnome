@@ -164,11 +164,6 @@ return -1 if fails
 int attribute_get(const char * table, const char *id, const char * attribute)
 {
 	int current;
-	context_t * context = context_find(id);
-	if( context == NULL ) {
-		werr(LOGDEV,"%s: Could not find context %s",id);
-		return -1;
-	}
 
 	SDL_LockMutex(attribute_mutex);
 
@@ -188,12 +183,6 @@ return -1 if fails
 *********************************************************************/
 int attribute_set(const char * table, const char * id, const char * attribute, int value)
 {
-	context_t * context = context_find(id);
-	if( context == NULL ) {
-		werr(LOGDEV,"Could not find context %s",id);
-		return -1;
-	}
-
 	SDL_LockMutex(attribute_mutex);
 
 	if(!entry_write_int(table,id,value,ATTRIBUTE_GROUP,attribute, ATTRIBUTE_CURRENT, NULL)) {
