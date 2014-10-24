@@ -1302,17 +1302,10 @@ return -1 if fails
 int entry_destroy(const char * table, const char * file)
 {
 	char * filename;
-	const config_t * old_config;
 
 	filename = strconcat(table,"/",file,NULL);
 
-	SDL_LockMutex(entry_mutex);
-	old_config = list_find(entry_list,filename);
-	if( old_config ) {
-		free_config((config_t*)old_config);
-	}
-	list_update(&entry_list,filename,NULL);
-	SDL_UnlockMutex(entry_mutex);
+	entry_remove(filename);
 
 	free(filename);
 
