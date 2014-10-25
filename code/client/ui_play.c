@@ -781,8 +781,7 @@ static void compose_inventory(context_t * ctx,item_t * item_list)
 			item_set_overlay(item,1);
 			if( w > anim->w ) {
 				x += w;
-			}
-			else {
+			} else {
 				x += anim->w;
 			}
 			item_set_click_left(item,cb_inventory_select,(void*)strdup(inventory_list[i]),free);

@@ -125,8 +125,7 @@ static const config_t * get_config(const char * table, const char * file)
 
 	if( table == NULL ) {
 		filename = strdup(file);
-	}
-	else {
+	} else {
 		filename = strconcat(table,"/",file,NULL);
 	}
 

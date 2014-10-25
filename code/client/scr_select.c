@@ -224,7 +224,7 @@ item_t * scr_select_compose(context_t * context)
 		character_list[i].item = item;
 
 		item_set_anim(item,x+character_list[i].width/2-character_list[i].anim->w/2,
-				max_h/2-character_list[i].anim->h/2,character_list[i].anim);
+					  max_h/2-character_list[i].anim->h/2,character_list[i].anim);
 		item_set_click_left(item,cb_show_item,(void *)item,NULL);
 		item_set_click_right(item,cb_select,(void *)context,NULL);
 		item_set_double_click_left(item,cb_select,(void *)context,NULL);

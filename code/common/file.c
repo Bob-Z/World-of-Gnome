@@ -170,8 +170,7 @@ char * file_new(char * table, const char * suggested_name)
 		}
 		free(fullname);
 		selected_name = suggested_name;
-	}
-	else {
+	} else {
 
 		dir = opendir(dirname);
 
