@@ -46,6 +46,9 @@ function talk (npc,portrait,player_id,text)
 		table.insert(func_param, speech)
 		table.insert(func_param, keyword)
 	end
+	table.insert(func_param,"")
+	table.insert(func_param,"Bye !")
+	table.insert(func_param,"speak_end")
 
 	speak_send(npc,portrait,player_id,text, unpack(func_param))
 end
@@ -56,12 +59,18 @@ function f (npc,player_id,keyword)
 		keyword = "start"
 	end
 
+	if keyword == "speak_end" then
+		speak_send("","",player_id,"")
+		return
+	end
+
 	if keyword == "start" then
 		text = string.format("Hello %s. What do you need ?",character_get_name(player_id))
 		portrait = "portrait/old_man.gif"
 	else
 		text,portrait = trade(player_id,keyword)
 	end
+
 
 	talk(npc,portrait,player_id,text)
 end
