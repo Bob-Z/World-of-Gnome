@@ -1064,6 +1064,14 @@ static void compose_speak(context_t * ctx,item_t * item_list)
 	}
 }
 
+/****************************
+****************************/
+static void cb_speak_quit(void * arg)
+{
+	speak_cleanup();
+	ui_play_set(UI_MAIN);
+}
+
 /**********************************
 Parse network frame and generate a speak screen
 TODO: put this in network files ?
@@ -1079,6 +1087,11 @@ void ui_play_speak_parse(int total_size, char * frame)
 	speak_cleanup();
 
 	speaker_id = strdup(_strsep(&frame,NETWORK_DELIMITER));
+	/* Close speak UI if no speaker provided */
+	if ( speaker_id[0] == 0 ) {
+		cb_speak_quit(NULL);
+		return;
+	}
 	speaker_ctx = context_find(speaker_id);
 	if( speaker_ctx->character_name ) {
 		speaker_name = strdup(speaker_ctx->character_name);
@@ -1137,15 +1150,6 @@ void ui_play_speak_parse(int total_size, char * frame)
 	}
 
 	ui_play_set(UI_SPEAK);
-}
-
-
-/****************************
-****************************/
-static void cb_speak_quit(void * arg)
-{
-	speak_cleanup();
-	ui_play_set(UI_MAIN);
 }
 
 /**********************************
