@@ -72,7 +72,7 @@ attribute :
 {
   x :
   {
-    current = 10000;
+    current = 0;
   };
   y :
   {
