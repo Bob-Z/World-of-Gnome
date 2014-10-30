@@ -33,7 +33,7 @@ if tile_type ~= "ground" then
 	end
 end
 
-new_map = map_new(32,32,64,64,"tile/dungeon_wall.gif","wall")
+new_map = map_new("",32,32,64,64,"tile/dungeon_wall.gif","wall")
 map_set_tile(new_map,"tile/dungeon_stairs_up.gif",16,15,0)
 map_set_tile_type(new_map,"stair",16,15)
 map_set_tile(new_map,"tile/dungeon.gif",16,16,0)
