@@ -11,19 +11,6 @@ map_h = character_get_map_h(id)
 new_pos_x = pos_x + move_x
 new_pos_y = pos_y + move_y
 
-if new_pos_x < 0 then
-        return
-end
-if new_pos_x >= map_w then
-        return
-end
-if new_pos_y < 0 then
-        return
-end
-if new_pos_y >= map_h then
-        return
-end
-
 character_set_pos(id,map,new_pos_x,new_pos_y)
 
 end
