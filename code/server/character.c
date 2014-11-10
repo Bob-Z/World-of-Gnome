@@ -399,6 +399,10 @@ int character_set_pos(context_t * ctx, const char * map, int x, int y)
 	char ** param = NULL;
 	int i;
 	int change_map = 0;
+	int width = x+1;
+	int height = y+1;
+	int warpx = FALSE;
+	int warpy = FALSE;
 
 	if(ctx == NULL) {
 		return -1;
@@ -409,44 +413,75 @@ int character_set_pos(context_t * ctx, const char * map, int x, int y)
 		return 0;
 	}
 
-	/* Check if this character is allowed to go to the target tile */
-	if (map_check_tile(ctx,ctx->id,map,x,y) ) {
+        entry_read_int(MAP_TABLE,map,&width,MAP_KEY_WIDTH,NULL);
+        entry_read_int(MAP_TABLE,map,&height,MAP_KEY_HEIGHT,NULL);
+        entry_read_int(MAP_TABLE,map,&warpx,MAP_KEY_WARP_X,NULL);
+        entry_read_int(MAP_TABLE,map,&warpy,MAP_KEY_WARP_Y,NULL);
 
-		if( strcmp(ctx->map,map) ) {
-			change_map = 1;
+	/* Coordinates warping */
+	if( x < 0 ) {
+		if( warpx == FALSE) {
+			return -1;
 		}
-
-		/* Th platform must be the last one to move */
-		platform_move(ctx,map,x,y,change_map);
-
-		do_set_pos(ctx,map,x,y,change_map);
-
-		event_id = map_get_event(map,x,y);
-
-		if(event_id) {
-			i = 0;
-			while(event_id[i]) {
-				if( !entry_read_string(MAP_TABLE,map,&script,MAP_ENTRY_EVENT_LIST,event_id[i],MAP_EVENT_SCRIPT,NULL) ) {
-					i++;
-					continue;
-				}
-				entry_read_list(MAP_TABLE,map,&param,MAP_ENTRY_EVENT_LIST,event_id[i],MAP_EVENT_PARAM,NULL);
-
-				action_execute_script(ctx,script,param);
-
-				free(script);
-				deep_free(param);
-				param=NULL;
-
-				i++;
-			}
-			deep_free(event_id);
-		}
-
-		character_update_aggro(ctx);
-		return 0;
+		x = width-1;
 	}
-	return -1;
+	if( y < 0 ) {
+		if( warpy == FALSE) {
+			return -1;
+		}
+		y = height-1;
+	}
+	if( x >= width ) {
+		if( warpx == FALSE) {
+			return -1;
+		}
+		x = 0;
+	}
+	if( y >= height ) {
+		if( warpy == FALSE) {
+			return -1;
+		}
+		y = 0;
+	}
+
+	/* Check if this character is allowed to go to the target tile */
+	if ( map_check_tile(ctx,ctx->id,map,x,y)  == FALSE ) {
+		return -1;
+	}
+
+	if( strcmp(ctx->map,map) ) {
+		change_map = 1;
+	}
+
+	/* If this character is a platform, move all characters on it */
+	platform_move(ctx,map,x,y,change_map);
+
+	do_set_pos(ctx,map,x,y,change_map);
+
+	event_id = map_get_event(map,x,y);
+
+	if(event_id) {
+		i = 0;
+		while(event_id[i]) {
+			if( !entry_read_string(MAP_TABLE,map,&script,MAP_ENTRY_EVENT_LIST,event_id[i],MAP_EVENT_SCRIPT,NULL) ) {
+				i++;
+				continue;
+			}
+			entry_read_list(MAP_TABLE,map,&param,MAP_ENTRY_EVENT_LIST,event_id[i],MAP_EVENT_PARAM,NULL);
+
+			action_execute_script(ctx,script,param);
+
+			free(script);
+			deep_free(param);
+			param=NULL;
+
+			i++;
+		}
+		deep_free(event_id);
+	}
+
+	character_update_aggro(ctx);
+	return 0;
 }
 
 /*********************************************************

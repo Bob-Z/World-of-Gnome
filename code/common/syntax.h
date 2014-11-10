@@ -101,6 +101,8 @@
 #define MAP_KEY_BG_RED		"bg_red"
 #define MAP_KEY_BG_BLUE		"bg_blue"
 #define MAP_KEY_BG_GREEN	"bg_green"
+#define MAP_KEY_WARP_X		"warp_x"
+#define MAP_KEY_WARP_Y		"warp_y"
 
 /* items on map */
 #define MAP_ITEM_POS_X		"pos_x"
