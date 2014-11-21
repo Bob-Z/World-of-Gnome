@@ -97,6 +97,11 @@ void context_set_tile_x(context_t * context, unsigned int pos);
 void context_set_tile_y(context_t * context, unsigned int pos);
 void context_new_VM(context_t * context);
 int context_set_id(context_t * context, const char * name);
+int context_set_selected_character(context_t * context, const char * selected_character);
+int context_set_selected_tile(context_t * context, const char * selected_map, int selected_map_x, int selected_map_y);
+int context_set_selected_equipment(context_t * context, const char * selected_equipment);
+int context_set_selected_item(context_t * context, const char * selected_item);
+
 int context_update_from_file(context_t * context);
 int context_update_from_network_frame(context_t * context, char * frame);
 void context_update_from_context(context_t * remote_context);

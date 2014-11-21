@@ -177,8 +177,6 @@ void network_send_context(context_t * context)
 	char itoa[SMALL_BUF];
 	int  data_size = 0;
 	int  size = 0;
-	char * selected_id = NULL;
-	char * selected_map = NULL;
 
 	size = strlen(context->user_name)+1;
 	memcpy(data+data_size, context->user_name, size);
@@ -230,13 +228,8 @@ void network_send_context(context_t * context)
 	memcpy(data+data_size, context->id, size);
 	data_size += size;
 
-	if( context->selection.id == NULL ) {
-		selected_id = "";
-	} else {
-		selected_id = context->selection.id;
-	}
-	size = strlen(selected_id)+1;
-	memcpy(data+data_size, selected_id, size);
+	size = strlen(context->selection.id)+1;
+	memcpy(data+data_size, context->selection.id, size);
 	data_size += size;
 
 	snprintf(itoa,sizeof(itoa),"%d",context->selection.map_coord[0]);
@@ -249,31 +242,16 @@ void network_send_context(context_t * context)
 	memcpy(data+data_size, itoa, size);
 	data_size += size;
 
-	if( context->selection.map == NULL ) {
-		selected_map = "";
-	} else {
-		selected_map = context->selection.map;
-	}
-	size = strlen(selected_map)+1;
-	memcpy(data+data_size, selected_map, size);
+	size = strlen(context->selection.map)+1;
+	memcpy(data+data_size, context->selection.map, size);
 	data_size += size;
 
-	if( context->selection.inventory == NULL ) {
-		selected_id = "";
-	} else {
-		selected_id = context->selection.inventory;
-	}
-	size = strlen(selected_id)+1;
-	memcpy(data+data_size, selected_id, size);
+	size = strlen(context->selection.inventory)+1;
+	memcpy(data+data_size, context->selection.inventory, size);
 	data_size += size;
 
-	if( context->selection.equipment == NULL ) {
-		selected_id = "";
-	} else {
-		selected_id = context->selection.equipment;
-	}
-	size = strlen(selected_id)+1;
-	memcpy(data+data_size, selected_id, size);
+	size = strlen(context->selection.equipment)+1;
+	memcpy(data+data_size, context->selection.equipment, size);
 	data_size += size;
 
 	wlog(LOGDEBUG,"Send CMD_SEND_CONTEXT of %s",context->id);
@@ -367,6 +345,32 @@ void network_send_context_to_context(context_t * dest_ctx, context_t * src_ctx)
 
 	size = strlen(src_ctx->id)+1;
 	memcpy(data+data_size, src_ctx->id, size);
+	data_size += size;
+
+	size = strlen(src_ctx->selection.id)+1;
+	memcpy(data+data_size, src_ctx->selection.id, size);
+	data_size += size;
+
+	size = strlen(src_ctx->selection.map)+1;
+	memcpy(data+data_size, src_ctx->selection.map, size);
+	data_size += size;
+
+	snprintf(itoa,sizeof(itoa),"%d",src_ctx->selection.map_coord[0]);
+	size = strlen(itoa)+1;
+	memcpy(data+data_size, itoa, size);
+	data_size += size;
+
+	snprintf(itoa,sizeof(itoa),"%d",src_ctx->selection.map_coord[1]);
+	size = strlen(itoa)+1;
+	memcpy(data+data_size, itoa, size);
+	data_size += size;
+
+	size = strlen(src_ctx->selection.equipment)+1;
+	memcpy(data+data_size, src_ctx->selection.equipment, size);
+	data_size += size;
+
+	size = strlen(src_ctx->selection.inventory)+1;
+	memcpy(data+data_size, src_ctx->selection.inventory, size);
 	data_size += size;
 
 	wlog(LOGDEBUG,"Send CMD_SEND_CONTEXT of %s to %s",src_ctx->id,dest_ctx->id);

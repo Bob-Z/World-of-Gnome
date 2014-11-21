@@ -141,6 +141,40 @@ static int l_character_get_selected_map( lua_State* L)
 	return 1;  /* number of results */
 }
 
+/* character_set_selected_tile
+Input:
+ - ID of a character
+ - ID of a map
+ - X coord of the selected tile in this map
+ - Y coord of the selected tile in this map
+Output:
+*/
+static int l_character_set_selected_tile( lua_State* L)
+{
+	context_t * target;
+	const char * id;
+	const char * selected_map;
+	int x;
+	int y;
+
+	id = luaL_checkstring(L, -4);
+	selected_map = luaL_checkstring(L, -3);
+	x = luaL_checkint(L, -2);
+	y = luaL_checkint(L, -1);
+
+	target = context_find(id);
+	if( target == NULL ) {
+		werr(LOGDEV,"Cannot find context with ID %s",id);
+		return 0;  /* number of results */
+	}
+
+	if( context_set_selected_tile(target,selected_map,x,y) ) {
+		network_send_context_to_context(target,target);
+	}
+
+	return 0;  /* number of results */
+}
+
 /* character_get_selected_inventory_id
 Input:
  - ID of a character
@@ -159,6 +193,34 @@ static int l_character_get_selected_inventory_id( lua_State* L)
 	}
 	lua_pushstring(L, target->selection.inventory);
 	return 1;  /* number of results */
+}
+
+/* character_set_selected_inventory_id
+Input:
+ - ID of a character
+ - ID of an item
+Output:
+*/
+static int l_character_set_selected_inventory_id( lua_State* L)
+{
+	context_t * target;
+	const char * id;
+	const char * selected_item;
+
+	id = luaL_checkstring(L, -2);
+	selected_item = luaL_checkstring(L, -1);
+
+	target = context_find(id);
+	if( target == NULL ) {
+		werr(LOGDEV,"Cannot find context with ID %s",id);
+		return 0;  /* number of results */
+	}
+
+	if( context_set_selected_item(target,selected_item) ) {
+		network_send_context_to_context(target,target);
+	}
+
+	return 0;  /* number of results */
 }
 
 /* character_get_selected_equipment_slot
@@ -181,6 +243,34 @@ static int l_character_get_selected_equipment_slot( lua_State* L)
 	return 1;  /* number of results */
 }
 
+/* character_set_selected_equipment_slot
+Input:
+ - ID of a character
+ - ID of an equipment slot
+Output:
+*/
+static int l_character_set_selected_equipment_slot( lua_State* L)
+{
+	context_t * target;
+	const char * id;
+	const char * selected_equipment;
+
+	id = luaL_checkstring(L, -2);
+	selected_equipment = luaL_checkstring(L, -1);
+
+	target = context_find(id);
+	if( target == NULL ) {
+		werr(LOGDEV,"Cannot find context with ID %s",id);
+		return 0;  /* number of results */
+	}
+
+	if( context_set_selected_equipment(target,selected_equipment) ) {
+		network_send_context_to_context(target,target);
+	}
+
+	return 0;  /* number of results */
+}
+
 /* character_get_selected_character_id
 Input:
  - ID of a character
@@ -199,6 +289,34 @@ static int l_character_get_selected_character_id( lua_State* L)
 	}
 	lua_pushstring(L, target->selection.id);
 	return 1;  /* number of results */
+}
+
+/* character_set_selected_character_id
+Input:
+ - ID of a character
+ - ID of selected character
+Output:
+*/
+static int l_character_set_selected_character_id( lua_State* L)
+{
+	context_t * target;
+	const char * id;
+	const char * selected_id;
+
+	id = luaL_checkstring(L, -2);
+	selected_id = luaL_checkstring(L, -1);
+
+	target = context_find(id);
+	if( target == NULL ) {
+		werr(LOGDEV,"Cannot find context with ID %s",id);
+		return 0;  /* number of results */
+	}
+
+	if( context_set_selected_character(target,selected_id) ) {
+		network_send_context_to_context(target,target);
+	}
+
+	return 0;  /* number of results */
 }
 
 /* character_get_map
@@ -1629,12 +1747,20 @@ void register_lua_functions(context_t * context)
 	lua_setglobal(L, "character_get_selected_map_tile_x");
 	lua_pushcfunction(L, l_character_get_selected_map_tile_y);
 	lua_setglobal(L, "character_get_selected_map_tile_y");
+	lua_pushcfunction(L, l_character_set_selected_tile);
+	lua_setglobal(L, "character_set_selected_tile");
 	lua_pushcfunction(L, l_character_get_selected_inventory_id);
 	lua_setglobal(L, "character_get_selected_inventory_id");
+	lua_pushcfunction(L, l_character_set_selected_inventory_id);
+	lua_setglobal(L, "character_set_selected_inventory_id");
 	lua_pushcfunction(L, l_character_get_selected_equipment_slot);
 	lua_setglobal(L, "character_get_selected_equipment_slot");
+	lua_pushcfunction(L, l_character_set_selected_equipment_slot);
+	lua_setglobal(L, "character_set_selected_equipment_slot");
 	lua_pushcfunction(L, l_character_get_selected_character_id);
 	lua_setglobal(L, "character_get_selected_character_id");
+	lua_pushcfunction(L, l_character_set_selected_character_id);
+	lua_setglobal(L, "character_set_selected_character_id");
 	lua_pushcfunction(L, l_character_get_map);
 	lua_setglobal(L, "character_get_map");
 	lua_pushcfunction(L, l_character_get_map_w);

@@ -72,10 +72,9 @@ int scr_play_get_current_y()
 static void cb_select_sprite(void *arg)
 {
 	char * id = (char*)arg;
-
 	context_t * ctx = context_get_player();
-	ctx->selection.id= id;
-	network_send_context(ctx);
+
+	network_send_action(ctx,option->action_select_character,id,NULL);
 }
 
 /**********************************
@@ -424,10 +423,13 @@ static void cb_select_map(void *arg)
 {
 	item_t * item = (item_t*)arg;
 	context_t * ctx = context_get_player();
+	char x[SMALL_BUF];
+	char y[SMALL_BUF];
 
-	ctx->selection.map_coord[0]= item->tile_x;
-	ctx->selection.map_coord[1]= item->tile_y;
-	network_send_context(ctx);
+	sprintf(x,"%d",item->tile_x);
+	sprintf(y,"%d",item->tile_y);
+
+	network_send_action(ctx,option->action_select_tile,ctx->map,x,y,NULL);
 }
 
 /**************************************
@@ -462,9 +464,6 @@ static void compose_map_button(context_t * ctx)
 	int y = 0;
 	item_t * item;
 	anim_t * anim = NULL;
-	option_t * option;
-
-	option = option_get();
 
 	if ( option && option->cursor_over_tile ) {
 		anim = imageDB_get_anim(ctx,option->cursor_over_tile);
@@ -691,33 +690,36 @@ static void compose_select(context_t * ctx)
 	int x;
 	int y;
 	context_t * selected_context = NULL;
-	option_t * option = option_get();
 
 	/* Tile selection */
 	if( option && option->cursor_tile ) {
-		x = ctx->selection.map_coord[0];
-		y = ctx->selection.map_coord[1];
+		if( ctx->selection.map[0] != 0) {
+			if( !strcmp(ctx->selection.map, ctx->map) ) {
+				x = ctx->selection.map_coord[0];
+				y = ctx->selection.map_coord[1];
 
-		if( x != -1 && y != -1) {
-			anim = imageDB_get_anim(ctx,option->cursor_tile);
+				if( x != -1 && y != -1) {
+					anim = imageDB_get_anim(ctx,option->cursor_tile);
 
-			item = item_list_add(&item_list);
+					item = item_list_add(&item_list);
 
-			/* get pixel coordiante from tile coordianate */
-			x = x * ctx->tile_x;
-			y = y * ctx->tile_y;
+					/* get pixel coordiante from tile coordianate */
+					x = x * ctx->tile_x;
+					y = y * ctx->tile_y;
 
-			/* Center on tile */
-			x -= (anim->w-ctx->tile_x)/2;
-			y -= (anim->h-ctx->tile_y)/2;
+					/* Center on tile */
+					x -= (anim->w-ctx->tile_x)/2;
+					y -= (anim->h-ctx->tile_y)/2;
 
-			item_set_anim(item,x,y,anim);
+					item_set_anim(item,x,y,anim);
+				}
+			}
 		}
 	}
 
 	/* Sprite selection */
 	if( option && option->cursor_sprite ) {
-		if( ctx->selection.id != NULL) {
+		if( ctx->selection.id[0] != 0) {
 			selected_context = context_find(ctx->selection.id);
 			if( selected_context == NULL ) {
 				return;

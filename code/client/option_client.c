@@ -53,6 +53,18 @@ static void parse_client_conf()
 	entry_read_string(NULL,CLIENT_CONF_FILE,&option.cursor_tile,CLIENT_KEY_CURSOR_TILE,NULL);
 	entry_read_string(NULL,CLIENT_CONF_FILE,&option.cursor_equipment,CLIENT_KEY_CURSOR_EQUIPMENT,NULL);
 	entry_read_string(NULL,CLIENT_CONF_FILE,&option.cursor_inventory,CLIENT_KEY_CURSOR_INVENTORY,NULL);
+	entry_read_string(NULL,CLIENT_CONF_FILE,&option.action_move_up,CLIENT_KEY_ACTION_MOVE_UP,NULL);
+	entry_read_string(NULL,CLIENT_CONF_FILE,&option.action_move_down,CLIENT_KEY_ACTION_MOVE_DOWN,NULL);
+	entry_read_string(NULL,CLIENT_CONF_FILE,&option.action_move_left,CLIENT_KEY_ACTION_MOVE_LEFT,NULL);
+	entry_read_string(NULL,CLIENT_CONF_FILE,&option.action_move_right,CLIENT_KEY_ACTION_MOVE_RIGHT,NULL);
+	entry_read_string(NULL,CLIENT_CONF_FILE,&option.action_move_up_left,CLIENT_KEY_ACTION_MOVE_UP_LEFT,NULL);
+	entry_read_string(NULL,CLIENT_CONF_FILE,&option.action_move_up_right,CLIENT_KEY_ACTION_MOVE_UP_RIGHT,NULL);
+	entry_read_string(NULL,CLIENT_CONF_FILE,&option.action_move_down_left,CLIENT_KEY_ACTION_MOVE_DOWN_LEFT,NULL);
+	entry_read_string(NULL,CLIENT_CONF_FILE,&option.action_move_down_right,CLIENT_KEY_ACTION_MOVE_DOWN_RIGHT,NULL);
+	entry_read_string(NULL,CLIENT_CONF_FILE,&option.action_select_character,CLIENT_KEY_ACTION_SELECT_CHARACTER,NULL);
+	entry_read_string(NULL,CLIENT_CONF_FILE,&option.action_select_tile,CLIENT_KEY_ACTION_SELECT_TILE,NULL);
+	entry_read_string(NULL,CLIENT_CONF_FILE,&option.action_select_equipment,CLIENT_KEY_ACTION_SELECT_EQUIPMENT,NULL);
+	entry_read_string(NULL,CLIENT_CONF_FILE,&option.action_select_inventory,CLIENT_KEY_ACTION_SELECT_INVENTORY,NULL);
 
 	already_parsed = 1;
 }

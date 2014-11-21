@@ -60,6 +60,10 @@ void network_send_action(context_t * context, char * script,...)
 	char * new_frame;
 	char * parameter;
 
+	if( script == NULL ) {
+		return;
+	}
+
 	frame = strdup(script);
 	va_start(ap, script);
 	while ( (parameter=va_arg(ap,char*)) != NULL ) {

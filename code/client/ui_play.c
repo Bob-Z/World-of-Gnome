@@ -60,6 +60,7 @@ static char * speaker_name = NULL;
 static char * speaker_text = NULL;
 static speak_entry_t * speech = NULL;
 static int speech_num = 0;
+static option_t * option;
 
 /**********************************
 **********************************/
@@ -133,7 +134,7 @@ static void key_up(void * arg)
 {
 	context_t * ctx = context_get_player();
 
-	network_send_action(ctx,"move_up",NULL);
+	network_send_action(ctx,option->action_move_up,NULL);
 }
 
 /**************************************
@@ -142,7 +143,7 @@ static void key_down(void * arg)
 {
 	context_t * ctx = context_get_player();
 
-	network_send_action(ctx,"move_down",NULL);
+	network_send_action(ctx,option->action_move_down,NULL);
 }
 
 /**************************************
@@ -151,7 +152,7 @@ static void key_left(void * arg)
 {
 	context_t * ctx = context_get_player();
 
-	network_send_action(ctx,"move_left",NULL);
+	network_send_action(ctx,option->action_move_left,NULL);
 }
 
 /**************************************
@@ -160,7 +161,43 @@ static void key_right(void * arg)
 {
 	context_t * ctx = context_get_player();
 
-	network_send_action(ctx,"move_right",NULL);
+	network_send_action(ctx,option->action_move_right,NULL);
+}
+
+/**************************************
+**************************************/
+static void key_up_left(void * arg)
+{
+	context_t * ctx = context_get_player();
+
+	network_send_action(ctx,option->action_move_up_left,NULL);
+}
+
+/**************************************
+**************************************/
+static void key_up_right(void * arg)
+{
+	context_t * ctx = context_get_player();
+
+	network_send_action(ctx,option->action_move_up_right,NULL);
+}
+
+/**************************************
+**************************************/
+static void key_down_left(void * arg)
+{
+	context_t * ctx = context_get_player();
+
+	network_send_action(ctx,option->action_move_down_left,NULL);
+}
+
+/**************************************
+**************************************/
+static void key_down_right(void * arg)
+{
+	context_t * ctx = context_get_player();
+
+	network_send_action(ctx,option->action_move_down_right,NULL);
 }
 
 /**********************************
@@ -339,8 +376,7 @@ static void cb_select_slot(void * arg)
 	char * id = (char*)arg;
 	context_t * ctx = context_get_player();
 
-	ctx->selection.equipment = id;
-	network_send_context(ctx);
+	network_send_action(ctx,option->action_select_equipment,id,NULL);
 }
 
 /**************************************
@@ -465,7 +501,7 @@ static void compose_equipment(context_t * ctx, item_t * item_list)
 		}
 
 		/* Draw selection cursor */
-		if( ctx->selection.equipment != NULL) {
+		if( ctx->selection.equipment[0] != 0) {
 			if( option && option->cursor_equipment ) {
 				if( !strcmp(ctx->selection.equipment,slot_list[index]) ) {
 					anim3 = imageDB_get_anim(ctx,option->cursor_equipment);
@@ -490,7 +526,7 @@ static void compose_equipment(context_t * ctx, item_t * item_list)
 	deep_free(slot_list);
 
 	/* Draw selected item */
-	if( ctx->selection.inventory != NULL) {
+	if( ctx->selection.inventory[0] != 0) {
 		template = item_is_resource(ctx->selection.inventory);
 
 		if ( template == NULL ) {
@@ -655,9 +691,17 @@ static void main_compose(context_t * ctx, item_t * item_list)
 
 	sdl_add_keycb(SDL_SCANCODE_I,show_inventory,NULL,NULL);
 	sdl_add_keycb(SDL_SCANCODE_UP,key_up,NULL,NULL);
+	sdl_add_keycb(SDL_SCANCODE_KP_8,key_up,NULL,NULL);
 	sdl_add_keycb(SDL_SCANCODE_DOWN,key_down,NULL,NULL);
+	sdl_add_keycb(SDL_SCANCODE_KP_2,key_down,NULL,NULL);
 	sdl_add_keycb(SDL_SCANCODE_LEFT,key_left,NULL,NULL);
+	sdl_add_keycb(SDL_SCANCODE_KP_4,key_left,NULL,NULL);
 	sdl_add_keycb(SDL_SCANCODE_RIGHT,key_right,NULL,NULL);
+	sdl_add_keycb(SDL_SCANCODE_KP_6,key_right,NULL,NULL);
+	sdl_add_keycb(SDL_SCANCODE_KP_7,key_up_left,NULL,NULL);
+	sdl_add_keycb(SDL_SCANCODE_KP_9,key_up_right,NULL,NULL);
+	sdl_add_keycb(SDL_SCANCODE_KP_1,key_down_left,NULL,NULL);
+	sdl_add_keycb(SDL_SCANCODE_KP_3,key_down_right,NULL,NULL);
 	sdl_add_keycb(SDL_SCANCODE_ESCAPE,cb_main_quit,NULL,NULL);
 	sdl_add_keycb(SDL_SCANCODE_SCROLLLOCK,cb_print_coord,NULL,NULL);
 }
@@ -673,14 +717,10 @@ static void cb_inventory_quit(void * arg)
 ****************************/
 void cb_inventory_select(void * arg)
 {
-	context_t * player = context_get_player();
 	char * item_id = (char *)arg;
+	context_t * ctx = context_get_player();
 
-	if( player->selection.inventory ) {
-		free( player->selection.inventory );
-	}
-	player->selection.inventory = strdup(item_id);
-	network_send_context(player);
+	network_send_action(ctx,option->action_select_inventory,item_id,NULL);
 }
 
 /**********************************
@@ -807,9 +847,6 @@ static void compose_inventory_select(context_t * ctx,item_t * item_list)
 	char * template;
 	option_t * option = option_get();
 
-	if(ctx->selection.inventory == NULL) {
-		return;
-	}
 	if(ctx->selection.inventory[0] == 0) {
 		return;
 	}
@@ -1186,4 +1223,6 @@ void ui_play_init()
 {
 	/* Empty text buffer */
 	text_buffer[0]=0;
+
+	option = option_get();
 }

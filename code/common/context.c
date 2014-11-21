@@ -72,12 +72,12 @@ void context_init(context_t * context)
 	context->pos_tick = 0;
 	context->type = NULL;
 
-	context->selection.id = NULL;
+	context->selection.id = strdup("");
 	context->selection.map_coord[0] = -1;
 	context->selection.map_coord[1] = -1;
-	context->selection.map = NULL;
-	context->selection.inventory = NULL;
-	context->selection.equipment = NULL;
+	context->selection.map = strdup("");
+	context->selection.inventory = strdup("");
+	context->selection.equipment = strdup("");
 
 	context->id = NULL;
 	context->prev_map = NULL;
@@ -162,9 +162,15 @@ void context_free(context_t * context)
 		free(context->type);
 	}
 	context->type = NULL;
+	if( context->selection.id ) {
+		free(context->selection.id);
+	}
 	context->selection.id = NULL;
 	context->selection.map_coord[0] = -1;
 	context->selection.map_coord[1] = -1;
+	if( context->selection.map ) {
+		free(context->selection.map);
+	}
 	context->selection.map = NULL;
 	if( context->selection.inventory ) {
 		free(context->selection.inventory);
@@ -544,6 +550,82 @@ int context_set_id(context_t * context, const char * name)
 }
 
 /**************************************
+ * return false if context has already the same values
+**************************************/
+int context_set_selected_character(context_t * context, const char * id)
+{
+	context_lock_list();
+
+	if( !strcmp( context->selection.id, id ) ) {
+		return false;
+	}
+	free( context->selection.id );
+
+	context->selection.id = strdup(id);
+
+	context_unlock_list();
+	return true;
+}
+
+/**************************************
+ * return false if context has already the same values
+**************************************/
+int context_set_selected_tile(context_t * context, const char * map, int x, int y)
+{
+	context_lock_list();
+
+	if( !strcmp( context->selection.map, map ) ) {
+		if ( x == context->selection.map_coord[0] &&
+				y == context->selection.map_coord[1] ) {
+			return false;
+		}
+	}
+	free( context->selection.map );
+
+	context->selection.map = strdup(map);
+
+	context->selection.map_coord[0] = x;
+	context->selection.map_coord[1] = y;
+
+	context_unlock_list();
+	return true;
+}
+
+/**************************************
+ * return false if context has already the same values
+**************************************/
+int context_set_selected_equipment(context_t * context, const char * id)
+{
+	context_lock_list();
+
+	if( !strcmp( context->selection.equipment, id ) ) {
+		return false;
+	}
+	free( context->selection.equipment );
+	context->selection.equipment = strdup(id);
+
+	context_unlock_list();
+	return true;
+}
+
+/**************************************
+ * return false if context has already the same values
+**************************************/
+int context_set_selected_item(context_t * context, const char * id)
+{
+	context_lock_list();
+
+	if( !strcmp( context->selection.inventory, id ) ) {
+		return false;
+	}
+	free( context->selection.inventory );
+	context->selection.inventory = strdup(id);
+
+	context_unlock_list();
+	return true;
+}
+
+/**************************************
 **************************************/
 #ifdef SERVER
 void register_lua_functions( context_t * context);
@@ -726,11 +808,7 @@ int context_update_from_network_frame(context_t * context, char * frame)
 	if( context->selection.id ) {
 		free( context->selection.id );
 	}
-	if( data[0] != 0 ) {
-		context->selection.id = strdup(data);
-	} else {
-		context->selection.id = NULL;
-	}
+	context->selection.id = strdup(data);
 	data += (strlen(data)+1);
 
 	context->selection.map_coord[0] = atoi(data);
@@ -742,31 +820,19 @@ int context_update_from_network_frame(context_t * context, char * frame)
 	if( context->selection.map ) {
 		free( context->selection.map );
 	}
-	if( data[0] != 0 ) {
-		context->selection.map = strdup(data);
-	} else {
-		context->selection.map = NULL;
-	}
+	context->selection.map = strdup(data);
 	data += (strlen(data)+1);
 
 	if( context->selection.inventory ) {
 		free( context->selection.inventory );
 	}
-	if( data[0] != 0 ) {
-		context->selection.inventory = strdup(data);
-	} else {
-		context->selection.inventory = NULL;
-	}
+	context->selection.inventory = strdup(data);
 	data += (strlen(data)+1);
 
 	if( context->selection.equipment ) {
 		free( context->selection.equipment );
 	}
-	if( data[0] != 0 ) {
-		context->selection.equipment = strdup(data);
-	} else {
-		context->selection.equipment = NULL;
-	}
+	context->selection.equipment = strdup(data);
 	data += (strlen(data)+1);
 
 	context_unlock_list();
@@ -926,6 +992,12 @@ void context_add_or_update_from_network_frame(context_t * context,char * data)
 	int tile_y;
 	char * type = NULL;
 	char * id = NULL;
+	char * selected_character = NULL;
+	char * selected_map = NULL;
+	int selected_map_x = NULL;
+	int selected_map_y = NULL;
+	char * selected_equipment = NULL;
+	char * selected_item = NULL;
 
 	/* First decode the data */
 
@@ -962,6 +1034,24 @@ void context_add_or_update_from_network_frame(context_t * context,char * data)
 	id = strdup(data);
 	data += (strlen(data)+1);
 
+	selected_character = strdup(data);
+	data += (strlen(data)+1);
+
+	selected_map = strdup(data);
+	data += (strlen(data)+1);
+
+	selected_map_x = atoi(data);
+	data += (strlen(data)+1);
+
+	selected_map_y = atoi(data);
+	data += (strlen(data)+1);
+
+	selected_equipment = strdup(data);
+	data += (strlen(data)+1);
+
+	selected_item = strdup(data);
+	data += (strlen(data)+1);
+
 	/* search for this context */
 	context_lock_list();
 	ctx = context_list_start;
@@ -984,6 +1074,28 @@ void context_add_or_update_from_network_frame(context_t * context,char * data)
 
 				free(ctx->type);
 				ctx->type = strdup(type);
+
+				if( ctx->selection.map ) {
+					free(ctx->selection.map );
+				}
+				ctx->selection.map = strdup(selected_map);
+				ctx->selection.map_coord[0] = selected_map_x;
+				ctx->selection.map_coord[1] = selected_map_y;
+
+				if( ctx->selection.id ) {
+					free(ctx->selection.id );
+				}
+				ctx->selection.id = strdup(selected_character);
+
+				if( ctx->selection.equipment ) {
+					free(ctx->selection.equipment );
+				}
+				ctx->selection.equipment = strdup(selected_equipment);
+
+				if( ctx->selection.inventory ) {
+					free(ctx->selection.inventory );
+				}
+				ctx->selection.inventory = strdup(selected_item);
 			}
 
 			if( connected == false ) {
@@ -1020,6 +1132,10 @@ void context_add_or_update_from_network_frame(context_t * context,char * data)
 	context_set_id(ctx,id);
 	context_set_connected(ctx,connected);
 	context_set_in_game(ctx,in_game);
+	context_set_selected_character(ctx,selected_character);
+	context_set_selected_tile(ctx,selected_map,selected_map_x,selected_map_y);
+	context_set_selected_equipment(ctx,selected_equipment);
+	context_set_selected_item(ctx,selected_item);
 
 context_add_or_update_from_network_frame_free:
 	free(user_name);
@@ -1027,6 +1143,10 @@ context_add_or_update_from_network_frame_free:
 	free(map);
 	free(type);
 	free(id);
+	free(selected_character);
+	free(selected_map);
+	free(selected_equipment);
+	free(selected_item);
 }
 
 /**************************************

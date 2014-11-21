@@ -149,5 +149,17 @@
 #define CLIENT_KEY_CURSOR_TILE	 	"cursor_tile"
 #define CLIENT_KEY_CURSOR_EQUIPMENT 	"cursor_equipment"
 #define CLIENT_KEY_CURSOR_INVENTORY 	"cursor_inventory"
+#define CLIENT_KEY_ACTION_MOVE_UP 	"action_move_up"
+#define CLIENT_KEY_ACTION_MOVE_DOWN 	"action_move_down"
+#define CLIENT_KEY_ACTION_MOVE_LEFT 	"action_move_left"
+#define CLIENT_KEY_ACTION_MOVE_RIGHT 	"action_move_right"
+#define CLIENT_KEY_ACTION_MOVE_UP_RIGHT	"action_move_up_right"
+#define CLIENT_KEY_ACTION_MOVE_UP_LEFT 	"action_move_up_left"
+#define CLIENT_KEY_ACTION_MOVE_DOWN_RIGHT 	"action_move_down_right"
+#define CLIENT_KEY_ACTION_MOVE_DOWN_LEFT 	"action_move_down_left"
+#define CLIENT_KEY_ACTION_SELECT_CHARACTER 	"action_select_character"
+#define CLIENT_KEY_ACTION_SELECT_TILE	 	"action_select_tile"
+#define CLIENT_KEY_ACTION_SELECT_EQUIPMENT 	"action_select_equipment"
+#define CLIENT_KEY_ACTION_SELECT_INVENTORY 	"action_select_inventory"
 
 #endif
