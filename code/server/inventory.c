@@ -64,6 +64,10 @@ int inventory_add(const char * ctx_id, const char * item_id)
 		return -1;
 	}
 
+	if( item_id == NULL || item_id[0] == 0 ) {
+		return -1;
+	}
+
 	/* Make sure the CHARACTER_KEY_INVENTORY list exists */
 	entry_list_create(CHARACTER_TABLE,context->id,CHARACTER_KEY_INVENTORY,NULL);
 
