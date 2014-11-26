@@ -557,6 +557,7 @@ int context_set_selected_character(context_t * context, const char * id)
 	context_lock_list();
 
 	if( !strcmp( context->selection.id, id ) ) {
+		context_unlock_list();
 		return false;
 	}
 	free( context->selection.id );
@@ -577,6 +578,7 @@ int context_set_selected_tile(context_t * context, const char * map, int x, int 
 	if( !strcmp( context->selection.map, map ) ) {
 		if ( x == context->selection.map_coord[0] &&
 				y == context->selection.map_coord[1] ) {
+			context_unlock_list();
 			return false;
 		}
 	}
@@ -599,6 +601,7 @@ int context_set_selected_equipment(context_t * context, const char * id)
 	context_lock_list();
 
 	if( !strcmp( context->selection.equipment, id ) ) {
+		context_unlock_list();
 		return false;
 	}
 	free( context->selection.equipment );
@@ -616,6 +619,7 @@ int context_set_selected_item(context_t * context, const char * id)
 	context_lock_list();
 
 	if( !strcmp( context->selection.inventory, id ) ) {
+		context_unlock_list();
 		return false;
 	}
 	free( context->selection.inventory );
