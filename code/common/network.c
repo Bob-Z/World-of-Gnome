@@ -293,6 +293,9 @@ void network_send_context_to_context(context_t * dest_ctx, context_t * src_ctx)
 	int  size = 0;
 
 	/* Source context is not ready yet */
+	if( src_ctx->in_game == 0 ) {
+		return;
+	}
 	if( src_ctx->user_name == NULL ) {
 		return;
 	}
