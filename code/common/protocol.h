@@ -44,7 +44,7 @@
 #define CMD_REQ_FILE			7  /* require a file's content */
 #define CMD_SEND_FILE			8 /* send a file's content */
 #define CMD_REQ_USER_CHARACTER_LIST	9 /* Require user's characters list */
-#define CMD_SEND_USER_CHARACTER_LIST   10 /* Send a user's character list */
+#define CMD_SEND_USER_CHARACTER		10 /* Send a user's character list */
 #define CMD_SEND_CONTEXT		11 /* Send a context */
 #define CMD_SEND_TEXT			12 /* Server sends a message to client */
 #define CMD_SEND_ACTION			13 /* Client sends the name of an action to be executed by the server. */
