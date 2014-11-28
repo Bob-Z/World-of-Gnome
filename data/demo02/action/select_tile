@@ -1,0 +1,3 @@
+text		= "Select tile";
+icon		= "none";
+script		= "select_tile.lua";
