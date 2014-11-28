@@ -32,8 +32,8 @@
 int parse_incoming_data(context_t * context, Uint32 command, Uint32 command_size, char * data)
 {
 	switch(command) {
-	case CMD_LOGIN_OK :
-		wlog(LOGDEBUG,"Received CMD_LOGIN_OK");
+	case CMD_SEND_LOGIN_OK :
+		wlog(LOGDEBUG,"Received CMD_SEND_LOGIN_OK");
 		if(!network_open_data_connection(context)) {
 			return FALSE;
 		}
@@ -42,8 +42,8 @@ int parse_incoming_data(context_t * context, Uint32 command, Uint32 command_size
 		network_request_user_character_list(context);
 		wlog(LOGDEBUG,"Character list requested");
 		break;
-	case CMD_LOGIN_NOK :
-		wlog(LOGDEBUG,"Received CMD_LOGIN_NOK");
+	case CMD_SEND_LOGIN_NOK :
+		wlog(LOGDEBUG,"Received CMD_SEND_LOGIN_NOK");
 		context_set_connected(context, FALSE);
 		werr(LOGUSER,"Check your login and password (they are case sensitive)\n");
 		exit(-1);
