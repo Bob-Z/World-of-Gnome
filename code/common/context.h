@@ -103,8 +103,6 @@ int context_set_selected_equipment(context_t * context, const char * selected_eq
 int context_set_selected_item(context_t * context, const char * selected_item);
 
 int context_update_from_file(context_t * context);
-int context_update_from_network_frame(context_t * context, char * frame);
-void context_update_from_context(context_t * remote_context);
 void context_spread(context_t * context);
 void context_add_or_update_from_network_frame(context_t * context, char * data);
 void context_lock_list();
