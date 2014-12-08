@@ -34,6 +34,22 @@ void network_login(context_t * context, const char * user_name, const char * pas
 }
 
 /*********************************************************************
+**********************************************************************/
+void network_request_start(context_t * context, const char * id)
+{
+	wlog(LOGDEBUG,"Send CMD_REQ_START");
+	network_send_command(context, CMD_REQ_START, strlen(id) + 1, id,FALSE);
+}
+
+/*********************************************************************
+**********************************************************************/
+void network_request_stop(context_t * context)
+{
+	wlog(LOGDEBUG,"Send CMD_REQ_STOP");
+	network_send_command(context, CMD_REQ_STOP, 0, NULL,FALSE);
+}
+
+/*********************************************************************
 *********************************************************************/
 void network_request_character_list(context_t * context)
 {

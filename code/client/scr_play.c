@@ -755,7 +755,7 @@ item_t * scr_play_compose(context_t * ctx)
 
 	if(init) {
 		/* Register this character to receive server notifications */
-		network_send_context(ctx);
+		network_request_start(ctx,ctx->id);
 		ui_play_init();
 		init = false;
 	}

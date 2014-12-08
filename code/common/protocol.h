@@ -36,9 +36,11 @@
 //List of command :
 
 // login with user name , followed by the user name itself, return OK if user exists
-#define CMD_LOGIN			1 /* user name followed by password in plain text FIXME */
-#define CMD_LOGIN_OK			3
-#define CMD_LOGIN_NOK			4
+#define CMD_LOGIN			0 /* user name followed by password in plain text FIXME */
+#define CMD_LOGIN_OK			1
+#define CMD_LOGIN_NOK			2
+#define CMD_REQ_START			3  /* Request to start playing the sent ID */
+#define CMD_REQ_STOP			4  /* Request to stop playing the sent ID */
 #define CMD_REQ_CHARACTER_LIST		5  /* Request available characters on the server */
 #define CMD_SEND_CHARACTER		6  /* Add a character to the list of available characters */
 #define CMD_REQ_FILE			7  /* require a file's content */

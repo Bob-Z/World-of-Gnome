@@ -113,16 +113,34 @@ int parse_incoming_data(context_t * context, Uint32 command, Uint32 command_size
 		character_user_send_list(context);
 		wlog(LOGDEBUG,"user %s's character list sent",context->user_name);
 		break;
-	case CMD_SEND_CONTEXT :
-		if( context->in_game == false ) { /* First time a context send its data */
-			context_update_from_network_frame(context,data);
+	case CMD_REQ_START :
+		if( context->in_game == false ) {
+			context->id = strdup(data);
+			context->in_game = true;
+			context_update_from_file(context);
 			context_spread(context);
 			context_request_other_context(context);
-		} else {
-			context_update_from_network_frame(context,data);
 		}
-		context_write_to_file(context);
-		wlog(LOGDEBUG,"Received CMD_SEND_CONTEXT for %s /%s",context->user_name,context->character_name);
+		wlog(LOGDEBUG,"Received CMD_REQ_START for %s /%s",context->user_name,context->id);
+		break;
+	case CMD_REQ_STOP :
+		wlog(LOGDEBUG,"Received CMD_REQ_STOP for %s /%s",context->user_name,context->id);
+		if( context->in_game == true ) {
+			context->in_game = false;
+			if( context->map ) {
+				free(context->map);
+			}
+			context->map = NULL;
+			if( context->prev_map ) {
+				free(context->prev_map);
+			}
+			context->prev_map = NULL;
+			if( context->id ) {
+				free(context->id);
+			}
+			context->id = NULL;
+			context_spread(context);
+		}
 		break;
 	case CMD_SEND_ACTION :
 		i = 0;

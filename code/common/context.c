@@ -655,7 +655,7 @@ void context_new_VM(context_t * context)
 }
 
 /*******************************
-Update the memory context by reading the client's character data file on disk
+Update the memory context by reading the character's data file on disk
 Return false if there is an error
 *******************************/
 int context_update_from_file(context_t * context)
@@ -1104,14 +1104,6 @@ void context_add_or_update_from_network_frame(context_t * context,char * data)
 
 			if( connected == false ) {
 				wlog(LOGDEBUG,"Deleting context %s / %s",user_name,name);
-				/* Delete selection if it was selected */
-				if( context->selection.id != NULL ) {
-					if( strcmp(context->selection.id, id) == 0 ) {
-						context->selection.id = NULL;
-						network_send_context(context);
-					}
-
-				}
 				context_free(ctx);
 			}
 			context_unlock_list();

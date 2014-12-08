@@ -30,7 +30,6 @@ typedef struct speak_entry {
 
 int network_read_bytes(TCPsocket socket, char * data, int size);
 void network_send_command(context_t * context, Uint32 command, long int count, const char *data, int is_data);
-void network_send_context(context_t * context);
 void network_send_context_to_context(context_t * dest_ctx, context_t * src_ctx);
 int network_send_file(context_t * context, char * filename);
 int network_send_table_file(context_t * context, char * table, const char * filename);
