@@ -142,7 +142,7 @@ int parse_incoming_data(context_t * context, Uint32 command, Uint32 command_size
 			context_spread(context);
 		}
 		break;
-	case CMD_SEND_ACTION :
+	case CMD_REQ_ACTION :
 		i = 0;
 		elements[i] = NULL;
 		elements[i] = _strsep(&data,NETWORK_DELIMITER);
@@ -152,7 +152,7 @@ int parse_incoming_data(context_t * context, Uint32 command, Uint32 command_size
 		}
 		elements[i+1] = NULL;
 
-		wlog(LOGDEBUG,"Received CMD_SEND_ACTION %s from %s /%s",elements[0],context->user_name,context->character_name);
+		wlog(LOGDEBUG,"Received CMD_REQ_ACTION %s from %s /%s",elements[0],context->user_name,context->character_name);
 
 		action_execute(context,elements[0],&elements[1]);
 		break;

@@ -34,11 +34,13 @@
 #define WOG_CHAT	"__wog_chat__"
 
 //List of command :
+// *_REQ_* are sent from client to server
+// *_SEND_* are sent from server to client
 
 // login with user name , followed by the user name itself, return OK if user exists
 #define CMD_REQ_LOGIN			0 /* user name followed by password in plain text FIXME */
-#define CMD_SEND_LOGIN_OK			1
-#define CMD_SEND_LOGIN_NOK			2
+#define CMD_SEND_LOGIN_OK		1
+#define CMD_SEND_LOGIN_NOK		2
 #define CMD_REQ_START			3  /* Request to start playing the sent ID */
 #define CMD_REQ_STOP			4  /* Request to stop playing the sent ID */
 #define CMD_REQ_CHARACTER_LIST		5  /* Request available characters on the server */
@@ -49,7 +51,7 @@
 #define CMD_SEND_USER_CHARACTER		10 /* Send a user's character list */
 #define CMD_SEND_CONTEXT		11 /* Send a context */
 #define CMD_SEND_TEXT			12 /* Server sends a message to client */
-#define CMD_SEND_ACTION			13 /* Client sends the name of an action to be executed by the server. */
+#define CMD_REQ_ACTION			13 /* Client sends the name of an action to be executed by the server. */
 #define CMD_SEND_ENTRY			14 /* Sends an entry to be updated on target */
 #define CMD_SEND_SPEAK			16 /* NPC is speaking */
 

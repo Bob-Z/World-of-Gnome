@@ -193,14 +193,33 @@ int network_read_bytes(TCPsocket socket, char * data, int size)
 }
 
 /*********************************************************************
+Helper to send context
+*********************************************************************/
+static void add_str(char * data, int * data_size, char * str)
+{
+	int size;
+
+	size = strlen(str)+1; // Include terminal 0
+	memcpy(data+(*data_size),str, size);
+	*data_size += size;
+}
+static void add_int(char * data, int * data_size, int val)
+{
+	int size;
+	char itoa[SMALL_BUF];
+
+	snprintf(itoa,sizeof(itoa),"%d",val);
+	size = strlen(itoa)+1; // Include terminal 0
+	memcpy(data+(*data_size), itoa, size);
+	*data_size += size;
+}
+/*********************************************************************
 send the data of a context to another context
 *********************************************************************/
 void network_send_context_to_context(context_t * dest_ctx, context_t * src_ctx)
 {
 	char data[BIG_BUF];
-	char itoa[SMALL_BUF];
 	int  data_size = 0;
-	int  size = 0;
 
 	/* Source context is not ready yet */
 	if( src_ctx->in_game == 0 ) {
@@ -210,81 +229,23 @@ void network_send_context_to_context(context_t * dest_ctx, context_t * src_ctx)
 		return;
 	}
 
-	size = strlen(src_ctx->user_name)+1;
-	memcpy(data+data_size, src_ctx->user_name, size);
-	data_size += size;
-
-	size = strlen(src_ctx->character_name)+1;
-	memcpy(data+data_size, src_ctx->character_name, size);
-	data_size += size;
-
-	size = strlen(src_ctx->map)+1;
-	memcpy(data+data_size, src_ctx->map, size);
-	data_size += size;
-
-	snprintf(itoa,sizeof(itoa),"%d",src_ctx->in_game);
-	size = strlen(itoa)+1;
-	memcpy(data+data_size, itoa, size);
-	data_size += size;
-
-	snprintf(itoa,sizeof(itoa),"%d",src_ctx->connected);
-	size = strlen(itoa)+1;
-	memcpy(data+data_size, itoa, size);
-	data_size += size;
-
-	snprintf(itoa,sizeof(itoa),"%d",src_ctx->pos_x);
-	size = strlen(itoa)+1;
-	memcpy(data+data_size, itoa, size);
-	data_size += size;
-
-	snprintf(itoa,sizeof(itoa),"%d",src_ctx->pos_y);
-	size = strlen(itoa)+1;
-	memcpy(data+data_size, itoa, size);
-	data_size += size;
-
-	size = strlen(src_ctx->type)+1;
-	memcpy(data+data_size, src_ctx->type, size);
-	data_size += size;
-
-	snprintf(itoa,sizeof(itoa),"%d",src_ctx->tile_x);
-	size = strlen(itoa)+1;
-	memcpy(data+data_size, itoa, size);
-	data_size += size;
-
-	snprintf(itoa,sizeof(itoa),"%d",src_ctx->tile_y);
-	size = strlen(itoa)+1;
-	memcpy(data+data_size, itoa, size);
-	data_size += size;
-
-	size = strlen(src_ctx->id)+1;
-	memcpy(data+data_size, src_ctx->id, size);
-	data_size += size;
-
-	size = strlen(src_ctx->selection.id)+1;
-	memcpy(data+data_size, src_ctx->selection.id, size);
-	data_size += size;
-
-	size = strlen(src_ctx->selection.map)+1;
-	memcpy(data+data_size, src_ctx->selection.map, size);
-	data_size += size;
-
-	snprintf(itoa,sizeof(itoa),"%d",src_ctx->selection.map_coord[0]);
-	size = strlen(itoa)+1;
-	memcpy(data+data_size, itoa, size);
-	data_size += size;
-
-	snprintf(itoa,sizeof(itoa),"%d",src_ctx->selection.map_coord[1]);
-	size = strlen(itoa)+1;
-	memcpy(data+data_size, itoa, size);
-	data_size += size;
-
-	size = strlen(src_ctx->selection.equipment)+1;
-	memcpy(data+data_size, src_ctx->selection.equipment, size);
-	data_size += size;
-
-	size = strlen(src_ctx->selection.inventory)+1;
-	memcpy(data+data_size, src_ctx->selection.inventory, size);
-	data_size += size;
+	add_str(data,&data_size,src_ctx->user_name);
+	add_str(data,&data_size,src_ctx->character_name);
+	add_str(data,&data_size,src_ctx->map);
+	add_int(data,&data_size,src_ctx->in_game);
+	add_int(data,&data_size,src_ctx->connected);
+	add_int(data,&data_size,src_ctx->pos_x);
+	add_int(data,&data_size,src_ctx->pos_y);
+	add_str(data,&data_size,src_ctx->type);
+	add_int(data,&data_size,src_ctx->tile_x);
+	add_int(data,&data_size,src_ctx->tile_y);
+	add_str(data,&data_size,src_ctx->id);
+	add_str(data,&data_size,src_ctx->selection.id);
+	add_str(data,&data_size,src_ctx->selection.map);
+	add_int(data,&data_size,src_ctx->selection.map_coord[0]);
+	add_int(data,&data_size,src_ctx->selection.map_coord[1]);
+	add_str(data,&data_size,src_ctx->selection.equipment);
+	add_str(data,&data_size,src_ctx->selection.inventory);
 
 	wlog(LOGDEBUG,"Send CMD_SEND_CONTEXT of %s to %s",src_ctx->id,dest_ctx->id);
 	network_send_command(dest_ctx, CMD_SEND_CONTEXT, data_size, data,FALSE);
