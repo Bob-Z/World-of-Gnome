@@ -28,8 +28,8 @@ void network_login(context_t * context, const char * user_name, const char * pas
 
 	frame = strconcat(user_name,NETWORK_DELIMITER,password,NULL);
 
-	wlog(LOGDEBUG,"Send CMD_LOGIN");
-	network_send_command(context, CMD_LOGIN, strlen(frame) + 1, frame,FALSE);
+	wlog(LOGDEBUG,"Send CMD_REQ_LOGIN");
+	network_send_command(context, CMD_REQ_LOGIN, strlen(frame) + 1, frame,FALSE);
 	free(frame);
 }
 

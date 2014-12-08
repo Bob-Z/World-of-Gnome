@@ -35,14 +35,14 @@ int parse_incoming_data(context_t * context, Uint32 command, Uint32 command_size
 	char * user_name;
 	char * password;
 
-	if( !context_get_connected(context) && ( command != CMD_LOGIN  && command != CMD_REQ_FILE) ) {
+	if( !context_get_connected(context) && ( command != CMD_REQ_LOGIN  && command != CMD_REQ_FILE) ) {
 		werr(LOGUSER,"Request from not authenticated client, close connection");
 		return FALSE;
 	}
 
 	switch(command) {
-	case CMD_LOGIN:
-		wlog(LOGDEBUG,"Received CMD_LOGIN");
+	case CMD_REQ_LOGIN:
+		wlog(LOGDEBUG,"Received CMD_REQ_LOGIN");
 		user_name = _strsep(&data,NETWORK_DELIMITER);
 		password = _strsep(&data,NETWORK_DELIMITER);
 
@@ -53,7 +53,7 @@ int parse_incoming_data(context_t * context, Uint32 command, Uint32 command_size
 			free(value);
 			werr(LOGUSER,"Wrong login for %s",user_name);
 			/* send answer */
-			network_send_command(context, CMD_LOGIN_NOK, 0, NULL, FALSE);
+			network_send_command(context, CMD_SEND_LOGIN_NOK, 0, NULL, FALSE);
 			/* force client disconnection*/
 			return FALSE;
 		} else {
@@ -65,7 +65,7 @@ int parse_incoming_data(context_t * context, Uint32 command, Uint32 command_size
 			context_set_connected(context, TRUE);
 
 			/* send answer */
-			network_send_command(context, CMD_LOGIN_OK, 0, NULL, FALSE);
+			network_send_command(context, CMD_SEND_LOGIN_OK, 0, NULL, FALSE);
 			wlog(LOGUSER,"Login successful for user %s",context->user_name);
 		}
 		break;
