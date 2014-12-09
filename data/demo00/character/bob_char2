@@ -1,6 +1,6 @@
 marquee		= "marquee/black_ball.jpg";
 sprite		= "sprite/black_ball.png";
-name = "yip";
+name = "Blip";
 inventory : [ "A0006" ];
 type = "black_ball";
 map = "map2";

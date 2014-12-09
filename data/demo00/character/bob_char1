@@ -1,6 +1,6 @@
 marquee         = "marquee/white_ball.jpg";
 sprite          = "sprite/white_ball.png";
-name = "yop";
+name = "Blop";
 inventory : [ "A0007", "A0008" ];
 type = "white_ball";
 map = "map1";

@@ -1,7 +1,7 @@
 marquee		= "marquee/gray_ball.jpg";
 sprite		= "sprite/gray_ball.png";
 npc = 1;
-name = "glipglip";
+name = "Grork";
 map = "map1";
 type = "gray_ball";
 pos_x = 2;
