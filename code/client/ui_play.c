@@ -670,9 +670,12 @@ static void cb_print_coord(void * arg)
 {
 	char buf[SMALL_BUF];
 	char *type;
+	int map_w;
+	context_t * ctx = context_get_player();
 
+	entry_read_int(MAP_TABLE,ctx->id,&map_w,MAP_KEY_WIDTH,NULL);
 
-	entry_read_list_index(MAP_TABLE,context_get_player()->map,&type,scr_play_get_current_x()+scr_play_get_current_y()*context_get_player()->map_w,MAP_KEY_TYPE,NULL);
+	entry_read_list_index(MAP_TABLE,ctx->map,&type,scr_play_get_current_x()+scr_play_get_current_y()*map_w,MAP_KEY_TYPE,NULL);
 	sprintf(buf,"x=%d y=%d type=%s",scr_play_get_current_x(),scr_play_get_current_y(),type);
 	free(type);
 	textview_add_line(buf);

@@ -58,10 +58,6 @@ void context_init(context_t * context)
 
 	context->character_name = NULL;
 	context->map = NULL;
-	context->map_w = -1;
-	context->map_h = -1;
-	context->tile_x = -1;
-	context->tile_y = -1;
 
 	context->pos_x = 0;
 	context->pos_y = 0;
@@ -426,8 +422,6 @@ static int _context_set_map(context_t * context, const char * map)
 		return false;
 	}
 	context->change_map = true;
-	context->map_w = -1;
-	context->map_h = -1;
 
 	if(!entry_read_int(MAP_TABLE,map,&map_w,MAP_KEY_WIDTH,NULL)) {
 		return false;
@@ -435,8 +429,6 @@ static int _context_set_map(context_t * context, const char * map)
 	if(!entry_read_int(MAP_TABLE,map,&map_h,MAP_KEY_HEIGHT,NULL)) {
 		return false;
 	}
-	context->map_w = map_w;
-	context->map_h = map_h;
 
 	return true;
 }
@@ -452,28 +444,6 @@ int context_set_map(context_t * context, const char * map)
 	context_unlock_list();
 
 	return ret;
-}
-
-/**************************************
-**************************************/
-int context_set_map_w(context_t * context, int width)
-{
-	context_lock_list();
-	context->map_w = width;
-	context_unlock_list();
-
-	return true;
-}
-
-/**************************************
-**************************************/
-int context_set_map_h(context_t * context, int height)
-{
-	context_lock_list();
-	context->map_h = height;
-	context_unlock_list();
-
-	return true;
 }
 
 /**************************************
@@ -509,24 +479,6 @@ void context_set_pos_y(context_t * context, unsigned int pos)
 {
 	context_lock_list();
 	context->pos_y = pos;
-	context_unlock_list();
-}
-
-/**************************************
-**************************************/
-void context_set_tile_x(context_t * context, unsigned int pos)
-{
-	context_lock_list();
-	context->tile_x = pos;
-	context_unlock_list();
-}
-
-/**************************************
-**************************************/
-void context_set_tile_y(context_t * context, unsigned int pos)
-{
-	context_lock_list();
-	context->tile_y = pos;
 	context_unlock_list();
 }
 
@@ -901,8 +853,6 @@ void context_add_or_update_from_network_frame(context_t * context,char * data)
 	int connected;
 	int pos_x;
 	int pos_y;
-	int tile_x;
-	int tile_y;
 	char * type = NULL;
 	char * id = NULL;
 	char * selected_character = NULL;
@@ -936,12 +886,6 @@ void context_add_or_update_from_network_frame(context_t * context,char * data)
 	data += (strlen(data)+1);
 
 	type = strdup(data);
-	data += (strlen(data)+1);
-
-	tile_x = atoi(data);
-	data += (strlen(data)+1);
-
-	tile_y = atoi(data);
 	data += (strlen(data)+1);
 
 	id = strdup(data);
@@ -981,9 +925,6 @@ void context_add_or_update_from_network_frame(context_t * context,char * data)
 
 				ctx->pos_x = pos_x;
 				ctx->pos_y = pos_y;
-
-				ctx->tile_x = tile_x;
-				ctx->tile_y = tile_y;
 
 				free(ctx->type);
 				ctx->type = strdup(type);
@@ -1032,8 +973,6 @@ void context_add_or_update_from_network_frame(context_t * context,char * data)
 	context_set_type(ctx,type);
 	context_set_pos_x(ctx,pos_x);
 	context_set_pos_y(ctx,pos_y);
-	context_set_tile_x(ctx,tile_x);
-	context_set_tile_y(ctx,tile_y);
 	context_set_id(ctx,id);
 	context_set_connected(ctx,connected);
 	context_set_in_game(ctx,in_game);

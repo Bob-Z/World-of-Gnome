@@ -237,8 +237,6 @@ void network_send_context_to_context(context_t * dest_ctx, context_t * src_ctx)
 	add_int(data,&data_size,src_ctx->pos_x);
 	add_int(data,&data_size,src_ctx->pos_y);
 	add_str(data,&data_size,src_ctx->type);
-	add_int(data,&data_size,src_ctx->tile_x);
-	add_int(data,&data_size,src_ctx->tile_y);
 	add_str(data,&data_size,src_ctx->id);
 	add_str(data,&data_size,src_ctx->selection.id);
 	add_str(data,&data_size,src_ctx->selection.map);

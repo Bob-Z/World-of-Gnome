@@ -348,6 +348,7 @@ static int l_character_get_map_w( lua_State* L)
 {
 	context_t * target;
 	const char * id;
+	int map_w = -1;
 
 	id = luaL_checkstring(L, -1);
 	target = context_find(id);
@@ -355,7 +356,10 @@ static int l_character_get_map_w( lua_State* L)
 		werr(LOGDEV,"Cannot find context with ID %s",id);
 		return 0;  /* number of results */
 	}
-	lua_pushnumber(L, target->map_w);
+
+	entry_read_int(MAP_TABLE,target->map,&map_w,MAP_KEY_WIDTH,NULL);
+
+	lua_pushnumber(L, map_w);
 	return 1;  /* number of results */
 }
 
@@ -368,6 +372,7 @@ static int l_character_get_map_h( lua_State* L)
 {
 	context_t * target;
 	const char * id;
+	int map_h = -1;
 
 	id = luaL_checkstring(L, -1);
 	target = context_find(id);
@@ -375,7 +380,10 @@ static int l_character_get_map_h( lua_State* L)
 		werr(LOGDEV,"Cannot find context with ID %s",id);
 		return 0;  /* number of results */
 	}
-	lua_pushnumber(L, target->map_h);
+
+	entry_read_int(MAP_TABLE,target->map,&map_h,MAP_KEY_HEIGHT,NULL);
+
+	lua_pushnumber(L, map_h);
 	return 1;  /* number of results */
 }
 

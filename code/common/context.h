@@ -46,10 +46,6 @@ typedef struct context {
 
 	char *		character_name;
 	char *		map;	/* map name */
-	int		map_w;	/* map width , -1 is an invalid size*/
-	int		map_h;	/* map height , -1 is an invalid size*/
-	int		tile_x; /* size of a tile for the current map */
-	int		tile_y; /* size of a tile for the current map */
 	int		pos_x;	/* player position (in tile) */
 	int		pos_y;	/* player position (in tile) */
 	int		cur_pos_x;	/* player position (in tile) */

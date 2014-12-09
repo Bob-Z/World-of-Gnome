@@ -98,8 +98,6 @@ void instantiate_npc(const char * id)
 	int is_npc;
 	int x;
 	int y;
-	int tile_w;
-	int tile_h;
 	int map_w;
 	int map_h;
 	context_t * ctx;
@@ -124,16 +122,6 @@ void instantiate_npc(const char * id)
 	}
 
 	if(!entry_read_string(CHARACTER_TABLE,id,&map,CHARACTER_KEY_MAP,NULL)) {
-		return;
-	}
-
-	if(!entry_read_int(MAP_TABLE,map,&tile_w,MAP_KEY_TILE_WIDTH,NULL)) {
-		free(map);
-		return;
-	}
-
-	if(!entry_read_int(MAP_TABLE,map,&tile_h,MAP_KEY_TILE_HEIGHT,NULL)) {
-		free(map);
 		return;
 	}
 
@@ -174,8 +162,6 @@ void instantiate_npc(const char * id)
 	free(type);
 	context_set_pos_x(ctx,x);
 	context_set_pos_y(ctx,y);
-	context_set_tile_x(ctx,tile_w);
-	context_set_tile_y(ctx,tile_h);
 	context_set_id(ctx,id);
 	ctx->cond = SDL_CreateCond();
 	ctx->cond_mutex = SDL_CreateMutex();

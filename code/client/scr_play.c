@@ -44,6 +44,10 @@ static int init = true;
 static int current_map_x = -1;
 static int current_map_y = -1;
 static option_t * option;
+static int tile_x = -1;
+static int tile_y = -1;
+static int map_w = -1;
+static int map_h = -1;
 
 /**********************************
 **********************************/
@@ -229,10 +233,10 @@ static void draw_sprite(context_t * ctx, const char * image_file_name)
 	}
 
 	/* Get position in pixel */
-	x = ctx->cur_pos_x * ctx->tile_x;
-	y = ctx->cur_pos_y * ctx->tile_y;
-	ox = ctx->old_pos_x * ctx->tile_x;
-	oy = ctx->old_pos_y * ctx->tile_y;
+	x = ctx->cur_pos_x * tile_x;
+	y = ctx->cur_pos_y * tile_y;
+	ox = ctx->old_pos_x * tile_x;
+	oy = ctx->old_pos_y * tile_y;
 
 	/* Get per sprite zoom */
 	if(entry_read_string(CHARACTER_TABLE,ctx->id,&zoom_str,CHARACTER_KEY_ZOOM,NULL)) {
@@ -241,10 +245,10 @@ static void draw_sprite(context_t * ctx, const char * image_file_name)
 	}
 
 	/* Center sprite on tile */
-	x -= ((anim->w*map_zoom*zoom)-ctx->tile_x)/2;
-	y -= ((anim->h*map_zoom*zoom)-ctx->tile_y)/2;
-	ox -= ((anim->w*map_zoom*zoom)-ctx->tile_x)/2;
-	oy -= ((anim->h*map_zoom*zoom)-ctx->tile_y)/2;
+	x -= ((anim->w*map_zoom*zoom)-tile_x)/2;
+	y -= ((anim->h*map_zoom*zoom)-tile_y)/2;
+	ox -= ((anim->w*map_zoom*zoom)-tile_x)/2;
+	oy -= ((anim->h*map_zoom*zoom)-tile_y)/2;
 
 	item_set_smooth_anim(item,x,y,ox,oy,ctx->pos_tick,anim);
 
@@ -395,11 +399,11 @@ static void compose_item(context_t * ctx)
 		anim = imageDB_get_anim(ctx,sprite_name);
 		free(sprite_name);
 
-		x = x*ctx->tile_x;
-		y = y*ctx->tile_y;
+		x = x*tile_x;
+		y = y*tile_y;
 		/* Center sprite on tile */
-		x -= ((anim->w*map_zoom)-ctx->tile_x)/2;
-		y -= ((anim->h*map_zoom)-ctx->tile_y)/2;
+		x -= ((anim->w*map_zoom)-tile_x)/2;
+		y -= ((anim->h*map_zoom)-tile_y)/2;
 
 		item_set_anim(item,x,y,anim);
 		item_set_zoom_x(item, map_zoom );
@@ -469,11 +473,11 @@ static void compose_map_button(context_t * ctx)
 		anim = imageDB_get_anim(ctx,option->cursor_over_tile);
 	}
 
-	for( y=0 ; y < ctx->map_h ; y++ ) {
-		for ( x=0 ; x < ctx->map_w ; x++ ) {
+	for( y=0 ; y < map_h ; y++ ) {
+		for ( x=0 ; x < map_w ; x++ ) {
 			item = item_list_add(&item_list);
-			item_set_frame_shape(item,x*ctx->tile_x,
-								 y*ctx->tile_y,ctx->tile_x,ctx->tile_y);
+			item_set_frame_shape(item,x*tile_x,
+								 y*tile_y,tile_x,tile_y);
 			item_set_tile(item,x,y);
 			item_set_click_left(item,cb_select_map,item,NULL);
 			item_set_click_right(item,cb_redo_map,item,NULL);
@@ -492,10 +496,10 @@ static int compose_map_set(context_t * ctx, int level)
 	int i = 0;
 	int x = 0;
 	int y = 0;
-	int map_w = ctx->map_w;
-	int map_h = ctx->map_h;
-	int tile_w = ctx->tile_x;
-	int tile_h = ctx->tile_y;
+	int _map_w = map_w;
+	int _map_h = map_h;
+	int tile_w = tile_x;
+	int tile_h = tile_y;
 
 	anim_t * anim;
 	item_t * item;
@@ -507,9 +511,9 @@ static int compose_map_set(context_t * ctx, int level)
 		return 0;
 	}
 	sprintf(buf,"%s%d",MAP_KEY_WIDTH,level);
-	entry_read_int(MAP_TABLE, ctx->map, &map_w,buf,NULL);
+	entry_read_int(MAP_TABLE, ctx->map, &_map_w,buf,NULL);
 	sprintf(buf,"%s%d",MAP_KEY_HEIGHT,level);
-	entry_read_int(MAP_TABLE, ctx->map, &map_h,buf,NULL);
+	entry_read_int(MAP_TABLE, ctx->map, &_map_h,buf,NULL);
 	sprintf(buf,"%s%d",MAP_KEY_TILE_WIDTH,level);
 	entry_read_int(MAP_TABLE, ctx->map, &tile_w,buf,NULL);
 	sprintf(buf,"%s%d",MAP_KEY_TILE_HEIGHT,level);
@@ -524,7 +528,7 @@ static int compose_map_set(context_t * ctx, int level)
 		}
 
 		x++;
-		if(x>=map_w) {
+		if(x>=_map_w) {
 			x=0;
 			y++;
 		}
@@ -586,31 +590,6 @@ static void compose_map(context_t * ctx)
 
 	entry_read_int(MAP_TABLE, ctx->map, &sprite_level,MAP_KEY_SPRITE_LEVEL,NULL);
 
-	if( ctx->map_w == -1 ) {
-		if(!entry_read_int(MAP_TABLE, ctx->map, &i,MAP_KEY_WIDTH,NULL)) {
-			return;
-		}
-		context_set_map_w( ctx, i);
-	}
-	if( ctx->map_h == -1 ) {
-		if(!entry_read_int(MAP_TABLE, ctx->map, &i,MAP_KEY_HEIGHT,NULL)) {
-			return;
-		}
-		context_set_map_h( ctx, i);
-	}
-	if( ctx->tile_x == -1 ) {
-		if(!entry_read_int(MAP_TABLE, ctx->map, &i,MAP_KEY_TILE_WIDTH,NULL)) {
-			return;
-		}
-		context_set_tile_x( ctx, i);
-	}
-	if( ctx->tile_y == -1 ) {
-		if(!entry_read_int(MAP_TABLE, ctx->map,&i,MAP_KEY_TILE_HEIGHT,NULL)) {
-			return;
-		}
-		context_set_tile_y( ctx, i);
-	}
-
 	/* Draw all maps */
 	while(TRUE) {
 		/* Draw sprite */
@@ -660,9 +639,9 @@ static void compose_type(context_t * ctx)
 		return;
 	}
 
-	for( x=0; x<ctx->map_w; x++) {
-		for( y=0; y<ctx->map_h; y++) {
-			if(!entry_read_list_index(MAP_TABLE,ctx->map,&type,x + y * ctx->map_w,MAP_KEY_TYPE,NULL)) {
+	for( x=0; x<map_w; x++) {
+		for( y=0; y<map_h; y++) {
+			if(!entry_read_list_index(MAP_TABLE,ctx->map,&type,x + y * map_w,MAP_KEY_TYPE,NULL)) {
 				continue;
 			}
 
@@ -675,7 +654,7 @@ static void compose_type(context_t * ctx)
 			item_set_string(item,type);
 			item_set_font(item,font);
 			sdl_get_string_size(item->font,item->string,&w,&h);
-			item_set_frame_shape(item,x*ctx->tile_x,y*ctx->tile_y,w,h);
+			item_set_frame_shape(item,x*tile_x,y*tile_y,w,h);
 		}
 	}
 }
@@ -704,12 +683,12 @@ static void compose_select(context_t * ctx)
 					item = item_list_add(&item_list);
 
 					/* get pixel coordiante from tile coordianate */
-					x = x * ctx->tile_x;
-					y = y * ctx->tile_y;
+					x = x * tile_x;
+					y = y * tile_y;
 
 					/* Center on tile */
-					x -= (anim->w-ctx->tile_x)/2;
-					y -= (anim->h-ctx->tile_y)/2;
+					x -= (anim->w-tile_x)/2;
+					y -= (anim->h-tile_y)/2;
 
 					item_set_anim(item,x,y,anim);
 				}
@@ -771,6 +750,10 @@ item_t * scr_play_compose(context_t * ctx)
 		map_filename = strconcat( MAP_TABLE,"/",ctx->map,NULL);
 		network_send_req_file(ctx,map_filename);
 		free(map_filename);
+                entry_read_int(MAP_TABLE, ctx->map, &map_w,MAP_KEY_WIDTH,NULL);
+                entry_read_int(MAP_TABLE, ctx->map, &map_h,MAP_KEY_HEIGHT,NULL);
+                entry_read_int(MAP_TABLE, ctx->map, &tile_x,MAP_KEY_TILE_WIDTH,NULL);
+                entry_read_int(MAP_TABLE, ctx->map, &tile_y,MAP_KEY_TILE_HEIGHT,NULL);
 	}
 
 	compose_map(ctx);
@@ -781,13 +764,13 @@ item_t * scr_play_compose(context_t * ctx)
 
 	/* force virtual coordinate on map change */
 	if(change_map) {
-		sdl_force_virtual_x(ctx->pos_x * ctx->tile_x + ctx->tile_x/2);
-		sdl_force_virtual_y(ctx->pos_y * ctx->tile_y + ctx->tile_y/2);
+		sdl_force_virtual_x(ctx->pos_x * tile_x + tile_x/2);
+		sdl_force_virtual_y(ctx->pos_y * tile_y + tile_y/2);
 	}
 	/* set virtual coordinate on the same map */
 	else {
-		sdl_set_virtual_x(ctx->cur_pos_x * ctx->tile_x + ctx->tile_x/2);
-		sdl_set_virtual_y(ctx->cur_pos_y * ctx->tile_y + ctx->tile_y/2);
+		sdl_set_virtual_x(ctx->cur_pos_x * tile_x + tile_x/2);
+		sdl_set_virtual_y(ctx->cur_pos_y * tile_y + tile_y/2);
 	}
 
 	entry_read_int(MAP_TABLE,ctx->map,&bg_red,MAP_KEY_BG_RED,NULL);
