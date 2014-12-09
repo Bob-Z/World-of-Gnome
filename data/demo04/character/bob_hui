@@ -1,0 +1,29 @@
+marquee         = "marquee/knight_marquee.jpg";
+sprite          = "sprite/knight.gif";
+portrait          = "sprite/knight.gif";
+speak_action    = "speak/player";
+name = "Hui";
+inventory = [ ];
+type = "knight";
+map = "village";
+pos_x = 1;
+pos_y = 6;
+action = [ "speak/start" ];
+allowed_tile = ["g","d"];
+attribute : 
+{
+  life : 
+  {
+    min = 0;
+    max = 10;
+    current = 10;
+    previous = 10;
+  };
+  agility : 
+  {
+    min = 0;
+    max = 10;
+    current = 10;
+    previous = 10;
+  };
+};
