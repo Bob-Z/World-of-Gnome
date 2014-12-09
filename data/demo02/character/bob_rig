@@ -1,6 +1,6 @@
 marquee		= "goblin_marquee.png";
 sprite		= "goblin.gif";
-name = "yip";
+name = "Rig";
 inventory = [ "A0006" ];
 type = "gob";
 map = "forest";

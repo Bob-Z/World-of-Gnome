@@ -1,7 +1,7 @@
 marquee		= "goblin_marquee.png";
 sprite		= "goblin.gif";
 npc = 1;
-name = "glopglop";
+name = "Pir";
 map = "village";
 speak_script = "npc_speak.lua"
 type = "gob";
