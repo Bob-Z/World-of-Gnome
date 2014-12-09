@@ -1,4 +1,4 @@
-name = "Ant One";
+name = "Ant Two";
 type = "ant";
 marquee         = "sprite/ant.png";
 sprite          = "sprite/ant.png";
