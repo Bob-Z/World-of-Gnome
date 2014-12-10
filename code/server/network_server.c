@@ -269,7 +269,7 @@ void network_send_speak(const char * speaker_id, const char * speaker_portrait, 
 		}
 	}
 
-	wlog(LOGDEBUG,"Send CMD_SEND_SPEAK : npc %s speaks to %s",speaker_id,listener_id);
-	network_send_command(target, CMD_SEND_SPEAK, strlen(frame)+1, frame,FALSE);
+	wlog(LOGDEBUG,"Send CMD_SEND_POPUP : npc %s speaks to %s",speaker_id,listener_id);
+	network_send_command(target, CMD_SEND_POPUP, strlen(frame)+1, frame,FALSE);
 	free(frame);
 }

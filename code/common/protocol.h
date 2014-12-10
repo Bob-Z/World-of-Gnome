@@ -53,6 +53,6 @@
 #define CMD_SEND_TEXT			12 /* Server sends a message to client */
 #define CMD_REQ_ACTION			13 /* Client sends the name of an action to be executed by the server. */
 #define CMD_SEND_ENTRY			14 /* Sends an entry to be updated on target */
-#define CMD_SEND_SPEAK			16 /* NPC is speaking */
+#define CMD_SEND_POPUP			16 /* Send a popup window */
 
 #endif
