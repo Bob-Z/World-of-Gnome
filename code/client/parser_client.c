@@ -79,7 +79,8 @@ int parse_incoming_data(context_t * context, Uint32 command, Uint32 command_size
 		break;
 	case CMD_SEND_POPUP :
 		wlog(LOGDEBUG,"Received CMD_SEND_POPUP");
-		ui_play_speak_parse(command_size,data);
+		ui_play_popup_add(data);
+		screen_compose();
 		break;
 	default:
 		werr(LOGDEV,"Unknown request from server");

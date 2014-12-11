@@ -244,23 +244,25 @@ void network_init(void)
 }
 
 /*********************************************************************
-NPC sends speak screen data to player
-dialog is an array of triplet of string.
-Each triplet is: "icon name","text to display", "keyword to foolow"
+Sends popup screen data to context
+dialog is a NULL terminated array of string:
+"action" <action name> <param>  // if action_name is popup_end, this action close the popup
+"image" <image name>
+"text"  <text>
+"eol" end of line
+"eop" end of paragraph
 *********************************************************************/
-void network_send_speak(const char * speaker_id, const char * speaker_portrait, const char * listener_id, const char * text,const char ** dialog)
+void network_send_popup(const char * id,const char ** dialog)
 {
 	char * frame = NULL;
 	char * new_frame = NULL;
 	context_t * target;
 
-	target = context_find(listener_id);
-
-	frame = strdup(speaker_id);
-	new_frame = strconcat(frame,NETWORK_DELIMITER,speaker_portrait,NETWORK_DELIMITER,text,NULL);
-	frame = new_frame;
+	target = context_find(id);
 
 	if(dialog) {
+		frame = strdup(*dialog);
+		dialog++;
 		while ( *dialog != NULL ) {
 			new_frame = strconcat(frame,NETWORK_DELIMITER,*dialog,NULL);
 			free(frame);
@@ -269,7 +271,7 @@ void network_send_speak(const char * speaker_id, const char * speaker_portrait, 
 		}
 	}
 
-	wlog(LOGDEBUG,"Send CMD_SEND_POPUP : npc %s speaks to %s",speaker_id,listener_id);
+	wlog(LOGDEBUG,"Send CMD_SEND_POPUP : send popup to %s",id);
 	network_send_command(target, CMD_SEND_POPUP, strlen(frame)+1, frame,FALSE);
 	free(frame);
 }

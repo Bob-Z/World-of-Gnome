@@ -30,7 +30,7 @@
 
 #define UI_MAIN		0
 #define UI_INVENTORY	1
-#define UI_SPEAK	2
+#define UI_POPUP	2
 
 #define FONT "/usr/share/fonts/truetype/ubuntu-font-family/Ubuntu-C.ttf"
 #define FONT_SIZE 30
@@ -44,6 +44,13 @@
 
 #define BACKGROUND_COLOR (0x000000C0)
 
+#define POPUP_TAG_IMAGE		"image"
+#define POPUP_TAG_TEXT		"text"
+#define POPUP_TAG_ACTION	"action"
+#define POPUP_TAG_EOL		"eol"
+#define POPUP_TAG_EOP		"eop"
+#define POPUP_TAG_END		"popup_end"
+
 static int current_ui = UI_MAIN;
 static char * last_action = NULL;
 /* main ui */
@@ -53,13 +60,14 @@ static int attribute_height;
 static char text_buffer[2048];
 /* inventory ui */
 static char ** inventory_list = NULL;
-/* speak ui */
-static char * speaker_id = NULL;
-static char * speaker_portrait = NULL;
-static char * speaker_name = NULL;
-static char * speaker_text = NULL;
-static speak_entry_t * speech = NULL;
-static int speech_num = 0;
+/* popup ui */
+static fifo_t * popup_fifo;
+static char * popup_frame = NULL;
+typedef struct action_param_tag {
+	char * action;
+	char * param;
+} action_param_t;
+
 static option_t * option;
 
 /**********************************
@@ -915,61 +923,56 @@ static void inventory_compose(context_t * ctx, item_t * item_list)
 
 /****************************
 ****************************/
-static void speak_cleanup()
+static void cb_popup_quit(void * arg)
 {
-	int i;
+	if( popup_frame ) {
+		free( popup_frame);
+		popup_frame = NULL;
+	}
+	
+	popup_frame = fifo_pop(&popup_fifo);
 
-	if( speaker_id ) {
-		free(speaker_id);
-		speaker_id = NULL;
+	if( popup_frame == NULL) {
+		ui_play_set(UI_MAIN);
 	}
-	if( speaker_portrait ) {
-		free(speaker_portrait);
-		speaker_portrait = NULL;
-	}
-	if( speaker_name ) {
-		free(speaker_name);
-		speaker_name = NULL;
-	}
-	if( speaker_text ) {
-		free(speaker_text);
-		speaker_text = NULL;
-	}
-
-	if( speech ) {
-		for(i=0; i<speech_num; i++) {
-			free(speech[i].icon);
-			free(speech[i].text);
-			free(speech[i].keyword);
-		}
-		free(speech);
-		speech = NULL;
-	}
-
-	speech_num = 0;
 }
 
 /****************************
 ****************************/
-void cb_speak(void * arg)
+void cb_popup(void * arg)
 {
 	context_t * player = context_get_player();
-	char * keyword = (char *)arg;
-	char * speak_action = NULL;
+	action_param_t * action_param = (action_param_t *)arg;
 
-	if(!entry_read_string(CHARACTER_TABLE, player->id,&speak_action,CHARACTER_KEY_SPEAK,NULL)) {
+	if( !strcmp(action_param->action,POPUP_TAG_END) ) {
+		cb_popup_quit(NULL);
 		return;
 	}
 
-	network_send_action(player, speak_action,speaker_id,keyword,NULL);
+	network_send_action(player, action_param->action,action_param->param,NULL);
 
-	free(speak_action);
+	if( popup_frame ) {
+                free( popup_frame);
+                popup_frame = NULL;
+        }
+
+	screen_compose();
 }
 
+/****************************
+****************************/
+void cb_free_action_param(void * arg)
+{
+	action_param_t * action_param = (action_param_t *)arg;
+
+	free(action_param->action);
+	free(action_param->param);
+	free(action_param);
+}
 /**********************************
 Compose screen
 **********************************/
-static void compose_speak(context_t * ctx,item_t * item_list)
+static void compose_popup(context_t * ctx,item_t * item_list)
 {
 	item_t * item;
 	int i = 0;
@@ -978,12 +981,19 @@ static void compose_speak(context_t * ctx,item_t * item_list)
 	int text_x = 0;
 	int text_y = -1;
 	static TTF_Font * font = NULL;
-	int w;
-	int h;
-	int max_h;
+	int w = 0;
+	int h = 0;
+	int max_h = 0;
 	anim_t * anim;
 	char * listener_portrait = NULL;
 	int center_text;
+	char * tag;
+	action_param_t * action_param = NULL;
+	char * data;
+
+	if( popup_frame == NULL ) {
+		return;
+	}
 
 	draw_background(ctx,item_list);
 
@@ -991,215 +1001,93 @@ static void compose_speak(context_t * ctx,item_t * item_list)
 		TTF_CloseFont(font);
 		font = NULL;
 	}
+	font = TTF_OpenFont(SPEAK_FONT, SPEAK_FONT_SIZE );
 
-	if( speech && speech[0].icon ) {
-		anim = imageDB_get_anim(ctx,speech[i].icon);
-		font = TTF_OpenFont(FONT, anim->h);
-	} else {
-		font = TTF_OpenFont(SPEAK_FONT, SPEAK_FONT_SIZE );
-	}
+	data = strdup(popup_frame);
 
-	if( speaker_portrait && speaker_portrait[0] != 0) {
-		item = item_list_add(&item_list);
-		anim = imageDB_get_anim(ctx,speaker_portrait);
-		item_set_anim(item,0,y,anim);
-		item_set_overlay(item,1);
-		y += anim->h;
-		text_x = anim->w;
-		text_y = 0;
-		center_text = anim->w / 2;
-	}
-
-	if( speaker_name && speaker_name[0] != 0) {
-		item = item_list_add(&item_list);
-		item_set_string(item,speaker_name);
-		item_set_font(item,font);
-		sdl_get_string_size(item->font,item->string,&w,&h);
-		if( w < text_x ) {
-			x = center_text - ( w/2 );
-		}
-		item_set_frame_shape(item,x,y,w,h);
-		item_set_overlay(item,1);
-		y += h;
-		if(w > text_x) {
-			text_x = w;
-		}
-		if( text_y == -1) {
-			text_y = h;
-		}
-	}
-
-	item = item_list_add(&item_list);
-	item_set_string(item,speaker_text);
-	item_set_font(item,font);
-	sdl_get_string_size(item->font,item->string,&w,&h);
-	item_set_frame_shape(item,text_x,text_y,w,h);
-	item_set_overlay(item,1);
-	if( text_y != 0 ) {
-		y += h;
-	}
-
-	text_x = 0;
-	text_y = y;
-	center_text = 0;
-
-	if(entry_read_string(CHARACTER_TABLE, ctx->id,&listener_portrait,CHARACTER_KEY_PORTRAIT,NULL)) {
-		item = item_list_add(&item_list);
-		anim = imageDB_get_anim(ctx,listener_portrait);
-		item_set_anim(item,0,y,anim);
-		item_set_overlay(item,1);
-		y += anim->h;
-		text_x = anim->w;
-		center_text = anim->w / 2;
-	}
-
-	item = item_list_add(&item_list);
-	item_set_string(item,ctx->character_name);
-	item_set_font(item,font);
-	sdl_get_string_size(item->font,item->string,&w,&h);
-	if( w < text_x ) {
-		x = center_text - ( w/2 );
-	}
-	item_set_frame_shape(item,x,y,w,h);
-	item_set_overlay(item,1);
-	if( text_x == 0 ) {
-		text_y += h;
-	}
-	if(w > text_x) {
-		text_x = w;
-	}
-
-	y = text_y;
-	for ( i = 0; i < speech_num; i++) {
-		x = text_x;
-		max_h = 0;
-
-		if( speech[i].icon && speech[i].icon[0] != 0 ) {
+	while( (tag = _strsep(&data,NETWORK_DELIMITER)) != NULL) {
+		if(!strcmp(tag,POPUP_TAG_IMAGE)) {
+			/* get image name */
+			tag = _strsep(&data,NETWORK_DELIMITER);
 			item = item_list_add(&item_list);
-			anim = imageDB_get_anim(ctx,speech[i].icon);
+			anim = imageDB_get_anim(ctx,tag);
 			item_set_anim(item,x,y,anim);
 			item_set_overlay(item,1);
-			if ( speech[i].keyword ) {
-				item_set_click_left(item,cb_speak,(void*)speech[i].keyword,NULL);
+			if(action_param) {
+				item_set_click_left(item,cb_popup,action_param,cb_free_action_param);
 			}
 			x += anim->w;
-			max_h = anim->h;
+			if( max_h < anim->h ) {
+				max_h = anim->h;
+			}
+
+			action_param = NULL;
+			continue;
 		}
-		if( speech[i].text ) {
+		if(!strcmp(tag,POPUP_TAG_TEXT)) {
+			/* get text */
+			tag = _strsep(&data,NETWORK_DELIMITER);
 			item = item_list_add(&item_list);
-			item_set_string(item,speech[i].text);
+			item_set_string(item,tag);
 			item_set_font(item,font);
 			sdl_get_string_size(item->font,item->string,&w,&h);
 			item_set_frame_shape(item,x,y,w,h);
 			item_set_overlay(item,1);
-			if( speech[i].keyword ) {
-				item_set_click_left(item,cb_speak,(void*)speech[i].keyword,NULL);
+			if(action_param) {
+				item_set_click_left(item,cb_popup,action_param,cb_free_action_param);
 			}
+			x += w;
 			if( max_h < h ) {
 				max_h = h;
 			}
+			action_param = NULL;
+			continue;
 		}
-
-		y += max_h;
-	}
-}
-
-/****************************
-****************************/
-static void cb_speak_quit(void * arg)
-{
-	speak_cleanup();
-	ui_play_set(UI_MAIN);
-}
-
-/**********************************
-Parse network frame and generate a speak screen
-TODO: put this in network files ?
-**********************************/
-void ui_play_speak_parse(int total_size, char * frame)
-{
-	char * s_icon = NULL;
-	char * s_text = NULL;
-	char * s_keyword = NULL;
-	int size = 0;
-	context_t * speaker_ctx;
-
-	speak_cleanup();
-
-	speaker_id = strdup(_strsep(&frame,NETWORK_DELIMITER));
-	/* Close speak UI if no speaker provided */
-	if ( speaker_id[0] == 0 ) {
-		cb_speak_quit(NULL);
-		return;
-	}
-	speaker_ctx = context_find(speaker_id);
-	if( speaker_ctx->character_name ) {
-		speaker_name = strdup(speaker_ctx->character_name);
-	}
-
-	size += strlen(speaker_id);
-	size += strlen(NETWORK_DELIMITER);
-	speaker_portrait = strdup(_strsep(&frame,NETWORK_DELIMITER));
-	size += strlen(speaker_portrait);
-	size += strlen(NETWORK_DELIMITER);
-	speaker_text = strdup(_strsep(&frame,NETWORK_DELIMITER));
-	size += strlen(speaker_text);
-	size += strlen(NETWORK_DELIMITER);
-	while( size < total_size ) {
-		s_icon = _strsep(&frame,NETWORK_DELIMITER);
-		if(s_icon == NULL) {
-			werr(LOGDEBUG,"Parsing error",NULL);
-			return;
+		if(!strcmp(tag,POPUP_TAG_ACTION)) {
+			action_param = malloc(sizeof(action_param_t));
+			/* get action */
+			tag = _strsep(&data,NETWORK_DELIMITER);
+			action_param->action = strdup(tag);
+			/* get param */
+			tag = _strsep(&data,NETWORK_DELIMITER);
+			action_param->param = strdup(tag);
+			continue;
 		}
-		size += strlen(s_icon);
-		size += strlen(NETWORK_DELIMITER);
-
-		s_text = _strsep(&frame,NETWORK_DELIMITER);
-		if(s_text == NULL) {
-			werr(LOGDEBUG,"Parsing error",NULL);
-			return;
+		if(!strcmp(tag,POPUP_TAG_EOL)) {
+			y += max_h;
+			max_h = 0;
+			x = 0;
 		}
-		size += strlen(s_text);
-		size += strlen(NETWORK_DELIMITER);
-
-		s_keyword = _strsep(&frame,NETWORK_DELIMITER);
-		if(s_keyword == NULL) {
-			werr(LOGDEBUG,"Parsing error",NULL);
-			return;
-		}
-		size += strlen(s_keyword);
-		size += strlen(NETWORK_DELIMITER);
-
-		speech_num++;
-		speech = realloc(speech,speech_num*sizeof(speak_entry_t));
-		if( *s_icon != 0 ) {
-			speech[speech_num-1].icon = strdup(s_icon);
-		} else {
-			speech[speech_num-1].icon = NULL;
-		}
-		if(*s_text != 0) {
-			speech[speech_num-1].text = strdup(s_text);
-		} else {
-			speech[speech_num-1].text = NULL;
-		}
-		if(*s_keyword != 0) {
-			speech[speech_num-1].keyword = strdup(s_keyword);
-		} else {
-			speech[speech_num-1].keyword = NULL;
+		if(!strcmp(tag,POPUP_TAG_EOP)) {
+			y += max_h;
+			max_h = 0;
+			x = 0;
 		}
 	}
-
-	ui_play_set(UI_SPEAK);
+	free(data);
 }
 
 /**********************************
 **********************************/
-static void speak_compose(context_t * ctx, item_t * item_list)
+void ui_play_popup_add(char * frame)
 {
-	compose_speak(ctx,item_list);
+	if(popup_frame == NULL) {
+		popup_frame = strdup(frame);
+	}
+	else {
+		fifo_push(&popup_fifo,strdup(frame));
+	}
+	ui_play_set(UI_POPUP);
+}
 
-	sdl_add_keycb(SDL_SCANCODE_ESCAPE,cb_speak_quit,NULL,NULL);
-	sdl_add_keycb(SDL_SCANCODE_SPACE,cb_speak_quit,NULL,NULL);
+/**********************************
+**********************************/
+static void popup_compose(context_t * ctx, item_t * item_list)
+{
+	compose_popup(ctx,item_list);
+
+	sdl_add_keycb(SDL_SCANCODE_ESCAPE,cb_popup_quit,NULL,NULL);
+	sdl_add_keycb(SDL_SCANCODE_SPACE,cb_popup_quit,NULL,NULL);
 }
 /**********************************
 **********************************/
@@ -1212,8 +1100,8 @@ void ui_play_compose(context_t * ctx, item_t * item_list)
 	case UI_INVENTORY:
 		inventory_compose(ctx,item_list);
 		break;
-	case UI_SPEAK:
-		speak_compose(ctx,item_list);
+	case UI_POPUP:
+		popup_compose(ctx,item_list);
 		break;
 	default:
 		werr(LOGUSER,"Wrong UI type");
@@ -1221,6 +1109,7 @@ void ui_play_compose(context_t * ctx, item_t * item_list)
 	}
 }
 /**********************************
+Called once
 **********************************/
 void ui_play_init()
 {
