@@ -44,5 +44,6 @@
 #include "log.h"
 #include "mutex.h"
 #include "item.h"
+#include "fifo.h"
 
 #endif
