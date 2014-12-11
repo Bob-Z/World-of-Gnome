@@ -105,7 +105,7 @@ void deep_free(char ** to_delete)
 
 /*********************
 Extract token from string
-Works just like strsep but delim is afull string, not separate characters
+Works just like strsep but delim is a full string, not separate characters
 *********************/
 char * _strsep(char **stringp, const char *delim)
 {
