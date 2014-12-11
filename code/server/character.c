@@ -554,3 +554,18 @@ int character_set_portrait(const char * id,const char * portrait)
 
 	return res;
 }
+
+/*********************************************************
+ Get character portrait.
+must be freed
+*********************************************************/
+char * character_get_portrait(const char * id)
+{
+	char * portrait;
+
+	if(!entry_read_string(CHARACTER_TABLE,id,&portrait,CHARACTER_KEY_PORTRAIT,NULL)) {
+		return NULL;
+	}
+
+	return portrait;
+}
