@@ -1771,9 +1771,9 @@ void register_lua_functions(context_t * context)
 	lua_setglobal(L, "character_set_npc");
 	lua_pushcfunction(L, l_character_get_npc);
 	lua_setglobal(L, "character_get_npc");
-	lua_pushcfunction(L, l_character_set_portrait);
-	lua_setglobal(L, "character_get_portrait");
 	lua_pushcfunction(L, l_character_get_portrait);
+	lua_setglobal(L, "character_get_portrait");
+	lua_pushcfunction(L, l_character_set_portrait);
 	lua_setglobal(L, "character_set_portrait");
 	lua_pushcfunction(L, l_character_out_of_game);
 	lua_setglobal(L, "character_out_of_game");
