@@ -467,29 +467,6 @@ static int l_character_get_type( lua_State* L)
 	return 1;  /* number of results */
 }
 
-/* character_get_speak
-Input:
- - ID of a character
-Output: speak action name
-*/
-static int l_character_get_speak( lua_State* L)
-{
-	context_t * target;
-	const char * id;
-	char * speak_action;
-
-	id = luaL_checkstring(L, -1);
-	target = context_find(id);
-	if( target == NULL ) {
-		werr(LOGDEV,"Cannot find context with ID %s",id);
-		return 0;  /* number of results */
-	}
-	speak_action = character_get_speak(target->id);
-	lua_pushstring(L, speak_action);
-	free(speak_action);
-	return 1;  /* number of results */
-}
-
 /* character_out_of_game
 
 Kick a context out of the game.
@@ -1788,8 +1765,6 @@ void register_lua_functions(context_t * context)
 	lua_setglobal(L, "character_get_name");
 	lua_pushcfunction(L, l_character_get_type);
 	lua_setglobal(L, "character_get_type");
-	lua_pushcfunction(L, l_character_get_speak);
-	lua_setglobal(L, "character_get_speak");
 	lua_pushcfunction(L, l_character_set_pos);
 	lua_setglobal(L, "character_set_pos");
 	lua_pushcfunction(L, l_character_set_npc);

@@ -519,22 +519,6 @@ int character_get_npc(const char * id)
 }
 
 /*********************************************************
- Get "speak_action" parameter of character.
- It's a LUA script.
- returned value MUST BE FREED
-*********************************************************/
-char * character_get_speak(char * id)
-{
-	char * speak_action;
-
-	if(!entry_read_string(CHARACTER_TABLE, id,&speak_action,CHARACTER_KEY_SPEAK,NULL)) {
-		return NULL;
-	}
-
-	return speak_action;
-}
-
-/*********************************************************
 return -1 if error
 *********************************************************/
 int character_set_portrait(const char * id,const char * portrait)
