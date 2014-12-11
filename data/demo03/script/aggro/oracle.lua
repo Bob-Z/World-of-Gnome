@@ -8,10 +8,6 @@ if( character_get_npc(target_id) == 1 ) then
 	return
 end
 
-speaker_id = "yezul"
-
-action = character_get_speak(speaker_id)
-
-call_action(action,speaker_id,target_id)
+call_action("speak/oracle","start",target_id)
 
 end

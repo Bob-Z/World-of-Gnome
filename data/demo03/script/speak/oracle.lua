@@ -1,33 +1,53 @@
-function f (npc,player,keyword)
+function f (keyword,player)
 
-oracle_name = character_get_name(npc);
-player_name = character_get_name(player);
+if player == nil then
+	player = player_get_id()
+end
+--player_portrait = character_get_portrait(player)
+player_portrait = "portrait/warrior.jpg"
+player_name = character_get_name(player)
 
 if keyword == nil then
 	keyword = "start"
 end
 
+text = string.format("keyword = %s",keyword)
+print_text_debug(text);
+
 if keyword == "start" then
-	text = string.format("Hello %s, I am %s. Would you like to help me ?",player_name,oracle_name)
-	speak_send(npc,"portrait/oracle.png",player,text,
-			"","Yes, of course","yes",
-			"","No, thanks","bye")
+	text = string.format("Yezul: Hello %s, I am Yezul. Would you like to help me ?",player_name)
+	popup_send(player,
+		"image","portrait/oracle.png",
+		"text",text,
+		"eop",
+		"image",player_portrait,
+		"action","speak/oracle","yes",
+		"text","Yes, of course   ",
+		"action","speak/oracle","bye",
+		"text","   No, thanks")
 end
 
 if keyword == "yes" then
 	item = item_create_from_template("artefact")
 	map_add_item("cliff",item,5,5);
 	text = string.format("Thanks %s, please go fetch the holy artefact !",player_name)
-	speak_send(npc,"portrait/oracle.png",player,text,
-			"","Let's go !","speak_end")
+	popup_send(player,
+		"image","portrait/oracle.png",
+		"text",text,
+		"eop",
+		"image",player_portrait,
+		"action", "popup_end", "",
+		"text","Let's go !")
 end
 
 if keyword == "bye" then
-	speak_send(npc,"portrait/oracle.png",player,"See you !",
-			"","Bye","speak_end")
+	popup_send(player,
+		"image","portrait/oracle.png",
+		"text","See you !",
+		"eop",
+		"image",player_portrait,
+		"action", "popup_end", "",
+		"text","Bye !")
 end
 
-if keyword == "speak_end" then
-	speak_send("","",player,"")
-end
 end

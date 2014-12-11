@@ -1,4 +1,0 @@
-text		= "Speak to somebody";
-icon		= "none";
-script		= "speak/player.lua";
-#param		= ( "0" , "-1" );
