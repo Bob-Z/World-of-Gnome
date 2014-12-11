@@ -63,6 +63,7 @@ static char ** inventory_list = NULL;
 /* popup ui */
 static fifo_t * popup_fifo;
 static char * popup_frame = NULL;
+static int  popup_active = false;
 typedef struct action_param_tag {
 	char * action;
 	char * param;
@@ -935,6 +936,9 @@ static void cb_popup_quit(void * arg)
 	if( popup_frame == NULL) {
 		ui_play_set(UI_MAIN);
 	}
+	else {
+		popup_active = true;
+	}
 }
 
 /****************************
@@ -951,10 +955,7 @@ void cb_popup(void * arg)
 
 	network_send_action(player, action_param->action,action_param->param,NULL);
 
-	if( popup_frame ) {
-                free( popup_frame);
-                popup_frame = NULL;
-        }
+	popup_active = false;
 
 	screen_compose();
 }
@@ -1075,7 +1076,14 @@ void ui_play_popup_add(char * frame)
 		popup_frame = strdup(frame);
 	}
 	else {
-		fifo_push(&popup_fifo,strdup(frame));
+		if(popup_active) {
+			fifo_push(&popup_fifo,strdup(frame));
+		}
+		else {
+			free(popup_frame);
+			popup_frame = strdup(frame);
+			popup_active = true;
+		}
 	}
 	ui_play_set(UI_POPUP);
 }
