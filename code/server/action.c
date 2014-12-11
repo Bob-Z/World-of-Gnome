@@ -630,6 +630,29 @@ static int l_character_get_npc( lua_State* L)
 	return 1;  /* number of results */
 }
 
+/* character_get_portrait
+
+Get portrait image file name
+
+Input:
+ - ID of a character
+Output: portrait file name
+*/
+static int l_character_get_portrait( lua_State* L)
+{
+	const char * id;
+	char * res;
+
+	id = luaL_checkstring(L, -1);
+
+	res = character_get_portrait(id);
+	lua_pushstring(L, res);
+	if( res) {
+		free(res);
+	}
+	return 1;  /* number of results */
+}
+
 /* character_set_portrait
 
 Set a character's portrait.
@@ -1507,36 +1530,22 @@ static int l_equipment_slot_get_item( lua_State* L)
 	return 1;  /* number of results */
 }
 
-/* speak_send
+/* popup_send
 
-Send a speak command to a context
+Send a popup screen to a context
 
 Input:
- - ID of the speaker character
- - portrait of the speaker character
- - ID of the listener character
- - Text to display
- - Array of icon/text/keyword
+ - ID of the target character
+ - Array of string describing the pop-up
 Output: -1 on error, 0 otherwise
 */
-static int l_speak_send( lua_State* L)
+static int l_popup_send( lua_State* L)
 {
-#define SPEAK_SEND_MIN_ARG_NUM (4)
 	int num_arg;
 	const char **arg = NULL;
 	int i;
 
 	num_arg = lua_gettop(L);
-	if(num_arg < SPEAK_SEND_MIN_ARG_NUM) {
-		werr(LOGDEV,"Not enough parameters for \"speak_send\" command. Need at least %s, only got %d.\n", SPEAK_SEND_MIN_ARG_NUM,num_arg);
-		lua_pushnumber(L, -1);
-		return 1;  /* number of results */
-	}
-	if((num_arg-SPEAK_SEND_MIN_ARG_NUM) % 3 != 0) {
-		werr(LOGDEV,"Wrong number of parameters for \"speak_send\" command. %d parameters missing.\n", (num_arg-SPEAK_SEND_MIN_ARG_NUM) % 3);
-		lua_pushnumber(L, -1);
-		return 1;  /* number of results */
-	}
 
 	arg = malloc(sizeof(char*)*num_arg+1);
 	for(i=0; i<num_arg; i++) {
@@ -1544,11 +1553,7 @@ static int l_speak_send( lua_State* L)
 	}
 	arg[i]=NULL;
 
-	if(num_arg > SPEAK_SEND_MIN_ARG_NUM) {
-		network_send_speak(arg[0],arg[1],arg[2],arg[3],&arg[4]);
-	} else {
-		network_send_speak(arg[0],arg[1],arg[2],arg[3],NULL);
-	}
+	network_send_popup(arg[0],&arg[1]);
 
 	free(arg);
 	lua_pushnumber(L, 0);
@@ -1792,6 +1797,8 @@ void register_lua_functions(context_t * context)
 	lua_pushcfunction(L, l_character_get_npc);
 	lua_setglobal(L, "character_get_npc");
 	lua_pushcfunction(L, l_character_set_portrait);
+	lua_setglobal(L, "character_get_portrait");
+	lua_pushcfunction(L, l_character_get_portrait);
 	lua_setglobal(L, "character_set_portrait");
 	lua_pushcfunction(L, l_character_out_of_game);
 	lua_setglobal(L, "character_out_of_game");
@@ -1863,10 +1870,9 @@ void register_lua_functions(context_t * context)
 	lua_setglobal(L, "equipment_slot_set_item");
 	lua_pushcfunction(L, l_equipment_slot_get_item);
 	lua_setglobal(L, "equipment_slot_get_item");
-	/* speak func */
-	lua_pushcfunction(L, l_speak_send);
-	lua_setglobal(L, "speak_send");
 	/* misc func */
+	lua_pushcfunction(L, l_popup_send);
+	lua_setglobal(L, "popup_send");
 	lua_pushcfunction(L, l_print_text_id);
 	lua_setglobal(L, "print_text_id");
 	lua_pushcfunction(L, l_print_text_map);
