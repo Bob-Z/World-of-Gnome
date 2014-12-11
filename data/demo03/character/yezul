@@ -11,4 +11,3 @@ ai = "ai/ai_dontmove.lua";
 allowed_tile = [ "grd" ];
 aggro_dist = 3;
 aggro_script = "aggro/oracle.lua";
-speak_action = "speak/oracle";
