@@ -1,9 +1,10 @@
 price_list = { sword = 200, shield = 150, bag = 25, magic = 500 }
 
+player_portrait = nil;
+
 function set_player_portrait(player_id,mood)
 		player_type = character_get_type(player_id)
-		filename = string.format("portrait/%s_%s.gif",player_type,mood)
-		character_set_portrait(player_id,filename)
+		player_portrait = string.format("portrait/%s_%s.gif",player_type,mood)
 end
 
 function trade (player_id,item)
@@ -12,7 +13,7 @@ function trade (player_id,item)
 		text = string.format("You don't have gold, get out of here !")
 		portrait = "portrait/old_man_angry.gif"
 
-		set_player_portrait(player_id,"angry");
+		set_player_portrait(player_id,"angry")
 
 		return text,portrait
 	end
@@ -25,43 +26,56 @@ function trade (player_id,item)
 		inventory_add(player_id,new_item)
 		text = string.format("You got a new %s. What do you need ?",item)
 		portrait = "portrait/old_man_happy.gif"
-		set_player_portrait(player_id,"happy");
+		set_player_portrait(player_id,"happy")
 		return text,portrait
 	end
 
 	text = string.format("You don't have enough gold, get out !")
 	portrait = "portrait/old_man_angry.gif"
-	set_player_portrait(player_id,"angry");
+	set_player_portrait(player_id,"angry")
 	return text,portrait
 end
 
-function talk (npc,portrait,player_id,text)
-	func_param = {}
+function talk (portrait,player_id,text)
+	table.insert(element,"image");
+	table.insert(element,portrait);
+	table.insert(element,"text");
+	table.insert(element,text);
+	table.insert(element,"eol");
+
+	table.insert(element,"image");
+	table.insert(element,player_portrait);
 	for k, v in pairs(price_list) do
 		keyword = k
 		price = v
 		speech = string.format("item/%s.gif",keyword)
-		table.insert(func_param, speech)
+		table.insert(element,"image")
+		table.insert(element,speech)
 		speech = string.format("Buy a %s (%d gold)",keyword,price)
-		table.insert(func_param, speech)
-		table.insert(func_param, keyword)
+		table.insert(element,"action")
+		table.insert(element,"speak/old_man")
+		table.insert(element,keyword)
+		table.insert(element,"text")
+		table.insert(element,speech)
+		table.insert(element,"eol")
 	end
-	table.insert(func_param,"")
-	table.insert(func_param,"Bye !")
-	table.insert(func_param,"speak_end")
+	table.insert(element,"eop")
+	table.insert(element,"action")
+	table.insert(element,"popup_end")
+	table.insert(element,"")
+	table.insert(element,"text")
+	table.insert(element,"Bye !")
 
-	speak_send(npc,portrait,player_id,text, unpack(func_param))
+	popup_send(player_id,unpack(element))
 end
 
-function f (npc,player_id,keyword)
+function f (keyword)
+	element = {}
+	player_id = player_get_id()
+	player_portrait = character_get_portrait(player_id)
 
 	if keyword == nil then
 		keyword = "start"
-	end
-
-	if keyword == "speak_end" then
-		speak_send("","",player_id,"")
-		return
 	end
 
 	if keyword == "start" then
@@ -71,6 +85,5 @@ function f (npc,player_id,keyword)
 		text,portrait = trade(player_id,keyword)
 	end
 
-
-	talk(npc,portrait,player_id,text)
+	talk(portrait,player_id,text)
 end

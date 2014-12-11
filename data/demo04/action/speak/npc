@@ -1,4 +1,4 @@
 text		= "Speak to somebody";
 icon		= "icon/speak.png";
-script		= "speak/player.lua";
+script		= "speak/npc.lua";
 #param		= ( "0" , "-1" );

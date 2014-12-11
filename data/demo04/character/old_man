@@ -3,7 +3,6 @@ type = "human";
 marquee         = ".gif";
 sprite          = "sprite/old_man.gif";
 portrait	= "portrait/old_man.gif";
-speak_action	= "speak/old_man";
 flip_w = 1;
 inventory = [ ];
 map = "house1";
