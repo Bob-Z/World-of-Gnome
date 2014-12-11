@@ -3,8 +3,7 @@ function f (keyword,player)
 if player == nil then
 	player = player_get_id()
 end
---player_portrait = character_get_portrait(player)
-player_portrait = "portrait/warrior.jpg"
+player_portrait = character_get_portrait(player)
 player_name = character_get_name(player)
 
 if keyword == nil then
