@@ -3,7 +3,6 @@ sprite		= "goblin.gif";
 npc = 1;
 name = "Arf";
 map = "forest";
-speak_script = "npc_speak.lua"
 type = "gob";
 pos_x = 0;
 pos_y = 6;

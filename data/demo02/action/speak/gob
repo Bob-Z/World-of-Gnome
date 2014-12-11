@@ -1,0 +1,4 @@
+text		= "";
+icon		= "";
+script		= "speak/goblin.lua";
+#param		= ( "0" , "-1" );

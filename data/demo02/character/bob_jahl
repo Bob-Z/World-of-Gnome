@@ -4,11 +4,10 @@ name = "Jahl";
 inventory = [ "A0009", "A0000" ];
 type = "human";
 map = "village";
-speak_script = "speak.lua"
 pos_x = 1;
 pos_y = 6;
 flip_w = 1;
-action = [ "speak", "add_black", "get", "drop_item", "get_apple", "eat_apple", "remove_life", "hit", "wear_equip", "remove_equip", "set_trap", "disarm_trap" ];
+action = [ "speak/speak", "add_black", "get", "drop_item", "get_apple", "eat_apple", "remove_life", "hit", "wear_equip", "remove_equip", "set_trap", "disarm_trap" ];
 allowed_tile = "ground";
 attribute : 
 {
