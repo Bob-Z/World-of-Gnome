@@ -976,18 +976,13 @@ Compose screen
 static void compose_popup(context_t * ctx,item_t * item_list)
 {
 	item_t * item;
-	int i = 0;
 	int x = 0;
 	int y = 0;
-	int text_x = 0;
-	int text_y = -1;
 	static TTF_Font * font = NULL;
 	int w = 0;
 	int h = 0;
 	int max_h = 0;
 	anim_t * anim;
-	char * listener_portrait = NULL;
-	int center_text;
 	char * tag;
 	action_param_t * action_param = NULL;
 	char * data;
