@@ -45,6 +45,17 @@ function talk (portrait,player_id,text)
 
 	table.insert(element,"image");
 	table.insert(element,player_portrait);
+	gold_id = inventory_get_by_name(player_id,"gold")
+	if gold_id then
+		gold = resource_get_quantity(gold_id)
+	else
+		gold = 0
+	end
+	text = string.format("You have %d gold.",gold)
+	table.insert(element,"text");
+	table.insert(element,text);
+	table.insert(element,"eol");
+
 	for k, v in pairs(price_list) do
 		keyword = k
 		price = v
