@@ -1338,7 +1338,7 @@ Get the value of the given attribute
 Input:
  - ID of a character
  - ID of an attribute
-Output: Value of the given attribute
+Output: Value of the given attribute or -1 if error
 */
 static int l_character_attribute_get( lua_State* L)
 {
