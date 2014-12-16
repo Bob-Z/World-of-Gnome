@@ -1,6 +1,6 @@
 marquee         = "marquee/knight_marquee.jpg";
 sprite          = "sprite/knight.gif";
-portrait          = "sprite/knight.gif";
+portrait          = "portrait/knight.gif";
 name = "Hui";
 inventory = [ ];
 type = "knight";
