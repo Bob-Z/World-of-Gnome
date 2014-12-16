@@ -163,14 +163,11 @@ return -1 if fails
 ****************************************/
 int attribute_get(const char * table, const char *id, const char * attribute)
 {
-	int current;
+	int current = -1;
 
 	SDL_LockMutex(attribute_mutex);
 
-	if(!entry_read_int(table,id,&current,ATTRIBUTE_GROUP,attribute, ATTRIBUTE_CURRENT, NULL)) {
-		SDL_UnlockMutex(attribute_mutex);
-		return -1;
-	}
+	entry_read_int(table,id,&current,ATTRIBUTE_GROUP,attribute, ATTRIBUTE_CURRENT, NULL);
 
 	SDL_UnlockMutex(attribute_mutex);
 
