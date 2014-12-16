@@ -27,6 +27,8 @@ if keyword == "start" then
 end
 
 if keyword == "yes" then
+	character_attribute_set(player,"quest_given",0)
+
 	item = item_create_from_template("artefact")
 	map_add_item("cliff",item,5,5);
 	text = string.format("Thanks %s, please go fetch the holy artefact !",player_name)
@@ -40,6 +42,8 @@ if keyword == "yes" then
 end
 
 if keyword == "bye" then
+	character_attribute_set(player,"quest_given",0)
+
 	popup_send(player,
 		"image","portrait/oracle.png",
 		"text","See you !",
