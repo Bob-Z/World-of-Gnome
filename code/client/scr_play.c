@@ -48,6 +48,11 @@ static int tile_width = -1;
 static int tile_height = -1;
 static int map_w = -1;
 static int map_h = -1;
+static int use_next = false;
+static int next_col_width = -1;
+static int next_col_height = -1;
+static int next_row_width = -1;
+static int next_row_height = -1;
 
 /**********************************
 **********************************/
@@ -498,8 +503,13 @@ static int compose_map_set(context_t * ctx, int level)
 	int y = 0;
 	int _map_w = map_w;
 	int _map_h = map_h;
-	int tile_w = tile_width;
-	int tile_h = tile_height;
+	int _tile_width = tile_width;
+	int _tile_height = tile_height;
+	int _next_col_width = next_col_width;
+	int _next_col_height = next_col_height;
+	int _next_row_width = next_row_width;
+	int _next_row_height = next_row_height;
+
 
 	anim_t * anim;
 	item_t * item;
@@ -514,17 +524,37 @@ static int compose_map_set(context_t * ctx, int level)
 	entry_read_int(MAP_TABLE, ctx->map, &_map_w,buf,NULL);
 	sprintf(buf,"%s%d",MAP_KEY_HEIGHT,level);
 	entry_read_int(MAP_TABLE, ctx->map, &_map_h,buf,NULL);
-	sprintf(buf,"%s%d",MAP_KEY_TILE_WIDTH,level);
-	entry_read_int(MAP_TABLE, ctx->map, &tile_w,buf,NULL);
-	sprintf(buf,"%s%d",MAP_KEY_TILE_HEIGHT,level);
-	entry_read_int(MAP_TABLE, ctx->map, &tile_h,buf,NULL);
+	use_next = false;
+	if(entry_read_int(MAP_TABLE, ctx->map, &_next_col_width,MAP_KEY_NEXT_COL_WIDTH,NULL)) {
+		if(entry_read_int(MAP_TABLE, ctx->map, &_next_col_height,MAP_KEY_NEXT_COL_HEIGHT,NULL)) {
+			if(entry_read_int(MAP_TABLE, ctx->map, &_next_row_width,MAP_KEY_NEXT_ROW_WIDTH,NULL)) {
+				if(entry_read_int(MAP_TABLE, ctx->map, &_next_row_height,MAP_KEY_NEXT_ROW_HEIGHT,NULL)) {
+					use_next = true;
+				}
+			}
+		}
+	}
+
+	if( use_next == false ) {
+		sprintf(buf,"%s%d",MAP_KEY_TILE_WIDTH,level);
+		entry_read_int(MAP_TABLE, ctx->map, &_tile_width,buf,NULL);
+		sprintf(buf,"%s%d",MAP_KEY_TILE_HEIGHT,level);
+		entry_read_int(MAP_TABLE, ctx->map, &_tile_height,buf,NULL);
+
+		_next_col_width = _tile_width;
+		_next_col_height = 0;
+		_next_row_width = 0;
+		_next_row_height = _tile_height;
+	}
 
 	while(value[i] != NULL ) {
 		/* Skip empty tile */
 		if( value[i][0] != 0 ) {
 			item = item_list_add(&item_list);
 			anim = imageDB_get_anim(ctx,value[i]);
-			item_set_anim(item, x*tile_w, y*tile_h, anim);
+			item_set_anim(item,	x*_next_col_width + x*_next_row_width,
+						y*_next_col_height + y*_next_row_height,
+					anim);
 		}
 
 		x++;
@@ -752,6 +782,22 @@ item_t * scr_play_compose(context_t * ctx)
                 entry_read_int(MAP_TABLE, ctx->map, &map_h,MAP_KEY_HEIGHT,NULL);
                 entry_read_int(MAP_TABLE, ctx->map, &tile_width,MAP_KEY_TILE_WIDTH,NULL);
                 entry_read_int(MAP_TABLE, ctx->map, &tile_height,MAP_KEY_TILE_HEIGHT,NULL);
+		use_next = false;
+		if(entry_read_int(MAP_TABLE, ctx->map, &next_col_width,MAP_KEY_NEXT_COL_WIDTH,NULL)) {
+			if(entry_read_int(MAP_TABLE, ctx->map, &next_col_height,MAP_KEY_NEXT_COL_HEIGHT,NULL)) {
+				if(entry_read_int(MAP_TABLE, ctx->map, &next_row_width,MAP_KEY_NEXT_ROW_WIDTH,NULL)) {
+					if(entry_read_int(MAP_TABLE, ctx->map, &next_row_height,MAP_KEY_NEXT_ROW_HEIGHT,NULL)) {
+						use_next = true;
+					}
+				}
+			}
+		}
+		if( use_next == false ) {
+			next_col_width = tile_width;
+			next_col_height = 0;
+			next_row_width = 0;
+			next_row_height = tile_height;
+		}
 	}
 
 	compose_map(ctx);
@@ -762,13 +808,25 @@ item_t * scr_play_compose(context_t * ctx)
 
 	/* force virtual coordinate on map change */
 	if(change_map) {
-		sdl_force_virtual_x(ctx->pos_x * tile_width + tile_width/2);
-		sdl_force_virtual_y(ctx->pos_y * tile_height + tile_height/2);
+		sdl_force_virtual_x(	ctx->pos_x * next_col_width + 
+					ctx->pos_x * next_row_width +
+					next_col_width/2 +
+					next_row_width/2 );
+		sdl_force_virtual_y(	ctx->pos_y * next_col_height +
+					ctx->pos_y * next_row_height +
+				 	next_col_height/2 +
+					next_row_height/2 );
 	}
 	/* set virtual coordinate on the same map */
 	else {
-		sdl_set_virtual_x(ctx->cur_pos_x * tile_width + tile_width/2);
-		sdl_set_virtual_y(ctx->cur_pos_y * tile_height + tile_height/2);
+		sdl_set_virtual_x(	ctx->pos_x * next_col_width + 
+					ctx->pos_x * next_row_width +
+					next_col_width/2 +
+					next_row_width/2 );
+		sdl_set_virtual_y(	ctx->pos_y * next_col_height +
+					ctx->pos_y * next_row_height +
+				 	next_col_height/2 +
+					next_row_height/2 );
 	}
 
 	entry_read_int(MAP_TABLE,ctx->map,&bg_red,MAP_KEY_BG_RED,NULL);
