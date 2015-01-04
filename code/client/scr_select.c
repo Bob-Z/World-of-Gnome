@@ -307,5 +307,7 @@ void scr_select_add_user_character(context_t * context, char * data)
 
 	SDL_UnlockMutex(character_select_mutex);
 
-	wlog(LOGDEV,"Received character %s of type %s",character_list[character_num-1].name,character_list[character_num-1].type);
+	if( character_num > 0 ) {
+		wlog(LOGDEV,"Received character %s of type %s",character_list[character_num-1].name,character_list[character_num-1].type);
+	}
 }
