@@ -250,10 +250,10 @@ static void draw_sprite(context_t * ctx, const char * image_file_name)
 	}
 
 	/* Center sprite on tile */
-	x -= ((anim->w*map_zoom*zoom)-col_width-row_width)/2;
-	y -= ((anim->h*map_zoom*zoom)-col_height-row_height)/2;
-	ox -= ((anim->w*map_zoom*zoom)-col_width-row_width)/2;
-	oy -= ((anim->h*map_zoom*zoom)-col_height-row_height)/2;
+	x -= ((anim->w*map_zoom*zoom)-tile_width)/2;
+	y -= ((anim->h*map_zoom*zoom)-tile_height)/2;
+	ox -= ((anim->w*map_zoom*zoom)-tile_width)/2;
+	oy -= ((anim->h*map_zoom*zoom)-tile_height)/2;
 
 	item_set_smooth_anim(item,x,y,ox,oy,ctx->pos_tick,anim);
 
@@ -407,8 +407,8 @@ static void compose_item(context_t * ctx)
 		x = x*col_width + y*row_width;
 		y = x*col_height + y*row_height;
 		/* Center sprite on tile */
-		x -= ((anim->w*map_zoom)-col_width-row_width)/2;
-		y -= ((anim->h*map_zoom)-col_height-row_height)/2;
+		x -= ((anim->w*map_zoom)-tile_width)/2;
+		y -= ((anim->h*map_zoom)-tile_height)/2;
 
 		item_set_anim(item,x,y,anim);
 		item_set_zoom_x(item, map_zoom );
@@ -717,8 +717,8 @@ static void compose_select(context_t * ctx)
 					y = pos_y * col_height + pos_y * row_height;
 
 					/* Center on tile */
-					x -= (anim->w-col_width-row_width)/2;
-					y -= (anim->h-col_height-row_height)/2;
+					x -= (anim->w-tile_width)/2;
+					y -= (anim->h-tile_height)/2;
 
 					item_set_anim(item,x,y,anim);
 				}
