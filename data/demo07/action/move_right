@@ -1,0 +1,4 @@
+text		= "Go right";
+icon		= "none";
+script		= "move.lua";
+param		= ( "1" , "0" );

@@ -1,0 +1,9 @@
+marquee		= "marquee/knight.gif";
+sprite		= "sprite/knight.gif";
+type		= "human"
+map		= "map1";
+pos_x		= 16;
+pos_y		= 16;
+action		= [ ];
+#allowed_tile_script	= "allowed_tile/ground_stair.lua";
+#inventory	= [ ];  
