@@ -49,10 +49,10 @@ static int tile_height = -1;
 static int map_w = -1;
 static int map_h = -1;
 static int use_next = false;
-static int next_col_width = -1;
-static int next_col_height = -1;
-static int next_row_width = -1;
-static int next_row_height = -1;
+static int col_width = -1;
+static int col_height = -1;
+static int row_width = -1;
+static int row_height = -1;
 
 /**********************************
 **********************************/
@@ -238,10 +238,10 @@ static void draw_sprite(context_t * ctx, const char * image_file_name)
 	}
 
 	/* Get position in pixel */
-	x = ctx->cur_pos_x * next_col_width + ctx->cur_pos_y * next_row_width;
-	y = ctx->cur_pos_x * next_col_height + ctx->cur_pos_y * next_row_height;
-	ox = ctx->old_pos_x * next_col_width + ctx->old_pos_y * next_row_width;
-	oy = ctx->old_pos_x * next_col_height + ctx->old_pos_y * next_row_height;
+	x = ctx->cur_pos_x * col_width + ctx->cur_pos_y * row_width;
+	y = ctx->cur_pos_x * col_height + ctx->cur_pos_y * row_height;
+	ox = ctx->old_pos_x * col_width + ctx->old_pos_y * row_width;
+	oy = ctx->old_pos_x * col_height + ctx->old_pos_y * row_height;
 
 	/* Get per sprite zoom */
 	if(entry_read_string(CHARACTER_TABLE,ctx->id,&zoom_str,CHARACTER_KEY_ZOOM,NULL)) {
@@ -250,10 +250,10 @@ static void draw_sprite(context_t * ctx, const char * image_file_name)
 	}
 
 	/* Center sprite on tile */
-	x -= ((anim->w*map_zoom*zoom)-next_col_width-next_row_width)/2;
-	y -= ((anim->h*map_zoom*zoom)-next_col_height-next_row_height)/2;
-	ox -= ((anim->w*map_zoom*zoom)-next_col_width-next_row_width)/2;
-	oy -= ((anim->h*map_zoom*zoom)-next_col_height-next_row_height)/2;
+	x -= ((anim->w*map_zoom*zoom)-col_width-row_width)/2;
+	y -= ((anim->h*map_zoom*zoom)-col_height-row_height)/2;
+	ox -= ((anim->w*map_zoom*zoom)-col_width-row_width)/2;
+	oy -= ((anim->h*map_zoom*zoom)-col_height-row_height)/2;
 
 	item_set_smooth_anim(item,x,y,ox,oy,ctx->pos_tick,anim);
 
@@ -404,11 +404,11 @@ static void compose_item(context_t * ctx)
 		anim = imageDB_get_anim(ctx,sprite_name);
 		free(sprite_name);
 
-		x = x*next_col_width + y*next_row_width;
-		y = x*next_col_height + y*next_row_height;
+		x = x*col_width + y*row_width;
+		y = x*col_height + y*row_height;
 		/* Center sprite on tile */
-		x -= ((anim->w*map_zoom)-next_col_width-next_row_width)/2;
-		y -= ((anim->h*map_zoom)-next_col_height-next_row_height)/2;
+		x -= ((anim->w*map_zoom)-col_width-row_width)/2;
+		y -= ((anim->h*map_zoom)-col_height-row_height)/2;
 
 		item_set_anim(item,x,y,anim);
 		item_set_zoom_x(item, map_zoom );
@@ -481,8 +481,8 @@ static void compose_map_button(context_t * ctx)
 	for( y=0 ; y < map_h ; y++ ) {
 		for ( x=0 ; x < map_w ; x++ ) {
 			item = item_list_add(&item_list);
-			item_set_frame_shape(item,x*next_col_width+y*next_row_width,
-						 x*next_col_height+y*next_row_height,tile_width,tile_height);
+			item_set_frame_shape(item,x*col_width+y*row_width,
+						 x*col_height+y*row_height,tile_width,tile_height);
 			item_set_tile(item,x,y);
 			item_set_click_left(item,cb_select_map,item,NULL);
 			item_set_click_right(item,cb_redo_map,item,NULL);
@@ -505,10 +505,10 @@ static int compose_map_set(context_t * ctx, int level)
 	int _map_h = map_h;
 	int _tile_width = tile_width;
 	int _tile_height = tile_height;
-	int _next_col_width = next_col_width;
-	int _next_col_height = next_col_height;
-	int _next_row_width = next_row_width;
-	int _next_row_height = next_row_height;
+	int _col_width = col_width;
+	int _col_height = col_height;
+	int _row_width = row_width;
+	int _row_height = row_height;
 
 
 	anim_t * anim;
@@ -525,10 +525,10 @@ static int compose_map_set(context_t * ctx, int level)
 	sprintf(buf,"%s%d",MAP_KEY_HEIGHT,level);
 	entry_read_int(MAP_TABLE, ctx->map, &_map_h,buf,NULL);
 	use_next = false;
-	if(entry_read_int(MAP_TABLE, ctx->map, &_next_col_width,MAP_KEY_NEXT_COL_WIDTH,NULL)) {
-		if(entry_read_int(MAP_TABLE, ctx->map, &_next_col_height,MAP_KEY_NEXT_COL_HEIGHT,NULL)) {
-			if(entry_read_int(MAP_TABLE, ctx->map, &_next_row_width,MAP_KEY_NEXT_ROW_WIDTH,NULL)) {
-				if(entry_read_int(MAP_TABLE, ctx->map, &_next_row_height,MAP_KEY_NEXT_ROW_HEIGHT,NULL)) {
+	if(entry_read_int(MAP_TABLE, ctx->map, &_col_width,MAP_KEY_COL_WIDTH,NULL)) {
+		if(entry_read_int(MAP_TABLE, ctx->map, &_col_height,MAP_KEY_COL_HEIGHT,NULL)) {
+			if(entry_read_int(MAP_TABLE, ctx->map, &_row_width,MAP_KEY_ROW_WIDTH,NULL)) {
+				if(entry_read_int(MAP_TABLE, ctx->map, &_row_height,MAP_KEY_ROW_HEIGHT,NULL)) {
 					use_next = true;
 				}
 			}
@@ -541,10 +541,10 @@ static int compose_map_set(context_t * ctx, int level)
 		sprintf(buf,"%s%d",MAP_KEY_TILE_HEIGHT,level);
 		entry_read_int(MAP_TABLE, ctx->map, &_tile_height,buf,NULL);
 
-		_next_col_width = _tile_width;
-		_next_col_height = 0;
-		_next_row_width = 0;
-		_next_row_height = _tile_height;
+		_col_width = _tile_width;
+		_col_height = 0;
+		_row_width = 0;
+		_row_height = _tile_height;
 	}
 
 	while(value[i] != NULL ) {
@@ -552,8 +552,8 @@ static int compose_map_set(context_t * ctx, int level)
 		if( value[i][0] != 0 ) {
 			item = item_list_add(&item_list);
 			anim = imageDB_get_anim(ctx,value[i]);
-			item_set_anim(item,	x*_next_col_width + y*_next_row_width,
-						x*_next_col_height + y*_next_row_height,
+			item_set_anim(item,	x*_col_width + y*_row_width,
+						x*_col_height + y*_row_height,
 					anim);
 		}
 
@@ -682,7 +682,7 @@ static void compose_type(context_t * ctx)
 			item_set_string(item,type);
 			item_set_font(item,font);
 			sdl_get_string_size(item->font,item->string,&w,&h);
-			item_set_frame_shape(item,x*next_col_width+y*next_row_width,x*next_col_height+y*next_row_height,w,h);
+			item_set_frame_shape(item,x*col_width+y*row_width,x*col_height+y*row_height,w,h);
 		}
 	}
 }
@@ -713,12 +713,12 @@ static void compose_select(context_t * ctx)
 					item = item_list_add(&item_list);
 
 					/* get pixel coordinate from tile coordinate */
-					x = pos_x * next_col_width + pos_y * next_row_width;
-					y = pos_y * next_col_height + pos_y * next_row_height;
+					x = pos_x * col_width + pos_y * row_width;
+					y = pos_y * col_height + pos_y * row_height;
 
 					/* Center on tile */
-					x -= (anim->w-next_col_width-next_row_width)/2;
-					y -= (anim->h-next_col_height-next_row_height)/2;
+					x -= (anim->w-col_width-row_width)/2;
+					y -= (anim->h-col_height-row_height)/2;
 
 					item_set_anim(item,x,y,anim);
 				}
@@ -785,20 +785,20 @@ item_t * scr_play_compose(context_t * ctx)
                 entry_read_int(MAP_TABLE, ctx->map, &tile_width,MAP_KEY_TILE_WIDTH,NULL);
                 entry_read_int(MAP_TABLE, ctx->map, &tile_height,MAP_KEY_TILE_HEIGHT,NULL);
 		use_next = false;
-		if(entry_read_int(MAP_TABLE, ctx->map, &next_col_width,MAP_KEY_NEXT_COL_WIDTH,NULL)) {
-			if(entry_read_int(MAP_TABLE, ctx->map, &next_col_height,MAP_KEY_NEXT_COL_HEIGHT,NULL)) {
-				if(entry_read_int(MAP_TABLE, ctx->map, &next_row_width,MAP_KEY_NEXT_ROW_WIDTH,NULL)) {
-					if(entry_read_int(MAP_TABLE, ctx->map, &next_row_height,MAP_KEY_NEXT_ROW_HEIGHT,NULL)) {
+		if(entry_read_int(MAP_TABLE, ctx->map, &col_width,MAP_KEY_COL_WIDTH,NULL)) {
+			if(entry_read_int(MAP_TABLE, ctx->map, &col_height,MAP_KEY_COL_HEIGHT,NULL)) {
+				if(entry_read_int(MAP_TABLE, ctx->map, &row_width,MAP_KEY_ROW_WIDTH,NULL)) {
+					if(entry_read_int(MAP_TABLE, ctx->map, &row_height,MAP_KEY_ROW_HEIGHT,NULL)) {
 						use_next = true;
 					}
 				}
 			}
 		}
 		if( use_next == false ) {
-			next_col_width = tile_width;
-			next_col_height = 0;
-			next_row_width = 0;
-			next_row_height = tile_height;
+			col_width = tile_width;
+			col_height = 0;
+			row_width = 0;
+			row_height = tile_height;
 		}
 	}
 
@@ -810,25 +810,25 @@ item_t * scr_play_compose(context_t * ctx)
 
 	/* force virtual coordinate on map change */
 	if(change_map) {
-		sdl_force_virtual_x(	ctx->pos_x * next_col_width + 
-					ctx->pos_y * next_row_width +
-					next_col_width/2 +
-					next_row_width/2 );
-		sdl_force_virtual_y(	ctx->pos_x * next_col_height +
-					ctx->pos_y * next_row_height +
-				 	next_col_height/2 +
-					next_row_height/2 );
+		sdl_force_virtual_x(	ctx->pos_x * col_width + 
+					ctx->pos_y * row_width +
+					col_width/2 +
+					row_width/2 );
+		sdl_force_virtual_y(	ctx->pos_x * col_height +
+					ctx->pos_y * row_height +
+				 	col_height/2 +
+					row_height/2 );
 	}
 	/* set virtual coordinate on the same map */
 	else {
-		sdl_set_virtual_x(	ctx->pos_x * next_col_width + 
-					ctx->pos_y * next_row_width +
-					next_col_width/2 +
-					next_row_width/2 );
-		sdl_set_virtual_y(	ctx->pos_x * next_col_height +
-					ctx->pos_y * next_row_height +
-				 	next_col_height/2 +
-					next_row_height/2 );
+		sdl_set_virtual_x(	ctx->pos_x * col_width + 
+					ctx->pos_y * row_width +
+					col_width/2 +
+					row_width/2 );
+		sdl_set_virtual_y(	ctx->pos_x * col_height +
+					ctx->pos_y * row_height +
+				 	col_height/2 +
+					row_height/2 );
 	}
 
 	entry_read_int(MAP_TABLE,ctx->map,&bg_red,MAP_KEY_BG_RED,NULL);
