@@ -136,6 +136,8 @@ static void draw_sprite(context_t * ctx, const char * image_file_name)
 	Uint32 current_time;
 	int angle;
 	int flip;
+	int force_flip;
+	int move_status;
 	char * zoom_str = NULL;
 	double zoom = 1.0;
 	double map_zoom = 0.0;
@@ -286,18 +288,25 @@ static void draw_sprite(context_t * ctx, const char * image_file_name)
 	}
 
 	/* Get flip configuration */
+	force_flip = 0;
+	entry_read_int(CHARACTER_TABLE,ctx->id,&force_flip,CHARACTER_KEY_FORCE_FLIP,NULL);
+	move_status = ctx->direction;
+	if( force_flip == true ) {
+		move_status = ctx->orientation;
+	}
+
 	flip = 0;
 	if( angle == 0 ) {
-		if( ctx->direction & NORTH ) {
+		if( move_status & NORTH ) {
 			entry_read_int(CHARACTER_TABLE,ctx->id,&flip,CHARACTER_KEY_DIR_N_FLIP,NULL);
 		}
-		if( ctx->direction & SOUTH ) {
+		if( move_status & SOUTH ) {
 			entry_read_int(CHARACTER_TABLE,ctx->id,&flip,CHARACTER_KEY_DIR_S_FLIP,NULL);
 		}
-		if( ctx->direction & WEST ) {
+		if( move_status & WEST ) {
 			entry_read_int(CHARACTER_TABLE,ctx->id,&flip,CHARACTER_KEY_DIR_W_FLIP,NULL);
 		}
-		if( ctx->direction & EAST ) {
+		if( move_status & EAST ) {
 			entry_read_int(CHARACTER_TABLE,ctx->id,&flip,CHARACTER_KEY_DIR_E_FLIP,NULL);
 		}
 
