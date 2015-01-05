@@ -723,7 +723,7 @@ static void compose_select(context_t * ctx)
 
 					/* get pixel coordinate from tile coordinate */
 					x = pos_x * col_width + pos_y * row_width;
-					y = pos_y * col_height + pos_y * row_height;
+					y = pos_x * col_height + pos_y * row_height;
 
 					/* Center on tile */
 					x -= (anim->w-tile_width)/2;
