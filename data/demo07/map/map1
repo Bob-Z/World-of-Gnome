@@ -1,7 +1,7 @@
 width = 32;
 height = 32;
 tile_width = 64;
-tile_height = 64;
+tile_height = 32;
 col_width = 32;
 col_height = -16;
 row_width = 32;
