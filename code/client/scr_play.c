@@ -431,9 +431,17 @@ static void compose_item(context_t * ctx)
 
 		x = x*col_width + y*row_width;
 		y = x*col_height + y*row_height;
-		/* Center sprite on tile */
-		x -= ((anim->w*map_zoom)-tile_width)/2;
-		y -= ((anim->h*map_zoom)-tile_height)/2;
+		/* Align on tile */
+		if( sprite_align == ALIGN_CENTER ) {
+			x -= ((anim->w*map_zoom)-tile_width)/2;
+			y -= ((anim->h*map_zoom)-tile_height)/2;
+		}
+		if( sprite_align == ALIGN_LOWER ) {
+			x -= ((anim->w*map_zoom)-tile_width)/2;
+			y -= (anim->h*map_zoom)-tile_height;
+		}
+
+		y += sprite_offset_y;
 
 		item_set_anim(item,x,y,anim);
 		item_set_zoom_x(item, map_zoom );
