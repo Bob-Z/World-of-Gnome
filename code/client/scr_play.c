@@ -38,6 +38,9 @@
 #define EAST (1<<2)
 #define WEST (1<<3)
 
+#define ALIGN_CENTER	0
+#define ALIGN_LOWER	1
+
 static item_t * item_list = NULL;
 static int change_map = 0;
 static int init = true;
@@ -53,6 +56,7 @@ static int col_width = -1;
 static int col_height = -1;
 static int row_width = -1;
 static int row_height = -1;
+static int sprite_align = ALIGN_CENTER;
 
 /**********************************
 **********************************/
@@ -127,7 +131,7 @@ if image_file_name is not NULL, this file is used as an image rather than the no
 static void draw_sprite(context_t * ctx, const char * image_file_name)
 {
 	char * sprite_name = NULL;
-	anim_t * anim;
+	anim_t * sprite;
 	item_t * item;
 	int x;
 	int y;
@@ -163,14 +167,14 @@ static void draw_sprite(context_t * ctx, const char * image_file_name)
 	}
 
 	if( image_file_name ) {
-		anim = imageDB_get_anim(player_context,image_file_name);
+		sprite = imageDB_get_anim(player_context,image_file_name);
 	} else {
 		if(!entry_read_string(CHARACTER_TABLE,ctx->id,&sprite_name,CHARACTER_KEY_SPRITE,NULL)) {
 			werr(LOGDEV,"Can't read sprite name for \"%s\"",ctx->id);
 			return;
 		}
 
-		anim = imageDB_get_anim(player_context,sprite_name);
+		sprite = imageDB_get_anim(player_context,sprite_name);
 		free(sprite_name);
 	}
 
@@ -251,13 +255,21 @@ static void draw_sprite(context_t * ctx, const char * image_file_name)
 		free(zoom_str);
 	}
 
-	/* Center sprite on tile */
-	x -= ((anim->w*map_zoom*zoom)-tile_width)/2;
-	y -= ((anim->h*map_zoom*zoom)-tile_height)/2;
-	ox -= ((anim->w*map_zoom*zoom)-tile_width)/2;
-	oy -= ((anim->h*map_zoom*zoom)-tile_height)/2;
+	/* Align sprite on tile */
+	if( sprite_align == ALIGN_CENTER ) {
+		x -= ((sprite->w*map_zoom*zoom)-tile_width)/2;
+		y -= ((sprite->h*map_zoom*zoom)-tile_height)/2;
+		ox -= ((sprite->w*map_zoom*zoom)-tile_width)/2;
+		oy -= ((sprite->h*map_zoom*zoom)-tile_height)/2;
+	}
+	if( sprite_align == ALIGN_LOWER ) {
+		x -= ((sprite->w*map_zoom*zoom)-tile_width)/2;
+		y -= (sprite->h*map_zoom*zoom)-tile_height ;
+		ox -= ((sprite->w*map_zoom*zoom)-tile_width)/2;
+		oy -= (sprite->h*map_zoom*zoom)-tile_height;
+	}
 
-	item_set_smooth_anim(item,x,y,ox,oy,ctx->pos_tick,anim);
+	item_set_smooth_anim(item,x,y,ox,oy,ctx->pos_tick,sprite);
 
 	/* Get rotation configuration */
 	angle = 0;
@@ -793,6 +805,7 @@ item_t * scr_play_compose(context_t * ctx)
                 entry_read_int(MAP_TABLE, ctx->map, &map_h,MAP_KEY_HEIGHT,NULL);
                 entry_read_int(MAP_TABLE, ctx->map, &tile_width,MAP_KEY_TILE_WIDTH,NULL);
                 entry_read_int(MAP_TABLE, ctx->map, &tile_height,MAP_KEY_TILE_HEIGHT,NULL);
+                entry_read_int(MAP_TABLE, ctx->map, &sprite_align,MAP_KEY_SPRITE_ALIGN,NULL);
 		use_next = false;
 		if(entry_read_int(MAP_TABLE, ctx->map, &col_width,MAP_KEY_COL_WIDTH,NULL)) {
 			if(entry_read_int(MAP_TABLE, ctx->map, &col_height,MAP_KEY_COL_HEIGHT,NULL)) {
