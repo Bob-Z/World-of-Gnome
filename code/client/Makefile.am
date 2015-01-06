@@ -1,3 +1,5 @@
+CC=clang
+
 bin_PROGRAMS=wog_client
 wog_client_SOURCES=main_client.c parser_client.c file_client.c imageDB.c client.c textview.c scr_select.c screen.c scr_play.c network_client.c ui_play.c option_client.c
 
