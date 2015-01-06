@@ -857,8 +857,8 @@ void context_add_or_update_from_network_frame(context_t * context,char * data)
 	char * id = NULL;
 	char * selected_character = NULL;
 	char * selected_map = NULL;
-	int selected_map_x = NULL;
-	int selected_map_y = NULL;
+	int selected_map_x = 0;
+	int selected_map_y = 0;
 	char * selected_equipment = NULL;
 	char * selected_item = NULL;
 
