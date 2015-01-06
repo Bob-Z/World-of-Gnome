@@ -58,6 +58,7 @@ static int row_width = -1;
 static int row_height = -1;
 static int sprite_align = ALIGN_CENTER;
 static int sprite_offset_y = 0;
+static double map_zoom = 0.0;
 
 /**********************************
 **********************************/
@@ -145,7 +146,6 @@ static void draw_sprite(context_t * ctx, const char * image_file_name)
 	int move_status;
 	char * zoom_str = NULL;
 	double zoom = 1.0;
-	double map_zoom = 0.0;
 
 	context_t * player_context = context_get_player();
 
@@ -157,14 +157,6 @@ static void draw_sprite(context_t * ctx, const char * image_file_name)
 	}
 	if( strcmp(ctx->map,player_context->map)) {
 		return;
-	}
-
-	if( map_zoom == 0.0 ) {
-		map_zoom = 1.0;
-		if(entry_read_string(MAP_TABLE,ctx->map,&zoom_str,MAP_KEY_SPRITE_ZOOM,NULL)) {
-			map_zoom = atof(zoom_str);
-			free(zoom_str);
-		}
 	}
 
 	if( image_file_name ) {
@@ -370,8 +362,6 @@ Compose item on map
 static void compose_item(context_t * ctx)
 {
 	char * sprite_name = NULL;
-	double map_zoom = 1.0;
-	char * zoom_str;
 	anim_t * anim;
 	item_t * item;
 	int x;
@@ -389,11 +379,6 @@ static void compose_item(context_t * ctx)
 
 	if(!entry_get_group_list(MAP_TABLE,ctx->map,&item_id,MAP_ENTRY_ITEM_LIST,NULL)) {
 		return;
-	}
-
-	if(entry_read_string(MAP_TABLE,ctx->map,&zoom_str,MAP_KEY_SPRITE_ZOOM,NULL)) {
-		map_zoom = atof(zoom_str);
-		free(zoom_str);
 	}
 
 	i=0;
@@ -781,6 +766,7 @@ item_t * scr_play_compose(context_t * ctx)
 	int bg_blue = 0;
 	int bg_green = 0;
 	char * map_filename;
+	char * zoom_str;
 
 	option = option_get();
 
@@ -819,6 +805,11 @@ item_t * scr_play_compose(context_t * ctx)
                 entry_read_int(MAP_TABLE, ctx->map, &tile_height,MAP_KEY_TILE_HEIGHT,NULL);
                 entry_read_int(MAP_TABLE, ctx->map, &sprite_align,MAP_KEY_SPRITE_ALIGN,NULL);
                 entry_read_int(MAP_TABLE, ctx->map, &sprite_offset_y,MAP_KEY_SPRITE_OFFSET_Y,NULL);
+		map_zoom = 1.0;
+		if(entry_read_string(MAP_TABLE,ctx->map,&zoom_str,MAP_KEY_SPRITE_ZOOM,NULL)) {
+			map_zoom = atof(zoom_str);
+			free(zoom_str);
+		}
 		use_next = false;
 		if(entry_read_int(MAP_TABLE, ctx->map, &col_width,MAP_KEY_COL_WIDTH,NULL)) {
 			if(entry_read_int(MAP_TABLE, ctx->map, &col_height,MAP_KEY_COL_HEIGHT,NULL)) {
