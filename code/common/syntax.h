@@ -93,6 +93,7 @@
 #define MAP_KEY_SPRITE_ZOOM	"sprite_zoom"
 /* sprite align : 0 = center 1 = lower */
 #define MAP_KEY_SPRITE_ALIGN	"sprite_align"
+#define MAP_KEY_SPRITE_OFFSET_Y	"sprite_offset_y"
 #define MAP_KEY_WIDTH		"width"
 #define MAP_KEY_HEIGHT		"height"
 #define MAP_KEY_TILE_WIDTH	"tile_width"

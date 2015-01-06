@@ -57,6 +57,7 @@ static int col_height = -1;
 static int row_width = -1;
 static int row_height = -1;
 static int sprite_align = ALIGN_CENTER;
+static int sprite_offset_y = 0;
 
 /**********************************
 **********************************/
@@ -268,6 +269,9 @@ static void draw_sprite(context_t * ctx, const char * image_file_name)
 		ox -= ((sprite->w*map_zoom*zoom)-tile_width)/2;
 		oy -= (sprite->h*map_zoom*zoom)-tile_height;
 	}
+
+	y += sprite_offset_y;
+	oy += sprite_offset_y;
 
 	item_set_smooth_anim(item,x,y,ox,oy,ctx->pos_tick,sprite);
 
@@ -806,6 +810,7 @@ item_t * scr_play_compose(context_t * ctx)
                 entry_read_int(MAP_TABLE, ctx->map, &tile_width,MAP_KEY_TILE_WIDTH,NULL);
                 entry_read_int(MAP_TABLE, ctx->map, &tile_height,MAP_KEY_TILE_HEIGHT,NULL);
                 entry_read_int(MAP_TABLE, ctx->map, &sprite_align,MAP_KEY_SPRITE_ALIGN,NULL);
+                entry_read_int(MAP_TABLE, ctx->map, &sprite_offset_y,MAP_KEY_SPRITE_OFFSET_Y,NULL);
 		use_next = false;
 		if(entry_read_int(MAP_TABLE, ctx->map, &col_width,MAP_KEY_COL_WIDTH,NULL)) {
 			if(entry_read_int(MAP_TABLE, ctx->map, &col_height,MAP_KEY_COL_HEIGHT,NULL)) {
