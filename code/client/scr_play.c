@@ -474,10 +474,10 @@ static void cb_redo_map(void *arg)
 
 /**************************************
 **************************************/
-static void cb_over(void *arg)
+static void cb_over(void *arg,int x,int y)
 {
 	item_t * item = (item_t*)arg;
-
+printf("x=%d, y=%d\n",x,y);
 	current_map_x = item->tile_x;
 	current_map_y = item->tile_y;
 }

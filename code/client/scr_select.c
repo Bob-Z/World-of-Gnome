@@ -94,7 +94,7 @@ static void cb_select(void * arg)
 
 /**********************************
 **********************************/
-static void cb_over(void * arg)
+static void cb_over(void * arg,int x,int y)
 {
 	current_character = (long)arg;
 }
