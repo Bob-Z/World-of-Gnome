@@ -477,7 +477,7 @@ static void cb_redo_map(void *arg)
 static void cb_over(void *arg,int x,int y)
 {
 	item_t * item = (item_t*)arg;
-printf("x=%d, y=%d\n",x,y);
+
 	current_map_x = item->tile_x;
 	current_map_y = item->tile_y;
 }
@@ -755,6 +755,12 @@ static void compose_select(context_t * ctx)
 			draw_sprite(selected_context, option->cursor_sprite);
 		}
 	}
+}
+
+/**********************************
+**********************************/
+void scr_play_frame_start(context_t * context)
+{
 }
 
 /**********************************

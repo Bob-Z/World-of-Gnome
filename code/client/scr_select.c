@@ -146,6 +146,12 @@ static void cb_wheel_down(Uint32 y, Uint32 unused)
 }
 
 /**********************************
+**********************************/
+void scr_select_frame_start(context_t * context)
+{
+}
+
+/**********************************
 Compose the character select screen
 **********************************/
 item_t * scr_select_compose(context_t * context)

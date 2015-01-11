@@ -44,6 +44,21 @@ void screen_compose()
 }
 
 /******************************************************
+Called at start of each frame
+******************************************************/
+static void frame_start(context_t * context)
+{
+	switch(current_screen) {
+	case SCREEN_SELECT:
+		scr_select_frame_start(context);
+		break;
+	case SCREEN_PLAY:
+		scr_play_frame_start(context);
+		break;
+	}
+}
+
+/******************************************************
 create a list of item for the currently selected screen
 ******************************************************/
 static void compose_scr(context_t * context)
@@ -75,6 +90,8 @@ void screen_display(context_t * ctx)
 	}
 
 	while( screen_end == -1) {
+
+		frame_start(ctx);
 
 		if(compose) {
 			compose = 0;

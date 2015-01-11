@@ -20,5 +20,6 @@
 #include "../sdl_item/item.h"
 
 item_t * scr_select_compose(context_t * context);
+void scr_select_frame_start(context_t * context);
 void scr_select_add_user_character(context_t * context, char * data);
 
