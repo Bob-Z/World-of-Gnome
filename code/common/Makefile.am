@@ -1,5 +1,3 @@
-CC=clang
-
 noinst_LIBRARIES=libcommon.a
 libcommon_a_SOURCES=util.c context.c network.c map.c entry.c log.c mutex.c item.c file.c list.c fifo.c
 libcommon_a_LIBADD=$(ADD_LIB)
