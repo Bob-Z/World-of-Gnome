@@ -184,6 +184,9 @@ void init_npc(void)
 	dirname = strconcat(base_directory,"/",CHARACTER_TABLE,NULL);
 
 	dir = opendir(dirname);
+	if(dir == NULL) {
+		return;
+	}
 	free(dirname);
 	while(( ent = readdir(dir)) != NULL ) {
 		// skip hidden file
