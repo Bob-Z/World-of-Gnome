@@ -149,6 +149,8 @@ static int async_recv(void * data)
 	context_set_socket(context,0);
 	context_set_socket_data(context,0);
 
+	screen_quit();
+
 	return 0;
 }
 
@@ -206,6 +208,8 @@ static int async_data_recv(void * data)
 	SDLNet_TCP_Close(context->socket_data);
 	context_set_socket(context,0);
 	context_set_socket_data(context,0);
+
+	screen_quit();
 
 	return 0;
 }
