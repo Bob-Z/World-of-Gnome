@@ -542,28 +542,23 @@ static int compose_map_set(context_t * ctx, int level)
 	entry_read_int(MAP_TABLE, ctx->map, &_map_w,buf,NULL);
 	sprintf(buf,"%s%d",MAP_KEY_HEIGHT,level);
 	entry_read_int(MAP_TABLE, ctx->map, &_map_h,buf,NULL);
-	use_next = false;
-	if(entry_read_int(MAP_TABLE, ctx->map, &_col_width,MAP_KEY_COL_WIDTH,NULL)) {
-		if(entry_read_int(MAP_TABLE, ctx->map, &_col_height,MAP_KEY_COL_HEIGHT,NULL)) {
-			if(entry_read_int(MAP_TABLE, ctx->map, &_row_width,MAP_KEY_ROW_WIDTH,NULL)) {
-				if(entry_read_int(MAP_TABLE, ctx->map, &_row_height,MAP_KEY_ROW_HEIGHT,NULL)) {
-					use_next = true;
-				}
-			}
-		}
-	}
 
-	if( use_next == false ) {
-		sprintf(buf,"%s%d",MAP_KEY_TILE_WIDTH,level);
-		entry_read_int(MAP_TABLE, ctx->map, &_tile_width,buf,NULL);
-		sprintf(buf,"%s%d",MAP_KEY_TILE_HEIGHT,level);
-		entry_read_int(MAP_TABLE, ctx->map, &_tile_height,buf,NULL);
+	/* Automatic tiling */
+	sprintf(buf,"%s%d",MAP_KEY_TILE_WIDTH,level);
+	entry_read_int(MAP_TABLE, ctx->map, &_tile_width,buf,NULL);
+	sprintf(buf,"%s%d",MAP_KEY_TILE_HEIGHT,level);
+	entry_read_int(MAP_TABLE, ctx->map, &_tile_height,buf,NULL);
 
-		_col_width = _tile_width;
-		_col_height = 0;
-		_row_width = 0;
-		_row_height = _tile_height;
-	}
+	_col_width = _tile_width;
+	_col_height = 0;
+	_row_width = 0;
+	_row_height = _tile_height;
+
+	/* Custom tiling */
+	entry_read_int(MAP_TABLE, ctx->map, &_col_width,MAP_KEY_COL_WIDTH,NULL);
+	entry_read_int(MAP_TABLE, ctx->map, &_col_height,MAP_KEY_COL_HEIGHT,NULL);
+	entry_read_int(MAP_TABLE, ctx->map, &_row_width,MAP_KEY_ROW_WIDTH,NULL);
+	entry_read_int(MAP_TABLE, ctx->map, &_row_height,MAP_KEY_ROW_HEIGHT,NULL);
 
 	while(tile_set[i] != NULL ) {
 		/* Skip empty tile */
@@ -816,22 +811,18 @@ item_t * scr_play_compose(context_t * ctx)
 			map_zoom = atof(zoom_str);
 			free(zoom_str);
 		}
-		use_next = false;
-		if(entry_read_int(MAP_TABLE, ctx->map, &col_width,MAP_KEY_COL_WIDTH,NULL)) {
-			if(entry_read_int(MAP_TABLE, ctx->map, &col_height,MAP_KEY_COL_HEIGHT,NULL)) {
-				if(entry_read_int(MAP_TABLE, ctx->map, &row_width,MAP_KEY_ROW_WIDTH,NULL)) {
-					if(entry_read_int(MAP_TABLE, ctx->map, &row_height,MAP_KEY_ROW_HEIGHT,NULL)) {
-						use_next = true;
-					}
-				}
-			}
-		}
-		if( use_next == false ) {
-			col_width = tile_width;
-			col_height = 0;
-			row_width = 0;
-			row_height = tile_height;
-		}
+
+		/* Automatic tiling */
+		col_width = tile_width;
+		col_height = 0;
+		row_width = 0;
+		row_height = tile_height;
+
+		/* Custom tiling */
+		entry_read_int(MAP_TABLE, ctx->map, &col_width,MAP_KEY_COL_WIDTH,NULL);
+		entry_read_int(MAP_TABLE, ctx->map, &col_height,MAP_KEY_COL_HEIGHT,NULL);
+		entry_read_int(MAP_TABLE, ctx->map, &row_width,MAP_KEY_ROW_WIDTH,NULL);
+		entry_read_int(MAP_TABLE, ctx->map, &row_height,MAP_KEY_ROW_HEIGHT,NULL);
 	}
 
 	compose_map(ctx);
