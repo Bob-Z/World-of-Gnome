@@ -532,10 +532,10 @@ static int compose_map_set(context_t * ctx, int level)
 	anim_t * anim;
 	item_t * item;
 	char buf[SMALL_BUF];
-	char ** value = NULL;
+	char ** tile_set = NULL;
 
 	sprintf(buf,"%s%d",MAP_KEY_SET,level);
-	if(!entry_read_list(MAP_TABLE, ctx->map, &value,buf,NULL)) {
+	if(!entry_read_list(MAP_TABLE, ctx->map, &tile_set,buf,NULL)) {
 		return 0;
 	}
 	sprintf(buf,"%s%d",MAP_KEY_WIDTH,level);
@@ -565,11 +565,11 @@ static int compose_map_set(context_t * ctx, int level)
 		_row_height = _tile_height;
 	}
 
-	while(value[i] != NULL ) {
+	while(tile_set[i] != NULL ) {
 		/* Skip empty tile */
-		if( value[i][0] != 0 ) {
+		if( tile_set[i][0] != 0 ) {
 			item = item_list_add(&item_list);
-			anim = imageDB_get_anim(ctx,value[i]);
+			anim = imageDB_get_anim(ctx,tile_set[i]);
 			item_set_anim(item,	x*_col_width + y*_row_width,
 						x*_col_height + y*_row_height,
 					anim);
@@ -583,7 +583,7 @@ static int compose_map_set(context_t * ctx, int level)
 		i++;
 	}
 
-	deep_free(value);
+	deep_free(tile_set);
 	return 1;
 }
 
@@ -599,20 +599,20 @@ static int compose_map_list(context_t * ctx, int level)
 	anim_t * anim;
 	item_t * item;
 	char buf[SMALL_BUF];
-	char ** value = NULL;
+	char ** tile_list = NULL;
 
 	sprintf(buf,"%s%d",MAP_KEY_LIST,level);
-	if(!entry_read_list(MAP_TABLE, ctx->map, &value,buf,NULL)) {
+	if(!entry_read_list(MAP_TABLE, ctx->map, &tile_list,buf,NULL)) {
 		return 0;
 	}
 
-	while(value[i] != NULL ) {
-		x = atoi(value[i]);
+	while(tile_list[i] != NULL ) {
+		x = atoi(tile_list[i]);
 		i++;
-		y = atoi(value[i]);
+		y = atoi(tile_list[i]);
 		i++;
 
-		anim = imageDB_get_anim(ctx,value[i]);
+		anim = imageDB_get_anim(ctx,tile_list[i]);
 
 		item = item_list_add(&item_list);
 		item_set_anim(item, x, y, anim);
@@ -621,7 +621,7 @@ static int compose_map_list(context_t * ctx, int level)
 		i++;
 	}
 
-	deep_free(value);
+	deep_free(tile_list);
 	return 1;
 }
 
