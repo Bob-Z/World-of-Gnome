@@ -523,10 +523,6 @@ static int compose_map_set(context_t * ctx, int level)
 	int _map_h = map_h;
 	int _tile_width = tile_width;
 	int _tile_height = tile_height;
-	int _col_width = col_width;
-	int _col_height = col_height;
-	int _row_width = row_width;
-	int _row_height = row_height;
 
 
 	anim_t * anim;
@@ -543,30 +539,18 @@ static int compose_map_set(context_t * ctx, int level)
 	sprintf(buf,"%s%d",MAP_KEY_HEIGHT,level);
 	entry_read_int(MAP_TABLE, ctx->map, &_map_h,buf,NULL);
 
-	/* Automatic tiling */
 	sprintf(buf,"%s%d",MAP_KEY_TILE_WIDTH,level);
 	entry_read_int(MAP_TABLE, ctx->map, &_tile_width,buf,NULL);
 	sprintf(buf,"%s%d",MAP_KEY_TILE_HEIGHT,level);
 	entry_read_int(MAP_TABLE, ctx->map, &_tile_height,buf,NULL);
-
-	_col_width = _tile_width;
-	_col_height = 0;
-	_row_width = 0;
-	_row_height = _tile_height;
-
-	/* Custom tiling */
-	entry_read_int(MAP_TABLE, ctx->map, &_col_width,MAP_KEY_COL_WIDTH,NULL);
-	entry_read_int(MAP_TABLE, ctx->map, &_col_height,MAP_KEY_COL_HEIGHT,NULL);
-	entry_read_int(MAP_TABLE, ctx->map, &_row_width,MAP_KEY_ROW_WIDTH,NULL);
-	entry_read_int(MAP_TABLE, ctx->map, &_row_height,MAP_KEY_ROW_HEIGHT,NULL);
 
 	while(tile_set[i] != NULL ) {
 		/* Skip empty tile */
 		if( tile_set[i][0] != 0 ) {
 			item = item_list_add(&item_list);
 			anim = imageDB_get_anim(ctx,tile_set[i]);
-			item_set_anim(item,	x*_col_width + y*_row_width,
-						x*_col_height + y*_row_height,
+			item_set_anim(item,	x*col_width + y*row_width,
+						x*col_height + y*row_height,
 					anim);
 		}
 
