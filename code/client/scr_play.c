@@ -41,6 +41,10 @@
 #define ALIGN_CENTER	0
 #define ALIGN_LOWER	1
 
+// Convert tiles coordinates into pixels coordinates
+#define T2P_X(x,y)  (x * col_width + y * row_width)
+#define T2P_Y(x,y)  (x * col_height + y * row_height)
+
 static item_t * item_list = NULL;
 static int change_map = 0;
 static int init = true;
@@ -237,10 +241,10 @@ static void draw_sprite(context_t * ctx, const char * image_file_name)
 	}
 
 	/* Get position in pixel */
-	x = ctx->cur_pos_x * col_width + ctx->cur_pos_y * row_width;
-	y = ctx->cur_pos_x * col_height + ctx->cur_pos_y * row_height;
-	ox = ctx->old_pos_x * col_width + ctx->old_pos_y * row_width;
-	oy = ctx->old_pos_x * col_height + ctx->old_pos_y * row_height;
+	x = T2P_X(ctx->cur_pos_x,ctx->cur_pos_y);
+	y = T2P_Y(ctx->cur_pos_x,ctx->cur_pos_y);
+	ox = T2P_X(ctx->old_pos_x,ctx->old_pos_y);
+	oy = T2P_Y(ctx->old_pos_x,ctx->old_pos_y);
 
 	/* Get per sprite zoom */
 	if(entry_read_string(CHARACTER_TABLE,ctx->id,&zoom_str,CHARACTER_KEY_ZOOM,NULL)) {
@@ -366,6 +370,8 @@ static void compose_item(context_t * ctx)
 	item_t * item;
 	int x;
 	int y;
+	int temp_x;
+	int temp_y;
 	char ** item_id;
 	int i;
 	static TTF_Font * font = NULL;
@@ -414,8 +420,10 @@ static void compose_item(context_t * ctx)
 		anim = imageDB_get_anim(ctx,sprite_name);
 		free(sprite_name);
 
-		x = x*col_width + y*row_width;
-		y = x*col_height + y*row_height;
+		temp_x = T2P_X(x,y);
+		temp_y = T2P_Y(x,y);
+		x = temp_x;
+		y = temp_y;
 		/* Align on tile */
 		if( sprite_align == ALIGN_CENTER ) {
 			x -= ((anim->w*map_zoom)-tile_width)/2;
@@ -499,8 +507,7 @@ static void compose_map_button(context_t * ctx)
 	for( y=0 ; y < map_h ; y++ ) {
 		for ( x=0 ; x < map_w ; x++ ) {
 			item = item_list_add(&item_list);
-			item_set_frame_shape(item,x*col_width+y*row_width,
-						 x*col_height+y*row_height,tile_width,tile_height);
+			item_set_frame_shape(item,T2P_X(x,y),T2P_Y(x,y),tile_width,tile_height);
 			item_set_tile(item,x,y);
 			item_set_click_left(item,cb_select_map,item,NULL);
 			item_set_click_right(item,cb_redo_map,item,NULL);
@@ -549,9 +556,7 @@ static int compose_map_set(context_t * ctx, int level)
 		if( tile_set[i][0] != 0 ) {
 			item = item_list_add(&item_list);
 			anim = imageDB_get_anim(ctx,tile_set[i]);
-			item_set_anim(item,	x*col_width + y*row_width,
-						x*col_height + y*row_height,
-					anim);
+			item_set_anim(item,T2P_X(x,y),T2P_Y(x,y),anim);
 		}
 
 		x++;
@@ -679,7 +684,7 @@ static void compose_type(context_t * ctx)
 			item_set_string(item,type);
 			item_set_font(item,font);
 			sdl_get_string_size(item->font,item->string,&w,&h);
-			item_set_frame_shape(item,x*col_width+y*row_width,x*col_height+y*row_height,w,h);
+			item_set_frame_shape(item,T2P_X(x,y),T2P_Y(x,y),w,h);
 		}
 	}
 }
@@ -710,8 +715,8 @@ static void compose_select(context_t * ctx)
 					item = item_list_add(&item_list);
 
 					/* get pixel coordinate from tile coordinate */
-					x = pos_x * col_width + pos_y * row_width;
-					y = pos_x * col_height + pos_y * row_height;
+					x = T2P_X(pos_x,pos_y);
+					y = T2P_Y(pos_x,pos_y);
 
 					/* Center on tile */
 					x -= (anim->w-tile_width)/2;
@@ -817,25 +822,13 @@ item_t * scr_play_compose(context_t * ctx)
 
 	/* force virtual coordinate on map change */
 	if(change_map) {
-		sdl_force_virtual_x(	ctx->pos_x * col_width + 
-					ctx->pos_y * row_width +
-					col_width/2 +
-					row_width/2 );
-		sdl_force_virtual_y(	ctx->pos_x * col_height +
-					ctx->pos_y * row_height +
-				 	col_height/2 +
-					row_height/2 );
+		sdl_force_virtual_x(T2P_X(ctx->pos_x,ctx->pos_y) + col_width/2 + row_width/2 );
+		sdl_force_virtual_y(T2P_Y(ctx->pos_x,ctx->pos_y) + col_height/2 + row_height/2 );
 	}
 	/* set virtual coordinate on the same map */
 	else {
-		sdl_set_virtual_x(	ctx->pos_x * col_width + 
-					ctx->pos_y * row_width +
-					col_width/2 +
-					row_width/2 );
-		sdl_set_virtual_y(	ctx->pos_x * col_height +
-					ctx->pos_y * row_height +
-				 	col_height/2 +
-					row_height/2 );
+		sdl_set_virtual_x(T2P_X(ctx->pos_x,ctx->pos_y) + col_width/2 + row_width/2 );
+		sdl_set_virtual_y(T2P_Y(ctx->pos_x,ctx->pos_y) + col_height/2 + row_height/2 );
 	}
 
 	entry_read_int(MAP_TABLE,ctx->map,&bg_red,MAP_KEY_BG_RED,NULL);
