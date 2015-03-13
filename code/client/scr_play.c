@@ -41,9 +41,12 @@
 #define ALIGN_CENTER	0
 #define ALIGN_LOWER	1
 
+#define MAX_COL		16
+#define MAX_ROW		16
+
 // Convert tiles coordinates into pixels coordinates
-#define T2P_X(x,y)  (x * col_width + y * row_width)
-#define T2P_Y(x,y)  (x * col_height + y * row_height)
+#define T2P_X(x,y)  (x * col_width[x%col_num] + y * row_width[y%row_num])
+#define T2P_Y(x,y)  (x * col_height[x%col_num] + y * row_height[y%row_num])
 
 static item_t * item_list = NULL;
 static int change_map = 0;
@@ -56,10 +59,12 @@ static int tile_height = -1;
 static int map_w = -1;
 static int map_h = -1;
 static int use_next = false;
-static int col_width = -1;
-static int col_height = -1;
-static int row_width = -1;
-static int row_height = -1;
+static int col_width[MAX_COL];
+static int col_height[MAX_COL];
+static int col_num = 0;
+static int row_width[MAX_ROW];
+static int row_height[MAX_ROW];
+static int row_num = 0;
 static int sprite_align = ALIGN_CENTER;
 static int sprite_offset_y = 0;
 static double map_zoom = 0.0;
@@ -802,16 +807,18 @@ item_t * scr_play_compose(context_t * ctx)
 		}
 
 		/* Automatic tiling */
-		col_width = tile_width;
-		col_height = 0;
-		row_width = 0;
-		row_height = tile_height;
+		col_num = 1;
+		col_width[0] = tile_width;
+		col_height[0] = 0;
+		row_num = 1;
+		row_width[0] = 0;
+		row_height[0] = tile_height;
 
 		/* Custom tiling */
-		entry_read_int(MAP_TABLE, ctx->map, &col_width,MAP_KEY_COL_WIDTH,NULL);
-		entry_read_int(MAP_TABLE, ctx->map, &col_height,MAP_KEY_COL_HEIGHT,NULL);
-		entry_read_int(MAP_TABLE, ctx->map, &row_width,MAP_KEY_ROW_WIDTH,NULL);
-		entry_read_int(MAP_TABLE, ctx->map, &row_height,MAP_KEY_ROW_HEIGHT,NULL);
+		entry_read_int(MAP_TABLE, ctx->map, &col_width[0],MAP_KEY_COL_WIDTH,NULL);
+		entry_read_int(MAP_TABLE, ctx->map, &col_height[0],MAP_KEY_COL_HEIGHT,NULL);
+		entry_read_int(MAP_TABLE, ctx->map, &row_width[0],MAP_KEY_ROW_WIDTH,NULL);
+		entry_read_int(MAP_TABLE, ctx->map, &row_height[0],MAP_KEY_ROW_HEIGHT,NULL);
 	}
 
 	compose_map(ctx);
@@ -822,13 +829,13 @@ item_t * scr_play_compose(context_t * ctx)
 
 	/* force virtual coordinate on map change */
 	if(change_map) {
-		sdl_force_virtual_x(T2P_X(ctx->pos_x,ctx->pos_y) + col_width/2 + row_width/2 );
-		sdl_force_virtual_y(T2P_Y(ctx->pos_x,ctx->pos_y) + col_height/2 + row_height/2 );
+		sdl_force_virtual_x(T2P_X(ctx->pos_x,ctx->pos_y) + col_width[ctx->pos_x%col_num]/2 + row_width[ctx->pos_y%row_num]/2 );
+		sdl_force_virtual_y(T2P_Y(ctx->pos_x,ctx->pos_y) + col_height[ctx->pos_x%col_num]/2 + row_height[ctx->pos_y%row_num]/2 );
 	}
 	/* set virtual coordinate on the same map */
 	else {
-		sdl_set_virtual_x(T2P_X(ctx->pos_x,ctx->pos_y) + col_width/2 + row_width/2 );
-		sdl_set_virtual_y(T2P_Y(ctx->pos_x,ctx->pos_y) + col_height/2 + row_height/2 );
+		sdl_set_virtual_x(T2P_X(ctx->pos_x,ctx->pos_y) + col_width[ctx->pos_x%col_num]/2 + row_width[ctx->pos_y%row_num]/2 );
+		sdl_set_virtual_y(T2P_Y(ctx->pos_x,ctx->pos_y) + col_height[ctx->pos_x%col_num]/2 + row_height[ctx->pos_y%row_num]/2 );
 	}
 
 	entry_read_int(MAP_TABLE,ctx->map,&bg_red,MAP_KEY_BG_RED,NULL);
