@@ -44,10 +44,6 @@
 #define MAX_COL		16
 #define MAX_ROW		16
 
-// Convert tiles coordinates into pixels coordinates
-#define T2P_X(x,y)  (x * col_width[x%col_num] + y * row_width[y%row_num])
-#define T2P_Y(x,y)  (x * col_height[x%col_num] + y * row_height[y%row_num])
-
 static item_t * item_list = NULL;
 static int change_map = 0;
 static int init = true;
@@ -61,12 +57,62 @@ static int map_h = -1;
 static int col_width[MAX_COL];
 static int col_height[MAX_COL];
 static int col_num = 0;
+static int col_width_total = 0;
+static int col_height_total = 0;
 static int row_width[MAX_ROW];
 static int row_height[MAX_ROW];
 static int row_num = 0;
+static int row_width_total = 0;
+static int row_height_total = 0;
 static int sprite_align = ALIGN_CENTER;
 static int sprite_offset_y = 0;
 static double map_zoom = 0.0;
+
+/**********************************
+ Convert tiles coordinates into pixels coordinates
+**********************************/
+int t2p_x(int x, int y)
+{
+	int i;
+	int res;
+
+	res = (x/col_num) * col_width_total;
+
+	for(i=0;i<x%col_num;i++) {
+		res += col_width[i];
+	}
+
+	res += (y/row_num) * row_width_total;
+
+	for(i=0;i<y%row_num;i++) {
+		res += row_width[i];
+	}
+
+	return res;
+}
+
+/**********************************
+ Convert tiles coordinates into pixels coordinates
+**********************************/
+int t2p_y(int x, int y)
+{
+	int i;
+	int res;
+
+	res = (x/col_num) * col_height_total;
+
+	for(i=0;i<x%col_num;i++) {
+		res += col_height[i];
+	}
+
+	res += (y/row_num) * row_height_total;
+
+	for(i=0;i<y%row_num;i++) {
+		res += row_height[i];
+	}
+
+	return res;
+}
 
 /**********************************
 **********************************/
@@ -245,10 +291,10 @@ static void draw_sprite(context_t * ctx, const char * image_file_name)
 	}
 
 	/* Get position in pixel */
-	x = T2P_X(ctx->cur_pos_x,ctx->cur_pos_y);
-	y = T2P_Y(ctx->cur_pos_x,ctx->cur_pos_y);
-	ox = T2P_X(ctx->old_pos_x,ctx->old_pos_y);
-	oy = T2P_Y(ctx->old_pos_x,ctx->old_pos_y);
+	x = t2p_x(ctx->cur_pos_x,ctx->cur_pos_y);
+	y = t2p_y(ctx->cur_pos_x,ctx->cur_pos_y);
+	ox = t2p_x(ctx->old_pos_x,ctx->old_pos_y);
+	oy = t2p_y(ctx->old_pos_x,ctx->old_pos_y);
 
 	/* Get per sprite zoom */
 	if(entry_read_string(CHARACTER_TABLE,ctx->id,&zoom_str,CHARACTER_KEY_ZOOM,NULL)) {
@@ -424,8 +470,8 @@ static void compose_item(context_t * ctx)
 		anim = imageDB_get_anim(ctx,sprite_name);
 		free(sprite_name);
 
-		temp_x = T2P_X(x,y);
-		temp_y = T2P_Y(x,y);
+		temp_x = t2p_x(x,y);
+		temp_y = t2p_y(x,y);
 		x = temp_x;
 		y = temp_y;
 		/* Align on tile */
@@ -511,7 +557,7 @@ static void compose_map_button(context_t * ctx)
 	for( y=0 ; y < map_h ; y++ ) {
 		for ( x=0 ; x < map_w ; x++ ) {
 			item = item_list_add(&item_list);
-			item_set_frame_shape(item,T2P_X(x,y),T2P_Y(x,y),tile_width,tile_height);
+			item_set_frame_shape(item,t2p_x(x,y),t2p_y(x,y),tile_width,tile_height);
 			item_set_tile(item,x,y);
 			item_set_click_left(item,cb_select_map,item,NULL);
 			item_set_click_right(item,cb_redo_map,item,NULL);
@@ -560,7 +606,7 @@ static int compose_map_set(context_t * ctx, int level)
 		if( tile_set[i][0] != 0 ) {
 			item = item_list_add(&item_list);
 			anim = imageDB_get_anim(ctx,tile_set[i]);
-			item_set_anim(item,T2P_X(x,y),T2P_Y(x,y),anim);
+			item_set_anim(item,t2p_x(x,y),t2p_y(x,y),anim);
 		}
 
 		x++;
@@ -688,7 +734,7 @@ static void compose_type(context_t * ctx)
 			item_set_string(item,type);
 			item_set_font(item,font);
 			sdl_get_string_size(item->font,item->string,&w,&h);
-			item_set_frame_shape(item,T2P_X(x,y),T2P_Y(x,y),w,h);
+			item_set_frame_shape(item,t2p_x(x,y),t2p_y(x,y),w,h);
 		}
 	}
 }
@@ -719,8 +765,8 @@ static void compose_select(context_t * ctx)
 					item = item_list_add(&item_list);
 
 					/* get pixel coordinate from tile coordinate */
-					x = T2P_X(pos_x,pos_y);
-					y = T2P_Y(pos_x,pos_y);
+					x = t2p_x(pos_x,pos_y);
+					y = t2p_y(pos_x,pos_y);
 
 					/* Center on tile */
 					x -= (anim->w-tile_width)/2;
@@ -828,15 +874,18 @@ item_t * scr_play_compose(context_t * ctx)
 			more = false;
 			col_width[i]=0;
 			col_height[i]=0;
-			sprintf(keyword,"MAP_KEY_COL_WIDTH%d",i);
+			sprintf(keyword,"%s%d",MAP_KEY_COL_WIDTH,i);
 			if( entry_read_int(MAP_TABLE, ctx->map, &col_width[i],keyword,NULL) ) {
 				more = true;
 			}
-			sprintf(keyword,"MAP_KEY_COL_HEIGHT%d",i);
+			sprintf(keyword,"%s%d",MAP_KEY_COL_HEIGHT,i);
 			if( entry_read_int(MAP_TABLE, ctx->map, &col_height[i],keyword,NULL) ) {
 				more = true;
 			}
 			i++;
+			if(more) {
+				col_num++;
+			}
 		}
 		more = true;
 		i = 1;
@@ -844,15 +893,32 @@ item_t * scr_play_compose(context_t * ctx)
 			more = false;
 			row_width[i]=0;
 			row_height[i]=0;
-			sprintf(keyword,"MAP_KEY_ROW_WIDTH%d",i);
+			sprintf(keyword,"%s%d",MAP_KEY_ROW_WIDTH,i);
 			if( entry_read_int(MAP_TABLE, ctx->map, &row_width[i],keyword,NULL) ) {
 				more = true;
 			}
-			sprintf(keyword,"MAP_KEY_ROW_HEIGHT%d",i);
+			sprintf(keyword,"%s%d",MAP_KEY_ROW_HEIGHT,i);
 			if( entry_read_int(MAP_TABLE, ctx->map, &row_height[i],keyword,NULL) ) {
 				more = true;
 			}
 			i++;
+			if(more) {
+				row_num++;
+			}
+		}
+
+
+		for(i=0,col_width_total=0;i<col_num;i++) {
+			col_width_total += col_width[i];
+		}
+		for(i=0,col_height_total=0;i<col_num;i++) {
+			col_height_total += col_height[i];
+		}
+		for(i=0,row_width_total=0;i<row_num;i++) {
+			row_width_total += row_width[i];
+		}
+		for(i=0,row_height_total=0;i<row_num;i++) {
+			row_height_total += row_height[i];
 		}
 	}
 
@@ -864,13 +930,13 @@ item_t * scr_play_compose(context_t * ctx)
 
 	/* force virtual coordinate on map change */
 	if(change_map) {
-		sdl_force_virtual_x(T2P_X(ctx->pos_x,ctx->pos_y) + col_width[ctx->pos_x%col_num]/2 + row_width[ctx->pos_y%row_num]/2 );
-		sdl_force_virtual_y(T2P_Y(ctx->pos_x,ctx->pos_y) + col_height[ctx->pos_x%col_num]/2 + row_height[ctx->pos_y%row_num]/2 );
+		sdl_force_virtual_x(t2p_x(ctx->pos_x,ctx->pos_y) + col_width[ctx->pos_x%col_num]/2 + row_width[ctx->pos_y%row_num]/2 );
+		sdl_force_virtual_y(t2p_y(ctx->pos_x,ctx->pos_y) + col_height[ctx->pos_x%col_num]/2 + row_height[ctx->pos_y%row_num]/2 );
 	}
 	/* set virtual coordinate on the same map */
 	else {
-		sdl_set_virtual_x(T2P_X(ctx->pos_x,ctx->pos_y) + col_width[ctx->pos_x%col_num]/2 + row_width[ctx->pos_y%row_num]/2 );
-		sdl_set_virtual_y(T2P_Y(ctx->pos_x,ctx->pos_y) + col_height[ctx->pos_x%col_num]/2 + row_height[ctx->pos_y%row_num]/2 );
+		sdl_set_virtual_x(t2p_x(ctx->pos_x,ctx->pos_y) + col_width[ctx->pos_x%col_num]/2 + row_width[ctx->pos_y%row_num]/2 );
+		sdl_set_virtual_y(t2p_y(ctx->pos_x,ctx->pos_y) + col_height[ctx->pos_x%col_num]/2 + row_height[ctx->pos_y%row_num]/2 );
 	}
 
 	entry_read_int(MAP_TABLE,ctx->map,&bg_red,MAP_KEY_BG_RED,NULL);
