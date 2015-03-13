@@ -58,7 +58,6 @@ static int tile_width = -1;
 static int tile_height = -1;
 static int map_w = -1;
 static int map_h = -1;
-static int use_next = false;
 static int col_width[MAX_COL];
 static int col_height[MAX_COL];
 static int col_num = 0;
