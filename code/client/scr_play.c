@@ -762,6 +762,9 @@ item_t * scr_play_compose(context_t * ctx)
 	int bg_green = 0;
 	char * map_filename;
 	char * zoom_str;
+	int i;
+	char keyword[SMALL_BUF];
+	int more;
 
 	option = option_get();
 
@@ -819,6 +822,39 @@ item_t * scr_play_compose(context_t * ctx)
 		entry_read_int(MAP_TABLE, ctx->map, &col_height[0],MAP_KEY_COL_HEIGHT,NULL);
 		entry_read_int(MAP_TABLE, ctx->map, &row_width[0],MAP_KEY_ROW_WIDTH,NULL);
 		entry_read_int(MAP_TABLE, ctx->map, &row_height[0],MAP_KEY_ROW_HEIGHT,NULL);
+		/* Additionnal custom tiling */
+		more = true;
+		i = 1;
+		while(more) {
+			more = false;
+			col_width[i]=0;
+			col_height[i]=0;
+			sprintf(keyword,"MAP_KEY_COL_WIDTH%d",i);
+			if( entry_read_int(MAP_TABLE, ctx->map, &col_width[i],keyword,NULL) ) {
+				more = true;
+			}
+			sprintf(keyword,"MAP_KEY_COL_HEIGHT%d",i);
+			if( entry_read_int(MAP_TABLE, ctx->map, &col_height[i],keyword,NULL) ) {
+				more = true;
+			}
+			i++;
+		}
+		more = true;
+		i = 1;
+		while(more) {
+			more = false;
+			row_width[i]=0;
+			row_height[i]=0;
+			sprintf(keyword,"MAP_KEY_ROW_WIDTH%d",i);
+			if( entry_read_int(MAP_TABLE, ctx->map, &row_width[i],keyword,NULL) ) {
+				more = true;
+			}
+			sprintf(keyword,"MAP_KEY_ROW_HEIGHT%d",i);
+			if( entry_read_int(MAP_TABLE, ctx->map, &row_height[i],keyword,NULL) ) {
+				more = true;
+			}
+			i++;
+		}
 	}
 
 	compose_map(ctx);
