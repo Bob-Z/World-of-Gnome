@@ -606,7 +606,13 @@ static int compose_map_set(context_t * ctx, int level)
 		if( tile_set[i][0] != 0 ) {
 			item = item_list_add(&item_list);
 			anim = imageDB_get_anim(ctx,tile_set[i]);
-			item_set_anim(item,t2p_x(x,y),t2p_y(x,y),anim);
+			/* FIXME: allow custom tiling only for level 0 */
+			if( level == 0 ) {
+				item_set_anim(item,t2p_x(x,y),t2p_y(x,y),anim);
+			}
+			else {
+				item_set_anim(item, x*_tile_width, y*_tile_height, anim);
+			}
 		}
 
 		x++;
