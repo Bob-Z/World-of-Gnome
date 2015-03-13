@@ -18,6 +18,7 @@
 */
 
 #include "../common/common.h"
+#include "screen.h"
 
 /*********************************************************************
 sends a login request, the answer is asynchronously read by async_recv
