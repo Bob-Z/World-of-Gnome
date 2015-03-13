@@ -1,0 +1,13 @@
+marquee		= "";
+sprite		= "sprite/orb-small-defend.png";
+type		= "orb"
+map		= "map1";
+pos_x		= 8;
+pos_y		= 8;
+flip_e          = 1;
+flip_s          = 1;
+force_flip      = 1;
+ai		= "ai/ai_random.lua";
+action		= [ ];
+#allowed_tile_script	= "allowed_tile/ground_stair.lua";
+#inventory	= [ ];  

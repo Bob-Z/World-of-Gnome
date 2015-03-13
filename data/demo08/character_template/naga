@@ -1,0 +1,12 @@
+marquee		= "marquee/esanoo.png";
+sprite		= "sprite/guardian.png";
+type		= "naga"
+map		= "map1";
+pos_x		= 16;
+pos_y		= 16;
+flip_e          = 1;
+flip_s          = 1;
+force_flip      = 1;
+action		= [ ];
+#allowed_tile_script	= "allowed_tile/ground_stair.lua";
+#inventory	= [ ];  
