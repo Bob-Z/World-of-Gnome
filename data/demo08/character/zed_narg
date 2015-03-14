@@ -1,5 +1,5 @@
-marquee		= "marquee/esanoo.png";
-sprite		= "sprite/guardian.png";
+marquee		= "marquee/naga.png";
+sprite		= "sprite/naga.png";
 name		= "Narg";
 type		= "naga";
 map		= "map1";

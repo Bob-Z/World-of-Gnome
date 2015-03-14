@@ -1,5 +1,5 @@
-marquee		= "marquee/nym.png";
-sprite		= "sprite/archer+female-bow.png";
+marquee		= "marquee/elf_female.png";
+sprite		= "sprite/elf_female-bow.png";
 name		= "Lyl";
 type		= "elf";
 map		= "map1";
