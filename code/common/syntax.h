@@ -98,6 +98,8 @@
 #define MAP_KEY_HEIGHT		"height"
 #define MAP_KEY_TILE_WIDTH	"tile_width"
 #define MAP_KEY_TILE_HEIGHT	"tile_height"
+/* Custom tiling */
+#define MAP_KEY_CUST_TILE_LEVEL	"cust_tile_level"
 #define MAP_KEY_COL_WIDTH	"col_width"
 #define MAP_KEY_COL_HEIGHT	"col_height"
 #define MAP_KEY_ROW_WIDTH	"row_width"

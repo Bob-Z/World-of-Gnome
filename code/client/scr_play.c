@@ -54,6 +54,7 @@ static int tile_width = -1;
 static int tile_height = -1;
 static int map_w = -1;
 static int map_h = -1;
+static int cust_tile_level = 0;
 static int col_width[MAX_COL];
 static int col_height[MAX_COL];
 static int col_num = 0;
@@ -606,8 +607,7 @@ static int compose_map_set(context_t * ctx, int level)
 		if( tile_set[i][0] != 0 ) {
 			item = item_list_add(&item_list);
 			anim = imageDB_get_anim(ctx,tile_set[i]);
-			/* FIXME: allow custom tiling only for level 0 */
-			if( level == 0 ) {
+			if( level == cust_tile_level ) {
 				item_set_anim(item,t2p_x(x,y),t2p_y(x,y),anim);
 			}
 			else {
@@ -869,6 +869,7 @@ item_t * scr_play_compose(context_t * ctx)
 		row_height[0] = tile_height;
 
 		/* Custom tiling */
+		entry_read_int(MAP_TABLE, ctx->map, &cust_tile_level,MAP_KEY_CUST_TILE_LEVEL,NULL);
 		entry_read_int(MAP_TABLE, ctx->map, &col_width[0],MAP_KEY_COL_WIDTH,NULL);
 		entry_read_int(MAP_TABLE, ctx->map, &col_height[0],MAP_KEY_COL_HEIGHT,NULL);
 		entry_read_int(MAP_TABLE, ctx->map, &row_width[0],MAP_KEY_ROW_WIDTH,NULL);
