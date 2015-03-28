@@ -700,11 +700,11 @@ char ** map_get_item(const char * map, int layer, int map_x, int map_y)
 		return NULL;
 	}
 
+	sprintf(layer_name,"%s%d",MAP_KEY_LAYER,layer);
+
 	if(!entry_get_group_list(MAP_TABLE,map,&item_id,layer_name,MAP_ENTRY_ITEM_LIST,NULL)) {
 		return NULL;
 	}
-
-	sprintf(layer_name,"%s%d",MAP_KEY_LAYER,layer);
 
 	i=0;
 	while( item_id[i] != NULL ) {
