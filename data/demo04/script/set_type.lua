@@ -8,6 +8,6 @@ if x == -1 or y == -1 then
 	return
 end
 map = character_get_map(id)
-map_set_tile_type(map,tile_type,x,y)
+map_set_tile_type(map,0,tile_type,x,y)
 
 end
