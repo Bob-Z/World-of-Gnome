@@ -87,7 +87,6 @@
 
 #define MAP_ENTRY_ITEM_LIST 	"item_list"
 #define MAP_ENTRY_EVENT_LIST 	"event_list"
-/* Tile set definition file : property of each tile (starting with it's associated picture) */
 #define MAP_DESCRIPTION		"description"
 #define MAP_KEY_SPRITE_LEVEL	"sprite_level"
 #define MAP_KEY_SPRITE_ZOOM	"sprite_zoom"
