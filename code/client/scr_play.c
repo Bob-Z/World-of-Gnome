@@ -638,7 +638,7 @@ static void compose_map_set(context_t * ctx, int layer_index)
 /**********************************
 Draw the "list" keyword of a layer
 **********************************/
-static void compose_map_list(context_t * ctx, char * layer_name)
+static void compose_map_list(context_t * ctx, int layer_index)
 {
 	int i = 0;
 	int x = 0;
@@ -646,7 +646,9 @@ static void compose_map_list(context_t * ctx, char * layer_name)
 	anim_t * anim;
 	item_t * item;
 	char ** tile_list = NULL;
+	char layer_name[SMALL_BUF];
 
+	sprintf(layer_name,"%s%d",MAP_KEY_LAYER,layer_index);
 	if(!entry_read_list(MAP_TABLE, ctx->map, &tile_list,layer_name,MAP_KEY_LIST,NULL)) {
 		return;
 	}
@@ -919,7 +921,7 @@ item_t * scr_play_compose(context_t * ctx)
 		}
 
 		compose_map_set(ctx,layer_index);
-		compose_map_list(ctx,layer_name);
+		compose_map_list(ctx,layer_index);
 		compose_item(ctx,layer_index);
 		compose_sprite(ctx,layer_index);
 		compose_map_button(ctx,layer_index);
