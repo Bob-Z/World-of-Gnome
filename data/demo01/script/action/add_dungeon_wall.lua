@@ -8,7 +8,7 @@ if x == -1 or y == -1 then
 	return
 end
 map = character_get_map(id)
-map_set_tile(map,"tile/dungeon_wall.gif",x,y,0)
-map_set_tile_type(map,"wall",x,y)
+map_set_tile(map,0,"tile/dungeon_wall.gif",x,y)
+map_set_tile_type(map,0,"wall",x,y)
 
 end

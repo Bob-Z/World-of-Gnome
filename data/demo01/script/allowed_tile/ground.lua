@@ -1,6 +1,6 @@
 function f (id,map,x, y)
 
-tile_type = map_get_tile_type(map,x,y)
+tile_type = map_get_tile_type(map,0,x,y)
 
 if tile_type == "ground" then
 	return 1

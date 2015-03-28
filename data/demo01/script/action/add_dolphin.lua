@@ -10,7 +10,7 @@ if x == -1 or y == -1 then
 end
 map = character_get_map(player)
 
-id = character_create_from_template("dolphin",map,x,y)
+id = character_create_from_template("dolphin",map,0,x,y)
 if id == nil then
         print_text_id(player, "Cannot create dolphin here")
         return

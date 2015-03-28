@@ -12,11 +12,11 @@ map = character_get_map(player)
 
 r = math.random(1,3)
 if r == 1 then
-        id = character_create_from_template("flower1",map,x,y)
+        id = character_create_from_template("flower1",map,0,x,y)
 elseif r == 2 then
-        id = character_create_from_template("flower2",map,x,y)
+        id = character_create_from_template("flower2",map,0,x,y)
 else
-        id = character_create_from_template("flower3",map,x,y)
+        id = character_create_from_template("flower3",map,0,x,y)
 end
 
 if id == nil then

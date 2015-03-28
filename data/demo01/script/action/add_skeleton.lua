@@ -10,7 +10,7 @@ if x == -1 or y == -1 then
 end
 map = character_get_map(player)
 
-id = character_create_from_template("skeleton",map,x,y)
+id = character_create_from_template("skeleton",map,0,x,y)
 if id == nil then
         print_text_id(player, "Cannot create skeleton here")
         return
