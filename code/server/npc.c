@@ -98,8 +98,6 @@ void instantiate_npc(const char * id)
 	int is_npc;
 	int x;
 	int y;
-	int map_w;
-	int map_h;
 	context_t * ctx;
 	char buf[512];
 
@@ -125,16 +123,6 @@ void instantiate_npc(const char * id)
 		return;
 	}
 
-	if(!entry_read_int(MAP_TABLE,map,&map_w,MAP_KEY_WIDTH,NULL)) {
-		free(map);
-		return;
-	}
-
-	if(!entry_read_int(MAP_TABLE,map,&map_h,MAP_KEY_HEIGHT,NULL)) {
-		free(map);
-		return;
-	}
-
 	if(!entry_read_string(CHARACTER_TABLE,id,&name,CHARACTER_KEY_NAME,NULL)) {
 		name = strdup("");
 	}
@@ -154,10 +142,7 @@ void instantiate_npc(const char * id)
 	context_set_connected(ctx,true);
 	context_set_map(ctx,map);
 	free(map);
-#if 0
-	context_set_map_w(ctx,map_w);
-	context_set_map_h(ctx,map_h);
-#endif
+
 	context_set_type(ctx,type);
 	free(type);
 	context_set_pos_x(ctx,x);

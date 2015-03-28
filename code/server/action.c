@@ -50,6 +50,7 @@ static int l_player_get_id( lua_State* L)
 Input:
  - character template name
  - map of the newly created character
+ - layer of the newly created character
  - x ...
  - y ...
 Output:
@@ -59,6 +60,7 @@ static int l_character_create_from_template( lua_State* L)
 {
 	const char * template;
 	const char * map;
+	int layer;
 	int x;
 	int y;
 
@@ -70,10 +72,11 @@ static int l_character_create_from_template( lua_State* L)
 	lua_pop(L,1);
 
 	template = luaL_checkstring(L, -4);
-	map = luaL_checkstring(L, -3);
+	map = luaL_checkstring(L, -4);
+	layer = luaL_checkint(L, -3);
 	x = luaL_checkint(L, -2);
 	y = luaL_checkint(L, -1);
-	res = character_create_from_template(ctx,template,map,x,y);
+	res = character_create_from_template(ctx,template,map,layer,x,y);
 	lua_pushstring(L, res);
 	if( res) {
 		free(res);
@@ -349,6 +352,8 @@ static int l_character_get_map_w( lua_State* L)
 	context_t * target;
 	const char * id;
 	int map_w = -1;
+	int player_layer = 0;
+	char layer_name[SMALL_BUF];
 
 	id = luaL_checkstring(L, -1);
 	target = context_find(id);
@@ -357,7 +362,9 @@ static int l_character_get_map_w( lua_State* L)
 		return 0;  /* number of results */
 	}
 
-	entry_read_int(MAP_TABLE,target->map,&map_w,MAP_KEY_WIDTH,NULL);
+	entry_read_int(CHARACTER_TABLE,target->id,&player_layer,CHARACTER_KEY_LAYER,NULL);
+	sprintf(layer_name,"%s%d",MAP_KEY_LAYER,player_layer);
+	entry_read_int(MAP_TABLE,target->map,&map_w,layer_name,MAP_KEY_WIDTH,NULL);
 
 	lua_pushnumber(L, map_w);
 	return 1;  /* number of results */
@@ -373,6 +380,8 @@ static int l_character_get_map_h( lua_State* L)
 	context_t * target;
 	const char * id;
 	int map_h = -1;
+	int player_layer = 0;
+	char layer_name[SMALL_BUF];
 
 	id = luaL_checkstring(L, -1);
 	target = context_find(id);
@@ -381,7 +390,9 @@ static int l_character_get_map_h( lua_State* L)
 		return 0;  /* number of results */
 	}
 
-	entry_read_int(MAP_TABLE,target->map,&map_h,MAP_KEY_HEIGHT,NULL);
+	entry_read_int(CHARACTER_TABLE,target->id,&player_layer,CHARACTER_KEY_LAYER,NULL);
+	sprintf(layer_name,"%s%d",MAP_KEY_LAYER,player_layer);
+	entry_read_int(MAP_TABLE,target->map,&map_h,layer_name,MAP_KEY_HEIGHT,NULL);
 
 	lua_pushnumber(L, map_h);
 	return 1;  /* number of results */
@@ -537,6 +548,7 @@ May fail with regard to allowed tiles
 Input:
  - ID of a character
  - ID of the map to set
+ - layer of the map
  - X cooridnate in the map
  - Y cooridnate in the map
 Output:
@@ -546,18 +558,20 @@ static int l_character_set_pos( lua_State* L)
 {
 	const char * id;
 	const char * map;
+	int layer;
 	int x;
 	int y;
 	int res;
 	context_t * ctx;
 
-	id = luaL_checkstring(L, -4);
-	map = luaL_checkstring(L, -3);
+	id = luaL_checkstring(L, -5);
+	map = luaL_checkstring(L, -4);
+	layer = luaL_checkint(L, -3);
 	x = luaL_checkint(L, -2);
 	y = luaL_checkint(L, -1);
 
 	ctx = context_find(id);
-	res = character_set_pos(ctx,map,x,y);
+	res = character_set_pos(ctx,map,layer,x,y);
 	lua_pushnumber(L, res);
 	return 1;  /* number of results */
 }
@@ -659,6 +673,7 @@ Create a map
 
 Input:
  - Suggested file name (if empty an available name if automatically found)
+ - layer to be created
  - Width of map
  - Height of map
  - Width of tile (in pixels)
@@ -671,6 +686,7 @@ static int l_map_new( lua_State* L)
 {
 	char * map_name;
 	const char * suggested_name;
+	int layer;
 	int x;
 	int y;
 	int tile_x;
@@ -678,14 +694,15 @@ static int l_map_new( lua_State* L)
 	const char * default_tile;
 	const char * default_type;
 
-	suggested_name = luaL_checkstring(L, -7);
+	suggested_name = luaL_checkstring(L, -8);
+	layer = luaL_checkint(L, -7);
 	x = luaL_checkint(L, -6);
 	y = luaL_checkint(L, -5);
 	tile_x = luaL_checkint(L, -4);
 	tile_y = luaL_checkint(L, -3);
 	default_tile = luaL_checkstring(L, -2);
 	default_type = luaL_checkstring(L, -1);
-	map_name = map_new(suggested_name,x,y,tile_x,tile_y,default_tile,default_type);
+	map_name = map_new(suggested_name,layer,x,y,tile_x,tile_y,default_tile,default_type);
 	lua_pushstring(L, map_name);
 	free(map_name);
 	return 1;  /* number of results */
@@ -697,6 +714,7 @@ Set a tile in a map
 
 Input:
  - ID of a map
+ - layer of the map
  - ID of a tile
  - X coordinate of the tile to set
  - Y coordinate of the tile to set
@@ -706,18 +724,18 @@ Output:
 static int l_map_set_tile( lua_State* L)
 {
 	const char * map;
+	int layer;
 	const char * tile;
 	int x;
 	int y;
-	int level;
 	int res;
 
 	map = luaL_checkstring(L, -5);
-	tile = luaL_checkstring(L, -4);
-	x = luaL_checkint(L, -3);
-	y = luaL_checkint(L, -2);
-	level = luaL_checkint(L, -1);
-	res = map_set_tile(map, tile, x, y, level);
+	layer = luaL_checkint(L, -4);
+	tile = luaL_checkstring(L, -3);
+	x = luaL_checkint(L, -2);
+	y = luaL_checkint(L, -1);
+	res = map_set_tile(map, layer, tile, x, y);
 	lua_pushnumber(L, res);
 	return 1;  /* number of results */
 }
@@ -728,6 +746,7 @@ Set a type in a map
 
 Input:
  - ID of a map
+ - layer of the map
  - type
  - X coordinate of the tile to set
  - Y coordinate of the tile to set
@@ -736,16 +755,18 @@ Output:
 static int l_map_set_tile_type( lua_State* L)
 {
 	const char * map;
+	int layer;
 	const char * type;
 	int x;
 	int y;
 	int res;
 
-	map = luaL_checkstring(L, -4);
+	map = luaL_checkstring(L, -5);
+	layer = luaL_checkint(L, -4);
 	type = luaL_checkstring(L, -3);
 	x = luaL_checkint(L, -2);
 	y = luaL_checkint(L, -1);
-	res = map_set_tile_type(map, type, x, y);
+	res = map_set_tile_type(map,layer,type,x,y);
 	lua_pushnumber(L, res);
 	return 1;  /* number of results */
 }
@@ -833,6 +854,7 @@ Add an item on a map
 
 Input:
  - ID of a map
+ - Layer of the map
  - ID of an item
  - X coordinate in the map
  - Y coordinate in the map
@@ -841,16 +863,18 @@ Output:
 static int l_map_add_item( lua_State* L)
 {
 	const char * map;
+	int layer;
 	const char * item;
 	int x;
 	int y;
 	int res;
 
-	map = luaL_checkstring(L, -4);
+	map = luaL_checkstring(L, -5);
+	layer = luaL_checkint(L, -4);
 	item = luaL_checkstring(L, -3);
 	x = luaL_checkint(L, -2);
 	y = luaL_checkint(L, -1);
-	res = map_add_item(map,item,x,y);
+	res = map_add_item(map,layer,item,x,y);
 	lua_pushnumber(L, res);
 	return 1;  /* number of results */
 }
@@ -861,6 +885,7 @@ Remove an item from a map (only the first item found on the tile is deleted)
 
 Input:
  - ID of a map
+ - Layer of map
  - X coordinate in the map
  - Y coordinate in the map
 Output:
@@ -868,14 +893,16 @@ Output:
 static int l_map_delete_item( lua_State* L)
 {
 	const char * map;
+	int layer;
 	int x;
 	int y;
 	char * res;
 
-	map = luaL_checkstring(L, -3);
+	map = luaL_checkstring(L, -4);
+	layer = luaL_checkint(L, -3);
 	x = luaL_checkint(L, -2);
 	y = luaL_checkint(L, -1);
-	res = map_delete_item(map,x,y);
+	res = map_delete_item(map,layer,x,y);
 	lua_pushstring(L, res);
 	if(res) {
 		free(res);
@@ -889,6 +916,7 @@ Add an event on a map
 
 Input:
  - ID of a map
+ - Layer of the map
  - Event's script
  - X coordinate in the map
  - Y coordinate in the map
@@ -897,16 +925,18 @@ Output: Event ID
 static int l_map_add_event( lua_State* L)
 {
 	const char * map;
+	int layer;
 	const char * script;
 	int x;
 	int y;
 	char *res;
 
-	map = luaL_checkstring(L, -4);
+	map = luaL_checkstring(L, -5);
+	layer = luaL_checkint(L, -4);
 	script = luaL_checkstring(L, -3);
 	x = luaL_checkint(L, -2);
 	y = luaL_checkint(L, -1);
-	res = map_add_event(map,script,x,y);
+	res = map_add_event(map,layer,script,x,y);
 	lua_pushstring(L, res);
 	if(res) {
 		free(res);
@@ -920,6 +950,7 @@ Add a parameter to the given event
 
 Input:
  - ID of a map
+ - Layer of the map
  - ID of an event
  - parameter to add
 Output:
@@ -927,14 +958,16 @@ Output:
 static int l_map_add_event_param( lua_State* L)
 {
 	const char * map;
+	int layer;
 	const char * event_id;
 	const char * param;
 	int res;
 
-	map = luaL_checkstring(L, -3);
+	map = luaL_checkstring(L, -4);
+	layer = luaL_checkint(L, -3);
 	event_id = luaL_checkstring(L, -2);
 	param = luaL_checkstring(L, -1);
-	res = map_add_event_param(map,event_id,param);
+	res = map_add_event_param(map,layer,event_id,param);
 	lua_pushnumber(L, res);
 	return 1;  /* number of results */
 }
@@ -945,6 +978,7 @@ Add a parameter to the given event
 
 Input:
  - ID of a map
+ - Layer of the map
  - event's script
  - X coordinate (in tiles)
  - Y coordinate (in tiles)
@@ -953,16 +987,18 @@ Output:
 static int l_map_delete_event( lua_State* L)
 {
 	const char * map;
+	int layer;
 	const char * script;
 	int x;
 	int y;
 	int res;
 
-	map = luaL_checkstring(L, -4);
+	map = luaL_checkstring(L, -5);
+	layer = luaL_checkint(L, -4);
 	script = luaL_checkstring(L, -3);
 	x = luaL_checkint(L, -2);
 	y = luaL_checkint(L, -1);
-	res = map_delete_event(map,script,x,y);
+	res = map_delete_event(map,layer,script,x,y);
 	lua_pushnumber(L, res);
 	return 1;  /* number of results */
 }
@@ -1173,6 +1209,7 @@ Get tile ID of a given map
 
 Input:
  - ID of a map
+ - Layer of the map
  - X coordinate (in tiles)
  - Y coordinate (in tiles)
  - Map level
@@ -1181,16 +1218,16 @@ Output: ID of the tile
 static int l_map_get_tile( lua_State* L)
 {
 	const char * map;
+	int layer;
 	int x;
 	int y;
-	int level;
 	char * res;
 
 	map = luaL_checkstring(L, -4);
-	x = luaL_checkint(L, -3);
-	y = luaL_checkint(L, -2);
-	level = luaL_checkint(L, -1);
-	res = map_get_tile(map,x,y,level);
+	layer = luaL_checkint(L, -3);
+	x = luaL_checkint(L, -2);
+	y = luaL_checkint(L, -1);
+	res = map_get_tile(map,layer,x,y);
 	lua_pushstring(L, res);
 	if( res) {
 		free(res);
@@ -1204,6 +1241,7 @@ Get tile type of a given map
 
 Input:
  - ID of a map
+ - Layer of the map
  - X coordinate (in tiles)
  - Y coordinate (in tiles)
 Output: type of the tile
@@ -1211,14 +1249,16 @@ Output: type of the tile
 static int l_map_get_tile_type( lua_State* L)
 {
 	const char * map;
+	int layer;
 	int x;
 	int y;
 	char * res;
 
-	map = luaL_checkstring(L, -3);
+	map = luaL_checkstring(L, -4);
+	layer = luaL_checkint(L, -3);
 	x = luaL_checkint(L, -2);
 	y = luaL_checkint(L, -1);
-	res = map_get_tile_type(map,x,y);
+	res = map_get_tile_type(map,layer,x,y);
 	lua_pushstring(L, res);
 	free(res);
 	return 1;  /* number of results */
@@ -1230,6 +1270,7 @@ Get list of characters on a tile
 
 Input:
  - ID of a map
+ - Layer of the map
  - X coordinate (in tiles)
  - Y coordinate (in tiles)
 Output: Array of characters on that tile
@@ -1237,17 +1278,19 @@ Output: Array of characters on that tile
 static int l_map_get_character( lua_State* L)
 {
 	const char * map;
+	int layer;
 	int x;
 	int y;
 	char ** res;
 	char ** cur_res;
 	int res_num = 0;
 
-	map = luaL_checkstring(L, -3);
+	map = luaL_checkstring(L, -4);
+	layer = luaL_checkint(L, -3);
 	x = luaL_checkint(L, -2);
 	y = luaL_checkint(L, -1);
 
-	res = map_get_character(map,x,y);
+	res = map_get_character(map,layer,x,y);
 	if( res) {
 		cur_res = res;
 		while(*cur_res != NULL) {
@@ -1268,6 +1311,7 @@ Get list of item on a tile
 
 Input:
  - ID of a map
+ - Layer of the map
  - X coordinate (in tiles)
  - Y coordinate (in tiles)
 Output: Array of item on that tile
@@ -1275,17 +1319,19 @@ Output: Array of item on that tile
 static int l_map_get_item( lua_State* L)
 {
 	const char * map;
+	int layer;
 	int x;
 	int y;
 	char ** res;
 	char ** cur_res;
 	int res_num = 0;
 
-	map = luaL_checkstring(L, -3);
+	map = luaL_checkstring(L, -4);
+	layer = luaL_checkint(L, -3);
 	x = luaL_checkint(L, -2);
 	y = luaL_checkint(L, -1);
 
-	res = map_get_item(map,x,y);
+	res = map_get_item(map,layer,x,y);
 	if( res) {
 		cur_res = res;
 		while(*cur_res != NULL) {

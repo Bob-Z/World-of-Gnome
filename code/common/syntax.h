@@ -47,6 +47,10 @@
 #define CHARACTER_KEY_SPRITE	"sprite"
 #define CHARACTER_KEY_PORTRAIT	"portrait"
 #define CHARACTER_KEY_ZOOM	"zoom"
+#define CHARACTER_KEY_LAYER	"layer"
+/* sprite align : 0 = center 1 = lower */
+#define CHARACTER_KEY_ALIGN	"align"
+#define CHARACTER_KEY_OFFSET_Y	"offset_y"
 #define CHARACTER_KEY_TYPE	"type"
 #define CHARACTER_KEY_MAP	"map"
 #define	CHARACTER_KEY_POS_X	"pos_x"
@@ -84,21 +88,19 @@
 
 /* map data */
 #define MAP_TABLE		"map"
-
-#define MAP_ENTRY_ITEM_LIST 	"item_list"
-#define MAP_ENTRY_EVENT_LIST 	"event_list"
 #define MAP_DESCRIPTION		"description"
-#define MAP_KEY_SPRITE_LEVEL	"sprite_level"
-#define MAP_KEY_SPRITE_ZOOM	"sprite_zoom"
-/* sprite align : 0 = center 1 = lower */
-#define MAP_KEY_SPRITE_ALIGN	"sprite_align"
-#define MAP_KEY_SPRITE_OFFSET_Y	"sprite_offset_y"
+#define MAP_KEY_BG_RED		"bg_red"
+#define MAP_KEY_BG_BLUE		"bg_blue"
+#define MAP_KEY_BG_GREEN	"bg_green"
+#define MAP_KEY_WARP_X		"warp_x"
+#define MAP_KEY_WARP_Y		"warp_y"
+/* layer data*/
+#define MAP_KEY_LAYER		"layer"
 #define MAP_KEY_WIDTH		"width"
 #define MAP_KEY_HEIGHT		"height"
 #define MAP_KEY_TILE_WIDTH	"tile_width"
 #define MAP_KEY_TILE_HEIGHT	"tile_height"
-/* Custom tiling */
-#define MAP_KEY_CUST_TILE_LEVEL	"cust_tile_level"
+#define MAP_KEY_SPRITE_ZOOM	"sprite_zoom"
 #define MAP_KEY_COL_WIDTH	"col_width"
 #define MAP_KEY_COL_HEIGHT	"col_height"
 #define MAP_KEY_ROW_WIDTH	"row_width"
@@ -106,11 +108,8 @@
 #define MAP_KEY_SET		"set"
 #define MAP_KEY_LIST		"list"
 #define MAP_KEY_TYPE		"type"
-#define MAP_KEY_BG_RED		"bg_red"
-#define MAP_KEY_BG_BLUE		"bg_blue"
-#define MAP_KEY_BG_GREEN	"bg_green"
-#define MAP_KEY_WARP_X		"warp_x"
-#define MAP_KEY_WARP_Y		"warp_y"
+#define MAP_ENTRY_ITEM_LIST 	"item_list"
+#define MAP_ENTRY_EVENT_LIST 	"event_list"
 
 /* items on map */
 #define MAP_ITEM_POS_X		"pos_x"
@@ -133,6 +132,9 @@
 #define ITEM_TABLE		"item"
 #define ITEM_NAME		"name"
 #define ITEM_SPRITE		"sprite"
+/* sprite align : 0 = center 1 = lower */
+#define ITEM_ALIGN		"align"
+#define ITEM_OFFSET_Y		"offset_y"
 #define ITEM_ICON		"icon"
 #define ITEM_DESC		"description"
 #define ITEM_TEMPLATE		"template"

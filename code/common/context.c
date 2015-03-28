@@ -401,9 +401,6 @@ Returns false if error
 **************************************/
 static int _context_set_map(context_t * context, const char * map)
 {
-	int map_w;
-	int map_h;
-
 	if(context->prev_map != NULL) {
 		if(!strcmp(context->map,map)) {
 			return true;
@@ -422,13 +419,6 @@ static int _context_set_map(context_t * context, const char * map)
 		return false;
 	}
 	context->change_map = true;
-
-	if(!entry_read_int(MAP_TABLE,map,&map_w,MAP_KEY_WIDTH,NULL)) {
-		return false;
-	}
-	if(!entry_read_int(MAP_TABLE,map,&map_h,MAP_KEY_HEIGHT,NULL)) {
-		return false;
-	}
 
 	return true;
 }

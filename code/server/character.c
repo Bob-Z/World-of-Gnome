@@ -173,7 +173,7 @@ return the id of the newly created character
 the returned string MUST BE FREED by caller
 return NULL if fails
 *******************************************************/
-char * character_create_from_template(context_t * ctx,const char * template,const char * map, int x, int y)
+char * character_create_from_template(context_t * ctx,const char * template,const char * map, int layer, int x, int y)
 {
 	char * new_id;
 	char * templatename;
@@ -188,7 +188,7 @@ char * character_create_from_template(context_t * ctx,const char * template,cons
 	free(fullname);
 
 	/* Check if new character is allowed to be created here */
-	if(!map_check_tile(ctx,new_id,map,x,y)) {
+	if(!map_check_tile(ctx,new_id,map,layer,x,y)) {
 		entry_destroy(CHARACTER_TABLE,new_id);
 		file_delete(CHARACTER_TABLE,new_id);
 		free(new_id);
@@ -392,7 +392,7 @@ static void platform_move(context_t * platform,const char * map, int x, int y, i
 return 0 if new position OK or if position has not changed.
 return -1 if the position was not set (because tile not allowed or out of bound)
 ******************************************************/
-int character_set_pos(context_t * ctx, const char * map, int x, int y)
+int character_set_pos(context_t * ctx, const char * map, int layer, int x, int y)
 {
 	char ** event_id;
 	char * script;
@@ -403,6 +403,8 @@ int character_set_pos(context_t * ctx, const char * map, int x, int y)
 	int height = y+1;
 	int warpx = FALSE;
 	int warpy = FALSE;
+	int ctx_layer = 0;
+	char layer_name[SMALL_BUF];
 
 	if(ctx == NULL) {
 		return -1;
@@ -413,10 +415,13 @@ int character_set_pos(context_t * ctx, const char * map, int x, int y)
 		return 0;
 	}
 
-        entry_read_int(MAP_TABLE,map,&width,MAP_KEY_WIDTH,NULL);
-        entry_read_int(MAP_TABLE,map,&height,MAP_KEY_HEIGHT,NULL);
-        entry_read_int(MAP_TABLE,map,&warpx,MAP_KEY_WARP_X,NULL);
-        entry_read_int(MAP_TABLE,map,&warpy,MAP_KEY_WARP_Y,NULL);
+	entry_read_int(CHARACTER_TABLE,ctx->id,&ctx_layer,CHARACTER_KEY_LAYER,NULL);
+	sprintf(layer_name,"%s%d",MAP_KEY_LAYER,ctx_layer);
+
+        entry_read_int(MAP_TABLE,map,&width,layer_name,MAP_KEY_WIDTH,NULL);
+        entry_read_int(MAP_TABLE,map,&height,layer_name,MAP_KEY_HEIGHT,NULL);
+        entry_read_int(MAP_TABLE,map,&warpx,layer_name,MAP_KEY_WARP_X,NULL);
+        entry_read_int(MAP_TABLE,map,&warpy,layer_name,MAP_KEY_WARP_Y,NULL);
 
 	/* Coordinates warping */
 	if( x < 0 ) {
@@ -445,7 +450,7 @@ int character_set_pos(context_t * ctx, const char * map, int x, int y)
 	}
 
 	/* Check if this character is allowed to go to the target tile */
-	if ( map_check_tile(ctx,ctx->id,map,x,y)  == FALSE ) {
+	if ( map_check_tile(ctx,ctx->id,map,layer,x,y)  == FALSE ) {
 		return -1;
 	}
 
@@ -458,16 +463,16 @@ int character_set_pos(context_t * ctx, const char * map, int x, int y)
 
 	do_set_pos(ctx,map,x,y,change_map);
 
-	event_id = map_get_event(map,x,y);
+	event_id = map_get_event(map,layer,x,y);
 
 	if(event_id) {
 		i = 0;
 		while(event_id[i]) {
-			if( !entry_read_string(MAP_TABLE,map,&script,MAP_ENTRY_EVENT_LIST,event_id[i],MAP_EVENT_SCRIPT,NULL) ) {
+			if( !entry_read_string(MAP_TABLE,map,&script,layer_name,MAP_ENTRY_EVENT_LIST,event_id[i],MAP_EVENT_SCRIPT,NULL) ) {
 				i++;
 				continue;
 			}
-			entry_read_list(MAP_TABLE,map,&param,MAP_ENTRY_EVENT_LIST,event_id[i],MAP_EVENT_PARAM,NULL);
+			entry_read_list(MAP_TABLE,map,&param,layer_name,MAP_ENTRY_EVENT_LIST,event_id[i],MAP_EVENT_PARAM,NULL);
 
 			action_execute_script(ctx,script,param);
 

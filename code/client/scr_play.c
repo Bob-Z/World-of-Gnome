@@ -41,8 +41,30 @@
 #define ALIGN_CENTER	0
 #define ALIGN_LOWER	1
 
+// Max number of consecutive tiles with custom alignement
 #define MAX_COL		16
 #define MAX_ROW		16
+
+#define MAX_LAYER	100
+
+typedef struct layer {
+	int active;
+	int tile_width;
+	int tile_height;
+	int map_w;
+	int map_h;
+	double map_zoom;
+	int col_width[MAX_COL];
+	int col_height[MAX_COL];
+	int col_num;
+	int col_width_total;
+	int col_height_total;
+	int row_width[MAX_ROW];
+	int row_height[MAX_ROW];
+	int row_num;
+	int row_width_total;
+	int row_height_total;
+} layer_t;
 
 static item_t * item_list = NULL;
 static int change_map = 0;
@@ -50,43 +72,27 @@ static int init = true;
 static int current_map_x = -1;
 static int current_map_y = -1;
 static option_t * option;
-static int tile_width = -1;
-static int tile_height = -1;
-static int map_w = -1;
-static int map_h = -1;
-static int cust_tile_level = 0;
-static int col_width[MAX_COL];
-static int col_height[MAX_COL];
-static int col_num = 0;
-static int col_width_total = 0;
-static int col_height_total = 0;
-static int row_width[MAX_ROW];
-static int row_height[MAX_ROW];
-static int row_num = 0;
-static int row_width_total = 0;
-static int row_height_total = 0;
-static int sprite_align = ALIGN_CENTER;
-static int sprite_offset_y = 0;
-static double map_zoom = 0.0;
+static layer_t layer[MAX_LAYER];
+static int player_layer = 0;
 
 /**********************************
  Convert tiles coordinates into pixels coordinates
 **********************************/
-int t2p_x(int x, int y)
+int t2p_x(int x, int y,int layer_index)
 {
 	int i;
 	int res;
 
-	res = (x/col_num) * col_width_total;
+	res = (x/layer[layer_index].col_num) * layer[layer_index].col_width_total;
 
-	for(i=0;i<x%col_num;i++) {
-		res += col_width[i];
+	for(i=0;i<x%layer[layer_index].col_num;i++) {
+		res += layer[layer_index].col_width[i];
 	}
 
-	res += (y/row_num) * row_width_total;
+	res += (y/layer[layer_index].row_num) * layer[layer_index].row_width_total;
 
-	for(i=0;i<y%row_num;i++) {
-		res += row_width[i];
+	for(i=0;i<y%layer[layer_index].row_num;i++) {
+		res += layer[layer_index].row_width[i];
 	}
 
 	return res;
@@ -95,21 +101,21 @@ int t2p_x(int x, int y)
 /**********************************
  Convert tiles coordinates into pixels coordinates
 **********************************/
-int t2p_y(int x, int y)
+int t2p_y(int x, int y,int layer_index)
 {
 	int i;
 	int res;
 
-	res = (x/col_num) * col_height_total;
+	res = (x/layer[layer_index].col_num) * layer[layer_index].col_height_total;
 
-	for(i=0;i<x%col_num;i++) {
-		res += col_height[i];
+	for(i=0;i<x%layer[layer_index].col_num;i++) {
+		res += layer[layer_index].col_height[i];
 	}
 
-	res += (y/row_num) * row_height_total;
+	res += (y/layer[layer_index].row_num) * layer[layer_index].row_height_total;
 
-	for(i=0;i<y%row_num;i++) {
-		res += row_height[i];
+	for(i=0;i<y%layer[layer_index].row_num;i++) {
+		res += layer[layer_index].row_height[i];
 	}
 
 	return res;
@@ -185,7 +191,7 @@ static void cb_unzoom(Uint32 y,Uint32 unused)
 Draw a single sprite
 if image_file_name is not NULL, this file is used as an image rather than the normal sprite image
 **********************************/
-static void draw_sprite(context_t * ctx, const char * image_file_name)
+static void draw_sprite(context_t * ctx, const char * image_file_name,int layer_index)
 {
 	char * sprite_name = NULL;
 	anim_t * sprite;
@@ -201,6 +207,8 @@ static void draw_sprite(context_t * ctx, const char * image_file_name)
 	int move_status;
 	char * zoom_str = NULL;
 	double zoom = 1.0;
+	int sprite_align = ALIGN_CENTER;
+	int sprite_offset_y = 0;
 
 	context_t * player_context = context_get_player();
 
@@ -292,10 +300,10 @@ static void draw_sprite(context_t * ctx, const char * image_file_name)
 	}
 
 	/* Get position in pixel */
-	x = t2p_x(ctx->cur_pos_x,ctx->cur_pos_y);
-	y = t2p_y(ctx->cur_pos_x,ctx->cur_pos_y);
-	ox = t2p_x(ctx->old_pos_x,ctx->old_pos_y);
-	oy = t2p_y(ctx->old_pos_x,ctx->old_pos_y);
+	x = t2p_x(ctx->cur_pos_x,ctx->cur_pos_y,layer_index);
+	y = t2p_y(ctx->cur_pos_x,ctx->cur_pos_y,layer_index);
+	ox = t2p_x(ctx->old_pos_x,ctx->old_pos_y,layer_index);
+	oy = t2p_y(ctx->old_pos_x,ctx->old_pos_y,layer_index);
 
 	/* Get per sprite zoom */
 	if(entry_read_string(CHARACTER_TABLE,ctx->id,&zoom_str,CHARACTER_KEY_ZOOM,NULL)) {
@@ -304,19 +312,21 @@ static void draw_sprite(context_t * ctx, const char * image_file_name)
 	}
 
 	/* Align sprite on tile */
+	entry_read_int(CHARACTER_TABLE,ctx->id,&sprite_align,CHARACTER_KEY_ALIGN,NULL);
 	if( sprite_align == ALIGN_CENTER ) {
-		x -= ((sprite->w*map_zoom*zoom)-tile_width)/2;
-		y -= ((sprite->h*map_zoom*zoom)-tile_height)/2;
-		ox -= ((sprite->w*map_zoom*zoom)-tile_width)/2;
-		oy -= ((sprite->h*map_zoom*zoom)-tile_height)/2;
+		x -= ((sprite->w*layer[layer_index].map_zoom*zoom)-layer[layer_index].tile_width)/2;
+		y -= ((sprite->h*layer[layer_index].map_zoom*zoom)-layer[layer_index].tile_height)/2;
+		ox -= ((sprite->w*layer[layer_index].map_zoom*zoom)-layer[layer_index].tile_width)/2;
+		oy -= ((sprite->h*layer[layer_index].map_zoom*zoom)-layer[layer_index].tile_height)/2;
 	}
 	if( sprite_align == ALIGN_LOWER ) {
-		x -= ((sprite->w*map_zoom*zoom)-tile_width)/2;
-		y -= (sprite->h*map_zoom*zoom)-tile_height ;
-		ox -= ((sprite->w*map_zoom*zoom)-tile_width)/2;
-		oy -= (sprite->h*map_zoom*zoom)-tile_height;
+		x -= ((sprite->w*layer[layer_index].map_zoom*zoom)-layer[layer_index].tile_width)/2;
+		y -= (sprite->h*layer[layer_index].map_zoom*zoom)-layer[layer_index].tile_height ;
+		ox -= ((sprite->w*layer[layer_index].map_zoom*zoom)-layer[layer_index].tile_width)/2;
+		oy -= (sprite->h*layer[layer_index].map_zoom*zoom)-layer[layer_index].tile_height;
 	}
 
+	entry_read_int(CHARACTER_TABLE,ctx->id,&sprite_offset_y,CHARACTER_KEY_OFFSET_Y,NULL);
 	y += sprite_offset_y;
 	oy += sprite_offset_y;
 
@@ -391,19 +401,24 @@ static void draw_sprite(context_t * ctx, const char * image_file_name)
 	item_set_click_left(item,cb_select_sprite,ctx->id,NULL);
 	item_set_click_right(item,cb_redo_sprite,item,NULL);
 
-	item_set_zoom_x(item,zoom * map_zoom );
-	item_set_zoom_y(item,zoom * map_zoom );
+	item_set_zoom_x(item,zoom * layer[layer_index].map_zoom );
+	item_set_zoom_y(item,zoom * layer[layer_index].map_zoom );
 }
 
 /**********************************
 Compose sprites
 **********************************/
-static void compose_sprite(context_t * ctx)
+static void compose_sprite(context_t * ctx,int layer_index)
 {
+	int character_index = 0;
+
 	context_lock_list();
 
 	while(ctx != NULL ) {
-		draw_sprite(ctx,NULL);
+		entry_read_int(CHARACTER_TABLE,ctx->id,&character_index,CHARACTER_KEY_LAYER,NULL);
+		if( layer_index == character_index ) {
+			draw_sprite(ctx,NULL,layer_index);
+		}
 
 		ctx = ctx->next;
 	}
@@ -414,9 +429,11 @@ static void compose_sprite(context_t * ctx)
 /**********************************
 Compose item on map
 **********************************/
-static void compose_item(context_t * ctx)
+static void compose_item(context_t * ctx,int layer_index)
 {
 	char * sprite_name = NULL;
+	int sprite_align = ALIGN_CENTER;
+	int sprite_offset_y = 0;
 	anim_t * anim;
 	item_t * item;
 	int x;
@@ -428,24 +445,29 @@ static void compose_item(context_t * ctx)
 	static TTF_Font * font = NULL;
 	char * template;
 	int quantity;
-	char buf[1024];
+	char buf[SMALL_BUF];
+	char layer_name[SMALL_BUF];
+
+	sprintf(layer_name,"%s%d",MAP_KEY_LAYER,layer_index);
+
+	if(!entry_get_group_list(MAP_TABLE,ctx->map,&item_id,layer_name,MAP_ENTRY_ITEM_LIST,NULL)) {
+		return;
+	}
 
 	if ( font == NULL ) {
 		font = TTF_OpenFont(ITEM_FONT, ITEM_FONT_SIZE);
 	}
 
-	if(!entry_get_group_list(MAP_TABLE,ctx->map,&item_id,MAP_ENTRY_ITEM_LIST,NULL)) {
-		return;
-	}
-
 	i=0;
 	while( item_id[i] != NULL ) {
-		if(!entry_read_int(MAP_TABLE,ctx->map,&x,MAP_ENTRY_ITEM_LIST,item_id[i],MAP_ITEM_POS_X,NULL)) {
+		sprite_align = ALIGN_CENTER;
+
+		if(!entry_read_int(MAP_TABLE,ctx->map,&x,layer_name,MAP_ENTRY_ITEM_LIST,item_id[i],MAP_ITEM_POS_X,NULL)) {
 			i++;
 			continue;
 		}
 
-		if(!entry_read_int(MAP_TABLE,ctx->map,&y,MAP_ENTRY_ITEM_LIST,item_id[i],MAP_ITEM_POS_Y,NULL)) {
+		if(!entry_read_int(MAP_TABLE,ctx->map,&y,layer_name,MAP_ENTRY_ITEM_LIST,item_id[i],MAP_ITEM_POS_Y,NULL)) {
 			i++;
 			continue;
 		}
@@ -457,12 +479,16 @@ static void compose_item(context_t * ctx)
 				i++;
 				continue;
 			}
+			entry_read_int(ITEM_TABLE,item_id[i],&sprite_align,ITEM_ALIGN,NULL);
+			entry_read_int(ITEM_TABLE,item_id[i],&sprite_offset_y,ITEM_OFFSET_Y,NULL);
 		} else {
 			if(!entry_read_string(ITEM_TEMPLATE_TABLE,template,&sprite_name,ITEM_SPRITE,NULL)) {
 				free(template);
 				i++;
 				continue;
 			}
+			entry_read_int(ITEM_TEMPLATE_TABLE,template,&sprite_align,ITEM_ALIGN,NULL);
+			entry_read_int(ITEM_TEMPLATE_TABLE,template,&sprite_offset_y,ITEM_OFFSET_Y,NULL);
 			free(template);
 		}
 
@@ -471,25 +497,25 @@ static void compose_item(context_t * ctx)
 		anim = imageDB_get_anim(ctx,sprite_name);
 		free(sprite_name);
 
-		temp_x = t2p_x(x,y);
-		temp_y = t2p_y(x,y);
+		temp_x = t2p_x(x,y,layer_index);
+		temp_y = t2p_y(x,y,layer_index);
 		x = temp_x;
 		y = temp_y;
 		/* Align on tile */
 		if( sprite_align == ALIGN_CENTER ) {
-			x -= ((anim->w*map_zoom)-tile_width)/2;
-			y -= ((anim->h*map_zoom)-tile_height)/2;
+			x -= ((anim->w*layer[layer_index].map_zoom)-layer[layer_index].tile_width)/2;
+			y -= ((anim->h*layer[layer_index].map_zoom)-layer[layer_index].tile_height)/2;
 		}
 		if( sprite_align == ALIGN_LOWER ) {
-			x -= ((anim->w*map_zoom)-tile_width)/2;
-			y -= (anim->h*map_zoom)-tile_height;
+			x -= ((anim->w*layer[layer_index].map_zoom)-layer[layer_index].tile_width)/2;
+			y -= (anim->h*layer[layer_index].map_zoom)-layer[layer_index].tile_height;
 		}
 
 		y += sprite_offset_y;
 
 		item_set_anim(item,x,y,anim);
-		item_set_zoom_x(item, map_zoom );
-		item_set_zoom_y(item, map_zoom );
+		item_set_zoom_x(item, layer[layer_index].map_zoom );
+		item_set_zoom_y(item, layer[layer_index].map_zoom );
 		if(font) {
 			quantity = resource_get_quantity(item_id[i]);
 			sprintf(buf,"%d",quantity);
@@ -544,21 +570,25 @@ static void cb_over(void *arg,int x,int y)
 /**********************************
 Set sdl_item item for mouse button callback
 **********************************/
-static void compose_map_button(context_t * ctx)
+static void compose_map_button(context_t * ctx,int layer_index)
 {
 	int x = 0;
 	int y = 0;
 	item_t * item;
 	anim_t * anim = NULL;
 
+	if( layer_index != player_layer ) {
+		return;
+	}
+
 	if ( option && option->cursor_over_tile ) {
 		anim = imageDB_get_anim(ctx,option->cursor_over_tile);
 	}
 
-	for( y=0 ; y < map_h ; y++ ) {
-		for ( x=0 ; x < map_w ; x++ ) {
+	for( y=0 ; y < layer[layer_index].map_h ; y++ ) {
+		for ( x=0 ; x < layer[layer_index].map_w ; x++ ) {
 			item = item_list_add(&item_list);
-			item_set_frame_shape(item,t2p_x(x,y),t2p_y(x,y),tile_width,tile_height);
+			item_set_frame_shape(item,t2p_x(x,y,layer_index),t2p_y(x,y,layer_index),layer[layer_index].tile_width,layer[layer_index].tile_height);
 			item_set_tile(item,x,y);
 			item_set_click_left(item,cb_select_map,item,NULL);
 			item_set_click_right(item,cb_redo_map,item,NULL);
@@ -569,54 +599,33 @@ static void compose_map_button(context_t * ctx)
 }
 
 /**********************************
-Draw a map from a "set" keyword
-return 1 if a map has been drawn
+Draw the "set" keyword of a layer
 **********************************/
-static int compose_map_set(context_t * ctx, int level)
+static void compose_map_set(context_t * ctx, int layer_index)
 {
 	int i = 0;
 	int x = 0;
 	int y = 0;
-	int _map_w = map_w;
-	int _map_h = map_h;
-	int _tile_width = tile_width;
-	int _tile_height = tile_height;
-
-
 	anim_t * anim;
 	item_t * item;
-	char buf[SMALL_BUF];
 	char ** tile_set = NULL;
+	char layer_name[SMALL_BUF];
 
-	sprintf(buf,"%s%d",MAP_KEY_SET,level);
-	if(!entry_read_list(MAP_TABLE, ctx->map, &tile_set,buf,NULL)) {
-		return 0;
+	sprintf(layer_name,"%s%d",MAP_KEY_LAYER,layer_index);
+	if(!entry_read_list(MAP_TABLE, ctx->map, &tile_set,layer_name,MAP_KEY_SET,NULL)) {
+		return;
 	}
-	sprintf(buf,"%s%d",MAP_KEY_WIDTH,level);
-	entry_read_int(MAP_TABLE, ctx->map, &_map_w,buf,NULL);
-	sprintf(buf,"%s%d",MAP_KEY_HEIGHT,level);
-	entry_read_int(MAP_TABLE, ctx->map, &_map_h,buf,NULL);
-
-	sprintf(buf,"%s%d",MAP_KEY_TILE_WIDTH,level);
-	entry_read_int(MAP_TABLE, ctx->map, &_tile_width,buf,NULL);
-	sprintf(buf,"%s%d",MAP_KEY_TILE_HEIGHT,level);
-	entry_read_int(MAP_TABLE, ctx->map, &_tile_height,buf,NULL);
 
 	while(tile_set[i] != NULL ) {
 		/* Skip empty tile */
 		if( tile_set[i][0] != 0 ) {
 			item = item_list_add(&item_list);
 			anim = imageDB_get_anim(ctx,tile_set[i]);
-			if( level == cust_tile_level ) {
-				item_set_anim(item,t2p_x(x,y),t2p_y(x,y),anim);
-			}
-			else {
-				item_set_anim(item, x*_tile_width, y*_tile_height, anim);
-			}
+			item_set_anim(item,t2p_x(x,y,layer_index),t2p_y(x,y,layer_index),anim);
 		}
 
 		x++;
-		if(x>=_map_w) {
+		if(x>=layer[layer_index].map_w) {
 			x=0;
 			y++;
 		}
@@ -624,26 +633,22 @@ static int compose_map_set(context_t * ctx, int level)
 	}
 
 	deep_free(tile_set);
-	return 1;
 }
 
 /**********************************
-Draw a map from a "list" keyword
-return 1 if a map has been drawn
+Draw the "list" keyword of a layer
 **********************************/
-static int compose_map_list(context_t * ctx, int level)
+static void compose_map_list(context_t * ctx, char * layer_name)
 {
 	int i = 0;
 	int x = 0;
 	int y = 0;
 	anim_t * anim;
 	item_t * item;
-	char buf[SMALL_BUF];
 	char ** tile_list = NULL;
 
-	sprintf(buf,"%s%d",MAP_KEY_LIST,level);
-	if(!entry_read_list(MAP_TABLE, ctx->map, &tile_list,buf,NULL)) {
-		return 0;
+	if(!entry_read_list(MAP_TABLE, ctx->map, &tile_list,layer_name,MAP_KEY_LIST,NULL)) {
+		return;
 	}
 
 	while(tile_list[i] != NULL ) {
@@ -662,49 +667,12 @@ static int compose_map_list(context_t * ctx, int level)
 	}
 
 	deep_free(tile_list);
-	return 1;
-}
-
-/**********************************
-Compose the map
-**********************************/
-static void compose_map(context_t * ctx)
-{
-	int sprite_level = 0;
-	int current_level = 0;
-	int map_drawn = 0;
-	int sprite_drawn = 0;
-	entry_read_int(MAP_TABLE, ctx->map, &sprite_level,MAP_KEY_SPRITE_LEVEL,NULL);
-
-	/* Draw all maps */
-	while(TRUE) {
-		/* Draw sprite */
-		if ( !sprite_drawn && sprite_level < current_level ) {
-			compose_item(ctx);
-			compose_sprite(ctx);
-			sprite_drawn = 1;
-		}
-
-		map_drawn = 0;
-		map_drawn |= compose_map_set(ctx,current_level);
-		map_drawn |= compose_map_list(ctx,current_level);
-
-		if( map_drawn == 0 ) {
-			break;
-		}
-
-		current_level++;
-	}
-
-	/* Set mouse callback */
-	compose_map_button(ctx);
-
 }
 
 /**********************************
 Show tiles types
 **********************************/
-static void compose_type(context_t * ctx)
+static void compose_type(context_t * ctx,int layer_index)
 {
 	int x = 0;
 	int y = 0;
@@ -713,6 +681,7 @@ static void compose_type(context_t * ctx)
 	static TTF_Font * font = NULL;
 	int w;
 	int h;
+	char layer_name[SMALL_BUF];
 
 	if( option->show_tile_type == false) {
 		return;
@@ -725,9 +694,11 @@ static void compose_type(context_t * ctx)
 		return;
 	}
 
-	for( x=0; x<map_w; x++) {
-		for( y=0; y<map_h; y++) {
-			if(!entry_read_list_index(MAP_TABLE,ctx->map,&type,x + y * map_w,MAP_KEY_TYPE,NULL)) {
+	sprintf(layer_name,"%s%d",MAP_KEY_LAYER,layer_index);
+
+	for( x=0; x<layer[layer_index].map_w; x++) {
+		for( y=0; y<layer[layer_index].map_h; y++) {
+			if(!entry_read_list_index(MAP_TABLE,ctx->map,&type,x + y * layer[layer_index].map_w,layer_name,MAP_KEY_TYPE,NULL)) {
 				continue;
 			}
 
@@ -740,7 +711,7 @@ static void compose_type(context_t * ctx)
 			item_set_string(item,type);
 			item_set_font(item,font);
 			sdl_get_string_size(item->font,item->string,&w,&h);
-			item_set_frame_shape(item,t2p_x(x,y),t2p_y(x,y),w,h);
+			item_set_frame_shape(item,t2p_x(x,y,layer_index),t2p_y(x,y,layer_index),w,h);
 		}
 	}
 }
@@ -748,7 +719,7 @@ static void compose_type(context_t * ctx)
 /**********************************
 Compose select cursor
 **********************************/
-static void compose_select(context_t * ctx)
+static void compose_select(context_t * ctx,int layer_index)
 {
 	item_t * item;
 	anim_t * anim;
@@ -757,6 +728,10 @@ static void compose_select(context_t * ctx)
 	int x;
 	int y;
 	context_t * selected_context = NULL;
+
+	if( layer_index != player_layer ) {
+		return;
+	}
 
 	/* Tile selection */
 	if( option && option->cursor_tile ) {
@@ -771,12 +746,12 @@ static void compose_select(context_t * ctx)
 					item = item_list_add(&item_list);
 
 					/* get pixel coordinate from tile coordinate */
-					x = t2p_x(pos_x,pos_y);
-					y = t2p_y(pos_x,pos_y);
+					x = t2p_x(pos_x,pos_y,layer_index);
+					y = t2p_y(pos_x,pos_y,layer_index);
 
 					/* Center on tile */
-					x -= (anim->w-tile_width)/2;
-					y -= (anim->h-tile_height)/2;
+					x -= (anim->w-layer[layer_index].tile_width)/2;
+					y -= (anim->h-layer[layer_index].tile_height)/2;
 
 					item_set_anim(item,x,y,anim);
 				}
@@ -792,7 +767,7 @@ static void compose_select(context_t * ctx)
 				return;
 			}
 
-			draw_sprite(selected_context, option->cursor_sprite);
+			draw_sprite(selected_context, option->cursor_sprite,layer_index);
 		}
 	}
 }
@@ -816,6 +791,9 @@ item_t * scr_play_compose(context_t * ctx)
 	int i;
 	char keyword[SMALL_BUF];
 	int more;
+	int layer_index = 0;
+	int tiling_index = 0;
+	char layer_name[SMALL_BUF];
 
 	option = option_get();
 
@@ -842,108 +820,127 @@ item_t * scr_play_compose(context_t * ctx)
 	sdl_add_mousecb(MOUSE_WHEEL_UP,cb_zoom);
 	sdl_add_mousecb(MOUSE_WHEEL_DOWN,cb_unzoom);
 
+	player_layer = 0;
+	entry_read_int(CHARACTER_TABLE,context_get_player()->id,&player_layer,CHARACTER_KEY_LAYER,NULL);
+
 	change_map = ctx->change_map;
-	/* Check if map has changed */
+
 	if( change_map ) {
 		map_filename = strconcat( MAP_TABLE,"/",ctx->map,NULL);
 		network_send_req_file(ctx,map_filename);
 		free(map_filename);
-                entry_read_int(MAP_TABLE, ctx->map, &map_w,MAP_KEY_WIDTH,NULL);
-                entry_read_int(MAP_TABLE, ctx->map, &map_h,MAP_KEY_HEIGHT,NULL);
-                entry_read_int(MAP_TABLE, ctx->map, &tile_width,MAP_KEY_TILE_WIDTH,NULL);
-                entry_read_int(MAP_TABLE, ctx->map, &tile_height,MAP_KEY_TILE_HEIGHT,NULL);
-                entry_read_int(MAP_TABLE, ctx->map, &sprite_align,MAP_KEY_SPRITE_ALIGN,NULL);
-                entry_read_int(MAP_TABLE, ctx->map, &sprite_offset_y,MAP_KEY_SPRITE_OFFSET_Y,NULL);
-		map_zoom = 1.0;
-		if(entry_read_string(MAP_TABLE,ctx->map,&zoom_str,MAP_KEY_SPRITE_ZOOM,NULL)) {
-			map_zoom = atof(zoom_str);
-			free(zoom_str);
-		}
-
-		/* Automatic tiling */
-		col_num = 1;
-		col_width[0] = tile_width;
-		col_height[0] = 0;
-		row_num = 1;
-		row_width[0] = 0;
-		row_height[0] = tile_height;
-
-		/* Custom tiling */
-		entry_read_int(MAP_TABLE, ctx->map, &cust_tile_level,MAP_KEY_CUST_TILE_LEVEL,NULL);
-		entry_read_int(MAP_TABLE, ctx->map, &col_width[0],MAP_KEY_COL_WIDTH,NULL);
-		entry_read_int(MAP_TABLE, ctx->map, &col_height[0],MAP_KEY_COL_HEIGHT,NULL);
-		entry_read_int(MAP_TABLE, ctx->map, &row_width[0],MAP_KEY_ROW_WIDTH,NULL);
-		entry_read_int(MAP_TABLE, ctx->map, &row_height[0],MAP_KEY_ROW_HEIGHT,NULL);
-		/* Additionnal custom tiling */
-		more = true;
-		i = 1;
-		while(more) {
-			more = false;
-			col_width[i]=0;
-			col_height[i]=0;
-			sprintf(keyword,"%s%d",MAP_KEY_COL_WIDTH,i);
-			if( entry_read_int(MAP_TABLE, ctx->map, &col_width[i],keyword,NULL) ) {
-				more = true;
-			}
-			sprintf(keyword,"%s%d",MAP_KEY_COL_HEIGHT,i);
-			if( entry_read_int(MAP_TABLE, ctx->map, &col_height[i],keyword,NULL) ) {
-				more = true;
-			}
-			i++;
-			if(more) {
-				col_num++;
-			}
-		}
-		more = true;
-		i = 1;
-		while(more) {
-			more = false;
-			row_width[i]=0;
-			row_height[i]=0;
-			sprintf(keyword,"%s%d",MAP_KEY_ROW_WIDTH,i);
-			if( entry_read_int(MAP_TABLE, ctx->map, &row_width[i],keyword,NULL) ) {
-				more = true;
-			}
-			sprintf(keyword,"%s%d",MAP_KEY_ROW_HEIGHT,i);
-			if( entry_read_int(MAP_TABLE, ctx->map, &row_height[i],keyword,NULL) ) {
-				more = true;
-			}
-			i++;
-			if(more) {
-				row_num++;
-			}
-		}
-
-
-		for(i=0,col_width_total=0;i<col_num;i++) {
-			col_width_total += col_width[i];
-		}
-		for(i=0,col_height_total=0;i<col_num;i++) {
-			col_height_total += col_height[i];
-		}
-		for(i=0,row_width_total=0;i<row_num;i++) {
-			row_width_total += row_width[i];
-		}
-		for(i=0,row_height_total=0;i<row_num;i++) {
-			row_height_total += row_height[i];
-		}
 	}
 
-	compose_map(ctx);
-	compose_type(ctx);
-	compose_select(ctx);
+	for(layer_index = 0; layer_index < MAX_LAYER; layer_index++) {
+		if( change_map ) {
+			sprintf(layer_name,"%s%d",MAP_KEY_LAYER,layer_index);
+			if( !entry_exist(MAP_TABLE, ctx->map, layer_name)) {
+				layer[layer_index].active = false;
+				continue;
+			}
+			layer[layer_index].active = true;
+
+			entry_read_int(MAP_TABLE, ctx->map, &layer[layer_index].map_w,layer_name,MAP_KEY_WIDTH,NULL);
+			entry_read_int(MAP_TABLE, ctx->map, &layer[layer_index].map_h,layer_name,MAP_KEY_HEIGHT,NULL);
+			entry_read_int(MAP_TABLE, ctx->map, &layer[layer_index].tile_width,layer_name,MAP_KEY_TILE_WIDTH,NULL);
+			entry_read_int(MAP_TABLE, ctx->map, &layer[layer_index].tile_height,layer_name,MAP_KEY_TILE_HEIGHT,NULL);
+			layer[layer_index].map_zoom = 1.0;
+			if(entry_read_string(MAP_TABLE,ctx->map,&zoom_str,layer_name,MAP_KEY_SPRITE_ZOOM,NULL)) {
+				layer[layer_index].map_zoom = atof(zoom_str);
+				free(zoom_str);
+			}
+
+			/* Automatic tiling */
+			layer[layer_index].col_num = 1;
+			layer[layer_index].col_width[0] = layer[layer_index].tile_width;
+			layer[layer_index].col_height[0] = 0;
+			layer[layer_index].row_num = 1;
+			layer[layer_index].row_width[0] = 0;
+			layer[layer_index].row_height[0] = layer[layer_index].tile_height;
+
+			/* Custom tiling */
+			entry_read_int(MAP_TABLE, ctx->map, &layer[layer_index].col_width[0],layer_name,MAP_KEY_COL_WIDTH,NULL);
+			entry_read_int(MAP_TABLE, ctx->map, &layer[layer_index].col_height[0],layer_name,MAP_KEY_COL_HEIGHT,NULL);
+			entry_read_int(MAP_TABLE, ctx->map, &layer[layer_index].row_width[0],layer_name,MAP_KEY_ROW_WIDTH,NULL);
+			entry_read_int(MAP_TABLE, ctx->map, &layer[layer_index].row_height[0],layer_name,MAP_KEY_ROW_HEIGHT,NULL);
+			/* Additionnal custom tiling */
+			more = true;
+			tiling_index = 1;
+			while(more) {
+				more = false;
+				layer[layer_index].col_width[tiling_index]=0;
+				layer[layer_index].col_height[tiling_index]=0;
+				sprintf(keyword,"%s%d",MAP_KEY_COL_WIDTH,tiling_index);
+				if( entry_read_int(MAP_TABLE, ctx->map, &layer[layer_index].col_width[tiling_index],layer_name,keyword,NULL) ) {
+					more = true;
+				}
+				sprintf(keyword,"%s%d",MAP_KEY_COL_HEIGHT,tiling_index);
+				if( entry_read_int(MAP_TABLE, ctx->map, &layer[layer_index].col_height[tiling_index],layer_name,keyword,NULL) ) {
+					more = true;
+				}
+				tiling_index++;
+				if(more) {
+					layer[layer_index].col_num++;
+				}
+			}
+			more = true;
+			tiling_index = 1;
+			while(more) {
+				more = false;
+				layer[layer_index].row_width[tiling_index]=0;
+				layer[layer_index].row_height[tiling_index]=0;
+				sprintf(keyword,"%s%d",MAP_KEY_ROW_WIDTH,tiling_index);
+				if( entry_read_int(MAP_TABLE, ctx->map, &layer[layer_index].row_width[tiling_index],layer_name,keyword,NULL) ) {
+					more = true;
+				}
+				sprintf(keyword,"%s%d",MAP_KEY_ROW_HEIGHT,tiling_index);
+				if( entry_read_int(MAP_TABLE, ctx->map, &layer[layer_index].row_height[tiling_index],layer_name,keyword,NULL) ) {
+					more = true;
+				}
+				i++;
+				if(more) {
+					layer[layer_index].row_num++;
+				}
+			}
+
+
+			for(tiling_index=0,layer[layer_index].col_width_total=0;tiling_index<layer[layer_index].col_num;tiling_index++) {
+				layer[layer_index].col_width_total += layer[layer_index].col_width[tiling_index];
+			}
+			for(tiling_index=0,layer[layer_index].col_height_total=0;tiling_index<layer[layer_index].col_num;tiling_index++) {
+				layer[layer_index].col_height_total += layer[layer_index].col_height[tiling_index];
+			}
+			for(tiling_index=0,layer[layer_index].row_width_total=0;tiling_index<layer[layer_index].row_num;tiling_index++) {
+				layer[layer_index].row_width_total += layer[layer_index].row_width[tiling_index];
+			}
+			for(tiling_index=0,layer[layer_index].row_height_total=0;tiling_index<layer[layer_index].row_num;tiling_index++) {
+				layer[layer_index].row_height_total += layer[layer_index].row_height[tiling_index];
+			}
+		}
+
+		compose_map_set(ctx,layer_index);
+		compose_map_list(ctx,layer_name);
+		compose_item(ctx,layer_index);
+		compose_sprite(ctx,layer_index);
+		compose_map_button(ctx,layer_index);
+		compose_type(ctx,layer_index);
+		compose_select(ctx,layer_index);
+
+	}
 
 	ui_play_compose(ctx,item_list);
 
-	/* force virtual coordinate on map change */
-	if(change_map) {
-		sdl_force_virtual_x(t2p_x(ctx->pos_x,ctx->pos_y) + col_width[ctx->pos_x%col_num]/2 + row_width[ctx->pos_y%row_num]/2 );
-		sdl_force_virtual_y(t2p_y(ctx->pos_x,ctx->pos_y) + col_height[ctx->pos_x%col_num]/2 + row_height[ctx->pos_y%row_num]/2 );
-	}
-	/* set virtual coordinate on the same map */
-	else {
-		sdl_set_virtual_x(t2p_x(ctx->pos_x,ctx->pos_y) + col_width[ctx->pos_x%col_num]/2 + row_width[ctx->pos_y%row_num]/2 );
-		sdl_set_virtual_y(t2p_y(ctx->pos_x,ctx->pos_y) + col_height[ctx->pos_x%col_num]/2 + row_height[ctx->pos_y%row_num]/2 );
+	if( layer[player_layer].active ) { // Make sure map data are available
+		/* force virtual coordinate on map change */
+		if(change_map) {
+			sdl_force_virtual_x(t2p_x(ctx->pos_x,ctx->pos_y,player_layer) + layer[player_layer].col_width[ctx->pos_x%layer[player_layer].col_num]/2 + layer[player_layer].row_width[ctx->pos_y%layer[player_layer].row_num]/2 );
+			sdl_force_virtual_y(t2p_y(ctx->pos_x,ctx->pos_y,player_layer) + layer[player_layer].col_height[ctx->pos_x%layer[player_layer].col_num]/2 + layer[player_layer].row_height[ctx->pos_y%layer[player_layer].row_num]/2 );
+		}
+		/* set virtual coordinate on the same map */
+		else {
+			sdl_set_virtual_x(t2p_x(ctx->pos_x,ctx->pos_y,player_layer) + layer[player_layer].col_width[ctx->pos_x%layer[player_layer].col_num]/2 + layer[player_layer].row_width[ctx->pos_y%layer[player_layer].row_num]/2 );
+			sdl_set_virtual_y(t2p_y(ctx->pos_x,ctx->pos_y,player_layer) + layer[player_layer].col_height[ctx->pos_x%layer[player_layer].col_num]/2 + layer[player_layer].row_height[ctx->pos_y%layer[player_layer].row_num]/2 );
+		}
 	}
 
 	entry_read_int(MAP_TABLE,ctx->map,&bg_red,MAP_KEY_BG_RED,NULL);
