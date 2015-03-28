@@ -8,6 +8,6 @@ if map == "lake" and item ~= nil then
 	map = "magic_lake"
 end
 
-character_set_pos(id,map,x,y)
+character_set_pos(id,map,0,x,y)
 
 end
