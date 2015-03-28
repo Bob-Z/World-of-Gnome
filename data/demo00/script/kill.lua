@@ -15,7 +15,7 @@ if target ~= nil then
 	if character_disconnect(target) ~= -1 then
 	-- drop the loot
 		loot = resource_new("apple",1)
-		map_add_item(map,loot,x,y)
+		map_add_item(map,0,loot,x,y)
 		character_delete(target)
 	end
 else

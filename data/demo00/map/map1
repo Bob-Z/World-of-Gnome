@@ -1,41 +1,52 @@
-width = 6;
-height = 6;
-tile_width = 64;
-tile_height = 64;
 bg_red = 192;
 bg_blue = 192;
 bg_green = 192;
-set0 = [ "tile/white.jpg", "tile/black.jpg", "tile/black.jpg", "tile/black.jpg", "tile/black.jpg", "tile/white.jpg", "tile/black.jpg", "tile/black.jpg", "tile/black.jpg", "tile/black.jpg", "tile/black.jpg", "tile/black.jpg", "tile/white.jpg", "tile/black.jpg", "tile/black.jpg", "tile/black.jpg", "tile/black.jpg", "tile/white.jpg", "tile/black.jpg", "tile/black.jpg", "tile/black.jpg", "tile/black.jpg", "tile/black.jpg", "tile/black.jpg", "tile/white.jpg", "tile/black.jpg", "tile/black.jpg", "tile/black.jpg", "tile/black.jpg", "tile/white.jpg", "tile/white.jpg", "tile/black.jpg",  "tile/black.jpg", "tile/black.jpg", "tile/black.jpg", "tile/exit.gif" ];
 
-set1 = [ "tile/trap.png","","","","","",
-	"","","","","","",
-	"","","","","","",
-	"","","","","","",
-	"","","","","","",
-	"","","","","",""];
+layer0: {
+	width = 6;
+	height = 6;
+	tile_width = 64;
+	tile_height = 64;
+	set = [ "tile/white.jpg", "tile/black.jpg", "tile/black.jpg", "tile/black.jpg", "tile/black.jpg", "tile/white.jpg", "tile/black.jpg", "tile/black.jpg", "tile/black.jpg", "tile/black.jpg", "tile/black.jpg", "tile/black.jpg", "tile/white.jpg", "tile/black.jpg", "tile/black.jpg", "tile/black.jpg", "tile/black.jpg", "tile/white.jpg", "tile/black.jpg", "tile/black.jpg", "tile/black.jpg", "tile/black.jpg", "tile/black.jpg", "tile/black.jpg", "tile/white.jpg", "tile/black.jpg", "tile/black.jpg", "tile/black.jpg", "tile/black.jpg", "tile/white.jpg", "tile/white.jpg", "tile/black.jpg",  "tile/black.jpg", "tile/black.jpg", "tile/black.jpg", "tile/exit.gif" ];
 
-type = [ "mud","ground","ground","ground","ground","mud","ground","ground","ground","ground","ground","ground","mud","ground","ground","ground","ground","mud","ground","ground","ground","ground","ground","ground","mud","ground","ground","ground","ground","mud","mud","ground","ground","ground","ground","ground" ];
 
-item_list: {
-	A0000 :
-	{
-	  pos_x = 1;
-	  pos_y = 1;
+	type = [ "mud","ground","ground","ground","ground","mud","ground","ground","ground","ground","ground","ground","mud","ground","ground","ground","ground","mud","ground","ground","ground","ground","ground","ground","mud","ground","ground","ground","ground","mud","mud","ground","ground","ground","ground","ground" ];
+
+	item_list: {
+		A0000 :
+		{
+		  pos_x = 1;
+		  pos_y = 1;
+		};
+	};
+
+	event_list: {
+		A0000 :
+		{
+			pos_x = 5;
+			pos_y = 5;
+			script = "goto_map2.lua";
+
+		};
+		A0001 :
+		{
+			pos_x = 0;
+			pos_y = 0;
+			script = "trap.lua";
+		};
 	};
 };
 
-event_list: {
-	A0000 :
-	{
-		pos_x = 5;
-		pos_y = 5;
-		script = "goto_map2.lua";
+layer1: {
+	width = 6;
+	height = 6;
+	tile_width = 64;
+	tile_height = 64;
 
-	};
-	A0001 :
-	{
-		pos_x = 0;
-		pos_y = 0;
-		script = "trap.lua";
-	};
+	set = [ "tile/trap.png","","","","","",
+		"","","","","","",
+		"","","","","","",
+		"","","","","","",
+		"","","","","","",
+		"","","","","",""];
 };

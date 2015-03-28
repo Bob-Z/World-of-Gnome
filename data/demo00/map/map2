@@ -1,32 +1,33 @@
-width = 3;
-height = 3;
-tile_width = 64;
-tile_height = 64;
 bg_red = 192;
 bg_blue = 192;
 bg_green = 192;
-set0 = [ "tile/white.jpg", "tile/black.jpg", "tile/exit.gif", "tile/black.jpg", "tile/black.jpg", "tile/black.jpg", "tile/white.jpg", "tile/black.jpg", "tile/black.jpg" ];
-type = [ "mud", "ground", "ground", "ground", "ground", "ground", "mud", "ground", "ground" ];
-item_list : {
-	A0002 : 
-	{
-	  pos_x = 1;
-	  pos_y = 0;
+
+layer0: {
+	width = 3;
+	height = 3;
+	tile_width = 64;
+	tile_height = 64;
+	set = [ "tile/white.jpg", "tile/black.jpg", "tile/exit.gif", "tile/black.jpg", "tile/black.jpg", "tile/black.jpg", "tile/white.jpg", "tile/black.jpg", "tile/black.jpg" ];
+	type = [ "mud", "ground", "ground", "ground", "ground", "ground", "mud", "ground", "ground" ];
+	item_list : {
+		A0002 : 
+		{
+			pos_x = 1;
+			pos_y = 0;
+		};
+		A0003 : 
+		{
+			pos_x = 0;
+			pos_y = 2;
+		};
 	};
-	A0003 : 
-	{
-	  pos_x = 0;
-	  pos_y = 2;
+
+	event_list: {
+		A0000 :
+		{
+			pos_x = 2;
+			pos_y = 0;
+			script = "goto_map1.lua";
+		};
 	};
 };
-
-event_list: {
-        A0000 :
-        {
-                pos_x = 2;
-                pos_y = 0;
-                script = "goto_map1.lua";
-
-        };
-};
-
