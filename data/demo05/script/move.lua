@@ -28,13 +28,13 @@ if new_pos_y >= map_h then
         return
 end
 
-character_set_pos(player_id,map,new_pos_x,new_pos_y)
+character_set_pos(player_id,map,0,new_pos_x,new_pos_y)
 
-tile_type = map_get_tile_type(map,new_pos_x,new_pos_y)
+tile_type = map_get_tile_type(map,0,new_pos_x,new_pos_y)
 
 if tile_type == "b" then
-	map_set_tile(map,"d.gif",new_pos_x,new_pos_y,0)
-	map_set_tile_type(map,"d",new_pos_x,new_pos_y)
+	map_set_tile(map,0,"d.gif",new_pos_x,new_pos_y)
+	map_set_tile_type(map,0,"d",new_pos_x,new_pos_y)
 end
 
 end
