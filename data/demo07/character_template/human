@@ -1,5 +1,7 @@
 marquee		= "marquee/knight.gif";
 sprite		= "sprite/knight.gif";
+align           = 1;
+offset_y        = -12
 type		= "human"
 map		= "map1";
 pos_x		= 16;

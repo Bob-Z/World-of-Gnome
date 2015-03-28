@@ -1,5 +1,7 @@
 marquee		= "marquee/red_dragon.gif";
 sprite		= "sprite/red_dragon.gif";
+align           = 1;
+offset_y        = -12
 type		= "red_dragon"
 map		= "map1";
 pos_x		= 8;
