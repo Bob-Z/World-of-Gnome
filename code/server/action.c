@@ -71,7 +71,7 @@ static int l_character_create_from_template( lua_State* L)
 	ctx = lua_touserdata(L, -1);
 	lua_pop(L,1);
 
-	template = luaL_checkstring(L, -4);
+	template = luaL_checkstring(L, -5);
 	map = luaL_checkstring(L, -4);
 	layer = luaL_checkint(L, -3);
 	x = luaL_checkint(L, -2);
