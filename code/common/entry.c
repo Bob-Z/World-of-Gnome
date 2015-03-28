@@ -1415,7 +1415,7 @@ int entry_exist(const char * table, const char * file, ...)
 	va_list ap;
 
 	va_start(ap, file);
-	ret = __group_create(table, file, ap);
+	ret = __exist(table, file, ap);
 	va_end(ap);
 
 	return ret;
