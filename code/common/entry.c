@@ -1388,3 +1388,36 @@ int entry_destroy(const char * table, const char * file)
 
 	return 0;
 }
+
+/*********************
+return TRUE if entry or group exists
+*********************/
+static int __exist(const char * table, const char * file, va_list ap)
+{
+	const config_t * config;
+
+	SDL_LockMutex(entry_mutex);
+	config = get_config(table,file);
+	SDL_UnlockMutex(entry_mutex);
+	if(config==NULL) {
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
+/*********************
+return TRUE if entry or group exists
+*********************/
+int entry_exist(const char * table, const char * file, ...)
+{
+	int ret;
+	va_list ap;
+
+	va_start(ap, file);
+	ret = __group_create(table, file, ap);
+	va_end(ap);
+
+	return ret;
+}
+

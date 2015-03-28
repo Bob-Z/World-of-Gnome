@@ -47,4 +47,5 @@ int entry_group_create(const char * table, const char * file, ...);
 char * entry_copy_group(const char * src_table, const char * src_file, const char * dst_table, const char * dst_file, const char * group_name, ...);
 int entry_update(char * data);
 int entry_destroy(const char * table, const char * filename);
+int entry_exist(const char * table, const char * file, ...);
 #endif
