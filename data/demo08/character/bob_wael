@@ -1,0 +1,11 @@
+marquee		= "marquee/shyde.png";
+sprite		= "sprite/shyde.png";
+name		= "Wael";
+type		= "shyde";
+map		= "map1";
+pos_x		= 15;
+pos_y		= 15;
+flip_w          = 1;
+action		= [ ];
+#allowed_tile_script	= "allowed_tile/ground_stair.lua";
+#inventory	= [ ];  
