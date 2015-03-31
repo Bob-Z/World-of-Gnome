@@ -405,6 +405,9 @@ int character_set_pos(context_t * ctx, const char * map, int layer, int x, int y
 	int warpy = FALSE;
 	int ctx_layer = 0;
 	char layer_name[SMALL_BUF];
+	char buf[SMALL_BUF];
+	char * coord[3];
+	int ret_value;
 
 	if(ctx == NULL) {
 		return -1;
@@ -423,9 +426,26 @@ int character_set_pos(context_t * ctx, const char * map, int layer, int x, int y
         entry_read_int(MAP_TABLE,map,&warpx,layer_name,MAP_KEY_WARP_X,NULL);
         entry_read_int(MAP_TABLE,map,&warpy,layer_name,MAP_KEY_WARP_Y,NULL);
 
+	/* Offscreen script */
+	entry_read_string(MAP_TABLE,map,&script,layer_name,MAP_OFFSCREEN,NULL);
+	if(script != NULL) {
+		snprintf(buf,SMALL_BUF,"%d",x);
+		coord[0] = strdup(buf);
+		snprintf(buf,SMALL_BUF,"%d",y);
+		coord[1] = strdup(buf);
+		coord[2] = NULL;
+
+		ret_value = action_execute_script(ctx,script,coord);
+		
+		free(coord[0]);
+		free(coord[1]);
+
+		return ret_value;
+	}
+
 	/* Coordinates warping */
 	if( x < 0 ) {
-		if( warpx == FALSE) {
+		if( warpy == FALSE) {
 			return -1;
 		}
 		x = width-1;
