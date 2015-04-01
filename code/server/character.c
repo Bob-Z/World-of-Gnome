@@ -428,7 +428,8 @@ int character_set_pos(context_t * ctx, const char * map, int layer, int x, int y
 
 	/* Offscreen script */
 	entry_read_string(MAP_TABLE,map,&script,layer_name,MAP_OFFSCREEN,NULL);
-	if(script != NULL) {
+	if(script != NULL && 
+		( x < 0 || y < 0 || x >= width || y >= height ) ) {
 		snprintf(buf,SMALL_BUF,"%d",x);
 		coord[0] = strdup(buf);
 		snprintf(buf,SMALL_BUF,"%d",y);
