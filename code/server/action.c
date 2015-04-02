@@ -1640,6 +1640,16 @@ static int l_equipment_slot_get_item( lua_State* L)
 	return 1;  /* number of results */
 }
 
+/* get_base_directory
+Input:
+Output: input data base directory
+*/
+static int l_get_base_directory( lua_State* L)
+{
+	lua_pushstring(L, base_directory);
+	return 1;  /* number of results */
+}
+
 /* popup_send
 
 Send a popup screen to a context
@@ -1985,6 +1995,8 @@ void register_lua_functions(context_t * context)
 	lua_pushcfunction(L, l_equipment_slot_get_item);
 	lua_setglobal(L, "equipment_slot_get_item");
 	/* misc func */
+	lua_pushcfunction(L, l_get_base_directory);
+	lua_setglobal(L, "get_base_directory");
 	lua_pushcfunction(L, l_popup_send);
 	lua_setglobal(L, "popup_send");
 	lua_pushcfunction(L, l_print_text_id);
