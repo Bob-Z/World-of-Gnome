@@ -57,6 +57,13 @@ if res == -1 then
                 "action","set_map","dr",
                 "text","Dry grass",
 
+		"eol",
+
+                "action","set_map","le",
+                "image","tile/le1.png",
+                "action","set_map","le",
+                "text","Leaf litter",
+
 		"eop",
 
                 "action", "popup_end", "",
