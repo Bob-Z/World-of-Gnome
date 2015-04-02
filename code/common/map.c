@@ -409,6 +409,82 @@ int map_set_offscreen(const char * map, int layer, const char * script)
 	return res;
 }
 
+/***********************************
+Set custom tiling of a map's layer
+return -1 if fails
+***********************************/
+int map_set_custom_column(const char * map, int layer, int num, int width, int height)
+{
+	char layer_name[SMALL_BUF];
+	char width_name[SMALL_BUF];
+	char height_name[SMALL_BUF];
+	int res;
+
+	if(map == NULL) {
+		return -1;
+	}
+
+	sprintf(layer_name,"%s%d",MAP_KEY_LAYER,layer);
+	
+	/* Manage concurrent access to map files */
+	SDL_LockMutex(map_mutex);
+
+	if(num==0) {
+		sprintf(width_name,"%s",MAP_KEY_COL_WIDTH);
+		sprintf(height_name,"%s",MAP_KEY_COL_HEIGHT);
+	}
+	else {
+		sprintf(width_name,"%s%d",MAP_KEY_COL_WIDTH,num);
+		sprintf(height_name,"%s%d",MAP_KEY_COL_HEIGHT,num);
+	}
+	res = entry_write_int(MAP_TABLE, map, width, layer_name,width_name,NULL);
+	if(res>-1) {
+		res = entry_write_int(MAP_TABLE, map, height, layer_name,height_name,NULL);
+	}
+
+	SDL_UnlockMutex(map_mutex);
+
+	return res;
+}
+
+/***********************************
+Set custom tiling of a map's layer
+return -1 if fails
+***********************************/
+int map_set_custom_row(const char * map, int layer, int num, int width, int height)
+{
+	char layer_name[SMALL_BUF];
+	char width_name[SMALL_BUF];
+	char height_name[SMALL_BUF];
+	int res;
+
+	if(map == NULL) {
+		return -1;
+	}
+
+	sprintf(layer_name,"%s%d",MAP_KEY_LAYER,layer);
+	
+	/* Manage concurrent access to map files */
+	SDL_LockMutex(map_mutex);
+
+	if(num==0) {
+		sprintf(width_name,"%s",MAP_KEY_ROW_WIDTH);
+		sprintf(height_name,"%s",MAP_KEY_ROW_HEIGHT);
+	}
+	else {
+		sprintf(width_name,"%s%d",MAP_KEY_ROW_WIDTH,num);
+		sprintf(height_name,"%s%d",MAP_KEY_ROW_HEIGHT,num);
+	}
+	res = entry_write_int(MAP_TABLE, map, width, layer_name,width_name,NULL);
+	if(res>-1) {
+		res = entry_write_int(MAP_TABLE, map, height, layer_name,height_name,NULL);
+	}
+
+	SDL_UnlockMutex(map_mutex);
+
+	return res;
+}
+
 /********************************************
  return the name of the tile on map at x,y
  return must be freed by caller

@@ -796,6 +796,68 @@ static int l_map_set_offscreen( lua_State* L)
 	return 1;  /* number of results */
 }
 
+/* map_set_custom_column
+
+Set a map's layer custom column tiling
+
+Input:
+ - ID of a map
+ - layer of the map
+ - number of the column
+ - width of column
+ - height of column
+Output:
+*/
+static int l_map_set_custom_column( lua_State* L)
+{
+	const char * map;
+	int layer;
+	int num;
+	int width;
+	int height;
+	int res;
+
+	map = luaL_checkstring(L, -5);
+	layer = luaL_checkint(L, -4);
+	num = luaL_checkint(L, -3);
+	width = luaL_checkint(L, -2);
+	height = luaL_checkint(L, -1);
+	res = map_set_custom_column(map,layer,num,width,height);
+	lua_pushnumber(L, res);
+	return 1;  /* number of results */
+}
+
+/* map_set_custom_row
+
+Set a map's layer custom row tiling
+
+Input:
+ - ID of a map
+ - layer of the map
+ - number of the row
+ - width of row
+ - height of row
+Output:
+*/
+static int l_map_set_custom_row( lua_State* L)
+{
+	const char * map;
+	int layer;
+	int num;
+	int width;
+	int height;
+	int res;
+
+	map = luaL_checkstring(L, -5);
+	layer = luaL_checkint(L, -4);
+	num = luaL_checkint(L, -3);
+	width = luaL_checkint(L, -2);
+	height = luaL_checkint(L, -1);
+	res = map_set_custom_row(map,layer,num,width,height);
+	lua_pushnumber(L, res);
+	return 1;  /* number of results */
+}
+
 /* print_text_id
 
 Send a message to a character
@@ -1861,6 +1923,10 @@ void register_lua_functions(context_t * context)
 	lua_setglobal(L, "map_set_tile_type");
 	lua_pushcfunction(L, l_map_set_offscreen);
 	lua_setglobal(L, "map_set_offscreen");
+	lua_pushcfunction(L, l_map_set_custom_column);
+	lua_setglobal(L, "map_set_custom_column");
+	lua_pushcfunction(L, l_map_set_custom_row);
+	lua_setglobal(L, "map_set_custom_row");
 	lua_pushcfunction(L, l_map_add_item);
 	lua_setglobal(L, "map_add_item");
 	lua_pushcfunction(L, l_map_delete_item);

@@ -26,6 +26,8 @@ int map_check_tile(context_t * ctx,char * id,const char * map,int layer, int x,i
 int map_set_tile(const char * map,int layer, const char * tile,int x, int y);
 int map_set_tile_type(const char * map,int layer, const char * type,int x, int y);
 int map_set_offscreen(const char * map,int layer, const char * script);
+int map_set_custom_column(const char * map, int layer, int num, int width, int height);
+int map_set_custom_row(const char * map, int layer, int num, int width, int height);
 char * map_get_tile(const char * map,int layer, int x, int y);
 char * map_get_tile_type(const char * map,int layer, int x, int y);
 char ** map_get_event(const char * map,int layer, int x, int y);
