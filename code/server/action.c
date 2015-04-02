@@ -771,6 +771,31 @@ static int l_map_set_tile_type( lua_State* L)
 	return 1;  /* number of results */
 }
 
+/* map_set_offscreen
+
+Set a map's layer offscreen
+
+Input:
+ - ID of a map
+ - layer of the map
+ - offscreen script
+Output:
+*/
+static int l_map_set_offscreen( lua_State* L)
+{
+	const char * map;
+	int layer;
+	const char * script;
+	int res;
+
+	map = luaL_checkstring(L, -3);
+	layer = luaL_checkint(L, -2);
+	script = luaL_checkstring(L, -1);
+	res = map_set_offscreen(map,layer,script);
+	lua_pushnumber(L, res);
+	return 1;  /* number of results */
+}
+
 /* print_text_id
 
 Send a message to a character
@@ -1834,6 +1859,8 @@ void register_lua_functions(context_t * context)
 	lua_setglobal(L, "map_set_tile");
 	lua_pushcfunction(L, l_map_set_tile_type);
 	lua_setglobal(L, "map_set_tile_type");
+	lua_pushcfunction(L, l_map_set_offscreen);
+	lua_setglobal(L, "map_set_offscreen");
 	lua_pushcfunction(L, l_map_add_item);
 	lua_setglobal(L, "map_add_item");
 	lua_pushcfunction(L, l_map_delete_item);

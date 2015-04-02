@@ -384,6 +384,30 @@ int map_set_tile_type(const char * map, int layer, const char * type,int x, int 
 	return 0;
 }
 
+/***********************************
+Set offscreen script of a map's layer
+return -1 if fails
+***********************************/
+int map_set_offscreen(const char * map, int layer, const char * script)
+{
+	char layer_name[SMALL_BUF];
+	int res;
+
+	if(map == NULL || script == NULL) {
+		return -1;
+	}
+
+	sprintf(layer_name,"%s%d",MAP_KEY_LAYER,layer);
+	
+	/* Manage concurrent access to map files */
+	SDL_LockMutex(map_mutex);
+
+	res = entry_write_string(MAP_TABLE, map, script, layer_name,MAP_OFFSCREEN,NULL);
+
+	SDL_UnlockMutex(map_mutex);
+
+	return res;
+}
 
 /********************************************
  return the name of the tile on map at x,y
