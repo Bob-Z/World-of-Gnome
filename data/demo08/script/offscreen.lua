@@ -40,8 +40,31 @@ map_name = string.format("M%d_%d",new_map_x,new_map_y)
 res = character_set_pos(player_id,map_name,0,player_x,player_y)
 
 if res == -1 then
-        call_script("add_map.lua",map_name,new_map_x,new_map_y);
+	call_script("add_map.lua",map_name,new_map_x,new_map_y);
         res = character_set_pos(player_id,map_name,0,player_x,player_y)
+
+        text = string.format("Select new map's default tile ?")
+        popup_send(player_id,
+                "action","set_map","gr",
+                "image","tile/gr1.png",
+                "action","set_map","gr",
+                "text","Green grass",
+
+		"eol",
+
+                "action","set_map","dr",
+                "image","tile/dr1.png",
+                "action","set_map","dr",
+                "text","Dry grass",
+
+		"eop",
+
+                "action", "popup_end", "",
+                "text","Done")
+
+
+
+	res = 0
 end
 
 return res
