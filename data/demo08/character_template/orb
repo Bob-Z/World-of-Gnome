@@ -1,7 +1,7 @@
 marquee		= "";
 sprite		= "sprite/orb-small-defend.png";
 type		= "orb"
-map		= "map1";
+map		= "M0_0";
 pos_x		= 8;
 pos_y		= 8;
 flip_w          = 1;
