@@ -64,6 +64,13 @@ if res == -1 then
                 "action","set_map","le",
                 "text","Leaf litter",
 
+		"eol",
+
+                "action","set_map","se",
+                "image","tile/se1.png",
+                "action","set_map","se",
+                "text","Semi-dry",
+
 		"eop",
 
                 "action", "popup_end", "",
