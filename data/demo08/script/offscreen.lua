@@ -71,6 +71,13 @@ if res == -1 then
                 "action","set_map","se",
                 "text","Semi-dry",
 
+		"eol",
+
+                "action","set_map","ea",
+                "image","tile/ea1.png",
+                "action","set_map","ea",
+                "text","Earthy floor",
+
 		"eop",
 
                 "action", "popup_end", "",
