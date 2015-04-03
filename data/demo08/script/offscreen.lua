@@ -78,6 +78,34 @@ if res == -1 then
                 "action","set_map","ea",
                 "text","Earthy floor",
 
+		"eol",
+
+                "action","set_map","fla",
+                "image","tile/fla1.png",
+                "action","set_map","fla",
+                "text","Flagstones dark",
+
+		"eol",
+
+                "action","set_map","flo",
+                "image","tile/flo1.png",
+                "action","set_map","flo",
+                "text","Floor",
+
+		"eol",
+
+                "action","set_map","hil",
+                "image","tile/hil1.png",
+                "action","set_map","hil",
+                "text","Hills variation",
+
+		"eol",
+
+                "action","set_map","pa",
+                "image","tile/pa1.png",
+                "action","set_map","pa",
+                "text","Path",
+
 		"eop",
 
                 "action", "popup_end", "",
