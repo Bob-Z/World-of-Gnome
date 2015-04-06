@@ -221,6 +221,10 @@ void network_send_context_to_context(context_t * dest_ctx, context_t * src_ctx)
 	char data[BIG_BUF];
 	int  data_size = 0;
 
+	/* Skip if Dest context is an NPC */
+	if( context_is_npc(dest_ctx) ) {
+		return;
+	}
 	/* Source context is not ready yet */
 	if( src_ctx->in_game == 0 ) {
 		return;
