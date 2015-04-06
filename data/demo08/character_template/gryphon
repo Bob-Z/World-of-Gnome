@@ -1,11 +1,11 @@
-marquee		= "marquee/shyde.png";
-sprite		= "sprite/shyde.png";
-name		= "Wael";
-type		= "shyde";
+marquee		= "marquee/gryphon.png";
+sprite		= "sprite/gryphon.gif";
+type		= "gryphon"
 map		= "M0_0";
 pos_x		= 15;
 pos_y		= 15;
 flip_w          = 1;
-action = [ "summon_gryphon" ];
+ai              = "ai/ai_random.lua";
+action		= [ ];
 #allowed_tile_script	= "allowed_tile/ground_stair.lua";
 #inventory	= [ ];  

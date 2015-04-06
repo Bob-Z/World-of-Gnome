@@ -1,0 +1,3 @@
+text            = "Summon a gryphon";
+icon            = "icon/gryphon.png";
+script          = "action/summon_gryphon.lua";
