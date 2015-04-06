@@ -111,6 +111,20 @@ if res == -1 then
                 "action","set_map","pa",
                 "text","Path",
 
+		"eol",
+
+                "action","set_map","oc.gif",
+                "image","tile/oc.gif",
+                "action","set_map","oc.gif",
+                "text","Ocean",
+
+		"eol",
+
+                "action","set_map","co.gif",
+                "image","tile/co.gif",
+                "action","set_map","co.gif",
+                "text","Coast tropical water",
+
 		"eop",
 
                 "action", "popup_end", "",
