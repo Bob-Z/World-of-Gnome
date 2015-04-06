@@ -33,6 +33,8 @@ npc_script
 static void npc_script(context_t * context, char * script, char ** parameters)
 {
 	Uint32 timeout_ms;
+	Uint32 remaining_timeout_ms;
+	Uint32 next_execution_time = 0;
 
 	/* Do not start every NPC at the same moment */
 	usleep( (random()%NPC_TIMEOUT) * 1000);
@@ -42,17 +44,24 @@ static void npc_script(context_t * context, char * script, char ** parameters)
 	wlog(LOGDEV,"Start AI script for %s(%s)",context->id, context->character_name);
 
 	while(context_get_connected(context)) {
-		SDL_LockMutex(npc_mutex);
-		timeout_ms = action_execute_script(context,script,parameters);
+		if( next_execution_time < SDL_GetTicks() ) {
+			SDL_LockMutex(npc_mutex);
+			timeout_ms = action_execute_script(context,script,parameters);
+			SDL_UnlockMutex(npc_mutex);
+			next_execution_time = SDL_GetTicks() + timeout_ms;
+		}
 
-		SDL_UnlockMutex(npc_mutex);
+		remaining_timeout_ms = next_execution_time - SDL_GetTicks();
+		if( timeout_ms < 0 ) {
+			timeout_ms = 0;
+		}
 
 		/* The previous call to action_execute_script may have changed
 		the connected status. So we test it to avoid waiting for the
 		timeout duration before disconnecting */
 		if( context_get_connected(context) ) {
 			SDL_LockMutex(context->cond_mutex);
-			SDL_CondWaitTimeout(context->cond,context->cond_mutex,timeout_ms);
+			SDL_CondWaitTimeout(context->cond,context->cond_mutex,remaining_timeout_ms);
 			SDL_UnlockMutex(context->cond_mutex);
 		}
 	}
