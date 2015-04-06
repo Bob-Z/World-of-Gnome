@@ -158,12 +158,16 @@ static void cb_select_sprite(void *arg)
 static void cb_redo_sprite(void *arg)
 {
 	char * script = NULL;
+	char * last_action = NULL;
 
 	cb_select_sprite(arg);
 
-	script = strdup(ui_play_get_last_action());
-	ui_play_cb_action(script);
-	free(script);
+	last_action = ui_play_get_last_action();
+	if(last_action) {
+		script = strdup(last_action);
+		ui_play_cb_action(script);
+		free(script);
+	}
 }
 
 /**********************************
@@ -549,12 +553,16 @@ static void cb_select_map(void *arg)
 static void cb_redo_map(void *arg)
 {
 	char * script = NULL;
+	char * last_action = NULL;
 
 	cb_select_map(arg);
 
-	script = strdup(ui_play_get_last_action());
-	ui_play_cb_action(script);
-	free(script);
+	last_action = ui_play_get_last_action();
+	if(last_action) {
+		script = strdup(last_action);
+		ui_play_cb_action(script);
+		free(script);
+	}
 }
 
 /**************************************
