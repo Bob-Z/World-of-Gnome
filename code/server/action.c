@@ -735,7 +735,40 @@ static int l_map_set_tile( lua_State* L)
 	tile = luaL_checkstring(L, -3);
 	x = luaL_checkint(L, -2);
 	y = luaL_checkint(L, -1);
-	res = map_set_tile(map, layer, tile, x, y);
+	res = map_set_tile(map, layer, tile, x, y,true);
+	lua_pushnumber(L, res);
+	return 1;  /* number of results */
+}
+
+/* map_set_tile_no_update
+
+Set a tile in a map without sending the resulting map to contexts
+Use map_broadcast to send the map
+
+Input:
+ - ID of a map
+ - layer of the map
+ - ID of a tile
+ - X coordinate of the tile to set
+ - Y coordinate of the tile to set
+ - Map level
+Output:
+*/
+static int l_map_set_tile_no_update( lua_State* L)
+{
+	const char * map;
+	int layer;
+	const char * tile;
+	int x;
+	int y;
+	int res;
+
+	map = luaL_checkstring(L, -5);
+	layer = luaL_checkint(L, -4);
+	tile = luaL_checkstring(L, -3);
+	x = luaL_checkint(L, -2);
+	y = luaL_checkint(L, -1);
+	res = map_set_tile(map, layer, tile, x, y,false);
 	lua_pushnumber(L, res);
 	return 1;  /* number of results */
 }
@@ -766,7 +799,59 @@ static int l_map_set_tile_type( lua_State* L)
 	type = luaL_checkstring(L, -3);
 	x = luaL_checkint(L, -2);
 	y = luaL_checkint(L, -1);
-	res = map_set_tile_type(map,layer,type,x,y);
+	res = map_set_tile_type(map,layer,type,x,y,true);
+	lua_pushnumber(L, res);
+	return 1;  /* number of results */
+}
+
+/* map_set_tile_type_no_update
+
+Set a type in a map without sending the resulting map to contexts
+Use map_broadcast to send the map
+
+Input:
+ - ID of a map
+ - layer of the map
+ - type
+ - X coordinate of the tile to set
+ - Y coordinate of the tile to set
+Output:
+*/
+static int l_map_set_tile_type_no_update( lua_State* L)
+{
+	const char * map;
+	int layer;
+	const char * type;
+	int x;
+	int y;
+	int res;
+
+	map = luaL_checkstring(L, -5);
+	layer = luaL_checkint(L, -4);
+	type = luaL_checkstring(L, -3);
+	x = luaL_checkint(L, -2);
+	y = luaL_checkint(L, -1);
+	res = map_set_tile_type(map,layer,type,x,y,true);
+	lua_pushnumber(L, res);
+	return 1;  /* number of results */
+}
+
+/* map_broadcast
+
+Send map to all context.
+Call this function after map_*_no_update functions
+
+Input:
+ - ID of a map
+Output:
+*/
+static int l_map_broadcast( lua_State* L)
+{
+	const char * map;
+	int res = 0;
+
+	map = luaL_checkstring(L, -1);
+	map_broadcast(map);
 	lua_pushnumber(L, res);
 	return 1;  /* number of results */
 }
@@ -1929,8 +2014,14 @@ void register_lua_functions(context_t * context)
 	lua_setglobal(L, "map_new");
 	lua_pushcfunction(L, l_map_set_tile);
 	lua_setglobal(L, "map_set_tile");
+	lua_pushcfunction(L, l_map_set_tile_no_update);
+	lua_setglobal(L, "map_set_tile_no_update");
 	lua_pushcfunction(L, l_map_set_tile_type);
 	lua_setglobal(L, "map_set_tile_type");
+	lua_pushcfunction(L, l_map_set_tile_type_no_update);
+	lua_setglobal(L, "map_set_tile_type_no_update");
+	lua_pushcfunction(L, l_map_broadcast);
+	lua_setglobal(L, "map_broadcast");
 	lua_pushcfunction(L, l_map_set_offscreen);
 	lua_setglobal(L, "map_set_offscreen");
 	lua_pushcfunction(L, l_map_set_custom_column);
