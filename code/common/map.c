@@ -279,7 +279,7 @@ int map_add_item(const char * map, int layer, const char * id, int x, int y)
 Write a new tile into a map set
 return -1 if fails
 ***********************************/
-int map_set_tile(const char * map, int layer, const char * tile,int x, int y)
+int map_set_tile(const char * map, int layer, const char * tile,int x, int y,int network_broadcast)
 {
 	char * previous_tile = NULL;
 	int width = -1;
@@ -323,7 +323,9 @@ int map_set_tile(const char * map, int layer, const char * tile,int x, int y)
 	free(previous_tile);
 
 	if( entry_write_list_index(MAP_TABLE, map, tile,index,layer_name,MAP_KEY_SET,NULL ) ) {
-		context_broadcast_map(map);
+		if( network_broadcast ) {
+			context_broadcast_map(map);
+		}
 	}
 
 	SDL_UnlockMutex(map_mutex);
@@ -335,7 +337,7 @@ int map_set_tile(const char * map, int layer, const char * tile,int x, int y)
 Write a new tile type into a map file
 return -1 if fails
 ***********************************/
-int map_set_tile_type(const char * map, int layer, const char * type,int x, int y)
+int map_set_tile_type(const char * map, int layer, const char * type,int x, int y,int network_broadcast)
 {
 	char * previous_type = NULL;
 	int width = -1;
@@ -376,12 +378,23 @@ int map_set_tile_type(const char * map, int layer, const char * type,int x, int 
 	}
 
 	if( entry_write_list_index(MAP_TABLE, map, type,index, layer_name,MAP_KEY_TYPE,NULL ) ) {
-		context_broadcast_map(map);
+		if( network_broadcast ) {
+			context_broadcast_map(map);
+		}
 	}
 
 	SDL_UnlockMutex(map_mutex);
 
 	return 0;
+}
+
+/***********************************
+Broadcast map file to other context
+return -1 if fails
+***********************************/
+void map_broadcast(const char * map)
+{
+	context_broadcast_map(map);
 }
 
 /***********************************
