@@ -984,9 +984,9 @@ context_add_or_update_from_network_frame_free:
 }
 
 /**************************************
-Broadcast upload of a file to all in_game context
+Broadcast upload of a map file to all in_game context on that map
 **************************************/
-void context_broadcast_file(const char * table, const char * file, int same_map_only)
+void context_broadcast_map(const char * map)
 {
 	context_t * ctx = NULL;
 	char * filename;
@@ -1000,7 +1000,7 @@ void context_broadcast_file(const char * table, const char * file, int same_map_
 		return;
 	}
 
-	filename = strconcat(table,"/",file,NULL);
+	filename = strconcat(MAP_TABLE,"/",map,NULL);
 
 	do {
 		if( context_is_npc(ctx) == true ) {
@@ -1013,8 +1013,8 @@ void context_broadcast_file(const char * table, const char * file, int same_map_
 		}
 
 		/* Skip if not on the same map */
-		if( same_map_only && ctx->map) {
-			if( strcmp(file,ctx->map) != 0 ) {
+		if( ctx->map) {
+			if( strcmp(map,ctx->map) != 0 ) {
 				continue;
 			}
 		}

@@ -106,7 +106,7 @@ void context_unlock_list();
 context_t * context_get_first();
 context_t * context_get_player();
 int context_write_to_file(context_t * context);
-void context_broadcast_file(const char * table, const char * file, int same_map_only);
+void context_broadcast_map(const char * map);
 void context_request_other_context(context_t * context);
 context_t * context_find(const char * id);
 void context_broadcast_text(const char * map, const char * text);

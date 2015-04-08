@@ -237,7 +237,7 @@ char * map_delete_item(const char * map, int layer, int x, int y)
 	SDL_UnlockMutex(map_mutex);
 
 	/* Send network notifications */
-	context_broadcast_file(MAP_TABLE,map,TRUE);
+	context_broadcast_map(map);
 
 	return saved_item;
 }
@@ -271,7 +271,7 @@ int map_add_item(const char * map, int layer, const char * id, int x, int y)
 	SDL_UnlockMutex(map_mutex);
 
 	/* Send network notifications */
-	context_broadcast_file(MAP_TABLE,map,TRUE);
+	context_broadcast_map(map);
 
 	return 0;
 }
@@ -323,7 +323,7 @@ int map_set_tile(const char * map, int layer, const char * tile,int x, int y)
 	free(previous_tile);
 
 	if( entry_write_list_index(MAP_TABLE, map, tile,index,layer_name,MAP_KEY_SET,NULL ) ) {
-		context_broadcast_file(MAP_TABLE,map,TRUE);
+		context_broadcast_map(map);
 	}
 
 	SDL_UnlockMutex(map_mutex);
@@ -376,7 +376,7 @@ int map_set_tile_type(const char * map, int layer, const char * type,int x, int 
 	}
 
 	if( entry_write_list_index(MAP_TABLE, map, type,index, layer_name,MAP_KEY_TYPE,NULL ) ) {
-		context_broadcast_file(MAP_TABLE,map,TRUE);
+		context_broadcast_map(map);
 	}
 
 	SDL_UnlockMutex(map_mutex);
@@ -650,7 +650,7 @@ char * map_add_event(const char * map, int layer, const char * script, int x, in
 	SDL_UnlockMutex(map_mutex);
 
 	/* Send network notifications */
-	context_broadcast_file(MAP_TABLE,map,TRUE);
+	context_broadcast_map(map);
 
 	return id;
 }
@@ -738,7 +738,7 @@ int map_delete_event(const char * map, int layer, const char * script, int x, in
 	SDL_UnlockMutex(map_mutex);
 
 	/* Send network notifications */
-	context_broadcast_file(MAP_TABLE,map,TRUE);
+	context_broadcast_map(map);
 
 	return 0;
 }
