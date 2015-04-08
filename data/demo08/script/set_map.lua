@@ -17,9 +17,10 @@ if ret == true then
 	for x=0,map_w-1 do
 		for y=0,map_h-1 do
 			tile_name = string.format("tile/%s",tile_type)
-			map_set_tile(map_name,0,tile_name,x,y)
+			map_set_tile_no_update(map_name,0,tile_name,x,y)
 		end
 	end
+	map_broadcast(map_name);
 	return
 end
 
@@ -37,8 +38,9 @@ max_img = max_img - 1
 for x=0,map_w-1 do
 	for y=0,map_h-1 do
 		tile_name = string.format("tile/%s%d.png",tile_type,math.random(1,max_img))
-		map_set_tile(map_name,0,tile_name,x,y)
+		map_set_tile_no_update(map_name,0,tile_name,x,y)
 	end
 end
+map_broadcast(map_name);
 
 end
