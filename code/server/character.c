@@ -593,3 +593,22 @@ int character_set_ai_script(const char * id, const char * script_name)
 	return 0;
 }
 
+/*********************************************************
+ Wake-up NPC. Execute it's AI script immediatly
+ return -1 on error
+*********************************************************/
+int character_wake_up(const char * id)
+{
+	context_t * ctx;
+
+	ctx = context_find(id);
+
+	/* Wake up NPC */
+	ctx->next_execution_time = 0;
+	if( SDL_TryLockMutex (ctx->cond_mutex) == 0 ) {
+		SDL_CondSignal (ctx->cond);
+		SDL_UnlockMutex (ctx->cond_mutex);
+	}
+
+	return 0;
+}

@@ -83,6 +83,8 @@ void context_init(context_t * context)
 	context->cond_mutex = NULL;
 	context->orientation = 0;
 	context->direction = 0;
+	context->next_execution_time = 0;
+
 	context->previous = NULL;
 	context->next = NULL;
 }

@@ -33,7 +33,6 @@ npc_script
 static void npc_script(context_t * context, char * script, char ** parameters)
 {
 	Uint32 timeout_ms;
-	Uint32 next_execution_time = 0;
 
 	/* Do not start every NPC at the same moment */
 	usleep( (random()%NPC_TIMEOUT) * 1000);
@@ -43,11 +42,11 @@ static void npc_script(context_t * context, char * script, char ** parameters)
 	wlog(LOGDEV,"Start AI script for %s(%s)",context->id, context->character_name);
 
 	while(context_get_connected(context)) {
-		if( next_execution_time < SDL_GetTicks() ) {
+		if( context->next_execution_time < SDL_GetTicks() ) {
 			SDL_LockMutex(npc_mutex);
 			timeout_ms = action_execute_script(context,script,parameters);
 			SDL_UnlockMutex(npc_mutex);
-			next_execution_time = SDL_GetTicks() + timeout_ms;
+			context->next_execution_time = SDL_GetTicks() + timeout_ms;
 		}
 
 		/* The previous call to action_execute_script may have changed

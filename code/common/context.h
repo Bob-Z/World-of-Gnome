@@ -64,6 +64,8 @@ typedef struct context {
 	int		orientation; /* Bit field for sprite orientation (north east, south...)*/
 	int		direction; /* Bit field for sprite direction (north, south...)*/
 
+	Uint32		next_execution_time; /* Time when an NPC will execute its AI script */
+
 	struct context*	previous;
 	struct context*	next;
 } context_t;

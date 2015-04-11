@@ -683,9 +683,29 @@ static int l_character_set_ai_script( lua_State* L)
 	int res;
 
 	id = luaL_checkstring(L, -2);
-	portrait = luaL_checkstring(L, -1);
+	script_name = luaL_checkstring(L, -1);
 
 	res = character_set_ai_script(id,script_name);
+	lua_pushnumber(L, res);
+	return 1;  /* number of results */
+}
+
+/* character_wake_up
+
+Wake-up a NPC
+
+Input:
+ - ID of a character
+Output:
+*/
+static int l_character_wake_up( lua_State* L)
+{
+	const char * id;
+	int res;
+
+	id = luaL_checkstring(L, -1);
+
+	res = character_wake_up(id);
 	lua_pushnumber(L, res);
 	return 1;  /* number of results */
 }
@@ -2028,6 +2048,8 @@ void register_lua_functions(context_t * context)
 	lua_setglobal(L, "character_set_portrait");
 	lua_pushcfunction(L, l_character_set_ai_script);
 	lua_setglobal(L, "character_set_ai_script");
+	lua_pushcfunction(L, l_character_wake_up);
+	lua_setglobal(L, "character_wake_up");
 	lua_pushcfunction(L, l_character_out_of_game);
 	lua_setglobal(L, "character_out_of_game");
 	lua_pushcfunction(L, l_character_disconnect);

@@ -29,3 +29,4 @@ int character_get_npc(const char * id);
 char * character_get_portrait(const char * id);
 int character_set_portrait(const char * id,const char * portrait);
 int character_set_ai_script(const char * id, const char * script_name);
+int character_wake_up(const char * id);
