@@ -1,4 +1,4 @@
-marquee		= "marquee/gryphon.png";
+marquee		= "marquee/gryphon.gif";
 sprite		= "sprite/gryphon.gif";
 type		= "gryphon"
 map		= "M0_0";
