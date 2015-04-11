@@ -1658,7 +1658,9 @@ static int l_character_attribute_tag_get( lua_State* L)
 	attribute = luaL_checkstring(L, -1);
 	res = attribute_tag_get(CHARACTER_TABLE,id,attribute);
 	lua_pushstring(L, res);
-	free(res);
+	if(res) {
+		free(res);
+	}
 	return 1;  /* number of results */
 }
 
