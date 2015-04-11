@@ -303,6 +303,31 @@ static void draw_sprite(context_t * ctx, const char * image_file_name,int layer_
 		ctx->cur_pos_y = ctx->pos_y;
 	}
 
+	if( ctx->direction & NORTH ) {
+		if( entry_read_string(CHARACTER_TABLE,ctx->id,&sprite_name,CHARACTER_KEY_DIR_N_SPRITE,NULL)) {
+			sprite = imageDB_get_anim(player_context,sprite_name);
+			free(sprite_name);
+		}
+	}
+	if( ctx->direction & SOUTH ) {
+		if( entry_read_string(CHARACTER_TABLE,ctx->id,&sprite_name,CHARACTER_KEY_DIR_S_SPRITE,NULL)) {
+			sprite = imageDB_get_anim(player_context,sprite_name);
+			free(sprite_name);
+		}
+	}
+	if( ctx->direction & EAST ) {
+		if( entry_read_string(CHARACTER_TABLE,ctx->id,&sprite_name,CHARACTER_KEY_DIR_E_SPRITE,NULL)) {
+			sprite = imageDB_get_anim(player_context,sprite_name);
+			free(sprite_name);
+		}
+	}
+	if( ctx->direction & WEST ) {
+		if( entry_read_string(CHARACTER_TABLE,ctx->id,&sprite_name,CHARACTER_KEY_DIR_W_SPRITE,NULL)) {
+			sprite = imageDB_get_anim(player_context,sprite_name);
+			free(sprite_name);
+		}
+	}
+
 	/* Get position in pixel */
 	x = t2p_x(ctx->cur_pos_x,ctx->cur_pos_y,layer_index);
 	y = t2p_y(ctx->cur_pos_x,ctx->cur_pos_y,layer_index);

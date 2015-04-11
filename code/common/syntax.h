@@ -79,6 +79,10 @@
 #define CHARACTER_KEY_DIR_W_FLIP	"flip_w"
 #define CHARACTER_KEY_DIR_E_FLIP	"flip_e"
 #define CHARACTER_KEY_FORCE_FLIP	"force_flip"
+#define CHARACTER_KEY_DIR_N_SPRITE	"sprite_n"
+#define CHARACTER_KEY_DIR_S_SPRITE	"sprite_s"
+#define CHARACTER_KEY_DIR_W_SPRITE	"sprite_w"
+#define CHARACTER_KEY_DIR_E_SPRITE	"sprite_e"
 #define CHARACTER_KEY_PLATFORM		"platform"
 
 #define CHARACTER_TEMPLATE_TABLE	"character_template"
