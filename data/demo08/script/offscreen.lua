@@ -125,6 +125,13 @@ if res == -1 then
                 "action","set_map","co.gif",
                 "text","Coast tropical water",
 
+		"eol",
+
+                "action","set_map","wa.gif",
+                "image","tile/wa.gif",
+                "action","set_map","wa.gif",
+                "text","Water",
+
 		"eop",
 
                 "action", "popup_end", "",
