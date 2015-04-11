@@ -1639,6 +1639,54 @@ static int l_character_attribute_set( lua_State* L)
 	return 1;  /* number of results */
 }
 
+/* character_attribute_tag_get
+
+Get the value of the given attribute tag
+
+Input:
+ - ID of a character
+ - ID of an attribute
+Output: Value of the given attribute or -1 if error
+*/
+static int l_character_attribute_tag_get( lua_State* L)
+{
+	const char * id;
+	const char * attribute;
+	char * res;
+
+	id = luaL_checkstring(L, -2);
+	attribute = luaL_checkstring(L, -1);
+	res = attribute_tag_get(CHARACTER_TABLE,id,attribute);
+	lua_pushstring(L, res);
+	free(res);
+	return 1;  /* number of results */
+}
+
+/* character_attribute_tag_set
+
+Set an attribute tag to the given value
+
+Input:
+ - ID of a character
+ - ID of an attribute
+ - value
+Output:
+*/
+static int l_character_attribute_tag_set( lua_State* L)
+{
+	const char * id;
+	const char * attribute;
+	const char * value;
+	int res;
+
+	id = luaL_checkstring(L, -3);
+	attribute = luaL_checkstring(L, -2);
+	value = luaL_checkstring(L, -1);
+	res = attribute_tag_set(CHARACTER_TABLE,id,attribute,value);
+	lua_pushnumber(L, res);
+	return 1;  /* number of results */
+}
+
 /* map_attribute_change
 
 Add (or remove) a value to the given attribute
@@ -2120,6 +2168,10 @@ void register_lua_functions(context_t * context)
 	lua_setglobal(L, "character_attribute_get");
 	lua_pushcfunction(L, l_character_attribute_set);
 	lua_setglobal(L, "character_attribute_set");
+	lua_pushcfunction(L, l_character_attribute_tag_get);
+	lua_setglobal(L, "character_attribute_tag_get");
+	lua_pushcfunction(L, l_character_attribute_tag_set);
+	lua_setglobal(L, "character_attribute_tag_set");
 	/* map attribute func */
 	lua_pushcfunction(L, l_map_attribute_change);
 	lua_setglobal(L, "map_attribute_change");

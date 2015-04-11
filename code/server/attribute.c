@@ -191,3 +191,39 @@ int attribute_set(const char * table, const char * id, const char * attribute, i
 
 	return 0;
 }
+
+/****************************************
+get the specified attribute tag's value
+return NULL if fails
+returned value MUST be freed
+****************************************/
+char * attribute_tag_get(const char * table, const char *id, const char * attribute)
+{
+	char * tag = NULL;
+
+	SDL_LockMutex(attribute_mutex);
+
+	entry_read_string(table,id,&tag,ATTRIBUTE_GROUP,attribute, ATTRIBUTE_CURRENT, NULL);
+
+	SDL_UnlockMutex(attribute_mutex);
+
+	return tag;
+}
+
+/*********************************************************************
+set the specified attribute tag's value
+return -1 if fails
+*********************************************************************/
+int attribute_tag_set(const char * table, const char * id, const char * attribute, const char * value)
+{
+	SDL_LockMutex(attribute_mutex);
+
+	if(!entry_write_string(table,id,value,ATTRIBUTE_GROUP,attribute, ATTRIBUTE_CURRENT, NULL)) {
+		SDL_UnlockMutex(attribute_mutex);
+		return -1;
+	}
+
+	SDL_UnlockMutex(attribute_mutex);
+
+	return 0;
+}

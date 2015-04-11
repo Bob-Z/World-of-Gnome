@@ -22,4 +22,6 @@
 int attribute_change(context_t * context, const char * table, const char * id, const char * attribute, int value);
 int attribute_get(const char * table, const char * id, const char * attribute);
 int attribute_set(const char * table, const char * id, const char * attribute, int value);
+char * attribute_tag_get(const char * table, const char * id, const char * attribute);
+int attribute_tag_set(const char * table, const char * id, const char * attribute, const char * value);
 
