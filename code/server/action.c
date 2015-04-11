@@ -667,6 +667,29 @@ static int l_character_set_portrait( lua_State* L)
 	return 1;  /* number of results */
 }
 
+/* character_set_ai_script
+
+Set a character's AI script
+
+Input:
+ - ID of a character
+ - name of the AI script
+Output:
+*/
+static int l_character_set_ai_script( lua_State* L)
+{
+	const char * id;
+	const char * script_name;
+	int res;
+
+	id = luaL_checkstring(L, -2);
+	portrait = luaL_checkstring(L, -1);
+
+	res = character_set_ai_script(id,script_name);
+	lua_pushnumber(L, res);
+	return 1;  /* number of results */
+}
+
 /* map_new
 
 Create a map
@@ -2003,6 +2026,8 @@ void register_lua_functions(context_t * context)
 	lua_setglobal(L, "character_get_portrait");
 	lua_pushcfunction(L, l_character_set_portrait);
 	lua_setglobal(L, "character_set_portrait");
+	lua_pushcfunction(L, l_character_set_ai_script);
+	lua_setglobal(L, "character_set_ai_script");
 	lua_pushcfunction(L, l_character_out_of_game);
 	lua_setglobal(L, "character_out_of_game");
 	lua_pushcfunction(L, l_character_disconnect);

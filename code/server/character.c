@@ -579,3 +579,17 @@ char * character_get_portrait(const char * id)
 
 	return portrait;
 }
+
+/*********************************************************
+ Set AI script name
+ return -1 on error
+*********************************************************/
+int character_set_ai_script(const char * id, const char * script_name)
+{
+	if(!entry_write_string(CHARACTER_TABLE,id,script_name,CHARACTER_KEY_AI,NULL)) {
+		return -1;
+	}
+
+	return 0;
+}
+
