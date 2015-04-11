@@ -1,3 +1,3 @@
 [submodule "code/sdl_item"]
 	path = code/sdl_item
-	url = git@github.com:Bob-Z/sdl_item.git
+	url = https://github.com/Bob-Z/sdl_item.git
