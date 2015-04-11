@@ -1,0 +1,4 @@
+text            = "Summon a bat";
+icon            = "icon/bat.png";
+script          = "action/summon.lua";
+param		= ( "bat" );

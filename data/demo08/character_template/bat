@@ -1,0 +1,13 @@
+marquee		= "marquee/bat-s.gif";
+sprite		= "sprite/bat-s.gif";
+type		= "bat"
+map		= "M0_0";
+pos_x		= 15;
+pos_y		= 15;
+flip_w          = 1;
+sprite_n	= "sprite/bat-n.gif";
+sprite_s	= "sprite/bat-s.gif";
+ai              = "ai/ai_random.lua";
+action		= [ ];
+#allowed_tile_script	= "allowed_tile/ground_stair.lua";
+#inventory	= [ ];  
