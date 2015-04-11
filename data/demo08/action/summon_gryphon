@@ -1,4 +1,6 @@
 text            = "Summon a gryphon";
 icon            = "icon/gryphon.png";
+icon_over       = "icon/gryphon_over.png";
+icon_click      = "icon/gryphon_click.png";
 script          = "action/summon.lua";
 param		= ( "gryphon" );
