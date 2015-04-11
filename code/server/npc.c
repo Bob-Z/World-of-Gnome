@@ -33,7 +33,6 @@ npc_script
 static void npc_script(context_t * context, char * script, char ** parameters)
 {
 	Uint32 timeout_ms;
-	Uint32 remaining_timeout_ms;
 	Uint32 next_execution_time = 0;
 
 	/* Do not start every NPC at the same moment */
@@ -51,17 +50,12 @@ static void npc_script(context_t * context, char * script, char ** parameters)
 			next_execution_time = SDL_GetTicks() + timeout_ms;
 		}
 
-		remaining_timeout_ms = next_execution_time - SDL_GetTicks();
-		if( timeout_ms < 0 ) {
-			timeout_ms = 0;
-		}
-
 		/* The previous call to action_execute_script may have changed
 		the connected status. So we test it to avoid waiting for the
 		timeout duration before disconnecting */
 		if( context_get_connected(context) ) {
 			SDL_LockMutex(context->cond_mutex);
-			SDL_CondWaitTimeout(context->cond,context->cond_mutex,remaining_timeout_ms);
+			SDL_CondWaitTimeout(context->cond,context->cond_mutex,timeout_ms);
 			SDL_UnlockMutex(context->cond_mutex);
 		}
 	}
