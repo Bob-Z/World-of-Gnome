@@ -305,6 +305,8 @@ static void compose_action(context_t * ctx,item_t * item_list)
 	char ** action_list = NULL;
 	char * text = NULL;
 	char * icon = NULL;
+	char * icon_over = NULL;
+	char * icon_click = NULL;
 	char * script = NULL;
 	anim_t * anim;
 	item_t * item;
@@ -346,17 +348,29 @@ static void compose_action(context_t * ctx,item_t * item_list)
 			continue;
 		}
 
+		item = item_list_add(&item_list);
+		item_set_overlay(item,1);
+
 		/* load image */
 		anim = imageDB_get_anim(ctx, icon);
-
-		item = item_list_add(&item_list);
-
-		item_set_overlay(item,1);
 		item_set_anim(item,x,sh-anim->h,anim);
+
 		x += anim->w;
 		item_set_click_left(item,ui_play_cb_action,(void*)strdup(action_list[i]),free);
 		if( action_bar_height < anim->h ) {
 			action_bar_height = anim->h;
+		}
+
+		entry_read_string(ACTION_TABLE,action_list[i],&icon_over,ACTION_KEY_ICON_OVER,NULL);
+		if( icon_over ) {
+			anim = imageDB_get_anim(ctx, icon_over);
+			item_set_anim_over(item,anim);
+		}
+
+		entry_read_string(ACTION_TABLE,action_list[i],&icon_click,ACTION_KEY_ICON_CLICK,NULL);
+		if( icon_click ) {
+			anim = imageDB_get_anim(ctx, icon_click);
+			item_set_anim_click(item,anim);
 		}
 
 		i++;

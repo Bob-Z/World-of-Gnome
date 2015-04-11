@@ -131,6 +131,8 @@
 #define ACTION_KEY_SCRIPT	"script"
 #define ACTION_KEY_TEXT		"text"
 #define ACTION_KEY_ICON		"icon"
+#define ACTION_KEY_ICON_OVER	"icon_over"
+#define ACTION_KEY_ICON_CLICK	"icon_click"
 #define ACTION_KEY_PARAM	"param"
 
 /* item data */
