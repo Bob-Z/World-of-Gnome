@@ -1,3 +1,4 @@
 text            = "Summon a gryphon";
 icon            = "icon/gryphon.png";
-script          = "action/summon_gryphon.lua";
+script          = "action/summon.lua";
+param		= ( "gryphon" );

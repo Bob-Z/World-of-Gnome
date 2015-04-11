@@ -1,4 +1,4 @@
-function f ()
+function f (creature_type)
 
 player = player_get_id()
 
@@ -10,9 +10,10 @@ if x == -1 or y == -1 then
 end
 map = character_get_map(player)
 
-id = character_create_from_template("gryphon",map,0,x,y)
+id = character_create_from_template(creature_type,map,0,x,y)
 if id == nil then
-        print_text_id(player, "Cannot create gryphon here")
+	text = string.format("Cannot create %s here",creature_type)
+        print_text_id(player, text)
         return
 end
 
