@@ -8,6 +8,7 @@ pos_x		= 8;
 pos_y		= 8;
 flip_e          = 1;
 ai		= "ai/ai_random.lua";
+ai_params       = [ "1000" ];
 action		= [ ];
 #allowed_tile_script	= "allowed_tile/ground_stair.lua";
 #inventory	= [ ];  

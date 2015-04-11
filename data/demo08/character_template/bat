@@ -8,6 +8,7 @@ flip_w          = 1;
 sprite_n	= "sprite/bat-n.gif";
 sprite_s	= "sprite/bat-s.gif";
 ai              = "ai/ai_random.lua";
+ai_params       = [ "1000" ];
 action		= [ ];
 #allowed_tile_script	= "allowed_tile/ground_stair.lua";
 #inventory	= [ ];  

@@ -1,4 +1,4 @@
-function f ()
+function f (timeout)
 
 id = player_get_id()
 
@@ -18,5 +18,5 @@ end
 character_set_pos(id,map,0,new_pos_x,new_pos_y)
 
 -- return the time in ms before the next NPC AI action
-return 1000
+return timeout
 end
