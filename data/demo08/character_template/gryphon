@@ -8,5 +8,7 @@ flip_w          = 1;
 ai              = "ai/ai_random.lua";
 ai_params       = [ "1200" ];
 action		= [ ];
+aggro_script    = "aggro/gryphon.lua";
+aggro_dist      = 5;
 #allowed_tile_script	= "allowed_tile/ground_stair.lua";
 #inventory	= [ ];  
