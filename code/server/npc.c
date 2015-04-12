@@ -30,9 +30,12 @@
 /**********************************
 npc_script
 *********************************/
-static void npc_script(context_t * context, char * script, char ** parameters)
+static int npc_script(void * data)
 {
+	context_t * context = (context_t *)data;
 	Uint32 timeout_ms;
+        char * script = NULL;
+        char ** parameters = NULL;
 
 	/* Do not start every NPC at the same moment */
 	usleep( (random()%NPC_TIMEOUT) * 1000);
@@ -42,6 +45,18 @@ static void npc_script(context_t * context, char * script, char ** parameters)
 	wlog(LOGDEV,"Start AI script for %s(%s)",context->id, context->character_name);
 
 	while(context_get_connected(context)) {
+		if( script ) {
+			free(script);
+		}
+		if(parameters) {
+			deep_free(parameters);
+		}
+		if(!entry_read_string(CHARACTER_TABLE,context->id,&script,CHARACTER_KEY_AI,NULL)) {
+			werr(LOGUSER,"No AI script for %s",context->id);
+			break;
+		}
+		entry_read_list(CHARACTER_TABLE,context->id,&parameters,CHARACTER_KEY_AI_PARAMS,NULL);
+
 		if( context->next_execution_time < SDL_GetTicks() ) {
 			SDL_LockMutex(npc_mutex);
 			timeout_ms = action_execute_script(context,script,parameters);
@@ -66,26 +81,6 @@ static void npc_script(context_t * context, char * script, char ** parameters)
 
 	/* clean up */
 	context_free(context);
-}
-
-/**********************************
-manage_npc
-*********************************/
-static int manage_npc(void * data)
-{
-	context_t * context = (context_t *)data;
-	char * ai;
-	char ** parameters;
-
-	if(entry_read_string(CHARACTER_TABLE,context->id,&ai,CHARACTER_KEY_AI,NULL)) {
-		entry_read_list(CHARACTER_TABLE,context->id,&parameters,CHARACTER_KEY_AI_PARAMS,NULL);
-		npc_script(context,ai,parameters);
-		free(ai);
-		deep_free(parameters);
-		return 0;
-	}
-
-	werr(LOGUSER,"No AI script for %s",context->id);
 
 	return 0;
 }
@@ -156,7 +151,7 @@ void instantiate_npc(const char * id)
 	context_spread(ctx);
 
 	sprintf(buf,"npc:%s",id);
-	SDL_CreateThread(manage_npc,buf,(void*)ctx);
+	SDL_CreateThread(npc_script,buf,(void*)ctx);
 }
 /**************************
 init non playing character
