@@ -952,13 +952,12 @@ static void cb_popup_quit(void * arg)
 	}
 
 	popup_offset = 0;
-	
+
 	popup_frame = fifo_pop(&popup_fifo);
 
 	if( popup_frame == NULL) {
 		ui_play_set(UI_MAIN);
-	}
-	else {
+	} else {
 		popup_active = true;
 	}
 }
@@ -997,7 +996,7 @@ void cb_free_action_param(void * arg)
 **********************************/
 static void cb_wheel_up(Uint32 y, Uint32 unused)
 {
-        popup_offset -= MOUSE_WHEEL_SCROLL;
+	popup_offset -= MOUSE_WHEEL_SCROLL;
 	if( popup_offset < 0 ) {
 		popup_offset = 0;
 	}
@@ -1115,12 +1114,10 @@ void ui_play_popup_add(char * frame)
 {
 	if(popup_frame == NULL) {
 		popup_frame = strdup(frame);
-	}
-	else {
+	} else {
 		if(popup_active) {
 			fifo_push(&popup_fifo,strdup(frame));
-		}
-		else {
+		} else {
 			free(popup_frame);
 			popup_frame = strdup(frame);
 			popup_active = true;

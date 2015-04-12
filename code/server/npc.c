@@ -34,8 +34,8 @@ static int npc_script(void * data)
 {
 	context_t * context = (context_t *)data;
 	Uint32 timeout_ms;
-        char * script = NULL;
-        char ** parameters = NULL;
+	char * script = NULL;
+	char ** parameters = NULL;
 
 	/* Do not start every NPC at the same moment */
 	usleep( (random()%NPC_TIMEOUT) * 1000);

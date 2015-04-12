@@ -417,15 +417,15 @@ int character_set_pos(context_t * ctx, const char * map, int layer, int x, int y
 	entry_read_int(CHARACTER_TABLE,ctx->id,&ctx_layer,CHARACTER_KEY_LAYER,NULL);
 	sprintf(layer_name,"%s%d",MAP_KEY_LAYER,ctx_layer);
 
-        entry_read_int(MAP_TABLE,map,&width,layer_name,MAP_KEY_WIDTH,NULL);
-        entry_read_int(MAP_TABLE,map,&height,layer_name,MAP_KEY_HEIGHT,NULL);
-        entry_read_int(MAP_TABLE,map,&warpx,layer_name,MAP_KEY_WARP_X,NULL);
-        entry_read_int(MAP_TABLE,map,&warpy,layer_name,MAP_KEY_WARP_Y,NULL);
+	entry_read_int(MAP_TABLE,map,&width,layer_name,MAP_KEY_WIDTH,NULL);
+	entry_read_int(MAP_TABLE,map,&height,layer_name,MAP_KEY_HEIGHT,NULL);
+	entry_read_int(MAP_TABLE,map,&warpx,layer_name,MAP_KEY_WARP_X,NULL);
+	entry_read_int(MAP_TABLE,map,&warpy,layer_name,MAP_KEY_WARP_Y,NULL);
 
 	/* Offscreen script */
 	entry_read_string(MAP_TABLE,map,&script,layer_name,MAP_OFFSCREEN,NULL);
-	if(script != NULL && 
-		( x < 0 || y < 0 || x >= width || y >= height ) ) {
+	if(script != NULL &&
+			( x < 0 || y < 0 || x >= width || y >= height ) ) {
 		snprintf(buf,SMALL_BUF,"%d",x);
 		coord[0] = strdup(buf);
 		snprintf(buf,SMALL_BUF,"%d",y);
@@ -433,7 +433,7 @@ int character_set_pos(context_t * ctx, const char * map, int layer, int x, int y
 		coord[2] = NULL;
 
 		ret_value = action_execute_script(ctx,script,coord);
-		
+
 		free(coord[0]);
 		free(coord[1]);
 

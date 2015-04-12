@@ -411,7 +411,7 @@ int map_set_offscreen(const char * map, int layer, const char * script)
 	}
 
 	sprintf(layer_name,"%s%d",MAP_KEY_LAYER,layer);
-	
+
 	/* Manage concurrent access to map files */
 	SDL_LockMutex(map_mutex);
 
@@ -438,15 +438,14 @@ int map_set_custom_column(const char * map, int layer, int num, int width, int h
 	}
 
 	sprintf(layer_name,"%s%d",MAP_KEY_LAYER,layer);
-	
+
 	/* Manage concurrent access to map files */
 	SDL_LockMutex(map_mutex);
 
 	if(num==0) {
 		sprintf(width_name,"%s",MAP_KEY_COL_WIDTH);
 		sprintf(height_name,"%s",MAP_KEY_COL_HEIGHT);
-	}
-	else {
+	} else {
 		sprintf(width_name,"%s%d",MAP_KEY_COL_WIDTH,num);
 		sprintf(height_name,"%s%d",MAP_KEY_COL_HEIGHT,num);
 	}
@@ -476,15 +475,14 @@ int map_set_custom_row(const char * map, int layer, int num, int width, int heig
 	}
 
 	sprintf(layer_name,"%s%d",MAP_KEY_LAYER,layer);
-	
+
 	/* Manage concurrent access to map files */
 	SDL_LockMutex(map_mutex);
 
 	if(num==0) {
 		sprintf(width_name,"%s",MAP_KEY_ROW_WIDTH);
 		sprintf(height_name,"%s",MAP_KEY_ROW_HEIGHT);
-	}
-	else {
+	} else {
 		sprintf(width_name,"%s%d",MAP_KEY_ROW_WIDTH,num);
 		sprintf(height_name,"%s%d",MAP_KEY_ROW_HEIGHT,num);
 	}

@@ -85,13 +85,13 @@ int t2p_x(int x, int y,int layer_index)
 
 	res = (x/layer[layer_index].col_num) * layer[layer_index].col_width_total;
 
-	for(i=0;i<x%layer[layer_index].col_num;i++) {
+	for(i=0; i<x%layer[layer_index].col_num; i++) {
 		res += layer[layer_index].col_width[i];
 	}
 
 	res += (y/layer[layer_index].row_num) * layer[layer_index].row_width_total;
 
-	for(i=0;i<y%layer[layer_index].row_num;i++) {
+	for(i=0; i<y%layer[layer_index].row_num; i++) {
 		res += layer[layer_index].row_width[i];
 	}
 
@@ -108,13 +108,13 @@ int t2p_y(int x, int y,int layer_index)
 
 	res = (x/layer[layer_index].col_num) * layer[layer_index].col_height_total;
 
-	for(i=0;i<x%layer[layer_index].col_num;i++) {
+	for(i=0; i<x%layer[layer_index].col_num; i++) {
 		res += layer[layer_index].col_height[i];
 	}
 
 	res += (y/layer[layer_index].row_num) * layer[layer_index].row_height_total;
 
-	for(i=0;i<y%layer[layer_index].row_num;i++) {
+	for(i=0; i<y%layer[layer_index].row_num; i++) {
 		res += layer[layer_index].row_height[i];
 	}
 
@@ -939,16 +939,16 @@ item_t * scr_play_compose(context_t * ctx)
 			}
 
 
-			for(tiling_index=0,layer[layer_index].col_width_total=0;tiling_index<layer[layer_index].col_num;tiling_index++) {
+			for(tiling_index=0,layer[layer_index].col_width_total=0; tiling_index<layer[layer_index].col_num; tiling_index++) {
 				layer[layer_index].col_width_total += layer[layer_index].col_width[tiling_index];
 			}
-			for(tiling_index=0,layer[layer_index].col_height_total=0;tiling_index<layer[layer_index].col_num;tiling_index++) {
+			for(tiling_index=0,layer[layer_index].col_height_total=0; tiling_index<layer[layer_index].col_num; tiling_index++) {
 				layer[layer_index].col_height_total += layer[layer_index].col_height[tiling_index];
 			}
-			for(tiling_index=0,layer[layer_index].row_width_total=0;tiling_index<layer[layer_index].row_num;tiling_index++) {
+			for(tiling_index=0,layer[layer_index].row_width_total=0; tiling_index<layer[layer_index].row_num; tiling_index++) {
 				layer[layer_index].row_width_total += layer[layer_index].row_width[tiling_index];
 			}
-			for(tiling_index=0,layer[layer_index].row_height_total=0;tiling_index<layer[layer_index].row_num;tiling_index++) {
+			for(tiling_index=0,layer[layer_index].row_height_total=0; tiling_index<layer[layer_index].row_num; tiling_index++) {
 				layer[layer_index].row_height_total += layer[layer_index].row_height[tiling_index];
 			}
 		}
