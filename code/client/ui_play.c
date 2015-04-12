@@ -61,6 +61,7 @@ static char text_buffer[2048];
 /* inventory ui */
 static char ** inventory_list = NULL;
 /* popup ui */
+#define MOUSE_WHEEL_SCROLL (20)
 static fifo_t * popup_fifo;
 static char * popup_frame = NULL;
 static int  popup_active = false;
@@ -68,6 +69,7 @@ typedef struct action_param_tag {
 	char * action;
 	char * param;
 } action_param_t;
+static int popup_offset = 0;
 
 static option_t * option;
 
@@ -948,6 +950,8 @@ static void cb_popup_quit(void * arg)
 		free( popup_frame);
 		popup_frame = NULL;
 	}
+
+	popup_offset = 0;
 	
 	popup_frame = fifo_pop(&popup_fifo);
 
@@ -988,6 +992,26 @@ void cb_free_action_param(void * arg)
 	free(action_param->param);
 	free(action_param);
 }
+
+/**********************************
+**********************************/
+static void cb_wheel_up(Uint32 y, Uint32 unused)
+{
+        popup_offset -= MOUSE_WHEEL_SCROLL;
+	if( popup_offset < 0 ) {
+		popup_offset = 0;
+	}
+	screen_compose();
+}
+
+/**********************************
+**********************************/
+static void cb_wheel_down(Uint32 y, Uint32 unused)
+{
+	popup_offset += MOUSE_WHEEL_SCROLL;
+	screen_compose();
+}
+
 /**********************************
 Compose screen
 **********************************/
@@ -1017,6 +1041,10 @@ static void compose_popup(context_t * ctx,item_t * item_list)
 	}
 	font = TTF_OpenFont(SPEAK_FONT, SPEAK_FONT_SIZE );
 
+	sdl_free_mousecb();
+	sdl_add_mousecb(MOUSE_WHEEL_UP,cb_wheel_up);
+	sdl_add_mousecb(MOUSE_WHEEL_DOWN,cb_wheel_down);
+
 	data = strdup(popup_frame);
 
 	while( (tag = _strsep(&data,NETWORK_DELIMITER)) != NULL) {
@@ -1025,7 +1053,7 @@ static void compose_popup(context_t * ctx,item_t * item_list)
 			tag = _strsep(&data,NETWORK_DELIMITER);
 			item = item_list_add(&item_list);
 			anim = imageDB_get_anim(ctx,tag);
-			item_set_anim(item,x,y,anim);
+			item_set_anim(item,x,y-popup_offset,anim);
 			item_set_overlay(item,1);
 			if(action_param) {
 				item_set_click_left(item,cb_popup,action_param,cb_free_action_param);
@@ -1045,7 +1073,7 @@ static void compose_popup(context_t * ctx,item_t * item_list)
 			item_set_string(item,tag);
 			item_set_font(item,font);
 			sdl_get_string_size(item->font,item->string,&w,&h);
-			item_set_frame_shape(item,x,y,w,h);
+			item_set_frame_shape(item,x,y-popup_offset,w,h);
 			item_set_overlay(item,1);
 			if(action_param) {
 				item_set_click_left(item,cb_popup,action_param,cb_free_action_param);
