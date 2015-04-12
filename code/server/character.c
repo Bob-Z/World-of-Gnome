@@ -262,12 +262,8 @@ void character_update_aggro(context_t * agressor)
 		return;
 	}
 
-	if( agressor->luaVM == NULL ) {
-		return;
-	}
-
 	/* If the current context is an NPC it might be an aggressor: compute its aggro */
-	if( character_get_npc(agressor->id) ) {
+	if( character_get_npc(agressor->id) && agressor->luaVM != NULL) {
 		if(entry_read_int(CHARACTER_TABLE,agressor->id,&aggro_dist, CHARACTER_KEY_AGGRO_DIST,NULL)) {
 			if(entry_read_string(CHARACTER_TABLE,agressor->id,&aggro_script, CHARACTER_KEY_AGGRO_SCRIPT,NULL)) {
 				target = context_get_first();
