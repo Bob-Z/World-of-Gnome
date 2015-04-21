@@ -440,6 +440,9 @@ int character_set_pos(context_t * ctx, const char * map, int layer, int x, int y
 
 		return ret_value;
 	}
+	if( script ) {
+		free(script);
+	}
 
 	/* Coordinates warping */
 	if( x < 0 ) {
