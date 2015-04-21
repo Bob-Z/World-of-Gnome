@@ -145,6 +145,7 @@ int map_check_tile(context_t * ctx,char * id, const char * map, int layer, int x
 
 	/* Allow tile if its type is empty (i.e. "") */
 	if( tile_type[0] == 0 ) {
+		free(tile_type);
 		return TRUE;
 	}
 
@@ -154,15 +155,18 @@ int map_check_tile(context_t * ctx,char * id, const char * map, int layer, int x
 		while( allowed_tile[i] != NULL ) {
 			if( strcmp(allowed_tile[i], tile_type) == 0 ) {
 				deep_free(allowed_tile);
+				free(tile_type);
 				return TRUE;
 			}
 			i++;
 		}
 
 		deep_free(allowed_tile);
+		free(tile_type);
 		return FALSE;
 	}
 
+	free(tile_type);
 	/* Allow all tiles by default */
 	return TRUE;
 }
