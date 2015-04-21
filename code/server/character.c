@@ -436,6 +436,7 @@ int character_set_pos(context_t * ctx, const char * map, int layer, int x, int y
 
 		free(coord[0]);
 		free(coord[1]);
+		free(script);
 
 		return ret_value;
 	}
