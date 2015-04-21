@@ -181,6 +181,7 @@ the returned path MUST BE FREED
 static char * get_path(va_list ap)
 {
 	char * path=NULL;
+	char * new_path=NULL;
 	char * entry = NULL;
 
 	entry=va_arg(ap,char*);
@@ -189,7 +190,9 @@ static char * get_path(va_list ap)
 	}
 
 	while( entry != NULL ) {
-		path = add_entry_to_path(path,entry);
+		new_path = add_entry_to_path(path,entry);
+		free(path);
+		path = new_path;
 		if(path == NULL) {
 			return NULL;
 		}
