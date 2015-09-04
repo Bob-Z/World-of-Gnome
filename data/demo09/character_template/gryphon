@@ -1,0 +1,14 @@
+marquee		= "marquee/gryphon.gif";
+sprite		= "sprite/gryphon.gif";
+type		= "gryphon"
+map		= "M0_0";
+pos_x		= 15;
+pos_y		= 15;
+flip_w          = 1;
+ai              = "ai/ai_random.lua";
+ai_params       = [ "1200" ];
+action		= [ ];
+aggro_script    = "aggro/gryphon.lua";
+aggro_dist      = 5;
+#allowed_tile_script	= "allowed_tile/ground_stair.lua";
+#inventory	= [ ];  
