@@ -1,0 +1,15 @@
+name = "Wanda";
+marquee = "marquee/princess.png";
+sprite = "sprite/princess_left.gif";
+type = "human";
+map = "M0_0";
+pos_x = 10;
+pos_y = 8;
+align = 1;
+sprite_n = "sprite/princess_up.gif";
+sprite_s = "sprite/princess_down.gif";
+sprite_w = "sprite/princess_left.gif";
+sprite_e = "sprite/princess_right.gif";
+ai = "ai/ai_random.lua";
+ai_params = [ "1000" ];
+action = [ ];
