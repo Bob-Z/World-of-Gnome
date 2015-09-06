@@ -420,26 +420,12 @@ static void set_up_sprite(context_t * ctx, const char * image_file_name,int laye
 		y -= ((sprite->h*layer[layer_index].map_zoom*zoom)-layer[layer_index].tile_height)/2;
 		ox -= ((sprite->w*layer[layer_index].map_zoom*zoom)-layer[layer_index].tile_width)/2;
 		oy -= ((sprite->h*layer[layer_index].map_zoom*zoom)-layer[layer_index].tile_height)/2;
-
-		if( sprite_move ) {
-			x -= ((sprite_move->w*layer[layer_index].map_zoom*zoom)-layer[layer_index].tile_width)/2;
-			y -= ((sprite_move->h*layer[layer_index].map_zoom*zoom)-layer[layer_index].tile_height)/2;
-			ox -= ((sprite_move->w*layer[layer_index].map_zoom*zoom)-layer[layer_index].tile_width)/2;
-			oy -= ((sprite_move->h*layer[layer_index].map_zoom*zoom)-layer[layer_index].tile_height)/2;
-		}
 	}
 	if( sprite_align == ALIGN_LOWER ) {
 		x -= ((sprite->w*layer[layer_index].map_zoom*zoom)-layer[layer_index].tile_width)/2;
 		y -= (sprite->h*layer[layer_index].map_zoom*zoom)-layer[layer_index].tile_height ;
 		ox -= ((sprite->w*layer[layer_index].map_zoom*zoom)-layer[layer_index].tile_width)/2;
 		oy -= (sprite->h*layer[layer_index].map_zoom*zoom)-layer[layer_index].tile_height;
-
-		if( sprite_move ) {
-			x -= ((sprite_move->w*layer[layer_index].map_zoom*zoom)-layer[layer_index].tile_width)/2;
-			y -= (sprite_move->h*layer[layer_index].map_zoom*zoom)-layer[layer_index].tile_height ;
-			ox -= ((sprite_move->w*layer[layer_index].map_zoom*zoom)-layer[layer_index].tile_width)/2;
-			oy -= (sprite_move->h*layer[layer_index].map_zoom*zoom)-layer[layer_index].tile_height;
-		}
 	}
 
 	/* Add Y offset */
