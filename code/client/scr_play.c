@@ -303,25 +303,25 @@ static void draw_sprite(context_t * ctx, const char * image_file_name,int layer_
 		ctx->cur_pos_y = ctx->pos_y;
 	}
 
-	if( ctx->direction & NORTH ) {
+	if( ctx->orientation & NORTH ) {
 		if( entry_read_string(CHARACTER_TABLE,ctx->id,&sprite_name,CHARACTER_KEY_DIR_N_SPRITE,NULL)) {
 			sprite = imageDB_get_anim(player_context,sprite_name);
 			free(sprite_name);
 		}
 	}
-	if( ctx->direction & SOUTH ) {
+	if( ctx->orientation & SOUTH ) {
 		if( entry_read_string(CHARACTER_TABLE,ctx->id,&sprite_name,CHARACTER_KEY_DIR_S_SPRITE,NULL)) {
 			sprite = imageDB_get_anim(player_context,sprite_name);
 			free(sprite_name);
 		}
 	}
-	if( ctx->direction & EAST ) {
+	if( ctx->orientation & EAST ) {
 		if( entry_read_string(CHARACTER_TABLE,ctx->id,&sprite_name,CHARACTER_KEY_DIR_E_SPRITE,NULL)) {
 			sprite = imageDB_get_anim(player_context,sprite_name);
 			free(sprite_name);
 		}
 	}
-	if( ctx->direction & WEST ) {
+	if( ctx->orientation & WEST ) {
 		if( entry_read_string(CHARACTER_TABLE,ctx->id,&sprite_name,CHARACTER_KEY_DIR_W_SPRITE,NULL)) {
 			sprite = imageDB_get_anim(player_context,sprite_name);
 			free(sprite_name);
