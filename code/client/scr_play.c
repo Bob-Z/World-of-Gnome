@@ -196,7 +196,7 @@ static void cb_unzoom(Uint32 y,Uint32 unused)
 Select sprite image to display
 Return NULL if no sprite can be found
 **********************************/
-static anim_t * select_sprite(context_t * ctx, const char * image_file_name,int sprite_is_moving)
+static anim_t * select_sprite(context_t * ctx, const char * image_file_name)
 {
 	anim_t * sprite;
 	char * sprite_name = NULL;
@@ -207,7 +207,7 @@ static anim_t * select_sprite(context_t * ctx, const char * image_file_name,int 
 		return sprite;
 	}
 
-	/* Take movement orientation into account */
+	/* Try to find a sprite depending on the orientation */
 	if( ctx->orientation & NORTH ) {
 		if( entry_read_string(CHARACTER_TABLE,ctx->id,&sprite_name,CHARACTER_KEY_DIR_N_SPRITE,NULL)) {
 			sprite = imageDB_get_anim(player_context,sprite_name);
@@ -247,13 +247,61 @@ static anim_t * select_sprite(context_t * ctx, const char * image_file_name,int 
 	free(sprite_name);
 	return sprite;
 }
+
+/**********************************
+Select sprite image to display when sprite is moving
+Return NULL if no sprite can be found
+**********************************/
+static anim_t * select_sprite_move(context_t * ctx, const char * image_file_name)
+{
+	anim_t * sprite;
+	char * sprite_name = NULL;
+	context_t * player_context = context_get_player();
+
+	/* Forced image, do not try to override it with moving sprite */
+	if( image_file_name ) {
+		return NULL;
+	}
+
+	if( ctx->orientation & NORTH ) {
+		if( entry_read_string(CHARACTER_TABLE,ctx->id,&sprite_name,CHARACTER_KEY_MOV_N_SPRITE,NULL)) {
+			sprite = imageDB_get_anim(player_context,sprite_name);
+			free(sprite_name);
+			return sprite;
+		}
+	}
+	if( ctx->orientation & SOUTH ) {
+		if( entry_read_string(CHARACTER_TABLE,ctx->id,&sprite_name,CHARACTER_KEY_MOV_S_SPRITE,NULL)) {
+			sprite = imageDB_get_anim(player_context,sprite_name);
+			free(sprite_name);
+			return sprite;
+		}
+	}
+	if( ctx->orientation & EAST ) {
+		if( entry_read_string(CHARACTER_TABLE,ctx->id,&sprite_name,CHARACTER_KEY_MOV_E_SPRITE,NULL)) {
+			sprite = imageDB_get_anim(player_context,sprite_name);
+			free(sprite_name);
+			return sprite;
+		}
+	}
+	if( ctx->orientation & WEST ) {
+		if( entry_read_string(CHARACTER_TABLE,ctx->id,&sprite_name,CHARACTER_KEY_MOV_W_SPRITE,NULL)) {
+			sprite = imageDB_get_anim(player_context,sprite_name);
+			free(sprite_name);
+			return sprite;
+		}
+	}
+
+	return NULL;
+}
 /**********************************
 Draw a single sprite
 if image_file_name is not NULL, this file is used as an image rather than the normal sprite image
 **********************************/
-static void draw_sprite(context_t * ctx, const char * image_file_name,int layer_index)
+static void set_up_sprite(context_t * ctx, const char * image_file_name,int layer_index)
 {
 	anim_t * sprite;
+	anim_t * sprite_move;
 	item_t * item;
 	int x;
 	int y;
@@ -268,7 +316,6 @@ static void draw_sprite(context_t * ctx, const char * image_file_name,int layer_
 	double zoom = 1.0;
 	int sprite_align = ALIGN_CENTER;
 	int sprite_offset_y = 0;
-	int sprite_is_moving = false;
 
 	context_t * player_context = context_get_player();
 
@@ -310,8 +357,6 @@ static void draw_sprite(context_t * ctx, const char * image_file_name,int layer_
 
 	/* Detect sprite movement, initiate animation */
 	if(ctx->pos_x != ctx->cur_pos_x||ctx->pos_y != ctx->cur_pos_y) {
-		sprite_is_moving = true;
-
 		ctx->pos_tick = current_time;
 
 		/* flip need to remember previous direction to avoid resetting a
@@ -350,10 +395,11 @@ static void draw_sprite(context_t * ctx, const char * image_file_name,int layer_
 	}
 
 	/* Select sprite to display */
-	sprite = select_sprite(ctx,image_file_name,sprite_is_moving);
+	sprite = select_sprite(ctx,image_file_name);
 	if( sprite == NULL ) {
 		return;
 	}
+	sprite_move = select_sprite_move(ctx,image_file_name);
 
 	/* Get position in pixel */
 	x = t2p_x(ctx->cur_pos_x,ctx->cur_pos_y,layer_index);
@@ -374,12 +420,26 @@ static void draw_sprite(context_t * ctx, const char * image_file_name,int layer_
 		y -= ((sprite->h*layer[layer_index].map_zoom*zoom)-layer[layer_index].tile_height)/2;
 		ox -= ((sprite->w*layer[layer_index].map_zoom*zoom)-layer[layer_index].tile_width)/2;
 		oy -= ((sprite->h*layer[layer_index].map_zoom*zoom)-layer[layer_index].tile_height)/2;
+
+		if( sprite_move ) {
+			x -= ((sprite_move->w*layer[layer_index].map_zoom*zoom)-layer[layer_index].tile_width)/2;
+			y -= ((sprite_move->h*layer[layer_index].map_zoom*zoom)-layer[layer_index].tile_height)/2;
+			ox -= ((sprite_move->w*layer[layer_index].map_zoom*zoom)-layer[layer_index].tile_width)/2;
+			oy -= ((sprite_move->h*layer[layer_index].map_zoom*zoom)-layer[layer_index].tile_height)/2;
+		}
 	}
 	if( sprite_align == ALIGN_LOWER ) {
 		x -= ((sprite->w*layer[layer_index].map_zoom*zoom)-layer[layer_index].tile_width)/2;
 		y -= (sprite->h*layer[layer_index].map_zoom*zoom)-layer[layer_index].tile_height ;
 		ox -= ((sprite->w*layer[layer_index].map_zoom*zoom)-layer[layer_index].tile_width)/2;
 		oy -= (sprite->h*layer[layer_index].map_zoom*zoom)-layer[layer_index].tile_height;
+
+		if( sprite_move ) {
+			x -= ((sprite_move->w*layer[layer_index].map_zoom*zoom)-layer[layer_index].tile_width)/2;
+			y -= (sprite_move->h*layer[layer_index].map_zoom*zoom)-layer[layer_index].tile_height ;
+			ox -= ((sprite_move->w*layer[layer_index].map_zoom*zoom)-layer[layer_index].tile_width)/2;
+			oy -= (sprite_move->h*layer[layer_index].map_zoom*zoom)-layer[layer_index].tile_height;
+		}
 	}
 
 	/* Add Y offset */
@@ -389,6 +449,7 @@ static void draw_sprite(context_t * ctx, const char * image_file_name,int layer_
 
 	/* Set sprite to item */
 	item_set_smooth_anim(item,x,y,ox,oy,ctx->pos_tick,sprite);
+	item_set_anim_move(item,sprite_move);
 
 	/* Get rotation configuration */
 	angle = 0;
@@ -475,7 +536,7 @@ static void compose_sprite(context_t * ctx,int layer_index)
 	while(ctx != NULL ) {
 		entry_read_int(CHARACTER_TABLE,ctx->id,&character_index,CHARACTER_KEY_LAYER,NULL);
 		if( layer_index == character_index ) {
-			draw_sprite(ctx,NULL,layer_index);
+			set_up_sprite(ctx,NULL,layer_index);
 		}
 
 		ctx = ctx->next;
@@ -831,7 +892,7 @@ static void compose_select(context_t * ctx,int layer_index)
 				return;
 			}
 
-			draw_sprite(selected_context, option->cursor_sprite,layer_index);
+			set_up_sprite(selected_context, option->cursor_sprite,layer_index);
 		}
 	}
 }

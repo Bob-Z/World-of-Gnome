@@ -83,6 +83,10 @@
 #define CHARACTER_KEY_DIR_S_SPRITE	"sprite_s"
 #define CHARACTER_KEY_DIR_W_SPRITE	"sprite_w"
 #define CHARACTER_KEY_DIR_E_SPRITE	"sprite_e"
+#define CHARACTER_KEY_MOV_N_SPRITE	"sprite_move_n"
+#define CHARACTER_KEY_MOV_S_SPRITE	"sprite_move_s"
+#define CHARACTER_KEY_MOV_W_SPRITE	"sprite_move_w"
+#define CHARACTER_KEY_MOV_E_SPRITE	"sprite_move_e"
 #define CHARACTER_KEY_PLATFORM		"platform"
 
 #define CHARACTER_TEMPLATE_TABLE	"character_template"
