@@ -643,8 +643,8 @@ static void cb_select_map(void *arg)
 	char x[SMALL_BUF];
 	char y[SMALL_BUF];
 
-	sprintf(x,"%d",item->tile_x);
-	sprintf(y,"%d",item->tile_y);
+	sprintf(x,"%d",item->user1);
+	sprintf(y,"%d",item->user2);
 
 	network_send_action(ctx,option->action_select_tile,ctx->map,x,y,NULL);
 }
@@ -672,8 +672,8 @@ static void cb_over(void *arg,int x,int y)
 {
 	item_t * item = (item_t*)arg;
 
-	current_map_x = item->tile_x;
-	current_map_y = item->tile_y;
+	current_map_x = item->user1;
+	current_map_y = item->user2;
 }
 
 /**********************************
@@ -698,7 +698,7 @@ static void compose_map_button(context_t * ctx,int layer_index)
 		for ( x=0 ; x < layer[layer_index].map_w ; x++ ) {
 			item = item_list_add(&item_list);
 			item_set_frame_shape(item,t2p_x(x,y,layer_index),t2p_y(x,y,layer_index),layer[layer_index].tile_width,layer[layer_index].tile_height);
-			item_set_tile(item,x,y);
+			item_set_user(item,x,y);
 			item_set_click_left(item,cb_select_map,item,NULL);
 			item_set_click_right(item,cb_redo_map,item,NULL);
 			item_set_over(item,cb_over,item,NULL);
