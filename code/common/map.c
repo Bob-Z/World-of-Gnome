@@ -38,8 +38,9 @@ char * map_new(const char *suggested_name,int layer, int w,int h, int tile_w, in
 	}
 
 	map_name = file_new(MAP_TABLE,suggested_name);
-	if(map_name == NULL) {
-		return NULL;
+	/* Map creation may fail because file already exists. Try the suggested name instead. */
+	if( map_name == NULL ) {
+		map_name = strdup(suggested_name);
 	}
 
 	sprintf(layer_name,"%s%d",MAP_KEY_LAYER,layer);
