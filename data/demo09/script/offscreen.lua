@@ -50,12 +50,19 @@ if res == -1 then
 
         text = string.format("Select new map's default tile ?")
         popup_send(player_id,
-                "action","set_map","grass",
+                "action","set_map_grass","",
                 "image","tile/grass1.png",
-                "action","set_map","grass",
+                "action","set_map_grass","",
                 "text","Green grass",
 
 		"eol",
+
+--                "action","set_map","grass",
+--                "image","tile/grass1.png",
+--                "action","set_map","grass",
+--                "text","Green grass",
+
+--		"eol",
 
 		"eop",
 

@@ -5,6 +5,9 @@ map_w = character_get_map_w(player_id)
 map_h = character_get_map_h(player_id)
 
 new_map = map_new(map_name,0,map_w,map_h,32,32,"tile/grass1.png","grass")
+if new_map ~= nil then
+	map_new(map_name,1,map_w,map_h,32,32,"","grass")
+end
 
 map_set_offscreen(map_name,0,"offscreen.lua")
 
