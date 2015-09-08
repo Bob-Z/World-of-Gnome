@@ -40,9 +40,9 @@ map_name = string.format("M%d_%d",new_map_x,new_map_y)
 res = character_set_pos(player_id,map_name,0,player_x,player_y)
 
 if res == -1 then
-	-- Only shyde can create map
+	-- Only human can create map
 	player_type = character_get_type(player_id)
-	if player_type ~= "shyde" then
+	if player_type ~= "human" then
 		return -1
 	end
 	call_script("add_map.lua",map_name,new_map_x,new_map_y);
@@ -50,87 +50,12 @@ if res == -1 then
 
         text = string.format("Select new map's default tile ?")
         popup_send(player_id,
-                "action","set_map","gr",
-                "image","tile/gr1.png",
-                "action","set_map","gr",
+                "action","set_map","grass",
+                "image","tile/grass1.png",
+                "action","set_map","grass",
                 "text","Green grass",
 
 		"eol",
-
-                "action","set_map","dr",
-                "image","tile/dr1.png",
-                "action","set_map","dr",
-                "text","Dry grass",
-
-		"eol",
-
-                "action","set_map","le",
-                "image","tile/le1.png",
-                "action","set_map","le",
-                "text","Leaf litter",
-
-		"eol",
-
-                "action","set_map","se",
-                "image","tile/se1.png",
-                "action","set_map","se",
-                "text","Semi-dry",
-
-		"eol",
-
-                "action","set_map","ea",
-                "image","tile/ea1.png",
-                "action","set_map","ea",
-                "text","Earthy floor",
-
-		"eol",
-
-                "action","set_map","fla",
-                "image","tile/fla1.png",
-                "action","set_map","fla",
-                "text","Flagstones dark",
-
-		"eol",
-
-                "action","set_map","flo",
-                "image","tile/flo1.png",
-                "action","set_map","flo",
-                "text","Floor",
-
-		"eol",
-
-                "action","set_map","hil",
-                "image","tile/hil1.png",
-                "action","set_map","hil",
-                "text","Hills variation",
-
-		"eol",
-
-                "action","set_map","pa",
-                "image","tile/pa1.png",
-                "action","set_map","pa",
-                "text","Path",
-
-		"eol",
-
-                "action","set_map","oc.gif",
-                "image","tile/oc.gif",
-                "action","set_map","oc.gif",
-                "text","Ocean",
-
-		"eol",
-
-                "action","set_map","co.gif",
-                "image","tile/co.gif",
-                "action","set_map","co.gif",
-                "text","Coast tropical water",
-
-		"eol",
-
-                "action","set_map","wa.gif",
-                "image","tile/wa.gif",
-                "action","set_map","wa.gif",
-                "text","Water",
 
 		"eop",
 
