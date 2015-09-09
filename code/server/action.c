@@ -576,6 +576,32 @@ static int l_character_set_pos( lua_State* L)
 	return 1;  /* number of results */
 }
 
+/* character_set_layer
+
+Set a character's layer.
+
+Input:
+ - ID of a character
+ - layer number
+Output:
+ return -1 if the layer can not be set.
+*/
+static int l_character_set_layer( lua_State* L)
+{
+	const char * id;
+	int layer;
+	int res;
+	context_t * ctx;
+
+	id = luaL_checkstring(L, -5);
+	layer = luaL_checkint(L, -3);
+
+	ctx = context_find(id);
+	res = character_set_layer(ctx,layer);
+	lua_pushnumber(L, res);
+	return 1;  /* number of results */
+}
+
 /* character_set_npc
 
 Set a character as a non-player character and starts it's AI script.
@@ -2088,6 +2114,8 @@ void register_lua_functions(context_t * context)
 	lua_setglobal(L, "character_get_type");
 	lua_pushcfunction(L, l_character_set_pos);
 	lua_setglobal(L, "character_set_pos");
+	lua_pushcfunction(L, l_character_set_layer);
+	lua_setglobal(L, "character_set_layer");
 	lua_pushcfunction(L, l_character_set_npc);
 	lua_setglobal(L, "character_set_npc");
 	lua_pushcfunction(L, l_character_get_npc);

@@ -510,6 +510,19 @@ int character_set_pos(context_t * ctx, const char * map, int layer, int x, int y
 	return 0;
 }
 
+/******************************************************
+return 0 if layer OK
+return -1 if layer was not set
+******************************************************/
+int character_set_layer(context_t * ctx, int layer)
+{
+	if( !entry_write_int(CHARACTER_TABLE,ctx->id,layer,CHARACTER_KEY_LAYER,NULL) ) {
+		return -1;
+	}
+
+	return 0;
+}
+
 /*********************************************************
  Set NPC to the value passed.
  If the value is != 0 , the NPC is instanciated
