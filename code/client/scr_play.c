@@ -945,7 +945,7 @@ item_t * scr_play_compose(context_t * ctx)
 	for(layer_index = 0; layer_index < MAX_LAYER; layer_index++) {
 		if( change_map ) {
 			sprintf(layer_name,"%s%d",MAP_KEY_LAYER,layer_index);
-			if( !entry_exist(MAP_TABLE, ctx->map, layer_name)) {
+			if( !entry_exist(MAP_TABLE, ctx->map, layer_name,NULL)) {
 				layer[layer_index].active = false;
 				continue;
 			}
