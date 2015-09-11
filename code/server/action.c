@@ -558,20 +558,18 @@ static int l_character_set_pos( lua_State* L)
 {
 	const char * id;
 	const char * map;
-	int layer;
 	int x;
 	int y;
 	int res;
 	context_t * ctx;
 
-	id = luaL_checkstring(L, -5);
-	map = luaL_checkstring(L, -4);
-	layer = luaL_checkint(L, -3);
+	id = luaL_checkstring(L, -4);
+	map = luaL_checkstring(L, -3);
 	x = luaL_checkint(L, -2);
 	y = luaL_checkint(L, -1);
 
 	ctx = context_find(id);
-	res = character_set_pos(ctx,map,layer,x,y);
+	res = character_set_pos(ctx,map,x,y);
 	lua_pushnumber(L, res);
 	return 1;  /* number of results */
 }

@@ -28,7 +28,7 @@ if new_pos_y >= map_h then
         return
 end
 
-character_set_pos(player_id,map,0,new_pos_x,new_pos_y)
+character_set_pos(player_id,map,new_pos_x,new_pos_y)
 
 tile_type = map_get_tile_type(map,0,new_pos_x,new_pos_y)
 

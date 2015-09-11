@@ -188,7 +188,7 @@ char * character_create_from_template(context_t * ctx,const char * template,cons
 	free(fullname);
 
 	/* Check if new character is allowed to be created here */
-	if(!map_check_tile(ctx,new_id,map,layer,x,y)) {
+	if(map_check_tile(ctx,new_id,map,layer,x,y) == 0) {
 		entry_destroy(CHARACTER_TABLE,new_id);
 		file_delete(CHARACTER_TABLE,new_id);
 		free(new_id);
@@ -388,7 +388,7 @@ static void platform_move(context_t * platform,const char * map, int x, int y, i
 return 0 if new position OK or if position has not changed.
 return -1 if the position was not set (because tile not allowed or out of bound)
 ******************************************************/
-int character_set_pos(context_t * ctx, const char * map, int layer, int x, int y)
+int character_set_pos(context_t * ctx, const char * map, int x, int y)
 {
 	char ** event_id;
 	char * script;
@@ -404,6 +404,7 @@ int character_set_pos(context_t * ctx, const char * map, int layer, int x, int y
 	char buf[SMALL_BUF];
 	char * coord[3];
 	int ret_value;
+	int layer;
 
 	if(ctx == NULL) {
 		return -1;
@@ -414,6 +415,7 @@ int character_set_pos(context_t * ctx, const char * map, int layer, int x, int y
 		return 0;
 	}
 
+	ctx_layer = 0;
 	entry_read_int(CHARACTER_TABLE,ctx->id,&ctx_layer,CHARACTER_KEY_LAYER,NULL);
 	sprintf(layer_name,"%s%d",MAP_KEY_LAYER,ctx_layer);
 
@@ -471,7 +473,21 @@ int character_set_pos(context_t * ctx, const char * map, int layer, int x, int y
 	}
 
 	/* Check if this character is allowed to go to the target tile */
-	if ( map_check_tile(ctx,ctx->id,map,layer,x,y)  == FALSE ) {
+	layer = ctx_layer;
+	while ( layer >= 0 ) {
+		ret_value = map_check_tile(ctx,ctx->id,map,layer,x,y);
+		/* not allowed */
+		if ( ret_value == 0 ) {
+			return -1;
+		}
+		/* allowed */
+		if ( ret_value == 1 ) {
+			break;
+		}
+		layer--;
+	}
+
+	if( layer < 0 ) {
 		return -1;
 	}
 
@@ -484,7 +500,7 @@ int character_set_pos(context_t * ctx, const char * map, int layer, int x, int y
 
 	do_set_pos(ctx,map,x,y,change_map);
 
-	event_id = map_get_event(map,layer,x,y);
+	event_id = map_get_event(map,ctx_layer,x,y);
 
 	if(event_id) {
 		i = 0;

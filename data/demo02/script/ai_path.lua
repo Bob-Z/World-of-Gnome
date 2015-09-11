@@ -21,7 +21,7 @@ map = character_get_map(id)
 pos_x = character_get_x(id)
 pos_y = character_get_y(id)
 
-character_set_pos(id,map,0,x[index],y[index])
+character_set_pos(id,map,x[index],y[index])
 
 character_attribute_set(id,"path_index",index)
 

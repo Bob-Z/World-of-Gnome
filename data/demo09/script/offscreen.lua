@@ -37,7 +37,7 @@ end
 
 map_name = string.format("M%d_%d",new_map_x,new_map_y)
 
-res = character_set_pos(player_id,map_name,0,player_x,player_y)
+res = character_set_pos(player_id,map_name,player_x,player_y)
 
 if res == -1 then
 	-- Only human can create map
@@ -46,7 +46,7 @@ if res == -1 then
 		return -1
 	end
 	call_script("add_map.lua",map_name,new_map_x,new_map_y);
-        res = character_set_pos(player_id,map_name,0,player_x,player_y)
+        res = character_set_pos(player_id,map_name,player_x,player_y)
 
         text = string.format("Select new map's default tile ?")
         popup_send(player_id,

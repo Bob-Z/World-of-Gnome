@@ -11,6 +11,6 @@ map_h = character_get_map_h(id)
 new_pos_x = pos_x + move_x
 new_pos_y = pos_y + move_y
 
-character_set_pos(id,map,0,new_pos_x,new_pos_y)
+character_set_pos(id,map,new_pos_x,new_pos_y)
 
 end

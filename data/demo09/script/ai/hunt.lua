@@ -31,7 +31,7 @@ if target_y < id_y then
 	id_y = id_y -1
 end
 
-character_set_pos(id,id_map,0,id_x,id_y)
+character_set_pos(id,id_map,id_x,id_y)
 
 -- return the time in ms before the next NPC AI action
 return 500

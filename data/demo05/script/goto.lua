@@ -18,11 +18,11 @@ if( x == "-1" ) then px = 31 end
 if( y == "1" ) then py = 0 end
 if( y == "-1" ) then py = 31 end
 
-res = character_set_pos(player_id,map_name,0,px,py)
+res = character_set_pos(player_id,map_name,px,py)
 
 if res == -1 then
 	call_script("add_map.lua",map_name,new_map_x,new_map_y);
-	res = character_set_pos(player_id,map_name,0,px,py)
+	res = character_set_pos(player_id,map_name,px,py)
 end
 
 tile_type = map_get_tile_type(map_name,0,px,py)
