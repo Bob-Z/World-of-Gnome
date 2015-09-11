@@ -96,7 +96,9 @@ char * map_new(const char *suggested_name,int layer, int w,int h, int tile_w, in
 
 /***********************************
 check if id is allowed to go on a tile
-return TRUE if the context is allowed to go to the tile at coord x,y
+return 1 if the context is allowed to go to the tile at coord x,y
+return 0 if the context is NOT allowed to go to the tile at coord x,y
+return -1 on error or no data found
 *************************************/
 int map_check_tile(context_t * ctx,char * id, const char * map, int layer, int x,int y)
 {
@@ -115,14 +117,14 @@ int map_check_tile(context_t * ctx,char * id, const char * map, int layer, int x
 	sprintf(layer_name,"%s%d",MAP_KEY_LAYER,layer);
 
 	if(!entry_read_int(MAP_TABLE,map,&width,layer_name,MAP_KEY_WIDTH,NULL)) {
-		return FALSE;
+		return -1;
 	}
 	if(!entry_read_int(MAP_TABLE,map,&height,layer_name,MAP_KEY_HEIGHT,NULL)) {
-		return FALSE;
+		return -1;
 	}
 
 	if( x < 0 || y < 0 || x >= width || y >= height ) {
-		return FALSE;
+		return 0;
 	}
 
 	/* If there is a allowed_tile_script, run it */
@@ -141,13 +143,13 @@ int map_check_tile(context_t * ctx,char * id, const char * map, int layer, int x
 
 	/* Read tile at given index on this map */
 	if(!entry_read_list_index(MAP_TABLE,map,&tile_type, (width*y)+x, layer_name,MAP_KEY_TYPE,NULL)) {
-		return TRUE;
+		return 1;
 	}
 
 	/* Allow tile if its type is empty (i.e. "") */
 	if( tile_type[0] == 0 ) {
 		free(tile_type);
-		return TRUE;
+		return 1;
 	}
 
 	/* If there is allowed_tile list, check it */
@@ -157,19 +159,19 @@ int map_check_tile(context_t * ctx,char * id, const char * map, int layer, int x
 			if( strcmp(allowed_tile[i], tile_type) == 0 ) {
 				deep_free(allowed_tile);
 				free(tile_type);
-				return TRUE;
+				return 1;
 			}
 			i++;
 		}
 
 		deep_free(allowed_tile);
 		free(tile_type);
-		return FALSE;
+		return 0;
 	}
 
 	free(tile_type);
 	/* Allow all tiles by default */
-	return TRUE;
+	return 1;
 }
 
 /**************************************
