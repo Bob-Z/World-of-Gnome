@@ -1398,6 +1398,8 @@ return TRUE if entry or group exists
 static int __exist(const char * table, const char * file, va_list ap)
 {
 	const config_t * config;
+	char * path;
+	config_setting_t * setting = NULL;
 
 	SDL_LockMutex(entry_mutex);
 	config = get_config(table,file);
@@ -1405,6 +1407,17 @@ static int __exist(const char * table, const char * file, va_list ap)
 	if(config==NULL) {
 		return FALSE;
 	}
+
+	path = get_path(ap);
+	if( path == NULL ) {
+		return FALSE;
+	}
+
+        setting = config_lookup (config, path);
+	free(path);
+        if( setting == NULL ) {
+                return FALSE;
+        }
 
 	return TRUE;
 }
