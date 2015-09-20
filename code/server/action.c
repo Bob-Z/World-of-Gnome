@@ -919,6 +919,28 @@ static int l_map_set_offscreen( lua_State* L)
 	return 1;  /* number of results */
 }
 
+/* map_set_character_layer
+
+Set a map's character layer
+
+Input:
+ - ID of a map
+ - layer index
+Output:
+*/
+static int l_map_set_character_layer( lua_State* L)
+{
+	const char * map;
+	int layer;
+	int res;
+
+	map = luaL_checkstring(L, -2);
+	layer = luaL_checkint(L, -1);
+	res = map_set_character_layer(map,layer);
+	lua_pushnumber(L, res);
+	return 1;  /* number of results */
+}
+
 /* map_set_custom_column
 
 Set a map's layer custom column tiling
@@ -2113,6 +2135,8 @@ void register_lua_functions(context_t * context)
 	lua_setglobal(L, "map_broadcast");
 	lua_pushcfunction(L, l_map_set_offscreen);
 	lua_setglobal(L, "map_set_offscreen");
+	lua_pushcfunction(L, l_map_set_character_layer);
+	lua_setglobal(L, "map_set_character_layer");
 	lua_pushcfunction(L, l_map_set_custom_column);
 	lua_setglobal(L, "map_set_custom_column");
 	lua_pushcfunction(L, l_map_set_custom_row);

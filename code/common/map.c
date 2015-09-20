@@ -427,6 +427,28 @@ int map_set_offscreen(const char * map, const char * script)
 }
 
 /***********************************
+Set character layer for a map
+return -1 if fails
+***********************************/
+int map_set_character_layer(const char * map, int layer)
+{
+	int res;
+
+	if( map == NULL ) {
+		return -1;
+	}
+
+	/* Manage concurrent access to map files */
+	SDL_LockMutex(map_mutex);
+
+	res = entry_write_int(MAP_TABLE, map, layer, MAP_CHARACTER_LAYER,NULL);
+
+	SDL_UnlockMutex(map_mutex);
+
+	return res;
+}
+
+/***********************************
 Set custom tiling of a map's layer
 return -1 if fails
 ***********************************/
