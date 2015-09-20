@@ -700,7 +700,7 @@ static void cb_print_coord(void * arg)
 	char layer_name[SMALL_BUF];
 	context_t * ctx = context_get_player();
 
-	entry_read_int(MAP_TABLE,ctx->map,&player_layer,MAP_KEY_CHARACTER_LAYER,NULL);
+	entry_read_int(MAP_TABLE,ctx->map,&player_layer,MAP_CHARACTER_LAYER,NULL);
 	sprintf(layer_name,"%s%d",MAP_KEY_LAYER,player_layer);
 	entry_read_int(MAP_TABLE,ctx->map,&map_w,layer_name,MAP_KEY_WIDTH,NULL);
 

@@ -803,7 +803,7 @@ char ** map_get_character(const char * map, int x, int y)
 		}
 		if(ctx->pos_x == x && ctx->pos_y == y && !strcmp(ctx->map,map)) {
 			character_layer=0;
-			entry_read_int(MAP_TABLE,ctx->map,&character_layer,MAP_KEY_CHARACTER_LAYER,NULL);
+			entry_read_int(MAP_TABLE,ctx->map,&character_layer,MAP_CHARACTER_LAYER,NULL);
 			character_num++;
 			character_list=realloc(character_list,sizeof(char*)*(character_num+1));
 			character_list[character_num-1] = strdup(ctx->id);

@@ -101,7 +101,7 @@
 #define MAP_KEY_BG_GREEN	"bg_green"
 #define MAP_KEY_WARP_X		"warp_x"
 #define MAP_KEY_WARP_Y		"warp_y"
-#define MAP_KEY_CHARACTER_LAYER	"character_layer"
+#define MAP_CHARACTER_LAYER	"character_layer"
 /* layer data*/
 #define MAP_KEY_LAYER		"layer"
 #define MAP_KEY_WIDTH		"width"

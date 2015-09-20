@@ -926,7 +926,7 @@ item_t * scr_play_compose(context_t * ctx)
 		free(map_filename);
 	}
 
-	entry_read_int(MAP_TABLE,context_get_player()->map,&character_layer,MAP_KEY_CHARACTER_LAYER,NULL);
+	entry_read_int(MAP_TABLE,context_get_player()->map,&character_layer,MAP_CHARACTER_LAYER,NULL);
 
 	for(layer_index = 0; layer_index < MAX_LAYER; layer_index++) {
 		if( change_map ) {
@@ -1014,8 +1014,6 @@ item_t * scr_play_compose(context_t * ctx)
 				layer[layer_index].row_height_total += layer[layer_index].row_height[tiling_index];
 			}
 		}
-
-		entry_read_int(MAP_TABLE,ctx->map,&character_layer,MAP_KEY_CHARACTER_LAYER,NULL);
 
 		compose_map_set(ctx,layer_index);
 		compose_map_list(ctx,layer_index);

@@ -362,7 +362,7 @@ static int l_character_get_map_w( lua_State* L)
 		return 0;  /* number of results */
 	}
 
-	entry_read_int(MAP_TABLE,target->map,&player_layer,MAP_KEY_CHARACTER_LAYER,NULL);
+	entry_read_int(MAP_TABLE,target->map,&player_layer,MAP_CHARACTER_LAYER,NULL);
 	sprintf(layer_name,"%s%d",MAP_KEY_LAYER,player_layer);
 	entry_read_int(MAP_TABLE,target->map,&map_w,layer_name,MAP_KEY_WIDTH,NULL);
 
@@ -390,7 +390,7 @@ static int l_character_get_map_h( lua_State* L)
 		return 0;  /* number of results */
 	}
 
-	entry_read_int(MAP_TABLE,target->map,&player_layer,MAP_KEY_CHARACTER_LAYER,NULL);
+	entry_read_int(MAP_TABLE,target->map,&player_layer,MAP_CHARACTER_LAYER,NULL);
 	sprintf(layer_name,"%s%d",MAP_KEY_LAYER,player_layer);
 	entry_read_int(MAP_TABLE,target->map,&map_h,layer_name,MAP_KEY_HEIGHT,NULL);
 
