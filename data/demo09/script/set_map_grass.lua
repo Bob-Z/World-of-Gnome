@@ -35,7 +35,7 @@ while ret == true do
 end
 max_img = max_img - 1
 
--- actually set tiles
+-- actually set tiles on layer 0
 for x=0,map_w-1 do
 	for y=0,map_h-1 do
 		tile_name = string.format("tile/%s%d.png",tile_type,math.random(1,max_img))
@@ -54,7 +54,7 @@ while ret == true do
 end
 max_img = max_img - 1
 bush_density = 10
--- actually set tiles
+-- actually set tiles on layer 1
 for x=0,map_w-1 do
 	for y=0,map_h-1 do
 		if math.random(1,bush_density) == 1 then
@@ -64,6 +64,10 @@ for x=0,map_w-1 do
 		end
 	end
 end
+
+-- let characters walks over grass
+map_set_character_layer(map_name,1);
+
 map_broadcast(map_name);
 
 
