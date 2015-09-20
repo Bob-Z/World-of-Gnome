@@ -9,7 +9,7 @@ if new_map ~= nil then
 	map_new(map_name,1,map_w,map_h,32,32,"","grass")
 end
 
-map_set_offscreen(map_name,0,"offscreen.lua")
+map_set_offscreen(map_name,"offscreen.lua")
 
 --map_set_custom_column(map_name,0,0,54,-36)
 --map_set_custom_column(map_name,0,1,54,36)

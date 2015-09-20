@@ -25,7 +25,7 @@ else
 end
 
 -- do not spawn if there is a flower already
-new_pos_character = {map_get_character(map,0,new_pos_x,new_pos_y)}
+new_pos_character = {map_get_character(map,new_pos_x,new_pos_y)}
 
 i=1
 while new_pos_character[i] ~= nil do

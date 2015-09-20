@@ -344,7 +344,7 @@ static int l_character_get_map( lua_State* L)
 
 /* character_get_map_w
 Input:
- - ID of a map
+ - ID of a character
 Output: Width of the map
 */
 static int l_character_get_map_w( lua_State* L)
@@ -362,7 +362,7 @@ static int l_character_get_map_w( lua_State* L)
 		return 0;  /* number of results */
 	}
 
-	entry_read_int(CHARACTER_TABLE,id,&player_layer,CHARACTER_KEY_LAYER,NULL);
+	entry_read_int(MAP_TABLE,target->map,&player_layer,MAP_KEY_CHARACTER_LAYER,NULL);
 	sprintf(layer_name,"%s%d",MAP_KEY_LAYER,player_layer);
 	entry_read_int(MAP_TABLE,target->map,&map_w,layer_name,MAP_KEY_WIDTH,NULL);
 
@@ -372,7 +372,7 @@ static int l_character_get_map_w( lua_State* L)
 
 /* character_get_map_h
 Input:
- - ID of a map
+ - ID of a map character
 Output: Height of the map
 */
 static int l_character_get_map_h( lua_State* L)
@@ -390,7 +390,7 @@ static int l_character_get_map_h( lua_State* L)
 		return 0;  /* number of results */
 	}
 
-	entry_read_int(CHARACTER_TABLE,id,&player_layer,CHARACTER_KEY_LAYER,NULL);
+	entry_read_int(MAP_TABLE,target->map,&player_layer,MAP_KEY_CHARACTER_LAYER,NULL);
 	sprintf(layer_name,"%s%d",MAP_KEY_LAYER,player_layer);
 	entry_read_int(MAP_TABLE,target->map,&map_h,layer_name,MAP_KEY_HEIGHT,NULL);
 
@@ -570,32 +570,6 @@ static int l_character_set_pos( lua_State* L)
 
 	ctx = context_find(id);
 	res = character_set_pos(ctx,map,x,y);
-	lua_pushnumber(L, res);
-	return 1;  /* number of results */
-}
-
-/* character_set_layer
-
-Set a character's layer.
-
-Input:
- - ID of a character
- - layer number
-Output:
- return -1 if the layer can not be set.
-*/
-static int l_character_set_layer( lua_State* L)
-{
-	const char * id;
-	int layer;
-	int res;
-	context_t * ctx;
-
-	id = luaL_checkstring(L, -5);
-	layer = luaL_checkint(L, -3);
-
-	ctx = context_find(id);
-	res = character_set_layer(ctx,layer);
 	lua_pushnumber(L, res);
 	return 1;  /* number of results */
 }
@@ -929,21 +903,18 @@ Set a map's layer offscreen
 
 Input:
  - ID of a map
- - layer of the map
  - offscreen script
 Output:
 */
 static int l_map_set_offscreen( lua_State* L)
 {
 	const char * map;
-	int layer;
 	const char * script;
 	int res;
 
-	map = luaL_checkstring(L, -3);
-	layer = luaL_checkint(L, -2);
+	map = luaL_checkstring(L, -2);
 	script = luaL_checkstring(L, -1);
-	res = map_set_offscreen(map,layer,script);
+	res = map_set_offscreen(map,script);
 	lua_pushnumber(L, res);
 	return 1;  /* number of results */
 }
@@ -1509,7 +1480,6 @@ Get list of characters on a tile
 
 Input:
  - ID of a map
- - Layer of the map
  - X coordinate (in tiles)
  - Y coordinate (in tiles)
 Output: Array of characters on that tile
@@ -1517,19 +1487,17 @@ Output: Array of characters on that tile
 static int l_map_get_character( lua_State* L)
 {
 	const char * map;
-	int layer;
 	int x;
 	int y;
 	char ** res;
 	char ** cur_res;
 	int res_num = 0;
 
-	map = luaL_checkstring(L, -4);
-	layer = luaL_checkint(L, -3);
+	map = luaL_checkstring(L, -3);
 	x = luaL_checkint(L, -2);
 	y = luaL_checkint(L, -1);
 
-	res = map_get_character(map,layer,x,y);
+	res = map_get_character(map,x,y);
 	if( res) {
 		cur_res = res;
 		while(*cur_res != NULL) {
@@ -2112,8 +2080,6 @@ void register_lua_functions(context_t * context)
 	lua_setglobal(L, "character_get_type");
 	lua_pushcfunction(L, l_character_set_pos);
 	lua_setglobal(L, "character_set_pos");
-	lua_pushcfunction(L, l_character_set_layer);
-	lua_setglobal(L, "character_set_layer");
 	lua_pushcfunction(L, l_character_set_npc);
 	lua_setglobal(L, "character_set_npc");
 	lua_pushcfunction(L, l_character_get_npc);

@@ -6,7 +6,7 @@ map_h = character_get_map_h(player_id)
 
 new_map = map_new(map_name,0,map_w,map_h,72,72,"tile/gr1.png","fl")
 
-map_set_offscreen(map_name,0,"offscreen.lua")
+map_set_offscreen(map_name,"offscreen.lua")
 
 map_set_custom_column(map_name,0,0,54,-36)
 map_set_custom_column(map_name,0,1,54,36)

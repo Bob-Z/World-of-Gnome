@@ -10,8 +10,9 @@ attribute :
   };
 };
 
+offscreen = "offscreen.lua";
+
 layer0: {
-	offscreen = "offscreen.lua";
 	width = 32;
 	height = 32;
 	tile_width = 72;

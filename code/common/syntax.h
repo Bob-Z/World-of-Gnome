@@ -47,7 +47,6 @@
 #define CHARACTER_KEY_SPRITE	"sprite"
 #define CHARACTER_KEY_PORTRAIT	"portrait"
 #define CHARACTER_KEY_ZOOM	"zoom"
-#define CHARACTER_KEY_LAYER	"layer"
 /* sprite align : 0 = center 1 = lower */
 #define CHARACTER_KEY_ALIGN	"align"
 #define CHARACTER_KEY_OFFSET_Y	"offset_y"
@@ -102,6 +101,7 @@
 #define MAP_KEY_BG_GREEN	"bg_green"
 #define MAP_KEY_WARP_X		"warp_x"
 #define MAP_KEY_WARP_Y		"warp_y"
+#define MAP_KEY_CHARACTER_LAYER	"character_layer"
 /* layer data*/
 #define MAP_KEY_LAYER		"layer"
 #define MAP_KEY_WIDTH		"width"

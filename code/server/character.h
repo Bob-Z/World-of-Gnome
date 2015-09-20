@@ -22,7 +22,6 @@ void character_user_send_list(context_t * context);
 int character_out_of_game(const char * id);
 int character_disconnect(const char * id);
 int character_set_pos(context_t * ctx,const char * map, int x, int y);
-int character_set_layer(context_t * ctx, int layer);
 char * character_create_from_template(context_t * ctx,const char * template,const char * map, int layer, int x, int y);
 void character_update_aggro(context_t * context);
 int character_set_npc(const char * ctx, int npc);

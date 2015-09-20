@@ -416,7 +416,7 @@ int character_set_pos(context_t * ctx, const char * map, int x, int y)
 	}
 
 	ctx_layer = 0;
-	entry_read_int(CHARACTER_TABLE,ctx->id,&ctx_layer,CHARACTER_KEY_LAYER,NULL);
+	entry_read_int(MAP_TABLE,map,&ctx_layer,MAP_KEY_CHARACTER_LAYER,NULL);
 	sprintf(layer_name,"%s%d",MAP_KEY_LAYER,ctx_layer);
 
 	entry_read_int(MAP_TABLE,map,&width,layer_name,MAP_KEY_WIDTH,NULL);
@@ -425,7 +425,7 @@ int character_set_pos(context_t * ctx, const char * map, int x, int y)
 	entry_read_int(MAP_TABLE,map,&warpy,layer_name,MAP_KEY_WARP_Y,NULL);
 
 	/* Offscreen script */
-	entry_read_string(MAP_TABLE,map,&script,layer_name,MAP_OFFSCREEN,NULL);
+	entry_read_string(MAP_TABLE,map,&script,MAP_OFFSCREEN,NULL);
 	if(script != NULL &&
 			( x < 0 || y < 0 || x >= width || y >= height ) ) {
 		snprintf(buf,SMALL_BUF,"%d",x);
@@ -526,24 +526,11 @@ int character_set_pos(context_t * ctx, const char * map, int x, int y)
 	return 0;
 }
 
-/******************************************************
-return 0 if layer OK
-return -1 if layer was not set
-******************************************************/
-int character_set_layer(context_t * ctx, int layer)
-{
-	if( !entry_write_int(CHARACTER_TABLE,ctx->id,layer,CHARACTER_KEY_LAYER,NULL) ) {
-		return -1;
-	}
-
-	return 0;
-}
-
 /*********************************************************
- Set NPC to the value passed.
- If the value is != 0 , the NPC is instanciated
- return -1 on error
-*********************************************************/
+  Set NPC to the value passed.
+  If the value is != 0 , the NPC is instanciated
+  return -1 on error
+ *********************************************************/
 int character_set_npc(const char * id, int npc)
 {
 	if(!entry_write_int(CHARACTER_TABLE,id,npc,CHARACTER_KEY_NPC,NULL)) {
@@ -558,10 +545,10 @@ int character_set_npc(const char * id, int npc)
 }
 
 /*********************************************************
- Get NPC value.
- return 0 if not NPC
- return 1 if NPC
-*********************************************************/
+  Get NPC value.
+  return 0 if not NPC
+  return 1 if NPC
+ *********************************************************/
 int character_get_npc(const char * id)
 {
 	int npc;

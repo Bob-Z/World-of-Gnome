@@ -405,24 +405,21 @@ void map_broadcast(const char * map)
 }
 
 /***********************************
-Set offscreen script of a map's layer
+Set offscreen script of a map
 return -1 if fails
 ***********************************/
-int map_set_offscreen(const char * map, int layer, const char * script)
+int map_set_offscreen(const char * map, const char * script)
 {
-	char layer_name[SMALL_BUF];
 	int res;
 
 	if(map == NULL || script == NULL) {
 		return -1;
 	}
 
-	sprintf(layer_name,"%s%d",MAP_KEY_LAYER,layer);
-
 	/* Manage concurrent access to map files */
 	SDL_LockMutex(map_mutex);
 
-	res = entry_write_string(MAP_TABLE, map, script, layer_name,MAP_OFFSCREEN,NULL);
+	res = entry_write_string(MAP_TABLE, map, script, MAP_OFFSCREEN,NULL);
 
 	SDL_UnlockMutex(map_mutex);
 
@@ -765,7 +762,7 @@ int map_delete_event(const char * map, int layer, const char * script, int x, in
  return an array of character id on given map at x,y
  This array AND its content MUST be freed by caller
 ************************************************/
-char ** map_get_character(const char * map, int layer, int x, int y)
+char ** map_get_character(const char * map, int x, int y)
 {
 	char ** character_list = NULL;
 	int character_num = 0;
@@ -784,13 +781,11 @@ char ** map_get_character(const char * map, int layer, int x, int y)
 		}
 		if(ctx->pos_x == x && ctx->pos_y == y && !strcmp(ctx->map,map)) {
 			character_layer=0;
-			entry_read_int(CHARACTER_TABLE,ctx->id,&character_layer,CHARACTER_KEY_LAYER,NULL);
-			if( character_layer == layer ) {
-				character_num++;
-				character_list=realloc(character_list,sizeof(char*)*(character_num+1));
-				character_list[character_num-1] = strdup(ctx->id);
-				character_list[character_num]=NULL;
-			}
+			entry_read_int(MAP_TABLE,ctx->map,&character_layer,MAP_KEY_CHARACTER_LAYER,NULL);
+			character_num++;
+			character_list=realloc(character_list,sizeof(char*)*(character_num+1));
+			character_list[character_num-1] = strdup(ctx->id);
+			character_list[character_num]=NULL;
 		}
 
 		ctx = ctx->next;
