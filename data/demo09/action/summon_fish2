@@ -1,0 +1,6 @@
+text            = "Summon fish 2";
+icon            = "sprite/fish2.png";
+#icon_over       = "icon/bat_over.png";
+#icon_click      = "icon/bat_click.png";
+script          = "action/summon.lua";
+param		= ( "fish2" );

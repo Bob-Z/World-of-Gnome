@@ -1,0 +1,15 @@
+marquee		= "sprite/fish4.png";
+sprite		= "sprite/fish4.png";
+type		= "fish4"
+map		= "M0_0";
+pos_x		= 15;
+pos_y		= 15;
+flip_e          = 1;
+rot_n           = 90;
+rot_s           = 270;
+ai              = "ai/ai_random.lua";
+ai_params       = [ "1000" ];
+action		= [ ];
+#allowed_tile    = [ "water" ];
+#allowed_tile_script	= "allowed_tile/ground_stair.lua";
+#inventory	= [ ];  

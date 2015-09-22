@@ -18,6 +18,6 @@ sprite_w       = "sprite/princess_left.png";
 sprite_e       = "sprite/princess_right.png";
 ai              = "ai/ai_random.lua";
 ai_params       = [ "1000" ];
-action          = [ ];
+action          = [ "summon_fish1","summon_fish2","summon_fish3","summon_fish4","summon_fish5"];
 #allowed_tile_script    = "allowed_tile/ground_stair.lua";
 #inventory      = [ ];
