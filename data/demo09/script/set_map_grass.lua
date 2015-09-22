@@ -53,7 +53,7 @@ while ret == true do
 	ret = file_exists(full_name)
 end
 max_img = max_img - 1
-bush_density = 10
+bush_density = 100
 -- actually set tiles on layer 1
 for x=0,map_w-1 do
 	for y=0,map_h-1 do
