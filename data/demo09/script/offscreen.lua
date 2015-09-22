@@ -57,6 +57,13 @@ if res == -1 then
 
 		"eol",
 
+                "action","set_map_water","",
+                "image","tile/water1.png",
+                "action","set_map_water","",
+                "text","Water",
+
+		"eol",
+
 --                "action","set_map","grass",
 --                "image","tile/grass1.png",
 --                "action","set_map","grass",
