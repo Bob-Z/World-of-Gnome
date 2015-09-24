@@ -52,6 +52,7 @@
 #define CHARACTER_KEY_OFFSET_Y	"offset_y"
 #define CHARACTER_KEY_TYPE	"type"
 #define CHARACTER_KEY_MAP	"map"
+#define CHARACTER_LAYER		"layer"
 #define	CHARACTER_KEY_POS_X	"pos_x"
 #define CHARACTER_KEY_POS_Y	"pos_y"
 #define CHARACTER_KEY_NPC	"npc"
@@ -101,7 +102,6 @@
 #define MAP_KEY_BG_GREEN	"bg_green"
 #define MAP_KEY_WARP_X		"warp_x"
 #define MAP_KEY_WARP_Y		"warp_y"
-#define MAP_CHARACTER_LAYER	"character_layer"
 /* layer data*/
 #define MAP_KEY_LAYER		"layer"
 #define MAP_KEY_WIDTH		"width"

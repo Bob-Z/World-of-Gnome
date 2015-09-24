@@ -1,8 +1,9 @@
+width = 13;
+height = 11;
+tile_width = 16;
+tile_height = 16;
+
 layer0: {
-	width = 13;
-	height = 11;
-	tile_width = 16;
-	tile_height = 16;
 	list = ["0","0","map/house2_level1.gif" ];
 	type = [
 	 ];

@@ -694,19 +694,18 @@ static void compose_text(context_t * ctx, item_t * item_list)
 static void cb_print_coord(void * arg)
 {
 	char buf[SMALL_BUF];
-	char *type;
 	int map_w;
-	int player_layer = 0;
-	char layer_name[SMALL_BUF];
 	context_t * ctx = context_get_player();
 
-	entry_read_int(MAP_TABLE,ctx->map,&player_layer,MAP_CHARACTER_LAYER,NULL);
-	sprintf(layer_name,"%s%d",MAP_KEY_LAYER,player_layer);
-	entry_read_int(MAP_TABLE,ctx->map,&map_w,layer_name,MAP_KEY_WIDTH,NULL);
+	entry_read_int(MAP_TABLE,ctx->map,&map_w,MAP_KEY_WIDTH,NULL);
 
+//TODO: take layer into account
+#if 0
 	entry_read_list_index(MAP_TABLE,ctx->map,&type,scr_play_get_current_x()+scr_play_get_current_y()*map_w,layer_name,MAP_KEY_TYPE,NULL);
 	sprintf(buf,"x=%d y=%d type=%s",scr_play_get_current_x(),scr_play_get_current_y(),type);
 	free(type);
+#endif
+	sprintf(buf,"x=%d y=%d",scr_play_get_current_x(),scr_play_get_current_y());
 	textview_add_line(buf);
 
 	screen_compose();

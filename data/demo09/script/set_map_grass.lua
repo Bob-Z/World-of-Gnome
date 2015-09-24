@@ -66,7 +66,7 @@ for x=0,map_w-1 do
 end
 
 -- let characters walks over grass
-map_set_character_layer(map_name,1);
+-- map_set_character_layer(map_name,1);
 
 map_broadcast(map_name);
 

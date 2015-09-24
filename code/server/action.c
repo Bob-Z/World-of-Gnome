@@ -352,8 +352,6 @@ static int l_character_get_map_w( lua_State* L)
 	context_t * target;
 	const char * id;
 	int map_w = -1;
-	int player_layer = 0;
-	char layer_name[SMALL_BUF];
 
 	id = luaL_checkstring(L, -1);
 	target = context_find(id);
@@ -362,9 +360,7 @@ static int l_character_get_map_w( lua_State* L)
 		return 0;  /* number of results */
 	}
 
-	entry_read_int(MAP_TABLE,target->map,&player_layer,MAP_CHARACTER_LAYER,NULL);
-	sprintf(layer_name,"%s%d",MAP_KEY_LAYER,player_layer);
-	entry_read_int(MAP_TABLE,target->map,&map_w,layer_name,MAP_KEY_WIDTH,NULL);
+	entry_read_int(MAP_TABLE,target->map,&map_w,MAP_KEY_WIDTH,NULL);
 
 	lua_pushnumber(L, map_w);
 	return 1;  /* number of results */
@@ -380,8 +376,6 @@ static int l_character_get_map_h( lua_State* L)
 	context_t * target;
 	const char * id;
 	int map_h = -1;
-	int player_layer = 0;
-	char layer_name[SMALL_BUF];
 
 	id = luaL_checkstring(L, -1);
 	target = context_find(id);
@@ -390,9 +384,7 @@ static int l_character_get_map_h( lua_State* L)
 		return 0;  /* number of results */
 	}
 
-	entry_read_int(MAP_TABLE,target->map,&player_layer,MAP_CHARACTER_LAYER,NULL);
-	sprintf(layer_name,"%s%d",MAP_KEY_LAYER,player_layer);
-	entry_read_int(MAP_TABLE,target->map,&map_h,layer_name,MAP_KEY_HEIGHT,NULL);
+	entry_read_int(MAP_TABLE,target->map,&map_h,MAP_KEY_HEIGHT,NULL);
 
 	lua_pushnumber(L, map_h);
 	return 1;  /* number of results */
@@ -915,28 +907,6 @@ static int l_map_set_offscreen( lua_State* L)
 	map = luaL_checkstring(L, -2);
 	script = luaL_checkstring(L, -1);
 	res = map_set_offscreen(map,script);
-	lua_pushnumber(L, res);
-	return 1;  /* number of results */
-}
-
-/* map_set_character_layer
-
-Set a map's character layer
-
-Input:
- - ID of a map
- - layer index
-Output:
-*/
-static int l_map_set_character_layer( lua_State* L)
-{
-	const char * map;
-	int layer;
-	int res;
-
-	map = luaL_checkstring(L, -2);
-	layer = luaL_checkint(L, -1);
-	res = map_set_character_layer(map,layer);
 	lua_pushnumber(L, res);
 	return 1;  /* number of results */
 }
@@ -2135,8 +2105,6 @@ void register_lua_functions(context_t * context)
 	lua_setglobal(L, "map_broadcast");
 	lua_pushcfunction(L, l_map_set_offscreen);
 	lua_setglobal(L, "map_set_offscreen");
-	lua_pushcfunction(L, l_map_set_character_layer);
-	lua_setglobal(L, "map_set_character_layer");
 	lua_pushcfunction(L, l_map_set_custom_column);
 	lua_setglobal(L, "map_set_custom_column");
 	lua_pushcfunction(L, l_map_set_custom_row);

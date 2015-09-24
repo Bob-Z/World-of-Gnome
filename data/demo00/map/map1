@@ -2,11 +2,12 @@ bg_red = 192;
 bg_blue = 192;
 bg_green = 192;
 
+width = 6;
+height = 6;
+tile_width = 64;
+tile_height = 64;
+
 layer0: {
-	width = 6;
-	height = 6;
-	tile_width = 64;
-	tile_height = 64;
 	set = [ "tile/white.jpg", "tile/black.jpg", "tile/black.jpg", "tile/black.jpg", "tile/black.jpg", "tile/white.jpg", "tile/black.jpg", "tile/black.jpg", "tile/black.jpg", "tile/black.jpg", "tile/black.jpg", "tile/black.jpg", "tile/white.jpg", "tile/black.jpg", "tile/black.jpg", "tile/black.jpg", "tile/black.jpg", "tile/white.jpg", "tile/black.jpg", "tile/black.jpg", "tile/black.jpg", "tile/black.jpg", "tile/black.jpg", "tile/black.jpg", "tile/white.jpg", "tile/black.jpg", "tile/black.jpg", "tile/black.jpg", "tile/black.jpg", "tile/white.jpg", "tile/white.jpg", "tile/black.jpg",  "tile/black.jpg", "tile/black.jpg", "tile/black.jpg", "tile/exit.gif" ];
 
 
@@ -38,11 +39,6 @@ layer0: {
 };
 
 layer1: {
-	width = 6;
-	height = 6;
-	tile_width = 64;
-	tile_height = 64;
-
 	set = [ "tile/trap.png","","","","","",
 		"","","","","","",
 		"","","","","","",

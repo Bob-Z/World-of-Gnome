@@ -53,7 +53,7 @@ for x=0,map_w-1 do
 end
 
 -- let characters walks under water
-map_set_character_layer(map_name,0);
+-- map_set_character_layer(map_name,0);
 
 map_broadcast(map_name);
 

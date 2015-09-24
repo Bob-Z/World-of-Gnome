@@ -1,9 +1,10 @@
+width = 17;
+height = 4;
+tile_width = 50;
+tile_height = 48;
+sprite_zoom = "0.14";
+
 layer0: {
-	sprite_zoom = "0.14";
-	width = 17;
-	height = 4;
-	tile_width = 50;
-	tile_height = 48;
 	list = ["0","-336","map/lake.jpg" ];
 	type = [
 		"grd","grd","grd","grd","wtr","wtr","wtr","wtr","wtr","grd","grd","grd","grd","grd","grd","grd","goo",
