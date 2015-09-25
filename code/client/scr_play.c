@@ -936,13 +936,8 @@ static int layer_update(layer_t * layer, int layer_index)
 		}
 	}
 
-	/* Automatic tiling */
-	layer->col_num = 1;
-	layer->col_width[0] = layer->tile_width;
-	layer->col_height[0] = 0;
 	layer->row_num = 1;
-	layer->row_width[0] = 0;
-	layer->row_height[0] = layer->tile_height;
+	layer->col_num = 1;
 
 	/* Custom tiling */
 	for( tiling_index=0; tiling_index< MAX_COL;tiling_index ++ ) {
@@ -960,15 +955,25 @@ static int layer_update(layer_t * layer, int layer_index)
 			}
 		}
 		else {
-			layer->col_width[tiling_index]=0;
-			layer->col_height[tiling_index]=0;
 			sprintf(keyword,"%s%d",MAP_KEY_COL_WIDTH,tiling_index);
 			if( entry_read_int(MAP_TABLE, ctx->map, &layer->col_width[tiling_index],keyword,NULL) ){
 				more = true;
 			}
+			else {
+				/* Automatic tiling, column width is tile grid width */
+				if( tiling_index == 0 ) {
+					layer->col_width[0] = layer->tile_width;
+				}
+				else {
+					layer->col_width[tiling_index]=0;
+				}
+			}
 			sprintf(keyword,"%s%d",MAP_KEY_COL_HEIGHT,tiling_index);
 			if( entry_read_int(MAP_TABLE, ctx->map, &layer->col_height[tiling_index],keyword,NULL) ){
 				more = true;
+			}
+			else {
+				layer->col_height[tiling_index]=0;
 			}
 		}
 		if(more) {
@@ -997,9 +1002,21 @@ static int layer_update(layer_t * layer, int layer_index)
 			if( entry_read_int(MAP_TABLE, ctx->map, &layer->row_width[tiling_index],keyword,NULL) ) {
 				more = true;
 			}
+			else {
+				layer->row_width[tiling_index]=0;
+			}
 			sprintf(keyword,"%s%d",MAP_KEY_ROW_HEIGHT,tiling_index);
 			if( entry_read_int(MAP_TABLE, ctx->map, &layer->row_height[tiling_index],keyword,NULL) ) {
 				more = true;
+			}
+			else {
+				/* Automatic tiling, row height is grid tile height */
+				if( tiling_index == 0 ) {
+					layer->row_height[0] = layer->tile_height;
+				}
+				else {
+					layer->row_height[tiling_index]=0;
+				}
 			}
 		}
 		if(more) {
