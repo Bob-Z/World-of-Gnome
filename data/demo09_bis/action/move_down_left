@@ -1,4 +1,0 @@
-text		= "Go down";
-icon		= "none";
-script		= "move.lua";
-param		= ( "-1" , "1" );

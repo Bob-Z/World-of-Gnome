@@ -1,3 +1,0 @@
-text		= "Select equipment";
-icon		= "none";
-script		= "select_equipment.lua";

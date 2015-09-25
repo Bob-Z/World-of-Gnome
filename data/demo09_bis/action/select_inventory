@@ -1,3 +1,0 @@
-text		= "Select inventory";
-icon		= "none";
-script		= "select_inventory.lua";

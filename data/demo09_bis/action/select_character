@@ -1,3 +1,0 @@
-text		= "Select character";
-icon		= "none";
-script		= "select_character.lua";
