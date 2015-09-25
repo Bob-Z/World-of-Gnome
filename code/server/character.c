@@ -416,7 +416,7 @@ int character_set_pos(context_t * ctx, const char * map, int x, int y)
 	}
 
 	ctx_layer = 0;
-	entry_read_int(CHARACTER_TABLE,map,&ctx_layer,CHARACTER_LAYER,NULL);
+	entry_read_int(CHARACTER_TABLE,ctx->id,&ctx_layer,CHARACTER_LAYER,NULL);
 
 	entry_read_int(MAP_TABLE,map,&width,MAP_KEY_WIDTH,NULL);
 	entry_read_int(MAP_TABLE,map,&height,MAP_KEY_HEIGHT,NULL);
