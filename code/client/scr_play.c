@@ -909,14 +909,29 @@ static int layer_update(layer_t * layer, int layer_index)
 
 	if( layer_index != GRID_INDEX ) {
 		layer->active = true;
+
+		/* Automatic tiling */
+		layer->col_width[0]=grid.col_width[0];
+		layer->col_height[0]=grid.col_height[0];
+		layer->row_width[0]=grid.row_width[0];
+		layer->row_height[0]=grid.row_height[0];
+
 		layer->map_w = grid.map_w;
 		entry_read_int(MAP_TABLE, ctx->map, &layer->map_w,layer_name,MAP_KEY_WIDTH,NULL);
+
 		layer->map_h = grid.map_h;
 		entry_read_int(MAP_TABLE, ctx->map, &layer->map_h,layer_name,MAP_KEY_HEIGHT,NULL);
+
 		layer->tile_width = grid.tile_width;
-		entry_read_int(MAP_TABLE, ctx->map, &layer->tile_width,layer_name,MAP_KEY_TILE_WIDTH,NULL);
+		if( entry_read_int(MAP_TABLE, ctx->map, &layer->tile_width,layer_name,MAP_KEY_TILE_WIDTH,NULL) ){
+			layer->col_width[0] = layer->tile_width;
+		}
+
 		layer->tile_height = grid.tile_height;
-		entry_read_int(MAP_TABLE, ctx->map, &layer->tile_height,layer_name,MAP_KEY_TILE_HEIGHT,NULL);
+		if( entry_read_int(MAP_TABLE, ctx->map, &layer->tile_height,layer_name,MAP_KEY_TILE_HEIGHT,NULL) ){
+			layer->row_height[0] = layer->tile_height;
+		}
+
 		layer->map_zoom = grid.map_zoom;
 		if(entry_read_string(MAP_TABLE,ctx->map,&zoom_str,layer_name,MAP_KEY_SPRITE_ZOOM,NULL)) {
 			layer->map_zoom = atof(zoom_str);
@@ -929,6 +944,13 @@ static int layer_update(layer_t * layer, int layer_index)
 		if(!entry_read_int(MAP_TABLE, ctx->map, &layer->tile_width,MAP_KEY_TILE_WIDTH,NULL)) return 0;
 		if(!entry_read_int(MAP_TABLE, ctx->map, &layer->tile_height,MAP_KEY_TILE_HEIGHT,NULL)) return 0;
 		layer->active = true;
+
+		/* Automatic tiling */
+		layer->col_width[0] = layer->tile_width;
+		layer->col_height[0]=0;
+		layer->row_width[0]=0;
+		layer->row_height[0] = layer->tile_height;
+
 		layer->map_zoom = 1.0;
 		if(entry_read_string(MAP_TABLE,ctx->map,&zoom_str,MAP_KEY_SPRITE_ZOOM,NULL)) {
 			layer->map_zoom = atof(zoom_str);
@@ -942,21 +964,16 @@ static int layer_update(layer_t * layer, int layer_index)
 	/* Custom tiling */
 	for( tiling_index=0; tiling_index< MAX_COL;tiling_index ++ ) {
 		more = false;
+
+		if( tiling_index > 0 ) {
+			layer->col_width[tiling_index] = 0;
+			layer->col_height[tiling_index] = 0;
+		}
+
 		if( layer_index != GRID_INDEX ) {
-			layer->col_width[tiling_index]=grid.col_width[tiling_index];
-			layer->col_height[tiling_index]=grid.col_height[tiling_index];
 			sprintf(keyword,"%s%d",MAP_KEY_COL_WIDTH,tiling_index);
 			if( entry_read_int(MAP_TABLE, ctx->map, &layer->col_width[tiling_index],layer_name,keyword,NULL) ){
 				more = true;
-			}
-			else {
-				/* Automatic tiling, column width is tile grid width */
-				if( tiling_index == 0 ) {
-					layer->col_width[0] = layer->tile_width;
-				}
-				else {
-					layer->col_width[tiling_index]=0;
-				}
 			}
 			sprintf(keyword,"%s%d",MAP_KEY_COL_HEIGHT,tiling_index);
 			if( entry_read_int(MAP_TABLE, ctx->map, &layer->col_height[tiling_index],layer_name,keyword,NULL) ){
@@ -964,17 +981,9 @@ static int layer_update(layer_t * layer, int layer_index)
 			}
 		}
 		else {
-			layer->col_width[tiling_index]=0;
-			layer->col_height[tiling_index]=0;
 			sprintf(keyword,"%s%d",MAP_KEY_COL_WIDTH,tiling_index);
 			if( entry_read_int(MAP_TABLE, ctx->map, &layer->col_width[tiling_index],keyword,NULL) ){
 				more = true;
-			}
-			else {
-				/* Automatic tiling, column width is tile grid width */
-				if( tiling_index == 0 ) {
-					layer->col_width[0] = layer->tile_width;
-				}
 			}
 			sprintf(keyword,"%s%d",MAP_KEY_COL_HEIGHT,tiling_index);
 			if( entry_read_int(MAP_TABLE, ctx->map, &layer->col_height[tiling_index],keyword,NULL) ){
@@ -988,9 +997,13 @@ static int layer_update(layer_t * layer, int layer_index)
 
 	for( tiling_index=0; tiling_index< MAX_ROW;tiling_index ++ ) {
 		more = false;
+
+		if( tiling_index > 0 ) {
+			layer->row_width[tiling_index] = 0;
+			layer->row_height[tiling_index] = 0;
+		}
+
 		if( layer_index != GRID_INDEX ) {
-			layer->row_width[tiling_index]=grid.row_width[tiling_index];
-			layer->row_height[tiling_index]=grid.row_height[tiling_index];
 			sprintf(keyword,"%s%d",MAP_KEY_ROW_WIDTH,tiling_index);
 			if( entry_read_int(MAP_TABLE, ctx->map, &layer->row_width[tiling_index],layer_name,keyword,NULL) ) {
 				more = true;
@@ -999,19 +1012,8 @@ static int layer_update(layer_t * layer, int layer_index)
 			if( entry_read_int(MAP_TABLE, ctx->map, &layer->row_height[tiling_index],layer_name,keyword,NULL) ) {
 				more = true;
 			}
-			else {
-				/* Automatic tiling, row height is grid tile height */
-				if( tiling_index == 0 ) {
-					layer->row_height[0] = layer->tile_height;
-				}
-				else {
-					layer->row_height[tiling_index]=0;
-				}
-			}
 		}
 		else {
-			layer->row_width[tiling_index]=0;
-			layer->row_height[tiling_index]=0;
 			sprintf(keyword,"%s%d",MAP_KEY_ROW_WIDTH,tiling_index);
 			if( entry_read_int(MAP_TABLE, ctx->map, &layer->row_width[tiling_index],keyword,NULL) ) {
 				more = true;
@@ -1019,12 +1021,6 @@ static int layer_update(layer_t * layer, int layer_index)
 			sprintf(keyword,"%s%d",MAP_KEY_ROW_HEIGHT,tiling_index);
 			if( entry_read_int(MAP_TABLE, ctx->map, &layer->row_height[tiling_index],keyword,NULL) ) {
 				more = true;
-			}
-			else {
-				/* Automatic tiling, row height is grid tile height */
-				if( tiling_index == 0 ) {
-					layer->row_height[0] = layer->tile_height;
-				}
 			}
 		}
 		if(more) {
