@@ -62,14 +62,15 @@ char * map_new(const char *suggested_name,int layer, int w,int h, int tile_w, in
 
 	tile_array=malloc(((w*h)+1)*sizeof(char *));
 
+	sprintf(layer_name,"%s%d",MAP_KEY_LAYER,layer);
+
 	/* Write default tile */
 	for(i=0; i<(w*h); i++) {
 		tile_array[i] = (char *)default_tile;
 	}
 	tile_array[i] = NULL; /* End of list */
 
-	sprintf(layer_name,"%s%d",MAP_KEY_LAYER,layer);
-	if (!entry_write_list(MAP_TABLE,map_name,tile_array,layer_name, MAP_KEY_SET, NULL) ) {
+	if (!entry_write_list(MAP_TABLE,map_name,tile_array,layer_name,MAP_KEY_SET, NULL) ) {
 		free(map_name);
 		return NULL;
 	}
@@ -80,13 +81,7 @@ char * map_new(const char *suggested_name,int layer, int w,int h, int tile_w, in
 	}
 	tile_array[i] = NULL; /* End of list */
 
-	sprintf(layer_name,"%s%d",MAP_KEY_LAYER,layer);
-	if (!entry_group_create(MAP_TABLE,map_name,layer_name,MAP_KEY_TYPE,NULL)) {
-		free(map_name);
-		return NULL;
-	}
-
-	if (!entry_write_list(MAP_TABLE,map_name,tile_array,layer_name, NULL) ) {
+	if (!entry_write_list(MAP_TABLE,map_name,tile_array,layer_name,MAP_KEY_TYPE, NULL) ) {
 		free(map_name);
 		return NULL;
 	}
