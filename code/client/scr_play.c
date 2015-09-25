@@ -937,6 +937,10 @@ static int layer_update(layer_t * layer, int layer_index)
 			layer->map_zoom = atof(zoom_str);
 			free(zoom_str);
 		}
+
+		layer->row_num = grid.row_num;
+		layer->col_num = grid.col_num;
+
 	}
 	else {
 		if(!entry_read_int(MAP_TABLE, ctx->map, &layer->map_w,MAP_KEY_WIDTH,NULL)) return 0;
@@ -956,21 +960,22 @@ static int layer_update(layer_t * layer, int layer_index)
 			layer->map_zoom = atof(zoom_str);
 			free(zoom_str);
 		}
-	}
 
-	layer->row_num = 1;
-	layer->col_num = 1;
+		layer->row_num = 1;
+		layer->col_num = 1;
+
+	}
 
 	/* Custom tiling */
 	for( tiling_index=0; tiling_index< MAX_COL;tiling_index ++ ) {
 		more = false;
 
-		if( tiling_index > 0 ) {
-			layer->col_width[tiling_index] = 0;
-			layer->col_height[tiling_index] = 0;
-		}
-
 		if( layer_index != GRID_INDEX ) {
+			if( tiling_index > 0 ) {
+				layer->col_width[tiling_index] = grid.col_width[tiling_index];
+				layer->col_height[tiling_index] = grid.col_height[tiling_index];
+			}
+
 			sprintf(keyword,"%s%d",MAP_KEY_COL_WIDTH,tiling_index);
 			if( entry_read_int(MAP_TABLE, ctx->map, &layer->col_width[tiling_index],layer_name,keyword,NULL) ){
 				more = true;
@@ -981,6 +986,11 @@ static int layer_update(layer_t * layer, int layer_index)
 			}
 		}
 		else {
+			if( tiling_index > 0 ) {
+				layer->col_width[tiling_index] = 0;
+				layer->col_height[tiling_index] = 0;
+			}
+
 			sprintf(keyword,"%s%d",MAP_KEY_COL_WIDTH,tiling_index);
 			if( entry_read_int(MAP_TABLE, ctx->map, &layer->col_width[tiling_index],keyword,NULL) ){
 				more = true;
@@ -998,12 +1008,12 @@ static int layer_update(layer_t * layer, int layer_index)
 	for( tiling_index=0; tiling_index< MAX_ROW;tiling_index ++ ) {
 		more = false;
 
-		if( tiling_index > 0 ) {
-			layer->row_width[tiling_index] = 0;
-			layer->row_height[tiling_index] = 0;
-		}
-
 		if( layer_index != GRID_INDEX ) {
+			if( tiling_index > 0 ) {
+				layer->row_width[tiling_index] = grid.row_width[tiling_index];
+				layer->row_height[tiling_index] = grid.row_height[tiling_index];
+			}
+
 			sprintf(keyword,"%s%d",MAP_KEY_ROW_WIDTH,tiling_index);
 			if( entry_read_int(MAP_TABLE, ctx->map, &layer->row_width[tiling_index],layer_name,keyword,NULL) ) {
 				more = true;
@@ -1014,6 +1024,11 @@ static int layer_update(layer_t * layer, int layer_index)
 			}
 		}
 		else {
+			if( tiling_index > 0 ) {
+				layer->row_width[tiling_index] = 0;
+				layer->row_height[tiling_index] = 0;
+			}
+
 			sprintf(keyword,"%s%d",MAP_KEY_ROW_WIDTH,tiling_index);
 			if( entry_read_int(MAP_TABLE, ctx->map, &layer->row_width[tiling_index],keyword,NULL) ) {
 				more = true;
