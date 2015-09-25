@@ -550,13 +550,15 @@ char * map_get_tile(const char * map, int layer, int x, int y)
 
 	sprintf(layer_name,"%s%d",MAP_KEY_LAYER,layer);
 
-	if(!entry_read_int(MAP_TABLE,map,&width,layer_name,MAP_KEY_WIDTH,NULL)) {
+	if(!entry_read_int(MAP_TABLE,map,&width,MAP_KEY_WIDTH,NULL)) {
 		return NULL;
 	}
+	entry_read_int(MAP_TABLE,map,&width,layer_name,MAP_KEY_WIDTH,NULL);
 
-	if(!entry_read_int(MAP_TABLE,map,&height,layer_name,MAP_KEY_HEIGHT,NULL)) {
+	if(!entry_read_int(MAP_TABLE,map,&height,MAP_KEY_HEIGHT,NULL)) {
 		return NULL;
 	}
+	entry_read_int(MAP_TABLE,map,&height,layer_name,MAP_KEY_HEIGHT,NULL);
 
 	if( x<0 || y<0 || x >= width || y >= height ) {
 		return NULL;
