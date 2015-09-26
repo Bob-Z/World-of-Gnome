@@ -1001,7 +1001,9 @@ static int layer_update(layer_t * layer, int layer_index)
 			}
 		}
 		if(more) {
-			layer->col_num++;
+			if( tiling_index > 0 ) {
+				layer->col_num++;
+			}
 		}
 	}
 
@@ -1039,7 +1041,9 @@ static int layer_update(layer_t * layer, int layer_index)
 			}
 		}
 		if(more) {
-			layer->row_num++;
+			if( tiling_index > 0 ) {
+				layer->row_num++;
+			}
 		}
 	}
 
