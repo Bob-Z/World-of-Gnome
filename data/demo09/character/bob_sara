@@ -1,0 +1,24 @@
+name		= "Sara";
+
+marquee         = "marquee/sara.png";
+sprite          = "sprite/sara_down.png";
+type            = "human"
+map             = "M0_0";
+pos_x           = 15;
+pos_y           = 15;
+layer		= 11;
+#align on lower edge of tile
+align           = 1;
+sprite_move_n   = "sprite/sara_up.gif";
+sprite_move_s   = "sprite/sara_down.gif";
+sprite_move_w   = "sprite/sara_left.gif";
+sprite_move_e   = "sprite/sara_right.gif";
+sprite_n       = "sprite/sara_up.png";
+sprite_s       = "sprite/sara_down.png";
+sprite_w       = "sprite/sara_left.png";
+sprite_e       = "sprite/sara_right.png";
+ai              = "ai/ai_random.lua";
+ai_params       = [ "1000" ];
+action          = [ "summon_fish1","summon_fish2","summon_fish3","summon_fish4","summon_fish5"];
+#allowed_tile_script    = "allowed_tile/ground_stair.lua";
+#inventory      = [ ];
