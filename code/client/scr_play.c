@@ -523,12 +523,12 @@ static void compose_sprite(context_t * ctx,int layer_index)
 	context_lock_list();
 
 	while(ctx != NULL ) {
-			layer = 0;
-			entry_read_int(CHARACTER_TABLE,ctx->id,&layer,CHARACTER_LAYER,NULL);
+		layer = 0;
+		entry_read_int(CHARACTER_TABLE,ctx->id,&layer,CHARACTER_LAYER,NULL);
 
-			if( layer == layer_index ) {
-				set_up_sprite(ctx,NULL);
-			}
+		if( layer == layer_index ) {
+			set_up_sprite(ctx,NULL);
+		}
 		ctx = ctx->next;
 	}
 
@@ -923,12 +923,12 @@ static int layer_update(layer_t * layer, int layer_index)
 		entry_read_int(MAP_TABLE, ctx->map, &layer->map_h,layer_name,MAP_KEY_HEIGHT,NULL);
 
 		layer->tile_width = grid.tile_width;
-		if( entry_read_int(MAP_TABLE, ctx->map, &layer->tile_width,layer_name,MAP_KEY_TILE_WIDTH,NULL) ){
+		if( entry_read_int(MAP_TABLE, ctx->map, &layer->tile_width,layer_name,MAP_KEY_TILE_WIDTH,NULL) ) {
 			layer->col_width[0] = layer->tile_width;
 		}
 
 		layer->tile_height = grid.tile_height;
-		if( entry_read_int(MAP_TABLE, ctx->map, &layer->tile_height,layer_name,MAP_KEY_TILE_HEIGHT,NULL) ){
+		if( entry_read_int(MAP_TABLE, ctx->map, &layer->tile_height,layer_name,MAP_KEY_TILE_HEIGHT,NULL) ) {
 			layer->row_height[0] = layer->tile_height;
 		}
 
@@ -941,12 +941,19 @@ static int layer_update(layer_t * layer, int layer_index)
 		layer->row_num = grid.row_num;
 		layer->col_num = grid.col_num;
 
-	}
-	else {
-		if(!entry_read_int(MAP_TABLE, ctx->map, &layer->map_w,MAP_KEY_WIDTH,NULL)) return 0;
-		if(!entry_read_int(MAP_TABLE, ctx->map, &layer->map_h,MAP_KEY_HEIGHT,NULL)) return 0;
-		if(!entry_read_int(MAP_TABLE, ctx->map, &layer->tile_width,MAP_KEY_TILE_WIDTH,NULL)) return 0;
-		if(!entry_read_int(MAP_TABLE, ctx->map, &layer->tile_height,MAP_KEY_TILE_HEIGHT,NULL)) return 0;
+	} else {
+		if(!entry_read_int(MAP_TABLE, ctx->map, &layer->map_w,MAP_KEY_WIDTH,NULL)) {
+			return 0;
+		}
+		if(!entry_read_int(MAP_TABLE, ctx->map, &layer->map_h,MAP_KEY_HEIGHT,NULL)) {
+			return 0;
+		}
+		if(!entry_read_int(MAP_TABLE, ctx->map, &layer->tile_width,MAP_KEY_TILE_WIDTH,NULL)) {
+			return 0;
+		}
+		if(!entry_read_int(MAP_TABLE, ctx->map, &layer->tile_height,MAP_KEY_TILE_HEIGHT,NULL)) {
+			return 0;
+		}
 		layer->active = true;
 
 		/* Automatic tiling */
@@ -967,7 +974,7 @@ static int layer_update(layer_t * layer, int layer_index)
 	}
 
 	/* Custom tiling */
-	for( tiling_index=0; tiling_index< MAX_COL;tiling_index ++ ) {
+	for( tiling_index=0; tiling_index< MAX_COL; tiling_index ++ ) {
 		more = false;
 
 		if( layer_index != GRID_INDEX ) {
@@ -977,26 +984,25 @@ static int layer_update(layer_t * layer, int layer_index)
 			}
 
 			sprintf(keyword,"%s%d",MAP_KEY_COL_WIDTH,tiling_index);
-			if( entry_read_int(MAP_TABLE, ctx->map, &layer->col_width[tiling_index],layer_name,keyword,NULL) ){
+			if( entry_read_int(MAP_TABLE, ctx->map, &layer->col_width[tiling_index],layer_name,keyword,NULL) ) {
 				more = true;
 			}
 			sprintf(keyword,"%s%d",MAP_KEY_COL_HEIGHT,tiling_index);
-			if( entry_read_int(MAP_TABLE, ctx->map, &layer->col_height[tiling_index],layer_name,keyword,NULL) ){
+			if( entry_read_int(MAP_TABLE, ctx->map, &layer->col_height[tiling_index],layer_name,keyword,NULL) ) {
 				more = true;
 			}
-		}
-		else {
+		} else {
 			if( tiling_index > 0 ) {
 				layer->col_width[tiling_index] = 0;
 				layer->col_height[tiling_index] = 0;
 			}
 
 			sprintf(keyword,"%s%d",MAP_KEY_COL_WIDTH,tiling_index);
-			if( entry_read_int(MAP_TABLE, ctx->map, &layer->col_width[tiling_index],keyword,NULL) ){
+			if( entry_read_int(MAP_TABLE, ctx->map, &layer->col_width[tiling_index],keyword,NULL) ) {
 				more = true;
 			}
 			sprintf(keyword,"%s%d",MAP_KEY_COL_HEIGHT,tiling_index);
-			if( entry_read_int(MAP_TABLE, ctx->map, &layer->col_height[tiling_index],keyword,NULL) ){
+			if( entry_read_int(MAP_TABLE, ctx->map, &layer->col_height[tiling_index],keyword,NULL) ) {
 				more = true;
 			}
 		}
@@ -1007,7 +1013,7 @@ static int layer_update(layer_t * layer, int layer_index)
 		}
 	}
 
-	for( tiling_index=0; tiling_index< MAX_ROW;tiling_index ++ ) {
+	for( tiling_index=0; tiling_index< MAX_ROW; tiling_index ++ ) {
 		more = false;
 
 		if( layer_index != GRID_INDEX ) {
@@ -1024,8 +1030,7 @@ static int layer_update(layer_t * layer, int layer_index)
 			if( entry_read_int(MAP_TABLE, ctx->map, &layer->row_height[tiling_index],layer_name,keyword,NULL) ) {
 				more = true;
 			}
-		}
-		else {
+		} else {
 			if( tiling_index > 0 ) {
 				layer->row_width[tiling_index] = 0;
 				layer->row_height[tiling_index] = 0;

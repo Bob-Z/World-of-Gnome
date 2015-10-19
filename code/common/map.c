@@ -100,7 +100,7 @@ static char * get_tile_type_through_layer(const char * map, int layer, int x, in
 		if( type ) {
 			return type;
 		}
-		layer--;	
+		layer--;
 	}
 
 	return NULL;
@@ -389,7 +389,7 @@ int map_set_tile_type(const char * map, int layer, const char * type,int x, int 
 	index = width * y + x;
 
 	/* read previous map type */
-	if( entry_read_list_index(MAP_TABLE,map,&previous_type, index,layer_name,MAP_KEY_TYPE,NULL) ){
+	if( entry_read_list_index(MAP_TABLE,map,&previous_type, index,layer_name,MAP_KEY_TYPE,NULL) ) {
 		/* Do not change the type if it already the requested type
 		   Avoid calling useless context_broadcast_file */
 		if( strcmp(previous_type, type) == 0 ) {
@@ -400,7 +400,7 @@ int map_set_tile_type(const char * map, int layer, const char * type,int x, int 
 		free(previous_type);
 	}
 
-	if( entry_write_list_index(MAP_TABLE, map, type,index, layer_name,MAP_KEY_TYPE,NULL) ){
+	if( entry_write_list_index(MAP_TABLE, map, type,index, layer_name,MAP_KEY_TYPE,NULL) ) {
 		if( network_broadcast ) {
 			context_broadcast_map(map);
 		}
@@ -523,8 +523,7 @@ int map_set_custom_row(const char * map, int layer, int num, int width, int heig
 		if(res>-1) {
 			res = entry_write_int(MAP_TABLE, map, height, height_name,NULL);
 		}
-	}
-	else {
+	} else {
 		sprintf(layer_name,"%s%d",MAP_KEY_LAYER,layer);
 		res = entry_write_int(MAP_TABLE, map, width, layer_name,width_name,NULL);
 		if(res>-1) {

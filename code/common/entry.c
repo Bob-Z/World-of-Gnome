@@ -1413,11 +1413,11 @@ static int __exist(const char * table, const char * file, va_list ap)
 		return FALSE;
 	}
 
-        setting = config_lookup (config, path);
+	setting = config_lookup (config, path);
 	free(path);
-        if( setting == NULL ) {
-                return FALSE;
-        }
+	if( setting == NULL ) {
+		return FALSE;
+	}
 
 	return TRUE;
 }
