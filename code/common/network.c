@@ -275,7 +275,7 @@ int network_send_file(context_t * context, char * filename)
 
 	/* Never send files with password */
 	if ( strstr(filename,PASSWD_TABLE) != NULL ) {
-		werr(LOGUSER,"send_file : Do not serve hazardous file  \"%s\"",filename);
+		werr(LOGUSER,"send_file : Do not serve personal file  \"%s\"",filename);
 		return -1;
 	}
 
