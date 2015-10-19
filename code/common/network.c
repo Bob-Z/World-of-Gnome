@@ -181,7 +181,7 @@ int network_read_bytes(TCPsocket socket, char * data, int size)
 	}
 
 	while( total_bytes != size && bytes_read != -1 ) {
-		bytes_read = SDLNet_TCP_Recv(socket, data+total_bytes, size);
+		bytes_read = SDLNet_TCP_Recv(socket, data+total_bytes, 1);
 		if( bytes_read < 1 ) {
 			werr(LOGDEBUG,"Read error on socket %d",socket);
 			return FALSE;
