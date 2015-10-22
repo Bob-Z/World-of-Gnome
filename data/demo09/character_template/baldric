@@ -1,0 +1,25 @@
+name		= "Baldric";
+
+npc		= 1;
+marquee         = "marquee/baldric.png";
+sprite          = "sprite/baldric_down.png";
+type            = "human"
+map             = "M0_0";
+pos_x           = 15;
+pos_y           = 15;
+layer		= 11;
+#align on lower edge of tile
+align           = 1;
+sprite_move_n   = "sprite/baldric_up.zip";
+sprite_move_s   = "sprite/baldric_down.zip";
+sprite_move_w   = "sprite/baldric_left.zip";
+sprite_move_e   = "sprite/baldric_right.zip";
+sprite_n       = "sprite/baldric_up.png";
+sprite_s       = "sprite/baldric_down.png";
+sprite_w       = "sprite/baldric_left.png";
+sprite_e       = "sprite/baldric_right.png";
+ai              = "ai/ai_random.lua";
+ai_params       = [ "1000" ];
+action          = [ "summon_fish1","summon_fish2","summon_fish3","summon_fish4","summon_fish5","summon_dragon","set_campfire"];
+#allowed_tile_script    = "allowed_tile/ground_stair.lua";
+#inventory      = [ ];
