@@ -18,27 +18,39 @@ new_map_y = map_y
 player_x = tonumber(dest_x)
 player_y = tonumber(dest_y)
 
+-- Get new map coordinates
 if( tonumber(dest_x) < 0 ) then  
 	new_map_x = map_x - 1 
-	player_x = map_w-1
 end
 if( tonumber(dest_x) >= map_w ) then
 	new_map_x = map_x + 1
-	player_x = 0
 end
 if( tonumber(dest_y) < 0 ) then
 	new_map_y = map_y - 1
-	player_y = map_h-1
 end
 if( tonumber(dest_y) >= map_h ) then
 	new_map_y = map_y + 1
-	player_y = 0
 end
 
 new_map = string.format("M%d_%d",new_map_x,new_map_y)
 new_map_w = character_get_map_w(new_map)
 new_map_h = character_get_map_h(new_map)
 
+-- Set player coordinates in new map
+if( tonumber(dest_x) < 0 ) then  
+	player_x = new_map_w-1
+end
+if( tonumber(dest_x) >= map_w ) then
+	player_x = 0
+end
+if( tonumber(dest_y) < 0 ) then
+	player_y = new_map_h-1
+end
+if( tonumber(dest_y) >= map_h ) then
+	player_y = 0
+end
+
+-- Avoid player being outside a map
 if( player_x >= new_map_w ) then
 	player_x = new_map_w -1
 end
