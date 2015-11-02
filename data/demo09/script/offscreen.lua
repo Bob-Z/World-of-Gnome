@@ -6,8 +6,8 @@ print_text_debug(text)
 player_id = player_get_id()
 map = character_get_map(player_id)
 
-map_w = character_get_map_w(player_id)
-map_h = character_get_map_h(player_id)
+map_w = character_get_map_w(map)
+map_h = character_get_map_h(map)
 
 map_x = map_attribute_get(map,"x")
 map_y = map_attribute_get(map,"y")
@@ -15,8 +15,8 @@ map_y = map_attribute_get(map,"y")
 new_map_x = map_x
 new_map_y = map_y
 
-player_x = dest_x
-player_y = dest_y
+player_x = tonumber(dest_x)
+player_y = tonumber(dest_y)
 
 if( tonumber(dest_x) < 0 ) then  
 	new_map_x = map_x - 1 
@@ -35,9 +35,18 @@ if( tonumber(dest_y) >= map_h ) then
 	player_y = 0
 end
 
-map_name = string.format("M%d_%d",new_map_x,new_map_y)
+new_map = string.format("M%d_%d",new_map_x,new_map_y)
+new_map_w = character_get_map_w(new_map)
+new_map_h = character_get_map_h(new_map)
 
-res = character_set_pos(player_id,map_name,player_x,player_y)
+if( player_x >= new_map_w ) then
+	player_x = new_map_w -1
+end
+if( player_y >= new_map_h ) then
+	player_y = new_map_h -1
+end
+
+res = character_set_pos(player_id,new_map,player_x,player_y)
 
 if res == -1 then
 	-- Only human can create map
@@ -45,8 +54,8 @@ if res == -1 then
 	if player_type ~= "human" then
 		return -1
 	end
-	call_script("add_map.lua",map_name,new_map_x,new_map_y);
-        res = character_set_pos(player_id,map_name,player_x,player_y)
+	call_script("add_map.lua",new_map,new_map_x,new_map_y);
+        res = character_set_pos(player_id,new_map,player_x,player_y)
 
         text = string.format("Select new map's default tile ?")
         popup_send(player_id,

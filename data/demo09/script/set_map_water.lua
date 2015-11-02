@@ -6,8 +6,10 @@ end
 function f ()
 
 player_id = player_get_id()
-map_w = character_get_map_w(player_id)
-map_h = character_get_map_h(player_id)
+map = character_get_map(player_id)
+
+map_w = character_get_map_w(map)
+map_h = character_get_map_h(map)
 
 -- dirt layer --
 -- determine max number of image

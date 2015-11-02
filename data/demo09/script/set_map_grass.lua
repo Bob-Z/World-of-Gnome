@@ -7,8 +7,10 @@ function f ()
 
 tile_type = "grass"
 player_id = player_get_id()
-map_w = character_get_map_w(player_id)
-map_h = character_get_map_h(player_id)
+map = character_get_map(player_id)
+
+map_w = character_get_map_w(map)
+map_h = character_get_map_h(map)
 
 -- determine if the exact name exists
 full_name = string.format("%s/image/tile/%s",get_base_directory(),tile_type)
