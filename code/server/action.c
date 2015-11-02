@@ -346,6 +346,7 @@ static int l_character_get_map( lua_State* L)
 Input:
  - map name
 Output: Width of the map
+-1 if map does not exists
 */
 static int l_character_get_map_w( lua_State* L)
 {
@@ -363,6 +364,7 @@ static int l_character_get_map_w( lua_State* L)
 Input:
  - map name
 Output: Height of the map
+-1 if map does not exists
 */
 static int l_character_get_map_h( lua_State* L)
 {
