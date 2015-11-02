@@ -36,26 +36,28 @@ new_map = string.format("M%d_%d",new_map_x,new_map_y)
 new_map_w = character_get_map_w(new_map)
 new_map_h = character_get_map_h(new_map)
 
--- Set player coordinates in new map
-if( tonumber(dest_x) < 0 ) then  
-	player_x = new_map_w-1
-end
-if( tonumber(dest_x) >= map_w ) then
-	player_x = 0
-end
-if( tonumber(dest_y) < 0 ) then
-	player_y = new_map_h-1
-end
-if( tonumber(dest_y) >= map_h ) then
-	player_y = 0
-end
+if( new_map_w ~= -1  ) then
+	-- Set player coordinates on new map
+	if( tonumber(dest_x) < 0 ) then
+		player_x = new_map_w-1
+	end
+	if( tonumber(dest_x) >= map_w ) then
+		player_x = 0
+	end
+	if( tonumber(dest_y) < 0 ) then
+		player_y = new_map_h-1
+	end
+	if( tonumber(dest_y) >= map_h ) then
+		player_y = 0
+	end
 
--- Avoid player being outside a map
-if( player_x >= new_map_w ) then
-	player_x = new_map_w -1
-end
-if( player_y >= new_map_h ) then
-	player_y = new_map_h -1
+	-- Avoid player being outside a map
+	if( player_x >= new_map_w ) then
+		player_x = new_map_w -1
+	end
+	if( player_y >= new_map_h ) then
+		player_y = new_map_h -1
+	end
 end
 
 res = character_set_pos(player_id,new_map,player_x,player_y)
@@ -66,7 +68,32 @@ if res == -1 then
 	if player_type ~= "human" then
 		return -1
 	end
-	call_script("add_map.lua",new_map,new_map_x,new_map_y);
+	call_script("add_map.lua",new_map,new_map_x,new_map_y)
+
+	new_map_w = character_get_map_w(new_map)
+	new_map_h = character_get_map_h(new_map)
+
+	-- Set player coordinates on new map
+	if( tonumber(dest_x) < 0 ) then
+		player_x = new_map_w-1
+	end
+	if( tonumber(dest_x) >= map_w ) then
+		player_x = 0
+	end
+	if( tonumber(dest_y) < 0 ) then
+		player_y = new_map_h-1
+	end
+	if( tonumber(dest_y) >= map_h ) then
+		player_y = 0
+	end
+
+	-- Avoid player being outside a map
+	if( player_x >= new_map_w ) then
+		player_x = new_map_w -1
+	end
+	if( player_y >= new_map_h ) then
+		player_y = new_map_h -1
+	end
         res = character_set_pos(player_id,new_map,player_x,player_y)
 
         text = string.format("Select new map's default tile ?")
@@ -96,8 +123,6 @@ if res == -1 then
 
                 "action", "popup_end", "",
                 "text","Done")
-
-
 
 	res = 0
 end
