@@ -1,10 +1,11 @@
 function f (map_name,map_x,map_y)
 
-player_id = player_get_id()
-map = character_get_map(player_id)
-
-map_w = character_get_map_w(map)
-map_h = character_get_map_h(map)
+--player_id = player_get_id()
+--map = character_get_map(player_id)
+--map_w = character_get_map_w(map)
+--map_h = character_get_map_h(map)
+map_w = 64
+map_h = 64
 
 new_map = map_new(map_name,0,map_w,map_h,32,32,"tile/grass1.png","grass")
 if new_map ~= nil then
