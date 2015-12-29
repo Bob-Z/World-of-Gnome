@@ -19,6 +19,32 @@
 
 #ifndef MAP_H
 #define MAP_H
+
+#define DEFAULT_LAYER      (-1)
+
+// Max number of consecutive tiles with custom alignement
+#define MAX_COL         16
+#define MAX_ROW         16
+
+typedef struct layer {
+        int active;
+        int tile_width;
+        int tile_height;
+        int map_w;
+        int map_h;
+        double map_zoom;
+        int col_width[MAX_COL];
+        int col_height[MAX_COL];
+        int col_num;
+        int col_width_total;
+        int col_height_total;
+        int row_width[MAX_ROW];
+        int row_height[MAX_ROW];
+        int row_num;
+        int row_width_total;
+        int row_height_total;
+} layer_t;
+
 char * map_new(const char * suggested_name, int layer, int w, int h, int tile_w, int tile_h, const char * default_tile,const char * default_type);
 char * map_delete_item(const char * map, int layer, int x, int y);
 int map_add_item(const char * map, int layer, const char * item, int x, int y);
@@ -37,4 +63,8 @@ char ** map_get_item(const char * map,int layer, int x, int y);
 char * map_add_event(const char * map, int layer, const char * script, int x, int y);
 int map_add_event_param(const char * map, int layer, const char * event_id, const char * param);
 int map_delete_event(const char * map, int layer, const char * script, int x, int y);
+int map_layer_update(const char * map,layer_t * default_layer, layer_t * filled_layer, int layer_index);
+int map_t2p_x(int x, int y,layer_t * layer);
+int map_t2p_y(int x, int y,layer_t * layer);
+int map_get_tile_coord(const char * map, int layer, int x, int y, int * tx, int * ty);
 #endif

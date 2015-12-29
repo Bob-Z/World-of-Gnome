@@ -17,33 +17,8 @@
    Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
-#ifndef WOG_COMMON_INCLUDE
-#define WOG_COMMON_INCLUDE
+#ifndef MAP_SERVER_H
+#define MAP_SERVER_H
 
-#define FALSE	(0)
-#define false	(0)
-#define TRUE	(1)
-#define true	(1)
-
-#define RET_OK		(0)
-#define RET_FAIL	(-1)
-
-#include <SDL2/SDL_net.h>
-
-#include "util.h"
-#include "const.h"
-#include "list.h"
-#include "syntax.h"
-#include "context.h"
-#include "file.h"
-#include "network.h"
-#include "protocol.h"
-#include "client_server.h"
-#include "map.h"
-#include "entry.h"
-#include "log.h"
-#include "mutex.h"
-#include "item.h"
-#include "fifo.h"
-
+int map_check_tile(context_t * ctx,char * id,const char * map,int layer, int x,int y);
 #endif

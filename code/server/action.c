@@ -1193,6 +1193,51 @@ static int l_map_delete_event( lua_State* L)
 	return 1;  /* number of results */
 }
 
+/* tile_get_x
+Input:
+ - X coordinate (in tiles)
+ - Y coordinate (in tiles)
+Output: X coordinate of the tile in pixels
+*/
+static int l_tile_get_x( lua_State* L)
+{
+	const char * map;
+	int layer;
+	int x;
+	int y;
+	int res = -1;
+
+	map = luaL_checkstring(L, -4);
+	layer = luaL_checkint(L, -3);
+	x = luaL_checkint(L, -2);
+	y = luaL_checkint(L, -1);
+	map_get_tile_coord(map,layer,x,y,&res,NULL);
+	lua_pushnumber(L, res);
+	return 1;  /* number of results */
+}
+
+/* tile_get_y
+Input:
+ - X coordinate (in tiles)
+ - Y coordinate (in tiles)
+Output: Y coordinate of the tile in pixels
+*/
+static int l_tile_get_y( lua_State* L)
+{
+	const char * map;
+	int layer;
+	int x;
+	int y;
+	int res = -1;
+
+	map = luaL_checkstring(L, -4);
+	layer = luaL_checkint(L, -3);
+	x = luaL_checkint(L, -2);
+	y = luaL_checkint(L, -1);
+	map_get_tile_coord(map,layer,x,y,NULL,&res);
+	lua_pushnumber(L, res);
+	return 1;  /* number of results */
+}
 /* inventory_delete
 
 Delete an item from the inventory
@@ -2115,6 +2160,11 @@ void register_lua_functions(context_t * context)
 	lua_setglobal(L, "map_add_event_param");
 	lua_pushcfunction(L, l_map_delete_event);
 	lua_setglobal(L, "map_delete_event");
+	/* tile func */
+	lua_pushcfunction(L, l_tile_get_x);
+	lua_setglobal(L, "tile_get_x");
+	lua_pushcfunction(L, l_tile_get_y);
+	lua_setglobal(L, "tile_get_y");
 	/* inventory func */
 	lua_pushcfunction(L, l_inventory_delete);
 	lua_setglobal(L, "inventory_delete");

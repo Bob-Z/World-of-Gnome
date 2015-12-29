@@ -54,7 +54,7 @@ static int async_send(void * user_data)
 
 	if( socket == 0 ) {
 		wlog(LOGDEBUG, "socket %d is disconnected",socket);
-		return RET_SUCCESS;
+		return RET_OK;
 	}
 
 	SDL_LockMutex(context->send_mutex);
@@ -93,7 +93,7 @@ async_send_end:
 	free(data->data);
 	free(data);
 
-	return RET_SUCCESS;
+	return RET_OK;
 }
 
 /*******************************

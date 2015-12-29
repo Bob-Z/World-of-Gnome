@@ -41,32 +41,7 @@
 #define ALIGN_CENTER	0
 #define ALIGN_LOWER	1
 
-// Max number of consecutive tiles with custom alignement
-#define MAX_COL		16
-#define MAX_ROW		16
-
 #define MAX_LAYER	100
-
-#define GRID_INDEX	(-1)
-
-typedef struct layer {
-	int active;
-	int tile_width;
-	int tile_height;
-	int map_w;
-	int map_h;
-	double map_zoom;
-	int col_width[MAX_COL];
-	int col_height[MAX_COL];
-	int col_num;
-	int col_width_total;
-	int col_height_total;
-	int row_width[MAX_ROW];
-	int row_height[MAX_ROW];
-	int row_num;
-	int row_width_total;
-	int row_height_total;
-} layer_t;
 
 static item_t * item_list = NULL;
 static int change_map = 0;
@@ -74,55 +49,7 @@ static int init = true;
 static int current_map_x = -1;
 static int current_map_y = -1;
 static option_t * option;
-static layer_t grid;
-
-static int layer_update(layer_t * layer, int layer_index);
-
-/**********************************
- Convert tiles coordinates into pixels coordinates
-**********************************/
-int t2p_x(int x, int y,layer_t * layer)
-{
-	int i;
-	int res;
-
-	res = (x/layer->col_num) * layer->col_width_total;
-
-	for(i=0; i<x%layer->col_num; i++) {
-		res += layer->col_width[i];
-	}
-
-	res += (y/layer->row_num) * layer->row_width_total;
-
-	for(i=0; i<y%layer->row_num; i++) {
-		res += layer->row_width[i];
-	}
-
-	return res;
-}
-
-/**********************************
- Convert tiles coordinates into pixels coordinates
-**********************************/
-int t2p_y(int x, int y,layer_t * layer)
-{
-	int i;
-	int res;
-
-	res = (x/layer->col_num) * layer->col_height_total;
-
-	for(i=0; i<x%layer->col_num; i++) {
-		res += layer->col_height[i];
-	}
-
-	res += (y/layer->row_num) * layer->row_height_total;
-
-	for(i=0; i<y%layer->row_num; i++) {
-		res += layer->row_height[i];
-	}
-
-	return res;
-}
+static layer_t default_layer;
 
 /**********************************
 **********************************/
@@ -405,10 +332,10 @@ static void set_up_sprite(context_t * ctx, const char * image_file_name)
 	sprite_move = select_sprite_move(ctx,image_file_name);
 
 	/* Get position in pixel */
-	x = t2p_x(ctx->cur_pos_x,ctx->cur_pos_y,&grid);
-	y = t2p_y(ctx->cur_pos_x,ctx->cur_pos_y,&grid);
-	ox = t2p_x(ctx->old_pos_x,ctx->old_pos_y,&grid);
-	oy = t2p_y(ctx->old_pos_x,ctx->old_pos_y,&grid);
+	x = map_t2p_x(ctx->cur_pos_x,ctx->cur_pos_y,&default_layer);
+	y = map_t2p_y(ctx->cur_pos_x,ctx->cur_pos_y,&default_layer);
+	ox = map_t2p_x(ctx->old_pos_x,ctx->old_pos_y,&default_layer);
+	oy = map_t2p_y(ctx->old_pos_x,ctx->old_pos_y,&default_layer);
 
 	/* Get per sprite zoom */
 	if(entry_read_string(CHARACTER_TABLE,ctx->id,&zoom_str,CHARACTER_KEY_ZOOM,NULL)) {
@@ -419,16 +346,16 @@ static void set_up_sprite(context_t * ctx, const char * image_file_name)
 	/* Align sprite on tile */
 	entry_read_int(CHARACTER_TABLE,ctx->id,&sprite_align,CHARACTER_KEY_ALIGN,NULL);
 	if( sprite_align == ALIGN_CENTER ) {
-		x -= ((sprite->w*grid.map_zoom*zoom)-grid.tile_width)/2;
-		y -= ((sprite->h*grid.map_zoom*zoom)-grid.tile_height)/2;
-		ox -= ((sprite->w*grid.map_zoom*zoom)-grid.tile_width)/2;
-		oy -= ((sprite->h*grid.map_zoom*zoom)-grid.tile_height)/2;
+		x -= ((sprite->w*default_layer.map_zoom*zoom)-default_layer.tile_width)/2;
+		y -= ((sprite->h*default_layer.map_zoom*zoom)-default_layer.tile_height)/2;
+		ox -= ((sprite->w*default_layer.map_zoom*zoom)-default_layer.tile_width)/2;
+		oy -= ((sprite->h*default_layer.map_zoom*zoom)-default_layer.tile_height)/2;
 	}
 	if( sprite_align == ALIGN_LOWER ) {
-		x -= ((sprite->w*grid.map_zoom*zoom)-grid.tile_width)/2;
-		y -= (sprite->h*grid.map_zoom*zoom)-grid.tile_height ;
-		ox -= ((sprite->w*grid.map_zoom*zoom)-grid.tile_width)/2;
-		oy -= (sprite->h*grid.map_zoom*zoom)-grid.tile_height;
+		x -= ((sprite->w*default_layer.map_zoom*zoom)-default_layer.tile_width)/2;
+		y -= (sprite->h*default_layer.map_zoom*zoom)-default_layer.tile_height ;
+		ox -= ((sprite->w*default_layer.map_zoom*zoom)-default_layer.tile_width)/2;
+		oy -= (sprite->h*default_layer.map_zoom*zoom)-default_layer.tile_height;
 	}
 
 	/* Add Y offset */
@@ -509,8 +436,8 @@ static void set_up_sprite(context_t * ctx, const char * image_file_name)
 	item_set_click_left(item,cb_select_sprite,ctx->id,NULL);
 	item_set_click_right(item,cb_redo_sprite,item,NULL);
 
-	item_set_zoom_x(item,zoom * grid.map_zoom );
-	item_set_zoom_y(item,zoom * grid.map_zoom );
+	item_set_zoom_x(item,zoom * default_layer.map_zoom );
+	item_set_zoom_y(item,zoom * default_layer.map_zoom );
 }
 
 /**********************************
@@ -606,25 +533,25 @@ static void compose_item(context_t * ctx,int layer_index)
 		anim = imageDB_get_anim(ctx,sprite_name);
 		free(sprite_name);
 
-		temp_x = t2p_x(x,y,&grid);
-		temp_y = t2p_y(x,y,&grid);
+		temp_x = map_t2p_x(x,y,&default_layer);
+		temp_y = map_t2p_y(x,y,&default_layer);
 		x = temp_x;
 		y = temp_y;
 		/* Align on tile */
 		if( sprite_align == ALIGN_CENTER ) {
-			x -= ((anim->w*grid.map_zoom)-grid.tile_width)/2;
-			y -= ((anim->h*grid.map_zoom)-grid.tile_height)/2;
+			x -= ((anim->w*default_layer.map_zoom)-default_layer.tile_width)/2;
+			y -= ((anim->h*default_layer.map_zoom)-default_layer.tile_height)/2;
 		}
 		if( sprite_align == ALIGN_LOWER ) {
-			x -= ((anim->w*grid.map_zoom)-grid.tile_width)/2;
-			y -= (anim->h*grid.map_zoom)-grid.tile_height;
+			x -= ((anim->w*default_layer.map_zoom)-default_layer.tile_width)/2;
+			y -= (anim->h*default_layer.map_zoom)-default_layer.tile_height;
 		}
 
 		y += sprite_offset_y;
 
 		item_set_anim(item,x,y,anim,0);
-		item_set_zoom_x(item, grid.map_zoom );
-		item_set_zoom_y(item, grid.map_zoom );
+		item_set_zoom_x(item, default_layer.map_zoom );
+		item_set_zoom_y(item, default_layer.map_zoom );
 		if(font) {
 			quantity = resource_get_quantity(item_id[i]);
 			sprintf(buf,"%d",quantity);
@@ -694,10 +621,10 @@ static void compose_map_button(context_t * ctx)
 		anim = imageDB_get_anim(ctx,option->cursor_over_tile);
 	}
 
-	for( y=0 ; y < grid.map_h ; y++ ) {
-		for ( x=0 ; x < grid.map_w ; x++ ) {
+	for( y=0 ; y < default_layer.map_h ; y++ ) {
+		for ( x=0 ; x < default_layer.map_w ; x++ ) {
 			item = item_list_add(&item_list);
-			item_set_frame_shape(item,t2p_x(x,y,&grid),t2p_y(x,y,&grid),grid.tile_width,grid.tile_height);
+			item_set_frame_shape(item,map_t2p_x(x,y,&default_layer),map_t2p_y(x,y,&default_layer),default_layer.tile_width,default_layer.tile_height);
 			item_set_user(item,x,y);
 			item_set_click_left(item,cb_select_map,item,NULL);
 			item_set_click_right(item,cb_redo_map,item,NULL);
@@ -726,14 +653,14 @@ static void compose_map_set(context_t * ctx, int layer_index)
 		return;
 	}
 
-	layer_update(&layer,layer_index);
+	map_layer_update(ctx->map,&default_layer,&layer,layer_index);
 
 	while(tile_set[i] != NULL ) {
 		/* Skip empty tile */
 		if( tile_set[i][0] != 0 ) {
 			item = item_list_add(&item_list);
 			anim = imageDB_get_anim(ctx,tile_set[i]);
-			item_set_anim(item,t2p_x(x,y,&layer),t2p_y(x,y,&layer),anim,0);
+			item_set_anim(item,map_t2p_x(x,y,&layer),map_t2p_y(x,y,&layer),anim,0);
 		}
 
 		x++;
@@ -814,9 +741,9 @@ static void compose_type(context_t * ctx,int layer_index)
 	}
 
 
-	for( x=0; x<grid.map_w; x++) {
-		for( y=0; y<grid.map_h; y++) {
-			if(!entry_read_list_index(MAP_TABLE,ctx->map,&type,x + y * grid.map_w,layer_name,MAP_KEY_TYPE,NULL)) {
+	for( x=0; x<default_layer.map_w; x++) {
+		for( y=0; y<default_layer.map_h; y++) {
+			if(!entry_read_list_index(MAP_TABLE,ctx->map,&type,x + y * default_layer.map_w,layer_name,MAP_KEY_TYPE,NULL)) {
 				continue;
 			}
 
@@ -829,7 +756,7 @@ static void compose_type(context_t * ctx,int layer_index)
 			item_set_string(item,type);
 			item_set_font(item,font);
 			sdl_get_string_size(item->font,item->string,&w,&h);
-			item_set_frame_shape(item,t2p_x(x,y,&grid),t2p_y(x,y,&grid),w,h);
+			item_set_frame_shape(item,map_t2p_x(x,y,&default_layer),map_t2p_y(x,y,&default_layer),w,h);
 		}
 	}
 }
@@ -860,12 +787,12 @@ static void compose_select(context_t * ctx)
 					item = item_list_add(&item_list);
 
 					/* get pixel coordinate from tile coordinate */
-					x = t2p_x(pos_x,pos_y,&grid);
-					y = t2p_y(pos_x,pos_y,&grid);
+					x = map_t2p_x(pos_x,pos_y,&default_layer);
+					y = map_t2p_y(pos_x,pos_y,&default_layer);
 
 					/* Center on tile */
-					x -= (anim->w-grid.tile_width)/2;
-					y -= (anim->h-grid.tile_height)/2;
+					x -= (anim->w-default_layer.tile_width)/2;
+					y -= (anim->h-default_layer.tile_height)/2;
 
 					item_set_anim(item,x,y,anim,0);
 				}
@@ -884,188 +811,6 @@ static void compose_select(context_t * ctx)
 			set_up_sprite(selected_context, option->cursor_sprite);
 		}
 	}
-}
-
-/**********************************
- Return 0 on error
- **********************************/
-static int layer_update(layer_t * layer, int layer_index)
-{
-	char layer_name[SMALL_BUF];
-	char keyword[SMALL_BUF];
-	int tiling_index = 0;
-	char * zoom_str;
-	int more;
-	context_t * ctx = context_get_player();
-
-	layer->active = false;
-
-	if( layer_index != GRID_INDEX ) {
-		sprintf(layer_name,"%s%d",MAP_KEY_LAYER,layer_index);
-		if( !entry_exist(MAP_TABLE, ctx->map, layer_name,MAP_KEY_SET,NULL)) {
-			return 0;
-		}
-	}
-
-	if( layer_index != GRID_INDEX ) {
-		layer->active = true;
-
-		/* Automatic tiling */
-		layer->col_width[0]=grid.col_width[0];
-		layer->col_height[0]=grid.col_height[0];
-		layer->row_width[0]=grid.row_width[0];
-		layer->row_height[0]=grid.row_height[0];
-
-		layer->map_w = grid.map_w;
-		entry_read_int(MAP_TABLE, ctx->map, &layer->map_w,layer_name,MAP_KEY_WIDTH,NULL);
-
-		layer->map_h = grid.map_h;
-		entry_read_int(MAP_TABLE, ctx->map, &layer->map_h,layer_name,MAP_KEY_HEIGHT,NULL);
-
-		layer->tile_width = grid.tile_width;
-		if( entry_read_int(MAP_TABLE, ctx->map, &layer->tile_width,layer_name,MAP_KEY_TILE_WIDTH,NULL) ) {
-			layer->col_width[0] = layer->tile_width;
-		}
-
-		layer->tile_height = grid.tile_height;
-		if( entry_read_int(MAP_TABLE, ctx->map, &layer->tile_height,layer_name,MAP_KEY_TILE_HEIGHT,NULL) ) {
-			layer->row_height[0] = layer->tile_height;
-		}
-
-		layer->map_zoom = grid.map_zoom;
-		if(entry_read_string(MAP_TABLE,ctx->map,&zoom_str,layer_name,MAP_KEY_SPRITE_ZOOM,NULL)) {
-			layer->map_zoom = atof(zoom_str);
-			free(zoom_str);
-		}
-
-		layer->row_num = grid.row_num;
-		layer->col_num = grid.col_num;
-
-	} else {
-		if(!entry_read_int(MAP_TABLE, ctx->map, &layer->map_w,MAP_KEY_WIDTH,NULL)) {
-			return 0;
-		}
-		if(!entry_read_int(MAP_TABLE, ctx->map, &layer->map_h,MAP_KEY_HEIGHT,NULL)) {
-			return 0;
-		}
-		if(!entry_read_int(MAP_TABLE, ctx->map, &layer->tile_width,MAP_KEY_TILE_WIDTH,NULL)) {
-			return 0;
-		}
-		if(!entry_read_int(MAP_TABLE, ctx->map, &layer->tile_height,MAP_KEY_TILE_HEIGHT,NULL)) {
-			return 0;
-		}
-		layer->active = true;
-
-		/* Automatic tiling */
-		layer->col_width[0] = layer->tile_width;
-		layer->col_height[0]=0;
-		layer->row_width[0]=0;
-		layer->row_height[0] = layer->tile_height;
-
-		layer->map_zoom = 1.0;
-		if(entry_read_string(MAP_TABLE,ctx->map,&zoom_str,MAP_KEY_SPRITE_ZOOM,NULL)) {
-			layer->map_zoom = atof(zoom_str);
-			free(zoom_str);
-		}
-
-		layer->row_num = 1;
-		layer->col_num = 1;
-
-	}
-
-	/* Custom tiling */
-	for( tiling_index=0; tiling_index< MAX_COL; tiling_index ++ ) {
-		more = false;
-
-		if( layer_index != GRID_INDEX ) {
-			if( tiling_index > 0 ) {
-				layer->col_width[tiling_index] = grid.col_width[tiling_index];
-				layer->col_height[tiling_index] = grid.col_height[tiling_index];
-			}
-
-			sprintf(keyword,"%s%d",MAP_KEY_COL_WIDTH,tiling_index);
-			if( entry_read_int(MAP_TABLE, ctx->map, &layer->col_width[tiling_index],layer_name,keyword,NULL) ) {
-				more = true;
-			}
-			sprintf(keyword,"%s%d",MAP_KEY_COL_HEIGHT,tiling_index);
-			if( entry_read_int(MAP_TABLE, ctx->map, &layer->col_height[tiling_index],layer_name,keyword,NULL) ) {
-				more = true;
-			}
-		} else {
-			if( tiling_index > 0 ) {
-				layer->col_width[tiling_index] = 0;
-				layer->col_height[tiling_index] = 0;
-			}
-
-			sprintf(keyword,"%s%d",MAP_KEY_COL_WIDTH,tiling_index);
-			if( entry_read_int(MAP_TABLE, ctx->map, &layer->col_width[tiling_index],keyword,NULL) ) {
-				more = true;
-			}
-			sprintf(keyword,"%s%d",MAP_KEY_COL_HEIGHT,tiling_index);
-			if( entry_read_int(MAP_TABLE, ctx->map, &layer->col_height[tiling_index],keyword,NULL) ) {
-				more = true;
-			}
-		}
-		if(more) {
-			if( tiling_index > 0 ) {
-				layer->col_num++;
-			}
-		}
-	}
-
-	for( tiling_index=0; tiling_index< MAX_ROW; tiling_index ++ ) {
-		more = false;
-
-		if( layer_index != GRID_INDEX ) {
-			if( tiling_index > 0 ) {
-				layer->row_width[tiling_index] = grid.row_width[tiling_index];
-				layer->row_height[tiling_index] = grid.row_height[tiling_index];
-			}
-
-			sprintf(keyword,"%s%d",MAP_KEY_ROW_WIDTH,tiling_index);
-			if( entry_read_int(MAP_TABLE, ctx->map, &layer->row_width[tiling_index],layer_name,keyword,NULL) ) {
-				more = true;
-			}
-			sprintf(keyword,"%s%d",MAP_KEY_ROW_HEIGHT,tiling_index);
-			if( entry_read_int(MAP_TABLE, ctx->map, &layer->row_height[tiling_index],layer_name,keyword,NULL) ) {
-				more = true;
-			}
-		} else {
-			if( tiling_index > 0 ) {
-				layer->row_width[tiling_index] = 0;
-				layer->row_height[tiling_index] = 0;
-			}
-
-			sprintf(keyword,"%s%d",MAP_KEY_ROW_WIDTH,tiling_index);
-			if( entry_read_int(MAP_TABLE, ctx->map, &layer->row_width[tiling_index],keyword,NULL) ) {
-				more = true;
-			}
-			sprintf(keyword,"%s%d",MAP_KEY_ROW_HEIGHT,tiling_index);
-			if( entry_read_int(MAP_TABLE, ctx->map, &layer->row_height[tiling_index],keyword,NULL) ) {
-				more = true;
-			}
-		}
-		if(more) {
-			if( tiling_index > 0 ) {
-				layer->row_num++;
-			}
-		}
-	}
-
-	for(tiling_index=0,layer->col_width_total=0; tiling_index<layer->col_num; tiling_index++) {
-		layer->col_width_total += layer->col_width[tiling_index];
-	}
-	for(tiling_index=0,layer->col_height_total=0; tiling_index<layer->col_num; tiling_index++) {
-		layer->col_height_total += layer->col_height[tiling_index];
-	}
-	for(tiling_index=0,layer->row_width_total=0; tiling_index<layer->row_num; tiling_index++) {
-		layer->row_width_total += layer->row_width[tiling_index];
-	}
-	for(tiling_index=0,layer->row_height_total=0; tiling_index<layer->row_num; tiling_index++) {
-		layer->row_height_total += layer->row_height[tiling_index];
-	}
-
-	return 1;
 }
 
 /**********************************
@@ -1110,17 +855,16 @@ item_t * scr_play_compose(context_t * ctx)
 	sdl_add_mousecb(MOUSE_WHEEL_UP,cb_zoom);
 	sdl_add_mousecb(MOUSE_WHEEL_DOWN,cb_unzoom);
 
-
 	change_map = ctx->change_map;
 
 	if( change_map ) {
 		map_filename = strconcat( MAP_TABLE,"/",ctx->map,NULL);
 		network_send_req_file(ctx,map_filename);
 		free(map_filename);
-		layer_update(&grid,-1);
+		map_layer_update(ctx->map,NULL,&default_layer,DEFAULT_LAYER);
 	}
 
-	if( grid.active ) { // Make sure map data are available
+	if( default_layer.active ) { // Make sure map data are available
 		for(layer_index = 0; layer_index < MAX_LAYER; layer_index++) {
 			compose_map_set(ctx,layer_index);
 			compose_map_list(ctx,layer_index);
@@ -1135,13 +879,13 @@ item_t * scr_play_compose(context_t * ctx)
 
 		/* force virtual coordinate on map change */
 		if(change_map) {
-			sdl_force_virtual_x(t2p_x(ctx->pos_x,ctx->pos_y,&grid) + grid.col_width[ctx->pos_x%grid.col_num]/2 + grid.row_width[ctx->pos_y%grid.row_num]/2 );
-			sdl_force_virtual_y(t2p_y(ctx->pos_x,ctx->pos_y,&grid) + grid.col_height[ctx->pos_x%grid.col_num]/2 + grid.row_height[ctx->pos_y%grid.row_num]/2 );
+			sdl_force_virtual_x(map_t2p_x(ctx->pos_x,ctx->pos_y,&default_layer) + default_layer.col_width[ctx->pos_x%default_layer.col_num]/2 + default_layer.row_width[ctx->pos_y%default_layer.row_num]/2 );
+			sdl_force_virtual_y(map_t2p_y(ctx->pos_x,ctx->pos_y,&default_layer) + default_layer.col_height[ctx->pos_x%default_layer.col_num]/2 + default_layer.row_height[ctx->pos_y%default_layer.row_num]/2 );
 		}
 		/* set virtual coordinate on the same map */
 		else {
-			sdl_set_virtual_x(t2p_x(ctx->pos_x,ctx->pos_y,&grid) + grid.col_width[ctx->pos_x%grid.col_num]/2 + grid.row_width[ctx->pos_y%grid.row_num]/2 );
-			sdl_set_virtual_y(t2p_y(ctx->pos_x,ctx->pos_y,&grid) + grid.col_height[ctx->pos_x%grid.col_num]/2 + grid.row_height[ctx->pos_y%grid.row_num]/2 );
+			sdl_set_virtual_x(map_t2p_x(ctx->pos_x,ctx->pos_y,&default_layer) + default_layer.col_width[ctx->pos_x%default_layer.col_num]/2 + default_layer.row_width[ctx->pos_y%default_layer.row_num]/2 );
+			sdl_set_virtual_y(map_t2p_y(ctx->pos_x,ctx->pos_y,&default_layer) + default_layer.col_height[ctx->pos_x%default_layer.col_num]/2 + default_layer.row_height[ctx->pos_y%default_layer.row_num]/2 );
 		}
 	}
 

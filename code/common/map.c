@@ -20,7 +20,6 @@
 #include "common.h"
 #include <stdlib.h>
 #include <string.h>
-#include "../server/action.h"
 
 /***********************************
 Create a new map or add a map layer.
@@ -87,104 +86,6 @@ char * map_new(const char *suggested_name,int layer, int w,int h, int tile_w, in
 	}
 
 	return map_name;
-}
-
-/***********************************
-return string MUST BE FREED
-***********************************/
-static char * get_tile_type_through_layer(const char * map, int layer, int x, int y)
-{
-	char * type;
-	while( layer >= 0 ) {
-		type = map_get_tile_type(map,layer,x,y);
-		if( type ) {
-			return type;
-		}
-		layer--;
-	}
-
-	return NULL;
-}
-
-/***********************************
-check if id is allowed to go on a tile
-return 1 if the context is allowed to go to the tile at coord x,y
-return 0 if the context is NOT allowed to go to the tile at coord x,y
-return -1 on error or no data found
-*************************************/
-int map_check_tile(context_t * ctx,char * id, const char * map, int layer, int x,int y)
-{
-	char * script;
-	char sx[64];
-	char sy[64];
-	char * param[5];
-	int res;
-	char * tile_type;
-	char ** allowed_tile;
-	int i=0;
-	int width = 0;
-	int height = 0;
-
-	if(!entry_read_int(MAP_TABLE,map,&width,MAP_KEY_WIDTH,NULL)) {
-		return -1;
-	}
-	if(!entry_read_int(MAP_TABLE,map,&height,MAP_KEY_HEIGHT,NULL)) {
-		return -1;
-	}
-
-	if( x < 0 || y < 0 || x >= width || y >= height ) {
-		return 0;
-	}
-
-	/* If there is a allowed_tile_script, run it */
-	if(entry_read_string(CHARACTER_TABLE,id,&script, CHARACTER_KEY_ALLOWED_TILE_SCRIPT, NULL)) {
-		param[0] = id;
-		param[1] = (char *)map;
-		sprintf(sx,"%d",x);
-		sprintf(sy,"%d",y);
-		param[2] = sx;
-		param[3] = sy;
-		param[4] = NULL;
-		res = action_execute_script(ctx,script,param);
-		free(script);
-		return res;
-	}
-
-	/* Read tile at given index on this map */
-	entry_read_int(CHARACTER_TABLE,id,&layer,CHARACTER_LAYER,NULL);
-	tile_type = get_tile_type_through_layer(map, layer, x, y);
-
-	/* Allow tile if no type defined */
-	if( tile_type == NULL ) {
-		return 1;
-	}
-
-	/* Allow tile if its type is empty (i.e. "") */
-	if( tile_type[0] == 0 ) {
-		free(tile_type);
-		return 1;
-	}
-
-	/* If there is allowed_tile list, check it */
-	if(entry_read_list(CHARACTER_TABLE,id,&allowed_tile,CHARACTER_KEY_ALLOWED_TILE,NULL)) {
-		i=0;
-		while( allowed_tile[i] != NULL ) {
-			if( strcmp(allowed_tile[i], tile_type) == 0 ) {
-				deep_free(allowed_tile);
-				free(tile_type);
-				return 1;
-			}
-			i++;
-		}
-
-		deep_free(allowed_tile);
-		free(tile_type);
-		return 0;
-	}
-
-	free(tile_type);
-	/* Allow all tiles by default */
-	return 1;
 }
 
 /**************************************
@@ -263,14 +164,14 @@ char * map_delete_item(const char * map, int layer, int x, int y)
 }
 /******************************************
 Add an item on map at given coordinate
-return -1 if fails
+return RET_FAIL if fails
 ******************************************/
 int map_add_item(const char * map, int layer, const char * id, int x, int y)
 {
 	char layer_name[SMALL_BUF];
 
 	if( x<0 || y<0 ) {
-		return -1;
+		return RET_FAIL;
 	}
 
 	sprintf(layer_name,"%s%d",MAP_KEY_LAYER,layer);
@@ -280,12 +181,12 @@ int map_add_item(const char * map, int layer, const char * id, int x, int y)
 	if (!entry_write_int(MAP_TABLE,map,x,layer_name,MAP_ENTRY_ITEM_LIST,id,MAP_ITEM_POS_X, NULL) ) {
 		entry_remove_group(MAP_TABLE,map,id,layer_name,MAP_ENTRY_ITEM_LIST,NULL);
 		SDL_UnlockMutex(map_mutex);
-		return -1;
+		return RET_FAIL;
 	}
 	if (!entry_write_int(MAP_TABLE,map,y,layer_name,MAP_ENTRY_ITEM_LIST,id,MAP_ITEM_POS_Y, NULL) ) {
 		entry_remove_group(MAP_TABLE,map,id,layer_name,MAP_ENTRY_ITEM_LIST,NULL);
 		SDL_UnlockMutex(map_mutex);
-		return -1;
+		return RET_FAIL;
 	}
 
 	SDL_UnlockMutex(map_mutex);
@@ -297,7 +198,7 @@ int map_add_item(const char * map, int layer, const char * id, int x, int y)
 }
 /***********************************
 Write a new tile into a map set
-return -1 if fails
+return RET_FAIL if fails
 ***********************************/
 int map_set_tile(const char * map, int layer, const char * tile,int x, int y,int network_broadcast)
 {
@@ -307,11 +208,11 @@ int map_set_tile(const char * map, int layer, const char * tile,int x, int y,int
 	char layer_name[SMALL_BUF];
 
 	if(map == NULL || tile == NULL) {
-		return -1;
+		return RET_FAIL;
 	}
 
 	if( x < 0 || y < 0) {
-		return -1;
+		return RET_FAIL;
 	}
 
 	sprintf(layer_name,"%s%d",MAP_KEY_LAYER,layer);
@@ -322,7 +223,7 @@ int map_set_tile(const char * map, int layer, const char * tile,int x, int y,int
 	/* read size of map grid */
 	if(!entry_read_int(MAP_TABLE,map,&width,MAP_KEY_WIDTH,NULL)) {
 		SDL_UnlockMutex(map_mutex);
-		return -1;
+		return RET_FAIL;
 	}
 
 	/* read layer's specific width */
@@ -333,7 +234,7 @@ int map_set_tile(const char * map, int layer, const char * tile,int x, int y,int
 	/* read previous map set */
 	if(!entry_read_list_index(MAP_TABLE,map,&previous_tile,index,layer_name,MAP_KEY_SET,NULL)) {
 		SDL_UnlockMutex(map_mutex);
-		return -1;
+		return RET_FAIL;
 	}
 
 	/* Do not change the tile if it is already the requested tile
@@ -341,7 +242,7 @@ int map_set_tile(const char * map, int layer, const char * tile,int x, int y,int
 	if( strcmp(previous_tile, tile) == 0 ) {
 		free(previous_tile);
 		SDL_UnlockMutex(map_mutex);
-		return 0;
+		return RET_OK;
 	}
 	free(previous_tile);
 
@@ -353,12 +254,12 @@ int map_set_tile(const char * map, int layer, const char * tile,int x, int y,int
 
 	SDL_UnlockMutex(map_mutex);
 
-	return 0;
+	return RET_OK;
 }
 
 /***********************************
 Write a new tile type into a map file
-return -1 if fails
+return RET_FAIL if fails
 ***********************************/
 int map_set_tile_type(const char * map, int layer, const char * type,int x, int y,int network_broadcast)
 {
@@ -368,11 +269,11 @@ int map_set_tile_type(const char * map, int layer, const char * type,int x, int 
 	char layer_name[SMALL_BUF];
 
 	if(map == NULL || type == NULL) {
-		return -1;
+		return RET_FAIL;
 	}
 
 	if( x < 0 || y < 0) {
-		return -1;
+		return RET_FAIL;
 	}
 
 	sprintf(layer_name,"%s%d",MAP_KEY_LAYER,layer);
@@ -383,7 +284,7 @@ int map_set_tile_type(const char * map, int layer, const char * type,int x, int 
 	/* read size of map grid */
 	if(!entry_read_int(MAP_TABLE,map,&width,MAP_KEY_WIDTH,NULL)) {
 		SDL_UnlockMutex(map_mutex);
-		return -1;
+		return RET_FAIL;
 	}
 
 	index = width * y + x;
@@ -395,7 +296,7 @@ int map_set_tile_type(const char * map, int layer, const char * type,int x, int 
 		if( strcmp(previous_type, type) == 0 ) {
 			free(previous_type);
 			SDL_UnlockMutex(map_mutex);
-			return 0;
+			return RET_OK;
 		}
 		free(previous_type);
 	}
@@ -408,12 +309,11 @@ int map_set_tile_type(const char * map, int layer, const char * type,int x, int 
 
 	SDL_UnlockMutex(map_mutex);
 
-	return 0;
+	return RET_OK;
 }
 
 /***********************************
 Broadcast map file to other context
-return -1 if fails
 ***********************************/
 void map_broadcast(const char * map)
 {
@@ -422,14 +322,14 @@ void map_broadcast(const char * map)
 
 /***********************************
 Set offscreen script of a map
-return -1 if fails
+return RET_FAIL if fails
 ***********************************/
 int map_set_offscreen(const char * map, const char * script)
 {
 	int res;
 
 	if(map == NULL || script == NULL) {
-		return -1;
+		return RET_FAIL;
 	}
 
 	/* Manage concurrent access to map files */
@@ -445,7 +345,7 @@ int map_set_offscreen(const char * map, const char * script)
 /***********************************
 Set custom tiling of a map's layer
 if layer == -1, set the map's grid custom columns
-return -1 if fails
+return RET_FAIL if fails
 ***********************************/
 int map_set_custom_column(const char * map, int layer, int num, int width, int height)
 {
@@ -455,7 +355,7 @@ int map_set_custom_column(const char * map, int layer, int num, int width, int h
 	int res;
 
 	if(map == NULL) {
-		return -1;
+		return RET_FAIL;
 	}
 
 	/* Manage concurrent access to map files */
@@ -493,7 +393,7 @@ int map_set_custom_column(const char * map, int layer, int num, int width, int h
 /***********************************
 Set custom tiling of a map's layer
 if layer == -1, set the map's grid custom rows
-return -1 if fails
+return RET_FAIL if fails
 ***********************************/
 int map_set_custom_row(const char * map, int layer, int num, int width, int height)
 {
@@ -503,7 +403,7 @@ int map_set_custom_row(const char * map, int layer, int num, int width, int heig
 	int res;
 
 	if(map == NULL) {
-		return -1;
+		return RET_FAIL;
 	}
 
 
@@ -730,7 +630,7 @@ int map_add_event_param(const char * map, int layer, const char * event_id, cons
 
 /**********************************************
 Delete an event on map at given coordinate
-return -1 if fails
+return RET_FAIL if fails
 **********************************************/
 int map_delete_event(const char * map, int layer, const char * script, int x, int y)
 {
@@ -743,7 +643,7 @@ int map_delete_event(const char * map, int layer, const char * script, int x, in
 	char layer_name[SMALL_BUF];
 
 	if( x<0 || y<0 ) {
-		return -1;
+		return RET_FAIL;
 	}
 
 	sprintf(layer_name,"%s%d",MAP_KEY_LAYER,layer);
@@ -753,7 +653,7 @@ int map_delete_event(const char * map, int layer, const char * script, int x, in
 	/* Search events on the specified tile */
 	if(!entry_get_group_list(MAP_TABLE,map,&eventlist,layer_name,MAP_ENTRY_EVENT_LIST,NULL)) {
 		SDL_UnlockMutex(map_mutex);
-		return -1;
+		return RET_FAIL;
 	}
 
 	while(eventlist[i] != NULL) {
@@ -781,13 +681,13 @@ int map_delete_event(const char * map, int layer, const char * script, int x, in
 
 	if( id == NULL ) {
 		SDL_UnlockMutex(map_mutex);
-		return -1;
+		return RET_FAIL;
 	}
 
 	/* remove the event from the events list of the map */
 	if(!entry_remove_group(MAP_TABLE,map,id,layer_name,MAP_ENTRY_EVENT_LIST,NULL)) {
 		SDL_UnlockMutex(map_mutex);
-		return -1;
+		return RET_FAIL;
 	}
 
 	deep_free(eventlist);
@@ -797,7 +697,7 @@ int map_delete_event(const char * map, int layer, const char * script, int x, in
 	/* Send network notifications */
 	context_broadcast_map(map);
 
-	return 0;
+	return RET_OK;
 }
 
 /************************************************
@@ -883,3 +783,257 @@ char ** map_get_item(const char * map, int layer, int map_x, int map_y)
 
 	return item_list;
 }
+
+/************************************************
+Fill a layer_t struct to be used by t2p_x and t2p_y
+if layer_index == DEFAULT_LAYER or default_layer is NULL, default value are filled in filled_layer
+return RET_FAIL on error
+************************************************/
+int map_layer_update(const char * map,layer_t * default_layer, layer_t * layer, int layer_index)
+{
+        char layer_name[SMALL_BUF];
+        char keyword[SMALL_BUF];
+        int tiling_index = 0;
+        char * zoom_str;
+        int more;
+
+        layer->active = false;
+
+        if( layer_index != DEFAULT_LAYER && default_layer != NULL ) {
+                sprintf(layer_name,"%s%d",MAP_KEY_LAYER,layer_index);
+                if( !entry_exist(MAP_TABLE, map, layer_name,MAP_KEY_SET,NULL)) {
+                        return RET_FAIL;
+                }
+
+                layer->active = true;
+
+                /* Automatic tiling */
+                layer->col_width[0]=default_layer->col_width[0];
+                layer->col_height[0]=default_layer->col_height[0];
+                layer->row_width[0]=default_layer->row_width[0];
+                layer->row_height[0]=default_layer->row_height[0];
+
+                layer->map_w = default_layer->map_w;
+                entry_read_int(MAP_TABLE, map, &layer->map_w,layer_name,MAP_KEY_WIDTH,NULL);
+
+                layer->map_h = default_layer->map_h;
+                entry_read_int(MAP_TABLE, map, &layer->map_h,layer_name,MAP_KEY_HEIGHT,NULL);
+
+                layer->tile_width = default_layer->tile_width;
+                if( entry_read_int(MAP_TABLE, map, &layer->tile_width,layer_name,MAP_KEY_TILE_WIDTH,NULL) ) {
+                        layer->col_width[0] = layer->tile_width;
+                }
+
+                layer->tile_height = default_layer->tile_height;
+                if( entry_read_int(MAP_TABLE, map, &layer->tile_height,layer_name,MAP_KEY_TILE_HEIGHT,NULL) ) {
+                        layer->row_height[0] = layer->tile_height;
+                }
+
+                layer->map_zoom = default_layer->map_zoom;
+                if(entry_read_string(MAP_TABLE,map,&zoom_str,layer_name,MAP_KEY_SPRITE_ZOOM,NULL)) {
+                        layer->map_zoom = atof(zoom_str);
+                        free(zoom_str);
+                }
+
+                layer->row_num = default_layer->row_num;
+                layer->col_num = default_layer->col_num;
+        } else {
+                if(!entry_read_int(MAP_TABLE, map, &layer->map_w,MAP_KEY_WIDTH,NULL)) {
+                        return RET_FAIL;
+                }
+                if(!entry_read_int(MAP_TABLE, map, &layer->map_h,MAP_KEY_HEIGHT,NULL)) {
+                        return RET_FAIL;
+                }
+                if(!entry_read_int(MAP_TABLE, map, &layer->tile_width,MAP_KEY_TILE_WIDTH,NULL)) {
+                        return RET_FAIL;
+                }
+                if(!entry_read_int(MAP_TABLE, map, &layer->tile_height,MAP_KEY_TILE_HEIGHT,NULL)) {
+                        return RET_FAIL;
+                }
+                layer->active = true;
+
+                /* Automatic tiling */
+                layer->col_width[0] = layer->tile_width;
+                layer->col_height[0]=0;
+                layer->row_width[0]=0;
+                layer->row_height[0] = layer->tile_height;
+
+                layer->map_zoom = 1.0;
+                if(entry_read_string(MAP_TABLE,map,&zoom_str,MAP_KEY_SPRITE_ZOOM,NULL)) {
+                        layer->map_zoom = atof(zoom_str);
+                        free(zoom_str);
+                }
+
+                layer->row_num = 1;
+                layer->col_num = 1;
+        }
+
+        /* Custom tiling */
+        for( tiling_index=0; tiling_index< MAX_COL; tiling_index ++ ) {
+                more = false;
+
+                if( layer_index != DEFAULT_LAYER && default_layer != NULL ) {
+                        if( tiling_index > 0 ) {
+                                layer->col_width[tiling_index] = default_layer->col_width[tiling_index];
+                                layer->col_height[tiling_index] = default_layer->col_height[tiling_index];
+                        }
+
+                        sprintf(keyword,"%s%d",MAP_KEY_COL_WIDTH,tiling_index);
+                        if( entry_read_int(MAP_TABLE, map, &layer->col_width[tiling_index],layer_name,keyword,NULL) ) {
+                                more = true;
+                        }
+                        sprintf(keyword,"%s%d",MAP_KEY_COL_HEIGHT,tiling_index);
+                        if( entry_read_int(MAP_TABLE, map, &layer->col_height[tiling_index],layer_name,keyword,NULL) ) {
+                                more = true;
+                        }
+                } else {
+                        if( tiling_index > 0 ) {
+                                layer->col_width[tiling_index] = 0;
+                                layer->col_height[tiling_index] = 0;
+                        }
+
+                        sprintf(keyword,"%s%d",MAP_KEY_COL_WIDTH,tiling_index);
+                        if( entry_read_int(MAP_TABLE, map, &layer->col_width[tiling_index],keyword,NULL) ) {
+                                more = true;
+                        }
+                        sprintf(keyword,"%s%d",MAP_KEY_COL_HEIGHT,tiling_index);
+                        if( entry_read_int(MAP_TABLE, map, &layer->col_height[tiling_index],keyword,NULL) ) {
+                                more = true;
+                        }
+                }
+                if(more) {
+                        if( tiling_index > 0 ) {
+                                layer->col_num++;
+                        }
+                }
+        }
+
+        for( tiling_index=0; tiling_index< MAX_ROW; tiling_index ++ ) {
+                more = false;
+
+                if( layer_index != DEFAULT_LAYER && default_layer != NULL ) {
+                        if( tiling_index > 0 ) {
+                                layer->row_width[tiling_index] = default_layer->row_width[tiling_index];
+                                layer->row_height[tiling_index] = default_layer->row_height[tiling_index];
+                        }
+
+                        sprintf(keyword,"%s%d",MAP_KEY_ROW_WIDTH,tiling_index);
+                        if( entry_read_int(MAP_TABLE, map, &layer->row_width[tiling_index],layer_name,keyword,NULL) ) {
+                                more = true;
+                        }
+                        sprintf(keyword,"%s%d",MAP_KEY_ROW_HEIGHT,tiling_index);
+                        if( entry_read_int(MAP_TABLE, map, &layer->row_height[tiling_index],layer_name,keyword,NULL) ) {
+                                more = true;
+                        }
+                } else {
+                        if( tiling_index > 0 ) {
+                                layer->row_width[tiling_index] = 0;
+                                layer->row_height[tiling_index] = 0;
+                        }
+
+                        sprintf(keyword,"%s%d",MAP_KEY_ROW_WIDTH,tiling_index);
+                        if( entry_read_int(MAP_TABLE, map, &layer->row_width[tiling_index],keyword,NULL) ) {
+                                more = true;
+                        }
+                        sprintf(keyword,"%s%d",MAP_KEY_ROW_HEIGHT,tiling_index);
+                        if( entry_read_int(MAP_TABLE, map, &layer->row_height[tiling_index],keyword,NULL) ) {
+                                more = true;
+                        }
+                }
+                if(more) {
+                        if( tiling_index > 0 ) {
+                                layer->row_num++;
+                        }
+                }
+        }
+
+        for(tiling_index=0,layer->col_width_total=0; tiling_index<layer->col_num; tiling_index++) {
+                layer->col_width_total += layer->col_width[tiling_index];
+        }
+        for(tiling_index=0,layer->col_height_total=0; tiling_index<layer->col_num; tiling_index++) {
+                layer->col_height_total += layer->col_height[tiling_index];
+        }
+        for(tiling_index=0,layer->row_width_total=0; tiling_index<layer->row_num; tiling_index++) {
+                layer->row_width_total += layer->row_width[tiling_index];
+        }
+        for(tiling_index=0,layer->row_height_total=0; tiling_index<layer->row_num; tiling_index++) {
+                layer->row_height_total += layer->row_height[tiling_index];
+        }
+
+        return RET_OK;
+}
+
+/**********************************
+ Convert tiles coordinates into pixels coordinates
+**********************************/
+int map_t2p_x(int x, int y,layer_t * layer)
+{
+        int i;
+        int res;
+
+        res = (x/layer->col_num) * layer->col_width_total;
+
+        for(i=0; i<x%layer->col_num; i++) {
+                res += layer->col_width[i];
+        }
+
+        res += (y/layer->row_num) * layer->row_width_total;
+
+        for(i=0; i<y%layer->row_num; i++) {
+                res += layer->row_width[i];
+        }
+
+        return res;
+}
+
+/**********************************
+ Convert tiles coordinates into pixels coordinates
+**********************************/
+int map_t2p_y(int x, int y,layer_t * layer)
+{
+        int i;
+        int res;
+
+        res = (x/layer->col_num) * layer->col_height_total;
+
+        for(i=0; i<x%layer->col_num; i++) {
+                res += layer->col_height[i];
+        }
+
+        res += (y/layer->row_num) * layer->row_height_total;
+
+        for(i=0; i<y%layer->row_num; i++) {
+                res += layer->row_height[i];
+        }
+
+        return res;
+}
+
+/************************************************
+Fill tx and ty with pixels coordinate of scpecified tile
+tx and/or ty may be NULL
+tx and ty are not modified on error
+return RET_FAIL on error
+************************************************/
+int map_get_tile_coord(const char * map, int layer, int x, int y, int * tx, int * ty)
+{
+	layer_t default_layer;
+
+	if( map == NULL ) {
+		return RET_FAIL;
+	}
+
+	if( map_layer_update(map,NULL,&default_layer,DEFAULT_LAYER) == RET_FAIL) {
+		return RET_FAIL;
+	}
+
+	if(tx) {	
+		*tx = map_t2p_x(x,y,&default_layer);
+	}
+	if(ty) {
+		*ty = map_t2p_y(x,y,&default_layer);
+	}
+
+	return RET_OK;
+}
+
