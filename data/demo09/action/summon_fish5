@@ -1,6 +1,6 @@
 text            = "Summon fish 5";
-icon            = "ui/button_up_fish5.png";
+icon            = [ "ui/button_up.png", "ui/fish5.png" ];
 #icon_over       = "icon/bat_over.png";
-icon_click      = "ui/button_down_fish5.png";
+icon_click      = [ "ui/button_down.png", "ui/fish5.png" ];
 script          = "action/summon.lua";
 param		= ( "fish5" );
