@@ -1,0 +1,6 @@
+text            = "Summon flappy";
+icon            = [ "ui/button_up.png", "ui/flappy.png" ];
+#icon_over       = "icon/bat_over.png";
+icon_click      = [ "ui/button_down.png", "ui/flappy.png" ];
+script          = "action/summon.lua";
+param		= ( "flappy" );

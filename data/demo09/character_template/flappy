@@ -1,8 +1,8 @@
-marquee		= "sprite/dragon.gif";
-sprite		= "sprite/dragon.gif";
-type		= "dragon"
+marquee		= "sprite/flappy.zip";
+sprite		= "sprite/flappy.zip";
+type		= "flappy"
 map		= "M0_0";
-layer           = 21;
+layer           = 1;
 pos_x		= 15;
 pos_y		= 15;
 flip_w          = 1;
