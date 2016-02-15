@@ -267,7 +267,7 @@ static void compose_attribute(context_t * ctx, item_t * item_list)
 		item_set_string(item,attribute_string[num_attr-1]);
 		item_set_font(item,font);
 		sdl_get_string_size(item->font,item->string,&w,&h);
-		item_set_frame_shape(item,0,y,w,h);
+		item_set_anim_shape(item,0,y,w,h);
 		y+=h;
 		if(attribute_height<y) {
 			attribute_height = y;
@@ -652,7 +652,7 @@ static void compose_text(context_t * ctx, item_t * item_list)
 	if ( y < TEXT_FONT_SIZE ) {
 		y = TEXT_FONT_SIZE;
 	}
-	item_set_frame_shape(item,0,current_y-y,x,y);
+	item_set_anim_shape(item,0,current_y-y,x,y);
 	current_y-=y;
 	if(attribute_height > current_y) {
 		return;
@@ -679,7 +679,7 @@ static void compose_text(context_t * ctx, item_t * item_list)
 		item_set_string_bg(item,BACKGROUND_COLOR);
 		item_set_font(item,font);
 		sdl_get_string_size(item->font,item->string,&w,&h);
-		item_set_frame_shape(item,0,current_y-h,w,h);
+		item_set_anim_shape(item,0,current_y-h,w,h);
 		current_y-=h;
 		if(attribute_height > current_y) {
 			return;
@@ -1071,7 +1071,7 @@ static void compose_popup(context_t * ctx,item_t * item_list)
 			item_set_string(item,tag);
 			item_set_font(item,font);
 			sdl_get_string_size(item->font,item->string,&w,&h);
-			item_set_frame_shape(item,x,y-popup_offset,w,h);
+			item_set_anim_shape(item,x,y-popup_offset,w,h);
 			item_set_overlay(item,1);
 			if(action_param) {
 				item_set_click_left(item,cb_popup,action_param,cb_free_action_param);

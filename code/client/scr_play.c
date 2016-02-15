@@ -624,7 +624,7 @@ static void compose_map_button(context_t * ctx)
 	for( y=0 ; y < default_layer.map_h ; y++ ) {
 		for ( x=0 ; x < default_layer.map_w ; x++ ) {
 			item = item_list_add(&item_list);
-			item_set_frame_shape(item,map_t2p_x(x,y,&default_layer),map_t2p_y(x,y,&default_layer),default_layer.tile_width,default_layer.tile_height);
+			item_set_anim_shape(item,map_t2p_x(x,y,&default_layer),map_t2p_y(x,y,&default_layer),default_layer.tile_width,default_layer.tile_height);
 			item_set_user(item,x,y);
 			item_set_click_left(item,cb_select_map,item,NULL);
 			item_set_click_right(item,cb_redo_map,item,NULL);
@@ -756,7 +756,7 @@ static void compose_type(context_t * ctx,int layer_index)
 			item_set_string(item,type);
 			item_set_font(item,font);
 			sdl_get_string_size(item->font,item->string,&w,&h);
-			item_set_frame_shape(item,map_t2p_x(x,y,&default_layer),map_t2p_y(x,y,&default_layer),w,h);
+			item_set_anim_shape(item,map_t2p_x(x,y,&default_layer),map_t2p_y(x,y,&default_layer),w,h);
 		}
 	}
 }
