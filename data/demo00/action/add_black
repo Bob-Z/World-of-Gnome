@@ -1,3 +1,3 @@
 text		= "Add a black tile";
-icon		= "icon/black.jpg";
+icon		= [ "icon/black.jpg" ];
 script		= "add_black.lua";
