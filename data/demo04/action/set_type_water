@@ -1,4 +1,4 @@
 text		= "Set tile type to water";
-icon		= "icon/set_type_water.gif";
+icon		= [ "icon/set_type_water.gif" ];
 script		= "set_type.lua";
 param		= ( "w" );
