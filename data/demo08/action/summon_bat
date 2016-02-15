@@ -1,6 +1,6 @@
 text            = "Summon a bat";
-icon            = "icon/bat.png";
-icon_over       = "icon/bat_over.png";
-icon_click      = "icon/bat_click.png";
+icon            = [ "icon/bat.png" ];
+icon_over       = [ "icon/bat_over.png" ];
+icon_click      = [ "icon/bat_click.png" ];
 script          = "action/summon.lua";
 param		= ( "bat" );
