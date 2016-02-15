@@ -65,7 +65,7 @@ static anim_t * image_load(context_t * ctx, char * filename)
 
 /******************************************************
 Return a pointer to an anim_t object
-image_name is the image file path and name in the IMAGE_TABLE directory
+image_name is the image file path
 *******************************************************/
 anim_t * imageDB_get_anim(context_t * context, const char * image_name)
 {
@@ -109,6 +109,33 @@ anim_t * imageDB_get_anim(context_t * context, const char * image_name)
 	SDL_UnlockMutex(imageDB_mutex);
 
 	return default_anim(context);
+}
+
+/******************************************************
+Return a pointer to a NULL terminated array of anim_t object
+image_name is a NULL terminated array of image files path
+return pointer MUST BE FREED
+*******************************************************/
+anim_t ** imageDB_get_anim_array(context_t * context, const char ** image_name)
+{
+	anim_t ** anim_output = NULL;
+	int num_image = 0;
+
+	anim_output = malloc( sizeof(anim_t*) );
+	anim_output[0] = NULL;
+
+	if( image_name == NULL ) {
+		return anim_output;
+	}
+
+	while( image_name[num_image] ) {
+		anim_output = realloc(anim_output,(num_image+2)*sizeof(anim_t*));
+		anim_output[num_image] = imageDB_get_anim(context,image_name[num_image]);
+		anim_output[num_image+1] = NULL;
+		num_image++;
+	}
+
+	return anim_output;
 }
 
 /****************************************************

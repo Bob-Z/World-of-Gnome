@@ -306,11 +306,11 @@ static void compose_action(context_t * ctx,item_t * item_list)
 {
 	char ** action_list = NULL;
 	char * text = NULL;
-	char * icon = NULL;
-	char * icon_over = NULL;
-	char * icon_click = NULL;
+	char ** icon = NULL;
+	char ** icon_over = NULL;
+	char ** icon_click = NULL;
 	char * script = NULL;
-	anim_t * anim;
+	anim_t ** anim_array;
 	item_t * item;
 	int sw = 0;
 	int sh = 0;
@@ -332,10 +332,6 @@ static void compose_action(context_t * ctx,item_t * item_list)
 			free(text);
 			text = NULL;
 		}
-		if(icon) {
-			free(icon);
-			icon = NULL;
-		}
 		if(script) {
 			free(script);
 			script = NULL;
@@ -345,7 +341,7 @@ static void compose_action(context_t * ctx,item_t * item_list)
 			i++;
 			continue;
 		}
-		if(!entry_read_string(ACTION_TABLE,action_list[i],&icon,ACTION_KEY_ICON,NULL)) {
+		if(!entry_read_list(ACTION_TABLE,action_list[i],&icon,ACTION_KEY_ICON,NULL)) {
 			i++;
 			continue;
 		}
@@ -354,25 +350,33 @@ static void compose_action(context_t * ctx,item_t * item_list)
 		item_set_overlay(item,1);
 
 		/* load image */
-		anim = imageDB_get_anim(ctx, icon);
-		item_set_anim(item,x,sh-anim->h,anim,0);
+		anim_array = imageDB_get_anim_array(ctx, (const char **)icon);
+		item_set_anim_array(item,x,sh-anim_array[0]->h,anim_array);
 
-		x += anim->w;
+		deep_free(icon);
+
+		x += anim_array[0]->w;
 		item_set_click_left(item,ui_play_cb_action,(void*)strdup(action_list[i]),free);
-		if( action_bar_height < anim->h ) {
-			action_bar_height = anim->h;
+		if( action_bar_height < anim_array[0]->h ) {
+			action_bar_height = anim_array[0]->h;
 		}
 
-		entry_read_string(ACTION_TABLE,action_list[i],&icon_over,ACTION_KEY_ICON_OVER,NULL);
+		free(anim_array);
+
+		entry_read_list(ACTION_TABLE,action_list[i],&icon_over,ACTION_KEY_ICON_OVER,NULL);
 		if( icon_over ) {
-			anim = imageDB_get_anim(ctx, icon_over);
-			item_set_anim_over(item,anim,0);
+			anim_array = imageDB_get_anim_array(ctx, (const char **)icon_over);
+			item_set_anim_over_array(item,anim_array);
+			free(anim_array);
+			deep_free(icon_over);
 		}
 
-		entry_read_string(ACTION_TABLE,action_list[i],&icon_click,ACTION_KEY_ICON_CLICK,NULL);
+		entry_read_list(ACTION_TABLE,action_list[i],&icon_click,ACTION_KEY_ICON_CLICK,NULL);
 		if( icon_click ) {
-			anim = imageDB_get_anim(ctx, icon_click);
-			item_set_anim_click(item,anim,0);
+			anim_array = imageDB_get_anim_array(ctx, (const char **)icon_click);
+			item_set_anim_click_array(item,anim_array);
+			free(anim_array);
+			deep_free(icon_click);
 		}
 
 		i++;
@@ -383,10 +387,6 @@ static void compose_action(context_t * ctx,item_t * item_list)
 	if(text) {
 		free(text);
 		text = NULL;
-	}
-	if(icon) {
-		free(icon);
-		icon = NULL;
 	}
 	if(script) {
 		free(script);
