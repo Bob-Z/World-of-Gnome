@@ -3,7 +3,7 @@ function file_exists(name)
    if f~=nil then io.close(f) return true else return false end
 end
 
-function f ()
+function f (map_name)
 
 player_id = player_get_id()
 map = character_get_map(player_id)
