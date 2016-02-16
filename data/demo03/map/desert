@@ -5,7 +5,13 @@ tile_height = 48;
 sprite_zoom = "0.07";
 
 layer0: {
-	list = ["50","0","map/desert.jpg" ];
+        scenery: {
+                bg: {
+                        x = 50;
+                        y = 0;
+                        image = "map/desert.jpg";
+                };
+        };
 	type = [
 		"no","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","no",
 		"no","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","sky","no",

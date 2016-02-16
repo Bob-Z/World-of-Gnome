@@ -5,7 +5,13 @@ tile_height = 48;
 sprite_zoom = "0.14";
 
 layer0: {
-	list = ["0","-336","map/lake.jpg" ];
+        scenery: {
+                bg: {
+                        x = 0;
+                        y = -336;
+                        image = "map/lake.jpg";
+                };
+        };
 	type = [
 		"grd","grd","grd","grd","wtr","wtr","wtr","wtr","wtr","grd","grd","grd","grd","grd","grd","grd","goo",
 		"grd","grd","grd","grd","wtr","wtr","wtr","wtr","wtr","grd","grd","grd","grd","grd","grd","grd","goo",
