@@ -20,7 +20,13 @@ warp_x = 0;
 warp_y = 0;
 
 layer0: {
-	list = ["0","0","map/farm.png" ];
+        scenery: {
+                bg: {
+                        x = 0;
+                        y = 0;
+                        image = "map/farm.png";
+                };
+        };
 	type = [
 "grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass",
 "grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass",
