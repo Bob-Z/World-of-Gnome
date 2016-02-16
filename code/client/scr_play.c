@@ -677,28 +677,37 @@ static void compose_map_set(context_t * ctx, int layer_index)
 /**********************************
 Draw the "list" keyword of a layer
 **********************************/
-static void compose_map_list(context_t * ctx, int layer_index)
+static void compose_map_scenery(context_t * ctx, int layer_index)
 {
 	int i = 0;
 	int x = 0;
 	int y = 0;
+	char * image_name = NULL;
 	anim_t * anim;
 	item_t * item;
-	char ** tile_list = NULL;
+	char ** scenery_list = NULL;
 	char layer_name[SMALL_BUF];
 
 	sprintf(layer_name,"%s%d",MAP_KEY_LAYER,layer_index);
-	if(!entry_read_list(MAP_TABLE, ctx->map, &tile_list,layer_name,MAP_KEY_LIST,NULL)) {
+	if(!entry_get_group_list(MAP_TABLE, ctx->map, &scenery_list,layer_name,MAP_KEY_SCENERY,NULL)) {
 		return;
 	}
 
-	while(tile_list[i] != NULL ) {
-		x = atoi(tile_list[i]);
-		i++;
-		y = atoi(tile_list[i]);
-		i++;
+	while(scenery_list[i] != NULL ) {
+		if(!entry_read_int(MAP_TABLE, ctx->map, &x,layer_name,MAP_KEY_SCENERY,scenery_list[i],MAP_KEY_SCENERY_X,NULL)) {
+			i++;
+			continue;
+		}
+		if(!entry_read_int(MAP_TABLE, ctx->map, &y,layer_name,MAP_KEY_SCENERY,scenery_list[i],MAP_KEY_SCENERY_Y,NULL)) {
+			i++;
+			continue;
+		}
+		if(!entry_read_string(MAP_TABLE, ctx->map, &image_name,layer_name,MAP_KEY_SCENERY,scenery_list[i],MAP_KEY_SCENERY_IMAGE,NULL)) {
+			i++;
+			continue;
+		}
 
-		anim = imageDB_get_anim(ctx,tile_list[i]);
+		anim = imageDB_get_anim(ctx,image_name);
 
 		item = item_list_add(&item_list);
 		item_set_anim(item, x, y, anim,0);
@@ -707,7 +716,7 @@ static void compose_map_list(context_t * ctx, int layer_index)
 		i++;
 	}
 
-	deep_free(tile_list);
+	deep_free(scenery_list);
 }
 
 /**********************************
@@ -867,7 +876,7 @@ item_t * scr_play_compose(context_t * ctx)
 	if( default_layer.active ) { // Make sure map data are available
 		for(layer_index = 0; layer_index < MAX_LAYER; layer_index++) {
 			compose_map_set(ctx,layer_index);
-			compose_map_list(ctx,layer_index);
+			compose_map_scenery(ctx,layer_index);
 			compose_item(ctx,layer_index);
 			compose_sprite(ctx,layer_index);
 			compose_type(ctx,layer_index);
