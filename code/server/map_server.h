@@ -40,4 +40,5 @@ char * map_add_event(const char * map, int layer, const char * script, int x, in
 int map_add_event_param(const char * map, int layer, const char * event_id, const char * param);
 int map_delete_event(const char * map, int layer, const char * script, int x, int y);
 int map_get_tile_coord(const char * map, int layer, int x, int y, int * tx, int * ty);
+char * map_add_scenery(const char * map, int layer, int x, int y, const char * image_name);
 #endif

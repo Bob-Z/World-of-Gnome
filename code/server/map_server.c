@@ -262,6 +262,7 @@ char * map_delete_item(const char * map, int layer, int x, int y)
 
 	return saved_item;
 }
+
 /******************************************
 Add an item on map at given coordinate
 return RET_FAIL if fails
@@ -296,6 +297,7 @@ int map_add_item(const char * map, int layer, const char * id, int x, int y)
 
 	return 0;
 }
+
 /***********************************
 Write a new tile into a map set
 return RET_FAIL if fails
@@ -910,5 +912,59 @@ int map_get_tile_coord(const char * map, int layer, int x, int y, int * tx, int 
 	}
 
 	return RET_OK;
+}
+
+/******************************************
+ Add a scenery on map at given coordinate
+ return NULL if fails
+ return the scenery id is success
+ the return scenery id must be freed by caller
+***********************************************/
+char * map_add_scenery(const char * map, int layer, int x, int y, const char * image_name)
+{
+	char layer_name[SMALL_BUF];
+	char * id;
+
+	if( x<0 || y<0 ) {
+		return NULL;
+	}
+
+	sprintf(layer_name,"%s%d",MAP_KEY_LAYER,layer);
+
+	/* Make sure the MAP_KEY_SCENERY group exists */
+	entry_group_create(MAP_TABLE,map,layer_name,MAP_KEY_SCENERY,NULL);
+
+	id = entry_get_unused_group(MAP_TABLE,map,layer_name,MAP_KEY_SCENERY,NULL);
+	if(id == NULL) {
+		return NULL;
+	}
+
+	SDL_LockMutex(map_mutex);
+
+	if (!entry_write_int(MAP_TABLE,map,x,layer_name,MAP_KEY_SCENERY,id,MAP_KEY_SCENERY_X, NULL) ) {
+		entry_remove_group(MAP_TABLE,map,id,layer_name,MAP_KEY_SCENERY,NULL);
+		SDL_UnlockMutex(map_mutex);
+		free(id);
+		return NULL;
+	}
+	if (!entry_write_int(MAP_TABLE,map,y,layer_name,MAP_KEY_SCENERY,id,MAP_KEY_SCENERY_Y, NULL) ) {
+		entry_remove_group(MAP_TABLE,map,id,layer_name,MAP_KEY_SCENERY,NULL);
+		SDL_UnlockMutex(map_mutex);
+		free(id);
+		return NULL;
+	}
+	if (!entry_write_string(MAP_TABLE,map,image_name,layer_name,MAP_KEY_SCENERY,id,MAP_KEY_SCENERY_IMAGE, NULL) ) {
+		entry_remove_group(MAP_TABLE,map,id,layer_name,MAP_KEY_SCENERY,NULL);
+		SDL_UnlockMutex(map_mutex);
+		free(id);
+		return NULL;
+	}
+
+	SDL_UnlockMutex(map_mutex);
+
+	/* Send network notifications */
+	context_broadcast_map(map);
+
+	return id;
 }
 

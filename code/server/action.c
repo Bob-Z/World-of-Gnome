@@ -1,6 +1,6 @@
 /*
    World of Gnome is a 2D multiplayer role playing game.
-   Copyright (C) 2013-2015 carabobz@gmail.com
+   Copyright (C) 2013-2016 carabobz@gmail.com
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -18,6 +18,7 @@
 */
 
 #include "../common/common.h"
+#include "map_server.h"
 #include "character.h"
 #include "equipment.h"
 #include "inventory.h"
@@ -1193,6 +1194,40 @@ static int l_map_delete_event( lua_State* L)
 	return 1;  /* number of results */
 }
 
+/* map_add_scenery
+
+Add a scenery on a map
+
+Input:
+ - ID of a map
+ - Layer of the map
+ - X coordinate in the map in pixel
+ - Y coordinate in the map in pixel
+ - image file name
+Output: Event ID
+*/
+static int l_map_add_scenery( lua_State* L)
+{
+	const char * map;
+	int layer;
+	int x;
+	int y;
+	const char * image_name;
+	char *res;
+
+	map = luaL_checkstring(L, -5);
+	layer = luaL_checkint(L, -4);
+	x = luaL_checkint(L, -3);
+	y = luaL_checkint(L, -2);
+	image_name = luaL_checkstring(L, -1);
+	res = map_add_scenery(map,layer,x,y,image_name);
+	lua_pushstring(L, res);
+	if(res) {
+		free(res);
+	}
+	return 1;  /* number of results */
+}
+
 /* tile_get_x
 Input:
  - X coordinate (in tiles)
@@ -2160,6 +2195,9 @@ void register_lua_functions(context_t * context)
 	lua_setglobal(L, "map_add_event_param");
 	lua_pushcfunction(L, l_map_delete_event);
 	lua_setglobal(L, "map_delete_event");
+	/* scenery func */
+	lua_pushcfunction(L, l_map_add_scenery);
+	lua_setglobal(L, "map_add_scenery");
 	/* tile func */
 	lua_pushcfunction(L, l_tile_get_x);
 	lua_setglobal(L, "tile_get_x");
