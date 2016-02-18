@@ -70,3 +70,13 @@ layer0: {
 "grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass"
 	];
 };
+
+event_list : {
+	to_littleroom : {
+		pos_x = 3;
+		pos_y = 14;
+		script = "goto.lua";
+		param = ( "littleroom", "3", "5" );
+	};
+};
+
