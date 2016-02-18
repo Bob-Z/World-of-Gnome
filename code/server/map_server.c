@@ -626,31 +626,52 @@ char ** map_get_event(const char * map, int layer, int x, int y)
 
 	/* Manage concurrent acces to map files */
 	SDL_LockMutex(map_mutex);
-	/* Search the items on the specified tile */
-	if(!entry_get_group_list(MAP_TABLE,map,&eventlist,layer_name,MAP_ENTRY_EVENT_LIST,NULL)) {
-		SDL_UnlockMutex(map_mutex);
-		return NULL;
+	/* Search the items on the specified tile for a specific layer*/
+	if(entry_get_group_list(MAP_TABLE,map,&eventlist,layer_name,MAP_ENTRY_EVENT_LIST,NULL)) {
+		while(eventlist[i] != NULL) {
+			if( !entry_read_int(MAP_TABLE,map,&mapx,layer_name,MAP_ENTRY_EVENT_LIST,eventlist[i],MAP_EVENT_POS_X,NULL) ) {
+				i++;
+				continue;
+			}
+
+			if( !entry_read_int(MAP_TABLE,map,&mapy,layer_name,MAP_ENTRY_EVENT_LIST,eventlist[i],MAP_EVENT_POS_Y,NULL) ) {
+				i++;
+				continue;
+			}
+
+			if( x == mapx && y == mapy ) {
+				event_id_num++;
+				event_id=realloc(event_id,sizeof(char*)*(event_id_num+1));
+				event_id[event_id_num-1] = strdup(eventlist[i]);
+				event_id[event_id_num] = NULL;
+			}
+
+			i++;
+		}
 	}
+	deep_free(eventlist);
+	/* Search the items on the specified tile for all layers*/
+	if(entry_get_group_list(MAP_TABLE,map,&eventlist,MAP_ENTRY_EVENT_LIST,NULL)) {
+		while(eventlist[i] != NULL) {
+			if( !entry_read_int(MAP_TABLE,map,&mapx,MAP_ENTRY_EVENT_LIST,eventlist[i],MAP_EVENT_POS_X,NULL) ) {
+				i++;
+				continue;
+			}
 
-	while(eventlist[i] != NULL) {
-		if( !entry_read_int(MAP_TABLE,map,&mapx,layer_name,MAP_ENTRY_EVENT_LIST,eventlist[i],MAP_EVENT_POS_X,NULL) ) {
+			if( !entry_read_int(MAP_TABLE,map,&mapy,MAP_ENTRY_EVENT_LIST,eventlist[i],MAP_EVENT_POS_Y,NULL) ) {
+				i++;
+				continue;
+			}
+
+			if( x == mapx && y == mapy ) {
+				event_id_num++;
+				event_id=realloc(event_id,sizeof(char*)*(event_id_num+1));
+				event_id[event_id_num-1] = strdup(eventlist[i]);
+				event_id[event_id_num] = NULL;
+			}
+
 			i++;
-			continue;
 		}
-
-		if( !entry_read_int(MAP_TABLE,map,&mapy,layer_name,MAP_ENTRY_EVENT_LIST,eventlist[i],MAP_EVENT_POS_Y,NULL) ) {
-			i++;
-			continue;
-		}
-
-		if( x == mapx && y == mapy ) {
-			event_id_num++;
-			event_id=realloc(event_id,sizeof(char*)*(event_id_num+1));
-			event_id[event_id_num-1] = strdup(eventlist[i]);
-			event_id[event_id_num] = NULL;
-		}
-
-		i++;
 	}
 	deep_free(eventlist);
 

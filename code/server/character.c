@@ -506,11 +506,18 @@ int character_set_pos(context_t * ctx, const char * map, int x, int y)
 	if(event_id) {
 		i = 0;
 		while(event_id[i]) {
-			if( !entry_read_string(MAP_TABLE,map,&script,layer_name,MAP_ENTRY_EVENT_LIST,event_id[i],MAP_EVENT_SCRIPT,NULL) ) {
+			script = NULL;
+			if( entry_read_string(MAP_TABLE,map,&script,layer_name,MAP_ENTRY_EVENT_LIST,event_id[i],MAP_EVENT_SCRIPT,NULL) ) {
+				entry_read_list(MAP_TABLE,map,&param,layer_name,MAP_ENTRY_EVENT_LIST,event_id[i],MAP_EVENT_PARAM,NULL);
+			}
+			else if( entry_read_string(MAP_TABLE,map,&script,MAP_ENTRY_EVENT_LIST,event_id[i],MAP_EVENT_SCRIPT,NULL) ) {
+				entry_read_list(MAP_TABLE,map,&param,MAP_ENTRY_EVENT_LIST,event_id[i],MAP_EVENT_PARAM,NULL);
+			}
+
+			if(script == NULL) {
 				i++;
 				continue;
 			}
-			entry_read_list(MAP_TABLE,map,&param,layer_name,MAP_ENTRY_EVENT_LIST,event_id[i],MAP_EVENT_PARAM,NULL);
 
 			action_execute_script(ctx,script,param);
 
