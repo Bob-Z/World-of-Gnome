@@ -1,0 +1,6 @@
+text            = "Raise a snow tree";
+icon            = [ "ui/button_up.png", "scenery/snowtree.png" ];
+#icon_over       = "icon/bat_over.png";
+icon_click      = [ "ui/button_down.png", "scenery/snowtree.png" ];
+script          = "action/add_scenery.lua";
+param		= ( "scenery/snowtree.png" );
