@@ -176,7 +176,7 @@ static anim_t ** select_sprite(context_t * ctx, const char * image_file_name)
 	}
 
 	if( sprite_list ) {
-		sprite = imageDB_get_anim_array(ctx,(const char **)sprite_list);
+		sprite = imageDB_get_anim_array(player_context,(const char **)sprite_list);
 		deep_free(sprite_list);
 		return sprite;
 	}
@@ -253,7 +253,7 @@ static anim_t ** select_sprite_move(context_t * ctx, const char * image_file_nam
 	}
 
 	if( sprite_list ) {
-		sprite = imageDB_get_anim_array(ctx,(const char **)sprite_list);
+		sprite = imageDB_get_anim_array(player_context,(const char **)sprite_list);
 		deep_free(sprite_list);
 		return sprite;
 	}
