@@ -144,13 +144,13 @@ static anim_t ** select_sprite(context_t * ctx, const char * image_file_name)
 	if( ctx->orientation & NORTH ) {
 		entry_read_string(CHARACTER_TABLE,ctx->id,&sprite_name,CHARACTER_KEY_DIR_N_SPRITE,NULL);
 	}
-	if( ctx->orientation & SOUTH ) {
+	if( (ctx->orientation & SOUTH) && sprite_name == NULL) {
 		entry_read_string(CHARACTER_TABLE,ctx->id,&sprite_name,CHARACTER_KEY_DIR_S_SPRITE,NULL);
 	}
-	if( ctx->orientation & EAST ) {
+	if( (ctx->orientation & EAST) && sprite_name == NULL) {
 		entry_read_string(CHARACTER_TABLE,ctx->id,&sprite_name,CHARACTER_KEY_DIR_E_SPRITE,NULL);
 	}
-	if( ctx->orientation & WEST ) {
+	if( (ctx->orientation & WEST) && sprite_name == NULL) {
 		entry_read_string(CHARACTER_TABLE,ctx->id,&sprite_name,CHARACTER_KEY_DIR_W_SPRITE,NULL);
 	}
 
@@ -165,13 +165,13 @@ static anim_t ** select_sprite(context_t * ctx, const char * image_file_name)
 	if( ctx->orientation & NORTH ) {
 		entry_read_list(CHARACTER_TABLE,ctx->id,&sprite_list,CHARACTER_KEY_DIR_N_SPRITE,NULL);
 	}
-	if( ctx->orientation & SOUTH ) {
+	if( (ctx->orientation & SOUTH) && sprite_list == NULL) {
 		entry_read_list(CHARACTER_TABLE,ctx->id,&sprite_list,CHARACTER_KEY_DIR_S_SPRITE,NULL);
 	}
-	if( ctx->orientation & EAST ) {
+	if( (ctx->orientation & EAST) && sprite_list == NULL) {
 		entry_read_list(CHARACTER_TABLE,ctx->id,&sprite_list,CHARACTER_KEY_DIR_E_SPRITE,NULL);
 	}
-	if( ctx->orientation & WEST ) {
+	if( (ctx->orientation & WEST) && sprite_list == NULL) {
 		entry_read_list(CHARACTER_TABLE,ctx->id,&sprite_list,CHARACTER_KEY_DIR_W_SPRITE,NULL);
 	}
 
@@ -221,13 +221,13 @@ static anim_t ** select_sprite_move(context_t * ctx, const char * image_file_nam
 	if( ctx->orientation & NORTH ) {
 		entry_read_string(CHARACTER_TABLE,ctx->id,&sprite_name,CHARACTER_KEY_MOV_N_SPRITE,NULL);
 	}
-	if( ctx->orientation & SOUTH ) {
+	if( (ctx->orientation & SOUTH) && sprite_name == NULL) {
 		entry_read_string(CHARACTER_TABLE,ctx->id,&sprite_name,CHARACTER_KEY_MOV_S_SPRITE,NULL);
 	}
-	if( ctx->orientation & EAST ) {
+	if( (ctx->orientation & EAST) && sprite_name == NULL) {
 		entry_read_string(CHARACTER_TABLE,ctx->id,&sprite_name,CHARACTER_KEY_MOV_E_SPRITE,NULL);
 	}
-	if( ctx->orientation & WEST ) {
+	if( (ctx->orientation & WEST) && sprite_name == NULL) {
 		entry_read_string(CHARACTER_TABLE,ctx->id,&sprite_name,CHARACTER_KEY_MOV_W_SPRITE,NULL);
 	}
 
@@ -242,13 +242,13 @@ static anim_t ** select_sprite_move(context_t * ctx, const char * image_file_nam
 	if( ctx->orientation & NORTH ) {
 		entry_read_list(CHARACTER_TABLE,ctx->id,&sprite_list,CHARACTER_KEY_MOV_N_SPRITE,NULL);
 	}
-	if( ctx->orientation & SOUTH ) {
+	if( (ctx->orientation & SOUTH) && sprite_list == NULL) {
 		entry_read_list(CHARACTER_TABLE,ctx->id,&sprite_list,CHARACTER_KEY_MOV_S_SPRITE,NULL);
 	}
-	if( ctx->orientation & EAST ) {
+	if( (ctx->orientation & EAST) && sprite_list == NULL) {
 		entry_read_list(CHARACTER_TABLE,ctx->id,&sprite_list,CHARACTER_KEY_MOV_E_SPRITE,NULL);
 	}
-	if( ctx->orientation & WEST ) {
+	if( (ctx->orientation & WEST) && sprite_list == NULL) {
 		entry_read_list(CHARACTER_TABLE,ctx->id,&sprite_list,CHARACTER_KEY_MOV_W_SPRITE,NULL);
 	}
 
