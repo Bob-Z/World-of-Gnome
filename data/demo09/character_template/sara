@@ -19,6 +19,21 @@ sprite_w       = "sprite/sara_left.png";
 sprite_e       = "sprite/sara_right.png";
 ai              = "ai/ai_random.lua";
 ai_params       = [ "1000" ];
-action          = [ "summon_fish1","summon_fish2","summon_fish3","summon_fish4","summon_fish5","summon_dragon", "summon_flappy", "set_campfire", "set_snowtree", "set_fireplace", "set_tree", "set_orangetree1", "set_orangetree2"];
+action          = [ "summon_fish1"
+	,"summon_fish2"
+	,"summon_fish3"
+	,"summon_fish4"
+	,"summon_fish5"
+	,"summon_dragon"
+	,"summon_flappy"
+	,"summon_chicken"
+	,"summon_cow"
+	,"set_campfire"
+	,"set_snowtree"
+	,"set_fireplace"
+	,"set_tree"
+	,"set_orangetree1"
+	,"set_orangetree2"
+];
 #allowed_tile_script    = "allowed_tile/ground_stair.lua";
 #inventory      = [ ];

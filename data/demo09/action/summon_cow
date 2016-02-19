@@ -1,0 +1,6 @@
+text            = "Summon cow";
+icon            = [ "ui/button_up.png", "ui/cow.png" ];
+#icon_over       = "icon/bat_over.png";
+icon_click      = [ "ui/button_down.png", "ui/cow.png" ];
+script          = "action/summon.lua";
+param		= ( "cow" );

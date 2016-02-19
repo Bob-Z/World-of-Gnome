@@ -1,0 +1,24 @@
+name		= "Cow";
+
+marquee         = "ui/cow.png";
+sprite          = [ "sprite/cow_shadow_down.png", "sprite/cow_down.zip" ];
+type            = "cow"
+map             = "M0_0";
+pos_x           = 15;
+pos_y           = 15;
+layer		= 11;
+#align on lower edge of tile
+align           = 1;
+sprite_move_n   = [ "sprite/cow_shadow_up.png", "sprite/cow_move_up.zip" ];
+sprite_move_s   = [ "sprite/cow_shadow_down.png", "sprite/cow_move_down.zip" ];
+sprite_move_w   = [ "sprite/cow_shadow_left.png", "sprite/cow_move_left.zip" ];
+sprite_move_e   = [ "sprite/cow_shadow_right.png", "sprite/cow_move_right.zip" ];
+sprite_n   = [ "sprite/cow_shadow_up.png", "sprite/cow_up.zip" ];
+sprite_s   = [ "sprite/cow_shadow_down.png", "sprite/cow_down.zip" ];
+sprite_e   = [ "sprite/cow_shadow_right.png", "sprite/cow_right.zip" ];
+sprite_w   = [ "sprite/cow_shadow_left.png", "sprite/cow_left.zip" ];
+ai              = "ai/ai_random.lua";
+ai_params       = [ "1000" ];
+#action          = [ "summon_fish1","summon_fish2","summon_fish3","summon_fish4","summon_fish5","summon_dragon", "summon_flappy", "set_campfire", "set_snowtree", "set_fireplace", "set_tree", "set_orangetree1", "set_orangetree2"];
+#allowed_tile_script    = "allowed_tile/ground_stair.lua";
+#inventory      = [ ];
