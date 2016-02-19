@@ -1,6 +1,6 @@
 /*
    World of Gnome is a 2D multiplayer role playing game.
-   Copyright (C) 2013-2015 carabobz@gmail.com
+   Copyright (C) 2013-2016 carabobz@gmail.com
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -72,6 +72,9 @@ typedef struct action_param_tag {
 static int popup_offset = 0;
 
 static option_t * option;
+
+static int first_action = 0;
+static int num_action = 0;
 
 /**********************************
 **********************************/
@@ -300,6 +303,26 @@ void ui_play_cb_action(void * arg)
 }
 
 /**********************************
+**********************************/
+static void cb_wheel_up_action(void* not_used)
+{
+	first_action--;
+	if( first_action < 0 ) {
+		first_action = 0;
+		return;
+	}
+	screen_compose();
+}
+
+/**********************************
+**********************************/
+static void cb_wheel_down_action(void* not_used)
+{
+	first_action++;
+	screen_compose();
+}
+
+/**********************************
 Compose action icon
 **********************************/
 static void compose_action(context_t * ctx,item_t * item_list)
@@ -337,6 +360,14 @@ static void compose_action(context_t * ctx,item_t * item_list)
 			script = NULL;
 		}
 
+		if( i < first_action ) {
+			if( action_list[i+1]!=NULL ) {
+				i++;
+				continue;
+			}
+			first_action = i;
+		}
+
 		if(!entry_read_string(ACTION_TABLE,action_list[i],&text,ACTION_KEY_TEXT,NULL)) {
 			i++;
 			continue;
@@ -348,15 +379,18 @@ static void compose_action(context_t * ctx,item_t * item_list)
 
 		item = item_list_add(&item_list);
 		item_set_overlay(item,1);
+		item_set_click_left(item,ui_play_cb_action,(void*)strdup(action_list[i]),free);
+		item_set_wheel_up(item,cb_wheel_up_action,NULL,NULL);
+		item_set_wheel_down(item,cb_wheel_down_action,NULL,NULL);
 
 		/* load image */
 		anim_array = imageDB_get_anim_array(ctx, (const char **)icon);
-		item_set_anim_array(item,x,sh-anim_array[0]->h,anim_array);
-
 		deep_free(icon);
 
+		item_set_anim_array(item,x,sh-anim_array[0]->h,anim_array);
+
+		/* calculate next icon start X */
 		x += anim_array[0]->w;
-		item_set_click_left(item,ui_play_cb_action,(void*)strdup(action_list[i]),free);
 		if( action_bar_height < anim_array[0]->h ) {
 			action_bar_height = anim_array[0]->h;
 		}
@@ -377,8 +411,11 @@ static void compose_action(context_t * ctx,item_t * item_list)
 			deep_free(icon_click);
 		}
 
+
 		i++;
 	}
+
+	num_action = first_action + i;
 
 	deep_free(action_list);
 
