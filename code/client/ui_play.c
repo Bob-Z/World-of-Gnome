@@ -363,16 +363,14 @@ static void compose_action(context_t * ctx,item_t * item_list)
 
 		free(anim_array);
 
-		entry_read_list(ACTION_TABLE,action_list[i],&icon_over,ACTION_KEY_ICON_OVER,NULL);
-		if( icon_over ) {
+		if( entry_read_list(ACTION_TABLE,action_list[i],&icon_over,ACTION_KEY_ICON_OVER,NULL) ) {
 			anim_array = imageDB_get_anim_array(ctx, (const char **)icon_over);
 			item_set_anim_over_array(item,anim_array);
 			free(anim_array);
 			deep_free(icon_over);
 		}
 
-		entry_read_list(ACTION_TABLE,action_list[i],&icon_click,ACTION_KEY_ICON_CLICK,NULL);
-		if( icon_click ) {
+		if( entry_read_list(ACTION_TABLE,action_list[i],&icon_click,ACTION_KEY_ICON_CLICK,NULL) ) {
 			anim_array = imageDB_get_anim_array(ctx, (const char **)icon_click);
 			item_set_anim_click_array(item,anim_array);
 			free(anim_array);

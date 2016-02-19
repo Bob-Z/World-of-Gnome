@@ -126,100 +126,136 @@ static void cb_unzoom(Uint32 y,Uint32 unused)
 Select sprite image to display
 Return NULL if no sprite can be found
 **********************************/
-static anim_t * select_sprite(context_t * ctx, const char * image_file_name)
+static anim_t ** select_sprite(context_t * ctx, const char * image_file_name)
 {
-	anim_t * sprite;
+	anim_t ** sprite;
 	char * sprite_name = NULL;
+	char ** sprite_list = NULL;
+	const char * sprite_name_array[2] = { NULL, NULL };
 	context_t * player_context = context_get_player();
 
 	if( image_file_name ) {
-		sprite = imageDB_get_anim(player_context,image_file_name);
+		sprite_name_array[0] = image_file_name;
+		sprite = imageDB_get_anim_array(player_context,sprite_name_array);
 		return sprite;
 	}
 
 	/* Try to find a sprite depending on the orientation */
 	if( ctx->orientation & NORTH ) {
-		if( entry_read_string(CHARACTER_TABLE,ctx->id,&sprite_name,CHARACTER_KEY_DIR_N_SPRITE,NULL)) {
-			sprite = imageDB_get_anim(player_context,sprite_name);
-			free(sprite_name);
-			return sprite;
-		}
+		entry_read_string(CHARACTER_TABLE,ctx->id,&sprite_name,CHARACTER_KEY_DIR_N_SPRITE,NULL);
 	}
 	if( ctx->orientation & SOUTH ) {
-		if( entry_read_string(CHARACTER_TABLE,ctx->id,&sprite_name,CHARACTER_KEY_DIR_S_SPRITE,NULL)) {
-			sprite = imageDB_get_anim(player_context,sprite_name);
-			free(sprite_name);
-			return sprite;
-		}
+		entry_read_string(CHARACTER_TABLE,ctx->id,&sprite_name,CHARACTER_KEY_DIR_S_SPRITE,NULL);
 	}
 	if( ctx->orientation & EAST ) {
-		if( entry_read_string(CHARACTER_TABLE,ctx->id,&sprite_name,CHARACTER_KEY_DIR_E_SPRITE,NULL)) {
-			sprite = imageDB_get_anim(player_context,sprite_name);
-			free(sprite_name);
-			return sprite;
-		}
+		entry_read_string(CHARACTER_TABLE,ctx->id,&sprite_name,CHARACTER_KEY_DIR_E_SPRITE,NULL);
 	}
 	if( ctx->orientation & WEST ) {
-		if( entry_read_string(CHARACTER_TABLE,ctx->id,&sprite_name,CHARACTER_KEY_DIR_W_SPRITE,NULL)) {
-			sprite = imageDB_get_anim(player_context,sprite_name);
-			free(sprite_name);
-			return sprite;
-		}
+		entry_read_string(CHARACTER_TABLE,ctx->id,&sprite_name,CHARACTER_KEY_DIR_W_SPRITE,NULL);
+	}
+
+	if( sprite_name ) {
+		sprite_name_array[0] = sprite_name;
+		sprite = imageDB_get_anim_array(player_context,sprite_name_array);
+		free(sprite_name);
+		return sprite;
+	}
+
+	/* Try sprite lists */
+	if( ctx->orientation & NORTH ) {
+		entry_read_list(CHARACTER_TABLE,ctx->id,&sprite_list,CHARACTER_KEY_DIR_N_SPRITE,NULL);
+	}
+	if( ctx->orientation & SOUTH ) {
+		entry_read_list(CHARACTER_TABLE,ctx->id,&sprite_list,CHARACTER_KEY_DIR_S_SPRITE,NULL);
+	}
+	if( ctx->orientation & EAST ) {
+		entry_read_list(CHARACTER_TABLE,ctx->id,&sprite_list,CHARACTER_KEY_DIR_E_SPRITE,NULL);
+	}
+	if( ctx->orientation & WEST ) {
+		entry_read_list(CHARACTER_TABLE,ctx->id,&sprite_list,CHARACTER_KEY_DIR_W_SPRITE,NULL);
+	}
+
+	if( sprite_list ) {
+		sprite = imageDB_get_anim_array(ctx,(const char **)sprite_list);
+		deep_free(sprite_list);
+		return sprite;
 	}
 
 	/* try default sprite file */
-	if(!entry_read_string(CHARACTER_TABLE,ctx->id,&sprite_name,CHARACTER_KEY_SPRITE,NULL)) {
-		werr(LOGDEV,"Can't read sprite name for \"%s\"",ctx->id);
-		return NULL;
+	if(entry_read_string(CHARACTER_TABLE,ctx->id,&sprite_name,CHARACTER_KEY_SPRITE,NULL)) {
+		sprite_name_array[0] = sprite_name;
+		sprite = imageDB_get_anim_array(player_context,sprite_name_array);
+		free(sprite_name);
+		return sprite;
+	}
+	/* try default sprite list */
+	if(entry_read_list(CHARACTER_TABLE,ctx->id,&sprite_list,CHARACTER_KEY_SPRITE,NULL)) {
+		sprite = imageDB_get_anim_array(player_context,(const char **)sprite_list);
+		deep_free(sprite_list);
+		return sprite;
 	}
 
-	sprite = imageDB_get_anim(player_context,sprite_name);
-	free(sprite_name);
-	return sprite;
+	werr(LOGDEV,"Can't read sprite name for \"%s\"",ctx->id);
+	return NULL;
 }
 
 /**********************************
 Select sprite image to display when sprite is moving
 Return NULL if no sprite can be found
 **********************************/
-static anim_t * select_sprite_move(context_t * ctx, const char * image_file_name)
+static anim_t ** select_sprite_move(context_t * ctx, const char * image_file_name)
 {
-	anim_t * sprite;
+	anim_t ** sprite;
 	char * sprite_name = NULL;
+	char ** sprite_list = NULL;
+	const char * sprite_name_array[2] = { NULL, NULL };
 	context_t * player_context = context_get_player();
 
-	/* Forced image, do not try to override it with moving sprite */
 	if( image_file_name ) {
-		return NULL;
+		sprite_name_array[0] = image_file_name;
+		sprite = imageDB_get_anim_array(player_context,sprite_name_array);
+		return sprite;
 	}
 
+	/* Try to find a sprite depending on the orientation */
 	if( ctx->orientation & NORTH ) {
-		if( entry_read_string(CHARACTER_TABLE,ctx->id,&sprite_name,CHARACTER_KEY_MOV_N_SPRITE,NULL)) {
-			sprite = imageDB_get_anim(player_context,sprite_name);
-			free(sprite_name);
-			return sprite;
-		}
+		entry_read_string(CHARACTER_TABLE,ctx->id,&sprite_name,CHARACTER_KEY_MOV_N_SPRITE,NULL);
 	}
 	if( ctx->orientation & SOUTH ) {
-		if( entry_read_string(CHARACTER_TABLE,ctx->id,&sprite_name,CHARACTER_KEY_MOV_S_SPRITE,NULL)) {
-			sprite = imageDB_get_anim(player_context,sprite_name);
-			free(sprite_name);
-			return sprite;
-		}
+		entry_read_string(CHARACTER_TABLE,ctx->id,&sprite_name,CHARACTER_KEY_MOV_S_SPRITE,NULL);
 	}
 	if( ctx->orientation & EAST ) {
-		if( entry_read_string(CHARACTER_TABLE,ctx->id,&sprite_name,CHARACTER_KEY_MOV_E_SPRITE,NULL)) {
-			sprite = imageDB_get_anim(player_context,sprite_name);
-			free(sprite_name);
-			return sprite;
-		}
+		entry_read_string(CHARACTER_TABLE,ctx->id,&sprite_name,CHARACTER_KEY_MOV_E_SPRITE,NULL);
 	}
 	if( ctx->orientation & WEST ) {
-		if( entry_read_string(CHARACTER_TABLE,ctx->id,&sprite_name,CHARACTER_KEY_MOV_W_SPRITE,NULL)) {
-			sprite = imageDB_get_anim(player_context,sprite_name);
-			free(sprite_name);
-			return sprite;
-		}
+		entry_read_string(CHARACTER_TABLE,ctx->id,&sprite_name,CHARACTER_KEY_MOV_W_SPRITE,NULL);
+	}
+
+	if( sprite_name ) {
+		sprite_name_array[0] = sprite_name;
+		sprite = imageDB_get_anim_array(player_context,sprite_name_array);
+		free(sprite_name);
+		return sprite;
+	}
+
+	/* Try sprite lists */
+	if( ctx->orientation & NORTH ) {
+		entry_read_list(CHARACTER_TABLE,ctx->id,&sprite_list,CHARACTER_KEY_MOV_N_SPRITE,NULL);
+	}
+	if( ctx->orientation & SOUTH ) {
+		entry_read_list(CHARACTER_TABLE,ctx->id,&sprite_list,CHARACTER_KEY_MOV_S_SPRITE,NULL);
+	}
+	if( ctx->orientation & EAST ) {
+		entry_read_list(CHARACTER_TABLE,ctx->id,&sprite_list,CHARACTER_KEY_MOV_E_SPRITE,NULL);
+	}
+	if( ctx->orientation & WEST ) {
+		entry_read_list(CHARACTER_TABLE,ctx->id,&sprite_list,CHARACTER_KEY_MOV_W_SPRITE,NULL);
+	}
+
+	if( sprite_list ) {
+		sprite = imageDB_get_anim_array(ctx,(const char **)sprite_list);
+		deep_free(sprite_list);
+		return sprite;
 	}
 
 	return NULL;
@@ -230,8 +266,8 @@ if image_file_name is not NULL, this file is used as an image rather than the no
 **********************************/
 static void set_up_sprite(context_t * ctx, const char * image_file_name)
 {
-	anim_t * sprite;
-	anim_t * sprite_move;
+	anim_t ** sprite;
+	anim_t ** sprite_move;
 	item_t * item;
 	int x;
 	int y;
@@ -346,16 +382,16 @@ static void set_up_sprite(context_t * ctx, const char * image_file_name)
 	/* Align sprite on tile */
 	entry_read_int(CHARACTER_TABLE,ctx->id,&sprite_align,CHARACTER_KEY_ALIGN,NULL);
 	if( sprite_align == ALIGN_CENTER ) {
-		x -= ((sprite->w*default_layer.map_zoom*zoom)-default_layer.tile_width)/2;
-		y -= ((sprite->h*default_layer.map_zoom*zoom)-default_layer.tile_height)/2;
-		ox -= ((sprite->w*default_layer.map_zoom*zoom)-default_layer.tile_width)/2;
-		oy -= ((sprite->h*default_layer.map_zoom*zoom)-default_layer.tile_height)/2;
+		x -= ((sprite[0]->w*default_layer.map_zoom*zoom)-default_layer.tile_width)/2;
+		y -= ((sprite[0]->h*default_layer.map_zoom*zoom)-default_layer.tile_height)/2;
+		ox -= ((sprite[0]->w*default_layer.map_zoom*zoom)-default_layer.tile_width)/2;
+		oy -= ((sprite[0]->h*default_layer.map_zoom*zoom)-default_layer.tile_height)/2;
 	}
 	if( sprite_align == ALIGN_LOWER ) {
-		x -= ((sprite->w*default_layer.map_zoom*zoom)-default_layer.tile_width)/2;
-		y -= (sprite->h*default_layer.map_zoom*zoom)-default_layer.tile_height ;
-		ox -= ((sprite->w*default_layer.map_zoom*zoom)-default_layer.tile_width)/2;
-		oy -= (sprite->h*default_layer.map_zoom*zoom)-default_layer.tile_height;
+		x -= ((sprite[0]->w*default_layer.map_zoom*zoom)-default_layer.tile_width)/2;
+		y -= (sprite[0]->h*default_layer.map_zoom*zoom)-default_layer.tile_height ;
+		ox -= ((sprite[0]->w*default_layer.map_zoom*zoom)-default_layer.tile_width)/2;
+		oy -= (sprite[0]->h*default_layer.map_zoom*zoom)-default_layer.tile_height;
 	}
 
 	/* Add Y offset */
@@ -364,8 +400,8 @@ static void set_up_sprite(context_t * ctx, const char * image_file_name)
 	oy += sprite_offset_y;
 
 	/* Set sprite to item */
-	item_set_smooth_anim(item,x,y,ox,oy,ctx->pos_tick,sprite,0);
-	item_set_anim_move(item,sprite_move,0);
+	item_set_smooth_anim_array(item,x,y,ox,oy,ctx->pos_tick,sprite);
+	item_set_anim_move_array(item,sprite_move);
 
 	/* Get rotation configuration */
 	angle = 0;
