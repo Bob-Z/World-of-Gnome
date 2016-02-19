@@ -24,7 +24,6 @@ while ret == true do
 end
 max_img = max_img - 1
 
--- actually set tiles on layer 0
 for x=0,map_w-1 do
 	for y=0,map_h-1 do
 		tile_name = string.format("tile/%s%d.gif",tile_type,math.random(1,max_img))
@@ -46,7 +45,6 @@ while ret == true do
 end
 max_img = max_img - 1
 
--- actually set tiles on layer 1
 for x=0,map_w-1 do
 	for y=0,map_h-1 do
 		tile_name = string.format("tile/%s%d.png",tile_type,math.random(1,max_img))

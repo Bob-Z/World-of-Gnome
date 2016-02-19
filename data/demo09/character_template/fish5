@@ -2,6 +2,7 @@ marquee		= "sprite/fish5.png";
 sprite		= "sprite/fish5.png";
 type		= "fish5"
 map		= "M0_0";
+layer           = 0;
 pos_x		= 15;
 pos_y		= 15;
 flip_e          = 1;
