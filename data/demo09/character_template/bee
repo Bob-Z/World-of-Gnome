@@ -1,0 +1,20 @@
+name		= "Bee";
+
+marquee         = "ui/bee.png";
+sprite          = [ "sprite/bee_shadow_down.zip", "sprite/bee_down.zip" ];
+type            = "bee"
+map             = "M0_0";
+pos_x           = 15;
+pos_y           = 15;
+layer		= 11;
+#align on lower edge of tile
+align           = 1;
+sprite_n   = [ "sprite/bee_shadow_up.zip", "sprite/bee_up.zip" ];
+sprite_s   = [ "sprite/bee_shadow_down.zip", "sprite/bee_down.zip" ];
+sprite_e   = [ "sprite/bee_shadow_right.zip", "sprite/bee_right.zip" ];
+sprite_w   = [ "sprite/bee_shadow_left.zip", "sprite/bee_left.zip" ];
+ai              = "ai/ai_random.lua";
+ai_params       = [ "1000" ];
+#action          = [ "summon_fish1","summon_fish2","summon_fish3","summon_fish4","summon_fish5","summon_dragon", "summon_flappy", "set_campfire", "set_snowtree", "set_fireplace", "set_tree", "set_orangetree1", "set_orangetree2"];
+#allowed_tile_script    = "allowed_tile/ground_stair.lua";
+#inventory      = [ ];
