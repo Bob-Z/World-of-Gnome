@@ -58,5 +58,17 @@ event_list : {
                 script = "goto.lua";
                 param = ( "throne", "10", "10" );
         };
+        to_throne_west1: {
+                pos_x = 14;
+                pos_y = 38;
+                script = "goto.lua";
+                param = ( "throne_west", "3", "8" );
+        };
+        to_throne_west2: {
+                pos_x = 15;
+                pos_y = 38;
+                script = "goto.lua";
+                param = ( "throne_west", "4", "8" );
+        };
 };
 
