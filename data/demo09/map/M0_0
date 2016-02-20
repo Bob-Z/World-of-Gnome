@@ -40,5 +40,23 @@ event_list : {
                 script = "goto.lua";
                 param = ( "inn", "30", "17" );
         };
+        to_throne1: {
+                pos_x = 23;
+                pos_y = 45;
+                script = "goto.lua";
+                param = ( "throne", "8", "10" );
+        };
+        to_throne2: {
+                pos_x = 24;
+                pos_y = 45;
+                script = "goto.lua";
+                param = ( "throne", "9", "10" );
+        };
+        to_throne3: {
+                pos_x = 25;
+                pos_y = 45;
+                script = "goto.lua";
+                param = ( "throne", "10", "10" );
+        };
 };
 
