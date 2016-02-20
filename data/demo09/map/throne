@@ -18,19 +18,31 @@ event_list = {
 		pos_x = 8
 		pos_y = 11
 		script = "goto.lua"
-		param = ( "M0_0", "23", "46" )
+		param = ( "M0_0", "23", "45" )
 	}
 	exit_1 = {
 		pos_x = 9
 		pos_y = 11
 		script = "goto.lua"
-		param = ( "M0_0", "24", "46" )
+		param = ( "M0_0", "24", "45" )
 	}
 	exit_2 = {
 		pos_x = 10
 		pos_y = 11
 		script = "goto.lua"
-		param = ( "M0_0", "25", "46" )
+		param = ( "M0_0", "25", "45" )
+	}
+	to_throne_west1 = {
+		pos_x = 0
+		pos_y = 9
+		script = "goto.lua"
+		param = ( "throne_west", "13", "4" )
+	}
+	to_throne_west2 = {
+		pos_x = 0
+		pos_y = 10
+		script = "goto.lua"
+		param = ( "throne_west", "13", "5" )
 	}
 }
 

@@ -26,5 +26,17 @@ event_list = {
 		script = "goto.lua"
 		param = ( "M0_0", "15", "39" )
 	}
+	to_throne1 = {
+		pos_x = 14
+		pos_y = 5
+		script = "goto.lua"
+		param = ( "throne", "1", "10" )
+	}
+	to_throne2 = {
+		pos_x = 14
+		pos_y = 4
+		script = "goto.lua"
+		param = ( "throne", "1", "9" )
+	}
 }
 
