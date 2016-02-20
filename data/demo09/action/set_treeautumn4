@@ -1,0 +1,6 @@
+text            = "Set up a tree";
+icon            = [ "ui/button_up.png", "ui/treeautumn4.png" ];
+#icon_over       = "icon/bat_over.png";
+icon_click      = [ "ui/button_down.png", "ui/treeautumn4.png" ];
+script          = "action/add_scenery.lua";
+param		= ( "scenery/treeautumn4.png" );
