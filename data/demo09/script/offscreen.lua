@@ -112,6 +112,13 @@ if res == -1 then
 
 		"eol",
 
+                "action","set_map_desert",new_map,
+                "image","tile/dirt1.gif",
+                "action","set_map_desert",new_map,
+                "text","Desert",
+
+		"eol",
+
 --                "action","set_map","grass",
 --                "image","tile/grass1.png",
 --                "action","set_map","grass",
