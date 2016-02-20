@@ -1,0 +1,119 @@
+width = 17
+height = 13
+tile_width = 32
+tile_height = 32
+warp_x = 0
+warp_y = 0
+layer0 = {
+	scenery = {
+		bg = {
+			x = 0
+			y = 0
+			image = "map/arabic_room2.png"
+		}
+	}
+}
+event_list = {
+	exit_0 = {
+		pos_x = 0
+		pos_y = 12
+		script = "goto.lua"
+		param = ( "M-1_1", "32", "28" )
+	}
+	exit_1 = {
+		pos_x = 1
+		pos_y = 12
+		script = "goto.lua"
+		param = ( "M-1_1", "32", "28" )
+	}
+	exit_2 = {
+		pos_x = 2
+		pos_y = 12
+		script = "goto.lua"
+		param = ( "M-1_1", "32", "28" )
+	}
+	exit_3 = {
+		pos_x = 3
+		pos_y = 12
+		script = "goto.lua"
+		param = ( "M-1_1", "32", "28" )
+	}
+	exit_4 = {
+		pos_x = 4
+		pos_y = 12
+		script = "goto.lua"
+		param = ( "M-1_1", "32", "28" )
+	}
+	exit_5 = {
+		pos_x = 5
+		pos_y = 12
+		script = "goto.lua"
+		param = ( "M-1_1", "32", "28" )
+	}
+	exit_6 = {
+		pos_x = 6
+		pos_y = 12
+		script = "goto.lua"
+		param = ( "M-1_1", "32", "28" )
+	}
+	exit_7 = {
+		pos_x = 7
+		pos_y = 12
+		script = "goto.lua"
+		param = ( "M-1_1", "32", "28" )
+	}
+	exit_8 = {
+		pos_x = 8
+		pos_y = 12
+		script = "goto.lua"
+		param = ( "M-1_1", "32", "28" )
+	}
+	exit_9 = {
+		pos_x = 9
+		pos_y = 12
+		script = "goto.lua"
+		param = ( "M-1_1", "32", "28" )
+	}
+	exit_10 = {
+		pos_x = 10
+		pos_y = 12
+		script = "goto.lua"
+		param = ( "M-1_1", "32", "28" )
+	}
+	exit_11 = {
+		pos_x = 11
+		pos_y = 12
+		script = "goto.lua"
+		param = ( "M-1_1", "32", "28" )
+	}
+	exit_12 = {
+		pos_x = 12
+		pos_y = 12
+		script = "goto.lua"
+		param = ( "M-1_1", "32", "28" )
+	}
+	exit_13 = {
+		pos_x = 13
+		pos_y = 12
+		script = "goto.lua"
+		param = ( "M-1_1", "32", "28" )
+	}
+	exit_14 = {
+		pos_x = 14
+		pos_y = 12
+		script = "goto.lua"
+		param = ( "M-1_1", "32", "28" )
+	}
+	exit_15 = {
+		pos_x = 15
+		pos_y = 12
+		script = "goto.lua"
+		param = ( "M-1_1", "32", "28" )
+	}
+	exit_16 = {
+		pos_x = 16
+		pos_y = 12
+		script = "goto.lua"
+		param = ( "M-1_1", "32", "28" )
+	}
+}
