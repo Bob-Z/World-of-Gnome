@@ -32,3 +32,13 @@ layer1 = {
 		}
 	}
 }
+
+event_list : {
+        to_inn : {
+                pos_x = 11;
+                pos_y = 68;
+                script = "goto.lua";
+                param = ( "inn", "30", "17" );
+        };
+};
+
