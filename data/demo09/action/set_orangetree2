@@ -1,6 +1,0 @@
-text            = "Set up an orange tree";
-icon            = [ "ui/button_up.png", "ui/orangetree2.png" ];
-#icon_over       = "icon/bat_over.png";
-icon_click      = [ "ui/button_down.png", "ui/orangetree2.png" ];
-script          = "action/add_scenery.lua";
-param		= ( "scenery/orangetree2.png" );

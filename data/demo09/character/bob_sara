@@ -33,10 +33,10 @@ action          = [ "summon_fish1"
         ,"summon_sheep"
         ,"set_campfire"
         ,"set_fireplace"
-        ,"set_snowtree"
+        ,"set_treesnow"
         ,"set_tree"
-        ,"set_orangetree1"
-        ,"set_orangetree2"
+        ,"set_treeorange1"
+        ,"set_treeorange2"
 ];
 
 #allowed_tile_script    = "allowed_tile/ground_stair.lua";
