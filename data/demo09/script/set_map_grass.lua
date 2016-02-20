@@ -46,7 +46,7 @@ for x=0,map_w-1 do
 end
 
 -- determine max number of bush image
-tile_type = "grass_bush"
+tile_type = "on_grass"
 max_img = 1
 ret = true
 while ret == true do
@@ -55,7 +55,7 @@ while ret == true do
 	ret = file_exists(full_name)
 end
 max_img = max_img - 1
-bush_density = 100
+bush_density = 20
 -- actually set tiles on layer 1
 for x=0,map_w-1 do
 	for y=0,map_h-1 do
