@@ -124,5 +124,17 @@ event_list : {
                 script = "goto.lua";
                 param = ( "tower_east", "28", "13" );
         };
+        to_stall1: {
+                pos_x = 37;
+                pos_y = 55;
+                script = "goto.lua";
+                param = ( "stall", "3", "8" );
+        };
+        to_stall2: {
+                pos_x = 38;
+                pos_y = 55;
+                script = "goto.lua";
+                param = ( "stall", "3", "8" );
+        };
 };
 
