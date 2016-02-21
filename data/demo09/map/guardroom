@@ -16,7 +16,7 @@ layer0 = {
 event_list = {
 	exit_0 = {
 		pos_x = 6
-		pos_y = 15
+		pos_y = 14
 		script = "goto.lua"
 		param = ( "M0_0", "24", "57" )
 	}
