@@ -46,5 +46,17 @@ event_list = {
                 script = "goto.lua"
                 param = ( "dungeon", "3", "24" )
         }
+        to_mine0 = {
+                pos_x = 6
+                pos_y = 24
+                script = "goto.lua"
+                param = ( "mine04", "11", "5" )
+        }
+        to_mine1 = {
+                pos_x = 7
+                pos_y = 24
+                script = "goto.lua"
+                param = ( "mine04", "11", "5" )
+        }
 }
 

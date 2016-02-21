@@ -1,0 +1,30 @@
+width = 27
+height = 23
+tile_width = 32
+tile_height = 32
+warp_x = 0
+warp_y = 0
+layer0 = {
+	scenery = {
+		bg = {
+			x = 0
+			y = 0
+			image = "map/mine04.png"
+		}
+	}
+}
+event_list = {
+	exit_0 = {
+		pos_x = 11
+		pos_y = 4
+		script = "goto.lua"
+		param = ( "M-1_0", "7", "25" )
+	}
+	to_mine0 = {
+		pos_x = 22
+		pos_y = 12
+		script = "goto.lua"
+		param = ( "mine03", "3", "4" )
+	}
+}
+
