@@ -82,5 +82,23 @@ event_list : {
                 script = "goto.lua";
                 param = ( "throne_east", "11", "8" );
         };
+        to_guardroom1: {
+                pos_x = 23;
+                pos_y = 56;
+                script = "goto.lua";
+                param = ( "guardroom", "6", "16" );
+        };
+        to_guardroom2: {
+                pos_x = 24;
+                pos_y = 56;
+                script = "goto.lua";
+                param = ( "guardroom", "6", "16" );
+        };
+        to_guardroom3: {
+                pos_x = 25;
+                pos_y = 56;
+                script = "goto.lua";
+                param = ( "guardroom", "6", "16" );
+        };
 };
 
