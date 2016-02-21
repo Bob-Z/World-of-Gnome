@@ -23,6 +23,7 @@
 #include "screen.h"
 #include "scr_select.h"
 #include "scr_play.h"
+#include "option_client.h"
 
 static int screen_end = -1;
 static item_t * item_list = NULL;
@@ -31,6 +32,11 @@ static int compose = 0;
 static int virtual_x[SCREEN_LAST];
 static int virtual_y[SCREEN_LAST];
 static double virtual_z[SCREEN_LAST];
+
+#define ITEM_FONT "/usr/share/fonts/truetype/ubuntu-font-family/Ubuntu-C.ttf"
+#define ITEM_FONT_SIZE 15
+#define NUM_SAMPLE (50)
+static item_t * frame_rate = NULL;
 
 /***********************************************
 Called by other thread to request compose update.
@@ -63,6 +69,9 @@ create a list of item for the currently selected screen
 ******************************************************/
 static void compose_scr(context_t * context)
 {
+	static TTF_Font * font = NULL;
+	option_t * option = option_get();
+
 	SDL_SetRenderDrawColor(context->render, 0, 0, 0, 255);
 
 	switch(current_screen) {
@@ -73,8 +82,44 @@ static void compose_scr(context_t * context)
 		item_list = scr_play_compose(context);
 		break;
 	}
+
+	if( option->show_fps ) {
+		if( font == NULL ) {
+			font = TTF_OpenFont(ITEM_FONT, ITEM_FONT_SIZE);
+		}
+		frame_rate = item_list_add(&item_list);
+		item_set_font(frame_rate,font);
+		item_set_anim_shape(frame_rate,50,50,20,20);
+		item_set_overlay(frame_rate,1);
+	}
 }
 
+/************************************************
+************************************************/
+static void display_fps()
+{
+	static Uint32 timer = 0;
+	Uint32 new_timer;
+	static char fps[64];
+	double sample;
+	option_t * option;
+	static int num_frame = 0;
+
+	if( frame_rate ) {
+		option = option_get();
+		if( option->show_fps ) {
+			num_frame++;
+			new_timer = SDL_GetTicks();
+			if( timer + 1000 < new_timer ) {
+				sample = (double)num_frame / ((double)new_timer - (double)timer ) * 1000.0;
+				num_frame = 0;
+				timer = new_timer;
+				sprintf(fps,"%f",sample);
+			}
+			item_set_string(frame_rate,fps);
+		}
+	}
+}
 /************************************************
 Render the currently selected item list to screen
 ************************************************/
@@ -97,6 +142,8 @@ void screen_display(context_t * ctx)
 			compose = 0;
 			compose_scr(ctx);
 		}
+
+		display_fps();
 
 		while (SDL_PollEvent(&event)) {
 			compose |= sdl_screen_manager(ctx->window, ctx->render, &event);
