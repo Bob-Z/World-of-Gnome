@@ -21,6 +21,7 @@
 
 typedef struct option_struct {
 	int show_tile_type;
+	int show_fps;
 	char * cursor_over_tile;
 
 	char * cursor_sprite;

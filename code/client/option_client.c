@@ -27,6 +27,7 @@ int already_parsed = 0;
 void option_init()
 {
 	option.show_tile_type = false;
+	option.show_fps = false;
 	option.cursor_over_tile = NULL;
 	option.cursor_sprite = NULL;
 	option.cursor_tile = NULL;

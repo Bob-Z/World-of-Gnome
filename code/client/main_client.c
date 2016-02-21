@@ -37,6 +37,7 @@ const struct option longopts[] = {
 	{ "file",required_argument,NULL,'f' },
 	{ "func",required_argument,NULL,'F' },
 	{ "type",no_argument,NULL,'t' },
+	{ "fps",no_argument,NULL,'P' },
 	{NULL,0,NULL,0}
 };
 
@@ -81,6 +82,9 @@ int main (int argc, char **argv)
 		case 't':
 			option->show_tile_type = true;
 			break;
+		case 'P':
+			option->show_fps = true;
+			break;
 		default:
 			printf("HELP:\n\n");
 			printf("-i --ip : Set a server IP\n");
@@ -90,6 +94,7 @@ int main (int argc, char **argv)
 			printf("-f --file: Only display logs from this source file\n");
 			printf("-F --func: Only display logs from this function\n");
 			printf("-t --type: Show tile type on map\n");
+			printf("-P --fps: Show FPS\n");
 			exit(0);
 		}
 	}
@@ -100,7 +105,7 @@ int main (int argc, char **argv)
 
 	context_set_username(context,user);
 
-	sdl_init(TITLE_NAME, &context->render, &context->window, screen_compose);
+	sdl_init(TITLE_NAME, &context->render, &context->window, screen_compose, !option->show_fps);
 
 	/* connect to server */
 	if( network_connect(context,ip) ) {
