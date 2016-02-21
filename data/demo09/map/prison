@@ -21,3 +21,12 @@ event_list = {
 		param = ( "M0_0", "11", "56" )
 	}
 }
+layer1 = {
+	scenery = {
+		A00000 = {
+			x = 176
+			y = 136
+			image = "scenery/boil.zip"
+		}
+	}
+}

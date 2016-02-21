@@ -1,0 +1,6 @@
+text            = "Set up boiling bowl";
+icon            = [ "ui/button_up.png", "ui/boil.png" ];
+#icon_over       = "icon/bat_over.png";
+icon_click      = [ "ui/button_down.png", "ui/boil.png" ];
+script          = "action/add_scenery.lua";
+param		= ( "scenery/boil.zip" );
