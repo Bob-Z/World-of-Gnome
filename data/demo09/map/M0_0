@@ -136,5 +136,17 @@ event_list : {
                 script = "goto.lua";
                 param = ( "stall", "3", "8" );
         };
+        to_prison1: {
+                pos_x = 10;
+                pos_y = 55;
+                script = "goto.lua";
+                param = ( "prison", "6", "7" );
+        };
+        to_prison2: {
+                pos_x = 11;
+                pos_y = 55;
+                script = "goto.lua";
+                param = ( "prison", "6", "7" );
+        };
 };
 
