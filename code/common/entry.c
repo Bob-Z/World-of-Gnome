@@ -649,9 +649,13 @@ static int __write_list(const char * table, const char * file, char ** data, va_
 	setting = create_tree(config,NULL,NULL,NULL,CONFIG_TYPE_ARRAY,ap);
 
 	while(data[i] != NULL) {
-		if(config_setting_set_string_elem(setting,-1,data[i])==NULL) {
-			SDL_UnlockMutex(entry_mutex);
-			return FALSE;
+		// First try to update existing setting
+		if(config_setting_set_string_elem(setting,i,data[i])==NULL) {
+			// If it down not exist, add a new setting at the end of the list
+			if(config_setting_set_string_elem(setting,-1,data[i])==NULL) {
+				SDL_UnlockMutex(entry_mutex);
+				return FALSE;
+			}
 		}
 		i++;
 	}
