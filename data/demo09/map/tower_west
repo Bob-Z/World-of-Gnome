@@ -1,0 +1,29 @@
+width = 23
+height = 34
+tile_width = 32
+tile_height = 32
+warp_x = 0
+warp_y = 0
+layer0 = {
+	scenery = {
+		bg = {
+			x = 0
+			y = 0
+			image = "map/tower_west.png"
+		}
+	}
+}
+event_list = {
+	exit_0 = {
+		pos_x = 8
+		pos_y = 8
+		script = "goto.lua"
+		param = ( "M0_0", "0", "47" )
+	}
+	exit_1 = {
+		pos_x = 14
+		pos_y = 8
+		script = "goto.lua"
+		param = ( "M0_0", "1", "47" )
+	}
+}
