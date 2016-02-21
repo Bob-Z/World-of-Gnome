@@ -6,6 +6,7 @@ end
 function f (map_name)
 
 tile_type = "grass"
+layer = 0
 player_id = player_get_id()
 map = character_get_map(player_id)
 
@@ -37,16 +38,21 @@ while ret == true do
 end
 max_img = max_img - 1
 
--- actually set tiles on layer 0
+tile_array = {}
+index=0
 for x=0,map_w-1 do
 	for y=0,map_h-1 do
 		tile_name = string.format("tile/%s%d.png",tile_type,math.random(1,max_img))
-		map_set_tile_no_update(map_name,0,tile_name,x,y)
+		tile_array[index] = tile_name
+                tile_array[index+1] = nil
+                index = index + 1
 	end
 end
+map_set_tile_array(map_name,layer,tile_array)
 
 -- determine max number of bush image
 tile_type = "on_grass"
+layer = 1
 max_img = 1
 ret = true
 while ret == true do
@@ -56,16 +62,21 @@ while ret == true do
 end
 max_img = max_img - 1
 bush_density = 20
--- actually set tiles on layer 1
+index=0
 for x=0,map_w-1 do
 	for y=0,map_h-1 do
 		if math.random(1,bush_density) == 1 then
 			print_text_debug("Add bush")
 			tile_name = string.format("tile/%s%d.png",tile_type,math.random(1,max_img))
-			map_set_tile_no_update(map_name,1,tile_name,x,y)
+		else
+			tile_name = ""
 		end
+		tile_array[index] = tile_name
+		tile_array[index+1] = nil
+		index = index + 1
 	end
 end
+map_set_tile_array(map_name,layer,tile_array)
 
 -- let characters walks over grass
 -- map_set_character_layer(map_name,1);
