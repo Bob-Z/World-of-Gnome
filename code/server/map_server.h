@@ -26,6 +26,7 @@ char * map_delete_item(const char * map, int layer, int x, int y);
 int map_add_item(const char * map, int layer, const char * item, int x, int y);
 int map_check_tile(context_t * ctx,char * id,const char * map,int layer, int x,int y);
 int map_set_tile(const char * map,int layer, const char * tile,int x, int y,int network_broadcast);
+int map_set_tile_array(const char * map, int layer,const char** tile_array);
 int map_set_tile_type(const char * map,int layer, const char * type,int x, int y,int network_broadcast);
 void map_broadcast(const char * map);
 int map_set_offscreen(const char * map, const char * script);

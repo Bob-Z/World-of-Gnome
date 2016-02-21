@@ -795,6 +795,44 @@ static int l_map_set_tile_no_update( lua_State* L)
 	return 1;  /* number of results */
 }
 
+/* map_set_tile_array
+
+
+Input:
+ - ID of a map
+ - layer of the map
+ - Array of tiles ID
+Output: -1 on error, 0 otherwise
+*/
+static int l_map_set_tile_array( lua_State* L)
+{
+        const char **arg = NULL;
+        int i;
+	const char * map;
+	int layer;
+
+	map = luaL_checkstring(L, -3);
+	layer = luaL_checkint(L, -2);
+
+	i=0;
+	lua_pushnil(L);  /* first key */
+	while (lua_next(L, -2) != 0) {
+		/* uses 'key' (at index -2) and 'value' (at index -1) */
+		arg = realloc(arg, sizeof(char*)*(i+2));
+                arg[i] = luaL_checkstring(L, -1);
+                i++;
+		/* removes 'value'; keeps 'key' for next iteration */
+		lua_pop(L, 1);
+	}
+        arg[i]=NULL;
+
+        map_set_tile_array(map,layer,&arg[2]);
+
+        free(arg);
+        lua_pushnumber(L, 0);
+        return 1;  /* number of results */
+}
+
 /* map_set_tile_type
 
 Set a type in a map
@@ -2165,6 +2203,8 @@ void register_lua_functions(context_t * context)
 	lua_setglobal(L, "map_set_tile");
 	lua_pushcfunction(L, l_map_set_tile_no_update);
 	lua_setglobal(L, "map_set_tile_no_update");
+	lua_pushcfunction(L, l_map_set_tile_array);
+	lua_setglobal(L, "map_set_tile_array");
 	lua_pushcfunction(L, l_map_set_tile_type);
 	lua_setglobal(L, "map_set_tile_type");
 	lua_pushcfunction(L, l_map_set_tile_type_no_update);

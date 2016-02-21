@@ -360,6 +360,51 @@ int map_set_tile(const char * map, int layer, const char * tile,int x, int y,int
 }
 
 /***********************************
+Write an array of tiles into a map set layer
+tile_array is a NULL teminated tiles ID
+return RET_FAIL if fails
+***********************************/
+int map_set_tile_array(const char * map, int layer,const char** tile_array)
+{
+	char ** previous_tile = NULL;
+	char ** current_tile = NULL;
+	char layer_name[SMALL_BUF];
+
+	if(map == NULL) {
+		return RET_FAIL;
+	}
+
+	sprintf(layer_name,"%s%d",MAP_KEY_LAYER,layer);
+
+	/* Manage concurrent access to map files */
+	SDL_LockMutex(map_mutex);
+
+	/* read previous map set */
+	if(!entry_read_list(MAP_TABLE,map,&previous_tile,layer_name,MAP_KEY_SET,NULL)) {
+		SDL_UnlockMutex(map_mutex);
+		return RET_FAIL;
+	}
+
+	current_tile = previous_tile;
+	while(*tile_array) {
+		free(*current_tile);
+		*current_tile = strdup(*tile_array);
+		current_tile++;
+		tile_array++;
+	}
+
+	if( entry_write_list(MAP_TABLE, map, previous_tile,layer_name,MAP_KEY_SET,NULL ) ) {
+		context_broadcast_map(map);
+	}
+
+	deep_free(previous_tile);
+
+	SDL_UnlockMutex(map_mutex);
+
+	return RET_OK;
+}
+
+/***********************************
 Write a new tile type into a map file
 return RET_FAIL if fails
 ***********************************/
