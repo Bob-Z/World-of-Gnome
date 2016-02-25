@@ -508,13 +508,8 @@ int map_set_custom_column(const char * map, int layer, int num, int width, int h
 	/* Manage concurrent access to map files */
 	SDL_LockMutex(map_mutex);
 
-	if(num==0) {
-		sprintf(width_name,"%s",MAP_KEY_COL_WIDTH);
-		sprintf(height_name,"%s",MAP_KEY_COL_HEIGHT);
-	} else {
-		sprintf(width_name,"%s%d",MAP_KEY_COL_WIDTH,num);
-		sprintf(height_name,"%s%d",MAP_KEY_COL_HEIGHT,num);
-	}
+	sprintf(width_name,"%s%d",MAP_KEY_COL_WIDTH,num);
+	sprintf(height_name,"%s%d",MAP_KEY_COL_HEIGHT,num);
 
 	/* Map grid settings */
 	if ( layer == -1 ) {
