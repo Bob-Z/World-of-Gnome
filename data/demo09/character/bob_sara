@@ -60,6 +60,7 @@ action          = [ "summon_fish1"
         ,"set_treeyellow2"
         ,"set_treeyellow3"
         ,"set_treeyellow4"
+        ,"set_castle"
 ];
 
 #allowed_tile_script    = "allowed_tile/ground_stair.lua";
