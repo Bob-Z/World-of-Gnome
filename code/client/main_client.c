@@ -38,6 +38,7 @@ const struct option longopts[] = {
 	{ "func",required_argument,NULL,'F' },
 	{ "type",no_argument,NULL,'t' },
 	{ "fps",no_argument,NULL,'P' },
+	{ "maxfps",no_argument,NULL,'m' },
 	{NULL,0,NULL,0}
 };
 
@@ -53,6 +54,7 @@ int main (int argc, char **argv)
 	char * user = NULL;
 	char * pass = NULL;
 	option_t * option;
+	int maxfps = false;
 
 	base_directory = strconcat(getenv("HOME"),"/.config/wog/client",NULL);
 
@@ -85,6 +87,9 @@ int main (int argc, char **argv)
 		case 'P':
 			option->show_fps = true;
 			break;
+		case 'm':
+			maxfps = true;
+			break;
 		default:
 			printf("HELP:\n\n");
 			printf("-i --ip : Set a server IP\n");
@@ -95,6 +100,7 @@ int main (int argc, char **argv)
 			printf("-F --func: Only display logs from this function\n");
 			printf("-t --type: Show tile type on map\n");
 			printf("-P --fps: Show FPS\n");
+			printf("-m --maxfps: Display at maximum FPS\n");
 			exit(0);
 		}
 	}
@@ -105,7 +111,7 @@ int main (int argc, char **argv)
 
 	context_set_username(context,user);
 
-	sdl_init(TITLE_NAME, &context->render, &context->window, screen_compose, !option->show_fps);
+	sdl_init(TITLE_NAME, &context->render, &context->window, screen_compose, !maxfps);
 
 	/* connect to server */
 	if( network_connect(context,ip) ) {
