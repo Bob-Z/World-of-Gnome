@@ -330,6 +330,7 @@ static void compose_action(context_t * ctx,item_t * item_list)
 	char ** action_list = NULL;
 	char * text = NULL;
 	char ** icon = NULL;
+	char * icon_array[2] = {NULL,NULL};
 	char ** icon_over = NULL;
 	char ** icon_click = NULL;
 	char * script = NULL;
@@ -372,7 +373,10 @@ static void compose_action(context_t * ctx,item_t * item_list)
 			i++;
 			continue;
 		}
-		if(!entry_read_list(ACTION_TABLE,action_list[i],&icon,ACTION_KEY_ICON,NULL)) {
+		if(entry_read_string(ACTION_TABLE,action_list[i],&icon_array[0],ACTION_KEY_ICON,NULL)) {
+			icon = icon_array;
+		}
+		else if(!entry_read_list(ACTION_TABLE,action_list[i],&icon,ACTION_KEY_ICON,NULL)) {
 			i++;
 			continue;
 		}
@@ -385,7 +389,9 @@ static void compose_action(context_t * ctx,item_t * item_list)
 
 		/* load image */
 		anim_array = imageDB_get_anim_array(ctx, (const char **)icon);
-		deep_free(icon);
+		if( icon_array[0] == NULL ) {
+			deep_free(icon);
+		}
 
 		item_set_anim_array(item,x,sh-anim_array[0]->h,anim_array);
 
