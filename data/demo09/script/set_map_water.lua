@@ -15,6 +15,7 @@ map_h = character_get_map_h(map)
 -- determine max number of image
 tile_type = "dirt"
 layer = 0
+map_add_layer(map_name,layer,map_w,map_h,32,32,"",tile_type)
 max_img = 1
 ret = true
 while ret == true do
@@ -42,7 +43,7 @@ map_set_tile_array(map_name,layer,tile_array)
 -- determine max number of image
 tile_type = "water"
 layer = 9
-map_new(map_name,layer,map_w,map_h,32,32,"",tile_type)
+map_add_layer(map_name,layer,map_w,map_h,32,32,"",tile_type)
 max_img = 1
 ret = true
 while ret == true do

@@ -7,7 +7,7 @@ function f (map_name)
 
 tile_type = "grass"
 layer = 10
-map_new(map_name,layer,map_w,map_h,32,32,"",tile_type)
+map_add_layer(map_name,layer,map_w,map_h,32,32,"",tile_type)
 player_id = player_get_id()
 map = character_get_map(player_id)
 
@@ -54,7 +54,7 @@ map_set_tile_array(map_name,layer,tile_array)
 -- determine max number of bush image
 tile_type = "on_grass"
 layer = 11
-map_new(map_name,layer,map_w,map_h,32,32,"",tile_type)
+map_add_layer(map_name,layer,map_w,map_h,32,32,"",tile_type)
 max_img = 1
 ret = true
 while ret == true do
