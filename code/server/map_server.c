@@ -124,22 +124,19 @@ int map_check_tile(context_t * ctx,char * id, const char * map, int layer, int x
 /***********************************
 Create a new map or add a map layer.
 Return the name of the new map
+Return string must be freed by caller
 *************************************/
-char * map_new(const char *suggested_name,int layer, int w,int h, int tile_w, int tile_h, const char * default_tile, const char * default_type)
+char * map_new(const char *name, int w,int h, int tile_w, int tile_h)
 {
 	char * map_name;
-	char ** tile_array;
-	int i;
-	char layer_name[SMALL_BUF];
 
 	if( w<0 || h<0 ) {
 		return NULL;
 	}
 
-	map_name = file_new(MAP_TABLE,suggested_name);
-	/* Map creation may fail because file already exists. Try the suggested name instead. */
+	map_name = file_new(MAP_TABLE,name);
 	if( map_name == NULL ) {
-		map_name = strdup(suggested_name);
+		return NULL;
 	}
 
 	if (!entry_write_int(MAP_TABLE,map_name,w,MAP_KEY_HEIGHT,NULL) ) {
@@ -155,32 +152,6 @@ char * map_new(const char *suggested_name,int layer, int w,int h, int tile_w, in
 		return NULL;
 	}
 	if (!entry_write_int(MAP_TABLE,map_name,tile_h,MAP_KEY_TILE_HEIGHT,NULL) ) {
-		free(map_name);
-		return NULL;
-	}
-
-	tile_array=malloc(((w*h)+1)*sizeof(char *));
-
-	sprintf(layer_name,"%s%d",MAP_KEY_LAYER,layer);
-
-	/* Write default tile */
-	for(i=0; i<(w*h); i++) {
-		tile_array[i] = (char *)default_tile;
-	}
-	tile_array[i] = NULL; /* End of list */
-
-	if (!entry_write_list(MAP_TABLE,map_name,tile_array,layer_name,MAP_KEY_SET, NULL) ) {
-		free(map_name);
-		return NULL;
-	}
-
-	/* Write default type */
-	for(i=0; i<(w*h); i++) {
-		tile_array[i] = (char *)default_type;
-	}
-	tile_array[i] = NULL; /* End of list */
-
-	if (!entry_write_list(MAP_TABLE,map_name,tile_array,layer_name,MAP_KEY_TYPE, NULL) ) {
 		free(map_name);
 		return NULL;
 	}
@@ -1027,5 +998,66 @@ char * map_add_scenery(const char * map, int layer, int x, int y, const char * i
 	context_broadcast_map(map);
 
 	return id;
+}
+
+/******************************************
+ Add a layer filled with image_name on map
+ return RET_FAIL on failure
+***********************************************/
+int map_add_layer(const char * map_name,int layer, int w,int h, int tile_w, int tile_h, const char * default_tile, const char * default_type)
+{
+	char ** tile_array;
+	char layer_name[SMALL_BUF];
+	int i;
+
+	if( w<0 || h<0 ) {
+		return RET_FAIL;
+	}
+
+        tile_array=malloc(((w*h)+1)*sizeof(char *));
+
+        sprintf(layer_name,"%s%d",MAP_KEY_LAYER,layer);
+
+	if (!entry_write_int(MAP_TABLE,map_name,w,layer_name,MAP_KEY_HEIGHT,NULL) ) {
+		free(tile_array);
+		return RET_FAIL;
+	}
+	if (!entry_write_int(MAP_TABLE,map_name,h,layer_name,MAP_KEY_WIDTH,NULL) ) {
+		free(tile_array);
+		return RET_FAIL;
+	}
+	if (!entry_write_int(MAP_TABLE,map_name,tile_w,layer_name,MAP_KEY_TILE_WIDTH,NULL) ) {
+		free(tile_array);
+		return RET_FAIL;
+	}
+	if (!entry_write_int(MAP_TABLE,map_name,tile_h,layer_name,MAP_KEY_TILE_HEIGHT,NULL) ) {
+		free(tile_array);
+		return RET_FAIL;
+	}
+
+        /* Write default tile */
+        for(i=0; i<(w*h); i++) {
+                tile_array[i] = (char *)default_tile;
+        }
+        tile_array[i] = NULL; /* End of list */
+
+        if (!entry_write_list(MAP_TABLE,map_name,tile_array,layer_name,MAP_KEY_SET, NULL) ) {
+                free(tile_array);
+                return RET_FAIL;
+        }
+
+        /* Write default type */
+        for(i=0; i<(w*h); i++) {
+                tile_array[i] = (char *)default_type;
+        }
+        tile_array[i] = NULL; /* End of list */
+
+        if (!entry_write_list(MAP_TABLE,map_name,tile_array,layer_name,MAP_KEY_TYPE, NULL) ) {
+                free(tile_array);
+                return RET_FAIL;
+        }
+
+	free(tile_array);
+	return RET_OK;
 }
 

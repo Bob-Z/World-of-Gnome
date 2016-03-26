@@ -21,7 +21,7 @@
 #define MAP_SERVER_H
 
 int map_check_tile(context_t * ctx,char * id,const char * map,int layer, int x,int y);
-char * map_new(const char * suggested_name, int layer, int w, int h, int tile_w, int tile_h, const char * default_tile,const char * default_type);
+char * map_new(const char * name, int w, int h, int tile_w, int tile_h);
 char * map_delete_item(const char * map, int layer, int x, int y);
 int map_add_item(const char * map, int layer, const char * item, int x, int y);
 int map_check_tile(context_t * ctx,char * id,const char * map,int layer, int x,int y);
@@ -42,4 +42,5 @@ int map_add_event_param(const char * map, int layer, const char * event_id, cons
 int map_delete_event(const char * map, int layer, const char * script, int x, int y);
 int map_get_tile_coord(const char * map, int layer, int x, int y, int * tx, int * ty);
 char * map_add_scenery(const char * map, int layer, int x, int y, const char * image_name);
+int map_add_layer(const char * map_name, int layer, int w, int h, int tile_w, int tile_h, const char * default_tile,const char * default_type);
 #endif

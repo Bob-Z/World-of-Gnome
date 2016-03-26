@@ -694,7 +694,41 @@ static int l_character_wake_up( lua_State* L)
 Create a map
 
 Input:
- - Suggested file name (if empty an available name if automatically found)
+ - file name (if empty an available name is automatically found)
+ - Width of map
+ - Height of map
+ - Width of tile (in pixels)
+ - Height of tile (in pixels)
+Output: New map ID
+*/
+static int l_map_new( lua_State* L)
+{
+	char * map_name;
+	const char * name;
+	int x;
+	int y;
+	int tile_x;
+	int tile_y;
+
+	name = luaL_checkstring(L, -5);
+	x = luaL_checkint(L, -4);
+	y = luaL_checkint(L, -3);
+	tile_x = luaL_checkint(L, -2);
+	tile_y = luaL_checkint(L, -1);
+	map_name = map_new(name,x,y,tile_x,tile_y);
+	lua_pushstring(L, map_name);
+	if( map_name ) {
+		free(map_name);
+	}
+	return 1;  /* number of results */
+}
+
+/* map_add_layer
+
+Add a layer to a map
+
+Input:
+ - map name
  - layer to be created
  - Width of map
  - Height of map
@@ -704,10 +738,9 @@ Input:
  - default type (new map is filled with)
 Output: New map ID
 */
-static int l_map_new( lua_State* L)
+static int l_map_add_layer( lua_State* L)
 {
-	char * map_name;
-	const char * suggested_name;
+	const char * map_name;
 	int layer;
 	int x;
 	int y;
@@ -715,8 +748,9 @@ static int l_map_new( lua_State* L)
 	int tile_y;
 	const char * default_tile;
 	const char * default_type;
+	int res;
 
-	suggested_name = luaL_checkstring(L, -8);
+	map_name = luaL_checkstring(L, -8);
 	layer = luaL_checkint(L, -7);
 	x = luaL_checkint(L, -6);
 	y = luaL_checkint(L, -5);
@@ -724,9 +758,8 @@ static int l_map_new( lua_State* L)
 	tile_y = luaL_checkint(L, -3);
 	default_tile = luaL_checkstring(L, -2);
 	default_type = luaL_checkstring(L, -1);
-	map_name = map_new(suggested_name,layer,x,y,tile_x,tile_y,default_tile,default_type);
-	lua_pushstring(L, map_name);
-	free(map_name);
+	res = map_add_layer(map_name,layer,x,y,tile_x,tile_y,default_tile,default_type);
+	lua_pushnumber(L, res);
 	return 1;  /* number of results */
 }
 
@@ -2199,6 +2232,8 @@ void register_lua_functions(context_t * context)
 	/* map func */
 	lua_pushcfunction(L, l_map_new);
 	lua_setglobal(L, "map_new");
+	lua_pushcfunction(L, l_map_add_layer);
+	lua_setglobal(L, "map_add_layer");
 	lua_pushcfunction(L, l_map_set_tile);
 	lua_setglobal(L, "map_set_tile");
 	lua_pushcfunction(L, l_map_set_tile_no_update);
