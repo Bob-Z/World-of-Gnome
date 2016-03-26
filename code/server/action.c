@@ -763,6 +763,28 @@ static int l_map_add_layer( lua_State* L)
 	return 1;  /* number of results */
 }
 
+/* map_delete_layer
+
+delete a layer on a map
+
+Input:
+ - map name
+ - layer to be deleted
+Output:
+*/
+static int l_map_delete_layer( lua_State* L)
+{
+	const char * map_name;
+	int layer;
+	int res;
+
+	map_name = luaL_checkstring(L, -2);
+	layer = luaL_checkint(L, -1);
+	res = map_delete_layer(map_name,layer);
+	lua_pushnumber(L, res);
+	return 1;  /* number of results */
+}
+
 /* map_set_tile
 
 Set a tile in a map
@@ -2234,6 +2256,8 @@ void register_lua_functions(context_t * context)
 	lua_setglobal(L, "map_new");
 	lua_pushcfunction(L, l_map_add_layer);
 	lua_setglobal(L, "map_add_layer");
+	lua_pushcfunction(L, l_map_delete_layer);
+	lua_setglobal(L, "map_delete_layer");
 	lua_pushcfunction(L, l_map_set_tile);
 	lua_setglobal(L, "map_set_tile");
 	lua_pushcfunction(L, l_map_set_tile_no_update);

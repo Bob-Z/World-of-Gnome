@@ -1061,3 +1061,19 @@ int map_add_layer(const char * map_name,int layer, int w,int h, int tile_w, int 
 	return RET_OK;
 }
 
+/******************************************
+ remove a layer
+ return RET_FAIL on failure
+***********************************************/
+int map_delete_layer(const char * map_name,int layer)
+{
+	char layer_name[SMALL_BUF];
+
+        sprintf(layer_name,"%s%d",MAP_KEY_LAYER,layer);
+
+	if (!entry_remove_group(MAP_TABLE,map_name,layer_name,NULL) ) {
+		return RET_FAIL;
+	}
+
+	return RET_OK;
+}

@@ -43,4 +43,5 @@ int map_delete_event(const char * map, int layer, const char * script, int x, in
 int map_get_tile_coord(const char * map, int layer, int x, int y, int * tx, int * ty);
 char * map_add_scenery(const char * map, int layer, int x, int y, const char * image_name);
 int map_add_layer(const char * map_name, int layer, int w, int h, int tile_w, int tile_h, const char * default_tile,const char * default_type);
+int map_delete_layer(const char * map_name,int layer);
 #endif
