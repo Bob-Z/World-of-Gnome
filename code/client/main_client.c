@@ -28,7 +28,7 @@
 #include "screen.h"
 #include "option_client.h"
 
-const char optstring[] = "?i:u:p:l:f:F:t";
+const char optstring[] = "?i:u:p:l:f:F:tPm";
 const struct option longopts[] = {
 	{ "ip",required_argument,NULL,'i' },
 	{ "user",required_argument,NULL,'u' },
