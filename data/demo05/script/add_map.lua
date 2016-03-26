@@ -5,7 +5,8 @@ map = character_get_map(player_id)
 map_w = character_get_map_w(map)
 map_h = character_get_map_h(map)
 
-new_map = map_new(map_name,0,map_w,map_h,32,32,"b.gif","b")
+map_new(map_name,map_w,map_h,32,32)
+map_add_layer(map_name,0,map_w,map_h,32,32,"b.gif","b")
 
 if map_y == "0" then
 	for i=0,map_w-1 do
