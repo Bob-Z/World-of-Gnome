@@ -6,7 +6,8 @@ map = character_get_map(player_id)
 map_w = character_get_map_w(map)
 map_h = character_get_map_h(map)
 
-new_map = map_new(map_name,0,map_w,map_h,72,72,"tile/gr1.png","fl")
+map_new(map_name,map_w,map_h,72,72)
+map_add_layer(map_name,0,map_w,map_h,72,72,"tile/gr1.png","fl")
 
 map_set_offscreen(map_name,"offscreen.lua")
 
