@@ -5,6 +5,11 @@ end
 
 function f (map_name)
 
+-- Clean-up
+for i=0,20 do
+        map_delete_layer(map_name,i)
+end
+
 tile_type = "grass"
 layer = 10
 map_add_layer(map_name,layer,map_w,map_h,32,32,"",tile_type)
@@ -13,11 +18,6 @@ map = character_get_map(player_id)
 
 map_w = character_get_map_w(map)
 map_h = character_get_map_h(map)
-
--- Clean-up
-for i=0,20 do
-        map_delete_layer(map_name,i)
-end
 
 -- determine if the exact name exists
 full_name = string.format("%s/image/tile/%s",get_base_directory(),tile_type)
