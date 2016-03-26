@@ -22,24 +22,28 @@
 #include <string.h>
 
 /************************************************
-Fill a layer_t struct to be used by t2p_x and t2p_y
+create a layer_t struct to be used by t2p_x and t2p_y
 if layer_index == DEFAULT_LAYER or default_layer is NULL, default value are filled in filled_layer
-return RET_FAIL on error
+return NULL on error
+return a layer_t struct which needs to be freed by a call to map_layer_delete
 ************************************************/
-int map_layer_update(const char * map,layer_t * default_layer, layer_t * layer, int layer_index)
+layer_t * map_layer_new(const char * map, int layer_index, layer_t * default_layer)
 {
         char layer_name[SMALL_BUF];
         char keyword[SMALL_BUF];
         int tiling_index = 0;
         char * zoom_str;
         int more;
+	layer_t * layer = NULL;
+
+	layer=malloc(sizeof(layer_t));
 
         layer->active = false;
 
         if( layer_index != DEFAULT_LAYER && default_layer != NULL ) {
                 sprintf(layer_name,"%s%d",MAP_KEY_LAYER,layer_index);
                 if( !entry_exist(MAP_TABLE, map, layer_name,MAP_KEY_SET,NULL)) {
-                        return RET_FAIL;
+                        return NULL;
                 }
 
                 layer->active = true;
@@ -76,16 +80,16 @@ int map_layer_update(const char * map,layer_t * default_layer, layer_t * layer, 
                 layer->col_num = default_layer->col_num;
         } else {
                 if(!entry_read_int(MAP_TABLE, map, &layer->map_w,MAP_KEY_WIDTH,NULL)) {
-                        return RET_FAIL;
+                        return NULL;
                 }
                 if(!entry_read_int(MAP_TABLE, map, &layer->map_h,MAP_KEY_HEIGHT,NULL)) {
-                        return RET_FAIL;
+                        return NULL;
                 }
                 if(!entry_read_int(MAP_TABLE, map, &layer->tile_width,MAP_KEY_TILE_WIDTH,NULL)) {
-                        return RET_FAIL;
+                        return NULL;
                 }
                 if(!entry_read_int(MAP_TABLE, map, &layer->tile_height,MAP_KEY_TILE_HEIGHT,NULL)) {
-                        return RET_FAIL;
+                        return NULL;
                 }
                 layer->active = true;
 
@@ -197,7 +201,15 @@ int map_layer_update(const char * map,layer_t * default_layer, layer_t * layer, 
                 layer->row_height_total += layer->row_height[tiling_index];
         }
 
-        return RET_OK;
+        return layer;
+}
+
+/************************************************
+Delete a layer_t struct created by map_layer_new
+************************************************/
+void map_layer_delete(layer_t * layer)
+{
+	free(layer);
 }
 
 /**********************************

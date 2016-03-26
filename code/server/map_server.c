@@ -926,22 +926,24 @@ return RET_FAIL on error
 ************************************************/
 int map_get_tile_coord(const char * map, int layer, int x, int y, int * tx, int * ty)
 {
-	layer_t default_layer;
+	layer_t * default_layer;
 
 	if( map == NULL ) {
 		return RET_FAIL;
 	}
 
-	if( map_layer_update(map,NULL,&default_layer,DEFAULT_LAYER) == RET_FAIL) {
+	if( (default_layer = map_layer_new(map,DEFAULT_LAYER,NULL)) == NULL) {
 		return RET_FAIL;
 	}
 
 	if(tx) {	
-		*tx = map_t2p_x(x,y,&default_layer);
+		*tx = map_t2p_x(x,y,default_layer);
 	}
 	if(ty) {
-		*ty = map_t2p_y(x,y,&default_layer);
+		*ty = map_t2p_y(x,y,default_layer);
 	}
+
+	map_layer_delete(default_layer);
 
 	return RET_OK;
 }

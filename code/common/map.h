@@ -45,7 +45,8 @@ typedef struct layer {
         int row_height_total;
 } layer_t;
 
-int map_layer_update(const char * map,layer_t * default_layer, layer_t * filled_layer, int layer_index);
+layer_t * map_layer_new(const char * map, int layer_index, layer_t * default_layer);
+void map_layer_delete(layer_t * default_layer);
 int map_t2p_x(int x, int y,layer_t * layer);
 int map_t2p_y(int x, int y,layer_t * layer);
 #endif
