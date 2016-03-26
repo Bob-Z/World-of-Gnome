@@ -11,6 +11,11 @@ map = character_get_map(player_id)
 map_w = character_get_map_w(map)
 map_h = character_get_map_h(map)
 
+-- Clean-up
+for i=0,20 do
+        map_delete_layer(map_name,i)
+end
+
 -- dirt layer --
 -- determine max number of image
 tile_type = "dirt"
