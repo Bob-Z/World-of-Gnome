@@ -41,7 +41,8 @@ map_set_tile_array(map_name,layer,tile_array)
 -- water layer --
 -- determine max number of image
 tile_type = "water"
-layer = 1
+layer = 9
+map_new(map_name,layer,map_w,map_h,32,32,"",tile_type)
 max_img = 1
 ret = true
 while ret == true do
@@ -67,6 +68,5 @@ map_set_tile_array(map_name,layer,tile_array)
 -- map_set_character_layer(map_name,0);
 
 map_broadcast(map_name);
-
 
 end

@@ -7,10 +7,10 @@ function f (map_name,map_x,map_y)
 map_w = 64
 map_h = 64
 
-new_map = map_new(map_name,0,map_w,map_h,32,32,"tile/grass1.png","grass")
-if new_map ~= nil then
-	map_new(map_name,1,map_w,map_h,32,32,"","grass")
-end
+new_map = map_new(map_name,0,map_w,map_h,32,32,"","")
+--if new_map ~= nil then
+--	map_new(map_name,1,map_w,map_h,32,32,"","grass")
+--end
 
 map_set_offscreen(map_name,"offscreen.lua")
 
