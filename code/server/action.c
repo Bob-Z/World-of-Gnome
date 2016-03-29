@@ -881,7 +881,7 @@ static int l_map_set_tile_array( lua_State* L)
 	}
         arg[i]=NULL;
 
-        map_set_tile_array(map,layer,&arg[2]);
+        map_set_tile_array(map,layer,arg);
 
         free(arg);
         lua_pushnumber(L, 0);
