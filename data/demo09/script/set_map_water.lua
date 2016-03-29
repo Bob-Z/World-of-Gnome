@@ -31,9 +31,9 @@ end
 max_img = max_img - 1
 
 tile_array = {}
-index=0
-for x=0,map_w-1 do
-	for y=0,map_h-1 do
+index=1
+for x=1,map_w do
+	for y=1,map_h do
 		tile_name = string.format("tile/%s%d.gif",tile_type,math.random(1,max_img))
 		tile_array[index] = tile_name
 		tile_array[index+1] = nil
@@ -58,9 +58,9 @@ while ret == true do
 end
 max_img = max_img - 1
 
-index=0
-for x=0,map_w-1 do
-	for y=0,map_h-1 do
+index=1
+for x=1,map_w do
+	for y=1,map_h do
 		tile_name = string.format("tile/%s%d.png",tile_type,math.random(1,max_img))
 		tile_array[index] = tile_name
 		tile_array[index+1] = nil
