@@ -79,6 +79,7 @@ void sfx_stop(context_t* ctx,const char * filename)
 
 	if( music ) {
 		Mix_FreeMusic(music);
+		list_update(&sfx_list,table_filename,NULL);
 		return;
 	}
 
