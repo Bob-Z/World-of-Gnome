@@ -43,6 +43,7 @@ static character_t * character_list = NULL;
 static int character_num = 0;
 static item_t * item_list = NULL;
 static long current_character = -1;
+static char * sfx_filename = NULL;
 
 /****************************
 Keyboard callback
@@ -72,7 +73,6 @@ static void cb_select(void * arg)
 {
 	context_t * ctx = (context_t*)arg;
 	character_t  *character;
-	char * sfx_filename;
 
 	if (current_character == -1 ) {
 		return;
@@ -88,7 +88,7 @@ static void cb_select(void * arg)
 
 	sdl_free_mousecb();
 
-	if(entry_read_string(NULL,CLIENT_CONF_FILE,&sfx_filename,CLIENT_KEY_SFX_SELECT_CHARACTER,NULL)) {
+	if( sfx_filename ) {
 		sfx_stop(ctx,sfx_filename);
 	}
 
@@ -172,15 +172,16 @@ item_t * scr_select_compose(context_t * context)
 	int h;
 	static TTF_Font * font_name = NULL;
 	static TTF_Font * font_type = NULL;
-	char * sfx_filename;
 
 	if(character_num==0) {
 		return NULL;
 	}
 
-	if(entry_read_string(NULL,CLIENT_CONF_FILE,&sfx_filename,CLIENT_KEY_SFX_SELECT_CHARACTER,NULL)) {
-		sfx_play(context,sfx_filename,NO_RESTART);
+	if( sfx_filename == NULL ) {
+		entry_read_string(NULL,CLIENT_CONF_FILE,&sfx_filename,CLIENT_KEY_SFX_SELECT_CHARACTER,NULL);
 	}
+
+	sfx_play(context,sfx_filename,NO_RESTART);
 
 	if(item_list) {
 		item_list_free(item_list);
