@@ -1,6 +1,6 @@
 /*
    World of Gnome is a 2D multiplayer role playing game.
-   Copyright (C) 2013-2015 carabobz@gmail.com
+   Copyright (C) 2013-2016 carabobz@gmail.com
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -136,7 +136,7 @@ Client request a file
 It adds the local file checksum so that the server only send the file if it is different
 It make sure there are a minimun time between to consecutive request on the same file
 *********************************************************************/
-void network_send_req_file(context_t * context, char * file)
+void network_send_req_file(context_t * context, const char * file)
 {
 	char * filename;
 	char * cksum;

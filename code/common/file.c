@@ -1,6 +1,6 @@
 /*
    World of Gnome is a 2D multiplayer role playing game.
-   Copyright (C) 2013-2015 carabobz@gmail.com
+   Copyright (C) 2013-2016 carabobz@gmail.com
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -75,7 +75,7 @@ void file_unlock(const char * filename)
 /****************************************
   filename is "table/dir/file"
  *****************************************/
-void file_update(context_t * context, char * filename)
+void file_update(context_t * context, const char * filename)
 {
 	Uint32 current_time = SDL_GetTicks();
 	file_t * file_data;
