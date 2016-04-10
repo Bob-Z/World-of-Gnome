@@ -122,6 +122,7 @@
 #define MAP_ENTRY_ITEM_LIST 	"item_list"
 #define MAP_ENTRY_EVENT_LIST 	"event_list"
 #define MAP_OFFSCREEN	 	"offscreen"
+#define MAP_SFX		 	"sfx"
 
 /* items on map */
 #define MAP_ITEM_POS_X		"pos_x"

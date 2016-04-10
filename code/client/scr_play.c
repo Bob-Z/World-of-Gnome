@@ -50,6 +50,7 @@ static int current_map_x = -1;
 static int current_map_y = -1;
 static option_t * option;
 static layer_t * default_layer = NULL;
+static char * sfx = NULL;
 
 /**********************************
 **********************************/
@@ -868,6 +869,7 @@ item_t * scr_play_compose(context_t * ctx)
 	int bg_green = 0;
 	char * map_filename;
 	int layer_index = 0;
+	char * old_sfx = NULL;
 
 	option = option_get();
 
@@ -935,6 +937,27 @@ item_t * scr_play_compose(context_t * ctx)
 	entry_read_int(MAP_TABLE,ctx->map,&bg_blue,MAP_KEY_BG_BLUE,NULL);
 	entry_read_int(MAP_TABLE,ctx->map,&bg_green,MAP_KEY_BG_GREEN,NULL);
 	SDL_SetRenderDrawColor(ctx->render, bg_red, bg_blue, bg_green, 255);
+
+	old_sfx = sfx;
+	sfx = NULL;
+
+	entry_read_string(MAP_TABLE,ctx->map,&sfx,MAP_SFX,NULL);
+
+	if(old_sfx)  {
+		if( sfx ) {
+			if( strcmp(old_sfx,sfx) ) {
+				sfx_stop(ctx,old_sfx);
+			}
+		}
+		else  {  // sfx == NULL
+			sfx_stop(ctx,old_sfx);
+		}
+		free(old_sfx);
+	}
+
+	if( sfx && sfx[0]!=0 ) {
+		sfx_play(ctx,sfx,NO_RESTART);
+	}
 
 	return item_list;
 }
