@@ -1,6 +1,6 @@
 /*
    World of Gnome is a 2D multiplayer role playing game.
-   Copyright (C) 2013-2015 carabobz@gmail.com
+   Copyright (C) 2013-2016 carabobz@gmail.com
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@
 #include "ui_play.h"
 #include "option_client.h"
 
-#define ITEM_FONT "/usr/share/fonts/truetype/ubuntu-font-family/Ubuntu-C.ttf"
+#define ITEM_FONT "Ubuntu-C.ttf"
 #define ITEM_FONT_SIZE 15
 
 #define NORTH (1<<0)
@@ -526,9 +526,7 @@ static void compose_item(context_t * ctx,int layer_index)
 		return;
 	}
 
-	if ( font == NULL ) {
-		font = TTF_OpenFont(ITEM_FONT, ITEM_FONT_SIZE);
-	}
+	font = font_get(ctx,ITEM_FONT, ITEM_FONT_SIZE);
 
 	i=0;
 	while( item_id[i] != NULL ) {
@@ -780,13 +778,7 @@ static void compose_type(context_t * ctx,int layer_index)
 		return;
 	}
 
-	if( font == NULL ) {
-		font = TTF_OpenFont(ITEM_FONT, ITEM_FONT_SIZE);
-	}
-	if( font == NULL ) {
-		return;
-	}
-
+	font = font_get(ctx,ITEM_FONT, ITEM_FONT_SIZE);
 
 	for( x=0; x<default_layer->map_w; x++) {
 		for( y=0; y<default_layer->map_h; y++) {

@@ -32,14 +32,14 @@
 #define UI_INVENTORY	1
 #define UI_POPUP	2
 
-#define FONT "/usr/share/fonts/truetype/ubuntu-font-family/Ubuntu-C.ttf"
+#define FONT "Ubuntu-C.ttf"
 #define FONT_SIZE 30
-#define TEXT_FONT "/usr/share/fonts/truetype/ubuntu-font-family/Ubuntu-C.ttf"
+#define TEXT_FONT "Ubuntu-C.ttf"
 #define TEXT_FONT_SIZE 15
 #define TEXT_TIMEOUT 5000 /* Text display timeout */
-#define ITEM_FONT "/usr/share/fonts/truetype/ubuntu-font-family/Ubuntu-C.ttf"
+#define ITEM_FONT "Ubuntu-C.ttf"
 #define ITEM_FONT_SIZE 15
-#define SPEAK_FONT "/usr/share/fonts/truetype/ubuntu-font-family/Ubuntu-C.ttf"
+#define SPEAK_FONT "Ubuntu-C.ttf"
 #define SPEAK_FONT_SIZE 32
 
 #define BACKGROUND_COLOR (0x000000C0)
@@ -229,12 +229,7 @@ static void compose_attribute(context_t * ctx, item_t * item_list)
 	int w,h;
 	static TTF_Font * font = NULL;
 
-	if ( font == NULL ) {
-		font = TTF_OpenFont(FONT, FONT_SIZE);
-	}
-	if ( font == NULL ) {
-		return;
-	}
+	font = font_get(ctx,FONT, FONT_SIZE);
 
 	if(attribute_string) {
 		index = 0;
@@ -665,12 +660,7 @@ static void compose_text(context_t * ctx, item_t * item_list)
 	int x;
 	int y;
 
-	if ( font == NULL ) {
-		font = TTF_OpenFont(TEXT_FONT, TEXT_FONT_SIZE);
-	}
-	if ( font == NULL ) {
-		return;
-	}
+	font = font_get(ctx,TEXT_FONT, TEXT_FONT_SIZE);
 
 	SDL_GetRendererOutputSize(ctx->render,&sw,&sh);
 	current_y = sh - action_bar_height;
@@ -814,9 +804,7 @@ static void compose_inventory(context_t * ctx,item_t * item_list)
 	int w;
 	int h;
 
-	if ( font == NULL ) {
-		font = TTF_OpenFont(ITEM_FONT, ITEM_FONT_SIZE);
-	}
+	font = font_get(ctx,ITEM_FONT, ITEM_FONT_SIZE);
 
 	deep_free(inventory_list);
 
@@ -1074,11 +1062,7 @@ static void compose_popup(context_t * ctx,item_t * item_list)
 
 	draw_background(ctx,item_list);
 
-	if ( font != NULL ) {
-		TTF_CloseFont(font);
-		font = NULL;
-	}
-	font = TTF_OpenFont(SPEAK_FONT, SPEAK_FONT_SIZE );
+	font = font_get(ctx,SPEAK_FONT, SPEAK_FONT_SIZE);
 
 	sdl_free_mousecb();
 	sdl_add_mousecb(MOUSE_WHEEL_UP,cb_wheel_up);
