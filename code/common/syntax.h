@@ -187,4 +187,5 @@
 #define CLIENT_KEY_ACTION_SELECT_INVENTORY 	"action_select_inventory"
 #define CLIENT_KEY_SFX_SELECT_CHARACTER 	"sfx_select_character"
 
+#define SFX_TABLE 				"sfx"
 #endif
