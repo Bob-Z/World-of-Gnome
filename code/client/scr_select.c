@@ -25,6 +25,7 @@
 #include "../sdl_item/item.h"
 #include "../sdl_item/sdl.h"
 #include "screen.h"
+#include <SDL2/SDL_mixer.h>
 
 #define BORDER 20
 #define FONT "Ubuntu-C.ttf"
@@ -43,6 +44,7 @@ static character_t * character_list = NULL;
 static int character_num = 0;
 static item_t * item_list = NULL;
 static long current_character = -1;
+Mix_Music *music = NULL;
 
 /****************************
 Keyboard callback
@@ -87,6 +89,7 @@ static void cb_select(void * arg)
 
 	sdl_free_mousecb();
 
+	Mix_FreeMusic(music);
 	screen_set_screen(SCREEN_PLAY);
 
 	screen_compose();
@@ -167,9 +170,17 @@ item_t * scr_select_compose(context_t * context)
 	int h;
 	static TTF_Font * font_name = NULL;
 	static TTF_Font * font_type = NULL;
+	char * sfx_filename;
 
 	if(character_num==0) {
 		return NULL;
+	}
+
+	if(music == NULL) {
+		if(entry_read_string(NULL,CLIENT_CONF_FILE,&sfx_filename,CLIENT_KEY_SFX_SELECT_CHARACTER,NULL)) {
+			music = Mix_LoadMUS(sfx_filename);
+			Mix_PlayMusic(music, -1);
+		}
 	}
 
 	if(item_list) {

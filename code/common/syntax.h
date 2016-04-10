@@ -1,6 +1,6 @@
 /*
    World of Gnome is a 2D multiplayer role playing game.
-   Copyright (C) 2013-2015 carabobz@gmail.com
+   Copyright (C) 2013-2016 carabobz@gmail.com
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -166,24 +166,25 @@
 #define EQUIPMENT_EQUIPPED	"equipped"
 
 /* client configuration */
-#define CLIENT_CONF_FILE		"client.conf"
-#define CLIENT_KEY_VERSION		"version"
-#define CLIENT_KEY_CURSOR_OVER_TILE	"cursor_over_tile"
-#define CLIENT_KEY_CURSOR_SPRITE 	"cursor_sprite"
-#define CLIENT_KEY_CURSOR_TILE	 	"cursor_tile"
-#define CLIENT_KEY_CURSOR_EQUIPMENT 	"cursor_equipment"
-#define CLIENT_KEY_CURSOR_INVENTORY 	"cursor_inventory"
-#define CLIENT_KEY_ACTION_MOVE_UP 	"action_move_up"
-#define CLIENT_KEY_ACTION_MOVE_DOWN 	"action_move_down"
-#define CLIENT_KEY_ACTION_MOVE_LEFT 	"action_move_left"
-#define CLIENT_KEY_ACTION_MOVE_RIGHT 	"action_move_right"
-#define CLIENT_KEY_ACTION_MOVE_UP_RIGHT	"action_move_up_right"
-#define CLIENT_KEY_ACTION_MOVE_UP_LEFT 	"action_move_up_left"
+#define CLIENT_CONF_FILE			"client.conf"
+#define CLIENT_KEY_VERSION			"version"
+#define CLIENT_KEY_CURSOR_OVER_TILE		"cursor_over_tile"
+#define CLIENT_KEY_CURSOR_SPRITE 		"cursor_sprite"
+#define CLIENT_KEY_CURSOR_TILE	 		"cursor_tile"
+#define CLIENT_KEY_CURSOR_EQUIPMENT 		"cursor_equipment"
+#define CLIENT_KEY_CURSOR_INVENTORY 		"cursor_inventory"
+#define CLIENT_KEY_ACTION_MOVE_UP 		"action_move_up"
+#define CLIENT_KEY_ACTION_MOVE_DOWN 		"action_move_down"
+#define CLIENT_KEY_ACTION_MOVE_LEFT 		"action_move_left"
+#define CLIENT_KEY_ACTION_MOVE_RIGHT 		"action_move_right"
+#define CLIENT_KEY_ACTION_MOVE_UP_RIGHT		"action_move_up_right"
+#define CLIENT_KEY_ACTION_MOVE_UP_LEFT 		"action_move_up_left"
 #define CLIENT_KEY_ACTION_MOVE_DOWN_RIGHT 	"action_move_down_right"
 #define CLIENT_KEY_ACTION_MOVE_DOWN_LEFT 	"action_move_down_left"
 #define CLIENT_KEY_ACTION_SELECT_CHARACTER 	"action_select_character"
 #define CLIENT_KEY_ACTION_SELECT_TILE	 	"action_select_tile"
 #define CLIENT_KEY_ACTION_SELECT_EQUIPMENT 	"action_select_equipment"
 #define CLIENT_KEY_ACTION_SELECT_INVENTORY 	"action_select_inventory"
+#define CLIENT_KEY_SFX_SELECT_CHARACTER 	"sfx_select_character"
 
 #endif

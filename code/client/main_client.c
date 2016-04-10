@@ -1,6 +1,6 @@
 /*
    World of Gnome is a 2D multiplayer role playing game.
-   Copyright (C) 2013-2015 carabobz@gmail.com
+   Copyright (C) 2013-2016 carabobz@gmail.com
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@
 #include "../sdl_item/sdl.h"
 #include "screen.h"
 #include "option_client.h"
+#include <SDL2/SDL_mixer.h>
 
 const char optstring[] = "?i:u:p:l:f:F:tPm";
 const struct option longopts[] = {
@@ -112,6 +113,15 @@ int main (int argc, char **argv)
 	context_set_username(context,user);
 
 	sdl_init(TITLE_NAME, &context->render, &context->window, screen_compose, !maxfps);
+
+	int Mix_flags =  MIX_INIT_FLAC |  MIX_INIT_MOD |  MIX_INIT_MP3 |  MIX_INIT_OGG ;
+	int result;
+	if (Mix_flags != (result = Mix_Init(Mix_flags))) {
+		werr(LOGUSER,"Could not initialize mixer (result: %d).\n", result);
+		werr(LOGDEV,"Mix_Init result: %s\n", Mix_GetError());
+    	}
+
+	Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, 2, 1024);
 
 	/* connect to server */
 	if( network_connect(context,ip) ) {
