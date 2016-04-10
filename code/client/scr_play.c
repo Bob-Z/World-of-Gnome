@@ -56,7 +56,14 @@ static char * sfx = NULL;
 **********************************/
 void scr_play_init(int init_value)
 {
+	context_t * ctx;
+
 	init = init_value;
+
+	if(init_value == true) {
+		ctx = context_get_player();
+		sfx_stop(ctx,sfx);
+	}
 }
 
 
