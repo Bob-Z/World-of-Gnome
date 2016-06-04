@@ -43,7 +43,7 @@ static int async_send(void * user_data)
 	context_t * context = data->context;
 
 	if( context == NULL ) {
-		return RET_FAIL;
+		goto async_send_free;
 	}
 
 	if(data->is_data ) {
@@ -54,7 +54,7 @@ static int async_send(void * user_data)
 
 	if( socket == 0 ) {
 		wlog(LOGDEBUG, "socket %d is disconnected",socket);
-		return RET_OK;
+		goto async_send_free;
 	}
 
 	SDL_LockMutex(context->send_mutex);
@@ -90,6 +90,7 @@ static int async_send(void * user_data)
 
 async_send_end:
 	SDL_UnlockMutex(context->send_mutex);
+async_send_free:
 	free(data->data);
 	free(data);
 
@@ -101,6 +102,7 @@ async_send_end:
 void network_send_command(context_t * context, Uint32 command, long int count, const char *data, int is_data)
 {
 	send_data_t * send_data;
+	SDL_Thread *thread;
 
 	send_data = malloc(sizeof(send_data_t));
 	send_data->command = command;
@@ -110,7 +112,12 @@ void network_send_command(context_t * context, Uint32 command, long int count, c
 	send_data->is_data = is_data;
 	send_data->context = context;
 
-	SDL_CreateThread(async_send,"async_send",(void*)send_data);
+	thread = SDL_CreateThread(async_send,"async_send",(void*)send_data);
+
+	if( thread == NULL) {
+		free(send_data->data);
+		free(send_data);
+	}
 }
 
 /*********************************************************************
