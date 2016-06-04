@@ -29,179 +29,179 @@ return a layer_t struct which needs to be freed by a call to map_layer_delete
 ************************************************/
 layer_t * map_layer_new(const char * map, int layer_index, layer_t * default_layer)
 {
-        char layer_name[SMALL_BUF];
-        char keyword[SMALL_BUF];
-        int tiling_index = 0;
-        char * zoom_str;
-        int more;
+	char layer_name[SMALL_BUF];
+	char keyword[SMALL_BUF];
+	int tiling_index = 0;
+	char * zoom_str;
+	int more;
 	layer_t * layer = NULL;
 
 	layer=malloc(sizeof(layer_t));
 
-        layer->active = false;
+	layer->active = false;
 
-        if( layer_index != DEFAULT_LAYER && default_layer != NULL ) {
-                sprintf(layer_name,"%s%d",MAP_KEY_LAYER,layer_index);
-                if( !entry_exist(MAP_TABLE, map, layer_name,MAP_KEY_SET,NULL)) {
-                        return NULL;
-                }
+	if( layer_index != DEFAULT_LAYER && default_layer != NULL ) {
+		sprintf(layer_name,"%s%d",MAP_KEY_LAYER,layer_index);
+		if( !entry_exist(MAP_TABLE, map, layer_name,MAP_KEY_SET,NULL)) {
+			return NULL;
+		}
 
-                layer->active = true;
+		layer->active = true;
 
-                /* Automatic tiling */
-                layer->col_width[0]=default_layer->col_width[0];
-                layer->col_height[0]=default_layer->col_height[0];
-                layer->row_width[0]=default_layer->row_width[0];
-                layer->row_height[0]=default_layer->row_height[0];
+		/* Automatic tiling */
+		layer->col_width[0]=default_layer->col_width[0];
+		layer->col_height[0]=default_layer->col_height[0];
+		layer->row_width[0]=default_layer->row_width[0];
+		layer->row_height[0]=default_layer->row_height[0];
 
-                layer->map_w = default_layer->map_w;
-                entry_read_int(MAP_TABLE, map, &layer->map_w,layer_name,MAP_KEY_WIDTH,NULL);
+		layer->map_w = default_layer->map_w;
+		entry_read_int(MAP_TABLE, map, &layer->map_w,layer_name,MAP_KEY_WIDTH,NULL);
 
-                layer->map_h = default_layer->map_h;
-                entry_read_int(MAP_TABLE, map, &layer->map_h,layer_name,MAP_KEY_HEIGHT,NULL);
+		layer->map_h = default_layer->map_h;
+		entry_read_int(MAP_TABLE, map, &layer->map_h,layer_name,MAP_KEY_HEIGHT,NULL);
 
-                layer->tile_width = default_layer->tile_width;
-                if( entry_read_int(MAP_TABLE, map, &layer->tile_width,layer_name,MAP_KEY_TILE_WIDTH,NULL) ) {
-                        layer->col_width[0] = layer->tile_width;
-                }
+		layer->tile_width = default_layer->tile_width;
+		if( entry_read_int(MAP_TABLE, map, &layer->tile_width,layer_name,MAP_KEY_TILE_WIDTH,NULL) ) {
+			layer->col_width[0] = layer->tile_width;
+		}
 
-                layer->tile_height = default_layer->tile_height;
-                if( entry_read_int(MAP_TABLE, map, &layer->tile_height,layer_name,MAP_KEY_TILE_HEIGHT,NULL) ) {
-                        layer->row_height[0] = layer->tile_height;
-                }
+		layer->tile_height = default_layer->tile_height;
+		if( entry_read_int(MAP_TABLE, map, &layer->tile_height,layer_name,MAP_KEY_TILE_HEIGHT,NULL) ) {
+			layer->row_height[0] = layer->tile_height;
+		}
 
-                layer->map_zoom = default_layer->map_zoom;
-                if(entry_read_string(MAP_TABLE,map,&zoom_str,layer_name,MAP_KEY_SPRITE_ZOOM,NULL)) {
-                        layer->map_zoom = atof(zoom_str);
-                        free(zoom_str);
-                }
+		layer->map_zoom = default_layer->map_zoom;
+		if(entry_read_string(MAP_TABLE,map,&zoom_str,layer_name,MAP_KEY_SPRITE_ZOOM,NULL)) {
+			layer->map_zoom = atof(zoom_str);
+			free(zoom_str);
+		}
 
-                layer->row_num = default_layer->row_num;
-                layer->col_num = default_layer->col_num;
-        } else {
-                if(!entry_read_int(MAP_TABLE, map, &layer->map_w,MAP_KEY_WIDTH,NULL)) {
-                        return NULL;
-                }
-                if(!entry_read_int(MAP_TABLE, map, &layer->map_h,MAP_KEY_HEIGHT,NULL)) {
-                        return NULL;
-                }
-                if(!entry_read_int(MAP_TABLE, map, &layer->tile_width,MAP_KEY_TILE_WIDTH,NULL)) {
-                        return NULL;
-                }
-                if(!entry_read_int(MAP_TABLE, map, &layer->tile_height,MAP_KEY_TILE_HEIGHT,NULL)) {
-                        return NULL;
-                }
-                layer->active = true;
+		layer->row_num = default_layer->row_num;
+		layer->col_num = default_layer->col_num;
+	} else {
+		if(!entry_read_int(MAP_TABLE, map, &layer->map_w,MAP_KEY_WIDTH,NULL)) {
+			return NULL;
+		}
+		if(!entry_read_int(MAP_TABLE, map, &layer->map_h,MAP_KEY_HEIGHT,NULL)) {
+			return NULL;
+		}
+		if(!entry_read_int(MAP_TABLE, map, &layer->tile_width,MAP_KEY_TILE_WIDTH,NULL)) {
+			return NULL;
+		}
+		if(!entry_read_int(MAP_TABLE, map, &layer->tile_height,MAP_KEY_TILE_HEIGHT,NULL)) {
+			return NULL;
+		}
+		layer->active = true;
 
-                /* Automatic tiling */
-                layer->col_width[0] = layer->tile_width;
-                layer->col_height[0]=0;
-                layer->row_width[0]=0;
-                layer->row_height[0] = layer->tile_height;
+		/* Automatic tiling */
+		layer->col_width[0] = layer->tile_width;
+		layer->col_height[0]=0;
+		layer->row_width[0]=0;
+		layer->row_height[0] = layer->tile_height;
 
-                layer->map_zoom = 1.0;
-                if(entry_read_string(MAP_TABLE,map,&zoom_str,MAP_KEY_SPRITE_ZOOM,NULL)) {
-                        layer->map_zoom = atof(zoom_str);
-                        free(zoom_str);
-                }
+		layer->map_zoom = 1.0;
+		if(entry_read_string(MAP_TABLE,map,&zoom_str,MAP_KEY_SPRITE_ZOOM,NULL)) {
+			layer->map_zoom = atof(zoom_str);
+			free(zoom_str);
+		}
 
-                layer->row_num = 1;
-                layer->col_num = 1;
-        }
+		layer->row_num = 1;
+		layer->col_num = 1;
+	}
 
-        /* Custom tiling */
-        for( tiling_index=0; tiling_index< MAX_COL; tiling_index ++ ) {
-                more = false;
+	/* Custom tiling */
+	for( tiling_index=0; tiling_index< MAX_COL; tiling_index ++ ) {
+		more = false;
 
-                if( layer_index != DEFAULT_LAYER && default_layer != NULL ) {
-                        if( tiling_index > 0 ) {
-                                layer->col_width[tiling_index] = default_layer->col_width[tiling_index];
-                                layer->col_height[tiling_index] = default_layer->col_height[tiling_index];
-                        }
+		if( layer_index != DEFAULT_LAYER && default_layer != NULL ) {
+			if( tiling_index > 0 ) {
+				layer->col_width[tiling_index] = default_layer->col_width[tiling_index];
+				layer->col_height[tiling_index] = default_layer->col_height[tiling_index];
+			}
 
-                        sprintf(keyword,"%s%d",MAP_KEY_COL_WIDTH,tiling_index);
-                        if( entry_read_int(MAP_TABLE, map, &layer->col_width[tiling_index],layer_name,keyword,NULL) ) {
-                                more = true;
-                        }
-                        sprintf(keyword,"%s%d",MAP_KEY_COL_HEIGHT,tiling_index);
-                        if( entry_read_int(MAP_TABLE, map, &layer->col_height[tiling_index],layer_name,keyword,NULL) ) {
-                                more = true;
-                        }
-                } else {
-                        if( tiling_index > 0 ) {
-                                layer->col_width[tiling_index] = 0;
-                                layer->col_height[tiling_index] = 0;
-                        }
+			sprintf(keyword,"%s%d",MAP_KEY_COL_WIDTH,tiling_index);
+			if( entry_read_int(MAP_TABLE, map, &layer->col_width[tiling_index],layer_name,keyword,NULL) ) {
+				more = true;
+			}
+			sprintf(keyword,"%s%d",MAP_KEY_COL_HEIGHT,tiling_index);
+			if( entry_read_int(MAP_TABLE, map, &layer->col_height[tiling_index],layer_name,keyword,NULL) ) {
+				more = true;
+			}
+		} else {
+			if( tiling_index > 0 ) {
+				layer->col_width[tiling_index] = 0;
+				layer->col_height[tiling_index] = 0;
+			}
 
-                        sprintf(keyword,"%s%d",MAP_KEY_COL_WIDTH,tiling_index);
-                        if( entry_read_int(MAP_TABLE, map, &layer->col_width[tiling_index],keyword,NULL) ) {
-                                more = true;
-                        }
-                        sprintf(keyword,"%s%d",MAP_KEY_COL_HEIGHT,tiling_index);
-                        if( entry_read_int(MAP_TABLE, map, &layer->col_height[tiling_index],keyword,NULL) ) {
-                                more = true;
-                        }
-                }
-                if(more) {
-                        if( tiling_index > 0 ) {
-                                layer->col_num++;
-                        }
-                }
-        }
+			sprintf(keyword,"%s%d",MAP_KEY_COL_WIDTH,tiling_index);
+			if( entry_read_int(MAP_TABLE, map, &layer->col_width[tiling_index],keyword,NULL) ) {
+				more = true;
+			}
+			sprintf(keyword,"%s%d",MAP_KEY_COL_HEIGHT,tiling_index);
+			if( entry_read_int(MAP_TABLE, map, &layer->col_height[tiling_index],keyword,NULL) ) {
+				more = true;
+			}
+		}
+		if(more) {
+			if( tiling_index > 0 ) {
+				layer->col_num++;
+			}
+		}
+	}
 
-        for( tiling_index=0; tiling_index< MAX_ROW; tiling_index ++ ) {
-                more = false;
+	for( tiling_index=0; tiling_index< MAX_ROW; tiling_index ++ ) {
+		more = false;
 
-                if( layer_index != DEFAULT_LAYER && default_layer != NULL ) {
-                        if( tiling_index > 0 ) {
-                                layer->row_width[tiling_index] = default_layer->row_width[tiling_index];
-                                layer->row_height[tiling_index] = default_layer->row_height[tiling_index];
-                        }
+		if( layer_index != DEFAULT_LAYER && default_layer != NULL ) {
+			if( tiling_index > 0 ) {
+				layer->row_width[tiling_index] = default_layer->row_width[tiling_index];
+				layer->row_height[tiling_index] = default_layer->row_height[tiling_index];
+			}
 
-                        sprintf(keyword,"%s%d",MAP_KEY_ROW_WIDTH,tiling_index);
-                        if( entry_read_int(MAP_TABLE, map, &layer->row_width[tiling_index],layer_name,keyword,NULL) ) {
-                                more = true;
-                        }
-                        sprintf(keyword,"%s%d",MAP_KEY_ROW_HEIGHT,tiling_index);
-                        if( entry_read_int(MAP_TABLE, map, &layer->row_height[tiling_index],layer_name,keyword,NULL) ) {
-                                more = true;
-                        }
-                } else {
-                        if( tiling_index > 0 ) {
-                                layer->row_width[tiling_index] = 0;
-                                layer->row_height[tiling_index] = 0;
-                        }
+			sprintf(keyword,"%s%d",MAP_KEY_ROW_WIDTH,tiling_index);
+			if( entry_read_int(MAP_TABLE, map, &layer->row_width[tiling_index],layer_name,keyword,NULL) ) {
+				more = true;
+			}
+			sprintf(keyword,"%s%d",MAP_KEY_ROW_HEIGHT,tiling_index);
+			if( entry_read_int(MAP_TABLE, map, &layer->row_height[tiling_index],layer_name,keyword,NULL) ) {
+				more = true;
+			}
+		} else {
+			if( tiling_index > 0 ) {
+				layer->row_width[tiling_index] = 0;
+				layer->row_height[tiling_index] = 0;
+			}
 
-                        sprintf(keyword,"%s%d",MAP_KEY_ROW_WIDTH,tiling_index);
-                        if( entry_read_int(MAP_TABLE, map, &layer->row_width[tiling_index],keyword,NULL) ) {
-                                more = true;
-                        }
-                        sprintf(keyword,"%s%d",MAP_KEY_ROW_HEIGHT,tiling_index);
-                        if( entry_read_int(MAP_TABLE, map, &layer->row_height[tiling_index],keyword,NULL) ) {
-                                more = true;
-                        }
-                }
-                if(more) {
-                        if( tiling_index > 0 ) {
-                                layer->row_num++;
-                        }
-                }
-        }
+			sprintf(keyword,"%s%d",MAP_KEY_ROW_WIDTH,tiling_index);
+			if( entry_read_int(MAP_TABLE, map, &layer->row_width[tiling_index],keyword,NULL) ) {
+				more = true;
+			}
+			sprintf(keyword,"%s%d",MAP_KEY_ROW_HEIGHT,tiling_index);
+			if( entry_read_int(MAP_TABLE, map, &layer->row_height[tiling_index],keyword,NULL) ) {
+				more = true;
+			}
+		}
+		if(more) {
+			if( tiling_index > 0 ) {
+				layer->row_num++;
+			}
+		}
+	}
 
-        for(tiling_index=0,layer->col_width_total=0; tiling_index<layer->col_num; tiling_index++) {
-                layer->col_width_total += layer->col_width[tiling_index];
-        }
-        for(tiling_index=0,layer->col_height_total=0; tiling_index<layer->col_num; tiling_index++) {
-                layer->col_height_total += layer->col_height[tiling_index];
-        }
-        for(tiling_index=0,layer->row_width_total=0; tiling_index<layer->row_num; tiling_index++) {
-                layer->row_width_total += layer->row_width[tiling_index];
-        }
-        for(tiling_index=0,layer->row_height_total=0; tiling_index<layer->row_num; tiling_index++) {
-                layer->row_height_total += layer->row_height[tiling_index];
-        }
+	for(tiling_index=0,layer->col_width_total=0; tiling_index<layer->col_num; tiling_index++) {
+		layer->col_width_total += layer->col_width[tiling_index];
+	}
+	for(tiling_index=0,layer->col_height_total=0; tiling_index<layer->col_num; tiling_index++) {
+		layer->col_height_total += layer->col_height[tiling_index];
+	}
+	for(tiling_index=0,layer->row_width_total=0; tiling_index<layer->row_num; tiling_index++) {
+		layer->row_width_total += layer->row_width[tiling_index];
+	}
+	for(tiling_index=0,layer->row_height_total=0; tiling_index<layer->row_num; tiling_index++) {
+		layer->row_height_total += layer->row_height[tiling_index];
+	}
 
-        return layer;
+	return layer;
 }
 
 /************************************************
@@ -217,22 +217,22 @@ void map_layer_delete(layer_t * layer)
 **********************************/
 int map_t2p_x(int x, int y,layer_t * layer)
 {
-        int i;
-        int res;
+	int i;
+	int res;
 
-        res = (x/layer->col_num) * layer->col_width_total;
+	res = (x/layer->col_num) * layer->col_width_total;
 
-        for(i=0; i<x%layer->col_num; i++) {
-                res += layer->col_width[i];
-        }
+	for(i=0; i<x%layer->col_num; i++) {
+		res += layer->col_width[i];
+	}
 
-        res += (y/layer->row_num) * layer->row_width_total;
+	res += (y/layer->row_num) * layer->row_width_total;
 
-        for(i=0; i<y%layer->row_num; i++) {
-                res += layer->row_width[i];
-        }
+	for(i=0; i<y%layer->row_num; i++) {
+		res += layer->row_width[i];
+	}
 
-        return res;
+	return res;
 }
 
 /**********************************
@@ -240,21 +240,21 @@ int map_t2p_x(int x, int y,layer_t * layer)
 **********************************/
 int map_t2p_y(int x, int y,layer_t * layer)
 {
-        int i;
-        int res;
+	int i;
+	int res;
 
-        res = (x/layer->col_num) * layer->col_height_total;
+	res = (x/layer->col_num) * layer->col_height_total;
 
-        for(i=0; i<x%layer->col_num; i++) {
-                res += layer->col_height[i];
-        }
+	for(i=0; i<x%layer->col_num; i++) {
+		res += layer->col_height[i];
+	}
 
-        res += (y/layer->row_num) * layer->row_height_total;
+	res += (y/layer->row_num) * layer->row_height_total;
 
-        for(i=0; i<y%layer->row_num; i++) {
-                res += layer->row_height[i];
-        }
+	for(i=0; i<y%layer->row_num; i++) {
+		res += layer->row_height[i];
+	}
 
-        return res;
+	return res;
 }
 

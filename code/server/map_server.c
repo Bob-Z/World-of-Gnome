@@ -28,16 +28,16 @@ return string MUST BE FREED
 ***********************************/
 static char * get_tile_type_through_layer(const char * map, int layer, int x, int y)
 {
-        char * type;
-        while( layer >= 0 ) {
-                type = map_get_tile_type(map,layer,x,y);
-                if( type ) {
-                        return type;
-                }
-                layer--;
-        }
+	char * type;
+	while( layer >= 0 ) {
+		type = map_get_tile_type(map,layer,x,y);
+		if( type ) {
+			return type;
+		}
+		layer--;
+	}
 
-        return NULL;
+	return NULL;
 }
 
 /***********************************
@@ -936,7 +936,7 @@ int map_get_tile_coord(const char * map, int layer, int x, int y, int * tx, int 
 		return RET_FAIL;
 	}
 
-	if(tx) {	
+	if(tx) {
 		*tx = map_t2p_x(x,y,default_layer);
 	}
 	if(ty) {
@@ -1016,9 +1016,9 @@ int map_add_layer(const char * map_name,int layer, int w,int h, int tile_w, int 
 		return RET_FAIL;
 	}
 
-        tile_array=malloc(((w*h)+1)*sizeof(char *));
+	tile_array=malloc(((w*h)+1)*sizeof(char *));
 
-        sprintf(layer_name,"%s%d",MAP_KEY_LAYER,layer);
+	sprintf(layer_name,"%s%d",MAP_KEY_LAYER,layer);
 
 	if (!entry_write_int(MAP_TABLE,map_name,w,layer_name,MAP_KEY_HEIGHT,NULL) ) {
 		free(tile_array);
@@ -1037,27 +1037,27 @@ int map_add_layer(const char * map_name,int layer, int w,int h, int tile_w, int 
 		return RET_FAIL;
 	}
 
-        /* Write default tile */
-        for(i=0; i<(w*h); i++) {
-                tile_array[i] = (char *)default_tile;
-        }
-        tile_array[i] = NULL; /* End of list */
+	/* Write default tile */
+	for(i=0; i<(w*h); i++) {
+		tile_array[i] = (char *)default_tile;
+	}
+	tile_array[i] = NULL; /* End of list */
 
-        if (!entry_write_list(MAP_TABLE,map_name,tile_array,layer_name,MAP_KEY_SET, NULL) ) {
-                free(tile_array);
-                return RET_FAIL;
-        }
+	if (!entry_write_list(MAP_TABLE,map_name,tile_array,layer_name,MAP_KEY_SET, NULL) ) {
+		free(tile_array);
+		return RET_FAIL;
+	}
 
-        /* Write default type */
-        for(i=0; i<(w*h); i++) {
-                tile_array[i] = (char *)default_type;
-        }
-        tile_array[i] = NULL; /* End of list */
+	/* Write default type */
+	for(i=0; i<(w*h); i++) {
+		tile_array[i] = (char *)default_type;
+	}
+	tile_array[i] = NULL; /* End of list */
 
-        if (!entry_write_list(MAP_TABLE,map_name,tile_array,layer_name,MAP_KEY_TYPE, NULL) ) {
-                free(tile_array);
-                return RET_FAIL;
-        }
+	if (!entry_write_list(MAP_TABLE,map_name,tile_array,layer_name,MAP_KEY_TYPE, NULL) ) {
+		free(tile_array);
+		return RET_FAIL;
+	}
 
 	free(tile_array);
 	return RET_OK;
@@ -1071,7 +1071,7 @@ int map_delete_layer(const char * map_name,int layer)
 {
 	char layer_name[SMALL_BUF];
 
-        sprintf(layer_name,"%s%d",MAP_KEY_LAYER,layer);
+	sprintf(layer_name,"%s%d",MAP_KEY_LAYER,layer);
 
 	if (!entry_remove_group(MAP_TABLE,map_name,layer_name,NULL) ) {
 		return RET_FAIL;

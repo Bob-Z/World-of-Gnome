@@ -370,8 +370,7 @@ static void compose_action(context_t * ctx,item_t * item_list)
 		}
 		if(entry_read_string(ACTION_TABLE,action_list[i],&icon_array[0],ACTION_KEY_ICON,NULL)) {
 			icon = icon_array;
-		}
-		else if(!entry_read_list(ACTION_TABLE,action_list[i],&icon,ACTION_KEY_ICON,NULL)) {
+		} else if(!entry_read_list(ACTION_TABLE,action_list[i],&icon,ACTION_KEY_ICON,NULL)) {
 			i++;
 			continue;
 		}

@@ -27,22 +27,22 @@
 #define MAX_ROW         16
 
 typedef struct layer {
-        int active;
-        int tile_width;
-        int tile_height;
-        int map_w;
-        int map_h;
-        double map_zoom;
-        int col_width[MAX_COL];
-        int col_height[MAX_COL];
-        int col_num;
-        int col_width_total;
-        int col_height_total;
-        int row_width[MAX_ROW];
-        int row_height[MAX_ROW];
-        int row_num;
-        int row_width_total;
-        int row_height_total;
+	int active;
+	int tile_width;
+	int tile_height;
+	int map_w;
+	int map_h;
+	double map_zoom;
+	int col_width[MAX_COL];
+	int col_height[MAX_COL];
+	int col_num;
+	int col_width_total;
+	int col_height_total;
+	int row_width[MAX_ROW];
+	int row_height[MAX_ROW];
+	int row_num;
+	int row_width_total;
+	int row_height_total;
 } layer_t;
 
 layer_t * map_layer_new(const char * map, int layer_index, layer_t * default_layer);

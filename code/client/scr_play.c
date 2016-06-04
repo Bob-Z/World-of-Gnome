@@ -955,8 +955,7 @@ item_t * scr_play_compose(context_t * ctx)
 			if( strcmp(old_sfx,sfx) ) {
 				sfx_stop(ctx,old_sfx);
 			}
-		}
-		else  {  // sfx == NULL
+		} else  { // sfx == NULL
 			sfx_stop(ctx,old_sfx);
 		}
 		free(old_sfx);

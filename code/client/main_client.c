@@ -119,7 +119,7 @@ int main (int argc, char **argv)
 	if (Mix_flags != (result = Mix_Init(Mix_flags))) {
 		werr(LOGUSER,"Could not initialize mixer (result: %d).\n", result);
 		werr(LOGDEV,"Mix_Init result: %s\n", Mix_GetError());
-    	}
+	}
 
 	Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, 2, 1024);
 
