@@ -35,7 +35,9 @@ int file_add(context_t * context,char * data,Uint32 command_size)
 	char * ptr = data;
 	Uint32 filename_size;
 	char * filename = NULL;
-	char * fullname;
+	char * tmpfilename = NULL;
+	char * tmpfullname = NULL;
+	char * fullname = NULL;
 	int res;
 
 	/* Get the data from the network frame */
@@ -64,16 +66,25 @@ int file_add(context_t * context,char * data,Uint32 command_size)
 	ptr += sizeof(Uint32);
 
 	/* Write the data to disk */
-	fullname = strconcat(base_directory,"/",filename,NULL);
+	tmpfilename = strconcat(filename,APP_NAME,"tmp",NULL);
+	tmpfullname = strconcat(base_directory,"/",tmpfilename,NULL);
 
-	file_create_directory(fullname);
+	file_create_directory(tmpfullname);
 
-	res = file_set_contents(filename,ptr,filedata_size);
+	res = file_set_contents(tmpfilename,ptr,filedata_size);
 	if( res == FALSE ) {
-		werr(LOGDEV,"Error writing file %s with size %d",fullname, filedata_size);
-		free(fullname);
+		werr(LOGDEV,"Error writing file %s with size %d",tmpfullname, filedata_size);
+		free(tmpfullname);
 		return -1;
 	}
+
+	fullname = strconcat(base_directory,"/",filename,NULL);
+
+	link(tmpfullname,fullname);
+	unlink(tmpfullname);
+
+	free(tmpfilename);
+	free(tmpfullname);
 
 	wlog(LOGDEBUG,"write file %s",fullname);
 	free(fullname);
