@@ -181,7 +181,9 @@ item_t * scr_select_compose(context_t * context)
 		entry_read_string(NULL,CLIENT_CONF_FILE,&sfx_filename,CLIENT_KEY_SFX_SELECT_CHARACTER,NULL);
 	}
 
-	sfx_play(context,sfx_filename,NO_RESTART);
+	if( sfx_filename ) {
+		sfx_play(context,sfx_filename,NO_RESTART);
+	}
 
 	if(item_list) {
 		item_list_free(item_list);
