@@ -40,4 +40,27 @@ for NUM in `ls -d ? | sort`;do
 
 	echo "        ]"	>> $MAP_NAME
 	echo "}"	>> $MAP_NAME
+
+	#Events
+	echo "event_list: {"	>> $MAP_NAME
+	XPOS=0
+	YPOS=0
+	CURRENT_TILE=0
+	for f in $FILE;do
+		SHORT_NAME=`echo $f | sed 's/.*WC_//g' | sed 's/_marquee.zip//g'`
+		if [ "$CURRENT_TILE" = "$WIDTH" ];then
+			XPOS=0
+			YPOS=2
+		fi
+		echo "E$CURRENT_TILE = {" >> $MAP_NAME
+		echo "   pos_x = $XPOS" >> $MAP_NAME
+		echo "   pos_y = $YPOS" >> $MAP_NAME
+		echo "   script = \"set_sprite.lua\"" >> $MAP_NAME
+		echo "   param = ( \"$NUM\", \"$SHORT_NAME\" )" >> $MAP_NAME
+		echo "}" >> $MAP_NAME
+
+		let "CURRENT_TILE=$CURRENT_TILE+1"
+		let "XPOS=$XPOS+1"
+	done
+	echo "}"	>> $MAP_NAME
 done
