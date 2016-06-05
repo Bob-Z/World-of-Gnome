@@ -8,7 +8,9 @@ for NUM in `ls -d ? | sort`;do
 
 	FILE_QTY=`ls -1 $NUM/WC_*_marquee.zip | wc -l`
 	echo $FILE_QTY files in map $NUM
-	let "WIDTH=($FILE_QTY+1)/2"
+	let "COLUMN=($FILE_QTY+1)/2"
+	#Add 2 column for map exits
+	let "WIDTH=$COLUMN+2"
 
 	FILE=`ls $NUM/WC_*_marquee.zip`
 
@@ -26,30 +28,32 @@ for NUM in `ls -d ? | sort`;do
 	echo "layer0 = {"	>> $MAP_NAME
 	echo "        set = ["	>> $MAP_NAME
 	CURRENT_TILE=0
+	echo "\"\"," >> $MAP_NAME #exit column
 	for f in $FILE;do
-		if [ "$CURRENT_TILE" = "$WIDTH" ];then
+		if [ "$CURRENT_TILE" = "$COLUMN" ];then
+			echo "\"\"," >> $MAP_NAME #exit column
 			for i in `seq 1 $WIDTH`;do
 				echo "\"\"," >> $MAP_NAME
 			done
+			echo "\"\"," >> $MAP_NAME #exit column
 		fi
 		echo "\"character/$f\"," >> $MAP_NAME
 		let "CURRENT_TILE=$CURRENT_TILE+1"
 	done
-	#last coma
-	echo "\"\"" >> $MAP_NAME
+	echo "\"\"" >> $MAP_NAME #exit column
 
 	echo "        ]"	>> $MAP_NAME
 	echo "}"	>> $MAP_NAME
 
 	#Events
 	echo "event_list: {"	>> $MAP_NAME
-	XPOS=0
+	XPOS=1
 	YPOS=0
 	CURRENT_TILE=0
 	for f in $FILE;do
 		SHORT_NAME=`echo $f | sed 's/.*WC_//g' | sed 's/_marquee.zip//g'`
-		if [ "$CURRENT_TILE" = "$WIDTH" ];then
-			XPOS=0
+		if [ "$CURRENT_TILE" = "$COLUMN" ];then
+			XPOS=1
 			YPOS=2
 		fi
 		echo "E$CURRENT_TILE = {" >> $MAP_NAME
