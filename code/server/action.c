@@ -669,6 +669,110 @@ static int l_character_set_ai_script( lua_State* L)
 	return 1;  /* number of results */
 }
 
+/* character_set sprite
+
+Set a character's sprite
+
+Input:
+ - ID of a character
+ - index in the sprite list
+ - name of the sprite file
+Output:
+*/
+static int l_character_set_sprite( lua_State* L)
+{
+	const char * id;
+	int index;
+	const char * sprite_name;
+	int res;
+
+	id = luaL_checkstring(L, -3);
+	index = luaL_checkint(L, -2);
+	sprite_name = luaL_checkstring(L, -1);
+
+	res = character_set_sprite(id,index,sprite_name);
+	lua_pushnumber(L, res);
+	return 1;  /* number of results */
+}
+
+/* character_set_sprite_dir
+
+Set a character's sprite for one direction
+
+Input:
+ - ID of a character
+ - direction to add (N,S,W,E)
+ - index in the sprite list
+ - name of the sprite file
+Output:
+*/
+static int l_character_set_sprite_dir( lua_State* L)
+{
+	const char * id;
+	const char * dir;
+	int index;
+	const char * sprite_name;
+	int res;
+
+	id = luaL_checkstring(L, -4);
+	dir = luaL_checkstring(L, -3);
+	index = luaL_checkint(L, -2);
+	sprite_name = luaL_checkstring(L, -1);
+
+	res = character_set_sprite_dir(id,dir,index,sprite_name);
+	lua_pushnumber(L, res);
+	return 1;  /* number of results */
+}
+
+/* character_set_sprite_move
+
+Set a character's moving sprite for one direction
+
+Input:
+ - ID of a character
+ - direction to add (N,S,W,E)
+ - index in the sprite list
+ - name of the sprite file
+Output:
+*/
+static int l_character_set_sprite_move( lua_State* L)
+{
+	const char * id;
+	const char * dir;
+	int index;
+	const char * sprite_name;
+	int res;
+
+	id = luaL_checkstring(L, -4);
+	dir = luaL_checkstring(L, -3);
+	index = luaL_checkint(L, -2);
+	sprite_name = luaL_checkstring(L, -1);
+
+	res = character_set_sprite_move(id,dir,index,sprite_name);
+	lua_pushnumber(L, res);
+	return 1;  /* number of results */
+}
+
+/* character_broadcast
+
+Send character to all context on the same map.
+Call this function after character_set_*_sprite functions
+
+Input:
+ - ID of a character
+Output:
+*/
+static int l_character_broadcast( lua_State* L)
+{
+	const char * character;
+	int res = 0;
+
+	character = luaL_checkstring(L, -1);
+	character_broadcast(character);
+	lua_pushnumber(L, res);
+	return 1;  /* number of results */
+}
+
 /* character_wake_up
 
 Wake-up a NPC
@@ -861,8 +965,8 @@ Output: -1 on error, 0 otherwise
 */
 static int l_map_set_tile_array( lua_State* L)
 {
-        const char **arg = NULL;
-        int i;
+	const char **arg = NULL;
+	int i;
 	const char * map;
 	int layer;
 
@@ -874,18 +978,18 @@ static int l_map_set_tile_array( lua_State* L)
 	while (lua_next(L, -2) != 0) {
 		/* uses 'key' (at index -2) and 'value' (at index -1) */
 		arg = realloc(arg, sizeof(char*)*(i+2));
-                arg[i] = luaL_checkstring(L, -1);
-                i++;
+		arg[i] = luaL_checkstring(L, -1);
+		i++;
 		/* removes 'value'; keeps 'key' for next iteration */
 		lua_pop(L, 1);
 	}
-        arg[i]=NULL;
+	arg[i]=NULL;
 
-        map_set_tile_array(map,layer,arg);
+	map_set_tile_array(map,layer,arg);
 
-        free(arg);
-        lua_pushnumber(L, 0);
-        return 1;  /* number of results */
+	free(arg);
+	lua_pushnumber(L, 0);
+	return 1;  /* number of results */
 }
 
 /* map_set_tile_type
@@ -2243,6 +2347,12 @@ void register_lua_functions(context_t * context)
 	lua_setglobal(L, "character_set_portrait");
 	lua_pushcfunction(L, l_character_set_ai_script);
 	lua_setglobal(L, "character_set_ai_script");
+	lua_pushcfunction(L, l_character_set_sprite);
+	lua_setglobal(L, "character_set_sprite");
+	lua_pushcfunction(L, l_character_set_sprite_dir);
+	lua_setglobal(L, "character_set_sprite_dir");
+	lua_pushcfunction(L, l_character_set_sprite_move);
+	lua_setglobal(L, "character_set_sprite_move");
 	lua_pushcfunction(L, l_character_wake_up);
 	lua_setglobal(L, "character_wake_up");
 	lua_pushcfunction(L, l_character_out_of_game);
@@ -2251,6 +2361,8 @@ void register_lua_functions(context_t * context)
 	lua_setglobal(L, "character_disconnect");
 	lua_pushcfunction(L, l_character_delete);
 	lua_setglobal(L, "character_delete");
+	lua_pushcfunction(L, l_character_broadcast);
+	lua_setglobal(L, "character_broadcast");
 	/* map func */
 	lua_pushcfunction(L, l_map_new);
 	lua_setglobal(L, "map_new");

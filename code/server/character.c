@@ -24,6 +24,7 @@
 #include "action.h"
 #include "character.h"
 #include "map_server.h"
+#include "network_server.h"
 
 /*********************************************
 Send playable character templates
@@ -509,8 +510,7 @@ int character_set_pos(context_t * ctx, const char * map, int x, int y)
 			script = NULL;
 			if( entry_read_string(MAP_TABLE,map,&script,layer_name,MAP_ENTRY_EVENT_LIST,event_id[i],MAP_EVENT_SCRIPT,NULL) ) {
 				entry_read_list(MAP_TABLE,map,&param,layer_name,MAP_ENTRY_EVENT_LIST,event_id[i],MAP_EVENT_PARAM,NULL);
-			}
-			else if( entry_read_string(MAP_TABLE,map,&script,MAP_ENTRY_EVENT_LIST,event_id[i],MAP_EVENT_SCRIPT,NULL) ) {
+			} else if( entry_read_string(MAP_TABLE,map,&script,MAP_ENTRY_EVENT_LIST,event_id[i],MAP_EVENT_SCRIPT,NULL) ) {
 				entry_read_list(MAP_TABLE,map,&param,MAP_ENTRY_EVENT_LIST,event_id[i],MAP_EVENT_PARAM,NULL);
 			}
 
@@ -574,19 +574,15 @@ return -1 if error
 int character_set_portrait(const char * id,const char * portrait)
 {
 	context_t * ctx;
-	char * filename;
-	int res;
 
 	if(!entry_write_string(CHARACTER_TABLE,id,portrait,CHARACTER_KEY_PORTRAIT,NULL)) {
 		return -1;
 	}
 
 	ctx = context_find(id);
-	filename = strconcat(CHARACTER_TABLE,"/",id,NULL);
-	res = network_send_file(ctx,filename);
-	free(filename);
+	network_send_character_file(ctx);
 
-	return res;
+	return RET_OK;
 }
 
 /*********************************************************
@@ -636,3 +632,111 @@ int character_wake_up(const char * id)
 
 	return 0;
 }
+
+/***********************************
+Write a new filename in a character's sprite list
+return RET_FAIL if fails
+***********************************/
+int character_set_sprite(const char * id, int index, const char * filename)
+{
+	if(id == NULL || filename == NULL) {
+		return RET_FAIL;
+	}
+
+	if( !entry_write_list_index(CHARACTER_TABLE, id, filename, index,CHARACTER_KEY_SPRITE,NULL ) ) {
+		return RET_FAIL;
+	}
+
+	return RET_OK;
+}
+
+/***********************************
+Write a new filename in a character's sprite direction list
+return RET_FAIL if fails
+***********************************/
+int character_set_sprite_dir(const char * id, const char * dir, int index, const char * filename)
+{
+	const char * key;
+
+	if(id == NULL || filename == NULL || dir == NULL) {
+		return RET_FAIL;
+	}
+
+	switch(dir[0]) {
+	case 'N':
+	case 'n':
+		key = CHARACTER_KEY_DIR_N_SPRITE;
+		break;
+	case 'S':
+	case 's':
+		key = CHARACTER_KEY_DIR_S_SPRITE;
+		break;
+	case 'W':
+	case 'w':
+		key = CHARACTER_KEY_DIR_W_SPRITE;
+		break;
+	case 'E':
+	case 'e':
+		key = CHARACTER_KEY_DIR_E_SPRITE;
+		break;
+	default:
+		return RET_FAIL;
+		break;
+	}
+
+	if( !entry_write_list_index(CHARACTER_TABLE, id, filename, index,key,NULL ) ) {
+		return RET_FAIL;
+	}
+
+	return RET_OK;
+}
+
+/***********************************
+Write a new filename in a character's moving sprite list
+return RET_FAIL if fails
+***********************************/
+int character_set_sprite_move(const char * id, const char * dir, int index, const char * filename)
+{
+	const char * key;
+
+	if(id == NULL || filename == NULL || dir == NULL) {
+		return RET_FAIL;
+	}
+
+	switch(dir[0]) {
+	case 'N':
+	case 'n':
+		key = CHARACTER_KEY_MOV_N_SPRITE;
+		break;
+	case 'S':
+	case 's':
+		key = CHARACTER_KEY_MOV_S_SPRITE;
+		break;
+	case 'W':
+	case 'w':
+		key = CHARACTER_KEY_MOV_W_SPRITE;
+		break;
+	case 'E':
+	case 'e':
+		key = CHARACTER_KEY_MOV_E_SPRITE;
+		break;
+	default:
+		return RET_FAIL;
+		break;
+	}
+
+	if( !entry_write_list_index(CHARACTER_TABLE, id, filename, index,key,NULL ) ) {
+		return RET_FAIL;
+	}
+
+	return RET_OK;
+}
+
+/***********************************
+Broadcast character file to other context
+***********************************/
+void character_broadcast(const char * character)
+{
+        context_broadcast_character(character);
+}
+
