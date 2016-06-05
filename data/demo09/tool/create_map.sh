@@ -32,9 +32,12 @@ for NUM in `ls -d ? | sort`;do
 	for f in $FILE;do
 		if [ "$CURRENT_TILE" = "$COLUMN" ];then
 			echo "\"\"," >> $MAP_NAME #exit column
-			for i in `seq 1 $WIDTH`;do
+			echo "\"tile/exit.gif\"," >> $MAP_NAME #exit tile
+			let "W_1=$WIDTH-1"
+			for i in `seq 2 ${W_1}`;do
 				echo "\"\"," >> $MAP_NAME
 			done
+			echo "\"tile/exit.gif\"," >> $MAP_NAME #exit tile
 			echo "\"\"," >> $MAP_NAME #exit column
 		fi
 		echo "\"character/$f\"," >> $MAP_NAME
