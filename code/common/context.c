@@ -1,6 +1,6 @@
 /*
    World of Gnome is a 2D multiplayer role playing game.
-   Copyright (C) 2013-2015 carabobz@gmail.com
+   Copyright (C) 2013-2016 carabobz@gmail.com
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -1030,6 +1030,53 @@ void context_broadcast_map(const char * map)
 	context_unlock_list();
 }
 
+/**************************************
+Broadcast upload of a character file to all in_game context on the same map
+**************************************/
+void context_broadcast_character(const char * character)
+{
+	context_t * ctx = NULL;
+	context_t * character_ctx = NULL;
+	char * filename;
+
+	context_lock_list();
+
+	character_ctx = context_find(character);
+
+	ctx = context_list_start;
+
+	if( ctx == NULL ) {
+		context_unlock_list();
+		return;
+	}
+
+	filename = strconcat(CHARACTER_TABLE,"/",character,NULL);
+
+	do {
+		if( context_is_npc(ctx) == true ) {
+			continue;
+		}
+
+		/* Skip if not in game */
+		if( ctx->in_game == false ) {
+			continue;
+		}
+
+		/* Skip if not on the same map */
+		if( ctx->map) {
+			if( strcmp(character_ctx->map,ctx->map) != 0 ) {
+				continue;
+			}
+		}
+
+		network_send_file(ctx,filename);
+
+	} while( (ctx=ctx->next)!= NULL );
+
+	free(filename);
+
+	context_unlock_list();
+}
 /**************************************
 Return the distance between two contexts
 **************************************/
