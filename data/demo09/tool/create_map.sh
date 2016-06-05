@@ -3,7 +3,7 @@
 MAP_QTY=`ls -d -1 ? | wc -l`
 echo Generating $MAP_QTY maps
 
-for NUM in `ls -d ? | sort`;do
+for NUM in `ls -d [0-9]* | sort -h`;do
 	MAP_NAME=C$NUM
 
 	FILE_QTY=`ls -1 $NUM/WC_*_marquee.zip | wc -l`
@@ -11,6 +11,7 @@ for NUM in `ls -d ? | sort`;do
 	let "COLUMN=($FILE_QTY+1)/2"
 	#Add 2 column for map exits
 	let "WIDTH=$COLUMN+2"
+	let "W_1=$WIDTH-1"
 
 	FILE=`ls $NUM/WC_*_marquee.zip`
 
@@ -33,7 +34,6 @@ for NUM in `ls -d ? | sort`;do
 		if [ "$CURRENT_TILE" = "$COLUMN" ];then
 			echo "\"\"," >> $MAP_NAME #exit column
 			echo "\"tile/exit.gif\"," >> $MAP_NAME #exit tile
-			let "W_1=$WIDTH-1"
 			for i in `seq 2 ${W_1}`;do
 				echo "\"\"," >> $MAP_NAME
 			done
@@ -50,6 +50,7 @@ for NUM in `ls -d ? | sort`;do
 
 	#Events
 	echo "event_list: {"	>> $MAP_NAME
+
 	XPOS=1
 	YPOS=0
 	CURRENT_TILE=0
@@ -69,5 +70,18 @@ for NUM in `ls -d ? | sort`;do
 		let "CURRENT_TILE=$CURRENT_TILE+1"
 		let "XPOS=$XPOS+1"
 	done
+
+	#Exit event
+	echo "E$CURRENT_TILE = {" >> $MAP_NAME
+	echo "   pos_x = $W_1" >> $MAP_NAME
+	echo "   pos_y = 1" >> $MAP_NAME
+	echo "   script = \"goto.lua\"" >> $MAP_NAME
+	let "NEXT_NUM=$NUM+1"
+	echo "   param = ( \"C$NEXT_NUM\", \"1\", \"1\" )" >> $MAP_NAME
+	echo "}" >> $MAP_NAME
+
+	let "CURRENT_TILE=$CURRENT_TILE+1"
+	let "XPOS=$XPOS+1"
+
 	echo "}"	>> $MAP_NAME
 done
