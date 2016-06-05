@@ -1,0 +1,134 @@
+attribute = {
+  x = {
+        current = 5
+      }
+}
+width = 9
+height = 3
+tile_width = 64
+tile_height = 64
+warp_x = 0
+warp_y = 0
+layer0 = {
+        set = [
+"",
+"character/5/WC_armor_female_golden_greaves_female_marquee.zip",
+"character/5/WC_armor_female_metal_pants_female_marquee.zip",
+"character/5/WC_armor_male_golden_greaves_male_marquee.zip",
+"character/5/WC_armor_male_metal_pants_male_marquee.zip",
+"character/5/WC_pants_female_magenta_pants_female_marquee.zip",
+"character/5/WC_pants_female_red_pants_female_marquee.zip",
+"character/5/WC_pants_female_teal_pants_female_marquee.zip",
+"",
+"tile/exit.gif",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"tile/exit.gif",
+"",
+"character/5/WC_pants_female_white_pants_female_marquee.zip",
+"character/5/WC_pants_male_magenta_pants_male_marquee.zip",
+"character/5/WC_pants_male_red_pants_male_marquee.zip",
+"character/5/WC_pants_male_teal_pants_male_marquee.zip",
+"character/5/WC_pants_male_white_pants_male_marquee.zip",
+"character/5/WC_skirt_female_robe_skirt_female_incomplete_marquee.zip",
+"character/5/WC_skirt_male_robe_skirt_male_marquee.zip",
+""
+        ]
+}
+event_list: {
+E0 = {
+   pos_x = 1
+   pos_y = 0
+   script = "set_sprite.lua"
+   param = ( "5", "armor_female_golden_greaves_female" )
+}
+E1 = {
+   pos_x = 2
+   pos_y = 0
+   script = "set_sprite.lua"
+   param = ( "5", "armor_female_metal_pants_female" )
+}
+E2 = {
+   pos_x = 3
+   pos_y = 0
+   script = "set_sprite.lua"
+   param = ( "5", "armor_male_golden_greaves_male" )
+}
+E3 = {
+   pos_x = 4
+   pos_y = 0
+   script = "set_sprite.lua"
+   param = ( "5", "armor_male_metal_pants_male" )
+}
+E4 = {
+   pos_x = 5
+   pos_y = 0
+   script = "set_sprite.lua"
+   param = ( "5", "pants_female_magenta_pants_female" )
+}
+E5 = {
+   pos_x = 6
+   pos_y = 0
+   script = "set_sprite.lua"
+   param = ( "5", "pants_female_red_pants_female" )
+}
+E6 = {
+   pos_x = 7
+   pos_y = 0
+   script = "set_sprite.lua"
+   param = ( "5", "pants_female_teal_pants_female" )
+}
+E7 = {
+   pos_x = 1
+   pos_y = 2
+   script = "set_sprite.lua"
+   param = ( "5", "pants_female_white_pants_female" )
+}
+E8 = {
+   pos_x = 2
+   pos_y = 2
+   script = "set_sprite.lua"
+   param = ( "5", "pants_male_magenta_pants_male" )
+}
+E9 = {
+   pos_x = 3
+   pos_y = 2
+   script = "set_sprite.lua"
+   param = ( "5", "pants_male_red_pants_male" )
+}
+E10 = {
+   pos_x = 4
+   pos_y = 2
+   script = "set_sprite.lua"
+   param = ( "5", "pants_male_teal_pants_male" )
+}
+E11 = {
+   pos_x = 5
+   pos_y = 2
+   script = "set_sprite.lua"
+   param = ( "5", "pants_male_white_pants_male" )
+}
+E12 = {
+   pos_x = 6
+   pos_y = 2
+   script = "set_sprite.lua"
+   param = ( "5", "skirt_female_robe_skirt_female_incomplete" )
+}
+E13 = {
+   pos_x = 7
+   pos_y = 2
+   script = "set_sprite.lua"
+   param = ( "5", "skirt_male_robe_skirt_male" )
+}
+E14 = {
+   pos_x = 8
+   pos_y = 1
+   script = "goto.lua"
+   param = ( "C6", "1", "1" )
+}
+}

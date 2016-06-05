@@ -1,0 +1,104 @@
+attribute = {
+  x = {
+        current = 7
+      }
+}
+width = 7
+height = 3
+tile_width = 64
+tile_height = 64
+warp_x = 0
+warp_y = 0
+layer0 = {
+        set = [
+"",
+"character/7/WC_bracelets_bracelet_marquee.zip",
+"character/7/WC_bracers_female_cloth_bracers_female_marquee.zip",
+"character/7/WC_bracers_female_leather_bracers_female_marquee.zip",
+"character/7/WC_bracers_female_white_cloth_bandages_marquee.zip",
+"character/7/WC_bracers_female_white_cloth_bracers_marquee.zip",
+"",
+"tile/exit.gif",
+"",
+"",
+"",
+"",
+"",
+"tile/exit.gif",
+"",
+"character/7/WC_bracers_male_leather_bracers_male_marquee.zip",
+"character/7/WC_gloves_female_golden_gloves_female_marquee.zip",
+"character/7/WC_gloves_female_metal_gloves_female_marquee.zip",
+"character/7/WC_gloves_male_golden_gloves_male_marquee.zip",
+"character/7/WC_gloves_male_metal_gloves_male_marquee.zip",
+""
+        ]
+}
+event_list: {
+E0 = {
+   pos_x = 1
+   pos_y = 0
+   script = "set_sprite.lua"
+   param = ( "7", "bracelets_bracelet" )
+}
+E1 = {
+   pos_x = 2
+   pos_y = 0
+   script = "set_sprite.lua"
+   param = ( "7", "bracers_female_cloth_bracers_female" )
+}
+E2 = {
+   pos_x = 3
+   pos_y = 0
+   script = "set_sprite.lua"
+   param = ( "7", "bracers_female_leather_bracers_female" )
+}
+E3 = {
+   pos_x = 4
+   pos_y = 0
+   script = "set_sprite.lua"
+   param = ( "7", "bracers_female_white_cloth_bandages" )
+}
+E4 = {
+   pos_x = 5
+   pos_y = 0
+   script = "set_sprite.lua"
+   param = ( "7", "bracers_female_white_cloth_bracers" )
+}
+E5 = {
+   pos_x = 1
+   pos_y = 2
+   script = "set_sprite.lua"
+   param = ( "7", "bracers_male_leather_bracers_male" )
+}
+E6 = {
+   pos_x = 2
+   pos_y = 2
+   script = "set_sprite.lua"
+   param = ( "7", "gloves_female_golden_gloves_female" )
+}
+E7 = {
+   pos_x = 3
+   pos_y = 2
+   script = "set_sprite.lua"
+   param = ( "7", "gloves_female_metal_gloves_female" )
+}
+E8 = {
+   pos_x = 4
+   pos_y = 2
+   script = "set_sprite.lua"
+   param = ( "7", "gloves_male_golden_gloves_male" )
+}
+E9 = {
+   pos_x = 5
+   pos_y = 2
+   script = "set_sprite.lua"
+   param = ( "7", "gloves_male_metal_gloves_male" )
+}
+E10 = {
+   pos_x = 6
+   pos_y = 1
+   script = "goto.lua"
+   param = ( "C8", "1", "1" )
+}
+}
