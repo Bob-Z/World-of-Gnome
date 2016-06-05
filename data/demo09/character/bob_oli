@@ -1,7 +1,7 @@
 name		= "Oli";
 
 marquee         = "marquee/ghost.png";
-sprite          = "sprite/ghost.png";
+sprite          = ["sprite/ghost.png"];
 type            = "ghost"
 map             = "C0";
 pos_x           = 1;
