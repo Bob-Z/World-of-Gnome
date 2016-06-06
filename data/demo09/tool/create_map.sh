@@ -100,7 +100,11 @@ for NUM in `ls -d [0-9]* | sort -h`;do
 	echo "   pos_x = $RIGHT_X" >> $MAP_NAME
 	echo "   pos_y = 1" >> $MAP_NAME
 	echo "   script = \"goto.lua\"" >> $MAP_NAME
-	echo "   param = ( \"C$NEXT_NUM\", \"1\", \"1\" )" >> $MAP_NAME
+	if [ "$NEXT_NUM" -gt "$MAP_QTY" ];then
+		echo "   param = ( \"M0_0\", \"10\", \"10\" )" >> $MAP_NAME
+	else
+		echo "   param = ( \"C$NEXT_NUM\", \"1\", \"1\" )" >> $MAP_NAME
+	fi
 	echo "}" >> $MAP_NAME
 
 	let "CURRENT_EVENT=$CURRENT_EVENT+1"
