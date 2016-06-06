@@ -34,6 +34,8 @@ for NUM in `ls -d [0-9]* | sort -h`;do
 	echo "\"\"," >> $MAP_NAME #left exit column
 	echo "\"tile/fog.png\"," >> $MAP_NAME #left cancel tile
 	for f in $FILE;do
+		echo "\"character/$f\"," >> $MAP_NAME
+		let "CURRENT_TILE=$CURRENT_TILE+1"
 		if [ "$CURRENT_TILE" = "$COLUMN" ];then
 			echo "\"tile/fog.png\"," >> $MAP_NAME #right cancel tile
 			echo "\"\"," >> $MAP_NAME #right exit column
@@ -47,8 +49,6 @@ for NUM in `ls -d [0-9]* | sort -h`;do
 			echo "\"\"," >> $MAP_NAME #left exit column
 			echo "\"tile/fog.png\"," >> $MAP_NAME #left cancel tile
 		fi
-		echo "\"character/$f\"," >> $MAP_NAME
-		let "CURRENT_TILE=$CURRENT_TILE+1"
 	done
 	if [ "$ADD_TILE" = 1 ];then
 		echo "\"\"," >> $MAP_NAME
