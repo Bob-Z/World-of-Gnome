@@ -72,6 +72,14 @@ anim_t * imageDB_get_anim(context_t * context, const char * image_name)
 	anim_t * anim;
 	char * filename;
 
+	if( image_name == NULL ){
+		return default_anim(context);
+	}
+
+	if( image_name[0] == 0 ){
+		return default_anim(context);
+	}
+
 	filename = strconcat(IMAGE_TABLE,"/",image_name,NULL);
 
 //	wlog(LOGDEBUG,"Image get: %s",filename);
