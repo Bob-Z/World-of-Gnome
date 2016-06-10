@@ -2,6 +2,20 @@ function f (index,name)
 
 id = player_get_id()
 
+if name == "" then
+character_set_sprite(id,index,"")
+character_set_sprite_dir(id,"N",index,"")
+character_set_sprite_dir(id,"S",index,"")
+character_set_sprite_dir(id,"W",index,"")
+character_set_sprite_dir(id,"E",index,"")
+
+character_set_sprite_move(id,"N",index,"")
+character_set_sprite_move(id,"S",index,"")
+character_set_sprite_move(id,"W",index,"")
+character_set_sprite_move(id,"E",index,"")
+end
+
+
 filename = string.format("character/%d/WC_S_%s.png",index,name)
 character_set_sprite(id,index,filename)
 
