@@ -13,8 +13,8 @@ character_set_sprite_move(id,"N",index,"")
 character_set_sprite_move(id,"S",index,"")
 character_set_sprite_move(id,"W",index,"")
 character_set_sprite_move(id,"E",index,"")
-end
 
+else
 
 filename = string.format("character/%d/WC_S_%s.png",index,name)
 character_set_sprite(id,index,filename)
@@ -36,6 +36,7 @@ filename = string.format("character/%d/WC_W_%s.zip",index,name)
 character_set_sprite_move(id,"W",index,filename)
 filename = string.format("character/%d/WC_E_%s.zip",index,name)
 character_set_sprite_move(id,"E",index,filename)
+end
 
 character_broadcast(id)
 
