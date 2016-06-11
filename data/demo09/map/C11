@@ -3,170 +3,195 @@ attribute = {
         current = 11
       }
 }
-width = 12
-height = 3
+width = 9
+height = 7
 tile_width = 64
 tile_height = 64
 warp_x = 0
 warp_y = 0
 layer0 = {
         set = [
+"tile/fog.png",
 "",
-"character/11/WC_bandanas_female_red_marquee.zip",
-"character/11/WC_bandanas_male_red_marquee.zip",
-"character/11/WC_caps_female_leather_cap_female_marquee.zip",
-"character/11/WC_caps_male_leather_cap_male_marquee.zip",
-"character/11/WC_helms_female_chainhat_female_marquee.zip",
-"character/11/WC_helms_female_golden_helm_female_marquee.zip",
-"character/11/WC_helms_female_metal_helm_female_marquee.zip",
-"character/11/WC_helms_male_chainhat_male_marquee.zip",
-"character/11/WC_helms_male_golden_helm_male_marquee.zip",
-"character/11/WC_helms_male_metal_helm_male_marquee.zip",
+"",
+"",
+"",
+"",
+"",
+"",
+"tile/fog.png",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"character/11/WC_bracelets_bracelet_marquee.zip",
+"",
+"character/11/WC_bracers_female_cloth_bracers_female_marquee.zip",
+"",
+"character/11/WC_bracers_female_leather_bracers_female_marquee.zip",
+"",
+"character/11/WC_bracers_female_white_cloth_bandages_marquee.zip",
 "",
 "tile/exit.gif",
+"character/11/WC_bracers_female_white_cloth_bracers_marquee.zip",
 "",
+"character/11/WC_bracers_male_leather_bracers_male_marquee.zip",
 "",
+"character/11/WC_gloves_female_golden_gloves_female_marquee.zip",
 "",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
+"character/11/WC_gloves_female_metal_gloves_female_marquee.zip",
 "tile/exit.gif",
 "",
-"character/11/WC_hoods_female_chain_hood_female_marquee.zip",
-"character/11/WC_hoods_female_cloth_hood_female_marquee.zip",
-"character/11/WC_hoods_male_chain_hood_male_marquee.zip",
-"character/11/WC_hoods_male_cloth_hood_male_marquee.zip",
-"character/11/WC_tiaras_female_bronze_marquee.zip",
-"character/11/WC_tiaras_female_gold_marquee.zip",
-"character/11/WC_tiaras_female_iron_marquee.zip",
-"character/11/WC_tiaras_female_purple_marquee.zip",
-"character/11/WC_tiaras_female_silver_marquee.zip",
-""
+"character/11/WC_gloves_male_golden_gloves_male_marquee.zip",
+"",
+"character/11/WC_gloves_male_metal_gloves_male_marquee.zip",
+"",
+"character/11/WC_gold_arms_female_marquee.zip",
+"",
+"character/11/WC_gold_arms_male_marquee.zip",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"tile/fog.png",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"tile/fog.png"
         ]
 }
 event_list: {
 E0 = {
    pos_x = 1
-   pos_y = 0
+   pos_y = 2
    script = "set_sprite.lua"
-   param = ( "11", "bandanas_female_red" )
+   param = ( "11", "bracelets_bracelet" )
 }
 E1 = {
-   pos_x = 2
-   pos_y = 0
+   pos_x = 3
+   pos_y = 2
    script = "set_sprite.lua"
-   param = ( "11", "bandanas_male_red" )
+   param = ( "11", "bracers_female_cloth_bracers_female" )
 }
 E2 = {
-   pos_x = 3
-   pos_y = 0
+   pos_x = 5
+   pos_y = 2
    script = "set_sprite.lua"
-   param = ( "11", "caps_female_leather_cap_female" )
+   param = ( "11", "bracers_female_leather_bracers_female" )
 }
 E3 = {
-   pos_x = 4
-   pos_y = 0
+   pos_x = 7
+   pos_y = 2
    script = "set_sprite.lua"
-   param = ( "11", "caps_male_leather_cap_male" )
+   param = ( "11", "bracers_female_white_cloth_bandages" )
 }
 E4 = {
-   pos_x = 5
-   pos_y = 0
+   pos_x = 1
+   pos_y = 3
    script = "set_sprite.lua"
-   param = ( "11", "helms_female_chainhat_female" )
+   param = ( "11", "bracers_female_white_cloth_bracers" )
 }
 E5 = {
-   pos_x = 6
-   pos_y = 0
+   pos_x = 3
+   pos_y = 3
    script = "set_sprite.lua"
-   param = ( "11", "helms_female_golden_helm_female" )
+   param = ( "11", "bracers_male_leather_bracers_male" )
 }
 E6 = {
-   pos_x = 7
-   pos_y = 0
+   pos_x = 5
+   pos_y = 3
    script = "set_sprite.lua"
-   param = ( "11", "helms_female_metal_helm_female" )
+   param = ( "11", "gloves_female_golden_gloves_female" )
 }
 E7 = {
+   pos_x = 7
+   pos_y = 3
+   script = "set_sprite.lua"
+   param = ( "11", "gloves_female_metal_gloves_female" )
+}
+E8 = {
+   pos_x = 1
+   pos_y = 4
+   script = "set_sprite.lua"
+   param = ( "11", "gloves_male_golden_gloves_male" )
+}
+E9 = {
+   pos_x = 3
+   pos_y = 4
+   script = "set_sprite.lua"
+   param = ( "11", "gloves_male_metal_gloves_male" )
+}
+E10 = {
+   pos_x = 5
+   pos_y = 4
+   script = "set_sprite.lua"
+   param = ( "11", "gold_arms_female" )
+}
+E11 = {
+   pos_x = 7
+   pos_y = 4
+   script = "set_sprite.lua"
+   param = ( "11", "gold_arms_male" )
+}
+E12 = {
+   pos_x = 0
+   pos_y = 3
+   script = "goto.lua"
+   param = ( "C10", "1", "1" )
+}
+E13 = {
+   pos_x = 8
+   pos_y = 3
+   script = "goto.lua"
+   param = ( "C12", "1", "1" )
+}
+E14 = {
+   pos_x = 0
+   pos_y = 0
+   script = "set_sprite.lua"
+   param = ( "11", "" )
+}
+E15 = {
+   pos_x = 0
+   pos_y = 6
+   script = "set_sprite.lua"
+   param = ( "11", "" )
+}
+E16 = {
    pos_x = 8
    pos_y = 0
    script = "set_sprite.lua"
-   param = ( "11", "helms_male_chainhat_male" )
-}
-E8 = {
-   pos_x = 9
-   pos_y = 0
-   script = "set_sprite.lua"
-   param = ( "11", "helms_male_golden_helm_male" )
-}
-E9 = {
-   pos_x = 10
-   pos_y = 0
-   script = "set_sprite.lua"
-   param = ( "11", "helms_male_metal_helm_male" )
-}
-E10 = {
-   pos_x = 1
-   pos_y = 2
-   script = "set_sprite.lua"
-   param = ( "11", "hoods_female_chain_hood_female" )
-}
-E11 = {
-   pos_x = 2
-   pos_y = 2
-   script = "set_sprite.lua"
-   param = ( "11", "hoods_female_cloth_hood_female" )
-}
-E12 = {
-   pos_x = 3
-   pos_y = 2
-   script = "set_sprite.lua"
-   param = ( "11", "hoods_male_chain_hood_male" )
-}
-E13 = {
-   pos_x = 4
-   pos_y = 2
-   script = "set_sprite.lua"
-   param = ( "11", "hoods_male_cloth_hood_male" )
-}
-E14 = {
-   pos_x = 5
-   pos_y = 2
-   script = "set_sprite.lua"
-   param = ( "11", "tiaras_female_bronze" )
-}
-E15 = {
-   pos_x = 6
-   pos_y = 2
-   script = "set_sprite.lua"
-   param = ( "11", "tiaras_female_gold" )
-}
-E16 = {
-   pos_x = 7
-   pos_y = 2
-   script = "set_sprite.lua"
-   param = ( "11", "tiaras_female_iron" )
+   param = ( "11", "" )
 }
 E17 = {
    pos_x = 8
-   pos_y = 2
+   pos_y = 6
    script = "set_sprite.lua"
-   param = ( "11", "tiaras_female_purple" )
-}
-E18 = {
-   pos_x = 9
-   pos_y = 2
-   script = "set_sprite.lua"
-   param = ( "11", "tiaras_female_silver" )
-}
-E19 = {
-   pos_x = 11
-   pos_y = 1
-   script = "goto.lua"
-   param = ( "C12", "1", "1" )
+   param = ( "11", "" )
 }
 }

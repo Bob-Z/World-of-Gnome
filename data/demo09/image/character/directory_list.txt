@@ -1,8 +1,23 @@
-0 - body
-1 - eyes
-2 - nose
-3 - ears
-4 - mustache
-5 - beard
-6 - fiveoclock
-7 - hair
+1- Eyes
+2- Nose
+3- Ears
+0- Body
+4- Mustache
+5- Beard
+6- Fiveoclock
+7- Hair
+8- Shoes
+9- Torso civil
+10- Torso military
+11- Arms
+12- Shoulder
+13- Legs civil
+14- Legs military
+15- Belt
+16- Tabard
+17- Neck
+18- Cape
+19- Head
+20- Weapon
+21- Quiver
+22- Wings

@@ -3,680 +3,234 @@ attribute = {
         current = 1
       }
 }
-width = 46
-height = 3
+width = 9
+height = 9
 tile_width = 64
 tile_height = 64
 warp_x = 0
 warp_y = 0
 layer0 = {
         set = [
+"tile/fog.png",
 "",
-"character/1/WC_female_ears_bigears_dark2_marquee.zip",
-"character/1/WC_female_ears_bigears_darkelf2_marquee.zip",
-"character/1/WC_female_ears_bigears_darkelf_marquee.zip",
-"character/1/WC_female_ears_bigears_dark_marquee.zip",
-"character/1/WC_female_ears_bigears_light_marquee.zip",
-"character/1/WC_female_ears_bigears_tanned2_marquee.zip",
-"character/1/WC_female_ears_bigears_tanned_marquee.zip",
-"character/1/WC_female_ears_elvenears_dark2_marquee.zip",
-"character/1/WC_female_ears_elvenears_darkelf2_marquee.zip",
-"character/1/WC_female_ears_elvenears_darkelf_marquee.zip",
-"character/1/WC_female_ears_elvenears_dark_marquee.zip",
-"character/1/WC_female_ears_elvenears_light_marquee.zip",
-"character/1/WC_female_ears_elvenears_tanned2_marquee.zip",
-"character/1/WC_female_ears_elvenears_tanned_marquee.zip",
+"",
+"",
+"",
+"",
+"",
+"",
+"tile/fog.png",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
 "character/1/WC_female_eyes_blue_marquee.zip",
+"",
 "character/1/WC_female_eyes_brown_marquee.zip",
+"",
 "character/1/WC_female_eyes_gray_marquee.zip",
+"",
 "character/1/WC_female_eyes_green_marquee.zip",
+"",
+"",
 "character/1/WC_female_eyes_orange_marquee.zip",
+"",
 "character/1/WC_female_eyes_purple_marquee.zip",
+"",
 "character/1/WC_female_eyes_red_marquee.zip",
+"",
 "character/1/WC_female_eyes_yellow_marquee.zip",
-"character/1/WC_female_nose_bignose_dark2_marquee.zip",
-"character/1/WC_female_nose_bignose_darkelf2_marquee.zip",
-"character/1/WC_female_nose_bignose_darkelf_marquee.zip",
-"character/1/WC_female_nose_bignose_dark_marquee.zip",
-"character/1/WC_female_nose_bignose_light_marquee.zip",
-"character/1/WC_female_nose_bignose_tanned2_marquee.zip",
-"character/1/WC_female_nose_bignose_tanned_marquee.zip",
-"character/1/WC_female_nose_buttonnose_dark2_marquee.zip",
-"character/1/WC_female_nose_buttonnose_darkelf2_marquee.zip",
-"character/1/WC_female_nose_buttonnose_darkelf_marquee.zip",
-"character/1/WC_female_nose_buttonnose_dark_marquee.zip",
-"character/1/WC_female_nose_buttonnose_light_marquee.zip",
-"character/1/WC_female_nose_buttonnose_tanned2_marquee.zip",
-"character/1/WC_female_nose_buttonnose_tanned_marquee.zip",
-"character/1/WC_female_nose_straightnose_dark2_marquee.zip",
-"character/1/WC_female_nose_straightnose_darkelf2_marquee.zip",
-"character/1/WC_female_nose_straightnose_darkelf_marquee.zip",
-"character/1/WC_female_nose_straightnose_dark_marquee.zip",
-"character/1/WC_female_nose_straightnose_light_marquee.zip",
-"character/1/WC_female_nose_straightnose_tanned2_marquee.zip",
-"character/1/WC_female_nose_straightnose_tanned_marquee.zip",
-"character/1/WC_male_ears_bigears_dark2_marquee.zip",
 "",
 "tile/exit.gif",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"tile/exit.gif",
-"",
-"character/1/WC_male_ears_bigears_darkelf2_marquee.zip",
-"character/1/WC_male_ears_bigears_darkelf_marquee.zip",
-"character/1/WC_male_ears_bigears_dark_marquee.zip",
-"character/1/WC_male_ears_bigears_light_marquee.zip",
-"character/1/WC_male_ears_bigears_tanned2_marquee.zip",
-"character/1/WC_male_ears_bigears_tanned_marquee.zip",
-"character/1/WC_male_ears_elvenears_dark2_marquee.zip",
-"character/1/WC_male_ears_elvenears_darkelf2_marquee.zip",
-"character/1/WC_male_ears_elvenears_darkelf_marquee.zip",
-"character/1/WC_male_ears_elvenears_dark_marquee.zip",
-"character/1/WC_male_ears_elvenears_light_marquee.zip",
-"character/1/WC_male_ears_elvenears_tanned2_marquee.zip",
-"character/1/WC_male_ears_elvenears_tanned_marquee.zip",
 "character/1/WC_male_eyes_blue_marquee.zip",
+"",
 "character/1/WC_male_eyes_brown_marquee.zip",
+"",
 "character/1/WC_male_eyes_casting_eyeglow_skeleton_marquee.zip",
+"",
 "character/1/WC_male_eyes_gray_marquee.zip",
+"tile/exit.gif",
+"",
 "character/1/WC_male_eyes_green_marquee.zip",
+"",
 "character/1/WC_male_eyes_orange_marquee.zip",
+"",
 "character/1/WC_male_eyes_purple_marquee.zip",
+"",
 "character/1/WC_male_eyes_red_marquee.zip",
+"",
+"",
 "character/1/WC_male_eyes_yellow_marquee.zip",
-"character/1/WC_male_nose_bignose_dark2_marquee.zip",
-"character/1/WC_male_nose_bignose_darkelf2_marquee.zip",
-"character/1/WC_male_nose_bignose_darkelf_marquee.zip",
-"character/1/WC_male_nose_bignose_dark_marquee.zip",
-"character/1/WC_male_nose_bignose_light_marquee.zip",
-"character/1/WC_male_nose_bignose_tanned2_marquee.zip",
-"character/1/WC_male_nose_bignose_tanned_marquee.zip",
-"character/1/WC_male_nose_buttonnose_dark2_marquee.zip",
-"character/1/WC_male_nose_buttonnose_darkelf2_marquee.zip",
-"character/1/WC_male_nose_buttonnose_darkelf_marquee.zip",
-"character/1/WC_male_nose_buttonnose_dark_marquee.zip",
-"character/1/WC_male_nose_buttonnose_light_marquee.zip",
-"character/1/WC_male_nose_buttonnose_tanned2_marquee.zip",
-"character/1/WC_male_nose_buttonnose_tanned_marquee.zip",
-"character/1/WC_male_nose_straightnose_dark2_marquee.zip",
-"character/1/WC_male_nose_straightnose_darkelf2_marquee.zip",
-"character/1/WC_male_nose_straightnose_darkelf_marquee.zip",
-"character/1/WC_male_nose_straightnose_dark_marquee.zip",
-"character/1/WC_male_nose_straightnose_light_marquee.zip",
-"character/1/WC_male_nose_straightnose_tanned2_marquee.zip",
-"character/1/WC_male_nose_straightnose_tanned_marquee.zip",
-""
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"tile/fog.png",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"tile/fog.png"
         ]
 }
 event_list: {
 E0 = {
    pos_x = 1
-   pos_y = 0
-   script = "set_sprite.lua"
-   param = ( "1", "female_ears_bigears_dark2" )
-}
-E1 = {
-   pos_x = 2
-   pos_y = 0
-   script = "set_sprite.lua"
-   param = ( "1", "female_ears_bigears_darkelf2" )
-}
-E2 = {
-   pos_x = 3
-   pos_y = 0
-   script = "set_sprite.lua"
-   param = ( "1", "female_ears_bigears_darkelf" )
-}
-E3 = {
-   pos_x = 4
-   pos_y = 0
-   script = "set_sprite.lua"
-   param = ( "1", "female_ears_bigears_dark" )
-}
-E4 = {
-   pos_x = 5
-   pos_y = 0
-   script = "set_sprite.lua"
-   param = ( "1", "female_ears_bigears_light" )
-}
-E5 = {
-   pos_x = 6
-   pos_y = 0
-   script = "set_sprite.lua"
-   param = ( "1", "female_ears_bigears_tanned2" )
-}
-E6 = {
-   pos_x = 7
-   pos_y = 0
-   script = "set_sprite.lua"
-   param = ( "1", "female_ears_bigears_tanned" )
-}
-E7 = {
-   pos_x = 8
-   pos_y = 0
-   script = "set_sprite.lua"
-   param = ( "1", "female_ears_elvenears_dark2" )
-}
-E8 = {
-   pos_x = 9
-   pos_y = 0
-   script = "set_sprite.lua"
-   param = ( "1", "female_ears_elvenears_darkelf2" )
-}
-E9 = {
-   pos_x = 10
-   pos_y = 0
-   script = "set_sprite.lua"
-   param = ( "1", "female_ears_elvenears_darkelf" )
-}
-E10 = {
-   pos_x = 11
-   pos_y = 0
-   script = "set_sprite.lua"
-   param = ( "1", "female_ears_elvenears_dark" )
-}
-E11 = {
-   pos_x = 12
-   pos_y = 0
-   script = "set_sprite.lua"
-   param = ( "1", "female_ears_elvenears_light" )
-}
-E12 = {
-   pos_x = 13
-   pos_y = 0
-   script = "set_sprite.lua"
-   param = ( "1", "female_ears_elvenears_tanned2" )
-}
-E13 = {
-   pos_x = 14
-   pos_y = 0
-   script = "set_sprite.lua"
-   param = ( "1", "female_ears_elvenears_tanned" )
-}
-E14 = {
-   pos_x = 15
-   pos_y = 0
+   pos_y = 2
    script = "set_sprite.lua"
    param = ( "1", "female_eyes_blue" )
 }
-E15 = {
-   pos_x = 16
-   pos_y = 0
-   script = "set_sprite.lua"
-   param = ( "1", "female_eyes_brown" )
-}
-E16 = {
-   pos_x = 17
-   pos_y = 0
-   script = "set_sprite.lua"
-   param = ( "1", "female_eyes_gray" )
-}
-E17 = {
-   pos_x = 18
-   pos_y = 0
-   script = "set_sprite.lua"
-   param = ( "1", "female_eyes_green" )
-}
-E18 = {
-   pos_x = 19
-   pos_y = 0
-   script = "set_sprite.lua"
-   param = ( "1", "female_eyes_orange" )
-}
-E19 = {
-   pos_x = 20
-   pos_y = 0
-   script = "set_sprite.lua"
-   param = ( "1", "female_eyes_purple" )
-}
-E20 = {
-   pos_x = 21
-   pos_y = 0
-   script = "set_sprite.lua"
-   param = ( "1", "female_eyes_red" )
-}
-E21 = {
-   pos_x = 22
-   pos_y = 0
-   script = "set_sprite.lua"
-   param = ( "1", "female_eyes_yellow" )
-}
-E22 = {
-   pos_x = 23
-   pos_y = 0
-   script = "set_sprite.lua"
-   param = ( "1", "female_nose_bignose_dark2" )
-}
-E23 = {
-   pos_x = 24
-   pos_y = 0
-   script = "set_sprite.lua"
-   param = ( "1", "female_nose_bignose_darkelf2" )
-}
-E24 = {
-   pos_x = 25
-   pos_y = 0
-   script = "set_sprite.lua"
-   param = ( "1", "female_nose_bignose_darkelf" )
-}
-E25 = {
-   pos_x = 26
-   pos_y = 0
-   script = "set_sprite.lua"
-   param = ( "1", "female_nose_bignose_dark" )
-}
-E26 = {
-   pos_x = 27
-   pos_y = 0
-   script = "set_sprite.lua"
-   param = ( "1", "female_nose_bignose_light" )
-}
-E27 = {
-   pos_x = 28
-   pos_y = 0
-   script = "set_sprite.lua"
-   param = ( "1", "female_nose_bignose_tanned2" )
-}
-E28 = {
-   pos_x = 29
-   pos_y = 0
-   script = "set_sprite.lua"
-   param = ( "1", "female_nose_bignose_tanned" )
-}
-E29 = {
-   pos_x = 30
-   pos_y = 0
-   script = "set_sprite.lua"
-   param = ( "1", "female_nose_buttonnose_dark2" )
-}
-E30 = {
-   pos_x = 31
-   pos_y = 0
-   script = "set_sprite.lua"
-   param = ( "1", "female_nose_buttonnose_darkelf2" )
-}
-E31 = {
-   pos_x = 32
-   pos_y = 0
-   script = "set_sprite.lua"
-   param = ( "1", "female_nose_buttonnose_darkelf" )
-}
-E32 = {
-   pos_x = 33
-   pos_y = 0
-   script = "set_sprite.lua"
-   param = ( "1", "female_nose_buttonnose_dark" )
-}
-E33 = {
-   pos_x = 34
-   pos_y = 0
-   script = "set_sprite.lua"
-   param = ( "1", "female_nose_buttonnose_light" )
-}
-E34 = {
-   pos_x = 35
-   pos_y = 0
-   script = "set_sprite.lua"
-   param = ( "1", "female_nose_buttonnose_tanned2" )
-}
-E35 = {
-   pos_x = 36
-   pos_y = 0
-   script = "set_sprite.lua"
-   param = ( "1", "female_nose_buttonnose_tanned" )
-}
-E36 = {
-   pos_x = 37
-   pos_y = 0
-   script = "set_sprite.lua"
-   param = ( "1", "female_nose_straightnose_dark2" )
-}
-E37 = {
-   pos_x = 38
-   pos_y = 0
-   script = "set_sprite.lua"
-   param = ( "1", "female_nose_straightnose_darkelf2" )
-}
-E38 = {
-   pos_x = 39
-   pos_y = 0
-   script = "set_sprite.lua"
-   param = ( "1", "female_nose_straightnose_darkelf" )
-}
-E39 = {
-   pos_x = 40
-   pos_y = 0
-   script = "set_sprite.lua"
-   param = ( "1", "female_nose_straightnose_dark" )
-}
-E40 = {
-   pos_x = 41
-   pos_y = 0
-   script = "set_sprite.lua"
-   param = ( "1", "female_nose_straightnose_light" )
-}
-E41 = {
-   pos_x = 42
-   pos_y = 0
-   script = "set_sprite.lua"
-   param = ( "1", "female_nose_straightnose_tanned2" )
-}
-E42 = {
-   pos_x = 43
-   pos_y = 0
-   script = "set_sprite.lua"
-   param = ( "1", "female_nose_straightnose_tanned" )
-}
-E43 = {
-   pos_x = 44
-   pos_y = 0
-   script = "set_sprite.lua"
-   param = ( "1", "male_ears_bigears_dark2" )
-}
-E44 = {
-   pos_x = 1
-   pos_y = 2
-   script = "set_sprite.lua"
-   param = ( "1", "male_ears_bigears_darkelf2" )
-}
-E45 = {
-   pos_x = 2
-   pos_y = 2
-   script = "set_sprite.lua"
-   param = ( "1", "male_ears_bigears_darkelf" )
-}
-E46 = {
+E1 = {
    pos_x = 3
    pos_y = 2
    script = "set_sprite.lua"
-   param = ( "1", "male_ears_bigears_dark" )
+   param = ( "1", "female_eyes_brown" )
 }
-E47 = {
-   pos_x = 4
-   pos_y = 2
-   script = "set_sprite.lua"
-   param = ( "1", "male_ears_bigears_light" )
-}
-E48 = {
+E2 = {
    pos_x = 5
    pos_y = 2
    script = "set_sprite.lua"
-   param = ( "1", "male_ears_bigears_tanned2" )
+   param = ( "1", "female_eyes_gray" )
 }
-E49 = {
-   pos_x = 6
-   pos_y = 2
-   script = "set_sprite.lua"
-   param = ( "1", "male_ears_bigears_tanned" )
-}
-E50 = {
+E3 = {
    pos_x = 7
    pos_y = 2
    script = "set_sprite.lua"
-   param = ( "1", "male_ears_elvenears_dark2" )
+   param = ( "1", "female_eyes_green" )
 }
-E51 = {
-   pos_x = 8
-   pos_y = 2
+E4 = {
+   pos_x = 1
+   pos_y = 3
    script = "set_sprite.lua"
-   param = ( "1", "male_ears_elvenears_darkelf2" )
+   param = ( "1", "female_eyes_orange" )
 }
-E52 = {
-   pos_x = 9
-   pos_y = 2
+E5 = {
+   pos_x = 3
+   pos_y = 3
    script = "set_sprite.lua"
-   param = ( "1", "male_ears_elvenears_darkelf" )
+   param = ( "1", "female_eyes_purple" )
 }
-E53 = {
-   pos_x = 10
-   pos_y = 2
+E6 = {
+   pos_x = 5
+   pos_y = 3
    script = "set_sprite.lua"
-   param = ( "1", "male_ears_elvenears_dark" )
+   param = ( "1", "female_eyes_red" )
 }
-E54 = {
-   pos_x = 11
-   pos_y = 2
+E7 = {
+   pos_x = 7
+   pos_y = 3
    script = "set_sprite.lua"
-   param = ( "1", "male_ears_elvenears_light" )
+   param = ( "1", "female_eyes_yellow" )
 }
-E55 = {
-   pos_x = 12
-   pos_y = 2
-   script = "set_sprite.lua"
-   param = ( "1", "male_ears_elvenears_tanned2" )
-}
-E56 = {
-   pos_x = 13
-   pos_y = 2
-   script = "set_sprite.lua"
-   param = ( "1", "male_ears_elvenears_tanned" )
-}
-E57 = {
-   pos_x = 14
-   pos_y = 2
+E8 = {
+   pos_x = 1
+   pos_y = 4
    script = "set_sprite.lua"
    param = ( "1", "male_eyes_blue" )
 }
-E58 = {
-   pos_x = 15
-   pos_y = 2
+E9 = {
+   pos_x = 3
+   pos_y = 4
    script = "set_sprite.lua"
    param = ( "1", "male_eyes_brown" )
 }
-E59 = {
-   pos_x = 16
-   pos_y = 2
+E10 = {
+   pos_x = 5
+   pos_y = 4
    script = "set_sprite.lua"
    param = ( "1", "male_eyes_casting_eyeglow_skeleton" )
 }
-E60 = {
-   pos_x = 17
-   pos_y = 2
+E11 = {
+   pos_x = 7
+   pos_y = 4
    script = "set_sprite.lua"
    param = ( "1", "male_eyes_gray" )
 }
-E61 = {
-   pos_x = 18
-   pos_y = 2
+E12 = {
+   pos_x = 1
+   pos_y = 5
    script = "set_sprite.lua"
    param = ( "1", "male_eyes_green" )
 }
-E62 = {
-   pos_x = 19
-   pos_y = 2
+E13 = {
+   pos_x = 3
+   pos_y = 5
    script = "set_sprite.lua"
    param = ( "1", "male_eyes_orange" )
 }
-E63 = {
-   pos_x = 20
-   pos_y = 2
+E14 = {
+   pos_x = 5
+   pos_y = 5
    script = "set_sprite.lua"
    param = ( "1", "male_eyes_purple" )
 }
-E64 = {
-   pos_x = 21
-   pos_y = 2
+E15 = {
+   pos_x = 7
+   pos_y = 5
    script = "set_sprite.lua"
    param = ( "1", "male_eyes_red" )
 }
-E65 = {
-   pos_x = 22
-   pos_y = 2
+E16 = {
+   pos_x = 1
+   pos_y = 6
    script = "set_sprite.lua"
    param = ( "1", "male_eyes_yellow" )
 }
-E66 = {
-   pos_x = 23
-   pos_y = 2
-   script = "set_sprite.lua"
-   param = ( "1", "male_nose_bignose_dark2" )
+E17 = {
+   pos_x = 0
+   pos_y = 4
+   script = "goto.lua"
+   param = ( "C0", "1", "1" )
 }
-E67 = {
-   pos_x = 24
-   pos_y = 2
-   script = "set_sprite.lua"
-   param = ( "1", "male_nose_bignose_darkelf2" )
-}
-E68 = {
-   pos_x = 25
-   pos_y = 2
-   script = "set_sprite.lua"
-   param = ( "1", "male_nose_bignose_darkelf" )
-}
-E69 = {
-   pos_x = 26
-   pos_y = 2
-   script = "set_sprite.lua"
-   param = ( "1", "male_nose_bignose_dark" )
-}
-E70 = {
-   pos_x = 27
-   pos_y = 2
-   script = "set_sprite.lua"
-   param = ( "1", "male_nose_bignose_light" )
-}
-E71 = {
-   pos_x = 28
-   pos_y = 2
-   script = "set_sprite.lua"
-   param = ( "1", "male_nose_bignose_tanned2" )
-}
-E72 = {
-   pos_x = 29
-   pos_y = 2
-   script = "set_sprite.lua"
-   param = ( "1", "male_nose_bignose_tanned" )
-}
-E73 = {
-   pos_x = 30
-   pos_y = 2
-   script = "set_sprite.lua"
-   param = ( "1", "male_nose_buttonnose_dark2" )
-}
-E74 = {
-   pos_x = 31
-   pos_y = 2
-   script = "set_sprite.lua"
-   param = ( "1", "male_nose_buttonnose_darkelf2" )
-}
-E75 = {
-   pos_x = 32
-   pos_y = 2
-   script = "set_sprite.lua"
-   param = ( "1", "male_nose_buttonnose_darkelf" )
-}
-E76 = {
-   pos_x = 33
-   pos_y = 2
-   script = "set_sprite.lua"
-   param = ( "1", "male_nose_buttonnose_dark" )
-}
-E77 = {
-   pos_x = 34
-   pos_y = 2
-   script = "set_sprite.lua"
-   param = ( "1", "male_nose_buttonnose_light" )
-}
-E78 = {
-   pos_x = 35
-   pos_y = 2
-   script = "set_sprite.lua"
-   param = ( "1", "male_nose_buttonnose_tanned2" )
-}
-E79 = {
-   pos_x = 36
-   pos_y = 2
-   script = "set_sprite.lua"
-   param = ( "1", "male_nose_buttonnose_tanned" )
-}
-E80 = {
-   pos_x = 37
-   pos_y = 2
-   script = "set_sprite.lua"
-   param = ( "1", "male_nose_straightnose_dark2" )
-}
-E81 = {
-   pos_x = 38
-   pos_y = 2
-   script = "set_sprite.lua"
-   param = ( "1", "male_nose_straightnose_darkelf2" )
-}
-E82 = {
-   pos_x = 39
-   pos_y = 2
-   script = "set_sprite.lua"
-   param = ( "1", "male_nose_straightnose_darkelf" )
-}
-E83 = {
-   pos_x = 40
-   pos_y = 2
-   script = "set_sprite.lua"
-   param = ( "1", "male_nose_straightnose_dark" )
-}
-E84 = {
-   pos_x = 41
-   pos_y = 2
-   script = "set_sprite.lua"
-   param = ( "1", "male_nose_straightnose_light" )
-}
-E85 = {
-   pos_x = 42
-   pos_y = 2
-   script = "set_sprite.lua"
-   param = ( "1", "male_nose_straightnose_tanned2" )
-}
-E86 = {
-   pos_x = 43
-   pos_y = 2
-   script = "set_sprite.lua"
-   param = ( "1", "male_nose_straightnose_tanned" )
-}
-E87 = {
-   pos_x = 45
-   pos_y = 1
+E18 = {
+   pos_x = 8
+   pos_y = 4
    script = "goto.lua"
    param = ( "C2", "1", "1" )
+}
+E19 = {
+   pos_x = 0
+   pos_y = 0
+   script = "set_sprite.lua"
+   param = ( "1", "" )
+}
+E20 = {
+   pos_x = 0
+   pos_y = 8
+   script = "set_sprite.lua"
+   param = ( "1", "" )
+}
+E21 = {
+   pos_x = 8
+   pos_y = 0
+   script = "set_sprite.lua"
+   param = ( "1", "" )
+}
+E22 = {
+   pos_x = 8
+   pos_y = 8
+   script = "set_sprite.lua"
+   param = ( "1", "" )
 }
 }

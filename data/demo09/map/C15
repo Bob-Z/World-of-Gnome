@@ -1,0 +1,231 @@
+attribute = {
+  x = {
+        current = 15
+      }
+}
+width = 11
+height = 7
+tile_width = 64
+tile_height = 64
+warp_x = 0
+warp_y = 0
+layer0 = {
+        set = [
+"tile/fog.png",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"tile/fog.png",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"character/15/WC_buckles_female_no_th-sh_bronze_marquee.zip",
+"",
+"character/15/WC_buckles_female_no_th-sh_gold_marquee.zip",
+"",
+"character/15/WC_buckles_female_no_th-sh_iron_marquee.zip",
+"",
+"character/15/WC_buckles_female_no_th-sh_silver_marquee.zip",
+"",
+"character/15/WC_cloth_female_black_female_no_th-sh_marquee.zip",
+"",
+"tile/exit.gif",
+"character/15/WC_cloth_female_brown_female_no_th-sh_marquee.zip",
+"",
+"character/15/WC_cloth_female_teal2_cloth_female_marquee.zip",
+"",
+"character/15/WC_cloth_female_white_cloth_female_marquee.zip",
+"",
+"character/15/WC_cloth_male_white_cloth_male_marquee.zip",
+"",
+"character/15/WC_leather_female_leather_female_marquee.zip",
+"tile/exit.gif",
+"",
+"character/15/WC_leather_male_leather_male_marquee.zip",
+"",
+"character/15/WC_metal_female_bronze_female_no_th-sh_marquee.zip",
+"",
+"character/15/WC_metal_female_gold_female_no_th-sh_marquee.zip",
+"",
+"character/15/WC_metal_female_iron_female_no_th-sh_marquee.zip",
+"",
+"character/15/WC_metal_female_silver_female_no_th-sh_marquee.zip",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"tile/fog.png",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"tile/fog.png"
+        ]
+}
+event_list: {
+E0 = {
+   pos_x = 1
+   pos_y = 2
+   script = "set_sprite.lua"
+   param = ( "15", "buckles_female_no_th-sh_bronze" )
+}
+E1 = {
+   pos_x = 3
+   pos_y = 2
+   script = "set_sprite.lua"
+   param = ( "15", "buckles_female_no_th-sh_gold" )
+}
+E2 = {
+   pos_x = 5
+   pos_y = 2
+   script = "set_sprite.lua"
+   param = ( "15", "buckles_female_no_th-sh_iron" )
+}
+E3 = {
+   pos_x = 7
+   pos_y = 2
+   script = "set_sprite.lua"
+   param = ( "15", "buckles_female_no_th-sh_silver" )
+}
+E4 = {
+   pos_x = 9
+   pos_y = 2
+   script = "set_sprite.lua"
+   param = ( "15", "cloth_female_black_female_no_th-sh" )
+}
+E5 = {
+   pos_x = 1
+   pos_y = 3
+   script = "set_sprite.lua"
+   param = ( "15", "cloth_female_brown_female_no_th-sh" )
+}
+E6 = {
+   pos_x = 3
+   pos_y = 3
+   script = "set_sprite.lua"
+   param = ( "15", "cloth_female_teal2_cloth_female" )
+}
+E7 = {
+   pos_x = 5
+   pos_y = 3
+   script = "set_sprite.lua"
+   param = ( "15", "cloth_female_white_cloth_female" )
+}
+E8 = {
+   pos_x = 7
+   pos_y = 3
+   script = "set_sprite.lua"
+   param = ( "15", "cloth_male_white_cloth_male" )
+}
+E9 = {
+   pos_x = 9
+   pos_y = 3
+   script = "set_sprite.lua"
+   param = ( "15", "leather_female_leather_female" )
+}
+E10 = {
+   pos_x = 1
+   pos_y = 4
+   script = "set_sprite.lua"
+   param = ( "15", "leather_male_leather_male" )
+}
+E11 = {
+   pos_x = 3
+   pos_y = 4
+   script = "set_sprite.lua"
+   param = ( "15", "metal_female_bronze_female_no_th-sh" )
+}
+E12 = {
+   pos_x = 5
+   pos_y = 4
+   script = "set_sprite.lua"
+   param = ( "15", "metal_female_gold_female_no_th-sh" )
+}
+E13 = {
+   pos_x = 7
+   pos_y = 4
+   script = "set_sprite.lua"
+   param = ( "15", "metal_female_iron_female_no_th-sh" )
+}
+E14 = {
+   pos_x = 9
+   pos_y = 4
+   script = "set_sprite.lua"
+   param = ( "15", "metal_female_silver_female_no_th-sh" )
+}
+E15 = {
+   pos_x = 0
+   pos_y = 3
+   script = "goto.lua"
+   param = ( "C14", "1", "1" )
+}
+E16 = {
+   pos_x = 10
+   pos_y = 3
+   script = "goto.lua"
+   param = ( "C16", "1", "1" )
+}
+E17 = {
+   pos_x = 0
+   pos_y = 0
+   script = "set_sprite.lua"
+   param = ( "15", "" )
+}
+E18 = {
+   pos_x = 0
+   pos_y = 6
+   script = "set_sprite.lua"
+   param = ( "15", "" )
+}
+E19 = {
+   pos_x = 10
+   pos_y = 0
+   script = "set_sprite.lua"
+   param = ( "15", "" )
+}
+E20 = {
+   pos_x = 10
+   pos_y = 6
+   script = "set_sprite.lua"
+   param = ( "15", "" )
+}
+}
