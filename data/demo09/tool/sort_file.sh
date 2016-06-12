@@ -25,17 +25,17 @@ mv body/??_* $DIR
 DIR=4
 echo $DIR- Mustache >> $DIR_LIST
 mkdir $DIR
-mv facial/??_*stache_* $DIR
+mv facial/??_*stache* $DIR
 
 let "DIR=$DIR+1"
 echo $DIR- Beard >> $DIR_LIST
 mkdir $DIR
-mv facial/??_*_beard_* $DIR
+mv facial/??_*_beard* $DIR
 
 let "DIR=$DIR+1"
 echo $DIR- Fiveoclock >> $DIR_LIST
 mkdir $DIR
-mv facial/??_*_fiveoclock_* $DIR
+mv facial/??_*_fiveoclock* $DIR
 
 let "DIR=$DIR+1"
 echo $DIR- Hair >> $DIR_LIST
@@ -55,15 +55,14 @@ mv torso/??*_corset_* $DIR
 mv torso/??*_dress_* $DIR
 mv torso/??*_robes_* $DIR
 mv torso/??*sleeve* $DIR
-mv formal_male_no_th-sh/??*_vest_* $DIR
-mv formal_male_no_th-sh/??*_shirt_* $DIR
+mv formal_male_no_th-sh/??*_vest* $DIR
+mv formal_male_no_th-sh/??*_shirt* $DIR
 
 let "DIR=$DIR+1"
 echo $DIR- Torso military >> $DIR_LIST
 mkdir $DIR
 mv torso/??_*chain_mail_* $DIR
 mv torso/??_*chest_* $DIR
-mv torso/??_*plate_* $DIR
 mv torso/??_*tunics_* $DIR
 
 let "DIR=$DIR+1"
@@ -104,7 +103,7 @@ let "DIR=$DIR+1"
 echo $DIR- Neck >> $DIR_LIST
 mkdir $DIR
 mv accessories/??_* $DIR
-mv formal_male_no_th-sh/??_*tie_* $DIR
+mv formal_male_no_th-sh/??_*tie* $DIR
 
 let "DIR=$DIR+1"
 echo $DIR- Cape >> $DIR_LIST
@@ -125,7 +124,7 @@ mv weapons/??_* $DIR
 let "DIR=$DIR+1"
 echo $DIR- Quiver >> $DIR_LIST
 mkdir $DIR
-mv behind_body/??*_quiver_* $DIR
+mv behind_body/??*_quiver* $DIR
 
 let "DIR=$DIR+1"
 echo $DIR- Wings >> $DIR_LIST
