@@ -230,45 +230,72 @@ int file_get_contents(const char *filename,char **contents,int *length)
 	int fd;
 	ssize_t size;
 	char * buf;
+	char error_buf[SMALL_BUF];
+	char * error_str;
+
+	*contents = NULL;
 
 	fullname = strconcat(base_directory,"/",filename,NULL);
 
 	file_lock(filename);
 
 	if( stat(fullname, &sts) == -1) {
-		werr(LOGDEV,"Error stat on file %s\n",fullname);
+		#if (_POSIX_C_SOURCE >= 200112L || _XOPEN_SOURCE >= 600) && ! _GNU_SOURCE
+			strerror_r(errno,error_buf,SMALL_BUF);
+			error_str = error_buf;
+		#else
+			error_str = strerror_r(errno,error_buf,SMALL_BUF);
+		#endif
+		file_unlock(filename);
+		werr(LOGDEV,"Error stat on file %s: %s\n",fullname,error_str);
 		free(fullname);
 		return FALSE;
 	}
 
 	fd = open(fullname,O_RDONLY);
 	if(fd == -1) {
-		werr(LOGDEV,"Error open on file %s\n",fullname);
+		#if (_POSIX_C_SOURCE >= 200112L || _XOPEN_SOURCE >= 600) && ! _GNU_SOURCE
+			strerror_r(errno,error_buf,SMALL_BUF);
+			error_str = error_buf;
+		#else
+			error_str = strerror_r(errno,error_buf,SMALL_BUF);
+		#endif
+		file_unlock(filename);
+		werr(LOGDEV,"Error open on file %s: %s\n",fullname,error_str);
 		free(fullname);
 		return FALSE;
 	}
 
 	buf = malloc(sts.st_size);
 	if( buf == NULL) {
+		close(fd);
+		file_unlock(filename);
 		free(fullname);
 		return FALSE;
 	}
 
 	size = read(fd,buf,sts.st_size);
 	if( size == -1) {
+		#if (_POSIX_C_SOURCE >= 200112L || _XOPEN_SOURCE >= 600) && ! _GNU_SOURCE
+			strerror_r(errno,error_buf,SMALL_BUF);
+			error_str = error_buf;
+		#else
+			error_str = strerror_r(errno,error_buf,SMALL_BUF);
+		#endif
+		close(fd);
+		file_unlock(filename);
 		free(buf);
-		werr(LOGDEV,"Error read on file %s\n",fullname);
+		werr(LOGDEV,"Error read on file %s: %s\n",fullname,error_str);
 		free(fullname);
 		return FALSE;
 	}
-	free(fullname);
 
 	close(fd);
+	file_unlock(filename);
+	free(fullname);
 
 	*contents = buf;
 	*length = size;
-
-	file_unlock(filename);
 
 	return TRUE;
 }
