@@ -44,6 +44,23 @@ mv hair/??_*.png $DIR
 mv hair/??_*.zip $DIR
 
 let "DIR=$DIR+1"
+echo $DIR- Legs civil >> $DIR_LIST
+mkdir $DIR
+mv formal_male_no_th-sh/??_*pants* $DIR
+mv legs/??_*_pants_* $DIR
+mv legs/??_*_skirt_* $DIR
+
+let "DIR=$DIR+1"
+echo $DIR- Legs military >> $DIR_LIST
+mkdir $DIR
+mv legs/??_*armor_* $DIR
+
+let "DIR=$DIR+1"
+echo $DIR- Belt >> $DIR_LIST
+mkdir $DIR
+mv belt/??_* $DIR
+
+let "DIR=$DIR+1"
 echo $DIR- Shoes >> $DIR_LIST
 mkdir $DIR
 mv feet/??_* $DIR
@@ -68,31 +85,16 @@ mv torso/??_*tunics_* $DIR
 let "DIR=$DIR+1"
 echo $DIR- Arms >> $DIR_LIST
 mkdir $DIR
-mv torso/??_*arms_* $DIR
 mv hands/??_* $DIR
 
 let "DIR=$DIR+1"
 echo $DIR- Shoulder >> $DIR_LIST
 mkdir $DIR
-mv torso/??_*spikes_* $DIR
 mv torso/??_*shoulders_* $DIR
+mv torso/??_*arms_* $DIR
 
-let "DIR=$DIR+1"
-echo $DIR- Legs civil >> $DIR_LIST
-mkdir $DIR
-mv formal_male_no_th-sh/??_*pants* $DIR
-mv legs/??_*_pants_* $DIR
-mv legs/??_*_skirt_* $DIR
-
-let "DIR=$DIR+1"
-echo $DIR- Legs military >> $DIR_LIST
-mkdir $DIR
-mv legs/??_*armor_* $DIR
-
-let "DIR=$DIR+1"
-echo $DIR- Belt >> $DIR_LIST
-mkdir $DIR
-mv belt/??_* $DIR
+#gold spikes seems incomplete
+rm torso/??_*spikes_*
 
 let "DIR=$DIR+1"
 echo $DIR- Tabard >> $DIR_LIST
