@@ -25,6 +25,7 @@
 #include <fcntl.h>
 #include <dirent.h>
 #include <unistd.h>
+#include <errno.h>
 
 list_t * file_list = NULL;
 
@@ -90,7 +91,7 @@ void file_update(context_t * context, const char * filename)
 
 	/* Avoid flooding the server */
 	if( file_data->timestamp != 0 && file_data->timestamp + FILE_REQUEST_TIMEOUT > current_time ) {
-		wlog(LOGDEBUG,"Previous request of file  %s has been %d ms ago",filename,current_time - file_data->timestamp );
+		//wlog(LOGDEBUG,"Previous request of file  %s has been %d ms ago",filename,current_time - file_data->timestamp );
 		return;
 	}
 
@@ -281,6 +282,8 @@ int file_set_contents(const char *filename,const char *contents,int length)
 	char * fullname;
 	int fd;
 	ssize_t size;
+	char error_buf[SMALL_BUF];
+	char * error_str;
 
 	fullname = strconcat(base_directory,"/",filename,NULL);
 
@@ -288,14 +291,29 @@ int file_set_contents(const char *filename,const char *contents,int length)
 
 	fd = creat(fullname,S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH);
 	if(fd == -1) {
-		werr(LOGDEV,"Error open on file %s\n",fullname);
+		#if (_POSIX_C_SOURCE >= 200112L || _XOPEN_SOURCE >= 600) && ! _GNU_SOURCE
+			strerror_r(errno,error_buf,SMALL_BUF);
+			error_str = error_buf;
+		#else
+			error_str = strerror_r(errno,error_buf,SMALL_BUF);
+		#endif
+		file_unlock(filename);
+		werr(LOGDEV,"Error open on file %s: %s\n",fullname,error_str);
 		free(fullname);
 		return FALSE;
 	}
 
 	size = write(fd,contents,length);
 	if( size == -1) {
-		werr(LOGDEV,"Error write on file %s\n",fullname);
+		#if (_POSIX_C_SOURCE >= 200112L || _XOPEN_SOURCE >= 600) && ! _GNU_SOURCE
+			strerror_r(errno,error_buf,SMALL_BUF);
+			error_str = error_buf;
+		#else
+			error_str = strerror_r(errno,error_buf,SMALL_BUF);
+		#endif
+		close(fd);
+		file_unlock(filename);
+		werr(LOGDEV,"Error write on file %s: %s\n",fullname,error_str);
 		free(fullname);
 		return FALSE;
 	}
