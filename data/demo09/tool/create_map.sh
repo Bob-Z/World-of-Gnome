@@ -75,10 +75,13 @@ for NUM in `ls -d [0-9]* | sort -h`;do
 		fi
 	done
 
-	let "ADD_TILE=$MAP_COLUMN-$CUR_X+1"
-	for i in `seq 1 $ADD_TILE`;do
-		echo "\"\"," >> $MAP_NAME
-	done
+	
+	if [ ! "$CUR_X" = "1" ];then # Last line was not complete
+		let "ADD_TILE=$MAP_COLUMN-$CUR_X+1"
+		for i in `seq 1 $ADD_TILE`;do
+			echo "\"\"," >> $MAP_NAME
+		done
+	fi
 
 	#last 2 lines
 	for i in `seq 0 $COLUMN`;do
