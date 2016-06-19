@@ -133,6 +133,7 @@ static void cb_unzoom(Uint32 y,Uint32 unused)
 /**********************************
 Select sprite image to display
 Return NULL if no sprite can be found
+Returned anim_t ** must be FREED
 **********************************/
 static anim_t ** select_sprite(context_t * ctx, const char * image_file_name)
 {
@@ -163,10 +164,13 @@ static anim_t ** select_sprite(context_t * ctx, const char * image_file_name)
 	}
 
 	if( sprite_name ) {
-		sprite_name_array[0] = sprite_name;
-		sprite = imageDB_get_anim_array(player_context,sprite_name_array);
+		if( sprite_name[0] != 0 ){
+			sprite_name_array[0] = sprite_name;
+			sprite = imageDB_get_anim_array(player_context,sprite_name_array);
+			free(sprite_name);
+			return sprite;
+		}
 		free(sprite_name);
-		return sprite;
 	}
 
 	/* Try sprite lists */
@@ -191,10 +195,13 @@ static anim_t ** select_sprite(context_t * ctx, const char * image_file_name)
 
 	/* try default sprite file */
 	if(entry_read_string(CHARACTER_TABLE,ctx->id,&sprite_name,CHARACTER_KEY_SPRITE,NULL)) {
-		sprite_name_array[0] = sprite_name;
-		sprite = imageDB_get_anim_array(player_context,sprite_name_array);
+		if( sprite_name[0] != 0 ) {
+			sprite_name_array[0] = sprite_name;
+			sprite = imageDB_get_anim_array(player_context,sprite_name_array);
+			free(sprite_name);
+			return sprite;
+		}
 		free(sprite_name);
-		return sprite;
 	}
 	/* try default sprite list */
 	if(entry_read_list(CHARACTER_TABLE,ctx->id,&sprite_list,CHARACTER_KEY_SPRITE,NULL)) {
@@ -274,8 +281,8 @@ if image_file_name is not NULL, this file is used as an image rather than the no
 **********************************/
 static void set_up_sprite(context_t * ctx, const char * image_file_name)
 {
-	anim_t ** sprite;
-	anim_t ** sprite_move;
+	anim_t ** sprite_list;
+	anim_t ** sprite_move_list;
 	item_t * item;
 	int x;
 	int y;
@@ -369,11 +376,15 @@ static void set_up_sprite(context_t * ctx, const char * image_file_name)
 	}
 
 	/* Select sprite to display */
-	sprite = select_sprite(ctx,image_file_name);
-	if( sprite == NULL ) {
+	sprite_list = select_sprite(ctx,image_file_name);
+	if( sprite_list == NULL ) {
 		return;
 	}
-	sprite_move = select_sprite_move(ctx,image_file_name);
+	if( sprite_list[0] == NULL ) {
+		free(sprite_list);
+		return;
+	}
+	sprite_move_list = select_sprite_move(ctx,image_file_name);
 
 	/* Get position in pixel */
 	x = map_t2p_x(ctx->cur_pos_x,ctx->cur_pos_y,default_layer);
@@ -390,16 +401,16 @@ static void set_up_sprite(context_t * ctx, const char * image_file_name)
 	/* Align sprite on tile */
 	entry_read_int(CHARACTER_TABLE,ctx->id,&sprite_align,CHARACTER_KEY_ALIGN,NULL);
 	if( sprite_align == ALIGN_CENTER ) {
-		x -= ((sprite[0]->w*default_layer->map_zoom*zoom)-default_layer->tile_width)/2;
-		y -= ((sprite[0]->h*default_layer->map_zoom*zoom)-default_layer->tile_height)/2;
-		ox -= ((sprite[0]->w*default_layer->map_zoom*zoom)-default_layer->tile_width)/2;
-		oy -= ((sprite[0]->h*default_layer->map_zoom*zoom)-default_layer->tile_height)/2;
+		x -= ((sprite_list[0]->w*default_layer->map_zoom*zoom)-default_layer->tile_width)/2;
+		y -= ((sprite_list[0]->h*default_layer->map_zoom*zoom)-default_layer->tile_height)/2;
+		ox -= ((sprite_list[0]->w*default_layer->map_zoom*zoom)-default_layer->tile_width)/2;
+		oy -= ((sprite_list[0]->h*default_layer->map_zoom*zoom)-default_layer->tile_height)/2;
 	}
 	if( sprite_align == ALIGN_LOWER ) {
-		x -= ((sprite[0]->w*default_layer->map_zoom*zoom)-default_layer->tile_width)/2;
-		y -= (sprite[0]->h*default_layer->map_zoom*zoom)-default_layer->tile_height ;
-		ox -= ((sprite[0]->w*default_layer->map_zoom*zoom)-default_layer->tile_width)/2;
-		oy -= (sprite[0]->h*default_layer->map_zoom*zoom)-default_layer->tile_height;
+		x -= ((sprite_list[0]->w*default_layer->map_zoom*zoom)-default_layer->tile_width)/2;
+		y -= (sprite_list[0]->h*default_layer->map_zoom*zoom)-default_layer->tile_height ;
+		ox -= ((sprite_list[0]->w*default_layer->map_zoom*zoom)-default_layer->tile_width)/2;
+		oy -= (sprite_list[0]->h*default_layer->map_zoom*zoom)-default_layer->tile_height;
 	}
 
 	/* Add Y offset */
@@ -408,8 +419,10 @@ static void set_up_sprite(context_t * ctx, const char * image_file_name)
 	oy += sprite_offset_y;
 
 	/* Set sprite to item */
-	item_set_smooth_anim_array(item,x,y,ox,oy,ctx->pos_tick,sprite);
-	item_set_anim_move_array(item,sprite_move);
+	item_set_smooth_anim_array(item,x,y,ox,oy,ctx->pos_tick,sprite_list);
+	free(sprite_list);
+	item_set_anim_move_array(item,sprite_move_list);
+	free(sprite_move_list);
 
 	/* Get rotation configuration */
 	angle = 0;

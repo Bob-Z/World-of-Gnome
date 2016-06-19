@@ -128,6 +128,7 @@ anim_t ** imageDB_get_anim_array(context_t * context, const char ** image_name)
 {
 	anim_t ** anim_output = NULL;
 	int num_image = 0;
+	int current_image = 0;
 
 	anim_output = malloc( sizeof(anim_t*) );
 	anim_output[0] = NULL;
@@ -136,11 +137,14 @@ anim_t ** imageDB_get_anim_array(context_t * context, const char ** image_name)
 		return anim_output;
 	}
 
-	while( image_name[num_image] ) {
-		anim_output = realloc(anim_output,(num_image+2)*sizeof(anim_t*));
-		anim_output[num_image] = imageDB_get_anim(context,image_name[num_image]);
-		anim_output[num_image+1] = NULL;
-		num_image++;
+	while( image_name[current_image] ) {
+		if( image_name[current_image][0] != 0 ){
+			anim_output = realloc(anim_output,(num_image+2)*sizeof(anim_t*));
+			anim_output[num_image] = imageDB_get_anim(context,image_name[current_image]);
+			anim_output[num_image+1] = NULL;
+			num_image++;
+		}
+		current_image++;
 	}
 
 	return anim_output;
