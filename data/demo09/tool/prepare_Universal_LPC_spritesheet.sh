@@ -4,13 +4,14 @@
 if [ ! -f master.zip ];then
 	wget https://github.com/jrconway3/Universal-LPC-spritesheet/archive/master.zip
 fi
-unzip master.zip
+echo Unzip archive
+unzip master.zip > /dev/null
 cd Universal-LPC-spritesheet-master
 
 SPRITE_TEMPO=200
 MARQUEE_TEMPO=500
 
-DIR=`ls`
+DIR=`ls -d */`
 
 IFS=$'\n'
 
@@ -35,7 +36,11 @@ PIC_ACTION[5]=13
 PIC_ACTION[6]=6
 
 for d in $DIR;do
-	echo $d
+	if [ "$d" == "_build/" ];then
+		continue
+	fi
+
+	echo Processing $d
 	cd $d > /dev/null 2>&1
 	if [ $? == 0 ];then
 		LIST=`find -iname "*.png" -type f`
@@ -44,7 +49,7 @@ for d in $DIR;do
 			#echo l= $l
 			#echo FILENAME= $FILENAME
 			cp "$l" "$FILENAME"
-			rm tmp_tiles*.png
+			rm tmp_tiles*.png > /dev/null 2>&1
 			convert -crop 64x64 "$FILENAME"  tmp_tiles%d.png
 			BASENAME=`basename "$FILENAME" .png`
 			LINE_PIC=13
@@ -53,7 +58,7 @@ for d in $DIR;do
 			for action in $ACTION_PREFIX;do
 				#For normal sprites
 				for orient in $ORIENT_PREFIX;do
-					rm timing
+					rm timing > /dev/null 2>&1
 					#For first set of action, set the number of picture for this action
 					if [ $orient == "N_" ];then
 						((INDEX_ACTION=$INDEX_ACTION+1))
@@ -66,15 +71,15 @@ for d in $DIR;do
 					NUM_PIC=${PIC_ACTION[$INDEX_ACTION]}
 					CURRENT_LOOP=0
 					#Marquee
-					zip ${action}${BASENAME}_marquee.zip tmp_tiles$INDEX_PIC.png
+					zip ${action}${BASENAME}_marquee.zip tmp_tiles$INDEX_PIC.png > /dev/null
 					cp tmp_tiles$INDEX_PIC.png ${action}${orient}$BASENAME.png
 					while [ $CURRENT_LOOP -lt $NUM_PIC ];do
-						zip ${action}${orient}$BASENAME.zip tmp_tiles$INDEX_PIC.png
+						zip ${action}${orient}$BASENAME.zip tmp_tiles$INDEX_PIC.png > /dev/null
 						echo $SPRITE_TEMPO >> timing
 						((CURRENT_LOOP=$CURRENT_LOOP+1))
 						((INDEX_PIC=$INDEX_PIC+1))
 					done
-					zip ${action}${orient}$BASENAME.zip timing
+					zip ${action}${orient}$BASENAME.zip timing > /dev/null
 					((INDEX_PIC=$INDEX_PIC+$LINE_PIC-$NUM_PIC))
 
 					#For HU (hurt) action, there is no orientation
@@ -89,9 +94,13 @@ for d in $DIR;do
 				echo $MARQUEE_TEMPO >> timing
 				echo $MARQUEE_TEMPO >> timing
 				echo $MARQUEE_TEMPO >> timing
-				zip ${action}${BASENAME}_marquee.zip timing
+				zip ${action}${BASENAME}_marquee.zip timing > /dev/null
 			done
 		done
+
+		# Clean-up
+		rm tmp_tiles*
+		rm timing
 		cd - > /dev/null 2>&1
 	fi
 done

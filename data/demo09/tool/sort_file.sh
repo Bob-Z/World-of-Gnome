@@ -47,8 +47,12 @@ let "DIR=$DIR+1"
 echo $DIR- Legs civil >> $DIR_LIST
 mkdir $DIR
 mv formal_male_no_th-sh/??_*pants* $DIR
-mv legs/??_*_pants_* $DIR
+mv legs/??_*magenta_pants_* $DIR
+mv legs/??_*red_pants_* $DIR
+mv legs/??_*white_pants_* $DIR
+mv legs/??_*teal_pants_* $DIR
 mv legs/??_*_skirt_* $DIR
+mv torso/??*_overskirt* $DIR
 
 let "DIR=$DIR+1"
 echo $DIR- Legs military >> $DIR_LIST
@@ -57,6 +61,13 @@ mv legs/??_*armor_* $DIR
 
 let "DIR=$DIR+1"
 echo $DIR- Belt >> $DIR_LIST
+mkdir $DIR
+mv belt/??_*cloth* $DIR
+mv belt/??_*leather* $DIR
+mv belt/??_*metal* $DIR
+
+let "DIR=$DIR+1"
+echo $DIR- Buckles >> $DIR_LIST
 mkdir $DIR
 mv belt/??_* $DIR
 
@@ -74,13 +85,13 @@ mv torso/??*_robes_* $DIR
 mv torso/??*sleeve* $DIR
 mv formal_male_no_th-sh/??*_vest* $DIR
 mv formal_male_no_th-sh/??*_shirt* $DIR
+mv torso/??_*tunics_* $DIR
 
 let "DIR=$DIR+1"
 echo $DIR- Torso military >> $DIR_LIST
 mkdir $DIR
 mv torso/??_*chain_mail_* $DIR
 mv torso/??_*chest_* $DIR
-mv torso/??_*tunics_* $DIR
 
 let "DIR=$DIR+1"
 echo $DIR- Arms >> $DIR_LIST

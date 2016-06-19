@@ -21,9 +21,13 @@ for NUM in `ls -d [0-9]* | sort -h`;do
 	let "MAP_COLUMN=$COLUMN+1"
 	let "MAP_LINE=$LINE+4"
 
+	echo "bg_red = 192" > $MAP_NAME
+	echo "bg_blue = 192" >> $MAP_NAME
+	echo "bg_green = 192" >> $MAP_NAME
+
 	FILE=`ls $NUM/WC_*_marquee.zip`
 
-	echo "attribute = {" > $MAP_NAME
+	echo "attribute = {" >> $MAP_NAME
         echo "  x = {"	>> $MAP_NAME
         echo "        current = $NUM"	>> $MAP_NAME
 	echo "      }"	>> $MAP_NAME
