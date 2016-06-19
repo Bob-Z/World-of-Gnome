@@ -1,10 +1,13 @@
+bg_red = 192
+bg_blue = 192
+bg_green = 192
 attribute = {
   x = {
         current = 20
       }
 }
-width = 11
-height = 10
+width = 9
+height = 9
 tile_width = 64
 tile_height = 64
 warp_x = 0
@@ -19,8 +22,6 @@ layer0 = {
 "",
 "",
 "",
-"",
-"",
 "tile/fog.png",
 "",
 "",
@@ -32,72 +33,47 @@ layer0 = {
 "",
 "",
 "",
+"character/20/WC_bandanas_female_red_marquee.zip",
+"",
+"character/20/WC_bandanas_male_red_marquee.zip",
+"",
+"character/20/WC_caps_female_leather_cap_female_marquee.zip",
+"",
+"character/20/WC_caps_male_leather_cap_male_marquee.zip",
 "",
 "",
-"character/20/WC_both_hand_spear_marquee.zip",
+"character/20/WC_helms_female_chainhat_female_marquee.zip",
 "",
-"character/20/WC_left_hand_either_arrow_marquee.zip",
+"character/20/WC_helms_female_golden_helm_female_marquee.zip",
 "",
-"character/20/WC_left_hand_either_arrow_skeleton_marquee.zip",
+"character/20/WC_helms_female_metal_helm_female_marquee.zip",
 "",
-"character/20/WC_left_hand_male_shield_male_cutoutforbody_marquee.zip",
-"",
-"character/20/WC_left_hand_male_shield_male_cutoutforhat_marquee.zip",
-"",
-"",
-"character/20/WC_oversize_right_hand_female_longsword_female_marquee.zip",
-"",
-"character/20/WC_oversize_right_hand_female_mace_female_marquee.zip",
-"",
-"character/20/WC_oversize_right_hand_female_rapier_female_marquee.zip",
-"",
-"character/20/WC_oversize_right_hand_female_saber_female_marquee.zip",
-"",
-"character/20/WC_oversize_right_hand_male_longsword_male_marquee.zip",
-"",
-"",
-"character/20/WC_oversize_right_hand_male_mace_male_marquee.zip",
-"",
-"character/20/WC_oversize_right_hand_male_rapier_male_marquee.zip",
-"",
-"character/20/WC_oversize_right_hand_male_saber_male_marquee.zip",
-"",
-"character/20/WC_oversize_two_hand_either_dragonspear_marquee.zip",
-"",
-"character/20/WC_oversize_two_hand_either_spear_marquee.zip",
+"character/20/WC_helms_male_chainhat_male_marquee.zip",
 "",
 "tile/exit.gif",
-"character/20/WC_oversize_two_hand_either_trident_marquee.zip",
+"character/20/WC_helms_male_golden_helm_male_marquee.zip",
 "",
-"character/20/WC_right_hand_either_bow_marquee.zip",
+"character/20/WC_helms_male_metal_helm_male_marquee.zip",
 "",
-"character/20/WC_right_hand_either_bow_skeleton_marquee.zip",
+"character/20/WC_hoods_female_chain_hood_female_marquee.zip",
 "",
-"character/20/WC_right_hand_either_greatbow_marquee.zip",
-"",
-"character/20/WC_right_hand_either_recurvebow_marquee.zip",
+"character/20/WC_hoods_female_cloth_hood_female_marquee.zip",
 "tile/exit.gif",
 "",
-"character/20/WC_right_hand_female_dagger_female_marquee.zip",
+"character/20/WC_hoods_male_chain_hood_male_marquee.zip",
 "",
-"character/20/WC_right_hand_female_spear_female_marquee.zip",
+"character/20/WC_hoods_male_cloth_hood_male_marquee.zip",
 "",
-"character/20/WC_right_hand_female_steelwand_female_marquee.zip",
+"character/20/WC_tiaras_female_bronze_marquee.zip",
 "",
-"character/20/WC_right_hand_female_woodwand_female_marquee.zip",
-"",
-"character/20/WC_right_hand_male_dagger_male_marquee.zip",
+"character/20/WC_tiaras_female_gold_marquee.zip",
 "",
 "",
-"character/20/WC_right_hand_male_spear_male_marquee.zip",
+"character/20/WC_tiaras_female_iron_marquee.zip",
 "",
-"character/20/WC_right_hand_male_woodwand_male_marquee.zip",
+"character/20/WC_tiaras_female_purple_marquee.zip",
 "",
-"",
-"",
-"",
-"",
-"",
+"character/20/WC_tiaras_female_silver_marquee.zip",
 "",
 "",
 "",
@@ -111,8 +87,6 @@ layer0 = {
 "",
 "",
 "tile/fog.png",
-"",
-"",
 "",
 "",
 "",
@@ -128,197 +102,149 @@ E0 = {
    pos_x = 1
    pos_y = 2
    script = "set_sprite.lua"
-   param = ( "20", "both_hand_spear" )
+   param = ( "20", "bandanas_female_red" )
 }
 E1 = {
    pos_x = 3
    pos_y = 2
    script = "set_sprite.lua"
-   param = ( "20", "left_hand_either_arrow" )
+   param = ( "20", "bandanas_male_red" )
 }
 E2 = {
    pos_x = 5
    pos_y = 2
    script = "set_sprite.lua"
-   param = ( "20", "left_hand_either_arrow_skeleton" )
+   param = ( "20", "caps_female_leather_cap_female" )
 }
 E3 = {
    pos_x = 7
    pos_y = 2
    script = "set_sprite.lua"
-   param = ( "20", "left_hand_male_shield_male_cutoutforbody" )
+   param = ( "20", "caps_male_leather_cap_male" )
 }
 E4 = {
-   pos_x = 9
-   pos_y = 2
+   pos_x = 1
+   pos_y = 3
    script = "set_sprite.lua"
-   param = ( "20", "left_hand_male_shield_male_cutoutforhat" )
+   param = ( "20", "helms_female_chainhat_female" )
 }
 E5 = {
-   pos_x = 1
+   pos_x = 3
    pos_y = 3
    script = "set_sprite.lua"
-   param = ( "20", "oversize_right_hand_female_longsword_female" )
+   param = ( "20", "helms_female_golden_helm_female" )
 }
 E6 = {
-   pos_x = 3
+   pos_x = 5
    pos_y = 3
    script = "set_sprite.lua"
-   param = ( "20", "oversize_right_hand_female_mace_female" )
+   param = ( "20", "helms_female_metal_helm_female" )
 }
 E7 = {
-   pos_x = 5
+   pos_x = 7
    pos_y = 3
    script = "set_sprite.lua"
-   param = ( "20", "oversize_right_hand_female_rapier_female" )
+   param = ( "20", "helms_male_chainhat_male" )
 }
 E8 = {
-   pos_x = 7
-   pos_y = 3
+   pos_x = 1
+   pos_y = 4
    script = "set_sprite.lua"
-   param = ( "20", "oversize_right_hand_female_saber_female" )
+   param = ( "20", "helms_male_golden_helm_male" )
 }
 E9 = {
-   pos_x = 9
-   pos_y = 3
+   pos_x = 3
+   pos_y = 4
    script = "set_sprite.lua"
-   param = ( "20", "oversize_right_hand_male_longsword_male" )
+   param = ( "20", "helms_male_metal_helm_male" )
 }
 E10 = {
-   pos_x = 1
+   pos_x = 5
    pos_y = 4
    script = "set_sprite.lua"
-   param = ( "20", "oversize_right_hand_male_mace_male" )
+   param = ( "20", "hoods_female_chain_hood_female" )
 }
 E11 = {
-   pos_x = 3
+   pos_x = 7
    pos_y = 4
    script = "set_sprite.lua"
-   param = ( "20", "oversize_right_hand_male_rapier_male" )
+   param = ( "20", "hoods_female_cloth_hood_female" )
 }
 E12 = {
-   pos_x = 5
-   pos_y = 4
+   pos_x = 1
+   pos_y = 5
    script = "set_sprite.lua"
-   param = ( "20", "oversize_right_hand_male_saber_male" )
+   param = ( "20", "hoods_male_chain_hood_male" )
 }
 E13 = {
-   pos_x = 7
-   pos_y = 4
+   pos_x = 3
+   pos_y = 5
    script = "set_sprite.lua"
-   param = ( "20", "oversize_two_hand_either_dragonspear" )
+   param = ( "20", "hoods_male_cloth_hood_male" )
 }
 E14 = {
-   pos_x = 9
-   pos_y = 4
+   pos_x = 5
+   pos_y = 5
    script = "set_sprite.lua"
-   param = ( "20", "oversize_two_hand_either_spear" )
+   param = ( "20", "tiaras_female_bronze" )
 }
 E15 = {
-   pos_x = 1
+   pos_x = 7
    pos_y = 5
    script = "set_sprite.lua"
-   param = ( "20", "oversize_two_hand_either_trident" )
+   param = ( "20", "tiaras_female_gold" )
 }
 E16 = {
-   pos_x = 3
-   pos_y = 5
+   pos_x = 1
+   pos_y = 6
    script = "set_sprite.lua"
-   param = ( "20", "right_hand_either_bow" )
+   param = ( "20", "tiaras_female_iron" )
 }
 E17 = {
-   pos_x = 5
-   pos_y = 5
+   pos_x = 3
+   pos_y = 6
    script = "set_sprite.lua"
-   param = ( "20", "right_hand_either_bow_skeleton" )
+   param = ( "20", "tiaras_female_purple" )
 }
 E18 = {
-   pos_x = 7
-   pos_y = 5
-   script = "set_sprite.lua"
-   param = ( "20", "right_hand_either_greatbow" )
-}
-E19 = {
-   pos_x = 9
-   pos_y = 5
-   script = "set_sprite.lua"
-   param = ( "20", "right_hand_either_recurvebow" )
-}
-E20 = {
-   pos_x = 1
-   pos_y = 6
-   script = "set_sprite.lua"
-   param = ( "20", "right_hand_female_dagger_female" )
-}
-E21 = {
-   pos_x = 3
-   pos_y = 6
-   script = "set_sprite.lua"
-   param = ( "20", "right_hand_female_spear_female" )
-}
-E22 = {
    pos_x = 5
    pos_y = 6
    script = "set_sprite.lua"
-   param = ( "20", "right_hand_female_steelwand_female" )
+   param = ( "20", "tiaras_female_silver" )
 }
-E23 = {
-   pos_x = 7
-   pos_y = 6
-   script = "set_sprite.lua"
-   param = ( "20", "right_hand_female_woodwand_female" )
-}
-E24 = {
-   pos_x = 9
-   pos_y = 6
-   script = "set_sprite.lua"
-   param = ( "20", "right_hand_male_dagger_male" )
-}
-E25 = {
-   pos_x = 1
-   pos_y = 7
-   script = "set_sprite.lua"
-   param = ( "20", "right_hand_male_spear_male" )
-}
-E26 = {
-   pos_x = 3
-   pos_y = 7
-   script = "set_sprite.lua"
-   param = ( "20", "right_hand_male_woodwand_male" )
-}
-E27 = {
+E19 = {
    pos_x = 0
-   pos_y = 5
+   pos_y = 4
    script = "goto.lua"
    param = ( "C19", "1", "1" )
 }
-E28 = {
-   pos_x = 10
-   pos_y = 5
+E20 = {
+   pos_x = 8
+   pos_y = 4
    script = "goto.lua"
    param = ( "C21", "1", "1" )
 }
-E29 = {
+E21 = {
    pos_x = 0
    pos_y = 0
    script = "set_sprite.lua"
    param = ( "20", "" )
 }
-E30 = {
+E22 = {
    pos_x = 0
-   pos_y = 9
+   pos_y = 8
    script = "set_sprite.lua"
    param = ( "20", "" )
 }
-E31 = {
-   pos_x = 10
+E23 = {
+   pos_x = 8
    pos_y = 0
    script = "set_sprite.lua"
    param = ( "20", "" )
 }
-E32 = {
-   pos_x = 10
-   pos_y = 9
+E24 = {
+   pos_x = 8
+   pos_y = 8
    script = "set_sprite.lua"
    param = ( "20", "" )
 }

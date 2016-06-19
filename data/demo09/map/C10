@@ -1,10 +1,13 @@
+bg_red = 192
+bg_blue = 192
+bg_green = 192
 attribute = {
   x = {
         current = 10
       }
 }
-width = 9
-height = 7
+width = 7
+height = 8
 tile_width = 64
 tile_height = 64
 warp_x = 0
@@ -17,8 +20,6 @@ layer0 = {
 "",
 "",
 "",
-"",
-"",
 "tile/fog.png",
 "",
 "",
@@ -28,33 +29,30 @@ layer0 = {
 "",
 "",
 "",
+"character/10/WC_cloth_female_black_female_no_th-sh_marquee.zip",
+"",
+"character/10/WC_cloth_female_brown_female_no_th-sh_marquee.zip",
+"",
+"character/10/WC_cloth_female_teal2_cloth_female_marquee.zip",
 "",
 "",
-"character/10/WC_chain_mail_female_marquee.zip",
+"character/10/WC_cloth_female_white_cloth_female_marquee.zip",
 "",
-"character/10/WC_chain_mail_male_marquee.zip",
+"character/10/WC_cloth_male_white_cloth_male_marquee.zip",
 "",
-"character/10/WC_gold_chest_female_marquee.zip",
-"",
-"character/10/WC_gold_chest_male_marquee.zip",
+"character/10/WC_leather_female_leather_female_marquee.zip",
 "",
 "tile/exit.gif",
-"character/10/WC_leather_chest_female_marquee.zip",
+"character/10/WC_leather_male_leather_male_marquee.zip",
 "",
-"character/10/WC_leather_chest_male_marquee.zip",
+"character/10/WC_metal_female_bronze_female_no_th-sh_marquee.zip",
 "",
-"character/10/WC_plate_chest_female_marquee.zip",
-"",
-"character/10/WC_plate_chest_male_marquee.zip",
+"character/10/WC_metal_female_gold_female_no_th-sh_marquee.zip",
 "tile/exit.gif",
 "",
-"character/10/WC_tunics_female_brown_tunic_marquee.zip",
+"character/10/WC_metal_female_iron_female_no_th-sh_marquee.zip",
 "",
-"character/10/WC_tunics_female_maroon_tunic_marquee.zip",
-"",
-"character/10/WC_tunics_female_teal_tunic_marquee.zip",
-"",
-"character/10/WC_tunics_female_white_tunic_marquee.zip",
+"character/10/WC_metal_female_silver_female_no_th-sh_marquee.zip",
 "",
 "",
 "",
@@ -66,8 +64,6 @@ layer0 = {
 "",
 "",
 "tile/fog.png",
-"",
-"",
 "",
 "",
 "",
@@ -81,107 +77,101 @@ E0 = {
    pos_x = 1
    pos_y = 2
    script = "set_sprite.lua"
-   param = ( "10", "chain_mail_female" )
+   param = ( "10", "cloth_female_black_female_no_th-sh" )
 }
 E1 = {
    pos_x = 3
    pos_y = 2
    script = "set_sprite.lua"
-   param = ( "10", "chain_mail_male" )
+   param = ( "10", "cloth_female_brown_female_no_th-sh" )
 }
 E2 = {
    pos_x = 5
    pos_y = 2
    script = "set_sprite.lua"
-   param = ( "10", "gold_chest_female" )
+   param = ( "10", "cloth_female_teal2_cloth_female" )
 }
 E3 = {
-   pos_x = 7
-   pos_y = 2
+   pos_x = 1
+   pos_y = 3
    script = "set_sprite.lua"
-   param = ( "10", "gold_chest_male" )
+   param = ( "10", "cloth_female_white_cloth_female" )
 }
 E4 = {
-   pos_x = 1
+   pos_x = 3
    pos_y = 3
    script = "set_sprite.lua"
-   param = ( "10", "leather_chest_female" )
+   param = ( "10", "cloth_male_white_cloth_male" )
 }
 E5 = {
-   pos_x = 3
-   pos_y = 3
-   script = "set_sprite.lua"
-   param = ( "10", "leather_chest_male" )
-}
-E6 = {
    pos_x = 5
    pos_y = 3
    script = "set_sprite.lua"
-   param = ( "10", "plate_chest_female" )
+   param = ( "10", "leather_female_leather_female" )
 }
-E7 = {
-   pos_x = 7
-   pos_y = 3
-   script = "set_sprite.lua"
-   param = ( "10", "plate_chest_male" )
-}
-E8 = {
+E6 = {
    pos_x = 1
    pos_y = 4
    script = "set_sprite.lua"
-   param = ( "10", "tunics_female_brown_tunic" )
+   param = ( "10", "leather_male_leather_male" )
 }
-E9 = {
+E7 = {
    pos_x = 3
    pos_y = 4
    script = "set_sprite.lua"
-   param = ( "10", "tunics_female_maroon_tunic" )
+   param = ( "10", "metal_female_bronze_female_no_th-sh" )
 }
-E10 = {
+E8 = {
    pos_x = 5
    pos_y = 4
    script = "set_sprite.lua"
-   param = ( "10", "tunics_female_teal_tunic" )
+   param = ( "10", "metal_female_gold_female_no_th-sh" )
+}
+E9 = {
+   pos_x = 1
+   pos_y = 5
+   script = "set_sprite.lua"
+   param = ( "10", "metal_female_iron_female_no_th-sh" )
+}
+E10 = {
+   pos_x = 3
+   pos_y = 5
+   script = "set_sprite.lua"
+   param = ( "10", "metal_female_silver_female_no_th-sh" )
 }
 E11 = {
-   pos_x = 7
-   pos_y = 4
-   script = "set_sprite.lua"
-   param = ( "10", "tunics_female_white_tunic" )
-}
-E12 = {
    pos_x = 0
-   pos_y = 3
+   pos_y = 4
    script = "goto.lua"
    param = ( "C9", "1", "1" )
 }
-E13 = {
-   pos_x = 8
-   pos_y = 3
+E12 = {
+   pos_x = 6
+   pos_y = 4
    script = "goto.lua"
    param = ( "C11", "1", "1" )
 }
-E14 = {
+E13 = {
    pos_x = 0
    pos_y = 0
+   script = "set_sprite.lua"
+   param = ( "10", "" )
+}
+E14 = {
+   pos_x = 0
+   pos_y = 7
    script = "set_sprite.lua"
    param = ( "10", "" )
 }
 E15 = {
-   pos_x = 0
-   pos_y = 6
-   script = "set_sprite.lua"
-   param = ( "10", "" )
-}
-E16 = {
-   pos_x = 8
+   pos_x = 6
    pos_y = 0
    script = "set_sprite.lua"
    param = ( "10", "" )
 }
-E17 = {
-   pos_x = 8
-   pos_y = 6
+E16 = {
+   pos_x = 6
+   pos_y = 7
    script = "set_sprite.lua"
    param = ( "10", "" )
 }

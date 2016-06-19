@@ -6,18 +6,19 @@
 5- Beard
 6- Fiveoclock
 7- Hair
-8- Shoes
-9- Torso civil
-10- Torso military
-11- Arms
-12- Shoulder
-13- Legs civil
-14- Legs military
-15- Belt
-16- Tabard
-17- Neck
-18- Cape
-19- Head
-20- Weapon
-21- Quiver
-22- Wings
+8- Legs civil
+9- Legs military
+10- Belt
+11- Buckles
+12- Shoes
+13- Torso civil
+14- Torso military
+15- Arms
+16- Shoulder
+17- Tabard
+18- Neck
+19- Cape
+20- Head
+21- Weapon
+22- Quiver
+23- Wings

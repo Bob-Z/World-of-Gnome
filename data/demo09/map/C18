@@ -1,10 +1,13 @@
+bg_red = 192
+bg_blue = 192
+bg_green = 192
 attribute = {
   x = {
         current = 18
       }
 }
-width = 15
-height = 11
+width = 11
+height = 10
 tile_width = 64
 tile_height = 64
 warp_x = 0
@@ -21,10 +24,6 @@ layer0 = {
 "",
 "",
 "",
-"",
-"",
-"",
-"",
 "tile/fog.png",
 "",
 "",
@@ -38,115 +37,68 @@ layer0 = {
 "",
 "",
 "",
+"character/18/WC_bowtie_marquee.zip",
+"",
+"character/18/WC_neck_capeclip_female_capeclip_black_marquee.zip",
+"",
+"character/18/WC_neck_capeclip_female_capeclip_blue_marquee.zip",
+"",
+"character/18/WC_neck_capeclip_female_capeclip_brown_marquee.zip",
+"",
+"character/18/WC_neck_capeclip_female_capeclip_gray_marquee.zip",
 "",
 "",
+"character/18/WC_neck_capeclip_female_capeclip_green_marquee.zip",
+"",
+"character/18/WC_neck_capeclip_female_capeclip_lavender_marquee.zip",
+"",
+"character/18/WC_neck_capeclip_female_capeclip_maroon_marquee.zip",
+"",
+"character/18/WC_neck_capeclip_female_capeclip_pink_marquee.zip",
+"",
+"character/18/WC_neck_capeclip_female_capeclip_red_marquee.zip",
 "",
 "",
-"character/18/WC_back_cape_normal_female_cape_black_marquee.zip",
+"character/18/WC_neck_capeclip_female_capeclip_white_marquee.zip",
 "",
-"character/18/WC_back_cape_normal_female_cape_blue_marquee.zip",
+"character/18/WC_neck_capeclip_female_capeclip_yellow_marquee.zip",
 "",
-"character/18/WC_back_cape_normal_female_cape_brown_marquee.zip",
+"character/18/WC_neck_capetie_female_capetie_black_marquee.zip",
 "",
-"character/18/WC_back_cape_normal_female_cape_gray_marquee.zip",
+"character/18/WC_neck_capetie_female_capetie_blue_marquee.zip",
 "",
-"character/18/WC_back_cape_normal_female_cape_green_marquee.zip",
-"",
-"character/18/WC_back_cape_normal_female_cape_lavender_marquee.zip",
-"",
-"character/18/WC_back_cape_normal_female_cape_maroon_marquee.zip",
-"",
-"",
-"character/18/WC_back_cape_normal_female_cape_pink_marquee.zip",
-"",
-"character/18/WC_back_cape_normal_female_cape_red_marquee.zip",
-"",
-"character/18/WC_back_cape_normal_female_cape_white_marquee.zip",
-"",
-"character/18/WC_back_cape_normal_female_cape_yellow_marquee.zip",
-"",
-"character/18/WC_back_cape_tattered_female_tattercape_black_marquee.zip",
-"",
-"character/18/WC_back_cape_tattered_female_tattercape_blue_marquee.zip",
-"",
-"character/18/WC_back_cape_tattered_female_tattercape_brown_marquee.zip",
-"",
-"",
-"character/18/WC_back_cape_tattered_female_tattercape_gray_marquee.zip",
-"",
-"character/18/WC_back_cape_tattered_female_tattercape_green_marquee.zip",
-"",
-"character/18/WC_back_cape_tattered_female_tattercape_maroon_marquee.zip",
-"",
-"character/18/WC_back_cape_tattered_female_tattercape_pink_marquee.zip",
-"",
-"character/18/WC_back_cape_tattered_female_tattercape_red_marquee.zip",
-"",
-"character/18/WC_back_cape_tattered_female_tattercape_white_marquee.zip",
-"",
-"character/18/WC_back_cape_tattered_female_tattercape_yellow_marquee.zip",
+"character/18/WC_neck_capetie_female_capetie_brown_marquee.zip",
 "",
 "tile/exit.gif",
-"character/18/WC_back_cape_trimmed_female_trimcape_whiteblue_marquee.zip",
+"character/18/WC_neck_capetie_female_capetie_gray_marquee.zip",
 "",
-"character/18/WC_cape_normal_female_cape_black_marquee.zip",
+"character/18/WC_neck_capetie_female_capetie_green_marquee.zip",
 "",
-"character/18/WC_cape_normal_female_cape_blue_marquee.zip",
+"character/18/WC_neck_capetie_female_capetie_lavender_marquee.zip",
 "",
-"character/18/WC_cape_normal_female_cape_brown_marquee.zip",
+"character/18/WC_neck_capetie_female_capetie_maroon_marquee.zip",
 "",
-"character/18/WC_cape_normal_female_cape_gray_marquee.zip",
-"",
-"character/18/WC_cape_normal_female_cape_green_marquee.zip",
-"",
-"character/18/WC_cape_normal_female_cape_lavender_marquee.zip",
+"character/18/WC_neck_capetie_female_capetie_pink_marquee.zip",
 "tile/exit.gif",
 "",
-"character/18/WC_cape_normal_female_cape_maroon_marquee.zip",
+"character/18/WC_neck_capetie_female_capetie_red_marquee.zip",
 "",
-"character/18/WC_cape_normal_female_cape_pink_marquee.zip",
+"character/18/WC_neck_capetie_female_capetie_white_marquee.zip",
 "",
-"character/18/WC_cape_normal_female_cape_red_marquee.zip",
+"character/18/WC_neck_capetie_female_capetie_yellow_marquee.zip",
 "",
-"character/18/WC_cape_normal_female_cape_white_marquee.zip",
+"character/18/WC_necklaces_female__no_th-sh_bronze_marquee.zip",
 "",
-"character/18/WC_cape_normal_female_cape_yellow_marquee.zip",
-"",
-"character/18/WC_cape_tattered_female_tattercape_black_marquee.zip",
-"",
-"character/18/WC_cape_tattered_female_tattercape_blue_marquee.zip",
+"character/18/WC_necklaces_female__no_th-sh_gold_marquee.zip",
 "",
 "",
-"character/18/WC_cape_tattered_female_tattercape_brown_marquee.zip",
+"character/18/WC_necklaces_female__no_th-sh_iron_marquee.zip",
 "",
-"character/18/WC_cape_tattered_female_tattercape_gray_marquee.zip",
+"character/18/WC_necklaces_female__no_th-sh_pirate_wc_sc_only_marquee.zip",
 "",
-"character/18/WC_cape_tattered_female_tattercape_green_marquee.zip",
+"character/18/WC_necklaces_female__no_th-sh_silver_marquee.zip",
 "",
-"character/18/WC_cape_tattered_female_tattercape_lavender_marquee.zip",
-"",
-"character/18/WC_cape_tattered_female_tattercape_maroon_marquee.zip",
-"",
-"character/18/WC_cape_tattered_female_tattercape_pink_marquee.zip",
-"",
-"character/18/WC_cape_tattered_female_tattercape_red_marquee.zip",
-"",
-"",
-"character/18/WC_cape_tattered_female_tattercape_white_marquee.zip",
-"",
-"character/18/WC_cape_tattered_female_tattercape_yellow_marquee.zip",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
+"character/18/WC_tie_marquee.zip",
 "",
 "",
 "",
@@ -162,10 +114,6 @@ layer0 = {
 "",
 "",
 "tile/fog.png",
-"",
-"",
-"",
-"",
 "",
 "",
 "",
@@ -183,299 +131,209 @@ E0 = {
    pos_x = 1
    pos_y = 2
    script = "set_sprite.lua"
-   param = ( "18", "back_cape_normal_female_cape_black" )
+   param = ( "18", "bowtie" )
 }
 E1 = {
    pos_x = 3
    pos_y = 2
    script = "set_sprite.lua"
-   param = ( "18", "back_cape_normal_female_cape_blue" )
+   param = ( "18", "neck_capeclip_female_capeclip_black" )
 }
 E2 = {
    pos_x = 5
    pos_y = 2
    script = "set_sprite.lua"
-   param = ( "18", "back_cape_normal_female_cape_brown" )
+   param = ( "18", "neck_capeclip_female_capeclip_blue" )
 }
 E3 = {
    pos_x = 7
    pos_y = 2
    script = "set_sprite.lua"
-   param = ( "18", "back_cape_normal_female_cape_gray" )
+   param = ( "18", "neck_capeclip_female_capeclip_brown" )
 }
 E4 = {
    pos_x = 9
    pos_y = 2
    script = "set_sprite.lua"
-   param = ( "18", "back_cape_normal_female_cape_green" )
+   param = ( "18", "neck_capeclip_female_capeclip_gray" )
 }
 E5 = {
-   pos_x = 11
-   pos_y = 2
+   pos_x = 1
+   pos_y = 3
    script = "set_sprite.lua"
-   param = ( "18", "back_cape_normal_female_cape_lavender" )
+   param = ( "18", "neck_capeclip_female_capeclip_green" )
 }
 E6 = {
-   pos_x = 13
-   pos_y = 2
+   pos_x = 3
+   pos_y = 3
    script = "set_sprite.lua"
-   param = ( "18", "back_cape_normal_female_cape_maroon" )
+   param = ( "18", "neck_capeclip_female_capeclip_lavender" )
 }
 E7 = {
-   pos_x = 1
+   pos_x = 5
    pos_y = 3
    script = "set_sprite.lua"
-   param = ( "18", "back_cape_normal_female_cape_pink" )
+   param = ( "18", "neck_capeclip_female_capeclip_maroon" )
 }
 E8 = {
-   pos_x = 3
+   pos_x = 7
    pos_y = 3
    script = "set_sprite.lua"
-   param = ( "18", "back_cape_normal_female_cape_red" )
+   param = ( "18", "neck_capeclip_female_capeclip_pink" )
 }
 E9 = {
-   pos_x = 5
+   pos_x = 9
    pos_y = 3
    script = "set_sprite.lua"
-   param = ( "18", "back_cape_normal_female_cape_white" )
+   param = ( "18", "neck_capeclip_female_capeclip_red" )
 }
 E10 = {
-   pos_x = 7
-   pos_y = 3
+   pos_x = 1
+   pos_y = 4
    script = "set_sprite.lua"
-   param = ( "18", "back_cape_normal_female_cape_yellow" )
+   param = ( "18", "neck_capeclip_female_capeclip_white" )
 }
 E11 = {
-   pos_x = 9
-   pos_y = 3
+   pos_x = 3
+   pos_y = 4
    script = "set_sprite.lua"
-   param = ( "18", "back_cape_tattered_female_tattercape_black" )
+   param = ( "18", "neck_capeclip_female_capeclip_yellow" )
 }
 E12 = {
-   pos_x = 11
-   pos_y = 3
+   pos_x = 5
+   pos_y = 4
    script = "set_sprite.lua"
-   param = ( "18", "back_cape_tattered_female_tattercape_blue" )
+   param = ( "18", "neck_capetie_female_capetie_black" )
 }
 E13 = {
-   pos_x = 13
-   pos_y = 3
+   pos_x = 7
+   pos_y = 4
    script = "set_sprite.lua"
-   param = ( "18", "back_cape_tattered_female_tattercape_brown" )
+   param = ( "18", "neck_capetie_female_capetie_blue" )
 }
 E14 = {
-   pos_x = 1
+   pos_x = 9
    pos_y = 4
    script = "set_sprite.lua"
-   param = ( "18", "back_cape_tattered_female_tattercape_gray" )
+   param = ( "18", "neck_capetie_female_capetie_brown" )
 }
 E15 = {
-   pos_x = 3
-   pos_y = 4
+   pos_x = 1
+   pos_y = 5
    script = "set_sprite.lua"
-   param = ( "18", "back_cape_tattered_female_tattercape_green" )
+   param = ( "18", "neck_capetie_female_capetie_gray" )
 }
 E16 = {
-   pos_x = 5
-   pos_y = 4
+   pos_x = 3
+   pos_y = 5
    script = "set_sprite.lua"
-   param = ( "18", "back_cape_tattered_female_tattercape_maroon" )
+   param = ( "18", "neck_capetie_female_capetie_green" )
 }
 E17 = {
-   pos_x = 7
-   pos_y = 4
+   pos_x = 5
+   pos_y = 5
    script = "set_sprite.lua"
-   param = ( "18", "back_cape_tattered_female_tattercape_pink" )
+   param = ( "18", "neck_capetie_female_capetie_lavender" )
 }
 E18 = {
-   pos_x = 9
-   pos_y = 4
+   pos_x = 7
+   pos_y = 5
    script = "set_sprite.lua"
-   param = ( "18", "back_cape_tattered_female_tattercape_red" )
+   param = ( "18", "neck_capetie_female_capetie_maroon" )
 }
 E19 = {
-   pos_x = 11
-   pos_y = 4
+   pos_x = 9
+   pos_y = 5
    script = "set_sprite.lua"
-   param = ( "18", "back_cape_tattered_female_tattercape_white" )
+   param = ( "18", "neck_capetie_female_capetie_pink" )
 }
 E20 = {
-   pos_x = 13
-   pos_y = 4
+   pos_x = 1
+   pos_y = 6
    script = "set_sprite.lua"
-   param = ( "18", "back_cape_tattered_female_tattercape_yellow" )
+   param = ( "18", "neck_capetie_female_capetie_red" )
 }
 E21 = {
-   pos_x = 1
-   pos_y = 5
+   pos_x = 3
+   pos_y = 6
    script = "set_sprite.lua"
-   param = ( "18", "back_cape_trimmed_female_trimcape_whiteblue" )
+   param = ( "18", "neck_capetie_female_capetie_white" )
 }
 E22 = {
-   pos_x = 3
-   pos_y = 5
+   pos_x = 5
+   pos_y = 6
    script = "set_sprite.lua"
-   param = ( "18", "cape_normal_female_cape_black" )
+   param = ( "18", "neck_capetie_female_capetie_yellow" )
 }
 E23 = {
-   pos_x = 5
-   pos_y = 5
+   pos_x = 7
+   pos_y = 6
    script = "set_sprite.lua"
-   param = ( "18", "cape_normal_female_cape_blue" )
+   param = ( "18", "necklaces_female__no_th-sh_bronze" )
 }
 E24 = {
-   pos_x = 7
-   pos_y = 5
+   pos_x = 9
+   pos_y = 6
    script = "set_sprite.lua"
-   param = ( "18", "cape_normal_female_cape_brown" )
+   param = ( "18", "necklaces_female__no_th-sh_gold" )
 }
 E25 = {
-   pos_x = 9
-   pos_y = 5
+   pos_x = 1
+   pos_y = 7
    script = "set_sprite.lua"
-   param = ( "18", "cape_normal_female_cape_gray" )
+   param = ( "18", "necklaces_female__no_th-sh_iron" )
 }
 E26 = {
-   pos_x = 11
-   pos_y = 5
+   pos_x = 3
+   pos_y = 7
    script = "set_sprite.lua"
-   param = ( "18", "cape_normal_female_cape_green" )
+   param = ( "18", "necklaces_female__no_th-sh_pirate_wc_sc_only" )
 }
 E27 = {
-   pos_x = 13
-   pos_y = 5
+   pos_x = 5
+   pos_y = 7
    script = "set_sprite.lua"
-   param = ( "18", "cape_normal_female_cape_lavender" )
+   param = ( "18", "necklaces_female__no_th-sh_silver" )
 }
 E28 = {
-   pos_x = 1
-   pos_y = 6
+   pos_x = 7
+   pos_y = 7
    script = "set_sprite.lua"
-   param = ( "18", "cape_normal_female_cape_maroon" )
+   param = ( "18", "tie" )
 }
 E29 = {
-   pos_x = 3
-   pos_y = 6
-   script = "set_sprite.lua"
-   param = ( "18", "cape_normal_female_cape_pink" )
-}
-E30 = {
-   pos_x = 5
-   pos_y = 6
-   script = "set_sprite.lua"
-   param = ( "18", "cape_normal_female_cape_red" )
-}
-E31 = {
-   pos_x = 7
-   pos_y = 6
-   script = "set_sprite.lua"
-   param = ( "18", "cape_normal_female_cape_white" )
-}
-E32 = {
-   pos_x = 9
-   pos_y = 6
-   script = "set_sprite.lua"
-   param = ( "18", "cape_normal_female_cape_yellow" )
-}
-E33 = {
-   pos_x = 11
-   pos_y = 6
-   script = "set_sprite.lua"
-   param = ( "18", "cape_tattered_female_tattercape_black" )
-}
-E34 = {
-   pos_x = 13
-   pos_y = 6
-   script = "set_sprite.lua"
-   param = ( "18", "cape_tattered_female_tattercape_blue" )
-}
-E35 = {
-   pos_x = 1
-   pos_y = 7
-   script = "set_sprite.lua"
-   param = ( "18", "cape_tattered_female_tattercape_brown" )
-}
-E36 = {
-   pos_x = 3
-   pos_y = 7
-   script = "set_sprite.lua"
-   param = ( "18", "cape_tattered_female_tattercape_gray" )
-}
-E37 = {
-   pos_x = 5
-   pos_y = 7
-   script = "set_sprite.lua"
-   param = ( "18", "cape_tattered_female_tattercape_green" )
-}
-E38 = {
-   pos_x = 7
-   pos_y = 7
-   script = "set_sprite.lua"
-   param = ( "18", "cape_tattered_female_tattercape_lavender" )
-}
-E39 = {
-   pos_x = 9
-   pos_y = 7
-   script = "set_sprite.lua"
-   param = ( "18", "cape_tattered_female_tattercape_maroon" )
-}
-E40 = {
-   pos_x = 11
-   pos_y = 7
-   script = "set_sprite.lua"
-   param = ( "18", "cape_tattered_female_tattercape_pink" )
-}
-E41 = {
-   pos_x = 13
-   pos_y = 7
-   script = "set_sprite.lua"
-   param = ( "18", "cape_tattered_female_tattercape_red" )
-}
-E42 = {
-   pos_x = 1
-   pos_y = 8
-   script = "set_sprite.lua"
-   param = ( "18", "cape_tattered_female_tattercape_white" )
-}
-E43 = {
-   pos_x = 3
-   pos_y = 8
-   script = "set_sprite.lua"
-   param = ( "18", "cape_tattered_female_tattercape_yellow" )
-}
-E44 = {
    pos_x = 0
    pos_y = 5
    script = "goto.lua"
    param = ( "C17", "1", "1" )
 }
-E45 = {
-   pos_x = 14
+E30 = {
+   pos_x = 10
    pos_y = 5
    script = "goto.lua"
    param = ( "C19", "1", "1" )
 }
-E46 = {
+E31 = {
    pos_x = 0
    pos_y = 0
    script = "set_sprite.lua"
    param = ( "18", "" )
 }
-E47 = {
+E32 = {
    pos_x = 0
-   pos_y = 10
+   pos_y = 9
    script = "set_sprite.lua"
    param = ( "18", "" )
 }
-E48 = {
-   pos_x = 14
+E33 = {
+   pos_x = 10
    pos_y = 0
    script = "set_sprite.lua"
    param = ( "18", "" )
 }
-E49 = {
-   pos_x = 14
-   pos_y = 10
+E34 = {
+   pos_x = 10
+   pos_y = 9
    script = "set_sprite.lua"
    param = ( "18", "" )
 }
