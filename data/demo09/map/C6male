@@ -1,0 +1,353 @@
+bg_red = 192
+bg_blue = 192
+bg_green = 192
+attribute = {
+  x = {
+        current = 6
+      }
+}
+width = 13
+height = 9
+tile_width = 64
+tile_height = 64
+warp_x = 0
+warp_y = 0
+layer0 = {
+        set = [
+"tile/fog.png",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"tile/fog.png",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"character/6/WC_male_fiveoclock_black_marquee.zip",
+"",
+"character/6/WC_male_fiveoclock_blonde2_marquee.zip",
+"",
+"character/6/WC_male_fiveoclock_blonde_marquee.zip",
+"",
+"character/6/WC_male_fiveoclock_blue2_marquee.zip",
+"",
+"character/6/WC_male_fiveoclock_blue_marquee.zip",
+"",
+"character/6/WC_male_fiveoclock_brown2_marquee.zip",
+"",
+"",
+"character/6/WC_male_fiveoclock_brown_marquee.zip",
+"",
+"character/6/WC_male_fiveoclock_brunette2_marquee.zip",
+"",
+"character/6/WC_male_fiveoclock_brunette_marquee.zip",
+"",
+"character/6/WC_male_fiveoclock_dark-blonde_marquee.zip",
+"",
+"character/6/WC_male_fiveoclock_gold_marquee.zip",
+"",
+"character/6/WC_male_fiveoclock_gray2_marquee.zip",
+"",
+"tile/exit.gif",
+"character/6/WC_male_fiveoclock_gray_marquee.zip",
+"",
+"character/6/WC_male_fiveoclock_green2_marquee.zip",
+"",
+"character/6/WC_male_fiveoclock_green_marquee.zip",
+"",
+"character/6/WC_male_fiveoclock_light-blonde2_marquee.zip",
+"",
+"character/6/WC_male_fiveoclock_light-blonde_marquee.zip",
+"",
+"character/6/WC_male_fiveoclock_marquee.zip",
+"tile/exit.gif",
+"",
+"character/6/WC_male_fiveoclock_pink2_marquee.zip",
+"",
+"character/6/WC_male_fiveoclock_pink_marquee.zip",
+"",
+"character/6/WC_male_fiveoclock_purple_marquee.zip",
+"",
+"character/6/WC_male_fiveoclock_raven2_marquee.zip",
+"",
+"character/6/WC_male_fiveoclock_raven_marquee.zip",
+"",
+"character/6/WC_male_fiveoclock_redhead2_marquee.zip",
+"",
+"",
+"character/6/WC_male_fiveoclock_redhead_marquee.zip",
+"",
+"character/6/WC_male_fiveoclock_ruby-red_marquee.zip",
+"",
+"character/6/WC_male_fiveoclock_white-blonde2_marquee.zip",
+"",
+"character/6/WC_male_fiveoclock_white-blonde_marquee.zip",
+"",
+"character/6/WC_male_fiveoclock_white-cyan_marquee.zip",
+"",
+"character/6/WC_male_fiveoclock_white_marquee.zip",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"tile/fog.png",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"tile/fog.png"
+        ]
+}
+event_list: {
+E0 = {
+   pos_x = 1
+   pos_y = 2
+   script = "set_sprite.lua"
+   param = ( "6", "male_fiveoclock_black" )
+}
+E1 = {
+   pos_x = 3
+   pos_y = 2
+   script = "set_sprite.lua"
+   param = ( "6", "male_fiveoclock_blonde2" )
+}
+E2 = {
+   pos_x = 5
+   pos_y = 2
+   script = "set_sprite.lua"
+   param = ( "6", "male_fiveoclock_blonde" )
+}
+E3 = {
+   pos_x = 7
+   pos_y = 2
+   script = "set_sprite.lua"
+   param = ( "6", "male_fiveoclock_blue2" )
+}
+E4 = {
+   pos_x = 9
+   pos_y = 2
+   script = "set_sprite.lua"
+   param = ( "6", "male_fiveoclock_blue" )
+}
+E5 = {
+   pos_x = 11
+   pos_y = 2
+   script = "set_sprite.lua"
+   param = ( "6", "male_fiveoclock_brown2" )
+}
+E6 = {
+   pos_x = 1
+   pos_y = 3
+   script = "set_sprite.lua"
+   param = ( "6", "male_fiveoclock_brown" )
+}
+E7 = {
+   pos_x = 3
+   pos_y = 3
+   script = "set_sprite.lua"
+   param = ( "6", "male_fiveoclock_brunette2" )
+}
+E8 = {
+   pos_x = 5
+   pos_y = 3
+   script = "set_sprite.lua"
+   param = ( "6", "male_fiveoclock_brunette" )
+}
+E9 = {
+   pos_x = 7
+   pos_y = 3
+   script = "set_sprite.lua"
+   param = ( "6", "male_fiveoclock_dark-blonde" )
+}
+E10 = {
+   pos_x = 9
+   pos_y = 3
+   script = "set_sprite.lua"
+   param = ( "6", "male_fiveoclock_gold" )
+}
+E11 = {
+   pos_x = 11
+   pos_y = 3
+   script = "set_sprite.lua"
+   param = ( "6", "male_fiveoclock_gray2" )
+}
+E12 = {
+   pos_x = 1
+   pos_y = 4
+   script = "set_sprite.lua"
+   param = ( "6", "male_fiveoclock_gray" )
+}
+E13 = {
+   pos_x = 3
+   pos_y = 4
+   script = "set_sprite.lua"
+   param = ( "6", "male_fiveoclock_green2" )
+}
+E14 = {
+   pos_x = 5
+   pos_y = 4
+   script = "set_sprite.lua"
+   param = ( "6", "male_fiveoclock_green" )
+}
+E15 = {
+   pos_x = 7
+   pos_y = 4
+   script = "set_sprite.lua"
+   param = ( "6", "male_fiveoclock_light-blonde2" )
+}
+E16 = {
+   pos_x = 9
+   pos_y = 4
+   script = "set_sprite.lua"
+   param = ( "6", "male_fiveoclock_light-blonde" )
+}
+E17 = {
+   pos_x = 11
+   pos_y = 4
+   script = "set_sprite.lua"
+   param = ( "6", "male_fiveoclock" )
+}
+E18 = {
+   pos_x = 1
+   pos_y = 5
+   script = "set_sprite.lua"
+   param = ( "6", "male_fiveoclock_pink2" )
+}
+E19 = {
+   pos_x = 3
+   pos_y = 5
+   script = "set_sprite.lua"
+   param = ( "6", "male_fiveoclock_pink" )
+}
+E20 = {
+   pos_x = 5
+   pos_y = 5
+   script = "set_sprite.lua"
+   param = ( "6", "male_fiveoclock_purple" )
+}
+E21 = {
+   pos_x = 7
+   pos_y = 5
+   script = "set_sprite.lua"
+   param = ( "6", "male_fiveoclock_raven2" )
+}
+E22 = {
+   pos_x = 9
+   pos_y = 5
+   script = "set_sprite.lua"
+   param = ( "6", "male_fiveoclock_raven" )
+}
+E23 = {
+   pos_x = 11
+   pos_y = 5
+   script = "set_sprite.lua"
+   param = ( "6", "male_fiveoclock_redhead2" )
+}
+E24 = {
+   pos_x = 1
+   pos_y = 6
+   script = "set_sprite.lua"
+   param = ( "6", "male_fiveoclock_redhead" )
+}
+E25 = {
+   pos_x = 3
+   pos_y = 6
+   script = "set_sprite.lua"
+   param = ( "6", "male_fiveoclock_ruby-red" )
+}
+E26 = {
+   pos_x = 5
+   pos_y = 6
+   script = "set_sprite.lua"
+   param = ( "6", "male_fiveoclock_white-blonde2" )
+}
+E27 = {
+   pos_x = 7
+   pos_y = 6
+   script = "set_sprite.lua"
+   param = ( "6", "male_fiveoclock_white-blonde" )
+}
+E28 = {
+   pos_x = 9
+   pos_y = 6
+   script = "set_sprite.lua"
+   param = ( "6", "male_fiveoclock_white-cyan" )
+}
+E29 = {
+   pos_x = 11
+   pos_y = 6
+   script = "set_sprite.lua"
+   param = ( "6", "male_fiveoclock_white" )
+}
+E30 = {
+   pos_x = 0
+   pos_y = 4
+   script = "goto_character_map.lua"
+   param = ( "5", "1", "1" )
+}
+E31 = {
+   pos_x = 12
+   pos_y = 4
+   script = "goto_character_map.lua"
+   param = ( "7", "1", "1" )
+}
+E32 = {
+   pos_x = 0
+   pos_y = 0
+   script = "set_sprite.lua"
+   param = ( "6", "" )
+}
+E33 = {
+   pos_x = 0
+   pos_y = 8
+   script = "set_sprite.lua"
+   param = ( "6", "" )
+}
+E34 = {
+   pos_x = 12
+   pos_y = 0
+   script = "set_sprite.lua"
+   param = ( "6", "" )
+}
+E35 = {
+   pos_x = 12
+   pos_y = 8
+   script = "set_sprite.lua"
+   param = ( "6", "" )
+}
+}

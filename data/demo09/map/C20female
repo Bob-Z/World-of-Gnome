@@ -1,0 +1,191 @@
+bg_red = 192
+bg_blue = 192
+bg_green = 192
+attribute = {
+  x = {
+        current = 20
+      }
+}
+width = 9
+height = 7
+tile_width = 64
+tile_height = 64
+warp_x = 0
+warp_y = 0
+layer0 = {
+        set = [
+"tile/fog.png",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"tile/fog.png",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"character/20/WC_bandanas_female_red_marquee.zip",
+"",
+"character/20/WC_caps_female_leather_cap_female_marquee.zip",
+"",
+"character/20/WC_helms_female_chainhat_female_marquee.zip",
+"",
+"character/20/WC_helms_female_golden_helm_female_marquee.zip",
+"",
+"tile/exit.gif",
+"character/20/WC_helms_female_metal_helm_female_marquee.zip",
+"",
+"character/20/WC_hoods_female_chain_hood_female_marquee.zip",
+"",
+"character/20/WC_hoods_female_cloth_hood_female_marquee.zip",
+"",
+"character/20/WC_tiaras_female_bronze_marquee.zip",
+"tile/exit.gif",
+"",
+"character/20/WC_tiaras_female_gold_marquee.zip",
+"",
+"character/20/WC_tiaras_female_iron_marquee.zip",
+"",
+"character/20/WC_tiaras_female_purple_marquee.zip",
+"",
+"character/20/WC_tiaras_female_silver_marquee.zip",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"tile/fog.png",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"tile/fog.png"
+        ]
+}
+event_list: {
+E0 = {
+   pos_x = 1
+   pos_y = 2
+   script = "set_sprite.lua"
+   param = ( "20", "bandanas_female_red" )
+}
+E1 = {
+   pos_x = 3
+   pos_y = 2
+   script = "set_sprite.lua"
+   param = ( "20", "caps_female_leather_cap_female" )
+}
+E2 = {
+   pos_x = 5
+   pos_y = 2
+   script = "set_sprite.lua"
+   param = ( "20", "helms_female_chainhat_female" )
+}
+E3 = {
+   pos_x = 7
+   pos_y = 2
+   script = "set_sprite.lua"
+   param = ( "20", "helms_female_golden_helm_female" )
+}
+E4 = {
+   pos_x = 1
+   pos_y = 3
+   script = "set_sprite.lua"
+   param = ( "20", "helms_female_metal_helm_female" )
+}
+E5 = {
+   pos_x = 3
+   pos_y = 3
+   script = "set_sprite.lua"
+   param = ( "20", "hoods_female_chain_hood_female" )
+}
+E6 = {
+   pos_x = 5
+   pos_y = 3
+   script = "set_sprite.lua"
+   param = ( "20", "hoods_female_cloth_hood_female" )
+}
+E7 = {
+   pos_x = 7
+   pos_y = 3
+   script = "set_sprite.lua"
+   param = ( "20", "tiaras_female_bronze" )
+}
+E8 = {
+   pos_x = 1
+   pos_y = 4
+   script = "set_sprite.lua"
+   param = ( "20", "tiaras_female_gold" )
+}
+E9 = {
+   pos_x = 3
+   pos_y = 4
+   script = "set_sprite.lua"
+   param = ( "20", "tiaras_female_iron" )
+}
+E10 = {
+   pos_x = 5
+   pos_y = 4
+   script = "set_sprite.lua"
+   param = ( "20", "tiaras_female_purple" )
+}
+E11 = {
+   pos_x = 7
+   pos_y = 4
+   script = "set_sprite.lua"
+   param = ( "20", "tiaras_female_silver" )
+}
+E12 = {
+   pos_x = 0
+   pos_y = 3
+   script = "goto_character_map.lua"
+   param = ( "19", "1", "1" )
+}
+E13 = {
+   pos_x = 8
+   pos_y = 3
+   script = "goto_character_map.lua"
+   param = ( "21", "1", "1" )
+}
+E14 = {
+   pos_x = 0
+   pos_y = 0
+   script = "set_sprite.lua"
+   param = ( "20", "" )
+}
+E15 = {
+   pos_x = 0
+   pos_y = 6
+   script = "set_sprite.lua"
+   param = ( "20", "" )
+}
+E16 = {
+   pos_x = 8
+   pos_y = 0
+   script = "set_sprite.lua"
+   param = ( "20", "" )
+}
+E17 = {
+   pos_x = 8
+   pos_y = 6
+   script = "set_sprite.lua"
+   param = ( "20", "" )
+}
+}

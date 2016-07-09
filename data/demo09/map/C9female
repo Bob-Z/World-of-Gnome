@@ -1,0 +1,93 @@
+bg_red = 192
+bg_blue = 192
+bg_green = 192
+attribute = {
+  x = {
+        current = 9
+      }
+}
+width = 5
+height = 5
+tile_width = 64
+tile_height = 64
+warp_x = 0
+warp_y = 0
+layer0 = {
+        set = [
+"tile/fog.png",
+"",
+"",
+"",
+"tile/fog.png",
+"",
+"",
+"",
+"",
+"",
+"tile/exit.gif",
+"character/9/WC_armor_female_golden_greaves_female_marquee.zip",
+"",
+"character/9/WC_armor_female_metal_pants_female_marquee.zip",
+"tile/exit.gif",
+"",
+"",
+"",
+"",
+"",
+"tile/fog.png",
+"",
+"",
+"",
+"tile/fog.png"
+        ]
+}
+event_list: {
+E0 = {
+   pos_x = 1
+   pos_y = 2
+   script = "set_sprite.lua"
+   param = ( "9", "armor_female_golden_greaves_female" )
+}
+E1 = {
+   pos_x = 3
+   pos_y = 2
+   script = "set_sprite.lua"
+   param = ( "9", "armor_female_metal_pants_female" )
+}
+E2 = {
+   pos_x = 0
+   pos_y = 2
+   script = "goto_character_map.lua"
+   param = ( "8", "1", "1" )
+}
+E3 = {
+   pos_x = 4
+   pos_y = 2
+   script = "goto_character_map.lua"
+   param = ( "10", "1", "1" )
+}
+E4 = {
+   pos_x = 0
+   pos_y = 0
+   script = "set_sprite.lua"
+   param = ( "9", "" )
+}
+E5 = {
+   pos_x = 0
+   pos_y = 4
+   script = "set_sprite.lua"
+   param = ( "9", "" )
+}
+E6 = {
+   pos_x = 4
+   pos_y = 0
+   script = "set_sprite.lua"
+   param = ( "9", "" )
+}
+E7 = {
+   pos_x = 4
+   pos_y = 4
+   script = "set_sprite.lua"
+   param = ( "9", "" )
+}
+}

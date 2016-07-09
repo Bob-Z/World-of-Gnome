@@ -1,0 +1,147 @@
+bg_red = 192
+bg_blue = 192
+bg_green = 192
+attribute = {
+  x = {
+        current = 8
+      }
+}
+width = 7
+height = 7
+tile_width = 64
+tile_height = 64
+warp_x = 0
+warp_y = 0
+layer0 = {
+        set = [
+"tile/fog.png",
+"",
+"",
+"",
+"",
+"",
+"tile/fog.png",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"character/8/WC_dress_female_overskirt_marquee.zip",
+"",
+"character/8/WC_pants_female_magenta_pants_female_marquee.zip",
+"",
+"character/8/WC_pants_female_red_pants_female_marquee.zip",
+"",
+"tile/exit.gif",
+"character/8/WC_pants_female_teal_pants_female_marquee.zip",
+"",
+"character/8/WC_pants_female_white_pants_female_marquee.zip",
+"",
+"character/8/WC_pants_marquee.zip",
+"tile/exit.gif",
+"",
+"character/8/WC_skirt_female_robe_skirt_female_incomplete_marquee.zip",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"tile/fog.png",
+"",
+"",
+"",
+"",
+"",
+"tile/fog.png"
+        ]
+}
+event_list: {
+E0 = {
+   pos_x = 1
+   pos_y = 2
+   script = "set_sprite.lua"
+   param = ( "8", "dress_female_overskirt" )
+}
+E1 = {
+   pos_x = 3
+   pos_y = 2
+   script = "set_sprite.lua"
+   param = ( "8", "pants_female_magenta_pants_female" )
+}
+E2 = {
+   pos_x = 5
+   pos_y = 2
+   script = "set_sprite.lua"
+   param = ( "8", "pants_female_red_pants_female" )
+}
+E3 = {
+   pos_x = 1
+   pos_y = 3
+   script = "set_sprite.lua"
+   param = ( "8", "pants_female_teal_pants_female" )
+}
+E4 = {
+   pos_x = 3
+   pos_y = 3
+   script = "set_sprite.lua"
+   param = ( "8", "pants_female_white_pants_female" )
+}
+E5 = {
+   pos_x = 5
+   pos_y = 3
+   script = "set_sprite.lua"
+   param = ( "8", "pants" )
+}
+E6 = {
+   pos_x = 1
+   pos_y = 4
+   script = "set_sprite.lua"
+   param = ( "8", "skirt_female_robe_skirt_female_incomplete" )
+}
+E7 = {
+   pos_x = 0
+   pos_y = 3
+   script = "goto_character_map.lua"
+   param = ( "7", "1", "1" )
+}
+E8 = {
+   pos_x = 6
+   pos_y = 3
+   script = "goto_character_map.lua"
+   param = ( "9", "1", "1" )
+}
+E9 = {
+   pos_x = 0
+   pos_y = 0
+   script = "set_sprite.lua"
+   param = ( "8", "" )
+}
+E10 = {
+   pos_x = 0
+   pos_y = 6
+   script = "set_sprite.lua"
+   param = ( "8", "" )
+}
+E11 = {
+   pos_x = 6
+   pos_y = 0
+   script = "set_sprite.lua"
+   param = ( "8", "" )
+}
+E12 = {
+   pos_x = 6
+   pos_y = 6
+   script = "set_sprite.lua"
+   param = ( "8", "" )
+}
+}

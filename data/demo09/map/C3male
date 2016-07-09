@@ -1,0 +1,212 @@
+bg_red = 192
+bg_blue = 192
+bg_green = 192
+attribute = {
+  x = {
+        current = 3
+      }
+}
+width = 9
+height = 8
+tile_width = 64
+tile_height = 64
+warp_x = 0
+warp_y = 0
+layer0 = {
+        set = [
+"tile/fog.png",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"tile/fog.png",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"character/3/WC_male_ears_bigears_dark2_marquee.zip",
+"",
+"character/3/WC_male_ears_bigears_darkelf2_marquee.zip",
+"",
+"character/3/WC_male_ears_bigears_darkelf_marquee.zip",
+"",
+"character/3/WC_male_ears_bigears_dark_marquee.zip",
+"",
+"",
+"character/3/WC_male_ears_bigears_light_marquee.zip",
+"",
+"character/3/WC_male_ears_bigears_tanned2_marquee.zip",
+"",
+"character/3/WC_male_ears_bigears_tanned_marquee.zip",
+"",
+"character/3/WC_male_ears_elvenears_dark2_marquee.zip",
+"",
+"tile/exit.gif",
+"character/3/WC_male_ears_elvenears_darkelf2_marquee.zip",
+"",
+"character/3/WC_male_ears_elvenears_darkelf_marquee.zip",
+"",
+"character/3/WC_male_ears_elvenears_dark_marquee.zip",
+"",
+"character/3/WC_male_ears_elvenears_light_marquee.zip",
+"tile/exit.gif",
+"",
+"character/3/WC_male_ears_elvenears_tanned2_marquee.zip",
+"",
+"character/3/WC_male_ears_elvenears_tanned_marquee.zip",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"tile/fog.png",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"tile/fog.png"
+        ]
+}
+event_list: {
+E0 = {
+   pos_x = 1
+   pos_y = 2
+   script = "set_sprite.lua"
+   param = ( "3", "male_ears_bigears_dark2" )
+}
+E1 = {
+   pos_x = 3
+   pos_y = 2
+   script = "set_sprite.lua"
+   param = ( "3", "male_ears_bigears_darkelf2" )
+}
+E2 = {
+   pos_x = 5
+   pos_y = 2
+   script = "set_sprite.lua"
+   param = ( "3", "male_ears_bigears_darkelf" )
+}
+E3 = {
+   pos_x = 7
+   pos_y = 2
+   script = "set_sprite.lua"
+   param = ( "3", "male_ears_bigears_dark" )
+}
+E4 = {
+   pos_x = 1
+   pos_y = 3
+   script = "set_sprite.lua"
+   param = ( "3", "male_ears_bigears_light" )
+}
+E5 = {
+   pos_x = 3
+   pos_y = 3
+   script = "set_sprite.lua"
+   param = ( "3", "male_ears_bigears_tanned2" )
+}
+E6 = {
+   pos_x = 5
+   pos_y = 3
+   script = "set_sprite.lua"
+   param = ( "3", "male_ears_bigears_tanned" )
+}
+E7 = {
+   pos_x = 7
+   pos_y = 3
+   script = "set_sprite.lua"
+   param = ( "3", "male_ears_elvenears_dark2" )
+}
+E8 = {
+   pos_x = 1
+   pos_y = 4
+   script = "set_sprite.lua"
+   param = ( "3", "male_ears_elvenears_darkelf2" )
+}
+E9 = {
+   pos_x = 3
+   pos_y = 4
+   script = "set_sprite.lua"
+   param = ( "3", "male_ears_elvenears_darkelf" )
+}
+E10 = {
+   pos_x = 5
+   pos_y = 4
+   script = "set_sprite.lua"
+   param = ( "3", "male_ears_elvenears_dark" )
+}
+E11 = {
+   pos_x = 7
+   pos_y = 4
+   script = "set_sprite.lua"
+   param = ( "3", "male_ears_elvenears_light" )
+}
+E12 = {
+   pos_x = 1
+   pos_y = 5
+   script = "set_sprite.lua"
+   param = ( "3", "male_ears_elvenears_tanned2" )
+}
+E13 = {
+   pos_x = 3
+   pos_y = 5
+   script = "set_sprite.lua"
+   param = ( "3", "male_ears_elvenears_tanned" )
+}
+E14 = {
+   pos_x = 0
+   pos_y = 4
+   script = "goto_character_map.lua"
+   param = ( "2", "1", "1" )
+}
+E15 = {
+   pos_x = 8
+   pos_y = 4
+   script = "goto_character_map.lua"
+   param = ( "4", "1", "1" )
+}
+E16 = {
+   pos_x = 0
+   pos_y = 0
+   script = "set_sprite.lua"
+   param = ( "3", "" )
+}
+E17 = {
+   pos_x = 0
+   pos_y = 7
+   script = "set_sprite.lua"
+   param = ( "3", "" )
+}
+E18 = {
+   pos_x = 8
+   pos_y = 0
+   script = "set_sprite.lua"
+   param = ( "3", "" )
+}
+E19 = {
+   pos_x = 8
+   pos_y = 7
+   script = "set_sprite.lua"
+   param = ( "3", "" )
+}
+}
