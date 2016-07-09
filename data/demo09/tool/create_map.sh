@@ -1,16 +1,61 @@
 #!/bin/bash
 
-MAP_QTY=`ls -1 -d [0-9]* | wc -l`
-echo Generating $MAP_QTY maps
+IS_CHECK_OK=0
 
-for NUM in `ls -d [0-9]* | sort -h`;do
-	MAP_NAME=C$NUM
+function check_sex_race {
+	IS_CHECK_OK=1
 
-	FILE_QTY=`ls -1 $NUM/WC_*_marquee.zip | wc -l`
-	echo $FILE_QTY files in map $NUM
+	if [ "$2" == "" ];then
+		return
+	fi
 
-	LINE=`echo "scale = 0; sqrt($FILE_QTY)" | bc`
-	COLUMN=`echo "scale = 0; $FILE_QTY/$LINE" | bc`
+	FILE_NAME=$1
+	SEX=$2
+
+	if [ $SEX == male ];then
+		echo $FILE_NAME | grep female > /dev/null 2>&1
+		if [ $? == 0 ];then
+			IS_CHECK_OK=0
+		fi
+	fi
+
+	if [ $SEX == female ];then
+		echo $FILE_NAME | grep male | grep -v female > /dev/null 2>&1
+		if [ $? == 0 ];then
+			IS_CHECK_OK=0
+		fi
+	fi
+
+}
+
+function create_map {
+	NUM=$1
+	SEX=$2
+
+	MAP_NAME=C$NUM$SEX
+
+	FILE=`ls $NUM/WC_*_marquee.zip`
+
+	# Count valid num of files
+	FILE_QTY=0
+	for f in $FILE;do
+		SHORT_NAME=`echo $f | sed 's/.*WC_//g' | sed 's/_marquee.zip//g'`
+		check_sex_race $SHORT_NAME $SEX
+		if [ $IS_CHECK_OK == 0 ];then
+			continue
+		fi
+		let "FILE_QTY=$FILE_QTY+1"
+	done
+	echo $FILE_QTY files in map $MAP_NAME
+
+	if [ $FILE_QTY -gt 0 ];then
+		LINE=`echo "scale = 0; sqrt($FILE_QTY)" | bc`
+		COLUMN=`echo "scale = 0; $FILE_QTY/$LINE" | bc`
+	else
+		LINE=0
+		COLUMN=0
+	fi
+
 	let "TOTAL=$LINE*$COLUMN"
 	if [ "$TOTAL" -lt "$FILE_QTY" ];then
 		let "LINE=$LINE+1"
@@ -24,8 +69,6 @@ for NUM in `ls -d [0-9]* | sort -h`;do
 	echo "bg_red = 192" > $MAP_NAME
 	echo "bg_blue = 192" >> $MAP_NAME
 	echo "bg_green = 192" >> $MAP_NAME
-
-	FILE=`ls $NUM/WC_*_marquee.zip`
 
 	echo "attribute = {" >> $MAP_NAME
         echo "  x = {"	>> $MAP_NAME
@@ -56,6 +99,12 @@ for NUM in `ls -d [0-9]* | sort -h`;do
 	CUR_Y=1
 	let "HALF_LINE=($LINE/2)+1"
 	for f in $FILE;do
+		SHORT_NAME=`echo $f | sed 's/.*WC_//g' | sed 's/_marquee.zip//g'`
+		check_sex_race $SHORT_NAME $SEX
+		if [ $IS_CHECK_OK == 0 ];then
+			continue
+		fi
+
 		if [ "$CUR_Y" = "$HALF_LINE" ];then
 			if [ "$CUR_X" = 1 ];then
 				echo "\"tile/exit.gif\"," >> $MAP_NAME
@@ -111,6 +160,38 @@ for NUM in `ls -d [0-9]* | sort -h`;do
 	CURRENT_EVENT=0
 	for f in $FILE;do
 		SHORT_NAME=`echo $f | sed 's/.*WC_//g' | sed 's/_marquee.zip//g'`
+		check_sex_race $SHORT_NAME $SEX
+		if [ $IS_CHECK_OK == 0 ];then
+			continue
+		fi
+
+		#Special case for body selection map
+		if [ $NUM == 0 ];then
+			#Get sex
+			SEX=`echo $SHORT_NAME | cut -d "_" -f 1`
+			RACE=human
+			echo $SHORT_NAME | grep darkelf > /dev/null 2>&1
+			if [ $? == 0 ];then
+				RACE=darkelf 
+			fi
+			echo $SHORT_NAME | grep orc > /dev/null 2>&1
+			if [ $? == 0 ];then
+				RACE=orc 
+			fi
+			echo $SHORT_NAME | grep skeleton > /dev/null 2>&1
+			if [ $? == 0 ];then
+				RACE=skeleton 
+			fi
+			#Add corresponding event
+			echo "E$CURRENT_EVENT = {" >> $MAP_NAME
+			echo "   pos_x = $CUR_X" >> $MAP_NAME
+			echo "   pos_y = $CUR_Y" >> $MAP_NAME
+			echo "   script = \"set_body.lua\"" >> $MAP_NAME
+			echo "   param = ( \"$SEX\", \"$RACE\" )" >> $MAP_NAME
+			echo "}" >> $MAP_NAME
+			let "CURRENT_EVENT=$CURRENT_EVENT+1"
+		fi
+
 		echo "E$CURRENT_EVENT = {" >> $MAP_NAME
 		echo "   pos_x = $CUR_X" >> $MAP_NAME
 		echo "   pos_y = $CUR_Y" >> $MAP_NAME
@@ -132,8 +213,8 @@ for NUM in `ls -d [0-9]* | sort -h`;do
 	echo "E$CURRENT_EVENT = {" >> $MAP_NAME
 	echo "   pos_x = 0" >> $MAP_NAME
 	echo "   pos_y = $HALF_LINE" >> $MAP_NAME
-	echo "   script = \"goto.lua\"" >> $MAP_NAME
-	echo "   param = ( \"C$PREV_NUM\", \"1\", \"1\" )" >> $MAP_NAME
+	echo "   script = \"goto_character_map.lua\"" >> $MAP_NAME
+	echo "   param = ( \"$PREV_NUM\", \"1\", \"1\" )" >> $MAP_NAME
 	echo "}" >> $MAP_NAME
 
 	let "CURRENT_EVENT=$CURRENT_EVENT+1"
@@ -144,11 +225,12 @@ for NUM in `ls -d [0-9]* | sort -h`;do
 	echo "E$CURRENT_EVENT = {" >> $MAP_NAME
 	echo "   pos_x = $LAST_COLUMN" >> $MAP_NAME
 	echo "   pos_y = $HALF_LINE" >> $MAP_NAME
-	echo "   script = \"goto.lua\"" >> $MAP_NAME
 	if [ "$NEXT_MAP" -ge "$MAP_QTY" ];then
+		echo "   script = \"goto.lua\"" >> $MAP_NAME
 		echo "   param = ( \"M0_0\", \"10\", \"10\" )" >> $MAP_NAME
 	else
-		echo "   param = ( \"C$NEXT_MAP\", \"1\", \"1\" )" >> $MAP_NAME
+		echo "   script = \"goto_character_map.lua\"" >> $MAP_NAME
+		echo "   param = ( \"$NEXT_MAP\", \"1\", \"1\" )" >> $MAP_NAME
 	fi
 	echo "}" >> $MAP_NAME
 
@@ -194,4 +276,17 @@ for NUM in `ls -d [0-9]* | sort -h`;do
 	let "CURRENT_EVENT=$CURRENT_EVENT+1"
 
 	echo "}"	>> $MAP_NAME
+
+}
+
+MAP_QTY=`ls -1 -d [0-9]* | wc -l`
+echo Generating $MAP_QTY maps
+
+for NUM in `ls -d [0-9]* | sort -h`;do
+	if [ $NUM == 0 ];then
+		create_map $NUM
+	else
+		create_map $NUM male
+		create_map $NUM female
+	fi
 done
