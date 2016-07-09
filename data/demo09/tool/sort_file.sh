@@ -122,7 +122,7 @@ let "DIR=$DIR+1"
 echo $DIR- Cape >> $DIR_LIST
 mkdir $DIR
 mv torso/??*_cape_* $DIR
-mv behind_body/??*_cape_* $DIR
+#mv behind_body/??*_cape_* $DIR
 
 let "DIR=$DIR+1"
 echo $DIR- Head >> $DIR_LIST
