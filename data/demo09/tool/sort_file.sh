@@ -8,6 +8,7 @@ HAIR00_BASE=Hair00
 LONGEARS_BASE=Long_ears
 APRONS_BASE=Aprons
 REPTILE_BASE=Reptile
+CLOTHES01_BASE=Clothes01
 
 DEST_DIR=output
 mkdir $DEST_DIR > /dev/null 2>&1
@@ -81,6 +82,7 @@ find $ULPC_BASE/hair -name "??_*.png" -exec $COMMAND {} $DIR \;
 #$COMMAND $ULPC_BASE/hair/??_*.zip $DIR
 find $ULPC_BASE/hair -name "??_*.zip" -exec $COMMAND {} $DIR \;
 $COMMAND $HAIR00_BASE/??_* $DIR
+$COMMAND $CLOTHES01_BASE/??_*Messy* $DIR
 
 let "NUM_DIR=$NUM_DIR+1"
 DIR=$DEST_DIR/$NUM_DIR
@@ -100,6 +102,7 @@ $COMMAND $ULPC_BASE/legs/??_*white_pants_* $DIR
 $COMMAND $ULPC_BASE/legs/??_*teal_pants_* $DIR
 $COMMAND $ULPC_BASE/legs/??_*_skirt_* $DIR
 $COMMAND $ULPC_BASE/torso/??*_overskirt* $DIR
+$COMMAND $CLOTHES01_BASE/??_*Pants* $DIR
 
 let "NUM_DIR=$NUM_DIR+1"
 DIR=$DEST_DIR/$NUM_DIR
@@ -136,6 +139,7 @@ $COMMAND $ULPC_BASE/torso/??*sleeve* $DIR
 $COMMAND $ULPC_BASE/formal_male_no_th-sh/??*_vest* $DIR
 $COMMAND $ULPC_BASE/formal_male_no_th-sh/??*_shirt* $DIR
 $COMMAND $ULPC_BASE/torso/??_*tunics_* $DIR
+$COMMAND $CLOTHES01_BASE/??_*sleevless* $DIR
 
 let "NUM_DIR=$NUM_DIR+1"
 DIR=$DEST_DIR/$NUM_DIR
@@ -158,6 +162,7 @@ mkdir $DIR
 $COMMAND $ULPC_BASE/torso/??_*shoulders_* $DIR
 $COMMAND $ULPC_BASE/torso/??_*arms_* $DIR
 $COMMAND $LEGION_BASE/Bauldron/??_*bauldron* $DIR
+$COMMAND $CLOTHES01_BASE/??_*Bauldron* $DIR
 
 #gold spikes seems incomplete
 rm $ULPC_BASE/torso/??_*spikes_* > /dev/null 2>&1
@@ -181,6 +186,7 @@ echo $NUM_DIR- Neck >> $DIR_LIST
 mkdir $DIR
 $COMMAND $ULPC_BASE/accessories/??_* $DIR
 $COMMAND $ULPC_BASE/formal_male_no_th-sh/??_*tie* $DIR
+$COMMAND $CLOTHES01_BASE/??_*Scarf* $DIR
 
 let "NUM_DIR=$NUM_DIR+1"
 DIR=$DEST_DIR/$NUM_DIR

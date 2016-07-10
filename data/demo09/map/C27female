@@ -1,0 +1,110 @@
+bg_red = 192
+bg_blue = 192
+bg_green = 192
+attribute = {
+  x = {
+        current = 27
+      }
+}
+width = 5
+height = 6
+tile_width = 64
+tile_height = 64
+warp_x = 0
+warp_y = 0
+layer0 = {
+        set = [
+"tile/fog.png",
+"",
+"",
+"",
+"tile/fog.png",
+"",
+"",
+"",
+"",
+"",
+"",
+"character/27/WC_back_wings_wings_no_th-sh_marquee.zip",
+"",
+"character/27/WC_WingFront_female_blue_marquee.zip",
+"",
+"tile/exit.gif",
+"character/27/WC_WingFront_female_dark_marquee.zip",
+"",
+"character/27/WC_WingFront_female_marquee.zip",
+"tile/exit.gif",
+"",
+"",
+"",
+"",
+"",
+"tile/fog.png",
+"",
+"",
+"",
+"tile/fog.png"
+        ]
+}
+event_list: {
+E0 = {
+   pos_x = 1
+   pos_y = 2
+   script = "set_sprite.lua"
+   param = ( "27", "back_wings_wings_no_th-sh" )
+}
+E1 = {
+   pos_x = 3
+   pos_y = 2
+   script = "set_sprite.lua"
+   param = ( "27", "WingFront_female_blue" )
+}
+E2 = {
+   pos_x = 1
+   pos_y = 3
+   script = "set_sprite.lua"
+   param = ( "27", "WingFront_female_dark" )
+}
+E3 = {
+   pos_x = 3
+   pos_y = 3
+   script = "set_sprite.lua"
+   param = ( "27", "WingFront_female" )
+}
+E4 = {
+   pos_x = 0
+   pos_y = 3
+   script = "goto_character_map.lua"
+   param = ( "26", "1", "1" )
+}
+E5 = {
+   pos_x = 4
+   pos_y = 3
+   script = "goto.lua"
+   param = ( "M0_0", "10", "10" )
+}
+E6 = {
+   pos_x = 0
+   pos_y = 0
+   script = "set_sprite.lua"
+   param = ( "27", "" )
+}
+E7 = {
+   pos_x = 0
+   pos_y = 5
+   script = "set_sprite.lua"
+   param = ( "27", "" )
+}
+E8 = {
+   pos_x = 4
+   pos_y = 0
+   script = "set_sprite.lua"
+   param = ( "27", "" )
+}
+E9 = {
+   pos_x = 4
+   pos_y = 5
+   script = "set_sprite.lua"
+   param = ( "27", "" )
+}
+}

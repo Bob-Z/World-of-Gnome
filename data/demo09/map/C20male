@@ -6,8 +6,8 @@ attribute = {
         current = 20
       }
 }
-width = 5
-height = 5
+width = 9
+height = 6
 tile_width = 64
 tile_height = 64
 warp_x = 0
@@ -18,14 +18,35 @@ layer0 = {
 "",
 "",
 "",
+"",
+"",
+"",
+"",
 "tile/fog.png",
 "",
 "",
 "",
 "",
 "",
-"tile/exit.gif",
+"",
+"",
+"",
+"",
+"",
 "character/20/WC_bowtie_marquee.zip",
+"",
+"character/20/WC_male_Scarf_black_marquee.zip",
+"",
+"character/20/WC_male_Scarf_blue_marquee.zip",
+"",
+"character/20/WC_male_Scarf_brown_marquee.zip",
+"",
+"tile/exit.gif",
+"character/20/WC_male_Scarf_grey_marquee.zip",
+"",
+"character/20/WC_male_Scarf_red_marquee.zip",
+"",
+"character/20/WC_male_Scarf_white_marquee.zip",
 "",
 "character/20/WC_tie_marquee.zip",
 "tile/exit.gif",
@@ -34,7 +55,15 @@ layer0 = {
 "",
 "",
 "",
+"",
+"",
+"",
+"",
 "tile/fog.png",
+"",
+"",
+"",
+"",
 "",
 "",
 "",
@@ -52,41 +81,77 @@ E1 = {
    pos_x = 3
    pos_y = 2
    script = "set_sprite.lua"
-   param = ( "20", "tie" )
+   param = ( "20", "male_Scarf_black" )
 }
 E2 = {
-   pos_x = 0
+   pos_x = 5
    pos_y = 2
+   script = "set_sprite.lua"
+   param = ( "20", "male_Scarf_blue" )
+}
+E3 = {
+   pos_x = 7
+   pos_y = 2
+   script = "set_sprite.lua"
+   param = ( "20", "male_Scarf_brown" )
+}
+E4 = {
+   pos_x = 1
+   pos_y = 3
+   script = "set_sprite.lua"
+   param = ( "20", "male_Scarf_grey" )
+}
+E5 = {
+   pos_x = 3
+   pos_y = 3
+   script = "set_sprite.lua"
+   param = ( "20", "male_Scarf_red" )
+}
+E6 = {
+   pos_x = 5
+   pos_y = 3
+   script = "set_sprite.lua"
+   param = ( "20", "male_Scarf_white" )
+}
+E7 = {
+   pos_x = 7
+   pos_y = 3
+   script = "set_sprite.lua"
+   param = ( "20", "tie" )
+}
+E8 = {
+   pos_x = 0
+   pos_y = 3
    script = "goto_character_map.lua"
    param = ( "19", "1", "1" )
 }
-E3 = {
-   pos_x = 4
-   pos_y = 2
+E9 = {
+   pos_x = 8
+   pos_y = 3
    script = "goto_character_map.lua"
    param = ( "21", "1", "1" )
 }
-E4 = {
+E10 = {
    pos_x = 0
    pos_y = 0
    script = "set_sprite.lua"
    param = ( "20", "" )
 }
-E5 = {
+E11 = {
    pos_x = 0
-   pos_y = 4
+   pos_y = 5
    script = "set_sprite.lua"
    param = ( "20", "" )
 }
-E6 = {
-   pos_x = 4
+E12 = {
+   pos_x = 8
    pos_y = 0
    script = "set_sprite.lua"
    param = ( "20", "" )
 }
-E7 = {
-   pos_x = 4
-   pos_y = 4
+E13 = {
+   pos_x = 8
+   pos_y = 5
    script = "set_sprite.lua"
    param = ( "20", "" )
 }
