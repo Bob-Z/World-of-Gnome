@@ -1,24 +1,24 @@
 1- Eyes
 2- Nose
 3- Ears
-0- Body
 4- Mustache
 5- Beard
 6- Fiveoclock
 7- Hair
-8- Legs civil
-9- Legs military
-10- Belt
-11- Buckles
-12- Shoes
+8- Shoes
+9- Legs civil
+10- Legs military
+11- Belt
+12- Buckles
 13- Torso civil
 14- Torso military
 15- Arms
 16- Shoulder
 17- Tabard
 18- Neck
-19- Cape
-20- Head
-21- Weapon
-22- Quiver
-23- Wings
+19- Bandage
+20- Cape
+21- Head
+22- Weapon
+23- Quiver
+24- Wings
