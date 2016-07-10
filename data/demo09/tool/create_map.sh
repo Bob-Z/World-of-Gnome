@@ -2,7 +2,7 @@
 
 IS_CHECK_OK=0
 
-function check_sex_race {
+function check_sex {
 	IS_CHECK_OK=1
 
 	if [ "$2" == "" ];then
@@ -40,7 +40,7 @@ function create_map {
 	FILE_QTY=0
 	for f in $FILE;do
 		SHORT_NAME=`echo $f | sed 's/.*WC_//g' | sed 's/_marquee.zip//g'`
-		check_sex_race $SHORT_NAME $SEX
+		check_sex $SHORT_NAME $SEX
 		if [ $IS_CHECK_OK == 0 ];then
 			continue
 		fi
@@ -100,7 +100,7 @@ function create_map {
 	let "HALF_LINE=($LINE/2)+1"
 	for f in $FILE;do
 		SHORT_NAME=`echo $f | sed 's/.*WC_//g' | sed 's/_marquee.zip//g'`
-		check_sex_race $SHORT_NAME $SEX
+		check_sex $SHORT_NAME $SEX
 		if [ $IS_CHECK_OK == 0 ];then
 			continue
 		fi
@@ -160,7 +160,7 @@ function create_map {
 	CURRENT_EVENT=0
 	for f in $FILE;do
 		SHORT_NAME=`echo $f | sed 's/.*WC_//g' | sed 's/_marquee.zip//g'`
-		check_sex_race $SHORT_NAME $SEX
+		check_sex $SHORT_NAME $SEX
 		if [ $IS_CHECK_OK == 0 ];then
 			continue
 		fi
