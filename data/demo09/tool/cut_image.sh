@@ -10,7 +10,7 @@ MARQUEE_TEMPO=500
 NUM_IMAGE_W=13
 NUM_IMAGE_H=21
 
-DIR=`ls -d */`
+DIR=`ls -d ./ */`
 
 IFS=$'\n'
 
@@ -45,7 +45,12 @@ for d in $DIR;do
 		continue
 	fi
 
-	LIST=`find -iname "*.png" -type f`
+	if [ "$d" = "./" ];then
+		LIST=`ls *.png` 2> /dev/null  # Not recursive
+	else
+		LIST=`find -iname "*.png" -type f`  # Recursive search
+	fi
+
 	for l in $LIST; do
 		IMG_W=`identify -format "%w" "$l"`
 		IMG_H=`identify -format "%h" "$l"`
@@ -62,7 +67,7 @@ for d in $DIR;do
 		FILENAME=`echo $l | cut -c 3- | sed 's/\//_/g' | sed 's/ /_/g'`
 		#echo l= $l
 		#echo FILENAME= $FILENAME
-		cp "$l" "$FILENAME"
+		cp "$l" "$FILENAME" > /dev/null 2>&1
 		rm tmp_tiles*.png > /dev/null 2>&1
 		convert -crop ${CROP_W}x${CROP_H} "$FILENAME"  tmp_tiles%d.png
 		BASENAME=`basename "$FILENAME" .png`

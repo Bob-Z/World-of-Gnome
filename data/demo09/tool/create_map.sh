@@ -1,5 +1,7 @@
 #!/bin/bash
 
+DEST_DIR=output
+
 IS_CHECK_OK=0
 
 function check_sex {
@@ -13,14 +15,14 @@ function check_sex {
 	SEX=$2
 
 	if [ $SEX == male ];then
-		echo $FILE_NAME | grep female > /dev/null 2>&1
+		echo $FILE_NAME | grep -i female > /dev/null 2>&1
 		if [ $? == 0 ];then
 			IS_CHECK_OK=0
 		fi
 	fi
 
 	if [ $SEX == female ];then
-		echo $FILE_NAME | grep male | grep -v female > /dev/null 2>&1
+		echo $FILE_NAME | grep -i male | grep -v -i female > /dev/null 2>&1
 		if [ $? == 0 ];then
 			IS_CHECK_OK=0
 		fi
@@ -168,26 +170,26 @@ function create_map {
 		#Special case for body selection map
 		if [ $NUM == 0 ];then
 			#Get sex
-			SEX=`echo $SHORT_NAME | cut -d "_" -f 1`
-			RACE=human
+			SET_SEX=`echo $SHORT_NAME | cut -d "_" -f 1`
+			SET_RACE=human
 			echo $SHORT_NAME | grep darkelf > /dev/null 2>&1
 			if [ $? == 0 ];then
-				RACE=darkelf 
+				SET_RACE=darkelf 
 			fi
 			echo $SHORT_NAME | grep orc > /dev/null 2>&1
 			if [ $? == 0 ];then
-				RACE=orc 
+				SET_RACE=orc 
 			fi
 			echo $SHORT_NAME | grep skeleton > /dev/null 2>&1
 			if [ $? == 0 ];then
-				RACE=skeleton 
+				SET_RACE=skeleton 
 			fi
 			#Add corresponding event
 			echo "E$CURRENT_EVENT = {" >> $MAP_NAME
 			echo "   pos_x = $CUR_X" >> $MAP_NAME
 			echo "   pos_y = $CUR_Y" >> $MAP_NAME
 			echo "   script = \"set_body.lua\"" >> $MAP_NAME
-			echo "   param = ( \"$SEX\", \"$RACE\" )" >> $MAP_NAME
+			echo "   param = ( \"$SET_SEX\", \"$SET_RACE\" )" >> $MAP_NAME
 			echo "}" >> $MAP_NAME
 			let "CURRENT_EVENT=$CURRENT_EVENT+1"
 		fi
@@ -278,6 +280,8 @@ function create_map {
 	echo "}"	>> $MAP_NAME
 
 }
+
+cd $DEST_DIR
 
 MAP_QTY=`ls -1 -d [0-9]* | wc -l`
 echo Generating $MAP_QTY maps
