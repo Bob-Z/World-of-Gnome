@@ -6,8 +6,8 @@ attribute = {
         current = 21
       }
 }
-width = 11
-height = 9
+width = 7
+height = 6
 tile_width = 64
 tile_height = 64
 warp_x = 0
@@ -20,10 +20,6 @@ layer0 = {
 "",
 "",
 "",
-"",
-"",
-"",
-"",
 "tile/fog.png",
 "",
 "",
@@ -33,68 +29,19 @@ layer0 = {
 "",
 "",
 "",
+"character/21/WC_Female_Bandage_head_marquee.zip",
 "",
+"character/21/WC_Female_Bandage_leftarm_marquee.zip",
 "",
-"",
-"",
-"character/21/WC_back_cape_normal_female_cape_black_marquee.zip",
-"",
-"character/21/WC_back_cape_normal_female_cape_blue_marquee.zip",
-"",
-"character/21/WC_back_cape_normal_female_cape_brown_marquee.zip",
-"",
-"character/21/WC_back_cape_normal_female_cape_gray_marquee.zip",
-"",
-"character/21/WC_back_cape_normal_female_cape_green_marquee.zip",
-"",
-"",
-"character/21/WC_back_cape_normal_female_cape_lavender_marquee.zip",
-"",
-"character/21/WC_back_cape_normal_female_cape_maroon_marquee.zip",
-"",
-"character/21/WC_back_cape_normal_female_cape_pink_marquee.zip",
-"",
-"character/21/WC_back_cape_normal_female_cape_red_marquee.zip",
-"",
-"character/21/WC_back_cape_normal_female_cape_white_marquee.zip",
+"character/21/WC_Female_Bandage_leftleg_marquee.zip",
 "",
 "tile/exit.gif",
-"character/21/WC_back_cape_normal_female_cape_yellow_marquee.zip",
+"character/21/WC_Female_Bandage_rightarm_marquee.zip",
 "",
-"character/21/WC_back_cape_tattered_female_tattercape_black_marquee.zip",
+"character/21/WC_Female_Bandage_rightleg_marquee.zip",
 "",
-"character/21/WC_back_cape_tattered_female_tattercape_blue_marquee.zip",
-"",
-"character/21/WC_back_cape_tattered_female_tattercape_brown_marquee.zip",
-"",
-"character/21/WC_back_cape_tattered_female_tattercape_gray_marquee.zip",
+"character/21/WC_Female_Bandage_torso_marquee.zip",
 "tile/exit.gif",
-"",
-"character/21/WC_back_cape_tattered_female_tattercape_green_marquee.zip",
-"",
-"character/21/WC_back_cape_tattered_female_tattercape_maroon_marquee.zip",
-"",
-"character/21/WC_back_cape_tattered_female_tattercape_pink_marquee.zip",
-"",
-"character/21/WC_back_cape_tattered_female_tattercape_red_marquee.zip",
-"",
-"character/21/WC_back_cape_tattered_female_tattercape_white_marquee.zip",
-"",
-"",
-"character/21/WC_back_cape_tattered_female_tattercape_yellow_marquee.zip",
-"",
-"character/21/WC_back_cape_trimmed_female_trimcape_whiteblue_marquee.zip",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
 "",
 "",
 "",
@@ -103,10 +50,6 @@ layer0 = {
 "",
 "",
 "tile/fog.png",
-"",
-"",
-"",
-"",
 "",
 "",
 "",
@@ -120,167 +63,71 @@ E0 = {
    pos_x = 1
    pos_y = 2
    script = "set_sprite.lua"
-   param = ( "21", "back_cape_normal_female_cape_black" )
+   param = ( "21", "Female_Bandage_head" )
 }
 E1 = {
    pos_x = 3
    pos_y = 2
    script = "set_sprite.lua"
-   param = ( "21", "back_cape_normal_female_cape_blue" )
+   param = ( "21", "Female_Bandage_leftarm" )
 }
 E2 = {
    pos_x = 5
    pos_y = 2
    script = "set_sprite.lua"
-   param = ( "21", "back_cape_normal_female_cape_brown" )
+   param = ( "21", "Female_Bandage_leftleg" )
 }
 E3 = {
-   pos_x = 7
-   pos_y = 2
+   pos_x = 1
+   pos_y = 3
    script = "set_sprite.lua"
-   param = ( "21", "back_cape_normal_female_cape_gray" )
+   param = ( "21", "Female_Bandage_rightarm" )
 }
 E4 = {
-   pos_x = 9
-   pos_y = 2
+   pos_x = 3
+   pos_y = 3
    script = "set_sprite.lua"
-   param = ( "21", "back_cape_normal_female_cape_green" )
+   param = ( "21", "Female_Bandage_rightleg" )
 }
 E5 = {
-   pos_x = 1
+   pos_x = 5
    pos_y = 3
    script = "set_sprite.lua"
-   param = ( "21", "back_cape_normal_female_cape_lavender" )
+   param = ( "21", "Female_Bandage_torso" )
 }
 E6 = {
-   pos_x = 3
-   pos_y = 3
-   script = "set_sprite.lua"
-   param = ( "21", "back_cape_normal_female_cape_maroon" )
-}
-E7 = {
-   pos_x = 5
-   pos_y = 3
-   script = "set_sprite.lua"
-   param = ( "21", "back_cape_normal_female_cape_pink" )
-}
-E8 = {
-   pos_x = 7
-   pos_y = 3
-   script = "set_sprite.lua"
-   param = ( "21", "back_cape_normal_female_cape_red" )
-}
-E9 = {
-   pos_x = 9
-   pos_y = 3
-   script = "set_sprite.lua"
-   param = ( "21", "back_cape_normal_female_cape_white" )
-}
-E10 = {
-   pos_x = 1
-   pos_y = 4
-   script = "set_sprite.lua"
-   param = ( "21", "back_cape_normal_female_cape_yellow" )
-}
-E11 = {
-   pos_x = 3
-   pos_y = 4
-   script = "set_sprite.lua"
-   param = ( "21", "back_cape_tattered_female_tattercape_black" )
-}
-E12 = {
-   pos_x = 5
-   pos_y = 4
-   script = "set_sprite.lua"
-   param = ( "21", "back_cape_tattered_female_tattercape_blue" )
-}
-E13 = {
-   pos_x = 7
-   pos_y = 4
-   script = "set_sprite.lua"
-   param = ( "21", "back_cape_tattered_female_tattercape_brown" )
-}
-E14 = {
-   pos_x = 9
-   pos_y = 4
-   script = "set_sprite.lua"
-   param = ( "21", "back_cape_tattered_female_tattercape_gray" )
-}
-E15 = {
-   pos_x = 1
-   pos_y = 5
-   script = "set_sprite.lua"
-   param = ( "21", "back_cape_tattered_female_tattercape_green" )
-}
-E16 = {
-   pos_x = 3
-   pos_y = 5
-   script = "set_sprite.lua"
-   param = ( "21", "back_cape_tattered_female_tattercape_maroon" )
-}
-E17 = {
-   pos_x = 5
-   pos_y = 5
-   script = "set_sprite.lua"
-   param = ( "21", "back_cape_tattered_female_tattercape_pink" )
-}
-E18 = {
-   pos_x = 7
-   pos_y = 5
-   script = "set_sprite.lua"
-   param = ( "21", "back_cape_tattered_female_tattercape_red" )
-}
-E19 = {
-   pos_x = 9
-   pos_y = 5
-   script = "set_sprite.lua"
-   param = ( "21", "back_cape_tattered_female_tattercape_white" )
-}
-E20 = {
-   pos_x = 1
-   pos_y = 6
-   script = "set_sprite.lua"
-   param = ( "21", "back_cape_tattered_female_tattercape_yellow" )
-}
-E21 = {
-   pos_x = 3
-   pos_y = 6
-   script = "set_sprite.lua"
-   param = ( "21", "back_cape_trimmed_female_trimcape_whiteblue" )
-}
-E22 = {
    pos_x = 0
-   pos_y = 4
+   pos_y = 3
    script = "goto_character_map.lua"
    param = ( "20", "1", "1" )
 }
-E23 = {
-   pos_x = 10
-   pos_y = 4
+E7 = {
+   pos_x = 6
+   pos_y = 3
    script = "goto_character_map.lua"
    param = ( "22", "1", "1" )
 }
-E24 = {
+E8 = {
    pos_x = 0
    pos_y = 0
    script = "set_sprite.lua"
    param = ( "21", "" )
 }
-E25 = {
+E9 = {
    pos_x = 0
-   pos_y = 8
+   pos_y = 5
    script = "set_sprite.lua"
    param = ( "21", "" )
 }
-E26 = {
-   pos_x = 10
+E10 = {
+   pos_x = 6
    pos_y = 0
    script = "set_sprite.lua"
    param = ( "21", "" )
 }
-E27 = {
-   pos_x = 10
-   pos_y = 8
+E11 = {
+   pos_x = 6
+   pos_y = 5
    script = "set_sprite.lua"
    param = ( "21", "" )
 }

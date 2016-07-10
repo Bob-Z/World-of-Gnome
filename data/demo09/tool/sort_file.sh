@@ -6,6 +6,7 @@ BANDAGE_BASE=Bandage
 MASK_BASE=Masks
 HAIR00_BASE=Hair00
 LONGEARS_BASE=Long_ears
+APRONS_BASE=Aprons
 
 DEST_DIR=output
 mkdir $DEST_DIR > /dev/null 2>&1
@@ -155,9 +156,15 @@ $COMMAND $ULPC_BASE/torso/??_*shoulders_* $DIR
 $COMMAND $ULPC_BASE/torso/??_*arms_* $DIR
 $COMMAND $LEGION_BASE/Bauldron/??_*bauldron* $DIR
 
-
 #gold spikes seems incomplete
 rm $ULPC_BASE/torso/??_*spikes_* > /dev/null 2>&1
+
+
+let "NUM_DIR=$NUM_DIR+1"
+DIR=$DEST_DIR/$NUM_DIR
+echo $NUM_DIR- Aprons >> $DIR_LIST
+mkdir $DIR
+$COMMAND $APRONS_BASE/??_* $DIR
 
 let "NUM_DIR=$NUM_DIR+1"
 DIR=$DEST_DIR/$NUM_DIR

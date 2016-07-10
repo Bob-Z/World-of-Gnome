@@ -7,7 +7,7 @@ attribute = {
       }
 }
 width = 7
-height = 8
+height = 6
 tile_width = 64
 tile_height = 64
 warp_x = 0
@@ -29,33 +29,19 @@ layer0 = {
 "",
 "",
 "",
-"character/21/WC_Male_cape_black(JaidynReiman)_marquee.zip",
+"character/21/WC_Male_Bandage_head_marquee.zip",
 "",
-"character/21/WC_Male_cape_blue(JaidynReiman)_marquee.zip",
+"character/21/WC_Male_Bandage_leftarm_marquee.zip",
 "",
-"character/21/WC_Male_cape_brown(JaidynReiman)_marquee.zip",
-"",
-"",
-"character/21/WC_Male_cape_gray(JaidynReiman)_marquee.zip",
-"",
-"character/21/WC_Male_cape_green(JaidynReiman)_marquee.zip",
-"",
-"character/21/WC_Male_cape_lavender(JaidynReiman)_marquee.zip",
+"character/21/WC_Male_Bandage_leftleg_marquee.zip",
 "",
 "tile/exit.gif",
-"character/21/WC_Male_cape_maroon(JaidynReiman)_marquee.zip",
+"character/21/WC_Male_Bandage_rightarm_marquee.zip",
 "",
-"character/21/WC_Male_cape_pink(JaidynReiman)_marquee.zip",
+"character/21/WC_Male_Bandage_rightleg_marquee.zip",
 "",
-"character/21/WC_Male_cape_red(JaidynReiman)_marquee.zip",
+"character/21/WC_Male_Bandage_torso_marquee.zip",
 "tile/exit.gif",
-"",
-"character/21/WC_Male_cape_white(JaidynReiman)_marquee.zip",
-"",
-"character/21/WC_Male_cape_yellow(JaidynReiman)_marquee.zip",
-"",
-"",
-"",
 "",
 "",
 "",
@@ -77,101 +63,71 @@ E0 = {
    pos_x = 1
    pos_y = 2
    script = "set_sprite.lua"
-   param = ( "21", "Male_cape_black(JaidynReiman)" )
+   param = ( "21", "Male_Bandage_head" )
 }
 E1 = {
    pos_x = 3
    pos_y = 2
    script = "set_sprite.lua"
-   param = ( "21", "Male_cape_blue(JaidynReiman)" )
+   param = ( "21", "Male_Bandage_leftarm" )
 }
 E2 = {
    pos_x = 5
    pos_y = 2
    script = "set_sprite.lua"
-   param = ( "21", "Male_cape_brown(JaidynReiman)" )
+   param = ( "21", "Male_Bandage_leftleg" )
 }
 E3 = {
    pos_x = 1
    pos_y = 3
    script = "set_sprite.lua"
-   param = ( "21", "Male_cape_gray(JaidynReiman)" )
+   param = ( "21", "Male_Bandage_rightarm" )
 }
 E4 = {
    pos_x = 3
    pos_y = 3
    script = "set_sprite.lua"
-   param = ( "21", "Male_cape_green(JaidynReiman)" )
+   param = ( "21", "Male_Bandage_rightleg" )
 }
 E5 = {
    pos_x = 5
    pos_y = 3
    script = "set_sprite.lua"
-   param = ( "21", "Male_cape_lavender(JaidynReiman)" )
+   param = ( "21", "Male_Bandage_torso" )
 }
 E6 = {
-   pos_x = 1
-   pos_y = 4
-   script = "set_sprite.lua"
-   param = ( "21", "Male_cape_maroon(JaidynReiman)" )
-}
-E7 = {
-   pos_x = 3
-   pos_y = 4
-   script = "set_sprite.lua"
-   param = ( "21", "Male_cape_pink(JaidynReiman)" )
-}
-E8 = {
-   pos_x = 5
-   pos_y = 4
-   script = "set_sprite.lua"
-   param = ( "21", "Male_cape_red(JaidynReiman)" )
-}
-E9 = {
-   pos_x = 1
-   pos_y = 5
-   script = "set_sprite.lua"
-   param = ( "21", "Male_cape_white(JaidynReiman)" )
-}
-E10 = {
-   pos_x = 3
-   pos_y = 5
-   script = "set_sprite.lua"
-   param = ( "21", "Male_cape_yellow(JaidynReiman)" )
-}
-E11 = {
    pos_x = 0
-   pos_y = 4
+   pos_y = 3
    script = "goto_character_map.lua"
    param = ( "20", "1", "1" )
 }
-E12 = {
+E7 = {
    pos_x = 6
-   pos_y = 4
+   pos_y = 3
    script = "goto_character_map.lua"
    param = ( "22", "1", "1" )
 }
-E13 = {
+E8 = {
    pos_x = 0
    pos_y = 0
    script = "set_sprite.lua"
    param = ( "21", "" )
 }
-E14 = {
+E9 = {
    pos_x = 0
-   pos_y = 7
+   pos_y = 5
    script = "set_sprite.lua"
    param = ( "21", "" )
 }
-E15 = {
+E10 = {
    pos_x = 6
    pos_y = 0
    script = "set_sprite.lua"
    param = ( "21", "" )
 }
-E16 = {
+E11 = {
    pos_x = 6
-   pos_y = 7
+   pos_y = 5
    script = "set_sprite.lua"
    param = ( "21", "" )
 }
