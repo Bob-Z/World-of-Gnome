@@ -6,8 +6,8 @@ attribute = {
         current = 22
       }
 }
-width = 3
-height = 5
+width = 9
+height = 7
 tile_width = 64
 tile_height = 64
 warp_x = 0
@@ -16,17 +16,65 @@ layer0 = {
         set = [
 "tile/fog.png",
 "",
-"tile/fog.png",
 "",
 "",
 "",
-"tile/exit.gif",
-"character/22/WC_equipment_quiver_marquee.zip",
-"tile/exit.gif",
 "",
 "",
 "",
 "tile/fog.png",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"character/22/WC_both_hand_spear_marquee.zip",
+"",
+"character/22/WC_left_hand_either_arrow_marquee.zip",
+"",
+"character/22/WC_left_hand_either_arrow_skeleton_marquee.zip",
+"",
+"character/22/WC_left_hand_male_shield_male_cutoutforbody_marquee.zip",
+"",
+"tile/exit.gif",
+"character/22/WC_left_hand_male_shield_male_cutoutforhat_marquee.zip",
+"",
+"character/22/WC_right_hand_either_bow_marquee.zip",
+"",
+"character/22/WC_right_hand_either_bow_skeleton_marquee.zip",
+"",
+"character/22/WC_right_hand_either_greatbow_marquee.zip",
+"tile/exit.gif",
+"",
+"character/22/WC_right_hand_either_recurvebow_marquee.zip",
+"",
+"character/22/WC_right_hand_male_dagger_male_marquee.zip",
+"",
+"character/22/WC_right_hand_male_spear_male_marquee.zip",
+"",
+"character/22/WC_right_hand_male_woodwand_male_marquee.zip",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"tile/fog.png",
+"",
+"",
+"",
+"",
+"",
+"",
 "",
 "tile/fog.png"
         ]
@@ -36,41 +84,107 @@ E0 = {
    pos_x = 1
    pos_y = 2
    script = "set_sprite.lua"
-   param = ( "22", "equipment_quiver" )
+   param = ( "22", "both_hand_spear" )
 }
 E1 = {
-   pos_x = 0
+   pos_x = 3
    pos_y = 2
+   script = "set_sprite.lua"
+   param = ( "22", "left_hand_either_arrow" )
+}
+E2 = {
+   pos_x = 5
+   pos_y = 2
+   script = "set_sprite.lua"
+   param = ( "22", "left_hand_either_arrow_skeleton" )
+}
+E3 = {
+   pos_x = 7
+   pos_y = 2
+   script = "set_sprite.lua"
+   param = ( "22", "left_hand_male_shield_male_cutoutforbody" )
+}
+E4 = {
+   pos_x = 1
+   pos_y = 3
+   script = "set_sprite.lua"
+   param = ( "22", "left_hand_male_shield_male_cutoutforhat" )
+}
+E5 = {
+   pos_x = 3
+   pos_y = 3
+   script = "set_sprite.lua"
+   param = ( "22", "right_hand_either_bow" )
+}
+E6 = {
+   pos_x = 5
+   pos_y = 3
+   script = "set_sprite.lua"
+   param = ( "22", "right_hand_either_bow_skeleton" )
+}
+E7 = {
+   pos_x = 7
+   pos_y = 3
+   script = "set_sprite.lua"
+   param = ( "22", "right_hand_either_greatbow" )
+}
+E8 = {
+   pos_x = 1
+   pos_y = 4
+   script = "set_sprite.lua"
+   param = ( "22", "right_hand_either_recurvebow" )
+}
+E9 = {
+   pos_x = 3
+   pos_y = 4
+   script = "set_sprite.lua"
+   param = ( "22", "right_hand_male_dagger_male" )
+}
+E10 = {
+   pos_x = 5
+   pos_y = 4
+   script = "set_sprite.lua"
+   param = ( "22", "right_hand_male_spear_male" )
+}
+E11 = {
+   pos_x = 7
+   pos_y = 4
+   script = "set_sprite.lua"
+   param = ( "22", "right_hand_male_woodwand_male" )
+}
+E12 = {
+   pos_x = 0
+   pos_y = 3
    script = "goto_character_map.lua"
    param = ( "21", "1", "1" )
 }
-E2 = {
-   pos_x = 2
-   pos_y = 2
+E13 = {
+   pos_x = 8
+   pos_y = 3
    script = "goto_character_map.lua"
    param = ( "23", "1", "1" )
 }
-E3 = {
+E14 = {
    pos_x = 0
    pos_y = 0
    script = "set_sprite.lua"
    param = ( "22", "" )
 }
-E4 = {
+E15 = {
    pos_x = 0
-   pos_y = 4
+   pos_y = 6
    script = "set_sprite.lua"
    param = ( "22", "" )
 }
-E5 = {
-   pos_x = 2
+E16 = {
+   pos_x = 8
    pos_y = 0
    script = "set_sprite.lua"
    param = ( "22", "" )
 }
-E6 = {
-   pos_x = 2
-   pos_y = 4
+E17 = {
+   pos_x = 8
+   pos_y = 6
    script = "set_sprite.lua"
    param = ( "22", "" )
 }

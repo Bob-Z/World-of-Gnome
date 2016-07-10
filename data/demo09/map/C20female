@@ -6,8 +6,8 @@ attribute = {
         current = 20
       }
 }
-width = 9
-height = 7
+width = 11
+height = 9
 tile_width = 64
 tile_height = 64
 warp_x = 0
@@ -22,53 +22,89 @@ layer0 = {
 "",
 "",
 "",
-"tile/fog.png",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"character/20/WC_bandanas_female_red_marquee.zip",
-"",
-"character/20/WC_caps_female_leather_cap_female_marquee.zip",
-"",
-"character/20/WC_helms_female_chainhat_female_marquee.zip",
-"",
-"character/20/WC_helms_female_golden_helm_female_marquee.zip",
-"",
-"tile/exit.gif",
-"character/20/WC_helms_female_metal_helm_female_marquee.zip",
-"",
-"character/20/WC_hoods_female_chain_hood_female_marquee.zip",
-"",
-"character/20/WC_hoods_female_cloth_hood_female_marquee.zip",
-"",
-"character/20/WC_tiaras_female_bronze_marquee.zip",
-"tile/exit.gif",
-"",
-"character/20/WC_tiaras_female_gold_marquee.zip",
-"",
-"character/20/WC_tiaras_female_iron_marquee.zip",
-"",
-"character/20/WC_tiaras_female_purple_marquee.zip",
-"",
-"character/20/WC_tiaras_female_silver_marquee.zip",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
 "",
 "",
 "tile/fog.png",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"character/20/WC_back_cape_normal_female_cape_black_marquee.zip",
+"",
+"character/20/WC_back_cape_normal_female_cape_blue_marquee.zip",
+"",
+"character/20/WC_back_cape_normal_female_cape_brown_marquee.zip",
+"",
+"character/20/WC_back_cape_normal_female_cape_gray_marquee.zip",
+"",
+"character/20/WC_back_cape_normal_female_cape_green_marquee.zip",
+"",
+"",
+"character/20/WC_back_cape_normal_female_cape_lavender_marquee.zip",
+"",
+"character/20/WC_back_cape_normal_female_cape_maroon_marquee.zip",
+"",
+"character/20/WC_back_cape_normal_female_cape_pink_marquee.zip",
+"",
+"character/20/WC_back_cape_normal_female_cape_red_marquee.zip",
+"",
+"character/20/WC_back_cape_normal_female_cape_white_marquee.zip",
+"",
+"tile/exit.gif",
+"character/20/WC_back_cape_normal_female_cape_yellow_marquee.zip",
+"",
+"character/20/WC_back_cape_tattered_female_tattercape_black_marquee.zip",
+"",
+"character/20/WC_back_cape_tattered_female_tattercape_blue_marquee.zip",
+"",
+"character/20/WC_back_cape_tattered_female_tattercape_brown_marquee.zip",
+"",
+"character/20/WC_back_cape_tattered_female_tattercape_gray_marquee.zip",
+"tile/exit.gif",
+"",
+"character/20/WC_back_cape_tattered_female_tattercape_green_marquee.zip",
+"",
+"character/20/WC_back_cape_tattered_female_tattercape_maroon_marquee.zip",
+"",
+"character/20/WC_back_cape_tattered_female_tattercape_pink_marquee.zip",
+"",
+"character/20/WC_back_cape_tattered_female_tattercape_red_marquee.zip",
+"",
+"character/20/WC_back_cape_tattered_female_tattercape_white_marquee.zip",
+"",
+"",
+"character/20/WC_back_cape_tattered_female_tattercape_yellow_marquee.zip",
+"",
+"character/20/WC_back_cape_trimmed_female_trimcape_whiteblue_marquee.zip",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"tile/fog.png",
+"",
+"",
 "",
 "",
 "",
@@ -84,107 +120,167 @@ E0 = {
    pos_x = 1
    pos_y = 2
    script = "set_sprite.lua"
-   param = ( "20", "bandanas_female_red" )
+   param = ( "20", "back_cape_normal_female_cape_black" )
 }
 E1 = {
    pos_x = 3
    pos_y = 2
    script = "set_sprite.lua"
-   param = ( "20", "caps_female_leather_cap_female" )
+   param = ( "20", "back_cape_normal_female_cape_blue" )
 }
 E2 = {
    pos_x = 5
    pos_y = 2
    script = "set_sprite.lua"
-   param = ( "20", "helms_female_chainhat_female" )
+   param = ( "20", "back_cape_normal_female_cape_brown" )
 }
 E3 = {
    pos_x = 7
    pos_y = 2
    script = "set_sprite.lua"
-   param = ( "20", "helms_female_golden_helm_female" )
+   param = ( "20", "back_cape_normal_female_cape_gray" )
 }
 E4 = {
-   pos_x = 1
-   pos_y = 3
+   pos_x = 9
+   pos_y = 2
    script = "set_sprite.lua"
-   param = ( "20", "helms_female_metal_helm_female" )
+   param = ( "20", "back_cape_normal_female_cape_green" )
 }
 E5 = {
+   pos_x = 1
+   pos_y = 3
+   script = "set_sprite.lua"
+   param = ( "20", "back_cape_normal_female_cape_lavender" )
+}
+E6 = {
    pos_x = 3
    pos_y = 3
    script = "set_sprite.lua"
-   param = ( "20", "hoods_female_chain_hood_female" )
+   param = ( "20", "back_cape_normal_female_cape_maroon" )
 }
-E6 = {
+E7 = {
    pos_x = 5
    pos_y = 3
    script = "set_sprite.lua"
-   param = ( "20", "hoods_female_cloth_hood_female" )
+   param = ( "20", "back_cape_normal_female_cape_pink" )
 }
-E7 = {
+E8 = {
    pos_x = 7
    pos_y = 3
    script = "set_sprite.lua"
-   param = ( "20", "tiaras_female_bronze" )
+   param = ( "20", "back_cape_normal_female_cape_red" )
 }
-E8 = {
+E9 = {
+   pos_x = 9
+   pos_y = 3
+   script = "set_sprite.lua"
+   param = ( "20", "back_cape_normal_female_cape_white" )
+}
+E10 = {
    pos_x = 1
    pos_y = 4
    script = "set_sprite.lua"
-   param = ( "20", "tiaras_female_gold" )
+   param = ( "20", "back_cape_normal_female_cape_yellow" )
 }
-E9 = {
+E11 = {
    pos_x = 3
    pos_y = 4
    script = "set_sprite.lua"
-   param = ( "20", "tiaras_female_iron" )
+   param = ( "20", "back_cape_tattered_female_tattercape_black" )
 }
-E10 = {
+E12 = {
    pos_x = 5
    pos_y = 4
    script = "set_sprite.lua"
-   param = ( "20", "tiaras_female_purple" )
+   param = ( "20", "back_cape_tattered_female_tattercape_blue" )
 }
-E11 = {
+E13 = {
    pos_x = 7
    pos_y = 4
    script = "set_sprite.lua"
-   param = ( "20", "tiaras_female_silver" )
+   param = ( "20", "back_cape_tattered_female_tattercape_brown" )
 }
-E12 = {
+E14 = {
+   pos_x = 9
+   pos_y = 4
+   script = "set_sprite.lua"
+   param = ( "20", "back_cape_tattered_female_tattercape_gray" )
+}
+E15 = {
+   pos_x = 1
+   pos_y = 5
+   script = "set_sprite.lua"
+   param = ( "20", "back_cape_tattered_female_tattercape_green" )
+}
+E16 = {
+   pos_x = 3
+   pos_y = 5
+   script = "set_sprite.lua"
+   param = ( "20", "back_cape_tattered_female_tattercape_maroon" )
+}
+E17 = {
+   pos_x = 5
+   pos_y = 5
+   script = "set_sprite.lua"
+   param = ( "20", "back_cape_tattered_female_tattercape_pink" )
+}
+E18 = {
+   pos_x = 7
+   pos_y = 5
+   script = "set_sprite.lua"
+   param = ( "20", "back_cape_tattered_female_tattercape_red" )
+}
+E19 = {
+   pos_x = 9
+   pos_y = 5
+   script = "set_sprite.lua"
+   param = ( "20", "back_cape_tattered_female_tattercape_white" )
+}
+E20 = {
+   pos_x = 1
+   pos_y = 6
+   script = "set_sprite.lua"
+   param = ( "20", "back_cape_tattered_female_tattercape_yellow" )
+}
+E21 = {
+   pos_x = 3
+   pos_y = 6
+   script = "set_sprite.lua"
+   param = ( "20", "back_cape_trimmed_female_trimcape_whiteblue" )
+}
+E22 = {
    pos_x = 0
-   pos_y = 3
+   pos_y = 4
    script = "goto_character_map.lua"
    param = ( "19", "1", "1" )
 }
-E13 = {
-   pos_x = 8
-   pos_y = 3
+E23 = {
+   pos_x = 10
+   pos_y = 4
    script = "goto_character_map.lua"
    param = ( "21", "1", "1" )
 }
-E14 = {
+E24 = {
    pos_x = 0
    pos_y = 0
    script = "set_sprite.lua"
    param = ( "20", "" )
 }
-E15 = {
+E25 = {
    pos_x = 0
-   pos_y = 6
+   pos_y = 8
    script = "set_sprite.lua"
    param = ( "20", "" )
 }
-E16 = {
-   pos_x = 8
+E26 = {
+   pos_x = 10
    pos_y = 0
    script = "set_sprite.lua"
    param = ( "20", "" )
 }
-E17 = {
-   pos_x = 8
-   pos_y = 6
+E27 = {
+   pos_x = 10
+   pos_y = 8
    script = "set_sprite.lua"
    param = ( "20", "" )
 }

@@ -7,7 +7,7 @@ attribute = {
       }
 }
 width = 5
-height = 5
+height = 6
 tile_width = 64
 tile_height = 64
 warp_x = 0
@@ -24,10 +24,15 @@ layer0 = {
 "",
 "",
 "",
-"tile/exit.gif",
-"character/10/WC_cloth_male_white_cloth_male_marquee.zip",
 "",
-"character/10/WC_leather_male_leather_male_marquee.zip",
+"character/10/WC_armor_male_golden_greaves_male_marquee.zip",
+"",
+"character/10/WC_armor_male_metal_pants_male_marquee.zip",
+"",
+"tile/exit.gif",
+"character/10/WC_le_legionSkirt_marquee.zip",
+"",
+"character/10/WC_male_legionSkirt_marquee.zip",
 "tile/exit.gif",
 "",
 "",
@@ -46,47 +51,59 @@ E0 = {
    pos_x = 1
    pos_y = 2
    script = "set_sprite.lua"
-   param = ( "10", "cloth_male_white_cloth_male" )
+   param = ( "10", "armor_male_golden_greaves_male" )
 }
 E1 = {
    pos_x = 3
    pos_y = 2
    script = "set_sprite.lua"
-   param = ( "10", "leather_male_leather_male" )
+   param = ( "10", "armor_male_metal_pants_male" )
 }
 E2 = {
-   pos_x = 0
-   pos_y = 2
-   script = "goto_character_map.lua"
-   param = ( "9", "1", "1" )
+   pos_x = 1
+   pos_y = 3
+   script = "set_sprite.lua"
+   param = ( "10", "le_legionSkirt" )
 }
 E3 = {
-   pos_x = 4
-   pos_y = 2
-   script = "goto_character_map.lua"
-   param = ( "11", "1", "1" )
+   pos_x = 3
+   pos_y = 3
+   script = "set_sprite.lua"
+   param = ( "10", "male_legionSkirt" )
 }
 E4 = {
    pos_x = 0
-   pos_y = 0
-   script = "set_sprite.lua"
-   param = ( "10", "" )
+   pos_y = 3
+   script = "goto_character_map.lua"
+   param = ( "9", "1", "1" )
 }
 E5 = {
-   pos_x = 0
-   pos_y = 4
-   script = "set_sprite.lua"
-   param = ( "10", "" )
+   pos_x = 4
+   pos_y = 3
+   script = "goto_character_map.lua"
+   param = ( "11", "1", "1" )
 }
 E6 = {
-   pos_x = 4
+   pos_x = 0
    pos_y = 0
    script = "set_sprite.lua"
    param = ( "10", "" )
 }
 E7 = {
+   pos_x = 0
+   pos_y = 5
+   script = "set_sprite.lua"
+   param = ( "10", "" )
+}
+E8 = {
    pos_x = 4
-   pos_y = 4
+   pos_y = 0
+   script = "set_sprite.lua"
+   param = ( "10", "" )
+}
+E9 = {
+   pos_x = 4
+   pos_y = 5
    script = "set_sprite.lua"
    param = ( "10", "" )
 }

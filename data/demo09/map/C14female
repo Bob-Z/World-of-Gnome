@@ -6,7 +6,7 @@ attribute = {
         current = 14
       }
 }
-width = 5
+width = 9
 height = 6
 tile_width = 64
 tile_height = 64
@@ -18,7 +18,15 @@ layer0 = {
 "",
 "",
 "",
+"",
+"",
+"",
+"",
 "tile/fog.png",
+"",
+"",
+"",
+"",
 "",
 "",
 "",
@@ -27,9 +35,17 @@ layer0 = {
 "",
 "character/14/WC_chain_mail_female_marquee.zip",
 "",
-"character/14/WC_gold_chest_female_marquee.zip",
+"character/14/WC_Female_legionplate_bronze_marquee.zip",
+"",
+"character/14/WC_Female_legionplate_gold_marquee.zip",
+"",
+"character/14/WC_Female_legionplate_steel_marquee.zip",
 "",
 "tile/exit.gif",
+"character/14/WC_Female_plate_bronze(Matthew_Krohn)_marquee.zip",
+"",
+"character/14/WC_gold_chest_female_marquee.zip",
+"",
 "character/14/WC_leather_chest_female_marquee.zip",
 "",
 "character/14/WC_plate_chest_female_marquee.zip",
@@ -39,7 +55,15 @@ layer0 = {
 "",
 "",
 "",
+"",
+"",
+"",
+"",
 "tile/fog.png",
+"",
+"",
+"",
+"",
 "",
 "",
 "",
@@ -57,52 +81,76 @@ E1 = {
    pos_x = 3
    pos_y = 2
    script = "set_sprite.lua"
-   param = ( "14", "gold_chest_female" )
+   param = ( "14", "Female_legionplate_bronze" )
 }
 E2 = {
+   pos_x = 5
+   pos_y = 2
+   script = "set_sprite.lua"
+   param = ( "14", "Female_legionplate_gold" )
+}
+E3 = {
+   pos_x = 7
+   pos_y = 2
+   script = "set_sprite.lua"
+   param = ( "14", "Female_legionplate_steel" )
+}
+E4 = {
    pos_x = 1
+   pos_y = 3
+   script = "set_sprite.lua"
+   param = ( "14", "Female_plate_bronze(Matthew_Krohn)" )
+}
+E5 = {
+   pos_x = 3
+   pos_y = 3
+   script = "set_sprite.lua"
+   param = ( "14", "gold_chest_female" )
+}
+E6 = {
+   pos_x = 5
    pos_y = 3
    script = "set_sprite.lua"
    param = ( "14", "leather_chest_female" )
 }
-E3 = {
-   pos_x = 3
+E7 = {
+   pos_x = 7
    pos_y = 3
    script = "set_sprite.lua"
    param = ( "14", "plate_chest_female" )
 }
-E4 = {
+E8 = {
    pos_x = 0
    pos_y = 3
    script = "goto_character_map.lua"
    param = ( "13", "1", "1" )
 }
-E5 = {
-   pos_x = 4
+E9 = {
+   pos_x = 8
    pos_y = 3
    script = "goto_character_map.lua"
    param = ( "15", "1", "1" )
 }
-E6 = {
+E10 = {
    pos_x = 0
    pos_y = 0
    script = "set_sprite.lua"
    param = ( "14", "" )
 }
-E7 = {
+E11 = {
    pos_x = 0
    pos_y = 5
    script = "set_sprite.lua"
    param = ( "14", "" )
 }
-E8 = {
-   pos_x = 4
+E12 = {
+   pos_x = 8
    pos_y = 0
    script = "set_sprite.lua"
    param = ( "14", "" )
 }
-E9 = {
-   pos_x = 4
+E13 = {
+   pos_x = 8
    pos_y = 5
    script = "set_sprite.lua"
    param = ( "14", "" )

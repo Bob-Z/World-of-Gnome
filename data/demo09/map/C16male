@@ -7,7 +7,7 @@ attribute = {
       }
 }
 width = 7
-height = 5
+height = 6
 tile_width = 64
 tile_height = 64
 warp_x = 0
@@ -28,10 +28,17 @@ layer0 = {
 "",
 "",
 "",
-"tile/exit.gif",
+"",
 "character/16/WC_gold_arms_male_marquee.zip",
 "",
 "character/16/WC_leather_shoulders_male_marquee.zip",
+"",
+"character/16/WC_Male_legionbauldron_bronze_marquee.zip",
+"",
+"tile/exit.gif",
+"character/16/WC_Male_legionbauldron_gold_marquee.zip",
+"",
+"character/16/WC_Male_legionbauldron_steel_marquee.zip",
 "",
 "character/16/WC_plate_arms_male_marquee.zip",
 "tile/exit.gif",
@@ -68,41 +75,59 @@ E2 = {
    pos_x = 5
    pos_y = 2
    script = "set_sprite.lua"
-   param = ( "16", "plate_arms_male" )
+   param = ( "16", "Male_legionbauldron_bronze" )
 }
 E3 = {
-   pos_x = 0
-   pos_y = 2
-   script = "goto_character_map.lua"
-   param = ( "15", "1", "1" )
+   pos_x = 1
+   pos_y = 3
+   script = "set_sprite.lua"
+   param = ( "16", "Male_legionbauldron_gold" )
 }
 E4 = {
-   pos_x = 6
-   pos_y = 2
-   script = "goto_character_map.lua"
-   param = ( "17", "1", "1" )
+   pos_x = 3
+   pos_y = 3
+   script = "set_sprite.lua"
+   param = ( "16", "Male_legionbauldron_steel" )
 }
 E5 = {
-   pos_x = 0
-   pos_y = 0
+   pos_x = 5
+   pos_y = 3
    script = "set_sprite.lua"
-   param = ( "16", "" )
+   param = ( "16", "plate_arms_male" )
 }
 E6 = {
    pos_x = 0
-   pos_y = 4
+   pos_y = 3
+   script = "goto_character_map.lua"
+   param = ( "15", "1", "1" )
+}
+E7 = {
+   pos_x = 6
+   pos_y = 3
+   script = "goto_character_map.lua"
+   param = ( "17", "1", "1" )
+}
+E8 = {
+   pos_x = 0
+   pos_y = 0
    script = "set_sprite.lua"
    param = ( "16", "" )
 }
-E7 = {
+E9 = {
+   pos_x = 0
+   pos_y = 5
+   script = "set_sprite.lua"
+   param = ( "16", "" )
+}
+E10 = {
    pos_x = 6
    pos_y = 0
    script = "set_sprite.lua"
    param = ( "16", "" )
 }
-E8 = {
+E11 = {
    pos_x = 6
-   pos_y = 4
+   pos_y = 5
    script = "set_sprite.lua"
    param = ( "16", "" )
 }

@@ -7,7 +7,7 @@ attribute = {
       }
 }
 width = 7
-height = 6
+height = 7
 tile_width = 64
 tile_height = 64
 warp_x = 0
@@ -29,19 +29,26 @@ layer0 = {
 "",
 "",
 "",
-"character/8/WC_pants_male_magenta_pants_male_marquee.zip",
+"character/8/WC_armor_male_golden_boots_male_marquee.zip",
 "",
-"character/8/WC_pants_male_red_pants_male_marquee.zip",
+"character/8/WC_armor_male_metal_boots_male_marquee.zip",
 "",
-"character/8/WC_pants_male_teal_pants_male_marquee.zip",
+"character/8/WC_le_sandals_marquee.zip",
 "",
 "tile/exit.gif",
-"character/8/WC_pants_male_white_pants_male_marquee.zip",
+"character/8/WC_male_sandals_marquee.zip",
 "",
-"character/8/WC_pants_marquee.zip",
+"character/8/WC_shoes_male_black_shoes_male_marquee.zip",
 "",
-"character/8/WC_skirt_male_robe_skirt_male_marquee.zip",
+"character/8/WC_shoes_male_brown_shoes_male_marquee.zip",
 "tile/exit.gif",
+"",
+"character/8/WC_shoes_male_maroon_shoes_male_marquee.zip",
+"",
+"",
+"",
+"",
+"",
 "",
 "",
 "",
@@ -63,71 +70,77 @@ E0 = {
    pos_x = 1
    pos_y = 2
    script = "set_sprite.lua"
-   param = ( "8", "pants_male_magenta_pants_male" )
+   param = ( "8", "armor_male_golden_boots_male" )
 }
 E1 = {
    pos_x = 3
    pos_y = 2
    script = "set_sprite.lua"
-   param = ( "8", "pants_male_red_pants_male" )
+   param = ( "8", "armor_male_metal_boots_male" )
 }
 E2 = {
    pos_x = 5
    pos_y = 2
    script = "set_sprite.lua"
-   param = ( "8", "pants_male_teal_pants_male" )
+   param = ( "8", "le_sandals" )
 }
 E3 = {
    pos_x = 1
    pos_y = 3
    script = "set_sprite.lua"
-   param = ( "8", "pants_male_white_pants_male" )
+   param = ( "8", "male_sandals" )
 }
 E4 = {
    pos_x = 3
    pos_y = 3
    script = "set_sprite.lua"
-   param = ( "8", "pants" )
+   param = ( "8", "shoes_male_black_shoes_male" )
 }
 E5 = {
    pos_x = 5
    pos_y = 3
    script = "set_sprite.lua"
-   param = ( "8", "skirt_male_robe_skirt_male" )
+   param = ( "8", "shoes_male_brown_shoes_male" )
 }
 E6 = {
+   pos_x = 1
+   pos_y = 4
+   script = "set_sprite.lua"
+   param = ( "8", "shoes_male_maroon_shoes_male" )
+}
+E7 = {
    pos_x = 0
    pos_y = 3
    script = "goto_character_map.lua"
    param = ( "7", "1", "1" )
 }
-E7 = {
+E8 = {
    pos_x = 6
    pos_y = 3
    script = "goto_character_map.lua"
    param = ( "9", "1", "1" )
 }
-E8 = {
-   pos_x = 0
-   pos_y = 0
-   script = "set_sprite.lua"
-   param = ( "8", "" )
-}
 E9 = {
    pos_x = 0
-   pos_y = 5
+   pos_y = 0
    script = "set_sprite.lua"
    param = ( "8", "" )
 }
 E10 = {
-   pos_x = 6
-   pos_y = 0
+   pos_x = 0
+   pos_y = 6
    script = "set_sprite.lua"
    param = ( "8", "" )
 }
 E11 = {
    pos_x = 6
-   pos_y = 5
+   pos_y = 0
+   script = "set_sprite.lua"
+   param = ( "8", "" )
+}
+E12 = {
+   pos_x = 6
+   pos_y = 6
    script = "set_sprite.lua"
    param = ( "8", "" )
 }
