@@ -54,8 +54,8 @@ function create_map {
 		LINE=`echo "scale = 0; sqrt($FILE_QTY)" | bc`
 		COLUMN=`echo "scale = 0; $FILE_QTY/$LINE" | bc`
 	else
-		LINE=0
-		COLUMN=0
+		LINE=1
+		COLUMN=1
 	fi
 
 	let "TOTAL=$LINE*$COLUMN"
@@ -63,6 +63,7 @@ function create_map {
 		let "LINE=$LINE+1"
 	fi
 
+	# Let a free space between each item column
 	let "COLUMN=$COLUMN*2"
 
 	let "MAP_COLUMN=$COLUMN+1"

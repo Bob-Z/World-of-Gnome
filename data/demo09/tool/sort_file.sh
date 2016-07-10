@@ -3,6 +3,7 @@
 ULPC_BASE=Universal-LPC-spritesheet-master
 LEGION_BASE=Legion_armor
 BANDAGE_BASE=Bandage
+MASK_BASE=Masks
 
 DEST_DIR=output
 mkdir $DEST_DIR > /dev/null 2>&1
@@ -57,6 +58,12 @@ DIR=$DEST_DIR/$NUM_DIR
 echo $NUM_DIR- Fiveoclock >> $DIR_LIST
 mkdir $DIR
 $COMMAND $ULPC_BASE/facial/??_*_fiveoclock* $DIR
+
+let "NUM_DIR=$NUM_DIR+1"
+DIR=$DEST_DIR/$NUM_DIR
+echo $NUM_DIR- Mask >> $DIR_LIST
+mkdir $DIR
+$COMMAND $MASK_BASE/??_* $DIR
 
 let "NUM_DIR=$NUM_DIR+1"
 DIR=$DEST_DIR/$NUM_DIR

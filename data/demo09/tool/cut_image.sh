@@ -46,7 +46,7 @@ for d in $DIR;do
 	fi
 
 	if [ "$d" = "./" ];then
-		LIST=`ls *.png` 2> /dev/null  # Not recursive
+		LIST=`find -maxdepth 1 -iname "*.png" -type f`  # Recursive search
 	else
 		LIST=`find -iname "*.png" -type f`  # Recursive search
 	fi
