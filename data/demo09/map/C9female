@@ -6,8 +6,8 @@ attribute = {
         current = 9
       }
 }
-width = 7
-height = 7
+width = 9
+height = 8
 tile_width = 64
 tile_height = 64
 warp_x = 0
@@ -20,43 +20,66 @@ layer0 = {
 "",
 "",
 "",
-"tile/fog.png",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"character/9/WC_dress_female_overskirt_marquee.zip",
-"",
-"character/9/WC_pants_female_magenta_pants_female_marquee.zip",
-"",
-"character/9/WC_pants_female_red_pants_female_marquee.zip",
-"",
-"tile/exit.gif",
-"character/9/WC_pants_female_teal_pants_female_marquee.zip",
-"",
-"character/9/WC_pants_female_white_pants_female_marquee.zip",
-"",
-"character/9/WC_pants_marquee.zip",
-"tile/exit.gif",
-"",
-"character/9/WC_skirt_female_robe_skirt_female_incomplete_marquee.zip",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
 "",
 "",
 "tile/fog.png",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"character/9/WC_armor_female_golden_boots_female_marquee.zip",
+"",
+"character/9/WC_armor_female_metal_boots_female_marquee.zip",
+"",
+"character/9/WC_boots_female_brown_longboots_female_marquee.zip",
+"",
+"character/9/WC_boots_female_maroon_longboots_female_marquee.zip",
+"",
+"",
+"character/9/WC_Female_sandals_marquee.zip",
+"",
+"character/9/WC_ghillies_female_no_th-sh_marquee.zip",
+"",
+"character/9/WC_shoes_female_black_shoes_female_marquee.zip",
+"",
+"character/9/WC_shoes_female_brown_shoes_female_marquee.zip",
+"",
+"tile/exit.gif",
+"character/9/WC_shoes_female_maroon_shoes_female_marquee.zip",
+"",
+"character/9/WC_slippers_female_black_marquee.zip",
+"",
+"character/9/WC_slippers_female_brown_marquee.zip",
+"",
+"character/9/WC_slippers_female_gray_marquee.zip",
+"tile/exit.gif",
+"",
+"character/9/WC_slippers_female_white_marquee.zip",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"tile/fog.png",
+"",
+"",
 "",
 "",
 "",
@@ -70,77 +93,113 @@ E0 = {
    pos_x = 1
    pos_y = 2
    script = "set_sprite.lua"
-   param = ( "9", "dress_female_overskirt" )
+   param = ( "9", "armor_female_golden_boots_female" )
 }
 E1 = {
    pos_x = 3
    pos_y = 2
    script = "set_sprite.lua"
-   param = ( "9", "pants_female_magenta_pants_female" )
+   param = ( "9", "armor_female_metal_boots_female" )
 }
 E2 = {
    pos_x = 5
    pos_y = 2
    script = "set_sprite.lua"
-   param = ( "9", "pants_female_red_pants_female" )
+   param = ( "9", "boots_female_brown_longboots_female" )
 }
 E3 = {
+   pos_x = 7
+   pos_y = 2
+   script = "set_sprite.lua"
+   param = ( "9", "boots_female_maroon_longboots_female" )
+}
+E4 = {
    pos_x = 1
    pos_y = 3
    script = "set_sprite.lua"
-   param = ( "9", "pants_female_teal_pants_female" )
+   param = ( "9", "Female_sandals" )
 }
-E4 = {
+E5 = {
    pos_x = 3
    pos_y = 3
    script = "set_sprite.lua"
-   param = ( "9", "pants_female_white_pants_female" )
+   param = ( "9", "ghillies_female_no_th-sh" )
 }
-E5 = {
+E6 = {
    pos_x = 5
    pos_y = 3
    script = "set_sprite.lua"
-   param = ( "9", "pants" )
+   param = ( "9", "shoes_female_black_shoes_female" )
 }
-E6 = {
+E7 = {
+   pos_x = 7
+   pos_y = 3
+   script = "set_sprite.lua"
+   param = ( "9", "shoes_female_brown_shoes_female" )
+}
+E8 = {
    pos_x = 1
    pos_y = 4
    script = "set_sprite.lua"
-   param = ( "9", "skirt_female_robe_skirt_female_incomplete" )
+   param = ( "9", "shoes_female_maroon_shoes_female" )
 }
-E7 = {
+E9 = {
+   pos_x = 3
+   pos_y = 4
+   script = "set_sprite.lua"
+   param = ( "9", "slippers_female_black" )
+}
+E10 = {
+   pos_x = 5
+   pos_y = 4
+   script = "set_sprite.lua"
+   param = ( "9", "slippers_female_brown" )
+}
+E11 = {
+   pos_x = 7
+   pos_y = 4
+   script = "set_sprite.lua"
+   param = ( "9", "slippers_female_gray" )
+}
+E12 = {
+   pos_x = 1
+   pos_y = 5
+   script = "set_sprite.lua"
+   param = ( "9", "slippers_female_white" )
+}
+E13 = {
    pos_x = 0
-   pos_y = 3
+   pos_y = 4
    script = "goto_character_map.lua"
    param = ( "8", "1", "1" )
 }
-E8 = {
-   pos_x = 6
-   pos_y = 3
+E14 = {
+   pos_x = 8
+   pos_y = 4
    script = "goto_character_map.lua"
    param = ( "10", "1", "1" )
 }
-E9 = {
+E15 = {
    pos_x = 0
    pos_y = 0
    script = "set_sprite.lua"
    param = ( "9", "" )
 }
-E10 = {
+E16 = {
    pos_x = 0
-   pos_y = 6
+   pos_y = 7
    script = "set_sprite.lua"
    param = ( "9", "" )
 }
-E11 = {
-   pos_x = 6
+E17 = {
+   pos_x = 8
    pos_y = 0
    script = "set_sprite.lua"
    param = ( "9", "" )
 }
-E12 = {
-   pos_x = 6
-   pos_y = 6
+E18 = {
+   pos_x = 8
+   pos_y = 7
    script = "set_sprite.lua"
    param = ( "9", "" )
 }

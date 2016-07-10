@@ -21,7 +21,7 @@ layer0 = {
 "",
 "",
 "tile/exit.gif",
-"character/24/WC_back_wings_wings_no_th-sh_marquee.zip",
+"character/24/WC_equipment_quiver_marquee.zip",
 "tile/exit.gif",
 "",
 "",
@@ -36,7 +36,7 @@ E0 = {
    pos_x = 1
    pos_y = 2
    script = "set_sprite.lua"
-   param = ( "24", "back_wings_wings_no_th-sh" )
+   param = ( "24", "equipment_quiver" )
 }
 E1 = {
    pos_x = 0
@@ -47,8 +47,8 @@ E1 = {
 E2 = {
    pos_x = 2
    pos_y = 2
-   script = "goto.lua"
-   param = ( "M0_0", "10", "10" )
+   script = "goto_character_map.lua"
+   param = ( "25", "1", "1" )
 }
 E3 = {
    pos_x = 0

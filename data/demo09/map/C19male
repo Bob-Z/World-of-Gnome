@@ -6,8 +6,8 @@ attribute = {
         current = 19
       }
 }
-width = 9
-height = 7
+width = 5
+height = 5
 tile_width = 64
 tile_height = 64
 warp_x = 0
@@ -18,61 +18,23 @@ layer0 = {
 "",
 "",
 "",
-"",
-"",
-"",
-"",
 "tile/fog.png",
 "",
 "",
 "",
 "",
 "",
-"",
-"",
-"",
-"",
-"",
-"character/19/WC_le_Bandage_head_marquee.zip",
-"",
-"character/19/WC_le_Bandage_leftarm_marquee.zip",
-"",
-"character/19/WC_le_Bandage_leftleg_marquee.zip",
-"",
-"character/19/WC_le_Bandage_rightarm_marquee.zip",
-"",
 "tile/exit.gif",
-"character/19/WC_le_Bandage_rightleg_marquee.zip",
+"character/19/WC_bowtie_marquee.zip",
 "",
-"character/19/WC_le_Bandage_torso_marquee.zip",
-"",
-"character/19/WC_male_Bandage_head_marquee.zip",
-"",
-"character/19/WC_male_Bandage_leftarm_marquee.zip",
+"character/19/WC_tie_marquee.zip",
 "tile/exit.gif",
-"",
-"character/19/WC_male_Bandage_leftleg_marquee.zip",
-"",
-"character/19/WC_male_Bandage_rightarm_marquee.zip",
-"",
-"character/19/WC_male_Bandage_rightleg_marquee.zip",
-"",
-"character/19/WC_male_Bandage_torso_marquee.zip",
-"",
-"",
-"",
-"",
-"",
 "",
 "",
 "",
 "",
 "",
 "tile/fog.png",
-"",
-"",
-"",
-"",
 "",
 "",
 "",
@@ -84,107 +46,47 @@ E0 = {
    pos_x = 1
    pos_y = 2
    script = "set_sprite.lua"
-   param = ( "19", "le_Bandage_head" )
+   param = ( "19", "bowtie" )
 }
 E1 = {
    pos_x = 3
    pos_y = 2
    script = "set_sprite.lua"
-   param = ( "19", "le_Bandage_leftarm" )
+   param = ( "19", "tie" )
 }
 E2 = {
-   pos_x = 5
-   pos_y = 2
-   script = "set_sprite.lua"
-   param = ( "19", "le_Bandage_leftleg" )
-}
-E3 = {
-   pos_x = 7
-   pos_y = 2
-   script = "set_sprite.lua"
-   param = ( "19", "le_Bandage_rightarm" )
-}
-E4 = {
-   pos_x = 1
-   pos_y = 3
-   script = "set_sprite.lua"
-   param = ( "19", "le_Bandage_rightleg" )
-}
-E5 = {
-   pos_x = 3
-   pos_y = 3
-   script = "set_sprite.lua"
-   param = ( "19", "le_Bandage_torso" )
-}
-E6 = {
-   pos_x = 5
-   pos_y = 3
-   script = "set_sprite.lua"
-   param = ( "19", "male_Bandage_head" )
-}
-E7 = {
-   pos_x = 7
-   pos_y = 3
-   script = "set_sprite.lua"
-   param = ( "19", "male_Bandage_leftarm" )
-}
-E8 = {
-   pos_x = 1
-   pos_y = 4
-   script = "set_sprite.lua"
-   param = ( "19", "male_Bandage_leftleg" )
-}
-E9 = {
-   pos_x = 3
-   pos_y = 4
-   script = "set_sprite.lua"
-   param = ( "19", "male_Bandage_rightarm" )
-}
-E10 = {
-   pos_x = 5
-   pos_y = 4
-   script = "set_sprite.lua"
-   param = ( "19", "male_Bandage_rightleg" )
-}
-E11 = {
-   pos_x = 7
-   pos_y = 4
-   script = "set_sprite.lua"
-   param = ( "19", "male_Bandage_torso" )
-}
-E12 = {
    pos_x = 0
-   pos_y = 3
+   pos_y = 2
    script = "goto_character_map.lua"
    param = ( "18", "1", "1" )
 }
-E13 = {
-   pos_x = 8
-   pos_y = 3
+E3 = {
+   pos_x = 4
+   pos_y = 2
    script = "goto_character_map.lua"
    param = ( "20", "1", "1" )
 }
-E14 = {
+E4 = {
    pos_x = 0
    pos_y = 0
    script = "set_sprite.lua"
    param = ( "19", "" )
 }
-E15 = {
+E5 = {
    pos_x = 0
-   pos_y = 6
+   pos_y = 4
    script = "set_sprite.lua"
    param = ( "19", "" )
 }
-E16 = {
-   pos_x = 8
+E6 = {
+   pos_x = 4
    pos_y = 0
    script = "set_sprite.lua"
    param = ( "19", "" )
 }
-E17 = {
-   pos_x = 8
-   pos_y = 6
+E7 = {
+   pos_x = 4
+   pos_y = 4
    script = "set_sprite.lua"
    param = ( "19", "" )
 }
