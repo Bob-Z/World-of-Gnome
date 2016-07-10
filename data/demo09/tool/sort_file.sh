@@ -7,6 +7,7 @@ MASK_BASE=Masks
 HAIR00_BASE=Hair00
 LONGEARS_BASE=Long_ears
 APRONS_BASE=Aprons
+REPTILE_BASE=Reptile
 
 DEST_DIR=output
 mkdir $DEST_DIR > /dev/null 2>&1
@@ -25,6 +26,8 @@ $COMMAND $ULPC_BASE/body/??_*male_orc* $DIR
 $COMMAND $ULPC_BASE/body/??_*male_red_orc* $DIR
 $COMMAND $ULPC_BASE/body/??_*male_tanned* $DIR
 $COMMAND $ULPC_BASE/body/??_*male_skeleton* $DIR
+$COMMAND $REPTILE_BASE/??_*Drake* $DIR
+$COMMAND $REPTILE_BASE/??_*Lizard* $DIR
 
 let "NUM_DIR=$NUM_DIR+1"
 DIR=$DEST_DIR/$NUM_DIR
@@ -214,7 +217,14 @@ $COMMAND $ULPC_BASE/behind_body/??*_quiver* $DIR
 
 let "NUM_DIR=$NUM_DIR+1"
 DIR=$DEST_DIR/$NUM_DIR
-echo $NUM_DIR- Wings >> $DIR_LIST
+echo $NUM_DIR- Tail >> $DIR_LIST
+mkdir $DIR
+$COMMAND $REPTILE_BASE/??_*TailFront* $DIR
+
+let "NUM_DIR=$NUM_DIR+1"
+DIR=$DEST_DIR/$NUM_DIR
+echo $NUM_DIR- Wing >> $DIR_LIST
 mkdir $DIR
 $COMMAND $ULPC_BASE/torso/??*_wings_* $DIR
+$COMMAND $REPTILE_BASE/??_*WingFront* $DIR
 

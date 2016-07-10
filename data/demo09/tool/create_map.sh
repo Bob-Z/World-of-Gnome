@@ -171,7 +171,12 @@ function create_map {
 		#Special case for body selection map
 		if [ $NUM == 0 ];then
 			#Get sex
-			SET_SEX=`echo $SHORT_NAME | cut -d "_" -f 1`
+			echo $SHORT_NAME | grep -i female > /dev/null 2>&1
+			if [ $? == 0 ];then
+				SET_SEX=female
+			else
+				SET_SEX=male
+			fi
 			SET_RACE=human
 			echo $SHORT_NAME | grep darkelf > /dev/null 2>&1
 			if [ $? == 0 ];then
