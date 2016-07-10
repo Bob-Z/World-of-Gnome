@@ -5,6 +5,7 @@ LEGION_BASE=Legion_armor
 BANDAGE_BASE=Bandage
 MASK_BASE=Masks
 HAIR00_BASE=Hair00
+LONGEARS_BASE=Long_ears
 
 DEST_DIR=output
 mkdir $DEST_DIR > /dev/null 2>&1
@@ -41,6 +42,7 @@ DIR=$DEST_DIR/$NUM_DIR
 echo $NUM_DIR- Ears >> $DIR_LIST
 mkdir $DIR
 $COMMAND $ULPC_BASE/body/??_*_ears_* $DIR
+$COMMAND $LONGEARS_BASE/??_* $DIR
 
 let "NUM_DIR=$NUM_DIR+1"
 DIR=$DEST_DIR/$NUM_DIR

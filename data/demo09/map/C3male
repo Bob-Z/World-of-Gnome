@@ -7,7 +7,7 @@ attribute = {
       }
 }
 width = 9
-height = 8
+height = 9
 tile_width = 64
 tile_height = 64
 warp_x = 0
@@ -33,38 +33,47 @@ layer0 = {
 "",
 "",
 "",
+"character/3/WC_LongEars_male_de1_marquee.zip",
+"",
+"character/3/WC_LongEars_male_de2_marquee.zip",
+"",
+"character/3/WC_LongEars_male_d_marquee.zip",
+"",
+"character/3/WC_LongEars_male_n_marquee.zip",
+"",
+"",
+"character/3/WC_LongEars_male_t_marquee.zip",
+"",
 "character/3/WC_male_ears_bigears_dark2_marquee.zip",
 "",
 "character/3/WC_male_ears_bigears_darkelf2_marquee.zip",
 "",
 "character/3/WC_male_ears_bigears_darkelf_marquee.zip",
 "",
+"tile/exit.gif",
 "character/3/WC_male_ears_bigears_dark_marquee.zip",
-"",
 "",
 "character/3/WC_male_ears_bigears_light_marquee.zip",
 "",
 "character/3/WC_male_ears_bigears_tanned2_marquee.zip",
 "",
 "character/3/WC_male_ears_bigears_tanned_marquee.zip",
+"tile/exit.gif",
 "",
 "character/3/WC_male_ears_elvenears_dark2_marquee.zip",
 "",
-"tile/exit.gif",
 "character/3/WC_male_ears_elvenears_darkelf2_marquee.zip",
 "",
 "character/3/WC_male_ears_elvenears_darkelf_marquee.zip",
 "",
 "character/3/WC_male_ears_elvenears_dark_marquee.zip",
 "",
+"",
 "character/3/WC_male_ears_elvenears_light_marquee.zip",
-"tile/exit.gif",
 "",
 "character/3/WC_male_ears_elvenears_tanned2_marquee.zip",
 "",
 "character/3/WC_male_ears_elvenears_tanned_marquee.zip",
-"",
-"",
 "",
 "",
 "",
@@ -93,119 +102,149 @@ E0 = {
    pos_x = 1
    pos_y = 2
    script = "set_sprite.lua"
-   param = ( "3", "male_ears_bigears_dark2" )
+   param = ( "3", "LongEars_male_de1" )
 }
 E1 = {
    pos_x = 3
    pos_y = 2
    script = "set_sprite.lua"
-   param = ( "3", "male_ears_bigears_darkelf2" )
+   param = ( "3", "LongEars_male_de2" )
 }
 E2 = {
    pos_x = 5
    pos_y = 2
    script = "set_sprite.lua"
-   param = ( "3", "male_ears_bigears_darkelf" )
+   param = ( "3", "LongEars_male_d" )
 }
 E3 = {
    pos_x = 7
    pos_y = 2
    script = "set_sprite.lua"
-   param = ( "3", "male_ears_bigears_dark" )
+   param = ( "3", "LongEars_male_n" )
 }
 E4 = {
    pos_x = 1
    pos_y = 3
    script = "set_sprite.lua"
-   param = ( "3", "male_ears_bigears_light" )
+   param = ( "3", "LongEars_male_t" )
 }
 E5 = {
    pos_x = 3
    pos_y = 3
    script = "set_sprite.lua"
-   param = ( "3", "male_ears_bigears_tanned2" )
+   param = ( "3", "male_ears_bigears_dark2" )
 }
 E6 = {
    pos_x = 5
    pos_y = 3
    script = "set_sprite.lua"
-   param = ( "3", "male_ears_bigears_tanned" )
+   param = ( "3", "male_ears_bigears_darkelf2" )
 }
 E7 = {
    pos_x = 7
    pos_y = 3
    script = "set_sprite.lua"
-   param = ( "3", "male_ears_elvenears_dark2" )
+   param = ( "3", "male_ears_bigears_darkelf" )
 }
 E8 = {
    pos_x = 1
    pos_y = 4
    script = "set_sprite.lua"
-   param = ( "3", "male_ears_elvenears_darkelf2" )
+   param = ( "3", "male_ears_bigears_dark" )
 }
 E9 = {
    pos_x = 3
    pos_y = 4
    script = "set_sprite.lua"
-   param = ( "3", "male_ears_elvenears_darkelf" )
+   param = ( "3", "male_ears_bigears_light" )
 }
 E10 = {
    pos_x = 5
    pos_y = 4
    script = "set_sprite.lua"
-   param = ( "3", "male_ears_elvenears_dark" )
+   param = ( "3", "male_ears_bigears_tanned2" )
 }
 E11 = {
    pos_x = 7
    pos_y = 4
    script = "set_sprite.lua"
-   param = ( "3", "male_ears_elvenears_light" )
+   param = ( "3", "male_ears_bigears_tanned" )
 }
 E12 = {
    pos_x = 1
    pos_y = 5
    script = "set_sprite.lua"
-   param = ( "3", "male_ears_elvenears_tanned2" )
+   param = ( "3", "male_ears_elvenears_dark2" )
 }
 E13 = {
    pos_x = 3
    pos_y = 5
    script = "set_sprite.lua"
-   param = ( "3", "male_ears_elvenears_tanned" )
+   param = ( "3", "male_ears_elvenears_darkelf2" )
 }
 E14 = {
+   pos_x = 5
+   pos_y = 5
+   script = "set_sprite.lua"
+   param = ( "3", "male_ears_elvenears_darkelf" )
+}
+E15 = {
+   pos_x = 7
+   pos_y = 5
+   script = "set_sprite.lua"
+   param = ( "3", "male_ears_elvenears_dark" )
+}
+E16 = {
+   pos_x = 1
+   pos_y = 6
+   script = "set_sprite.lua"
+   param = ( "3", "male_ears_elvenears_light" )
+}
+E17 = {
+   pos_x = 3
+   pos_y = 6
+   script = "set_sprite.lua"
+   param = ( "3", "male_ears_elvenears_tanned2" )
+}
+E18 = {
+   pos_x = 5
+   pos_y = 6
+   script = "set_sprite.lua"
+   param = ( "3", "male_ears_elvenears_tanned" )
+}
+E19 = {
    pos_x = 0
    pos_y = 4
    script = "goto_character_map.lua"
    param = ( "2", "1", "1" )
 }
-E15 = {
+E20 = {
    pos_x = 8
    pos_y = 4
    script = "goto_character_map.lua"
    param = ( "4", "1", "1" )
 }
-E16 = {
+E21 = {
    pos_x = 0
    pos_y = 0
    script = "set_sprite.lua"
    param = ( "3", "" )
 }
-E17 = {
+E22 = {
    pos_x = 0
-   pos_y = 7
+   pos_y = 8
    script = "set_sprite.lua"
    param = ( "3", "" )
 }
-E18 = {
+E23 = {
    pos_x = 8
    pos_y = 0
    script = "set_sprite.lua"
    param = ( "3", "" )
 }
-E19 = {
+E24 = {
    pos_x = 8
-   pos_y = 7
+   pos_y = 8
    script = "set_sprite.lua"
    param = ( "3", "" )
 }
