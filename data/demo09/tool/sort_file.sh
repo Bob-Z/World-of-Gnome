@@ -4,6 +4,7 @@ ULPC_BASE=Universal-LPC-spritesheet-master
 LEGION_BASE=Legion_armor
 BANDAGE_BASE=Bandage
 MASK_BASE=Masks
+HAIR00_BASE=Hair00
 
 DEST_DIR=output
 mkdir $DEST_DIR > /dev/null 2>&1
@@ -73,6 +74,7 @@ mkdir $DIR
 find $ULPC_BASE/hair -name "??_*.png" -exec $COMMAND {} $DIR \;
 #$COMMAND $ULPC_BASE/hair/??_*.zip $DIR
 find $ULPC_BASE/hair -name "??_*.zip" -exec $COMMAND {} $DIR \;
+$COMMAND $HAIR00_BASE/??_* $DIR
 
 let "NUM_DIR=$NUM_DIR+1"
 DIR=$DEST_DIR/$NUM_DIR
