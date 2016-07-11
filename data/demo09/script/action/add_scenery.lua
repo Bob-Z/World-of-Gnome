@@ -15,7 +15,7 @@ map = character_get_map(player)
 px = tile_get_x(map,1,x,y)
 py = tile_get_y(map,1,x,y)
 
-map_add_scenery(map,1,px,py,image_name)
+map_add_scenery(map,11,px,py,image_name)
 
 end
 
