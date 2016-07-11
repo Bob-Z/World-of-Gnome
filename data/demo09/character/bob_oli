@@ -6,6 +6,6 @@ type            = "ghost"
 map             = "C0";
 pos_x           = 1;
 pos_y           = 1;
-layer		= 11;
+layer		= 15;
 #align on lower edge of tile
 align           = 1;

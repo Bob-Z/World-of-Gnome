@@ -7,7 +7,7 @@ type            = "goblin"
 map             = "M0_0";
 pos_x           = 25;
 pos_y           = 25;
-layer		= 11;
+layer		= 15;
 #align on lower edge of tile
 align           = 1;
 sprite_move_n   = "sprite/goblin_up.gif";

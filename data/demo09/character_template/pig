@@ -6,7 +6,7 @@ type            = "pig"
 map             = "M0_0";
 pos_x           = 15;
 pos_y           = 15;
-layer		= 11;
+layer		= 15;
 #align on lower edge of tile
 align           = 1;
 sprite_move_n   = [ "sprite/pig_shadow_up.png", "sprite/pig_move_up.zip" ];
