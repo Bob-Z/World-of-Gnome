@@ -1,0 +1,22 @@
+name		= "Golem";
+
+npc		= 1;
+marquee         = "marquee/golem.png";
+sprite          = "sprite/golem/S.png";
+type            = "golem"
+map             = "M0_0";
+pos_x           = 15;
+pos_y           = 15;
+layer		= 15;
+#align on lower edge of tile
+align           = 1;
+sprite_move_n   = "sprite/golem/WC_N.zip";
+sprite_move_s   = "sprite/golem/WC_S.zip";
+sprite_move_w   = "sprite/golem/WC_W.zip";
+sprite_move_e   = "sprite/golem/WC_E.zip";
+sprite_n       = "sprite/golem/N.png";
+sprite_s       = "sprite/golem/S.png";
+sprite_w       = "sprite/golem/W.png";
+sprite_e       = "sprite/golem/E.png";
+ai              = "ai/ai_random.lua";
+ai_params       = [ "1029" ];
