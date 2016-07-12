@@ -113,20 +113,6 @@ $COMMAND $LEGION_BASE/??_*Skirt* $DIR
 
 let "NUM_DIR=$NUM_DIR+1"
 DIR=$DEST_DIR/$NUM_DIR
-echo $NUM_DIR- Belt >> $DIR_LIST
-mkdir $DIR
-$COMMAND $ULPC_BASE/belt/??_*cloth* $DIR
-$COMMAND $ULPC_BASE/belt/??_*leather* $DIR
-$COMMAND $ULPC_BASE/belt/??_*metal* $DIR
-
-let "NUM_DIR=$NUM_DIR+1"
-DIR=$DEST_DIR/$NUM_DIR
-echo $NUM_DIR- Buckles >> $DIR_LIST
-mkdir $DIR
-$COMMAND $ULPC_BASE/belt/??_*buckles* $DIR
-
-let "NUM_DIR=$NUM_DIR+1"
-DIR=$DEST_DIR/$NUM_DIR
 echo $NUM_DIR- Torso civil >> $DIR_LIST
 mkdir $DIR
 $COMMAND $ULPC_BASE/torso/??*_corset_* $DIR
@@ -148,6 +134,20 @@ mkdir $DIR
 $COMMAND $ULPC_BASE/torso/??_*chain_mail_* $DIR
 $COMMAND $ULPC_BASE/torso/??_*chest_* $DIR
 $COMMAND $LEGION_BASE/Plate/??_*plate* $DIR
+
+let "NUM_DIR=$NUM_DIR+1"
+DIR=$DEST_DIR/$NUM_DIR
+echo $NUM_DIR- Belt >> $DIR_LIST
+mkdir $DIR
+$COMMAND $ULPC_BASE/belt/??_*cloth* $DIR
+$COMMAND $ULPC_BASE/belt/??_*leather* $DIR
+$COMMAND $ULPC_BASE/belt/??_*metal* $DIR
+
+let "NUM_DIR=$NUM_DIR+1"
+DIR=$DEST_DIR/$NUM_DIR
+echo $NUM_DIR- Buckles >> $DIR_LIST
+mkdir $DIR
+$COMMAND $ULPC_BASE/belt/??_*buckles* $DIR
 
 let "NUM_DIR=$NUM_DIR+1"
 DIR=$DEST_DIR/$NUM_DIR
