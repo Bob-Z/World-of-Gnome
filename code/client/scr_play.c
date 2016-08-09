@@ -312,33 +312,33 @@ static void set_up_sprite(context_t * ctx, const char * image_file_name)
 
 	item = item_list_add(&item_list);
 
-	current_time = SDL_GetTicks();
+	current_time = sdl_get_global_time();
 
 	/* Force position when the player has changed map */
 	if(change_map) {
-		ctx->pos_tick = 0;
+		ctx->start_tick = 0;
 	}
 	/* Force position when this context has changed map */
 	if(ctx->change_map) {
-		ctx->pos_tick = 0;
+		ctx->start_tick = 0;
 		ctx->change_map = 0;
 	}
 
-	if( ctx->pos_tick == 0 ) {
+	if( ctx->start_tick == 0 ) {
 		ctx->cur_pos_x = ctx->pos_x;
 		ctx->cur_pos_y = ctx->pos_y;
-		ctx->pos_tick = 1;
+		ctx->start_tick = 1;
 	}
 
 	/* If previous animation has ended */
-	if( ctx->pos_tick + VIRTUAL_ANIM_DURATION < current_time ) {
+	if( ctx->start_tick + VIRTUAL_ANIM_DURATION < current_time ) {
 		ctx->old_pos_x = ctx->cur_pos_x;
 		ctx->old_pos_y = ctx->cur_pos_y;
 	}
 
 	/* Detect sprite movement, initiate animation */
 	if(ctx->pos_x != ctx->cur_pos_x||ctx->pos_y != ctx->cur_pos_y) {
-		ctx->pos_tick = current_time;
+		ctx->start_tick = current_time;
 
 		/* flip need to remember previous direction to avoid resetting a
 		   east -> west flip when a sprite goes to north for instance.
@@ -419,7 +419,7 @@ static void set_up_sprite(context_t * ctx, const char * image_file_name)
 	oy += sprite_offset_y;
 
 	/* Set sprite to item */
-	item_set_smooth_anim_array(item,x,y,ox,oy,ctx->pos_tick,sprite_list);
+	item_set_smooth_anim_array(item,x,y,ox,oy,ctx->start_tick,sprite_list);
 	free(sprite_list);
 	item_set_anim_move_array(item,sprite_move_list);
 	free(sprite_move_list);
