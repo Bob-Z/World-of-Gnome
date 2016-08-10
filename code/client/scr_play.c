@@ -419,7 +419,8 @@ static void set_up_sprite(context_t * ctx, const char * image_file_name)
 	oy += sprite_offset_y;
 
 	/* Set sprite to item */
-	item_set_smooth_anim_array(item,x,y,ox,oy,ctx->start_tick,sprite_list);
+	item_set_move(item,ox,oy,x,y,VIRTUAL_ANIM_DURATION);
+	item_set_anim_array(item,sprite_list);
 	free(sprite_list);
 	item_set_anim_move_array(item,sprite_move_list);
 	free(sprite_move_list);
@@ -604,7 +605,8 @@ static void compose_item(context_t * ctx,int layer_index)
 
 		y += sprite_offset_y;
 
-		item_set_anim(item,x,y,anim,0);
+		item_set_pos(item,x,y);
+		item_set_anim(item,anim,0);
 		item_set_zoom_x(item, default_layer->map_zoom );
 		item_set_zoom_y(item, default_layer->map_zoom );
 		if(font) {
@@ -715,7 +717,8 @@ static void compose_map_set(context_t * ctx, int layer_index)
 		if( tile_set[i][0] != 0 ) {
 			item = item_list_add(&item_list);
 			anim = imageDB_get_anim(ctx,tile_set[i]);
-			item_set_anim(item,map_t2p_x(x,y,layer),map_t2p_y(x,y,layer),anim,0);
+			item_set_pos(item,map_t2p_x(x,y,layer),map_t2p_y(x,y,layer));
+			item_set_anim(item,anim,0);
 		}
 
 		x++;
@@ -767,7 +770,8 @@ static void compose_map_scenery(context_t * ctx, int layer_index)
 		anim = imageDB_get_anim(ctx,image_name);
 
 		item = item_list_add(&item_list);
-		item_set_anim(item, x, y, anim,0);
+		item_set_pos(item, x, y);
+		item_set_anim(item,anim,0);
 		//item_set_anim(item, x*ctx->tile_width, y*ctx->tile_height, anim,0);
 
 		i++;
@@ -854,7 +858,8 @@ static void compose_select(context_t * ctx)
 					x -= (anim->w-default_layer->tile_width)/2;
 					y -= (anim->h-default_layer->tile_height)/2;
 
-					item_set_anim(item,x,y,anim,0);
+					item_set_pos(item,x,y);
+					item_set_anim(item,anim,0);
 				}
 			}
 		}

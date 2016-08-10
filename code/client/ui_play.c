@@ -91,7 +91,8 @@ static void draw_background(context_t * ctx, item_t * item_list)
 	SDL_GetRendererOutputSize(ctx->render,&sw,&sh);
 	bg_anim = anim_create_color(ctx->render, sw, sh, BACKGROUND_COLOR);
 	item = item_list_add(&item_list);
-	item_set_anim(item,0,0,bg_anim,0);
+	item_set_pos(item,0,0);
+	item_set_anim(item,bg_anim,0);
 	item_set_overlay(item,1);
 }
 
@@ -387,7 +388,8 @@ static void compose_action(context_t * ctx,item_t * item_list)
 			deep_free(icon);
 		}
 
-		item_set_anim_array(item,x,sh-anim_array[0]->h,anim_array);
+		item_set_pos(item,x,sh-anim_array[0]->h);
+		item_set_anim_array(item,anim_array);
 
 		/* calculate next icon start X */
 		x += anim_array[0]->w;
@@ -509,7 +511,8 @@ static void compose_equipment(context_t * ctx, item_t * item_list)
 			x = sw-anim->w;
 			h1 = anim->h;
 			item_set_overlay(item,1);
-			item_set_anim(item,x,y,anim,0);
+			item_set_pos(item,x,y);
+			item_set_anim(item,anim,0);
 
 			item_set_click_left(item,cb_select_slot,strdup(slot_list[index]),NULL);
 
@@ -551,7 +554,8 @@ static void compose_equipment(context_t * ctx, item_t * item_list)
 				free(equipped_icon_name);
 
 				item_set_overlay(item,1);
-				item_set_anim(item,x-anim->w,y,anim2,0);
+				item_set_pos(item,x-anim->w,y);
+				item_set_anim(item,anim2,0);
 				item_set_click_left(item,cb_select_slot,strdup(slot_list[index]),NULL);
 				if(h1 < anim->h) {
 					h1 = anim->h;
@@ -570,7 +574,8 @@ static void compose_equipment(context_t * ctx, item_t * item_list)
 
 					/* Center on icon */
 					item_set_overlay(item,1);
-					item_set_anim(item,x - (anim3->w-anim->w)/2, y - (anim3->h-anim->w)/2, anim3,0);
+					item_set_pos(item,x - (anim3->w-anim->w)/2, y - (anim3->h-anim->w)/2);
+					item_set_anim(item,anim3,0);
 				}
 			}
 		}
@@ -607,7 +612,8 @@ static void compose_equipment(context_t * ctx, item_t * item_list)
 			free(inventory_icon_name);
 
 			item_set_overlay(item,1);
-			item_set_anim(item,sw-anim->w,y,anim,0);
+			item_set_pos(item,sw-anim->w,y);
+			item_set_anim(item,anim,0);
 			item_set_click_left(item,show_inventory,NULL,NULL);
 		}
 	} else {
@@ -625,7 +631,8 @@ static void compose_equipment(context_t * ctx, item_t * item_list)
 		item = item_list_add(&item_list);
 
 		item_set_overlay(item,1);
-		item_set_anim(item,sw-inventory_icon->w,y,inventory_icon,0);
+		item_set_pos(item,sw-inventory_icon->w,y);
+		item_set_anim(item,inventory_icon,0);
 		item_set_click_left(item,show_inventory,NULL,NULL);
 	}
 }
@@ -869,7 +876,8 @@ static void compose_inventory(context_t * ctx,item_t * item_list)
 		if( quantity > 0 ) {
 			w = 0;
 			item = item_list_add(&item_list);
-			item_set_anim(item,x,0,anim,0);
+			item_set_pos(item,x,0);
+			item_set_anim(item,anim,0);
 			if( quantity > 1 ) {
 				sprintf(buf,"%d",quantity);
 				item_set_string(item,buf);
@@ -952,7 +960,8 @@ static void compose_inventory_select(context_t * ctx,item_t * item_list)
 
 	if(inventory_list[i]) {
 		item = item_list_add(&item_list);
-		item_set_anim(item,x,0,anim,0);
+		item_set_pos(item,x,0);
+		item_set_anim(item,anim,0);
 		item_set_overlay(item,1);
 	}
 }
@@ -1075,7 +1084,8 @@ static void compose_popup(context_t * ctx,item_t * item_list)
 			tag = _strsep(&data,NETWORK_DELIMITER);
 			item = item_list_add(&item_list);
 			anim = imageDB_get_anim(ctx,tag);
-			item_set_anim(item,x,y-popup_offset,anim,0);
+			item_set_pos(item,x,y-popup_offset);
+			item_set_anim(item,anim,0);
 			item_set_overlay(item,1);
 			if(action_param) {
 				item_set_click_left(item,cb_popup,action_param,cb_free_action_param);
