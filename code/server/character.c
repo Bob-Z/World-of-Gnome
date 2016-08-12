@@ -737,6 +737,6 @@ Broadcast character file to other context
 ***********************************/
 void character_broadcast(const char * character)
 {
-        context_broadcast_character(character);
+	context_broadcast_character(character);
 }
 

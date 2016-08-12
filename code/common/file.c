@@ -240,12 +240,12 @@ int file_get_contents(const char *filename,char **contents,int *length)
 	file_lock(filename);
 
 	if( stat(fullname, &sts) == -1) {
-		#if (_POSIX_C_SOURCE >= 200112L || _XOPEN_SOURCE >= 600) && ! _GNU_SOURCE
-			strerror_r(errno,error_buf,SMALL_BUF);
-			error_str = error_buf;
-		#else
-			error_str = strerror_r(errno,error_buf,SMALL_BUF);
-		#endif
+#if (_POSIX_C_SOURCE >= 200112L || _XOPEN_SOURCE >= 600) && ! _GNU_SOURCE
+		strerror_r(errno,error_buf,SMALL_BUF);
+		error_str = error_buf;
+#else
+		error_str = strerror_r(errno,error_buf,SMALL_BUF);
+#endif
 		file_unlock(filename);
 		werr(LOGDEV,"Error stat on file %s: %s\n",fullname,error_str);
 		free(fullname);
@@ -254,12 +254,12 @@ int file_get_contents(const char *filename,char **contents,int *length)
 
 	fd = open(fullname,O_RDONLY);
 	if(fd == -1) {
-		#if (_POSIX_C_SOURCE >= 200112L || _XOPEN_SOURCE >= 600) && ! _GNU_SOURCE
-			strerror_r(errno,error_buf,SMALL_BUF);
-			error_str = error_buf;
-		#else
-			error_str = strerror_r(errno,error_buf,SMALL_BUF);
-		#endif
+#if (_POSIX_C_SOURCE >= 200112L || _XOPEN_SOURCE >= 600) && ! _GNU_SOURCE
+		strerror_r(errno,error_buf,SMALL_BUF);
+		error_str = error_buf;
+#else
+		error_str = strerror_r(errno,error_buf,SMALL_BUF);
+#endif
 		file_unlock(filename);
 		werr(LOGDEV,"Error open on file %s: %s\n",fullname,error_str);
 		free(fullname);
@@ -276,12 +276,12 @@ int file_get_contents(const char *filename,char **contents,int *length)
 
 	size = read(fd,buf,sts.st_size);
 	if( size == -1) {
-		#if (_POSIX_C_SOURCE >= 200112L || _XOPEN_SOURCE >= 600) && ! _GNU_SOURCE
-			strerror_r(errno,error_buf,SMALL_BUF);
-			error_str = error_buf;
-		#else
-			error_str = strerror_r(errno,error_buf,SMALL_BUF);
-		#endif
+#if (_POSIX_C_SOURCE >= 200112L || _XOPEN_SOURCE >= 600) && ! _GNU_SOURCE
+		strerror_r(errno,error_buf,SMALL_BUF);
+		error_str = error_buf;
+#else
+		error_str = strerror_r(errno,error_buf,SMALL_BUF);
+#endif
 		close(fd);
 		file_unlock(filename);
 		free(buf);
@@ -318,12 +318,12 @@ int file_set_contents(const char *filename,const char *contents,int length)
 
 	fd = creat(fullname,S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH);
 	if(fd == -1) {
-		#if (_POSIX_C_SOURCE >= 200112L || _XOPEN_SOURCE >= 600) && ! _GNU_SOURCE
-			strerror_r(errno,error_buf,SMALL_BUF);
-			error_str = error_buf;
-		#else
-			error_str = strerror_r(errno,error_buf,SMALL_BUF);
-		#endif
+#if (_POSIX_C_SOURCE >= 200112L || _XOPEN_SOURCE >= 600) && ! _GNU_SOURCE
+		strerror_r(errno,error_buf,SMALL_BUF);
+		error_str = error_buf;
+#else
+		error_str = strerror_r(errno,error_buf,SMALL_BUF);
+#endif
 		file_unlock(filename);
 		werr(LOGDEV,"Error open on file %s: %s\n",fullname,error_str);
 		free(fullname);
@@ -332,12 +332,12 @@ int file_set_contents(const char *filename,const char *contents,int length)
 
 	size = write(fd,contents,length);
 	if( size == -1) {
-		#if (_POSIX_C_SOURCE >= 200112L || _XOPEN_SOURCE >= 600) && ! _GNU_SOURCE
-			strerror_r(errno,error_buf,SMALL_BUF);
-			error_str = error_buf;
-		#else
-			error_str = strerror_r(errno,error_buf,SMALL_BUF);
-		#endif
+#if (_POSIX_C_SOURCE >= 200112L || _XOPEN_SOURCE >= 600) && ! _GNU_SOURCE
+		strerror_r(errno,error_buf,SMALL_BUF);
+		error_str = error_buf;
+#else
+		error_str = strerror_r(errno,error_buf,SMALL_BUF);
+#endif
 		close(fd);
 		file_unlock(filename);
 		werr(LOGDEV,"Error write on file %s: %s\n",fullname,error_str);

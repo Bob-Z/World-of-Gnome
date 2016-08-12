@@ -164,7 +164,7 @@ static anim_t ** select_sprite(context_t * ctx, const char * image_file_name)
 	}
 
 	if( sprite_name ) {
-		if( sprite_name[0] != 0 ){
+		if( sprite_name[0] != 0 ) {
 			sprite_name_array[0] = sprite_name;
 			sprite = imageDB_get_anim_array(player_context,sprite_name_array);
 			free(sprite_name);

@@ -72,11 +72,11 @@ anim_t * imageDB_get_anim(context_t * context, const char * image_name)
 	anim_t * anim;
 	char * filename;
 
-	if( image_name == NULL ){
+	if( image_name == NULL ) {
 		return default_anim(context);
 	}
 
-	if( image_name[0] == 0 ){
+	if( image_name[0] == 0 ) {
 		return default_anim(context);
 	}
 
@@ -138,7 +138,7 @@ anim_t ** imageDB_get_anim_array(context_t * context, const char ** image_name)
 	}
 
 	while( image_name[current_image] ) {
-		if( image_name[current_image][0] != 0 ){
+		if( image_name[current_image][0] != 0 ) {
 			anim_output = realloc(anim_output,(num_image+2)*sizeof(anim_t*));
 			anim_output[num_image] = imageDB_get_anim(context,image_name[current_image]);
 			anim_output[num_image+1] = NULL;
