@@ -330,12 +330,6 @@ static void set_up_sprite(context_t * ctx, const char * image_file_name)
 		ctx->start_tick = 1;
 	}
 
-	/* If previous animation has ended */
-	if( ctx->start_tick + VIRTUAL_ANIM_DURATION < current_time ) {
-		ctx->old_pos_x = ctx->cur_pos_x;
-		ctx->old_pos_y = ctx->cur_pos_y;
-	}
-
 	/* Detect sprite movement, initiate animation */
 	if(ctx->pos_x != ctx->cur_pos_x||ctx->pos_y != ctx->cur_pos_y) {
 		ctx->start_tick = current_time;
@@ -419,7 +413,7 @@ static void set_up_sprite(context_t * ctx, const char * image_file_name)
 	oy += sprite_offset_y;
 
 	/* Set sprite to item */
-	item_set_move(item,ox,oy,x,y,VIRTUAL_ANIM_DURATION);
+	item_set_move(item,ox,oy,x,y,ctx->start_tick,VIRTUAL_ANIM_DURATION);
 	item_set_anim_array(item,sprite_list);
 	free(sprite_list);
 	item_set_anim_move_array(item,sprite_move_list);
