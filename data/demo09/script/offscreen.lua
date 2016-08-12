@@ -4,6 +4,13 @@ text = string.format("offscreen coord = %d,%d",dest_x,dest_y)
 print_text_debug(text)
 
 player_id = player_get_id()
+
+-- npc stay on their map
+npc = character_get_npc(player_id)
+if( npc == 1 ) then
+	return
+end
+
 map = character_get_map(player_id)
 
 map_w = character_get_map_w(map)
