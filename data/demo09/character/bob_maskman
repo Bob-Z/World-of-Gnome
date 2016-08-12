@@ -1,0 +1,24 @@
+name		= "Maskman";
+
+marquee         = "marquee/maskman.png";
+sprite          = [ "sprite/shadow/human.png","sprite/maskman/S.png" ];
+type            = "human"
+map             = "M0_0";
+pos_x           = 15;
+pos_y           = 15;
+layer		= 15;
+#align on lower edge of tile
+align           = 1;
+sprite_move_n   = [ "sprite/shadow/human.png","sprite/maskman/WC_N.gif" ];
+sprite_move_s   = [ "sprite/shadow/human.png","sprite/maskman/WC_S.gif" ];
+sprite_move_w   = [ "sprite/shadow/human.png","sprite/maskman/WC_W.gif" ];
+sprite_move_e   = [ "sprite/shadow/human.png","sprite/maskman/WC_E.gif" ];
+sprite_n       = [ "sprite/shadow/human.png","sprite/maskman/N.png" ];
+sprite_s       = [ "sprite/shadow/human.png","sprite/maskman/S.png" ];
+sprite_w       = [ "sprite/shadow/human.png","sprite/maskman/W.png" ];
+sprite_e       = [ "sprite/shadow/human.png","sprite/maskman/E.png" ];
+ai              = "ai/ai_random.lua";
+ai_params       = [ "1000" ];
+action          = [ "summon_dragon" ];
+#allowed_tile_script    = "allowed_tile/ground_stair.lua";
+#inventory      = [ ];
