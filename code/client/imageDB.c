@@ -36,12 +36,11 @@ static anim_t * default_anim(context_t * ctx)
 		def_anim->num_frame = 1;
 		def_anim->tex = malloc(sizeof(SDL_Texture*));
 		def_anim->tex[0] = SDL_CreateTexture(ctx->render, SDL_PIXELFORMAT_ABGR8888, SDL_TEXTUREACCESS_STATIC, 1,1);
-		def_anim->current_frame = 0;
 		def_anim->w = 1;
 		def_anim->h = 1;
 		def_anim->delay = malloc(sizeof(Uint32));;
 		def_anim->delay[0] = 0;
-		def_anim->prev_time = 0;
+		def_anim->total_duration = 0;
 	}
 
 	return def_anim;

@@ -52,7 +52,8 @@ typedef struct context {
 	int		cur_pos_y;	/* player position (in tile) */
 	int		old_pos_x;	/* player position (in tile) */
 	int		old_pos_y;	/* player position (in tile) */
-	Uint32		start_tick;	/* smooth move animation's starting tick */
+	Uint32		move_start_tick;	/* smooth move animation's starting tick */
+	Uint32		animation_tick;	// Start tick for animation
 	char *		type;	/* character's type */
 	selection_t 	selection; /* Selected tile or sprite */
 	char *		id; /* unique ID of a character (its filename) */

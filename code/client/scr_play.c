@@ -314,25 +314,33 @@ static void set_up_sprite(context_t * ctx, const char * image_file_name)
 
 	current_time = sdl_get_global_time();
 
-	/* Force position when the player has changed map */
+	// Force position when the player has changed map
 	if(change_map) {
-		ctx->start_tick = 0;
+		ctx->move_start_tick = 0;
+		ctx->animation_tick = 0;
 	}
-	/* Force position when this context has changed map */
+	// Force position when this context has changed map
 	if(ctx->change_map) {
-		ctx->start_tick = 0;
+		ctx->move_start_tick = 0;
+		ctx->animation_tick = 0;
 		ctx->change_map = 0;
 	}
 
-	if( ctx->start_tick == 0 ) {
+	if( ctx->move_start_tick == 0 ) {
 		ctx->cur_pos_x = ctx->pos_x;
 		ctx->cur_pos_y = ctx->pos_y;
-		ctx->start_tick = 1;
+		ctx->old_pos_x = ctx->pos_x;
+		ctx->old_pos_y = ctx->pos_y;
+		ctx->move_start_tick = current_time;
 	}
 
-	/* Detect sprite movement, initiate animation */
-	if(ctx->pos_x != ctx->cur_pos_x||ctx->pos_y != ctx->cur_pos_y) {
-		ctx->start_tick = current_time;
+	if( ctx->animation_tick == 0 ) {
+		ctx->animation_tick = current_time;
+	}
+
+	// Detect sprite movement, initiate animation
+	if( ctx->pos_x != ctx->cur_pos_x || ctx->pos_y != ctx->cur_pos_y ) {
+		ctx->move_start_tick = current_time;
 
 		/* flip need to remember previous direction to avoid resetting a
 		   east -> west flip when a sprite goes to north for instance.
@@ -341,7 +349,7 @@ static void set_up_sprite(context_t * ctx, const char * image_file_name)
 		   Hence the distinction between orientation (no memory) and
 		   direction (memory). */
 		ctx->orientation = 0;
-		/* Compute direction */
+		// Compute direction
 		if( ctx->pos_x > ctx->cur_pos_x ) {
 			ctx->direction &= ~WEST;
 			ctx->direction |= EAST;
@@ -369,7 +377,7 @@ static void set_up_sprite(context_t * ctx, const char * image_file_name)
 		ctx->cur_pos_y = ctx->pos_y;
 	}
 
-	/* Select sprite to display */
+	// Select sprite to display
 	sprite_list = select_sprite(ctx,image_file_name);
 	if( sprite_list == NULL ) {
 		return;
@@ -380,19 +388,19 @@ static void set_up_sprite(context_t * ctx, const char * image_file_name)
 	}
 	sprite_move_list = select_sprite_move(ctx,image_file_name);
 
-	/* Get position in pixel */
+	// Get position in pixel
 	x = map_t2p_x(ctx->cur_pos_x,ctx->cur_pos_y,default_layer);
 	y = map_t2p_y(ctx->cur_pos_x,ctx->cur_pos_y,default_layer);
 	ox = map_t2p_x(ctx->old_pos_x,ctx->old_pos_y,default_layer);
 	oy = map_t2p_y(ctx->old_pos_x,ctx->old_pos_y,default_layer);
 
-	/* Get per sprite zoom */
+	// Get per sprite zoom
 	if(entry_read_string(CHARACTER_TABLE,ctx->id,&zoom_str,CHARACTER_KEY_ZOOM,NULL)) {
 		zoom = atof(zoom_str);
 		free(zoom_str);
 	}
 
-	/* Align sprite on tile */
+	// Align sprite on tile
 	entry_read_int(CHARACTER_TABLE,ctx->id,&sprite_align,CHARACTER_KEY_ALIGN,NULL);
 	if( sprite_align == ALIGN_CENTER ) {
 		x -= ((sprite_list[0]->w*default_layer->map_zoom*zoom)-default_layer->tile_width)/2;
@@ -407,19 +415,20 @@ static void set_up_sprite(context_t * ctx, const char * image_file_name)
 		oy -= (sprite_list[0]->h*default_layer->map_zoom*zoom)-default_layer->tile_height;
 	}
 
-	/* Add Y offset */
+	// Add Y offset
 	entry_read_int(CHARACTER_TABLE,ctx->id,&sprite_offset_y,CHARACTER_KEY_OFFSET_Y,NULL);
 	y += sprite_offset_y;
 	oy += sprite_offset_y;
 
-	/* Set sprite to item */
-	item_set_move(item,ox,oy,x,y,ctx->start_tick,VIRTUAL_ANIM_DURATION);
+	// Set sprite to item
+	item_set_anim_start_tick(item,ctx->animation_tick);
+	item_set_move(item,ox,oy,x,y,ctx->move_start_tick,VIRTUAL_ANIM_DURATION);
 	item_set_anim_array(item,sprite_list);
 	free(sprite_list);
 	item_set_anim_move_array(item,sprite_move_list);
 	free(sprite_move_list);
 
-	/* Get rotation configuration */
+	// Get rotation configuration
 	angle = 0;
 	if( ctx->orientation & NORTH && ctx->orientation & EAST ) {
 		entry_read_int(CHARACTER_TABLE,ctx->id,&angle,CHARACTER_KEY_DIR_NE_ROT,NULL);
@@ -447,7 +456,7 @@ static void set_up_sprite(context_t * ctx, const char * image_file_name)
 		item_set_angle(item,(double)angle);
 	}
 
-	/* Get flip configuration */
+	// Get flip configuration
 	force_flip = 0;
 	entry_read_int(CHARACTER_TABLE,ctx->id,&force_flip,CHARACTER_KEY_FORCE_FLIP,NULL);
 	move_status = ctx->direction;

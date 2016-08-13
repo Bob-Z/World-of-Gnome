@@ -65,7 +65,8 @@ void context_init(context_t * context)
 	context->cur_pos_y = 0;
 	context->old_pos_x = 0;
 	context->old_pos_y = 0;
-	context->start_tick = 0;
+	context->move_start_tick = 0;
+	context->animation_tick = 0;
 	context->type = NULL;
 
 	context->selection.id = strdup("");
@@ -1109,7 +1110,7 @@ void context_reset_all_position()
 	while(ctx != NULL ) {
 		ctx->old_pos_x = ctx->cur_pos_x;
 		ctx->old_pos_y = ctx->cur_pos_y;
-		ctx->start_tick = 0;
+		ctx->move_start_tick = 0;
 		ctx = ctx->next;
 	}
 	context_unlock_list();
