@@ -297,6 +297,7 @@ static void set_up_sprite(context_t * ctx, const char * image_file_name)
 	double zoom = 1.0;
 	int sprite_align = ALIGN_CENTER;
 	int sprite_offset_y = 0;
+	int force_position = FALSE;
 
 	context_t * player_context = context_get_player();
 
@@ -315,21 +316,17 @@ static void set_up_sprite(context_t * ctx, const char * image_file_name)
 	current_time = sdl_get_global_time();
 
 	// Force position when the player has changed map
-	if(change_map) {
-		ctx->move_start_tick = 0;
-		ctx->animation_tick = 0;
+	if( change_map ) {
+		ctx->move_start_tick = current_time;
+		ctx->animation_tick = current_time;
+		force_position = TRUE;
 	}
 	// Force position when this context has changed map
-	if(ctx->change_map) {
-		ctx->move_start_tick = 0;
-		ctx->animation_tick = 0;
-		ctx->change_map = 0;
-	}
-
-	if( ctx->move_start_tick == 0 ) {
-		ctx->start_pos_px = map_t2p_x(ctx->prev_pos_tx,ctx->prev_pos_ty,default_layer);
-		ctx->start_pos_py = map_t2p_y(ctx->prev_pos_tx,ctx->prev_pos_ty,default_layer);
+	if( ctx->change_map ) {
 		ctx->move_start_tick = current_time;
+		ctx->animation_tick = current_time;
+		ctx->change_map = 0;
+		force_position = TRUE;
 	}
 
 	if( ctx->animation_tick == 0 ) {
@@ -337,7 +334,7 @@ static void set_up_sprite(context_t * ctx, const char * image_file_name)
 	}
 
 	// Detect sprite movement, initiate animation
-	if( ctx->pos_changed ) {
+	if( ctx->pos_changed && force_position == FALSE ) {
 		ctx->pos_changed = FALSE;
 		ctx->move_start_tick = current_time;
 		ctx->start_pos_px = ctx->cur_pos_px;
@@ -413,7 +410,12 @@ static void set_up_sprite(context_t * ctx, const char * image_file_name)
 
 	// Set sprite to item
 	item_set_anim_start_tick(item,ctx->animation_tick);
-	item_set_move(item,opx,opy,px,py,ctx->move_start_tick,VIRTUAL_ANIM_DURATION);
+	if( force_position == TRUE ) {
+		item_set_move(item,px,py,px,py,ctx->move_start_tick,VIRTUAL_ANIM_DURATION);
+	}
+	else {
+		item_set_move(item,opx,opy,px,py,ctx->move_start_tick,VIRTUAL_ANIM_DURATION);
+	}
 	item_set_save_coordinate(item,&ctx->cur_pos_px,&ctx->cur_pos_py);
 	item_set_anim_array(item,sprite_list);
 	free(sprite_list);
