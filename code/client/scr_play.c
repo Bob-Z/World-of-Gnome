@@ -284,10 +284,10 @@ static void set_up_sprite(context_t * ctx, const char * image_file_name)
 	anim_t ** sprite_list;
 	anim_t ** sprite_move_list;
 	item_t * item;
-	int x;
-	int y;
-	int ox;
-	int oy;
+	int px;
+	int py;
+	int opx;
+	int opy;
 	Uint32 current_time;
 	int angle;
 	int flip;
@@ -327,10 +327,8 @@ static void set_up_sprite(context_t * ctx, const char * image_file_name)
 	}
 
 	if( ctx->move_start_tick == 0 ) {
-		ctx->cur_pos_x = ctx->pos_x;
-		ctx->cur_pos_y = ctx->pos_y;
-		ctx->old_pos_x = ctx->pos_x;
-		ctx->old_pos_y = ctx->pos_y;
+		ctx->start_pos_px = map_t2p_x(ctx->prev_pos_tx,ctx->prev_pos_ty,default_layer);
+		ctx->start_pos_py = map_t2p_y(ctx->prev_pos_tx,ctx->prev_pos_ty,default_layer);
 		ctx->move_start_tick = current_time;
 	}
 
@@ -339,8 +337,11 @@ static void set_up_sprite(context_t * ctx, const char * image_file_name)
 	}
 
 	// Detect sprite movement, initiate animation
-	if( ctx->pos_x != ctx->cur_pos_x || ctx->pos_y != ctx->cur_pos_y ) {
+	if( ctx->pos_changed ) {
+		ctx->pos_changed = FALSE;
 		ctx->move_start_tick = current_time;
+		ctx->start_pos_px = ctx->cur_pos_px;
+		ctx->start_pos_py = ctx->cur_pos_py;
 
 		/* flip need to remember previous direction to avoid resetting a
 		   east -> west flip when a sprite goes to north for instance.
@@ -350,31 +351,26 @@ static void set_up_sprite(context_t * ctx, const char * image_file_name)
 		   direction (memory). */
 		ctx->orientation = 0;
 		// Compute direction
-		if( ctx->pos_x > ctx->cur_pos_x ) {
+		if( ctx->pos_tx > ctx->prev_pos_tx ) {
 			ctx->direction &= ~WEST;
 			ctx->direction |= EAST;
 			ctx->orientation |= EAST;
 		}
-		if( ctx->pos_x < ctx->cur_pos_x ) {
+		if( ctx->pos_tx < ctx->prev_pos_tx ) {
 			ctx->direction &= ~EAST;
 			ctx->direction |= WEST;
 			ctx->orientation |= WEST;
 		}
-		if( ctx->pos_y > ctx->cur_pos_y ) {
+		if( ctx->pos_ty > ctx->prev_pos_ty ) {
 			ctx->direction &= ~NORTH;
 			ctx->direction |= SOUTH;
 			ctx->orientation |= SOUTH;
 		}
-		if( ctx->pos_y < ctx->cur_pos_y ) {
+		if( ctx->pos_ty < ctx->prev_pos_ty ) {
 			ctx->direction &= ~SOUTH;
 			ctx->direction |= NORTH;
 			ctx->orientation |= NORTH;
 		}
-
-		ctx->old_pos_x = ctx->cur_pos_x;
-		ctx->old_pos_y = ctx->cur_pos_y;
-		ctx->cur_pos_x = ctx->pos_x;
-		ctx->cur_pos_y = ctx->pos_y;
 	}
 
 	// Select sprite to display
@@ -389,10 +385,10 @@ static void set_up_sprite(context_t * ctx, const char * image_file_name)
 	sprite_move_list = select_sprite_move(ctx,image_file_name);
 
 	// Get position in pixel
-	x = map_t2p_x(ctx->cur_pos_x,ctx->cur_pos_y,default_layer);
-	y = map_t2p_y(ctx->cur_pos_x,ctx->cur_pos_y,default_layer);
-	ox = map_t2p_x(ctx->old_pos_x,ctx->old_pos_y,default_layer);
-	oy = map_t2p_y(ctx->old_pos_x,ctx->old_pos_y,default_layer);
+	px = map_t2p_x(ctx->pos_tx,ctx->pos_ty,default_layer);
+	py = map_t2p_y(ctx->pos_tx,ctx->pos_ty,default_layer);
+	opx = ctx->start_pos_px;
+	opy = ctx->start_pos_py;
 
 	// Get per sprite zoom
 	if(entry_read_string(CHARACTER_TABLE,ctx->id,&zoom_str,CHARACTER_KEY_ZOOM,NULL)) {
@@ -403,26 +399,22 @@ static void set_up_sprite(context_t * ctx, const char * image_file_name)
 	// Align sprite on tile
 	entry_read_int(CHARACTER_TABLE,ctx->id,&sprite_align,CHARACTER_KEY_ALIGN,NULL);
 	if( sprite_align == ALIGN_CENTER ) {
-		x -= ((sprite_list[0]->w*default_layer->map_zoom*zoom)-default_layer->tile_width)/2;
-		y -= ((sprite_list[0]->h*default_layer->map_zoom*zoom)-default_layer->tile_height)/2;
-		ox -= ((sprite_list[0]->w*default_layer->map_zoom*zoom)-default_layer->tile_width)/2;
-		oy -= ((sprite_list[0]->h*default_layer->map_zoom*zoom)-default_layer->tile_height)/2;
+		px -= ((sprite_list[0]->w*default_layer->map_zoom*zoom)-default_layer->tile_width)/2;
+		py -= ((sprite_list[0]->h*default_layer->map_zoom*zoom)-default_layer->tile_height)/2;
 	}
 	if( sprite_align == ALIGN_LOWER ) {
-		x -= ((sprite_list[0]->w*default_layer->map_zoom*zoom)-default_layer->tile_width)/2;
-		y -= (sprite_list[0]->h*default_layer->map_zoom*zoom)-default_layer->tile_height ;
-		ox -= ((sprite_list[0]->w*default_layer->map_zoom*zoom)-default_layer->tile_width)/2;
-		oy -= (sprite_list[0]->h*default_layer->map_zoom*zoom)-default_layer->tile_height;
+		px -= ((sprite_list[0]->w*default_layer->map_zoom*zoom)-default_layer->tile_width)/2;
+		py -= (sprite_list[0]->h*default_layer->map_zoom*zoom)-default_layer->tile_height ;
 	}
 
 	// Add Y offset
 	entry_read_int(CHARACTER_TABLE,ctx->id,&sprite_offset_y,CHARACTER_KEY_OFFSET_Y,NULL);
-	y += sprite_offset_y;
-	oy += sprite_offset_y;
+	py += sprite_offset_y;
 
 	// Set sprite to item
 	item_set_anim_start_tick(item,ctx->animation_tick);
-	item_set_move(item,ox,oy,x,y,ctx->move_start_tick,VIRTUAL_ANIM_DURATION);
+	item_set_move(item,opx,opy,px,py,ctx->move_start_tick,VIRTUAL_ANIM_DURATION);
+	item_set_save_coordinate(item,&ctx->cur_pos_px,&ctx->cur_pos_py);
 	item_set_anim_array(item,sprite_list);
 	free(sprite_list);
 	item_set_anim_move_array(item,sprite_move_list);
@@ -835,8 +827,8 @@ static void compose_select(context_t * ctx)
 {
 	item_t * item;
 	anim_t * anim;
-	int pos_x;
-	int pos_y;
+	int pos_tx;
+	int pos_ty;
 	int x;
 	int y;
 	context_t * selected_context = NULL;
@@ -845,17 +837,17 @@ static void compose_select(context_t * ctx)
 	if( option && option->cursor_tile ) {
 		if( ctx->selection.map[0] != 0) {
 			if( !strcmp(ctx->selection.map, ctx->map) ) {
-				pos_x = ctx->selection.map_coord[0];
-				pos_y = ctx->selection.map_coord[1];
+				pos_tx = ctx->selection.map_coord[0];
+				pos_ty = ctx->selection.map_coord[1];
 
-				if( pos_x != -1 && pos_y != -1) {
+				if( pos_tx != -1 && pos_ty != -1) {
 					anim = imageDB_get_anim(ctx,option->cursor_tile);
 
 					item = item_list_add(&item_list);
 
 					/* get pixel coordinate from tile coordinate */
-					x = map_t2p_x(pos_x,pos_y,default_layer);
-					y = map_t2p_y(pos_x,pos_y,default_layer);
+					x = map_t2p_x(pos_tx,pos_ty,default_layer);
+					y = map_t2p_y(pos_tx,pos_ty,default_layer);
 
 					/* Center on tile */
 					x -= (anim->w-default_layer->tile_width)/2;
@@ -951,13 +943,13 @@ item_t * scr_play_compose(context_t * ctx)
 
 		/* force virtual coordinate on map change */
 		if(change_map) {
-			sdl_force_virtual_x(map_t2p_x(ctx->pos_x,ctx->pos_y,default_layer) + default_layer->col_width[ctx->pos_x%default_layer->col_num]/2 + default_layer->row_width[ctx->pos_y%default_layer->row_num]/2 );
-			sdl_force_virtual_y(map_t2p_y(ctx->pos_x,ctx->pos_y,default_layer) + default_layer->col_height[ctx->pos_x%default_layer->col_num]/2 + default_layer->row_height[ctx->pos_y%default_layer->row_num]/2 );
+			sdl_force_virtual_x(map_t2p_x(ctx->pos_tx,ctx->pos_ty,default_layer) + default_layer->col_width[ctx->pos_tx%default_layer->col_num]/2 + default_layer->row_width[ctx->pos_ty%default_layer->row_num]/2 );
+			sdl_force_virtual_y(map_t2p_y(ctx->pos_tx,ctx->pos_ty,default_layer) + default_layer->col_height[ctx->pos_tx%default_layer->col_num]/2 + default_layer->row_height[ctx->pos_ty%default_layer->row_num]/2 );
 		}
 		/* set virtual coordinate on the same map */
 		else {
-			sdl_set_virtual_x(map_t2p_x(ctx->pos_x,ctx->pos_y,default_layer) + default_layer->col_width[ctx->pos_x%default_layer->col_num]/2 + default_layer->row_width[ctx->pos_y%default_layer->row_num]/2 );
-			sdl_set_virtual_y(map_t2p_y(ctx->pos_x,ctx->pos_y,default_layer) + default_layer->col_height[ctx->pos_x%default_layer->col_num]/2 + default_layer->row_height[ctx->pos_y%default_layer->row_num]/2 );
+			sdl_set_virtual_x(map_t2p_x(ctx->pos_tx,ctx->pos_ty,default_layer) + default_layer->col_width[ctx->pos_tx%default_layer->col_num]/2 + default_layer->row_width[ctx->pos_ty%default_layer->row_num]/2 );
+			sdl_set_virtual_y(map_t2p_y(ctx->pos_tx,ctx->pos_ty,default_layer) + default_layer->col_height[ctx->pos_tx%default_layer->col_num]/2 + default_layer->row_height[ctx->pos_ty%default_layer->row_num]/2 );
 		}
 	}
 

@@ -395,7 +395,7 @@ static int l_character_get_x( lua_State* L)
 		werr(LOGDEV,"Cannot find context with ID %s",id);
 		return 0;  /* number of results */
 	}
-	lua_pushnumber(L, target->pos_x);
+	lua_pushnumber(L, target->pos_tx);
 	return 1;  /* number of results */
 }
 
@@ -415,7 +415,7 @@ static int l_character_get_y( lua_State* L)
 		werr(LOGDEV,"Cannot find context with ID %s",id);
 		return 0;  /* number of results */
 	}
-	lua_pushnumber(L, target->pos_y);
+	lua_pushnumber(L, target->pos_ty);
 	return 1;  /* number of results */
 }
 

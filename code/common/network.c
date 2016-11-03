@@ -245,8 +245,8 @@ void network_send_context_to_context(context_t * dest_ctx, context_t * src_ctx)
 	add_str(data,&data_size,src_ctx->map);
 	add_int(data,&data_size,src_ctx->in_game);
 	add_int(data,&data_size,src_ctx->connected);
-	add_int(data,&data_size,src_ctx->pos_x);
-	add_int(data,&data_size,src_ctx->pos_y);
+	add_int(data,&data_size,src_ctx->pos_tx);
+	add_int(data,&data_size,src_ctx->pos_ty);
 	add_str(data,&data_size,src_ctx->type);
 	add_str(data,&data_size,src_ctx->id);
 	add_str(data,&data_size,src_ctx->selection.id);

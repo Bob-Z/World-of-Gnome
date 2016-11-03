@@ -59,12 +59,13 @@ void context_init(context_t * context)
 	context->character_name = NULL;
 	context->map = NULL;
 
-	context->pos_x = 0;
-	context->pos_y = 0;
-	context->cur_pos_x = 0;
-	context->cur_pos_y = 0;
-	context->old_pos_x = 0;
-	context->old_pos_y = 0;
+	context->pos_tx = 0;
+	context->pos_ty = 0;
+	context->prev_pos_tx = 0;
+	context->prev_pos_ty = 0;
+	context->cur_pos_px = 0;
+	context->cur_pos_py = 0;
+	context->pos_changed = FALSE;
 	context->move_start_tick = 0;
 	context->animation_tick = 0;
 	context->type = NULL;
@@ -459,19 +460,41 @@ int context_set_type(context_t * context, const char * type)
 
 /**************************************
 **************************************/
-void context_set_pos_x(context_t * context, unsigned int pos)
+void _context_set_pos_tx(context_t * context, unsigned int pos_tx)
+{
+	if( context->pos_tx != pos_tx ) {
+		context->pos_changed = TRUE;
+		context->prev_pos_tx = context->pos_tx;
+		context->pos_tx = pos_tx;
+	}
+}
+
+/**************************************
+**************************************/
+void context_set_pos_tx(context_t * context, unsigned int pos_tx)
 {
 	context_lock_list();
-	context->pos_x = pos;
+	_context_set_pos_tx(context,pos_tx);
 	context_unlock_list();
 }
 
 /**************************************
 **************************************/
-void context_set_pos_y(context_t * context, unsigned int pos)
+void _context_set_pos_ty(context_t * context, unsigned int pos_ty)
+{
+	if( context->pos_ty != pos_ty ) {
+		context->pos_changed = TRUE;
+		context->prev_pos_ty = context->pos_ty;
+		context->pos_ty = pos_ty;
+	}
+}
+
+/**************************************
+**************************************/
+void context_set_pos_ty(context_t * context, unsigned int pos_ty)
 {
 	context_lock_list();
-	context->pos_y = pos;
+	_context_set_pos_ty(context,pos_ty);
 	context_unlock_list();
 }
 
@@ -640,13 +663,17 @@ int context_update_from_file(context_t * context)
 		ret = false;
 	}
 
-	if(!entry_read_int(CHARACTER_TABLE,context->id,&context->pos_x, CHARACTER_KEY_POS_X,NULL)) {
+	int pos_tx;
+	if(!entry_read_int(CHARACTER_TABLE,context->id,&pos_tx, CHARACTER_KEY_POS_X,NULL)) {
 		ret = false;
 	}
+	_context_set_pos_tx(context,pos_tx);
 
-	if(!entry_read_int(CHARACTER_TABLE,context->id,&context->pos_y, CHARACTER_KEY_POS_Y,NULL)) {
+	int pos_ty;
+	if(!entry_read_int(CHARACTER_TABLE,context->id,&pos_ty, CHARACTER_KEY_POS_Y,NULL)) {
 		ret = false;
 	}
+	_context_set_pos_ty(context,pos_ty);
 
 	context_unlock_list();
 	return ret;
@@ -668,9 +695,9 @@ int context_write_to_file(context_t * context)
 	entry_write_string(CHARACTER_TABLE, context->id,context->map,CHARACTER_KEY_MAP, NULL);
 
 
-	entry_write_int(CHARACTER_TABLE, context->id,context->pos_x,CHARACTER_KEY_POS_X, NULL);
+	entry_write_int(CHARACTER_TABLE, context->id,context->pos_tx,CHARACTER_KEY_POS_X, NULL);
 
-	entry_write_int(CHARACTER_TABLE, context->id,context->pos_y,CHARACTER_KEY_POS_Y, NULL);
+	entry_write_int(CHARACTER_TABLE, context->id,context->pos_ty,CHARACTER_KEY_POS_Y, NULL);
 
 	context_unlock_list();
 	return true;
@@ -844,8 +871,8 @@ void context_add_or_update_from_network_frame(context_t * context,char * data)
 	char * map = NULL;
 	int in_game;
 	int connected;
-	int pos_x;
-	int pos_y;
+	int pos_tx;
+	int pos_ty;
 	char * type = NULL;
 	char * id = NULL;
 	char * selected_character = NULL;
@@ -872,10 +899,10 @@ void context_add_or_update_from_network_frame(context_t * context,char * data)
 	connected = atoi(data);
 	data += (strlen(data)+1);
 
-	pos_x = atoi(data);
+	pos_tx = atoi(data);
 	data += (strlen(data)+1);
 
-	pos_y = atoi(data);
+	pos_ty = atoi(data);
 	data += (strlen(data)+1);
 
 	type = strdup(data);
@@ -916,8 +943,8 @@ void context_add_or_update_from_network_frame(context_t * context,char * data)
 				/* do not call context_set_* function since we already have the lock */
 				_context_set_map(ctx,map);
 
-				ctx->pos_x = pos_x;
-				ctx->pos_y = pos_y;
+				_context_set_pos_tx(ctx,pos_tx);
+				_context_set_pos_ty(ctx,pos_ty);
 
 				free(ctx->type);
 				ctx->type = strdup(type);
@@ -964,8 +991,8 @@ void context_add_or_update_from_network_frame(context_t * context,char * data)
 	context_set_character_name(ctx,name);
 	context_set_map(ctx,map);
 	context_set_type(ctx,type);
-	context_set_pos_x(ctx,pos_x);
-	context_set_pos_y(ctx,pos_y);
+	context_set_pos_tx(ctx,pos_tx);
+	context_set_pos_ty(ctx,pos_ty);
 	context_set_id(ctx,id);
 	context_set_connected(ctx,connected);
 	context_set_in_game(ctx,in_game);
@@ -1086,11 +1113,11 @@ int context_distance(context_t * ctx1, context_t * ctx2)
 	int distx;
 	int disty;
 
-	distx = ctx1->pos_x - ctx2->pos_x;
+	distx = ctx1->pos_tx - ctx2->pos_tx;
 	if(distx < 0 ) {
 		distx = -distx;
 	}
-	disty = ctx1->pos_y - ctx2->pos_y;
+	disty = ctx1->pos_ty - ctx2->pos_ty;
 	if(disty < 0 ) {
 		disty = -disty;
 	}
@@ -1108,8 +1135,6 @@ void context_reset_all_position()
 
 	context_lock_list();
 	while(ctx != NULL ) {
-		ctx->old_pos_x = ctx->cur_pos_x;
-		ctx->old_pos_y = ctx->cur_pos_y;
 		ctx->move_start_tick = 0;
 		ctx = ctx->next;
 	}

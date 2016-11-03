@@ -142,8 +142,8 @@ void instantiate_npc(const char * id)
 
 	context_set_type(ctx,type);
 	free(type);
-	context_set_pos_x(ctx,x);
-	context_set_pos_y(ctx,y);
+	context_set_pos_tx(ctx,x);
+	context_set_pos_ty(ctx,y);
 	context_set_id(ctx,id);
 	ctx->cond = SDL_CreateCond();
 	ctx->cond_mutex = SDL_CreateMutex();

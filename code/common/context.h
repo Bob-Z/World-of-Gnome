@@ -25,47 +25,52 @@
 #include <SDL2/SDL_net.h>
 
 typedef struct selection {
-	char *		id;	/* a character id */
-	int		map_coord[2];	/* a tile map */
+	char *		id;	// a character id
+	int		map_coord[2];	// a tile map
 	char *		map;
-	char *		inventory;	/* name of the selected item in inventory */
-	char *		equipment;	/* name of the selected slot in equipment */
+	char *		inventory;	// name of the selected item in inventory
+	char *		equipment;	// name of the selected slot in equipment
 } selection_t;
 
 typedef struct context {
 	char *		user_name;
-	int		connected; /* User logged with the correct password, or NPC activated */
+	int		connected; // User logged with the correct password, or NPC activated
 	int		in_game;
 	TCPsocket	socket;
 	TCPsocket	socket_data;
-	SDL_mutex*	send_mutex; /* Asynchronous network send */
+	SDL_mutex*	send_mutex; // Asynchronous network send
 	char *		hostname;
 
 	SDL_Renderer * render;
 	SDL_Window * window;
 
 	char *		character_name;
-	char *		map;	/* map name */
-	int		pos_x;	/* player position (in tile) */
-	int		pos_y;	/* player position (in tile) */
-	int		cur_pos_x;	/* player position (in tile) */
-	int		cur_pos_y;	/* player position (in tile) */
-	int		old_pos_x;	/* player position (in tile) */
-	int		old_pos_y;	/* player position (in tile) */
-	Uint32		move_start_tick;	/* smooth move animation's starting tick */
-	Uint32		animation_tick;	// Start tick for animation
-	char *		type;	/* character's type */
-	selection_t 	selection; /* Selected tile or sprite */
-	char *		id; /* unique ID of a character (its filename) */
-	char *		prev_map; /* the map from where this context comes */
-	int 		change_map; /* Has this context map changed ? */
-	lua_State*	luaVM; /* LUA state */
-	SDL_cond*	cond;	/* async condition for npc */
-	SDL_mutex*	cond_mutex;/* mutex for async condition for npc */
-	int		orientation; /* Bit field for sprite orientation (north east, south...)*/
-	int		direction; /* Bit field for sprite direction (north, south...)*/
+	char *		map;	// map name
+	int		pos_tx;	// player position (in tile)
+	int		pos_ty;	// player position (in tile)
+	int		prev_pos_tx;	// player previous position (in tile) for sprite direction
+	int		prev_pos_ty;	// player previous position (in tile) for sprite direction
+	int		pos_changed;
 
-	Uint32		next_execution_time; /* Time when an NPC will execute its AI script */
+	int		cur_pos_px;	// current player position (in pixel)
+	int		cur_pos_py;	// current player position (in pixel)
+	int		start_pos_px;	// player position (in pixel) at last postion change
+	int		start_pos_py;	// player position (in pixel) at last postion change
+	Uint32		move_start_tick;	// smooth move animation's starting tick
+	Uint32		animation_tick;	// Start tick for animation
+
+	char *		type;	// character's type
+	selection_t 	selection; // Selected tile or sprite
+	char *		id; // unique ID of a character (its filename)
+	char *		prev_map; // the map from where this context comes
+	int 		change_map; // Has this context map changed ?
+	lua_State*	luaVM;	// LUA state
+	SDL_cond*	cond;	// async condition for npc
+	SDL_mutex*	cond_mutex;	// mutex for async condition for npc */
+	int		orientation;	// Bit field for sprite orientation (north east, south...)
+	int		direction;	// Bit field for sprite direction (north, south...)
+
+	Uint32		next_execution_time; // Time when an NPC will execute its AI script
 
 	struct context*	previous;
 	struct context*	next;
@@ -90,8 +95,8 @@ int context_set_map(context_t * context, const char * name);
 int context_set_map_w(context_t * context, int width);
 int context_set_map_h(context_t * context, int height);
 int context_set_type(context_t * context, const char * name);
-void context_set_pos_x(context_t * context, unsigned int pos);
-void context_set_pos_y(context_t * context, unsigned int pos);
+void context_set_pos_tx(context_t * context, unsigned int pos);
+void context_set_pos_ty(context_t * context, unsigned int pos);
 void context_set_tile_x(context_t * context, unsigned int pos);
 void context_set_tile_y(context_t * context, unsigned int pos);
 void context_new_VM(context_t * context);

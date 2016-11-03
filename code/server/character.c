@@ -345,8 +345,8 @@ void character_update_aggro(context_t * agressor)
 static void do_set_pos(context_t * ctx,const char * map, int x, int y, int change_map)
 {
 	context_set_map(ctx,map);
-	context_set_pos_x(ctx,x);
-	context_set_pos_y(ctx,y);
+	context_set_pos_tx(ctx,x);
+	context_set_pos_ty(ctx,y);
 
 	entry_write_string(CHARACTER_TABLE,ctx->id,map,CHARACTER_KEY_MAP,NULL);
 	entry_write_int(CHARACTER_TABLE,ctx->id,x,CHARACTER_KEY_POS_X,NULL);
@@ -379,7 +379,7 @@ static void platform_move(context_t * platform,const char * map, int x, int y, i
 			current = current->next;
 			continue;
 		}
-		if( platform->pos_x == current->pos_x && platform->pos_y == current->pos_y && !strcmp(platform->map, current->map) ) {
+		if( platform->pos_tx == current->pos_tx && platform->pos_ty == current->pos_ty && !strcmp(platform->map, current->map) ) {
 			do_set_pos(current,map,x,y,change_map);
 		}
 		current = current->next;
@@ -413,7 +413,7 @@ int character_set_pos(context_t * ctx, const char * map, int x, int y)
 	}
 
 	/* Do nothing if no move */
-	if(!strcmp(ctx->map, map) && ctx->pos_x == x && ctx->pos_y == y) {
+	if(!strcmp(ctx->map, map) && ctx->pos_tx == x && ctx->pos_ty == y) {
 		return 0;
 	}
 
