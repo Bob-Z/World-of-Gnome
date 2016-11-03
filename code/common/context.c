@@ -462,9 +462,9 @@ int context_set_type(context_t * context, const char * type)
 **************************************/
 void _context_set_pos_tx(context_t * context, unsigned int pos_tx)
 {
+	context->prev_pos_tx = context->pos_tx;
 	if( context->pos_tx != pos_tx ) {
 		context->pos_changed = TRUE;
-		context->prev_pos_tx = context->pos_tx;
 		context->pos_tx = pos_tx;
 	}
 }
@@ -482,9 +482,9 @@ void context_set_pos_tx(context_t * context, unsigned int pos_tx)
 **************************************/
 void _context_set_pos_ty(context_t * context, unsigned int pos_ty)
 {
+	context->prev_pos_ty = context->pos_ty;
 	if( context->pos_ty != pos_ty ) {
 		context->pos_changed = TRUE;
-		context->prev_pos_ty = context->pos_ty;
 		context->pos_ty = pos_ty;
 	}
 }
