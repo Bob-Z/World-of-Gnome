@@ -44,7 +44,7 @@
 #define MAX_LAYER	100
 
 static item_t * item_list = NULL;
-static int change_map = 0;
+static int change_map = FALSE;
 static int init = true;
 static int current_map_x = -1;
 static int current_map_y = -1;
@@ -316,16 +316,16 @@ static void set_up_sprite(context_t * ctx, const char * image_file_name)
 	current_time = sdl_get_global_time();
 
 	// Force position when the player has changed map
-	if( change_map ) {
+	if( change_map == TRUE ) {
 		ctx->move_start_tick = current_time;
 		ctx->animation_tick = current_time;
 		force_position = TRUE;
 	}
 	// Force position when this context has changed map
-	if( ctx->change_map ) {
+	if( ctx->change_map == TRUE ) {
 		ctx->move_start_tick = current_time;
 		ctx->animation_tick = current_time;
-		ctx->change_map = 0;
+		ctx->change_map = FALSE;
 		force_position = TRUE;
 	}
 
@@ -920,7 +920,7 @@ item_t * scr_play_compose(context_t * ctx)
 
 	change_map = ctx->change_map;
 
-	if( change_map ) {
+	if( change_map == TRUE ) {
 		map_filename = strconcat( MAP_TABLE,"/",ctx->map,NULL);
 		network_send_req_file(ctx,map_filename);
 		free(map_filename);
@@ -944,7 +944,7 @@ item_t * scr_play_compose(context_t * ctx)
 		ui_play_compose(ctx,item_list);
 
 		/* force virtual coordinate on map change */
-		if(change_map) {
+		if( change_map == TRUE ) {
 			sdl_force_virtual_x(map_t2p_x(ctx->pos_tx,ctx->pos_ty,default_layer) + default_layer->col_width[ctx->pos_tx%default_layer->col_num]/2 + default_layer->row_width[ctx->pos_ty%default_layer->row_num]/2 );
 			sdl_force_virtual_y(map_t2p_y(ctx->pos_tx,ctx->pos_ty,default_layer) + default_layer->col_height[ctx->pos_tx%default_layer->col_num]/2 + default_layer->row_height[ctx->pos_ty%default_layer->row_num]/2 );
 		}

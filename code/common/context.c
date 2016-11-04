@@ -79,7 +79,7 @@ void context_init(context_t * context)
 
 	context->id = NULL;
 	context->prev_map = NULL;
-	context->change_map = false;
+	context->change_map = FALSE;
 	context->luaVM = NULL;
 	context->cond = NULL;
 	context->cond_mutex = NULL;
@@ -414,15 +414,15 @@ static int _context_set_map(context_t * context, const char * map)
 	}
 
 	if(context->map) {
-		context->prev_map = strdup(context->map);
-		free( context->map );
+		context->prev_map = context->map;
 	}
 
 	context->map = strdup(map);
 	if( context->map == NULL ) {
 		return false;
 	}
-	context->change_map = true;
+
+	context->change_map = TRUE;
 
 	return true;
 }

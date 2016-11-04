@@ -353,7 +353,7 @@ static void do_set_pos(context_t * ctx,const char * map, int x, int y, int chang
 	entry_write_int(CHARACTER_TABLE,ctx->id,y,CHARACTER_KEY_POS_Y,NULL);
 
 	context_spread(ctx);
-	if(change_map) {
+	if( change_map == TRUE ) {
 		context_request_other_context(ctx);
 	}
 }
@@ -396,7 +396,7 @@ int character_set_pos(context_t * ctx, const char * map, int x, int y)
 	char * script;
 	char ** param = NULL;
 	int i;
-	int change_map = 0;
+	int change_map = FALSE;
 	int width = x+1;
 	int height = y+1;
 	int warpx = FALSE;
@@ -494,7 +494,7 @@ int character_set_pos(context_t * ctx, const char * map, int x, int y)
 	}
 
 	if( strcmp(ctx->map,map) ) {
-		change_map = 1;
+		change_map = TRUE;
 	}
 
 	/* If this character is a platform, move all characters on it */
