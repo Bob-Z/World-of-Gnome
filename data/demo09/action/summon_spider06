@@ -1,0 +1,6 @@
+text            = "Summon spider 6";
+icon            = [ "ui/button_up.png", "sprite/spider06/marquee.png" ];
+#icon_over       = "icon/bat_over.png";
+icon_click      = [ "ui/button_down.png", "sprite/spider06/marquee.png" ];
+script          = "action/summon.lua";
+param		= ( "spider06" );
