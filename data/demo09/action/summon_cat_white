@@ -1,0 +1,6 @@
+text            = "Summon cat_white";
+icon            = [ "ui/button_up.png", "sprite/cat_white/marquee.png" ];
+#icon_over       = "icon/bat_over.png";
+icon_click      = [ "ui/button_down.png", "sprite/cat_white/marquee.png" ];
+script          = "action/summon.lua";
+param		= ( "cat_white" );

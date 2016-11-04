@@ -1,0 +1,24 @@
+name		= "Black cat";
+
+marquee         = "sprite/cat_black/marquee.png";
+sprite          = [ "sprite/shadow/rat.png", "sprite/cat_black/marquee.png" ];
+type            = "cat_black"
+map             = "M0_0";
+pos_x           = 15;
+pos_y           = 15;
+layer		= 15;
+#align on lower edge of tile
+align           = 1;
+sprite_move_n   = [ "sprite/shadow/rat.png", "sprite/cat_black/WC_N.zip" ];
+sprite_move_s   = [ "sprite/shadow/rat.png", "sprite/cat_black/WC_S.zip" ];
+sprite_move_w   = [ "sprite/shadow/rat.png", "sprite/cat_black/WC_W.zip" ];
+sprite_move_e   = [ "sprite/shadow/rat.png", "sprite/cat_black/WC_E.zip" ];
+sprite_n   = [ "sprite/shadow/rat.png", "sprite/cat_black/N.png" ];
+sprite_s   = [ "sprite/shadow/rat.png", "sprite/cat_black/S.png" ];
+sprite_e   = [ "sprite/shadow/rat.png", "sprite/cat_black/E.png" ];
+sprite_w   = [ "sprite/shadow/rat.png", "sprite/cat_black/W.png" ];
+ai              = "ai/ai_random.lua";
+ai_params       = [ "1000" ];
+#action          = [ "summon_fish1","summon_fish2","summon_fish3","summon_fish4","summon_fish5","summon_dragon", "summon_flappy", "set_campfire", "set_snowtree", "set_fireplace", "set_tree", "set_orangetree1", "set_orangetree2"];
+#allowed_tile_script    = "allowed_tile/ground_stair.lua";
+#inventory      = [ ];

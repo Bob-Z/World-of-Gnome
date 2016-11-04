@@ -1,0 +1,6 @@
+text            = "Summon rat";
+icon            = [ "ui/button_up.png", "sprite/rat/marquee.png" ];
+#icon_over       = "icon/bat_over.png";
+icon_click      = [ "ui/button_down.png", "sprite/rat/marquee.png" ];
+script          = "action/summon.lua";
+param		= ( "rat" );
