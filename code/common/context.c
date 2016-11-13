@@ -22,6 +22,7 @@
 #include <lualib.h>
 #include <lauxlib.h>
 #include <unistd.h>
+#include <limits.h>
 #include "common.h"
 
 context_t * context_list_start = NULL;
@@ -63,8 +64,8 @@ void context_init(context_t * context)
 	context->pos_ty = 0;
 	context->prev_pos_tx = 0;
 	context->prev_pos_ty = 0;
-	context->cur_pos_px = 0;
-	context->cur_pos_py = 0;
+	context->cur_pos_px = INT_MAX;
+	context->cur_pos_py = INT_MAX;
 	context->pos_changed = FALSE;
 	context->move_start_tick = 0;
 	context->animation_tick = 0;

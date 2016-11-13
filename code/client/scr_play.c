@@ -29,6 +29,7 @@
 #include "network_client.h"
 #include "ui_play.h"
 #include "option_client.h"
+#include <limits.h>
 
 #define ITEM_FONT "Ubuntu-C.ttf"
 #define ITEM_FONT_SIZE 15
@@ -333,6 +334,10 @@ static void set_up_sprite(context_t * ctx, const char * image_file_name)
 		ctx->animation_tick = current_time;
 	}
 
+	if( ctx->cur_pos_px == INT_MAX || ctx->cur_pos_py == INT_MAX ) {
+		force_position = TRUE;
+	}
+
 	// Detect sprite movement, initiate animation
 	if( ctx->pos_changed && force_position == FALSE ) {
 		ctx->pos_changed = FALSE;
@@ -384,8 +389,6 @@ static void set_up_sprite(context_t * ctx, const char * image_file_name)
 	// Get position in pixel
 	px = map_t2p_x(ctx->pos_tx,ctx->pos_ty,default_layer);
 	py = map_t2p_y(ctx->pos_tx,ctx->pos_ty,default_layer);
-	opx = ctx->start_pos_px;
-	opy = ctx->start_pos_py;
 
 	// Get per sprite zoom
 	if(entry_read_string(CHARACTER_TABLE,ctx->id,&zoom_str,CHARACTER_KEY_ZOOM,NULL)) {
@@ -410,12 +413,18 @@ static void set_up_sprite(context_t * ctx, const char * image_file_name)
 
 	// Set sprite to item
 	item_set_anim_start_tick(item,ctx->animation_tick);
+
 	if( force_position == TRUE ) {
-		item_set_move(item,px,py,px,py,ctx->move_start_tick,VIRTUAL_ANIM_DURATION);
+		ctx->start_pos_px = px;
+		ctx->cur_pos_px = px;
+		ctx->start_pos_py = py;
+		ctx->cur_pos_py = py;
 	}
-	else {
-		item_set_move(item,opx,opy,px,py,ctx->move_start_tick,VIRTUAL_ANIM_DURATION);
-	}
+
+	opx = ctx->start_pos_px;
+	opy = ctx->start_pos_py;
+
+	item_set_move(item,opx,opy,px,py,ctx->move_start_tick,VIRTUAL_ANIM_DURATION);
 	item_set_save_coordinate(item,&ctx->cur_pos_px,&ctx->cur_pos_py);
 	item_set_anim_array(item,sprite_list);
 	free(sprite_list);
@@ -850,10 +859,6 @@ static void compose_select(context_t * ctx)
 					/* get pixel coordinate from tile coordinate */
 					x = map_t2p_x(pos_tx,pos_ty,default_layer);
 					y = map_t2p_y(pos_tx,pos_ty,default_layer);
-
-					/* Center on tile */
-					x -= (anim->w-default_layer->tile_width)/2;
-					y -= (anim->h-default_layer->tile_height)/2;
 
 					item_set_pos(item,x,y);
 					item_set_anim(item,anim,0);
