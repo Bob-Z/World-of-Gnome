@@ -42,9 +42,9 @@ void file_lock(const char * filename)
 	file_t * file_data;
 
 	SDL_LockMutex(file_list_mutex);
-	file_data = list_find(file_list,filename);
+	file_data = (file_t *)list_find(file_list,filename);
 	if( file_data == NULL ) {
-		file_data = malloc(sizeof(file_t));
+		file_data = (file_t*)malloc(sizeof(file_t));
 		file_data->timestamp = 0;
 		file_data->mutex = SDL_CreateMutex();
 
@@ -60,10 +60,10 @@ void file_lock(const char * filename)
  *****************************************/
 void file_unlock(const char * filename)
 {
-	const file_t * file_data;
+	file_t * file_data;
 
 	SDL_LockMutex(file_list_mutex);
-	file_data = list_find(file_list,filename);
+	file_data = (file_t *)list_find(file_list,filename);
 	SDL_UnlockMutex(file_list_mutex);
 
 	if( file_data == NULL ) {
@@ -86,7 +86,7 @@ void file_update(context_t * context, const char * filename)
 	}
 
 	SDL_LockMutex(file_list_mutex);
-	file_data = list_find(file_list,filename);
+	file_data = (file_t *)list_find(file_list,filename);
 	SDL_UnlockMutex(file_list_mutex);
 
 	/* Avoid flooding the server */
@@ -143,7 +143,7 @@ static int mkdir_all(const char * pathname)
   if success the file is created on disk
   the return string must be freed by caller
  ****************************/
-char * file_new(char * table, const char * suggested_name)
+char * file_new(const char * table, const char * suggested_name)
 {
 	DIR * dir;
 	struct dirent * ent;
@@ -221,9 +221,9 @@ char * file_new(char * table, const char * suggested_name)
   filename is "table/dir/file"
   Fill contents and size with data from filename file.
   contents MUST BE FREED by caller
-  return TRUE id success
+  return RET_NOK on error
  ****************************/
-int file_get_contents(const char *filename,char **contents,int *length)
+ret_code_t file_get_contents(const char *filename,char **contents,int *length)
 {
 	char * fullname;
 	struct stat sts;
@@ -249,7 +249,7 @@ int file_get_contents(const char *filename,char **contents,int *length)
 		file_unlock(filename);
 		werr(LOGDEV,"Error stat on file %s: %s\n",fullname,error_str);
 		free(fullname);
-		return FALSE;
+		return RET_NOK;
 	}
 
 	fd = open(fullname,O_RDONLY);
@@ -263,15 +263,15 @@ int file_get_contents(const char *filename,char **contents,int *length)
 		file_unlock(filename);
 		werr(LOGDEV,"Error open on file %s: %s\n",fullname,error_str);
 		free(fullname);
-		return FALSE;
+		return RET_NOK;
 	}
 
-	buf = malloc(sts.st_size);
+	buf = (char*)malloc(sts.st_size);
 	if( buf == NULL) {
 		close(fd);
 		file_unlock(filename);
 		free(fullname);
-		return FALSE;
+		return RET_NOK;
 	}
 
 	size = read(fd,buf,sts.st_size);
@@ -287,7 +287,7 @@ int file_get_contents(const char *filename,char **contents,int *length)
 		free(buf);
 		werr(LOGDEV,"Error read on file %s: %s\n",fullname,error_str);
 		free(fullname);
-		return FALSE;
+		return RET_NOK;
 	}
 
 	close(fd);
@@ -297,14 +297,14 @@ int file_get_contents(const char *filename,char **contents,int *length)
 	*contents = buf;
 	*length = size;
 
-	return TRUE;
+	return RET_OK;
 }
 /****************************
   file_set_contents
   filename is "table/dir/file"
-  return TRUE id success
+  return RET_NOK on error
  ****************************/
-int file_set_contents(const char *filename,const char *contents,int length)
+ret_code_t file_set_contents(const char *filename,const char *contents,int length)
 {
 	char * fullname;
 	int fd;
@@ -327,7 +327,7 @@ int file_set_contents(const char *filename,const char *contents,int length)
 		file_unlock(filename);
 		werr(LOGDEV,"Error open on file %s: %s\n",fullname,error_str);
 		free(fullname);
-		return FALSE;
+		return RET_NOK;
 	}
 
 	size = write(fd,contents,length);
@@ -342,7 +342,7 @@ int file_set_contents(const char *filename,const char *contents,int length)
 		file_unlock(filename);
 		werr(LOGDEV,"Error write on file %s: %s\n",fullname,error_str);
 		free(fullname);
-		return FALSE;
+		return RET_NOK;
 	}
 	free(fullname);
 
@@ -350,7 +350,7 @@ int file_set_contents(const char *filename,const char *contents,int length)
 
 	file_unlock(filename);
 
-	return TRUE;
+	return RET_OK;
 }
 
 /******************************************************

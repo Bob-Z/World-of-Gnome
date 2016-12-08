@@ -34,7 +34,7 @@ void sfx_play(context_t* ctx,const char * filename, int restart)
 
 	file_lock(table_filename);
 
-	music = list_find(sfx_list,table_filename);
+	music = (Mix_Music*)list_find(sfx_list,table_filename);
 
 	if( music ) {
 		if( restart ) {
@@ -73,7 +73,7 @@ void sfx_stop(context_t* ctx,const char * filename)
 
 	file_lock(table_filename);
 
-	music = list_find(sfx_list,table_filename);
+	music = (Mix_Music*)list_find(sfx_list,table_filename);
 
 	file_unlock(table_filename);
 

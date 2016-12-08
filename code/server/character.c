@@ -41,7 +41,7 @@ void character_send_list(context_t * context)
 	}
 
 	while( character_list[i] != NULL ) {
-		network_send_command(context, CMD_SEND_CHARACTER, strlen(character_list[i])+1, character_list[i],FALSE);
+		network_send_command(context, CMD_SEND_CHARACTER, strlen(character_list[i])+1, character_list[i],false);
 		i++;
 	}
 
@@ -111,7 +111,7 @@ void character_user_send_list(context_t * context)
 	data[data_size] = 0;
 	data_size ++;
 
-	network_send_command(context, CMD_SEND_USER_CHARACTER, data_size, data,FALSE);
+	network_send_command(context, CMD_SEND_USER_CHARACTER, data_size, data,false);
 	free(data);
 }
 

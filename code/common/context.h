@@ -24,6 +24,8 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_net.h>
 
+#include "types.h"
+
 typedef struct selection {
 	char *		id;	// a character id
 	int		map_coord[2];	// a tile map
@@ -34,8 +36,8 @@ typedef struct selection {
 
 typedef struct context {
 	char *		user_name;
-	int		connected; // User logged with the correct password, or NPC activated
-	int		in_game;
+	bool		connected; // User logged with the correct password, or NPC activated
+	bool		in_game;
 	TCPsocket	socket;
 	TCPsocket	socket_data;
 	SDL_mutex*	send_mutex; // Asynchronous network send
@@ -50,7 +52,7 @@ typedef struct context {
 	int		pos_ty;	// player position (in tile)
 	int		prev_pos_tx;	// player previous position (in tile) for sprite direction
 	int		prev_pos_ty;	// player previous position (in tile) for sprite direction
-	int		pos_changed;
+	bool		pos_changed;
 
 	int		cur_pos_px;	// current player position (in pixel)
 	int		cur_pos_py;	// current player position (in pixel)
@@ -63,7 +65,7 @@ typedef struct context {
 	selection_t 	selection; // Selected tile or sprite
 	char *		id; // unique ID of a character (its filename)
 	char *		prev_map; // the map from where this context comes
-	int 		change_map; // Has this context map changed ?
+	bool 		change_map; // Has this context map changed ?
 	lua_State*	luaVM;	// LUA state
 	SDL_cond*	cond;	// async condition for npc
 	SDL_mutex*	cond_mutex;	// mutex for async condition for npc */
@@ -80,40 +82,40 @@ typedef struct context {
 void context_init(context_t * context);
 context_t * context_new(void);
 void context_free(context_t * context);
-int context_set_hostname(context_t * context, const char * name);
-int context_set_username(context_t * context, const char * name);
+ret_code_t context_set_hostname(context_t * context, const char * name);
+ret_code_t context_set_username(context_t * context, const char * name);
 void context_set_in_game(context_t * context, int in_game);
 int context_get_in_game(context_t * context);
-void context_set_connected(context_t * context, int connected);
+void context_set_connected(context_t * context, bool connected);
 int context_get_connected(context_t * context);
 void context_set_socket(context_t * context, TCPsocket socket);
 TCPsocket context_get_socket(context_t * context);
 void context_set_socket_data(context_t * context, TCPsocket socket);
 TCPsocket context_get_socket_data(context_t * context);
-int context_set_character_name(context_t * context, const char * name);
-int context_set_map(context_t * context, const char * name);
+ret_code_t context_set_character_name(context_t * context, const char * name);
+ret_code_t context_set_map(context_t * context, const char * name);
 int context_set_map_w(context_t * context, int width);
 int context_set_map_h(context_t * context, int height);
-int context_set_type(context_t * context, const char * name);
+ret_code_t context_set_type(context_t * context, const char * name);
 void context_set_pos_tx(context_t * context, unsigned int pos);
 void context_set_pos_ty(context_t * context, unsigned int pos);
 void context_set_tile_x(context_t * context, unsigned int pos);
 void context_set_tile_y(context_t * context, unsigned int pos);
 void context_new_VM(context_t * context);
-int context_set_id(context_t * context, const char * name);
-int context_set_selected_character(context_t * context, const char * selected_character);
-int context_set_selected_tile(context_t * context, const char * selected_map, int selected_map_x, int selected_map_y);
-int context_set_selected_equipment(context_t * context, const char * selected_equipment);
-int context_set_selected_item(context_t * context, const char * selected_item);
+ret_code_t context_set_id(context_t * context, const char * name);
+ret_code_t context_set_selected_character(context_t * context, const char * selected_character);
+ret_code_t context_set_selected_tile(context_t * context, const char * selected_map, int selected_map_x, int selected_map_y);
+ret_code_t context_set_selected_equipment(context_t * context, const char * selected_equipment);
+ret_code_t context_set_selected_item(context_t * context, const char * selected_item);
 
-int context_update_from_file(context_t * context);
+ret_code_t context_update_from_file(context_t * context);
 void context_spread(context_t * context);
 void context_add_or_update_from_network_frame(context_t * context, char * data);
 void context_lock_list();
 void context_unlock_list();
 context_t * context_get_first();
 context_t * context_get_player();
-int context_write_to_file(context_t * context);
+ret_code_t context_write_to_file(context_t * context);
 void context_broadcast_map(const char * map);
 void context_broadcast_character(const char * character);
 void context_request_other_context(context_t * context);
@@ -121,6 +123,6 @@ context_t * context_find(const char * id);
 void context_broadcast_text(const char * map, const char * text);
 int context_distance(context_t * ctx1, context_t * ctx2);
 void context_reset_all_position();
-int context_is_npc(context_t * ctx);
+bool context_is_npc(context_t * ctx);
 
 #endif

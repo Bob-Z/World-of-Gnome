@@ -36,7 +36,7 @@ layer_t * map_layer_new(const char * map, int layer_index, layer_t * default_lay
 	int more;
 	layer_t * layer = NULL;
 
-	layer=malloc(sizeof(layer_t));
+	layer=(layer_t*)malloc(sizeof(layer_t));
 
 	layer->active = false;
 

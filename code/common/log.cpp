@@ -29,7 +29,7 @@
 
 static int log_level = 0;
 
-char *log_level_string[3] = {"user","dev","debug"};
+const char *log_level_string[3] = {"user","dev","debug"};
 
 char ** file_filter = NULL;
 int file_filter_num = 0;
@@ -42,7 +42,7 @@ int func_filter_num = 0;
 void log_add_file_filter(const char * file)
 {
 	file_filter_num++;
-	file_filter = realloc(file_filter,sizeof(char*)*file_filter_num);
+	file_filter = (char **)realloc(file_filter,sizeof(char*)*file_filter_num);
 	file_filter[file_filter_num-1] = strdup(file);
 }
 
@@ -51,7 +51,7 @@ void log_add_file_filter(const char * file)
 void log_add_func_filter(const char * func)
 {
 	func_filter_num++;
-	func_filter = realloc(func_filter,sizeof(char*)*func_filter_num);
+	func_filter = (char **)realloc(func_filter,sizeof(char*)*func_filter_num);
 	func_filter[func_filter_num-1] = strdup(func);
 }
 

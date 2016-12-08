@@ -146,22 +146,22 @@ static int new_connection(void * data)
 	context_new_VM(context);
 
 	while(context_get_socket(context)) {
-		/* Read a command code */
-		if( !network_read_bytes(socket,(char *)&command, sizeof(Uint32))) {
-			context_set_connected(context,FALSE);
+		// Read a command code
+		if( network_read_bytes(socket,(char *)&command, sizeof(Uint32)) == RET_NOK ) {
+			context_set_connected(context,false);
 			break;
 		}
-		/* Read a size */
-		if( !network_read_bytes(socket,(char *)&command_size, sizeof(Uint32))) {
-			context_set_connected(context,FALSE);
+		// Read a size
+		if( network_read_bytes(socket,(char *)&command_size, sizeof(Uint32)) == RET_NOK ) {
+			context_set_connected(context,false);
 			break;
 		}
 
-		/* Read additional data */
+		// Read additional data
 		if( command_size > 0) {
 			buf = malloc(command_size);
-			if( !network_read_bytes(socket,buf, command_size)) {
-				context_set_connected(context,FALSE);
+			if( network_read_bytes(socket,buf, command_size) == RET_NOK ) {
+				context_set_connected(context,false);
 				break;
 			}
 		}
@@ -171,7 +171,7 @@ static int new_connection(void * data)
 				free(buf);
 				buf = NULL;
 			}
-			context_set_connected(context,FALSE);
+			context_set_connected(context,false);
 			break;
 		}
 
@@ -272,6 +272,6 @@ void network_send_popup(const char * id,const char ** dialog)
 	}
 
 	wlog(LOGDEBUG,"Send CMD_SEND_POPUP : send popup to %s",id);
-	network_send_command(target, CMD_SEND_POPUP, strlen(frame)+1, frame,FALSE);
+	network_send_command(target, CMD_SEND_POPUP, strlen(frame)+1, frame,false);
 	free(frame);
 }

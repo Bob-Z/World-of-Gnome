@@ -70,7 +70,7 @@ char * strconcat(const char * str, ...)
 	entry=va_arg(ap,char*);
 	while( entry != NULL ) {
 		size += strlen(entry);
-		res = realloc(res,size+1);
+		res = (char *)realloc(res,size+1);
 		strcat(res,entry);
 
 		entry=va_arg(ap,char*);
@@ -140,7 +140,7 @@ char ** add_array(char ** array1, char ** array2)
 		current_array = array1;
 		while( *current_array != NULL ) {
 			array_index++;
-			ret_array = realloc( ret_array, array_index * sizeof(char*) );
+			ret_array = (char **)realloc( ret_array, array_index * sizeof(char*) );
 			ret_array[array_index-1] = *current_array;
 			current_array++;
 		}
@@ -150,7 +150,7 @@ char ** add_array(char ** array1, char ** array2)
 		current_array = array2;
 		while( *current_array != NULL ) {
 			array_index++;
-			ret_array = realloc( ret_array, array_index * sizeof(char*) );
+			ret_array = (char **)realloc( ret_array, array_index * sizeof(char*) );
 			ret_array[array_index-1] = *current_array;
 			current_array++;
 		}
@@ -158,7 +158,7 @@ char ** add_array(char ** array1, char ** array2)
 
 	/* Terminal NULL */
 	array_index++;
-	ret_array = realloc( ret_array, array_index * sizeof(char*) );
+	ret_array = (char **)realloc( ret_array, array_index * sizeof(char*) );
 	ret_array[array_index-1] = NULL;
 
 	return ret_array;

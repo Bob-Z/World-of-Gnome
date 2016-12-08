@@ -21,9 +21,9 @@
 #define ITEM_H
 
 char * item_create_empty();
-char * item_create_from_template(const char * template);
+char * item_create_from_template(const char * my_template);
 int item_destroy(const char * item_id);
-char * resource_new(const char * template, int quantity);
+char * resource_new(const char * my_template, int quantity);
 char * item_is_resource(const char * item_id);
 int resource_get_quantity(const char * item_id);
 int resource_set_quantity(context_t * context, const char * item_id, int quantity);

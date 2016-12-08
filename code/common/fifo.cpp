@@ -45,7 +45,7 @@ void fifo_push(fifo_t ** fifo, void * data)
 	fifo_t * f;
 
 	if(*fifo == NULL) {
-		*fifo = malloc(sizeof(fifo_t));
+		*fifo = (fifo_t*)malloc(sizeof(fifo_t));
 		(*fifo)->data = data;
 		(*fifo)->next = NULL;
 		return;
@@ -56,7 +56,7 @@ void fifo_push(fifo_t ** fifo, void * data)
 		f = f->next;
 	}
 
-	f->next = malloc(sizeof(fifo_t));
+	f->next = (fifo_tag*)malloc(sizeof(fifo_t));
 	f = f->next;
 	f->data = data;
 	f->next = NULL;

@@ -172,7 +172,7 @@ static int l_character_set_selected_tile( lua_State* L)
 		return 0;  /* number of results */
 	}
 
-	if( context_set_selected_tile(target,selected_map,x,y) ) {
+	if( context_set_selected_tile(target,selected_map,x,y) == RET_OK ) {
 		network_send_context_to_context(target,target);
 	}
 
@@ -220,7 +220,7 @@ static int l_character_set_selected_inventory_id( lua_State* L)
 		return 0;  /* number of results */
 	}
 
-	if( context_set_selected_item(target,selected_item) ) {
+	if( context_set_selected_item(target,selected_item) == RET_OK ) {
 		network_send_context_to_context(target,target);
 	}
 
@@ -268,7 +268,7 @@ static int l_character_set_selected_equipment_slot( lua_State* L)
 		return 0;  /* number of results */
 	}
 
-	if( context_set_selected_equipment(target,selected_equipment) ) {
+	if( context_set_selected_equipment(target,selected_equipment) == RET_OK ) {
 		network_send_context_to_context(target,target);
 	}
 
@@ -316,7 +316,7 @@ static int l_character_set_selected_character_id( lua_State* L)
 		return 0;  /* number of results */
 	}
 
-	if( context_set_selected_character(target,selected_id) ) {
+	if( context_set_selected_character(target,selected_id) == RET_OK ) {
 		network_send_context_to_context(target,target);
 	}
 

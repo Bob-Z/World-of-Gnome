@@ -38,7 +38,7 @@ char * item_create_empty()
  the returned string must be freed by caller
  return NULL if fails
 **************************************************/
-char * item_create_from_template(const char * template)
+char * item_create_from_template(const char * my_template)
 {
 	char * new_name;
 	char * templatename;
@@ -46,7 +46,7 @@ char * item_create_from_template(const char * template)
 
 	new_name = file_new(ITEM_TABLE,NULL);
 
-	templatename = strconcat(base_directory,"/",ITEM_TEMPLATE_TABLE,"/",template,NULL);
+	templatename = strconcat(base_directory,"/",ITEM_TEMPLATE_TABLE,"/",my_template,NULL);
 	newfilename = strconcat(base_directory,"/",ITEM_TABLE,"/",new_name,NULL);
 
 	file_copy(templatename,newfilename);
@@ -72,7 +72,7 @@ int item_destroy(const char * item_id)
  the returned string must be freed by caller
  return NULL if fails
 ***********************************************************/
-char * resource_new(const char * template, int quantity)
+char * resource_new(const char * my_template, int quantity)
 {
 	char * new_id;
 
@@ -81,7 +81,7 @@ char * resource_new(const char * template, int quantity)
 		return NULL;
 	}
 
-	if(!entry_write_string(ITEM_TABLE,new_id,template,ITEM_TEMPLATE, NULL)) {
+	if(!entry_write_string(ITEM_TABLE,new_id,my_template,ITEM_TEMPLATE, NULL)) {
 		entry_destroy(ITEM_TABLE,new_id);
 		return NULL;
 	}
@@ -101,11 +101,11 @@ char * resource_new(const char * template, int quantity)
  *****************************************************/
 char * item_is_resource(const char * item_id)
 {
-	char * template = NULL;
+	char * my_template = NULL;
 
-	entry_read_string(ITEM_TABLE,item_id,&template,ITEM_TEMPLATE, NULL);
+	entry_read_string(ITEM_TABLE,item_id,&my_template,ITEM_TEMPLATE, NULL);
 
-	return template;
+	return my_template;
 }
 
 /*****************************
@@ -115,12 +115,12 @@ char * item_is_resource(const char * item_id)
 int resource_get_quantity(const char * item_id)
 {
 	int quantity;
-	char * template;
+	char * my_template;
 
-	if((template=item_is_resource(item_id))==NULL) {
+	if((my_template=item_is_resource(item_id))==NULL) {
 		return 1; /* unique item */
 	}
-	free(template);
+	free(my_template);
 
 	if(!entry_read_int(ITEM_TABLE,item_id,&quantity,ITEM_QUANTITY, NULL)) {
 		return -1;
@@ -135,13 +135,13 @@ int resource_get_quantity(const char * item_id)
 *****************************/
 int resource_set_quantity(context_t * context, const char * item_id, int quantity)
 {
-	char * template;
+	char * my_template;
 
 	/* unique item */
-	if((template=item_is_resource(item_id))==NULL) {
+	if((my_template=item_is_resource(item_id))==NULL) {
 		return -1;
 	}
-	free(template);
+	free(my_template);
 
 	if(!entry_write_int(ITEM_TABLE,item_id,quantity,ITEM_QUANTITY, NULL)) {
 		return -1;
@@ -158,15 +158,15 @@ int resource_set_quantity(context_t * context, const char * item_id, int quantit
 *****************************/
 char * item_get_name(const char * item_id)
 {
-	char * template;
+	char * my_template;
 	char * name;
 
-	if( (template=item_is_resource(item_id)) != NULL ) {
-		if(entry_read_string(ITEM_TEMPLATE_TABLE,template,&name,ITEM_NAME,NULL)) {
-			free(template);
+	if( (my_template=item_is_resource(item_id)) != NULL ) {
+		if(entry_read_string(ITEM_TEMPLATE_TABLE,my_template,&name,ITEM_NAME,NULL)) {
+			free(my_template);
 			return name;
 		}
-		free(template);
+		free(my_template);
 	} else {
 		if(entry_read_string(ITEM_TABLE,item_id,&name,ITEM_NAME,NULL)) {
 			return name;

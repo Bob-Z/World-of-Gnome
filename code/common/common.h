@@ -20,16 +20,9 @@
 #ifndef WOG_COMMON_INCLUDE
 #define WOG_COMMON_INCLUDE
 
-#define FALSE	(0)
-#define false	(0)
-#define TRUE	(1)
-#define true	(1)
-
-#define RET_OK		(0)
-#define RET_FAIL	(-1)
-
 #include <SDL2/SDL_net.h>
 
+#include "types.h"
 #include "util.h"
 #include "const.h"
 #include "list.h"
@@ -47,5 +40,8 @@
 #include "fifo.h"
 #include "font.h"
 #include "sfx.h"
+
+#define RET_OK		(0)
+#define RET_NOK		(-1)
 
 #endif

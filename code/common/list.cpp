@@ -103,7 +103,7 @@ void list_update(list_t ** list, const char *key, void * data)
 	}
 
 	/* The key doesn't exists; create it */
-	new_entry = malloc(sizeof(list_entry_t));
+	new_entry = (list_entry_t*)malloc(sizeof(list_entry_t));
 	new_entry->key = strdup(key);
 	new_entry->data = data;
 	new_entry->hash = calc_hash(new_entry->key);
@@ -113,7 +113,7 @@ void list_update(list_t ** list, const char *key, void * data)
 
 	/* list does not exist */
 	if( *list == NULL) {
-		*list = malloc( HASH_TABLE_SIZE * sizeof(list_entry_t *));
+		*list = (list_entry_t**)malloc( HASH_TABLE_SIZE * sizeof(list_entry_t *));
 		memset(*list,0,HASH_TABLE_SIZE * sizeof(list_entry_t *));
 		(*list)[index] = new_entry;
 		return;

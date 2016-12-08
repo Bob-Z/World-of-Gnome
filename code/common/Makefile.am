@@ -1,5 +1,5 @@
 noinst_LIBRARIES=libcommon.a
-libcommon_a_SOURCES=util.c context.c network.c map.c entry.c log.c mutex.c item.c file.c list.c fifo.c font.c sfx.c
+libcommon_a_SOURCES=util.cpp context.cpp network.cpp map.cpp entry.cpp log.cpp mutex.cpp item.cpp file.cpp list.cpp fifo.cpp font.cpp sfx.cpp
 libcommon_a_LIBADD=$(ADD_LIB)
 libcommon_a_CFLAGS = $(AM_CFLAGS)
 

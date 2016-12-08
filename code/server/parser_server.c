@@ -52,20 +52,20 @@ int parse_incoming_data(context_t * context, Uint32 command, Uint32 command_size
 		if( strcmp(value, password) != 0) {
 			free(value);
 			werr(LOGUSER,"Wrong login for %s",user_name);
-			/* send answer */
-			network_send_command(context, CMD_SEND_LOGIN_NOK, 0, NULL, FALSE);
-			/* force client disconnection*/
+			// send answer
+			network_send_command(context, CMD_SEND_LOGIN_NOK, 0, NULL, false);
+			// force client disconnection
 			return FALSE;
 		} else {
 			free(value);
 
-			if( !context_set_username(context, user_name) ) {
+			if( context_set_username(context, user_name) == RET_NOK ) {
 				return FALSE;
 			}
-			context_set_connected(context, TRUE);
+			context_set_connected(context, true);
 
-			/* send answer */
-			network_send_command(context, CMD_SEND_LOGIN_OK, 0, NULL, FALSE);
+			// send answer
+			network_send_command(context, CMD_SEND_LOGIN_OK, 0, NULL, false);
 			wlog(LOGUSER,"Login successful for user %s",context->user_name);
 		}
 		break;

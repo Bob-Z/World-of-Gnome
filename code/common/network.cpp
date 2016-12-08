@@ -64,7 +64,7 @@ static int async_send(void * user_data)
 	bytes_written = SDLNet_TCP_Send(socket,&data->command,length);
 	if( bytes_written != length ) {
 		werr(LOGUSER,"Could not send command to %s",context->id);
-		context_set_connected(context,FALSE);
+		context_set_connected(context,false);
 		goto async_send_end;
 	}
 
@@ -73,7 +73,7 @@ static int async_send(void * user_data)
 	bytes_written = SDLNet_TCP_Send(socket,&data->count,length);
 	if( bytes_written != length ) {
 		werr(LOGUSER,"Could not send command to %s",context->id);
-		context_set_connected(context,FALSE);
+		context_set_connected(context,false);
 		goto async_send_end;
 	}
 
@@ -83,7 +83,7 @@ static int async_send(void * user_data)
 		bytes_written = SDLNet_TCP_Send(socket,data->data,length);
 		if( bytes_written != length ) {
 			werr(LOGUSER,"Could not send command to %s",context->id);
-			context_set_connected(context,FALSE);
+			context_set_connected(context,false);
 			goto async_send_end;
 		}
 	}
@@ -99,15 +99,15 @@ async_send_free:
 
 /*******************************
 *******************************/
-void network_send_command(context_t * context, Uint32 command, long int count, const char *data, int is_data)
+void network_send_command(context_t * context, Uint32 command, long int count, const char *data, bool is_data)
 {
 	send_data_t * send_data;
 	SDL_Thread *thread;
 
-	send_data = malloc(sizeof(send_data_t));
+	send_data = (send_data_t*)malloc(sizeof(send_data_t));
 	send_data->command = command;
 	send_data->count = count;
-	send_data->data = malloc(count);
+	send_data->data = (char *)malloc(count);
 	memcpy(send_data->data,data,count);
 	send_data->is_data = is_data;
 	send_data->context = context;
@@ -133,7 +133,7 @@ void network_send_entry_int(context_t * context, const char * table, const char 
 	frame = strconcat(ENTRY_TYPE_INT,NETWORK_DELIMITER,table,NETWORK_DELIMITER,file,NETWORK_DELIMITER,path,NETWORK_DELIMITER,buf,NULL);
 
 	wlog(LOGDEBUG,"Send CMD_SEND_ENTRY to %s :%s",context->id,frame);
-	network_send_command(context, CMD_SEND_ENTRY, strlen(frame)+1, frame,FALSE);
+	network_send_command(context, CMD_SEND_ENTRY, strlen(frame)+1, frame,false);
 
 	free(frame);
 }
@@ -149,54 +149,52 @@ void network_send_req_file(context_t * context, const char * file)
 	char * cksum;
 	char * frame;
 
-	/* Sanity check */
+	// Sanity check
 	if(file == NULL) {
 		werr(LOGDEV,"network_send_req_file_checksum called with NULL");
 		return;
 	}
 
-	/* Compute checksum of local file */
+	// Compute checksum of local file
 	filename = strconcat(base_directory,"/",file,NULL);
 
 	cksum = checksum_file(filename);
 	if( cksum == NULL ) {
-		cksum = "0";
+		cksum = strdup("0");
 	}
 	free(filename);
 
 	frame = strconcat(file,NETWORK_DELIMITER,cksum,NULL);
 
 	wlog(LOGDEBUG,"Send CMD_REQ_FILE :%s",file);
-	network_send_command(context, CMD_REQ_FILE, strlen(frame)+1, frame,TRUE);
+	network_send_command(context, CMD_REQ_FILE, strlen(frame)+1, frame,true);
 	free(frame);
 
-	if(cksum[0] != '0' && cksum[1] != 0) {
-		free(cksum);
-	}
+	free(cksum);
 }
 
 /*********************************************************************
-  Return FALSE on error, TRUE on OK
+  Return RET_NOK on error, RET_OK on OK
 *********************************************************************/
-int network_read_bytes(TCPsocket socket, char * data, int size)
+ret_code_t network_read_bytes(TCPsocket socket, char * data, int size)
 {
 	int bytes_read = 0;
 	int total_bytes = 0;
 
 	if( socket == 0 ) {
-		return FALSE;
+		return RET_NOK;
 	}
 
 	while( total_bytes != size && bytes_read != -1 ) {
 		bytes_read = SDLNet_TCP_Recv(socket, data+total_bytes, 1);
 		if( bytes_read < 1 ) {
 			werr(LOGDEBUG,"Read error on socket %d",socket);
-			return FALSE;
+			return RET_NOK;
 		}
 		total_bytes += bytes_read;
 	}
 
-	return TRUE;
+	return RET_OK;
 }
 
 /*********************************************************************
@@ -257,7 +255,7 @@ void network_send_context_to_context(context_t * dest_ctx, context_t * src_ctx)
 	add_str(data,&data_size,src_ctx->selection.inventory);
 
 	wlog(LOGDEBUG,"Send CMD_SEND_CONTEXT of %s to %s",src_ctx->id,dest_ctx->id);
-	network_send_command(dest_ctx, CMD_SEND_CONTEXT, data_size, data,FALSE);
+	network_send_command(dest_ctx, CMD_SEND_CONTEXT, data_size, data,false);
 }
 
 /*********************************************************************
@@ -275,54 +273,54 @@ int network_send_file(context_t * context, char * filename)
 	char * frame = NULL;
 	char * ptr = NULL;
 
-	/* Check if NPC */
+	// Check if NPC
 	if( context_is_npc(context) == true ) {
 		return -1;
 	}
 
-	/* Never send files with password */
+	// Never send files with password
 	if ( strstr(filename,PASSWD_TABLE) != NULL ) {
 		werr(LOGUSER,"send_file : Do not serve personal file  \"%s\"",filename);
 		return -1;
 	}
 
-	/* Read the file */
+	// Read the file
 	res = file_get_contents(filename,&file_data,&file_length);
-	if( res == FALSE) {
+	if( res == RET_NOK ) {
 		werr(LOGUSER,"send_file : Error reading file \"%s\"",filename);
 		return -1;
 	}
 
-	/* Prepare the frame = file_name_size + file_name + file_data_size + file_data*/
+	// Prepare the frame = file_name_size + file_name + file_data_size + file_data
 	count = sizeof(Uint32)+strlen(filename)+1+sizeof(Uint32)+file_length;
-	frame = malloc(count);
+	frame = (char*)malloc(count);
 	if( frame == NULL) {
 		free(file_data);
 		werr(LOGUSER,"send_file : Error allocating memory");
 		return -1;
 	}
 
-	/* first the filename size */
+	// first the filename size
 	*((Uint32 *)frame) = strlen(filename)+1;
 	ptr = frame;
 	ptr += sizeof(Uint32);
 
-	/* then the name of the file itself */
+	// then the name of the file itself
 	memcpy(ptr,filename,strlen(filename)+1);
 	ptr += strlen(filename) + 1;
 
-	/* then the size of the file data */
+	// then the size of the file data
 	*((Uint32 *)ptr) = file_length;
 	ptr += sizeof(Uint32);
 
-	/* then the file data itself */
+	// then the file data itself
 	memcpy(ptr,file_data,file_length);
 
 	free(file_data);
 
-	/* send the frame */
+	// send the frame
 	wlog(LOGDEBUG,"Send CMD_SEND_FILE : %s",filename);
-	network_send_command(context, CMD_SEND_FILE, count, frame,FALSE);
+	network_send_command(context, CMD_SEND_FILE, count, frame,false);
 
 	free(frame);
 
@@ -333,7 +331,7 @@ int network_send_file(context_t * context, char * filename)
 send table/file to a context
 return FALSE on success
 *********************************************************************/
-int network_send_table_file(context_t * context, char * table, const char * id)
+int network_send_table_file(context_t * context, const char * table, const char * id)
 {
 	char * filename;
 	int ret;
@@ -356,5 +354,5 @@ void network_send_text(const char * id, const char * string)
 	}
 
 	wlog(LOGDEBUG,"Send CMD_SEND_TEXT :\"%s\" to %s (%s)",string,context->character_name,context->user_name);
-	network_send_command(context, CMD_SEND_TEXT, strlen(string)+1, string,FALSE);
+	network_send_command(context, CMD_SEND_TEXT, strlen(string)+1, string,false);
 }

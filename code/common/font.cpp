@@ -1,6 +1,6 @@
 /*
    World of Gnome is a 2D multiplayer role playing game.
-   Copyright (C) 2013-2016 carabobz@gmail.com
+   Copyright (C) 2016 carabobz@gmail.com
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -17,23 +17,39 @@
    Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
-#ifndef LOG_H
-#define LOG_H
+#include "common.h"
 
-#include <stdio.h>
+static list_t * font_list = NULL;
 
-void log_set_level(char * log_level);
-void log_add_file_filter(const char * file);
-void log_add_func_filter(const char * func);
-void log_print(int type,const char * file,const char * func, int line,FILE *stream,int level,const char * format, ...);
+/****************************************
+*****************************************/
+TTF_Font * font_get(context_t* ctx,const char * filename, int size)
+{
+	TTF_Font * font;
+	char * fullname;
 
-#define LOGUSER		0
-#define LOGDEV		1
-#define LOGDEBUG	2
+	file_lock(filename);
 
-#define TYPELOG		0
-#define TYPEERR		1
+	font = (TTF_Font*)list_find(font_list,filename);
 
-#define wlog(level,str,args...) log_print(TYPELOG,__FILE__,__func__,__LINE__,stdout,level,str, ## args)
-#define werr(level,str,args...) log_print(TYPEERR,__FILE__,__func__,__LINE__,stderr,level,str, ## args)
-#endif
+	if( font ) {
+		file_unlock(filename);
+		return font;
+	}
+
+	fullname = strconcat(base_directory,"/",filename,NULL);
+	font = TTF_OpenFont(fullname, size);
+	free(fullname);
+	if( font ) {
+		list_update(&font_list,filename,font);
+		file_unlock(filename);
+		return font;
+	}
+
+	file_update(ctx,filename);
+
+	file_unlock(filename);
+
+	return NULL;
+}
+

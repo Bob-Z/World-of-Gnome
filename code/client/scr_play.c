@@ -906,7 +906,7 @@ item_t * scr_play_compose(context_t * ctx)
 	}
 
 	if(ctx->map == NULL ) {
-		if(!context_update_from_file(ctx)) {
+		if(context_update_from_file(ctx) == RET_NOK) {
 			return NULL;
 		}
 	}

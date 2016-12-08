@@ -73,7 +73,7 @@ static const config_t * load_config(char * filename)
 
 	fullname = strconcat(base_directory,"/",filename,NULL);
 
-	config = malloc(sizeof(config_t));
+	config = (config_t*)malloc(sizeof(config_t));
 	if(config == NULL) {
 		free(fullname);
 		return NULL;
@@ -105,7 +105,7 @@ void entry_remove(char * filename)
 	wlog(LOGDEBUG,"Removing entry : %s",filename);
 	/* Clean-up old anim if any */
 	SDL_LockMutex(entry_mutex);
-	old_config = list_find(entry_list,filename);
+	old_config = (config_t*)list_find(entry_list,filename);
 	if( old_config ) {
 		free_config(old_config);
 	}
@@ -131,7 +131,7 @@ static const config_t * get_config(const char * table, const char * file)
 
 //	wlog(LOGDEBUG,"Entry get : %s",filename);
 
-	config = list_find(entry_list,filename);
+	config = (config_t*)list_find(entry_list,filename);
 
 	if(config) {
 //		wlog(LOGDEBUG,"Entry found : %s",filename);
@@ -203,9 +203,9 @@ static char * get_path(va_list ap)
 }
 
 /*********************
-return FALSE on error
+return RET_NOK on error
 *********************/
-static int __read_int(const char * table, const char * file, int * res, va_list ap)
+static ret_code_t __read_int(const char * table, const char * file, int * res, va_list ap)
 {
 	const config_t * config = NULL;
 	char * path=NULL;
@@ -215,19 +215,19 @@ static int __read_int(const char * table, const char * file, int * res, va_list 
 	config = get_config(table,file);
 	if(config==NULL) {
 		SDL_UnlockMutex(entry_mutex);
-		return FALSE;
+		return RET_NOK;
 	}
 
 	path = get_path(ap);
 	if(path == NULL) {
 		SDL_UnlockMutex(entry_mutex);
-		return FALSE;
+		return RET_NOK;
 	}
 
 	if(config_lookup_int (config, path, &result)==CONFIG_FALSE) {
 		SDL_UnlockMutex(entry_mutex);
 		free(path);
-		return FALSE;
+		return RET_NOK;
 	}
 	free(path);
 
@@ -235,15 +235,15 @@ static int __read_int(const char * table, const char * file, int * res, va_list 
 
 	*res = result;
 
-	return TRUE;
+	return RET_OK;
 }
 
 /*********************
-return FALSE on error
+return RET_NOK on error
 *********************/
-int entry_read_int(const char * table, const char * file, int * res, ...)
+ret_code_t entry_read_int(const char * table, const char * file, int * res, ...)
 {
-	int ret;
+	ret_code_t ret;
 	va_list ap;
 
 	va_start(ap, res);
@@ -254,10 +254,10 @@ int entry_read_int(const char * table, const char * file, int * res, ...)
 }
 
 /*********************
-return FALSE on error
+return RET_NOK on error
 res MUST BE FREED by caller
 *********************/
-static int __read_string(const char * table, const char * file, char ** res, va_list ap)
+static ret_code_t __read_string(const char * table, const char * file, char ** res, va_list ap)
 {
 	const config_t * config = NULL;
 	char * path;
@@ -269,37 +269,37 @@ static int __read_string(const char * table, const char * file, char ** res, va_
 	config = get_config(table,file);
 	if(config==NULL) {
 		SDL_UnlockMutex(entry_mutex);
-		return FALSE;
+		return RET_NOK;
 	}
 
 	path = get_path(ap);
 	if(path == NULL) {
 		SDL_UnlockMutex(entry_mutex);
-		return FALSE;
+		return RET_NOK;
 	}
 
 	if(config_lookup_string (config, path, &result)==CONFIG_FALSE) {
 //		g_warning("%s: Can't read %s/%s/%s",__func__,table,file,path);
 		SDL_UnlockMutex(entry_mutex);
 		free(path);
-		return FALSE;
+		return RET_NOK;
 	}
 	free(path);
 	SDL_UnlockMutex(entry_mutex);
 
 	*res = strdup(result);
 
-	return TRUE;
+	return RET_OK;
 }
 
 /*********************
 Fill res with a pointer to a string.
 This string MUST BE FREED by caller.
-return FALSE on error
+return RET_NOK on error
 *********************/
-int entry_read_string(const char * table, const char * file, char ** res, ...)
+ret_code_t entry_read_string(const char * table, const char * file, char ** res, ...)
 {
-	int ret;
+	ret_code_t ret;
 	va_list ap;
 
 	va_start(ap, res);
@@ -310,10 +310,10 @@ int entry_read_string(const char * table, const char * file, char ** res, ...)
 }
 
 /*********************
-return FALSE on error
+return RET_NOK on error
 res MUST BE FREED by caller
 *********************/
-static int __read_list_index(const char * table, const char * file, char ** res, int index, va_list ap)
+static ret_code_t __read_list_index(const char * table, const char * file, char ** res, int index, va_list ap)
 {
 	const config_t * config = NULL;
 	config_setting_t * setting = NULL;
@@ -326,40 +326,40 @@ static int __read_list_index(const char * table, const char * file, char ** res,
 	config = get_config(table,file);
 	if(config==NULL) {
 		SDL_UnlockMutex(entry_mutex);
-		return FALSE;
+		return RET_NOK;
 	}
 
 	path = get_path(ap);
 	if(path == NULL) {
 		SDL_UnlockMutex(entry_mutex);
-		return FALSE;
+		return RET_NOK;
 	}
 
 	setting = config_lookup (config, path);
 	if( setting == NULL ) {
 		SDL_UnlockMutex(entry_mutex);
 		free(path);
-		return FALSE;
+		return RET_NOK;
 	}
 	free(path);
 
 	result = config_setting_get_string_elem (setting,index);
 	if(result == NULL ) {
 		SDL_UnlockMutex(entry_mutex);
-		return FALSE;
+		return RET_NOK;
 	}
 
 	SDL_UnlockMutex(entry_mutex);
 	*res = strdup(result);
-	return TRUE;
+	return RET_OK;
 }
 
 /*********************
-return FALSE on error
+return RET_NOK on error
 *********************/
-int entry_read_list_index(const char * table, const char * file, char ** res,int index, ...)
+ret_code_t entry_read_list_index(const char * table, const char * file, char ** res,int index, ...)
 {
-	int ret;
+	ret_code_t ret;
 	va_list ap;
 
 	va_start(ap, index);
@@ -370,10 +370,10 @@ int entry_read_list_index(const char * table, const char * file, char ** res,int
 }
 
 /*********************
-return FALSE on error
+return RET_NOK on error
 res must be freed with deep_free
 *********************/
-static int __read_list(const char * table, const char * file, char *** res, va_list ap)
+static ret_code_t __read_list(const char * table, const char * file, char *** res, va_list ap)
 {
 	const config_t * config = NULL;
 	config_setting_t * setting = NULL;
@@ -387,26 +387,26 @@ static int __read_list(const char * table, const char * file, char *** res, va_l
 	config = get_config(table,file);
 	if(config==NULL) {
 		SDL_UnlockMutex(entry_mutex);
-		return FALSE;
+		return RET_NOK;
 	}
 
 	path = get_path(ap);
 	if(path == NULL) {
 		SDL_UnlockMutex(entry_mutex);
-		return FALSE;
+		return RET_NOK;
 	}
 
 	setting = config_lookup (config, path);
 	if( setting == NULL ) {
 		SDL_UnlockMutex(entry_mutex);
 		free(path);
-		return FALSE;
+		return RET_NOK;
 	}
 	free(path);
 
 	while( (elem=config_setting_get_string_elem (setting,i )) != NULL ) {
 		i++;
-		*res = realloc(*res,(i+1)*sizeof(char *));
+		*res = (char**)realloc(*res,(i+1)*sizeof(char *));
 		(*res)[i-1] = strdup(elem);
 		(*res)[i] = NULL;
 
@@ -415,19 +415,19 @@ static int __read_list(const char * table, const char * file, char *** res, va_l
 	SDL_UnlockMutex(entry_mutex);
 
 	if(*res == NULL) {
-		return FALSE;
+		return RET_NOK;
 	}
 
-	return TRUE;
+	return RET_OK;
 }
 
 /*********************
-return FALSE on error
+return RET_NOK on error
 res must be freed with deep_free
 *********************/
-int entry_read_list(const char * table, const char * file, char *** res, ...)
+ret_code_t entry_read_list(const char * table, const char * file, char *** res, ...)
 {
-	int ret;
+	ret_code_t ret;
 	va_list ap;
 
 	va_start(ap, res);
@@ -438,7 +438,6 @@ int entry_read_list(const char * table, const char * file, char *** res, ...)
 }
 
 /*********************
-return FALSE on error
 *********************/
 static config_setting_t * create_tree(const config_t * config, config_setting_t * prev_setting, char * prev_entry, char * path, int type, va_list ap)
 {
@@ -491,9 +490,9 @@ static config_setting_t * create_tree(const config_t * config, config_setting_t 
 }
 
 /*********************
-return FALSE on error
+return RET_NOK on error
 *********************/
-static int __write_int(const char * table, const char * file, int data, va_list ap)
+static ret_code_t __write_int(const char * table, const char * file, int data, va_list ap)
 {
 	config_setting_t * setting;
 	const config_t * config;
@@ -502,7 +501,7 @@ static int __write_int(const char * table, const char * file, int data, va_list 
 	config = get_config(table,file);
 	if(config==NULL) {
 		SDL_UnlockMutex(entry_mutex);
-		return FALSE;
+		return RET_NOK;
 	}
 
 	setting = create_tree(config,NULL,NULL,NULL,CONFIG_TYPE_INT,ap);
@@ -510,20 +509,20 @@ static int __write_int(const char * table, const char * file, int data, va_list 
 	/* update int */
 	if(config_setting_set_int(setting, data)==CONFIG_FALSE) {
 		SDL_UnlockMutex(entry_mutex);
-		return FALSE;
+		return RET_NOK;
 	}
 
 	write_config(config,table,file);
 	SDL_UnlockMutex(entry_mutex);
-	return TRUE;
+	return RET_OK;
 }
 
 /*********************
-return FALSE on error
+return RET_NOK on error
 *********************/
-int entry_write_int(const char * table, const char * file,int data, ...)
+ret_code_t entry_write_int(const char * table, const char * file,int data, ...)
 {
-	int ret;
+	ret_code_t ret;
 	va_list ap;
 
 	va_start(ap, data);
@@ -534,9 +533,9 @@ int entry_write_int(const char * table, const char * file,int data, ...)
 }
 
 /*********************
-return FALSE on error
+return RET_NOK on error
 *********************/
-static int __write_string(const char * table, const char * file, const char * data, va_list ap)
+static ret_code_t __write_string(const char * table, const char * file, const char * data, va_list ap)
 {
 	config_setting_t * setting;
 	const config_t * config;
@@ -545,7 +544,7 @@ static int __write_string(const char * table, const char * file, const char * da
 	config = get_config(table,file);
 	if(config==NULL) {
 		SDL_UnlockMutex(entry_mutex);
-		return FALSE;
+		return RET_NOK;
 	}
 
 	setting = create_tree(config,NULL,NULL,NULL,CONFIG_TYPE_STRING,ap);
@@ -553,20 +552,20 @@ static int __write_string(const char * table, const char * file, const char * da
 	/* update string */
 	if(config_setting_set_string(setting, data)==CONFIG_FALSE) {
 		SDL_UnlockMutex(entry_mutex);
-		return FALSE;
+		return RET_NOK;
 	}
 
 	write_config(config,table,file);
 	SDL_UnlockMutex(entry_mutex);
-	return TRUE;
+	return RET_OK;
 }
 
 /*********************
-return FALSE on error
+return RET_NOK on error
 *********************/
-int entry_write_string(const char * table, const char * file, const char * data, ...)
+ret_code_t entry_write_string(const char * table, const char * file, const char * data, ...)
 {
-	int ret;
+	ret_code_t ret;
 	va_list ap;
 
 	va_start(ap, data);
@@ -577,9 +576,9 @@ int entry_write_string(const char * table, const char * file, const char * data,
 }
 
 /*********************
-return FALSE on error
+return RET_NOK on error
 *********************/
-static int __write_list_index(const char * table, const char * file, const char * data, int index, va_list ap)
+static ret_code_t __write_list_index(const char * table, const char * file, const char * data, int index, va_list ap)
 {
 	config_setting_t * setting = NULL;
 	const config_t * config;
@@ -590,37 +589,37 @@ static int __write_list_index(const char * table, const char * file, const char 
 	config = get_config(table,file);
 	if(config==NULL) {
 		SDL_UnlockMutex(entry_mutex);
-		return FALSE;
+		return RET_NOK;
 	}
 
 	setting = create_tree(config,NULL,NULL,NULL,CONFIG_TYPE_ARRAY,ap);
 
-	/* Create empty entry before index */
+	// Create empty entry before index
 	list_size = config_setting_length (setting);
 	while( list_size <= index ) {
 		if(config_setting_set_string_elem(setting,-1,"")==NULL) {
 			SDL_UnlockMutex(entry_mutex);
-			return FALSE;
+			return RET_NOK;
 		}
 		list_size++;
 	}
 
 	if(config_setting_set_string_elem(setting,index,data)==NULL) {
 		SDL_UnlockMutex(entry_mutex);
-		return FALSE;
+		return RET_NOK;
 	}
 
 	write_config(config,table,file);
 	SDL_UnlockMutex(entry_mutex);
-	return TRUE;
+	return RET_OK;
 }
 
 /*********************
-return FALSE on error
+return RET_NOK on error
 *********************/
-int entry_write_list_index(const char * table, const char * file, const char * data, int index, ...)
+ret_code_t entry_write_list_index(const char * table, const char * file, const char * data, int index, ...)
 {
-	int ret;
+	ret_code_t ret;
 	va_list ap;
 
 	va_start(ap, index);
@@ -631,9 +630,9 @@ int entry_write_list_index(const char * table, const char * file, const char * d
 }
 
 /*********************
-return FALSE on error
+return RET_NOK on error
 *********************/
-static int __write_list(const char * table, const char * file, char ** data, va_list ap)
+static ret_code_t __write_list(const char * table, const char * file, char ** data, va_list ap)
 {
 	config_setting_t * setting;
 	const config_t * config;
@@ -643,7 +642,7 @@ static int __write_list(const char * table, const char * file, char ** data, va_
 	config = get_config(table,file);
 	if(config==NULL) {
 		SDL_UnlockMutex(entry_mutex);
-		return FALSE;
+		return RET_NOK;
 	}
 
 	setting = create_tree(config,NULL,NULL,NULL,CONFIG_TYPE_ARRAY,ap);
@@ -654,7 +653,7 @@ static int __write_list(const char * table, const char * file, char ** data, va_
 			// If it down not exist, add a new setting at the end of the list
 			if(config_setting_set_string_elem(setting,-1,data[i])==NULL) {
 				SDL_UnlockMutex(entry_mutex);
-				return FALSE;
+				return RET_NOK;
 			}
 		}
 		i++;
@@ -663,15 +662,15 @@ static int __write_list(const char * table, const char * file, char ** data, va_
 	write_config(config,table,file);
 	SDL_UnlockMutex(entry_mutex);
 
-	return TRUE;
+	return RET_OK;
 }
 
 /*********************
-return FALSE on error
+return RET_NOK on error
 *********************/
-int entry_write_list(const char * table, const char * file, char ** data, ...)
+ret_code_t entry_write_list(const char * table, const char * file, char ** data, ...)
 {
-	int ret;
+	ret_code_t ret;
 	va_list ap;
 
 	va_start(ap, data);
@@ -682,9 +681,9 @@ int entry_write_list(const char * table, const char * file, char ** data, ...)
 }
 
 /*********************
-return FALSE on error
+return RET_NOK on error
 *********************/
-static int __add_to_list(const char * table, const char * file, const char * to_be_added, va_list ap)
+static ret_code_t __add_to_list(const char * table, const char * file, const char * to_be_added, va_list ap)
 {
 	const config_t * config = NULL;
 	config_setting_t * setting = NULL;
@@ -694,40 +693,40 @@ static int __add_to_list(const char * table, const char * file, const char * to_
 	config = get_config(table,file);
 	if(config==NULL) {
 		SDL_UnlockMutex(entry_mutex);
-		return FALSE;
+		return RET_NOK;
 	}
 
 	path = get_path(ap);
 	if(path == NULL) {
 		SDL_UnlockMutex(entry_mutex);
-		return FALSE;
+		return RET_NOK;
 	}
 
 	setting = config_lookup (config, path);
 	if( setting == NULL ) {
 		SDL_UnlockMutex(entry_mutex);
 		free(path);
-		return FALSE;
+		return RET_NOK;
 	}
 	free(path);
 
 	if(config_setting_set_string_elem(setting,-1,to_be_added)==NULL) {
 		SDL_UnlockMutex(entry_mutex);
-		return FALSE;
+		return RET_NOK;
 	}
 
 	write_config(config,table,file);
 	SDL_UnlockMutex(entry_mutex);
 
-	return TRUE;
+	return RET_OK;
 }
 
 /*********************
-return FALSE on error
+return RET_NOK on error
 *********************/
-int entry_add_to_list(const char * table, const char * file, const char * to_be_added, ...)
+ret_code_t entry_add_to_list(const char * table, const char * file, const char * to_be_added, ...)
 {
-	int ret;
+	ret_code_t ret;
 	va_list ap;
 
 	va_start(ap, to_be_added);
@@ -738,9 +737,9 @@ int entry_add_to_list(const char * table, const char * file, const char * to_be_
 }
 
 /*********************
-return FALSE on error
+return RET_NOK on error
 *********************/
-static int __remove_group(const char * table, const char * file, const char * group, va_list ap)
+static ret_code_t __remove_group(const char * table, const char * file, const char * group, va_list ap)
 {
 
 	const config_t * config;
@@ -751,7 +750,7 @@ static int __remove_group(const char * table, const char * file, const char * gr
 	config = get_config(table,file);
 	if(config==NULL) {
 		SDL_UnlockMutex(entry_mutex);
-		return FALSE;
+		return RET_NOK;
 	}
 
 	path = get_path(ap);
@@ -764,26 +763,26 @@ static int __remove_group(const char * table, const char * file, const char * gr
 
 	if( setting == NULL ) {
 		SDL_UnlockMutex(entry_mutex);
-		return FALSE;
+		return RET_NOK;
 	}
 
 	if( config_setting_remove(setting,group) == CONFIG_FALSE) {
 		SDL_UnlockMutex(entry_mutex);
-		return FALSE;
+		return RET_NOK;
 	}
 
 	write_config(config,table,file);
 	SDL_UnlockMutex(entry_mutex);
 
-	return TRUE;
+	return RET_OK;
 }
 
 /*********************
-return FALSE on error
+return RET_NOK on error
 *********************/
-int entry_remove_group(const char * table, const char * file, const char * group, ...)
+ret_code_t entry_remove_group(const char * table, const char * file, const char * group, ...)
 {
-	int ret;
+	ret_code_t ret;
 	va_list ap;
 
 	va_start(ap, group);
@@ -891,6 +890,7 @@ char * entry_get_unused_group(const char * table, const char * file, ...)
 __get_unused_group_on_path
 find an unused group, DO NOT CREATE IT and return its name
 returned string must be freed
+return NULL on error
 **********************/
 char * __get_unused_group_on_path(const char * table, const char * file, char * path)
 {
@@ -903,7 +903,7 @@ char * __get_unused_group_on_path(const char * table, const char * file, char * 
 	config = get_config(table,file);
 	if(config==NULL) {
 		SDL_UnlockMutex(entry_mutex);
-		return FALSE;
+		return NULL;
 	}
 
 	sprintf(tag,"A%05x",index);
@@ -929,9 +929,9 @@ char * __get_unused_group_on_path(const char * table, const char * file, char * 
 /**********************
 Return a list of the name of the elements in the specified group
 res must be freed  (deep_free)
- return FALSE on error
+ return RET_NOK on error
 **********************/
-int entry_get_group_list(const char * table, const char * file, char *** res, ...)
+ret_code_t entry_get_group_list(const char * table, const char * file, char *** res, ...)
 {
 	char * path;
 	const config_t * config;
@@ -946,7 +946,7 @@ int entry_get_group_list(const char * table, const char * file, char *** res, ..
 	config = get_config(table,file);
 	if(config==NULL) {
 		SDL_UnlockMutex(entry_mutex);
-		return FALSE;
+		return RET_NOK;
 	}
 
 	va_start(ap,res);
@@ -963,12 +963,12 @@ int entry_get_group_list(const char * table, const char * file, char *** res, ..
 	/* The path does not exist in the conf file */
 	if(setting == NULL ) {
 		SDL_UnlockMutex(entry_mutex);
-		return FALSE;
+		return RET_NOK;
 	}
 
 	while((elem_setting=config_setting_get_elem(setting,index))!= NULL ) {
 		index++;
-		*res = realloc(*res,(index+1)*sizeof(char *));
+		*res = (char **)realloc(*res,(index+1)*sizeof(char *));
 		(*res)[index-1] = strdup(config_setting_name(elem_setting));
 		(*res)[index] = NULL;
 	}
@@ -976,16 +976,16 @@ int entry_get_group_list(const char * table, const char * file, char *** res, ..
 	SDL_UnlockMutex(entry_mutex);
 
 	if( *res == NULL) {
-		return FALSE;
+		return RET_NOK;
 	}
 
-	return TRUE;
+	return RET_OK;
 }
 
 /*********************
-return FALSE on failure
+return RET_NOK on failure
 *********************/
-static int __remove_from_list(const char * table, const char * file, const char * to_be_removed, va_list ap)
+static ret_code_t __remove_from_list(const char * table, const char * file, const char * to_be_removed, va_list ap)
 {
 	const config_t * config = NULL;
 	config_setting_t * setting = NULL;
@@ -997,20 +997,20 @@ static int __remove_from_list(const char * table, const char * file, const char 
 	config = get_config(table,file);
 	if(config==NULL) {
 		SDL_UnlockMutex(entry_mutex);
-		return FALSE;
+		return RET_NOK;
 	}
 
 	path = get_path(ap);
 	if(path == NULL) {
 		SDL_UnlockMutex(entry_mutex);
-		return FALSE;
+		return RET_NOK;
 	}
 
 	setting = config_lookup (config, path);
 	if( setting == NULL ) {
 		SDL_UnlockMutex(entry_mutex);
 		free(path);
-		return FALSE;
+		return RET_NOK;
 	}
 	free(path);
 
@@ -1018,26 +1018,26 @@ static int __remove_from_list(const char * table, const char * file, const char 
 		if( strcmp(elem,to_be_removed) == 0 ) {
 			if(config_setting_remove_elem (setting,i)==CONFIG_FALSE) {
 				SDL_UnlockMutex(entry_mutex);
-				return FALSE;
+				return RET_NOK;
 			}
 
 			write_config(config,table,file);
 			SDL_UnlockMutex(entry_mutex);
-			return TRUE;
+			return RET_OK;
 		}
 		i++;
 	}
 
 	SDL_UnlockMutex(entry_mutex);
-	return FALSE;
+	return RET_NOK;
 }
 
 /*********************
-return 0 on failure
+return RET_NOK on error
 *********************/
-int entry_remove_from_list(const char * table, const char * file, const char * to_be_removed, ...)
+ret_code_t entry_remove_from_list(const char * table, const char * file, const char * to_be_removed, ...)
 {
-	int ret;
+	ret_code_t ret;
 	va_list ap;
 
 	va_start(ap, to_be_removed);
@@ -1047,10 +1047,10 @@ int entry_remove_from_list(const char * table, const char * file, const char * t
 }
 
 /*********************
-return 0 on failure
+return RET_NOK on error
 *********************/
-int entry_copy_config(config_setting_t * source,config_setting_t * destination);
-int entry_copy_aggregate(config_setting_t * source, config_setting_t * dest, int type)
+ret_code_t entry_copy_config(config_setting_t * source,config_setting_t * destination);
+ret_code_t entry_copy_aggregate(config_setting_t * source, config_setting_t * dest, int type)
 {
 	const char * setting_name;
 	config_setting_t * new_dest;
@@ -1059,12 +1059,12 @@ int entry_copy_aggregate(config_setting_t * source, config_setting_t * dest, int
 
 	setting_name = config_setting_name(source);
 	if(setting_name == NULL) {
-		return 0;
+		return RET_NOK;
 	}
 
 	new_dest=config_setting_add(dest,setting_name,type);
 	if( new_dest == NULL ) {
-		/* Try to find an available name */
+		// Try to find an available name
 		sprintf(tag,"A%05x",index);
 
 		while((new_dest=config_setting_add(dest,setting_name,type))== NULL) {
@@ -1075,15 +1075,15 @@ int entry_copy_aggregate(config_setting_t * source, config_setting_t * dest, int
 
 	if(!entry_copy_config(source,new_dest)) {
 		config_setting_remove(dest,setting_name);
-		return 0;
+		return RET_NOK;
 	}
-	return 1;
+	return RET_OK;
 }
 
 /*********************
-return 0 on failure
+return RET_NOK on error
 *********************/
-int entry_copy_config(config_setting_t * source, config_setting_t * dest)
+ret_code_t entry_copy_config(config_setting_t * source, config_setting_t * dest)
 {
 	config_setting_t * new_source;
 	config_setting_t * new_dest;
@@ -1097,19 +1097,19 @@ int entry_copy_config(config_setting_t * source, config_setting_t * dest)
 		index++;
 		if(config_setting_is_group(new_source)) {
 			if(!entry_copy_aggregate(new_source,dest,CONFIG_TYPE_GROUP)) {
-				return 0;
+				return RET_NOK;
 			}
 		}
 
 		else if(config_setting_is_array(new_source)) {
 			if(!entry_copy_aggregate(new_source,dest,CONFIG_TYPE_ARRAY)) {
-				return 0;
+				return RET_NOK;
 			}
 		}
 
 		else if(config_setting_is_list(new_source)) {
 			if(!entry_copy_aggregate(new_source,dest,CONFIG_TYPE_LIST)) {
-				return 0;
+				return RET_NOK;
 			}
 		}
 
@@ -1141,18 +1141,18 @@ int entry_copy_config(config_setting_t * source, config_setting_t * dest)
 				config_setting_set_string(new_dest,string);
 				continue;
 			default:
-				return 0;
+				return RET_NOK;
 			}
 		}
 	}
 
-	return 1;
+	return RET_OK;
 }
 
 /*********************
-return FALSE on failure
+returnRET_NOK on error
 *********************/
-static int __list_create(const char * table, const char * file, va_list ap)
+static ret_code_t __list_create(const char * table, const char * file, va_list ap)
 {
 	const config_t * config;
 
@@ -1160,22 +1160,22 @@ static int __list_create(const char * table, const char * file, va_list ap)
 	config = get_config(table,file);
 	if(config==NULL) {
 		SDL_UnlockMutex(entry_mutex);
-		return FALSE;
+		return RET_NOK;
 	}
 
 	create_tree(config,NULL,NULL,NULL,CONFIG_TYPE_LIST,ap);
 
 	write_config(config,table,file);
 	SDL_UnlockMutex(entry_mutex);
-	return TRUE;
+	return RET_OK;
 }
 
 /*********************
-return FALSE on failure
+return RET_NOK on error
 *********************/
-int entry_list_create(const char * table, const char * file, ...)
+ret_code_t entry_list_create(const char * table, const char * file, ...)
 {
-	int ret;
+	ret_code_t ret;
 	va_list ap;
 
 	va_start(ap, file);
@@ -1186,9 +1186,9 @@ int entry_list_create(const char * table, const char * file, ...)
 }
 
 /*********************
-return FALSE on failure
+return RET_NOK on error
 *********************/
-static int __group_create(const char * table, const char * file, va_list ap)
+static ret_code_t __group_create(const char * table, const char * file, va_list ap)
 {
 	const config_t * config;
 
@@ -1196,22 +1196,22 @@ static int __group_create(const char * table, const char * file, va_list ap)
 	config = get_config(table,file);
 	if(config==NULL) {
 		SDL_UnlockMutex(entry_mutex);
-		return FALSE;
+		return RET_NOK;
 	}
 
 	create_tree(config,NULL,NULL,NULL,CONFIG_TYPE_GROUP,ap);
 
 	write_config(config,table,file);
 	SDL_UnlockMutex(entry_mutex);
-	return TRUE;
+	return RET_OK;
 }
 
 /*********************
-return FALSE on failure
+return RET_NOK on error
 *********************/
-int entry_group_create(const char * table, const char * file, ...)
+ret_code_t entry_group_create(const char * table, const char * file, ...)
 {
-	int ret;
+	ret_code_t ret;
 	va_list ap;
 
 	va_start(ap, file);
@@ -1222,7 +1222,7 @@ int entry_group_create(const char * table, const char * file, ...)
 }
 
 /*********************
-return FALSE on failure
+return NULL on error
 *********************/
 static char * __copy_group(const char * src_table, const char * src_file, const char * dst_table, const char * dst_file, const char * group_name, va_list ap)
 {
@@ -1317,9 +1317,9 @@ char * entry_copy_group(const char * src_table, const char * src_file, const cha
 
 /*********************************************
 Update an entry from a network frame
-return -1 if fails
+return RET_NOK on error
 *********************************************/
-int entry_update(char * data)
+ret_code_t entry_update(char * data)
 {
 	char * elements[5] = {NULL,NULL,NULL,NULL,NULL};
 	config_setting_t * setting;
@@ -1327,7 +1327,7 @@ int entry_update(char * data)
 	int value;
 	char * token;
 	int index = 0;
-	int ret = -1;
+	ret_code_t ret = RET_NOK;
 
 	token = _strsep(&data,NETWORK_DELIMITER);
 	while( token != NULL ) {
@@ -1366,7 +1366,7 @@ int entry_update(char * data)
 		}
 	}
 
-	ret = 0;
+	ret = RET_OK;
 
 entry_update_cleanup:
 	SDL_UnlockMutex(entry_mutex);
@@ -1381,9 +1381,9 @@ entry_update_cleanup:
 
 /***********************************************
 Delete a character's entry
-return -1 if fails
+return RET_NOK on error
 ***********************************************/
-int entry_destroy(const char * table, const char * file)
+ret_code_t entry_destroy(const char * table, const char * file)
 {
 	char * filename;
 
@@ -1393,13 +1393,13 @@ int entry_destroy(const char * table, const char * file)
 
 	free(filename);
 
-	return 0;
+	return RET_OK;
 }
 
 /*********************
-return TRUE if entry or group exists
+return true if entry or group exists
 *********************/
-static int __exist(const char * table, const char * file, va_list ap)
+static bool __exist(const char * table, const char * file, va_list ap)
 {
 	const config_t * config;
 	char * path;
@@ -1409,29 +1409,29 @@ static int __exist(const char * table, const char * file, va_list ap)
 	config = get_config(table,file);
 	SDL_UnlockMutex(entry_mutex);
 	if(config==NULL) {
-		return FALSE;
+		return false;
 	}
 
 	path = get_path(ap);
 	if( path == NULL ) {
-		return FALSE;
+		return false;
 	}
 
 	setting = config_lookup (config, path);
 	free(path);
 	if( setting == NULL ) {
-		return FALSE;
+		return false;
 	}
 
-	return TRUE;
+	return true;
 }
 
 /*********************
-return TRUE if entry or group exists
+return true if entry or group exists
 *********************/
-int entry_exist(const char * table, const char * file, ...)
+bool entry_exist(const char * table, const char * file, ...)
 {
-	int ret;
+	bool ret;
 	va_list ap;
 
 	va_start(ap, file);

@@ -30,7 +30,7 @@ void network_login(context_t * context, const char * user_name, const char * pas
 	frame = strconcat(user_name,NETWORK_DELIMITER,password,NULL);
 
 	wlog(LOGDEBUG,"Send CMD_REQ_LOGIN");
-	network_send_command(context, CMD_REQ_LOGIN, strlen(frame) + 1, frame,FALSE);
+	network_send_command(context, CMD_REQ_LOGIN, strlen(frame) + 1, frame,false);
 	free(frame);
 }
 
@@ -39,7 +39,7 @@ void network_login(context_t * context, const char * user_name, const char * pas
 void network_request_start(context_t * context, const char * id)
 {
 	wlog(LOGDEBUG,"Send CMD_REQ_START");
-	network_send_command(context, CMD_REQ_START, strlen(id) + 1, id,FALSE);
+	network_send_command(context, CMD_REQ_START, strlen(id) + 1, id,false);
 }
 
 /*********************************************************************
@@ -47,7 +47,7 @@ void network_request_start(context_t * context, const char * id)
 void network_request_stop(context_t * context)
 {
 	wlog(LOGDEBUG,"Send CMD_REQ_STOP");
-	network_send_command(context, CMD_REQ_STOP, 0, NULL,FALSE);
+	network_send_command(context, CMD_REQ_STOP, 0, NULL,false);
 }
 
 /*********************************************************************
@@ -55,7 +55,7 @@ void network_request_stop(context_t * context)
 void network_request_character_list(context_t * context)
 {
 	wlog(LOGDEBUG,"Send CMD_REQ_CHARACTER_LIST");
-	network_send_command(context, CMD_REQ_CHARACTER_LIST, 0, NULL,FALSE);
+	network_send_command(context, CMD_REQ_CHARACTER_LIST, 0, NULL,false);
 }
 
 /*********************************************************************
@@ -64,7 +64,7 @@ request a specific user's characters list
 void network_request_user_character_list(context_t * context)
 {
 	wlog(LOGDEBUG,"Send CMD_REQ_USER_CHARACTER_LIST");
-	network_send_command(context, CMD_REQ_USER_CHARACTER_LIST, strlen(context->user_name)+1, context->user_name,FALSE);
+	network_send_command(context, CMD_REQ_USER_CHARACTER_LIST, strlen(context->user_name)+1, context->user_name,false);
 }
 
 /*********************************************************************
@@ -91,7 +91,7 @@ void network_send_action(context_t * context, char * script,...)
 	va_end(ap);
 
 	wlog(LOGDEBUG,"Send CMD_REQ_ACTION :%s",frame);
-	network_send_command(context, CMD_REQ_ACTION, strlen(frame)+1, frame,FALSE);
+	network_send_command(context, CMD_REQ_ACTION, strlen(frame)+1, frame,false);
 	free(frame);
 }
 
@@ -112,18 +112,18 @@ static int async_recv(void * data)
 		command_size = 0;
 		buf = NULL;
 
-		if( !network_read_bytes(context->socket,(char *)&command, sizeof(Uint32)) ) {
+		if( network_read_bytes(context->socket,(char *)&command, sizeof(Uint32)) == RET_NOK ) {
 			break;
 		}
-		/* Read a size */
-		if( !network_read_bytes(context->socket,(char *)&command_size, sizeof(Uint32))) {
+		// Read a size
+		if( network_read_bytes(context->socket,(char *)&command_size, sizeof(Uint32)) == RET_NOK ) {
 			break;
 		}
 
-		/* Read additional data */
+		// Read additional data
 		if( command_size > 0) {
 			buf = malloc(command_size);
-			if( !network_read_bytes(context->socket,buf, command_size) ) {
+			if( network_read_bytes(context->socket,buf, command_size) == RET_NOK ) {
 				break;
 			}
 		}
@@ -144,7 +144,7 @@ static int async_recv(void * data)
 
 	werr(LOGUSER,"Socket closed on server side.");
 
-	context_set_connected(context,FALSE);
+	context_set_connected(context,false);
 	SDLNet_TCP_Close(context->socket);
 	SDLNet_TCP_Close(context->socket_data);
 	context_set_socket(context,0);
@@ -172,18 +172,18 @@ static int async_data_recv(void * data)
 		command_size = 0;
 		buf = NULL;
 
-		if( !network_read_bytes(context->socket_data,(char *)&command, sizeof(Uint32))) {
+		if( network_read_bytes(context->socket_data,(char *)&command, sizeof(Uint32)) == RET_NOK ) {
 			break;
 		}
-		/* Read a size */
-		if( !network_read_bytes(context->socket_data,(char *)&command_size, sizeof(Uint32)) ) {
+		// Read a size
+		if( network_read_bytes(context->socket_data,(char *)&command_size, sizeof(Uint32)) == RET_NOK ) {
 			break;
 		}
 
-		/* Read additional data */
+		// Read additional data
 		if( command_size > 0) {
 			buf = malloc(command_size);
-			if( !network_read_bytes(context->socket_data,buf, command_size) ) {
+			if( network_read_bytes(context->socket_data,buf, command_size) == RET_NOK ) {
 				break;
 			}
 		}
@@ -204,7 +204,7 @@ static int async_data_recv(void * data)
 
 	werr(LOGUSER,"Socket closed on server side.");
 
-	context_set_connected(context,FALSE);
+	context_set_connected(context,false);
 	SDLNet_TCP_Close(context->socket);
 	SDLNet_TCP_Close(context->socket_data);
 	context_set_socket(context,0);
