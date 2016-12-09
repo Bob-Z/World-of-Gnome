@@ -59,7 +59,7 @@ static int npc_script(void * data)
 
 		if( context->next_execution_time < SDL_GetTicks() ) {
 			SDL_LockMutex(npc_mutex);
-			timeout_ms = action_execute_script(context,script,parameters);
+			timeout_ms = action_execute_script(context,script,(const char **)parameters);
 			SDL_UnlockMutex(npc_mutex);
 			context->next_execution_time = SDL_GetTicks() + timeout_ms;
 		}

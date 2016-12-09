@@ -80,21 +80,21 @@ void character_user_send_list(context_t * context)
 			continue;
 		}
 
-		/* add the name of the character to the network frame */
+		// add the name of the character to the network frame
 		string_size = strlen(character_list[i])+1;
-		data = realloc(data, data_size + string_size);
+		data = (char*)realloc(data, data_size + string_size);
 		memcpy(data+data_size,character_list[i], string_size);
 		data_size += string_size;
 
-		/* add the type of the character to the network frame */
+		// add the type of the character to the network frame
 		string_size = strlen(type)+1;
-		data = realloc(data, data_size + string_size);
+		data = (char*)realloc(data, data_size + string_size);
 		memcpy(data+data_size,type, string_size);
 		data_size += string_size;
 
-		/* add the type of the character to the network frame */
+		// add the type of the character to the network frame
 		string_size = strlen(name)+1;
-		data = realloc(data, data_size + string_size);
+		data = (char*)realloc(data, data_size + string_size);
 		memcpy(data+data_size,name, string_size);
 		data_size += string_size;
 
@@ -106,8 +106,8 @@ void character_user_send_list(context_t * context)
 
 	deep_free(character_list);
 
-	/* Mark the end of the list */
-	data = realloc(data, data_size + 1);
+	// Mark the end of the list
+	data = (char*)realloc(data, data_size + 1);
 	data[data_size] = 0;
 	data_size ++;
 
@@ -175,7 +175,7 @@ return the id of the newly created character
 the returned string MUST BE FREED by caller
 return NULL if fails
 *******************************************************/
-char * character_create_from_template(context_t * ctx,const char * template,const char * map, int layer, int x, int y)
+char * character_create_from_template(context_t * ctx,const char * my_template,const char * map, int layer, int x, int y)
 {
 	char * new_id;
 	char * templatename;
@@ -183,7 +183,7 @@ char * character_create_from_template(context_t * ctx,const char * template,cons
 
 	new_id = file_new(CHARACTER_TABLE,NULL);
 
-	templatename = strconcat(base_directory,"/",CHARACTER_TEMPLATE_TABLE,"/",template,NULL);
+	templatename = strconcat(base_directory,"/",CHARACTER_TEMPLATE_TABLE,"/",my_template,NULL);
 	fullname = strconcat(base_directory,"/",CHARACTER_TABLE,"/",new_id,NULL);
 	file_copy(templatename,fullname);
 	free(templatename);
@@ -227,7 +227,7 @@ char * character_create_from_template(context_t * ctx,const char * template,cons
 static void execute_aggro(context_t * agressor, context_t * target, char * script, int aggro_dist)
 {
 	int dist;
-	char * param[] = { NULL,NULL,NULL };
+	const char * param[] = { NULL,NULL,NULL };
 
 	dist = context_distance(agressor,target);
 
@@ -342,7 +342,7 @@ void character_update_aggro(context_t * agressor)
 }
 /*************************************************************
 *************************************************************/
-static void do_set_pos(context_t * ctx,const char * map, int x, int y, int change_map)
+static void do_set_pos(context_t * ctx,const char * map, int x, int y, bool change_map)
 {
 	context_set_map(ctx,map);
 	context_set_pos_tx(ctx,x);
@@ -353,7 +353,7 @@ static void do_set_pos(context_t * ctx,const char * map, int x, int y, int chang
 	entry_write_int(CHARACTER_TABLE,ctx->id,y,CHARACTER_KEY_POS_Y,NULL);
 
 	context_spread(ctx);
-	if( change_map == TRUE ) {
+	if( change_map == true ) {
 		context_request_other_context(ctx);
 	}
 }
@@ -361,7 +361,7 @@ static void do_set_pos(context_t * ctx,const char * map, int x, int y, int chang
 /*************************************************************
 Move every context on the same coordinate as platform context
 *************************************************************/
-static void platform_move(context_t * platform,const char * map, int x, int y, int change_map)
+static void platform_move(context_t * platform,const char * map, int x, int y, bool change_map)
 {
 	context_t * current = context_get_first();
 	int is_platform;
@@ -396,11 +396,11 @@ int character_set_pos(context_t * ctx, const char * map, int x, int y)
 	char * script;
 	char ** param = NULL;
 	int i;
-	int change_map = FALSE;
+	bool change_map = false;
 	int width = x+1;
 	int height = y+1;
-	int warpx = FALSE;
-	int warpy = FALSE;
+	int warpx = 0;
+	int warpy = 0;
 	int ctx_layer = 0;
 	char layer_name[SMALL_BUF];
 	char buf[SMALL_BUF];
@@ -412,7 +412,7 @@ int character_set_pos(context_t * ctx, const char * map, int x, int y)
 		return -1;
 	}
 
-	/* Do nothing if no move */
+	// Do nothing if no move
 	if(!strcmp(ctx->map, map) && ctx->pos_tx == x && ctx->pos_ty == y) {
 		return 0;
 	}
@@ -426,7 +426,7 @@ int character_set_pos(context_t * ctx, const char * map, int x, int y)
 	entry_read_int(MAP_TABLE,map,&warpx,MAP_KEY_WARP_X,NULL);
 	entry_read_int(MAP_TABLE,map,&warpy,MAP_KEY_WARP_Y,NULL);
 
-	/* Offscreen script */
+	// Offscreen script
 	entry_read_string(MAP_TABLE,map,&script,MAP_OFFSCREEN,NULL);
 	if(script != NULL &&
 			( x < 0 || y < 0 || x >= width || y >= height ) ) {
@@ -436,7 +436,7 @@ int character_set_pos(context_t * ctx, const char * map, int x, int y)
 		coord[1] = strdup(buf);
 		coord[2] = NULL;
 
-		ret_value = action_execute_script(ctx,script,coord);
+		ret_value = action_execute_script(ctx,script,(const char **)coord);
 
 		free(coord[0]);
 		free(coord[1]);
@@ -448,33 +448,33 @@ int character_set_pos(context_t * ctx, const char * map, int x, int y)
 		free(script);
 	}
 
-	/* Coordinates warping */
+	// Coordinates warping
 	if( x < 0 ) {
-		if( warpy == FALSE) {
+		if( warpy == 0) {
 			return -1;
 		}
 		x = width-1;
 	}
 	if( y < 0 ) {
-		if( warpy == FALSE) {
+		if( warpy == 0) {
 			return -1;
 		}
 		y = height-1;
 	}
 	if( x >= width ) {
-		if( warpx == FALSE) {
+		if( warpx == 0) {
 			return -1;
 		}
 		x = 0;
 	}
 	if( y >= height ) {
-		if( warpy == FALSE) {
+		if( warpy == 0) {
 			return -1;
 		}
 		y = 0;
 	}
 
-	/* Check if this character is allowed to go to the target tile */
+	// Check if this character is allowed to go to the target tile
 	layer = ctx_layer;
 	while ( layer >= 0 ) {
 		ret_value = map_check_tile(ctx,ctx->id,map,layer,x,y);
@@ -494,7 +494,7 @@ int character_set_pos(context_t * ctx, const char * map, int x, int y)
 	}
 
 	if( strcmp(ctx->map,map) ) {
-		change_map = TRUE;
+		change_map = true;
 	}
 
 	/* If this character is a platform, move all characters on it */
@@ -519,7 +519,7 @@ int character_set_pos(context_t * ctx, const char * map, int x, int y)
 				continue;
 			}
 
-			action_execute_script(ctx,script,param);
+			action_execute_script(ctx,script,(const char **)param);
 
 			free(script);
 			deep_free(param);
@@ -635,16 +635,16 @@ int character_wake_up(const char * id)
 
 /***********************************
 Write a new filename in a character's sprite list
-return RET_FAIL if fails
+return RET_NOK on error
 ***********************************/
 int character_set_sprite(const char * id, int index, const char * filename)
 {
 	if(id == NULL || filename == NULL) {
-		return RET_FAIL;
+		return RET_NOK;
 	}
 
 	if( !entry_write_list_index(CHARACTER_TABLE, id, filename, index,CHARACTER_KEY_SPRITE,NULL ) ) {
-		return RET_FAIL;
+		return RET_NOK;
 	}
 
 	return RET_OK;
@@ -652,14 +652,14 @@ int character_set_sprite(const char * id, int index, const char * filename)
 
 /***********************************
 Write a new filename in a character's sprite direction list
-return RET_FAIL if fails
+return RET_NOK on error
 ***********************************/
 int character_set_sprite_dir(const char * id, const char * dir, int index, const char * filename)
 {
 	const char * key;
 
 	if(id == NULL || filename == NULL || dir == NULL) {
-		return RET_FAIL;
+		return RET_NOK;
 	}
 
 	switch(dir[0]) {
@@ -680,12 +680,12 @@ int character_set_sprite_dir(const char * id, const char * dir, int index, const
 		key = CHARACTER_KEY_DIR_E_SPRITE;
 		break;
 	default:
-		return RET_FAIL;
+		return RET_NOK;
 		break;
 	}
 
 	if( !entry_write_list_index(CHARACTER_TABLE, id, filename, index,key,NULL ) ) {
-		return RET_FAIL;
+		return RET_NOK;
 	}
 
 	return RET_OK;
@@ -693,14 +693,14 @@ int character_set_sprite_dir(const char * id, const char * dir, int index, const
 
 /***********************************
 Write a new filename in a character's moving sprite list
-return RET_FAIL if fails
+return RET_NOK on error
 ***********************************/
 int character_set_sprite_move(const char * id, const char * dir, int index, const char * filename)
 {
 	const char * key;
 
 	if(id == NULL || filename == NULL || dir == NULL) {
-		return RET_FAIL;
+		return RET_NOK;
 	}
 
 	switch(dir[0]) {
@@ -721,12 +721,12 @@ int character_set_sprite_move(const char * id, const char * dir, int index, cons
 		key = CHARACTER_KEY_MOV_E_SPRITE;
 		break;
 	default:
-		return RET_FAIL;
+		return RET_NOK;
 		break;
 	}
 
 	if( !entry_write_list_index(CHARACTER_TABLE, id, filename, index,key,NULL ) ) {
-		return RET_FAIL;
+		return RET_NOK;
 	}
 
 	return RET_OK;

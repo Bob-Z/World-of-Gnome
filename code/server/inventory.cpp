@@ -52,7 +52,7 @@ return -1 if fails
 int inventory_add(const char * ctx_id, const char * item_id)
 {
 	context_t * context = context_find(ctx_id);
-	char * template;
+	char * mytemplate;
 	int index;
 	char ** name_list;
 	char * current_template;
@@ -71,8 +71,8 @@ int inventory_add(const char * ctx_id, const char * item_id)
 	/* Make sure the CHARACTER_KEY_INVENTORY list exists */
 	entry_list_create(CHARACTER_TABLE,context->id,CHARACTER_KEY_INVENTORY,NULL);
 
-	template = item_is_resource(item_id);
-	if(template == NULL) {
+	mytemplate = item_is_resource(item_id);
+	if(mytemplate == NULL) {
 		if(!entry_add_to_list(CHARACTER_TABLE,context->id,item_id, CHARACTER_KEY_INVENTORY, NULL)) {
 			return -1;
 		}
@@ -87,10 +87,10 @@ int inventory_add(const char * ctx_id, const char * item_id)
 		index=0;
 		while( name_list[index] != NULL) {
 			if(entry_read_string(ITEM_TABLE,name_list[index],&current_template,ITEM_TEMPLATE,NULL)) {
-				if( strcmp(template,current_template) == 0 ) {
+				if( strcmp(mytemplate,current_template) == 0 ) {
 					if(entry_read_int(ITEM_TABLE,name_list[index],&current_count,ITEM_QUANTITY,NULL)) {
 						free(current_template);
-						free(template);
+						free(mytemplate);
 						add_count+=current_count;
 						resource_set_quantity(context,name_list[index],add_count);
 						item_destroy(item_id);
@@ -102,7 +102,7 @@ int inventory_add(const char * ctx_id, const char * item_id)
 			}
 			index++;
 		}
-		free(template);
+		free(mytemplate);
 
 		/* First time we add this type of resource to inventory */
 		if( name_list[index] == NULL ) {

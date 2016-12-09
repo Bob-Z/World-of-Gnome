@@ -37,10 +37,10 @@ int attribute_change(context_t * context, const char * table, const char * id, c
 	int min;
 	int max;
 	char buf[SMALL_BUF];
-	int do_min_action = FALSE;
-	int do_down_action = FALSE;
-	int do_max_action = FALSE;
-	int do_up_action = FALSE;
+	bool do_min_action = false;
+	bool do_down_action = false;
+	bool do_max_action = false;
+	bool do_up_action = false;
 	char * action;
 	char * min_action = NULL;
 	char * down_action = NULL;
@@ -66,14 +66,14 @@ int attribute_change(context_t * context, const char * table, const char * id, c
 	current = current + value;
 	if( min != -1 ) {
 		if(current <= min) {
-			do_min_action = TRUE;
+			do_min_action = true;
 			current = min;
 		}
 	}
 
 	if( max != -1 ) {
 		if(current >= max) {
-			do_max_action = TRUE;
+			do_max_action = true;
 			current = max;
 		}
 	}
@@ -87,62 +87,62 @@ int attribute_change(context_t * context, const char * table, const char * id, c
 		return -1;
 	}
 
-	/* Check automatic actions */
+	// Check automatic actions
 	if( value < 0 ) {
-		if( do_min_action ) {
+		if( do_min_action == true ) {
 			if(!entry_read_string(table,id,&action,ATTRIBUTE_GROUP,attribute, ATTRIBUTE_ON_MIN, NULL)) {
-				do_min_action = FALSE;
+				do_min_action = false;
 			} else {
 				min_action = action;
 			}
 		}
 
 		if(entry_read_string(table,id,&action,ATTRIBUTE_GROUP,attribute, ATTRIBUTE_ON_DOWN, NULL)) {
-			do_down_action = TRUE;
+			do_down_action = true;
 			down_action = action;
 		}
 	}
 
 	if( value > 0 ) {
-		if( do_max_action ) {
+		if( do_max_action == true ) {
 			if(!entry_read_string(table,id,&action,ATTRIBUTE_GROUP,attribute, ATTRIBUTE_ON_MAX, NULL)) {
-				do_max_action = FALSE;
+				do_max_action = false;
 			} else {
 				max_action = action;
 			}
 		}
 
 		if(entry_read_string(table,id,&action,ATTRIBUTE_GROUP,attribute, ATTRIBUTE_ON_UP, NULL)) {
-			do_up_action = TRUE;
+			do_up_action = true;
 			up_action = action;
 		}
 	}
 
 	SDL_UnlockMutex(attribute_mutex);
 
-	/* do automatic actions */
-	if( do_down_action && down_action) {
+	// do automatic actions
+	if( do_down_action == true && down_action != NULL ) {
 		action_execute_script(context,down_action,NULL);
 	}
 	if( down_action ) {
 		free(down_action);
 	}
 
-	if( do_min_action && min_action) {
+	if( do_min_action == true && min_action != NULL ) {
 		action_execute_script(context,min_action,NULL);
 	}
 	if( min_action ) {
 		free(min_action);
 	}
 
-	if( do_up_action && up_action) {
+	if( do_up_action == true && up_action != NULL ) {
 		action_execute_script(context,up_action,NULL);
 	}
 	if( min_action ) {
 		free(up_action);
 	}
 
-	if( do_max_action && max_action) {
+	if( do_max_action == true && max_action != NULL ) {
 		action_execute_script(context,max_action,NULL);
 		free(max_action);
 	}
@@ -151,9 +151,9 @@ int attribute_change(context_t * context, const char * table, const char * id, c
 	}
 
 	sprintf(buf,"%s.%s.%s",ATTRIBUTE_GROUP,attribute,ATTRIBUTE_CURRENT);
-	network_broadcast_entry_int(table,id,buf,current,TRUE);
+	network_broadcast_entry_int(table,id,buf,current,true);
 	sprintf(buf,"%s.%s.%s",ATTRIBUTE_GROUP,attribute,ATTRIBUTE_PREVIOUS);
-	network_broadcast_entry_int(table,id,buf,old,TRUE);
+	network_broadcast_entry_int(table,id,buf,old,true);
 	return 0;
 }
 

@@ -23,9 +23,9 @@
 #include <string.h>
 
 /**************************************
-Return FALSE on error, TRUE if OK
+Return RET_NOK on error
 **************************************/
-int parse_incoming_data(context_t * context, Uint32 command, Uint32 command_size, char * data)
+ret_code_t parse_incoming_data(context_t * context, Uint32 command, Uint32 command_size, char * data)
 {
 	char * value = NULL;
 	char * fullname;
@@ -37,7 +37,7 @@ int parse_incoming_data(context_t * context, Uint32 command, Uint32 command_size
 
 	if( !context_get_connected(context) && ( command != CMD_REQ_LOGIN  && command != CMD_REQ_FILE) ) {
 		werr(LOGUSER,"Request from not authenticated client, close connection");
-		return FALSE;
+		return RET_NOK;
 	}
 
 	switch(command) {
@@ -47,7 +47,7 @@ int parse_incoming_data(context_t * context, Uint32 command, Uint32 command_size
 		password = _strsep(&data,NETWORK_DELIMITER);
 
 		if(!entry_read_string(PASSWD_TABLE, user_name, &value, PASSWD_KEY_PASSWORD,NULL)) {
-			return FALSE;
+			return RET_NOK;
 		}
 		if( strcmp(value, password) != 0) {
 			free(value);
@@ -55,12 +55,12 @@ int parse_incoming_data(context_t * context, Uint32 command, Uint32 command_size
 			// send answer
 			network_send_command(context, CMD_SEND_LOGIN_NOK, 0, NULL, false);
 			// force client disconnection
-			return FALSE;
+			return RET_NOK;
 		} else {
 			free(value);
 
 			if( context_set_username(context, user_name) == RET_NOK ) {
-				return FALSE;
+				return RET_NOK;
 			}
 			context_set_connected(context, true);
 
@@ -158,8 +158,8 @@ int parse_incoming_data(context_t * context, Uint32 command, Uint32 command_size
 		break;
 	default:
 		werr(LOGDEV,"Unknown request %d from client",command);
-		return FALSE;
+		return RET_NOK;
 	}
 
-	return TRUE;
+	return RET_OK;
 }

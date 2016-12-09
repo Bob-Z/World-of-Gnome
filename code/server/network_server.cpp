@@ -82,7 +82,7 @@ void network_send_character_file(context_t * context)
 /*********************************************************************
 Asks to update an int entry on all in_game players
 *********************************************************************/
-void network_broadcast_entry_int(const char * table, const char * file, const char * path, int value, int same_map_only)
+void network_broadcast_entry_int(const char * table, const char * file, const char * path, int value, bool same_map_only)
 {
 	context_t * ctx = NULL;
 	context_t * target = NULL;
@@ -107,7 +107,7 @@ void network_broadcast_entry_int(const char * table, const char * file, const ch
 			continue;
 		}
 		/* Skip if not on the same map */
-		if( same_map_only ) {
+		if( same_map_only == true ) {
 			if( target == NULL ) {
 				continue;
 			}
@@ -138,7 +138,7 @@ static int new_connection(void * data)
 	context = context_new();
 	if(context == NULL ) {
 		werr(LOGUSER,"Failed to create context");
-		return TRUE;
+		return RET_NOK;
 	}
 
 	context_set_socket(context,socket);
@@ -159,14 +159,14 @@ static int new_connection(void * data)
 
 		// Read additional data
 		if( command_size > 0) {
-			buf = malloc(command_size);
+			buf = (char*)malloc(command_size);
 			if( network_read_bytes(socket,buf, command_size) == RET_NOK ) {
 				context_set_connected(context,false);
 				break;
 			}
 		}
 
-		if (!parse_incoming_data(context, command, command_size, buf) ) {
+		if (parse_incoming_data(context, command, command_size, buf) == RET_NOK ) {
 			if( buf ) {
 				free(buf);
 				buf = NULL;
@@ -186,7 +186,7 @@ static int new_connection(void * data)
 	context_write_to_file(context);
 	context_free(context);
 
-	return TRUE;
+	return RET_OK;
 }
 
 /*********************************************************************
@@ -220,7 +220,7 @@ void network_init(void)
 	SDLNet_TCP_AddSocket(server_set, socket);
 
 	/* Wait for a connection */
-	while (TRUE) {
+	while (true) {
 		SDLNet_CheckSockets(server_set, -1);
 		/* check for pending connection.
 		* If there is one, accept that, and open a new socket for communicating */

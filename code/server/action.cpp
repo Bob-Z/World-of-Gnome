@@ -41,7 +41,7 @@ static int l_player_get_id( lua_State* L)
 	context_t * context;
 
 	lua_getglobal(L,LUAVM_CONTEXT);
-	context = lua_touserdata(L, -1);
+	context = (context_t*)lua_touserdata(L, -1);
 	lua_pop(L,1);
 	lua_pushstring(L, context->id);
 	return 1;  /* number of results */
@@ -59,7 +59,7 @@ Output:
 */
 static int l_character_create_from_template( lua_State* L)
 {
-	const char * template;
+	const char * mytemplate;
 	const char * map;
 	int layer;
 	int x;
@@ -69,15 +69,15 @@ static int l_character_create_from_template( lua_State* L)
 	context_t * ctx;
 
 	lua_getglobal(L,LUAVM_CONTEXT);
-	ctx = lua_touserdata(L, -1);
+	ctx = (context_t*)lua_touserdata(L, -1);
 	lua_pop(L,1);
 
-	template = luaL_checkstring(L, -5);
+	mytemplate = luaL_checkstring(L, -5);
 	map = luaL_checkstring(L, -4);
 	layer = luaL_checkint(L, -3);
 	x = luaL_checkint(L, -2);
 	y = luaL_checkint(L, -1);
-	res = character_create_from_template(ctx,template,map,layer,x,y);
+	res = character_create_from_template(ctx,mytemplate,map,layer,x,y);
 	lua_pushstring(L, res);
 	if( res) {
 		free(res);
@@ -974,13 +974,13 @@ static int l_map_set_tile_array( lua_State* L)
 	layer = luaL_checkint(L, -2);
 
 	i=0;
-	lua_pushnil(L);  /* first key */
+	lua_pushnil(L);  // first key
 	while (lua_next(L, -2) != 0) {
-		/* uses 'key' (at index -2) and 'value' (at index -1) */
-		arg = realloc(arg, sizeof(char*)*(i+2));
+		// uses 'key' (at index -2) and 'value' (at index -1)
+		arg = (const char**)realloc(arg, sizeof(char*)*(i+2));
 		arg[i] = luaL_checkstring(L, -1);
 		i++;
-		/* removes 'value'; keeps 'key' for next iteration */
+		// removes 'value'; keeps 'key' for next iteration
 		lua_pop(L, 1);
 	}
 	arg[i]=NULL;
@@ -1590,14 +1590,14 @@ Output: ID of the new resource
 */
 static int l_resource_new( lua_State* L)
 {
-	const char * template;
+	const char * mytemplate;
 	int quantity;
 	char * resource;
 
-	template = luaL_checkstring(L, -2);
+	mytemplate = luaL_checkstring(L, -2);
 	quantity = luaL_checkint(L, -1);
 
-	resource = resource_new(template,quantity);
+	resource = resource_new(mytemplate,quantity);
 	lua_pushstring(L, resource);
 	if( resource) {
 		free(resource);
@@ -1641,7 +1641,7 @@ static int l_resource_set_quantity( lua_State* L)
 	context_t * context;
 
 	lua_getglobal(L,LUAVM_CONTEXT);
-	context = lua_touserdata(L, -1);
+	context = (context_t*)lua_touserdata(L, -1);
 	lua_pop(L,1);
 
 	resource = luaL_checkstring(L, -2);
@@ -1833,7 +1833,7 @@ static int l_character_attribute_change( lua_State* L)
 	value = luaL_checkint(L, -1);
 
 	lua_getglobal(L,LUAVM_CONTEXT);
-	context = lua_touserdata(L, -1);
+	context = (context_t*)lua_touserdata(L, -1);
 	lua_pop(L,1);
 
 	res = attribute_change(context,CHARACTER_TABLE,id,attribute,value);
@@ -1961,7 +1961,7 @@ static int l_map_attribute_change( lua_State* L)
 	value = luaL_checkint(L, -1);
 
 	lua_getglobal(L,LUAVM_CONTEXT);
-	context = lua_touserdata(L, -1);
+	context = (context_t*)lua_touserdata(L, -1);
 	lua_pop(L,1);
 
 	res = attribute_change(context,MAP_TABLE,id,attribute,value);
@@ -2094,7 +2094,7 @@ static int l_popup_send( lua_State* L)
 
 	num_arg = lua_gettop(L);
 
-	arg = malloc(sizeof(char*)*num_arg+1);
+	arg = (const char**)malloc(sizeof(char*)*num_arg+1);
 	for(i=0; i<num_arg; i++) {
 		arg[i] = luaL_checkstring(L, -num_arg+i);
 	}
@@ -2124,7 +2124,7 @@ static void action_chat(context_t * context, const char * text)
 Execute a LUA script file
 return -1 if the script do not return something
 **************************************/
-int action_execute_script(context_t * context, const char * script, char ** parameters)
+int action_execute_script(context_t * context, const char * script, const char ** parameters)
 {
 	char * filename;
 	int param_num = 0;
@@ -2201,7 +2201,7 @@ int action_execute(context_t * context, const char * action, char ** parameters)
 
 	all_params = add_array(params,parameters);
 
-	ret = action_execute_script(context,script,all_params);
+	ret = action_execute_script(context,script,(const char**)all_params);
 
 	deep_free(params);
 	free(all_params);
@@ -2227,20 +2227,20 @@ static int l_call_script( lua_State* L)
 	context_t * context;
 
 	lua_getglobal(L,LUAVM_CONTEXT);
-	context = lua_touserdata(L, -1);
+	context = (context_t*)lua_touserdata(L, -1);
 	lua_pop(L,1);
 
 	num_arg = lua_gettop(L);
 	script = luaL_checkstring(L, -num_arg);
 	if(num_arg > 1 ) {
-		arg = malloc(sizeof(char*)*num_arg);
+		arg = (char**)malloc(sizeof(char*)*num_arg);
 		for(i=0; i<num_arg-1; i++) {
 			arg[i] = (char *)luaL_checkstring(L, -num_arg+1+i); /* FIXME wrong casting ? */
 		}
 		arg[i] = NULL; /* End of list */
 	}
 
-	res = action_execute_script(context, script, arg);
+	res = action_execute_script(context, script, (const char**)arg);
 
 	if(arg) {
 		free(arg);
@@ -2267,13 +2267,13 @@ static int l_call_action( lua_State* L)
 	context_t * context;
 
 	lua_getglobal(L,LUAVM_CONTEXT);
-	context = lua_touserdata(L, -1);
+	context = (context_t*)lua_touserdata(L, -1);
 	lua_pop(L,1);
 
 	num_arg = lua_gettop(L);
 	action = luaL_checkstring(L, -num_arg);
 	if(num_arg > 1 ) {
-		arg = malloc(sizeof(char*)*num_arg);
+		arg = (char**)malloc(sizeof(char*)*num_arg);
 		for(i=0; i<num_arg-1; i++) {
 			arg[i] = (char *)luaL_checkstring(L, -num_arg+1+i); /* FIXME wrong casting ? */
 		}

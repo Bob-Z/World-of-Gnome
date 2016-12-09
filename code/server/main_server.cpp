@@ -19,9 +19,9 @@
 
 #include "../common/common.h"
 #include "network_server.h"
+#include "npc.h"
 #include <signal.h>
 #include <stdlib.h>
-#include <npc.h>
 #include <getopt.h>
 #include <string.h>
 #include <stdlib.h>
