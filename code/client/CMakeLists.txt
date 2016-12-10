@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8)
 enable_language(CXX)
 enable_language(C)
 
-project(World of Gnome)
+project(client)
 set(VERSION 0.0.0)
 
 #find_package(PkgConfig REQUIRED)
@@ -22,17 +22,17 @@ include_directories( ${COMMON_PATH} )
 add_executable(
 	wog_client
 
-	client.c
-	file_client.c
-	imageDB.c
-	main_client.c
-	network_client.c
-	option_client.c
-	parser_client.c
-	screen.c
-	scr_play.c
-	scr_select.c
-	textview.c
-	ui_play.c
+	client.cpp
+	file_client.cpp
+	imageDB.cpp
+	main_client.cpp
+	network_client.cpp
+	option_client.cpp
+	parser_client.cpp
+	screen.cpp
+	scr_play.cpp
+	scr_select.cpp
+	textview.cpp
+	ui_play.cpp
 )
 

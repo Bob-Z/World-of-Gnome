@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8)
 enable_language(CXX)
 enable_language(C)
 
-project(World of Gnome)
+project(common)
 set(VERSION 0.0.0)
 
 #find_package(PkgConfig REQUIRED)
@@ -22,18 +22,18 @@ set(VERSION 0.0.0)
 add_library(
 	common
 	SHARED
-	context.c
-	entry.c
-	fifo.c
-	file.c
-	font.c
-	item.c
-	list.c
-	log.c
-	map.c
-	mutex.c
-	network.c
-	sfx.c
-	util.c
+	context.cpp
+	entry.cpp
+	fifo.cpp
+	file.cpp
+	font.cpp
+	item.cpp
+	list.cpp
+	log.cpp
+	map.cpp
+	mutex.cpp
+	network.cpp
+	sfx.cpp
+	util.cpp
 )
 

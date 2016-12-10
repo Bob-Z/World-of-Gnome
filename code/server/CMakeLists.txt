@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8)
 enable_language(CXX)
 enable_language(C)
 
-project(World of Gnome)
+project(server)
 set(VERSION 0.0.0)
 
 #find_package(PkgConfig REQUIRED)
@@ -22,16 +22,16 @@ include_directories( ${COMMON_PATH} )
 add_executable(
 	wog_server
 
-	action.c
-	attribute.c
-	character.c
-	equipment.c
-	inventory.c
-	main_server.c
-	map_server.c
-	network_server.c
-	npc.c
-	parser_server.c
-	server.c
+	action.cpp
+	attribute.cpp
+	character.cpp
+	equipment.cpp
+	inventory.cpp
+	main_server.cpp
+	map_server.cpp
+	network_server.cpp
+	npc.cpp
+	parser_server.cpp
+	server.cpp
 )
 

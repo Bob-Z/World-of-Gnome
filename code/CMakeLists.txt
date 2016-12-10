@@ -1,9 +1,11 @@
 cmake_minimum_required(VERSION 2.8)
-#enable_language(CXX)
+
+project(World_of_Gnome)
+set(VERSION 0.0.0)
+
+enable_language(CXX)
 enable_language(C)
 
-project(World of Gnome)
-set(VERSION 0.0.0)
 
 #find_package(PkgConfig REQUIRED)
 #pkg_search_module(....)
