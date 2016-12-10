@@ -22,3 +22,8 @@ stamp-h1
 
 *.orig
 *.swp
+
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+
