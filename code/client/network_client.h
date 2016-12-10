@@ -28,8 +28,8 @@ void network_request_stop(context_t * context);
 void network_login(context_t * context, const char * name, const char * password);
 void network_request_character_list(context_t * context);
 void network_request_user_character_list(context_t * context);
-void network_send_action(context_t * context, char * frame,...);
-int network_connect(context_t * context, const char * hostname);
-int network_open_data_connection(context_t * context);
+void network_send_action(context_t * context, const char * frame,...);
+ret_code_t network_connect(context_t * context, const char * hostname);
+ret_code_t network_open_data_connection(context_t * context);
 
 #endif

@@ -255,7 +255,7 @@ static void compose_attribute(context_t * ctx, item_t * item_list)
 		}
 
 		num_attr++;
-		attribute_string = realloc(attribute_string, (num_attr+1)*sizeof(char*));
+		attribute_string = (char**)realloc(attribute_string, (num_attr+1)*sizeof(char*));
 		sprintf(buf,"%s: %d",name_list[index],value);
 		attribute_string[num_attr-1] = strdup(buf);
 		attribute_string[num_attr]=NULL;
@@ -292,7 +292,7 @@ void ui_play_cb_action(void * arg)
 	}
 
 	if( arg ) {
-		last_action = strdup(arg);
+		last_action = (char*)strdup(action);
 	} else {
 		last_action = NULL;
 	}
@@ -464,7 +464,7 @@ static void compose_equipment(context_t * ctx, item_t * item_list)
 	int x=0;
 	int h1;
 	int index;
-	char * template = NULL;
+	char * mytemplate = NULL;
 #if 0
 	char * name;
 #endif
@@ -534,17 +534,17 @@ static void compose_equipment(context_t * ctx, item_t * item_list)
 			free(equipped_text);
 #endif
 			/* Get its icon */
-			template = item_is_resource(equipped_name);
+			mytemplate = item_is_resource(equipped_name);
 
-			if ( template == NULL ) {
+			if ( mytemplate == NULL ) {
 				if(!entry_read_string(ITEM_TABLE,equipped_name,&equipped_icon_name,ITEM_ICON,NULL)) {
 					werr(LOGDEV,"Can't read object %s icon in equipment slot %s",equipped_name,slot_list[index]);
 				}
 			} else {
-				if(!entry_read_string(ITEM_TEMPLATE_TABLE,template,&equipped_icon_name,ITEM_ICON,NULL)) {
-					werr(LOGDEV,"Can't read item %s icon name (template: %s)",equipped_name,template);
+				if(!entry_read_string(ITEM_TEMPLATE_TABLE,mytemplate,&equipped_icon_name,ITEM_ICON,NULL)) {
+					werr(LOGDEV,"Can't read item %s icon name (template: %s)",equipped_name,mytemplate);
 				}
-				free(template);
+				free(mytemplate);
 			}
 
 			if( equipped_icon_name ) {
@@ -592,17 +592,17 @@ static void compose_equipment(context_t * ctx, item_t * item_list)
 
 	/* Draw selected item */
 	if( ctx->selection.inventory[0] != 0) {
-		template = item_is_resource(ctx->selection.inventory);
+		mytemplate = item_is_resource(ctx->selection.inventory);
 
-		if ( template == NULL ) {
+		if ( mytemplate == NULL ) {
 			if(!entry_read_string(ITEM_TABLE,ctx->selection.inventory,&inventory_icon_name,ITEM_ICON,NULL)) {
 				werr(LOGDEV,"Can't read item %s icon name",ctx->selection.inventory);
 			}
 		} else {
-			if(!entry_read_string(ITEM_TEMPLATE_TABLE,template,&inventory_icon_name,ITEM_ICON,NULL)) {
-				werr(LOGDEV,"Can't read item %s icon name (template: %s)",ctx->selection.inventory,template);
+			if(!entry_read_string(ITEM_TEMPLATE_TABLE,mytemplate,&inventory_icon_name,ITEM_ICON,NULL)) {
+				werr(LOGDEV,"Can't read item %s icon name (template: %s)",ctx->selection.inventory,mytemplate);
 			}
-			free(template);
+			free(mytemplate);
 		}
 
 		if( inventory_icon_name ) {
@@ -641,7 +641,7 @@ static void compose_equipment(context_t * ctx, item_t * item_list)
 **************************************/
 static void keyboard_text(void * arg)
 {
-	char * text = (char*)arg;
+	const char * text = (const char*)arg;
 
 	network_send_action(context_get_player(),WOG_CHAT,text,NULL);
 	text_buffer[0]=0;
@@ -804,7 +804,7 @@ static void compose_inventory(context_t * ctx,item_t * item_list)
 	int x=0;
 	int i = 0;
 	static TTF_Font * font = NULL;
-	char * template;
+	char * mytemplate;
 	int quantity;
 	char buf[1024];
 	int w;
@@ -822,9 +822,9 @@ static void compose_inventory(context_t * ctx,item_t * item_list)
 	}
 
 	while( inventory_list[i] != NULL) {
-		template = item_is_resource(inventory_list[i]);
+		mytemplate = item_is_resource(inventory_list[i]);
 
-		if( template == NULL ) {
+		if( mytemplate == NULL ) {
 			/* Icon is mandatory for now */
 			if(!entry_read_string(ITEM_TABLE,inventory_list[i],&value,ITEM_ICON,NULL)) {
 				i++;
@@ -847,27 +847,27 @@ static void compose_inventory(context_t * ctx,item_t * item_list)
 			}
 		} else {
 			/* Icon is mandatory for now */
-			if(!entry_read_string(ITEM_TEMPLATE_TABLE,template,&value,ITEM_ICON,NULL)) {
+			if(!entry_read_string(ITEM_TEMPLATE_TABLE,mytemplate,&value,ITEM_ICON,NULL)) {
 				i++;
-				free(template);
+				free(mytemplate);
 				continue;
 			}
 			/* load image */
 			anim = imageDB_get_anim(ctx, value);
 			free(value);
 
-			if(!entry_read_string(ITEM_TEMPLATE_TABLE,template,&value,ITEM_NAME,NULL)) {
+			if(!entry_read_string(ITEM_TEMPLATE_TABLE,mytemplate,&value,ITEM_NAME,NULL)) {
 				label = strdup(inventory_list[i]);
 			} else {
 				label = value;
 			}
 
-			if(!entry_read_string(ITEM_TEMPLATE_TABLE,template,&value,ITEM_DESC,NULL)) {
+			if(!entry_read_string(ITEM_TEMPLATE_TABLE,mytemplate,&value,ITEM_DESC,NULL)) {
 				description = strdup("");;
 			} else {
 				description = value;
 			}
-			free(template);
+			free(mytemplate);
 
 		}
 
@@ -911,7 +911,7 @@ static void compose_inventory_select(context_t * ctx,item_t * item_list)
 	char * icon_name;
 	anim_t * anim;
 	anim_t * icon_anim;
-	char * template;
+	char * mytemplate;
 	option_t * option = option_get();
 
 	if(ctx->selection.inventory[0] == 0) {
@@ -938,17 +938,17 @@ static void compose_inventory_select(context_t * ctx,item_t * item_list)
 	i = 0;
 	x = 0;
 	while( inventory_list[i] && strcmp(inventory_list[i],ctx->selection.inventory) ) {
-		template = item_is_resource(inventory_list[i]);
+		mytemplate = item_is_resource(inventory_list[i]);
 
-		if ( template == NULL ) {
+		if ( mytemplate == NULL ) {
 			if(!entry_read_string(ITEM_TABLE,inventory_list[i],&icon_name,ITEM_ICON,NULL)) {
 				werr(LOGDEV,"Can't read item %s icon name",inventory_list[i]);
 			}
 		} else {
-			if(!entry_read_string(ITEM_TEMPLATE_TABLE,template,&icon_name,ITEM_ICON,NULL)) {
-				werr(LOGDEV,"Can't read item %s icon name (template: %s)",inventory_list[i],template);
+			if(!entry_read_string(ITEM_TEMPLATE_TABLE,mytemplate,&icon_name,ITEM_ICON,NULL)) {
+				werr(LOGDEV,"Can't read item %s icon name (template: %s)",inventory_list[i],mytemplate);
 			}
-			free(template);
+			free(mytemplate);
 		}
 
 		icon_anim = imageDB_get_anim(ctx,icon_name);
@@ -989,7 +989,7 @@ static void cb_popup_quit(void * arg)
 
 	popup_offset = 0;
 
-	popup_frame = fifo_pop(&popup_fifo);
+	popup_frame = (char*)fifo_pop(&popup_fifo);
 
 	if( popup_frame == NULL) {
 		ui_play_set(UI_MAIN);
@@ -1118,7 +1118,7 @@ static void compose_popup(context_t * ctx,item_t * item_list)
 			continue;
 		}
 		if(!strcmp(tag,POPUP_TAG_ACTION)) {
-			action_param = malloc(sizeof(action_param_t));
+			action_param = (action_param_t*) malloc(sizeof(action_param_t));
 			/* get action */
 			tag = _strsep(&data,NETWORK_DELIMITER);
 			action_param->action = strdup(tag);

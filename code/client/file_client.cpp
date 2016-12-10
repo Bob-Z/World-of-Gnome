@@ -38,7 +38,7 @@ int file_add(context_t * context,char * data,Uint32 command_size)
 	char * tmpfilename = NULL;
 	char * tmpfullname = NULL;
 	char * fullname = NULL;
-	int res;
+	ret_code_t res;
 
 	/* Get the data from the network frame */
 	/* First 4 bytes are the size of the file name*/
@@ -50,7 +50,7 @@ int file_add(context_t * context,char * data,Uint32 command_size)
 
 	/* Following bytes are the file name, relative to the application base directory ( $HOME/.config/wog/client/ ) */
 	ptr += sizeof(Uint32);
-	filename = malloc(filename_size);
+	filename = (char*)malloc(filename_size);
 	memcpy(filename,ptr,filename_size);
 	wlog(LOGDEBUG,"Received file %s",filename);
 	if( filename == NULL ) {
@@ -72,7 +72,7 @@ int file_add(context_t * context,char * data,Uint32 command_size)
 	file_create_directory(tmpfullname);
 
 	res = file_set_contents(tmpfilename,ptr,filedata_size);
-	if( res == FALSE ) {
+	if( res == RET_NOK ) {
 		werr(LOGDEV,"Error writing file %s with size %d",tmpfullname, filedata_size);
 		free(tmpfullname);
 		return -1;

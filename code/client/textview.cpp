@@ -27,7 +27,7 @@ void textview_add_line(char * text)
 {
 	history_entry_t * new_entry;
 
-	new_entry = malloc(sizeof(history_entry_t));
+	new_entry = (history_entry_t*)malloc(sizeof(history_entry_t));
 
 	new_entry->text = strdup(text);
 	new_entry->time = SDL_GetTicks();

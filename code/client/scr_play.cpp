@@ -45,7 +45,7 @@
 #define MAX_LAYER	100
 
 static item_t * item_list = NULL;
-static int change_map = FALSE;
+static bool change_map = false;
 static int init = true;
 static int current_map_x = -1;
 static int current_map_y = -1;
@@ -298,7 +298,7 @@ static void set_up_sprite(context_t * ctx, const char * image_file_name)
 	double zoom = 1.0;
 	int sprite_align = ALIGN_CENTER;
 	int sprite_offset_y = 0;
-	int force_position = FALSE;
+	bool force_position = false;
 
 	context_t * player_context = context_get_player();
 
@@ -317,17 +317,17 @@ static void set_up_sprite(context_t * ctx, const char * image_file_name)
 	current_time = sdl_get_global_time();
 
 	// Force position when the player has changed map
-	if( change_map == TRUE ) {
+	if( change_map == true ) {
 		ctx->move_start_tick = current_time;
 		ctx->animation_tick = current_time;
-		force_position = TRUE;
+		force_position = true;
 	}
 	// Force position when this context has changed map
-	if( ctx->change_map == TRUE ) {
+	if( ctx->change_map == true ) {
 		ctx->move_start_tick = current_time;
 		ctx->animation_tick = current_time;
-		ctx->change_map = FALSE;
-		force_position = TRUE;
+		ctx->change_map = false;
+		force_position = true;
 	}
 
 	if( ctx->animation_tick == 0 ) {
@@ -335,12 +335,12 @@ static void set_up_sprite(context_t * ctx, const char * image_file_name)
 	}
 
 	if( ctx->cur_pos_px == INT_MAX || ctx->cur_pos_py == INT_MAX ) {
-		force_position = TRUE;
+		force_position = true;
 	}
 
 	// Detect sprite movement, initiate animation
-	if( ctx->pos_changed && force_position == FALSE ) {
-		ctx->pos_changed = FALSE;
+	if( ctx->pos_changed && force_position == false ) {
+		ctx->pos_changed = false;
 		ctx->move_start_tick = current_time;
 		ctx->start_pos_px = ctx->cur_pos_px;
 		ctx->start_pos_py = ctx->cur_pos_py;
@@ -414,7 +414,7 @@ static void set_up_sprite(context_t * ctx, const char * image_file_name)
 	// Set sprite to item
 	item_set_anim_start_tick(item,ctx->animation_tick);
 
-	if( force_position == TRUE ) {
+	if( force_position == true ) {
 		ctx->start_pos_px = px;
 		ctx->cur_pos_px = px;
 		ctx->start_pos_py = py;
@@ -543,7 +543,7 @@ static void compose_item(context_t * ctx,int layer_index)
 	char ** item_id;
 	int i;
 	static TTF_Font * font = NULL;
-	char * template;
+	char * mytemplate;
 	int quantity;
 	char buf[SMALL_BUF];
 	char layer_name[SMALL_BUF];
@@ -570,9 +570,9 @@ static void compose_item(context_t * ctx,int layer_index)
 			continue;
 		}
 
-		template = item_is_resource(item_id[i]);
+		mytemplate = item_is_resource(item_id[i]);
 
-		if ( template == NULL ) {
+		if ( mytemplate == NULL ) {
 			if(!entry_read_string(ITEM_TABLE,item_id[i],&sprite_name,ITEM_SPRITE,NULL)) {
 				i++;
 				continue;
@@ -580,14 +580,14 @@ static void compose_item(context_t * ctx,int layer_index)
 			entry_read_int(ITEM_TABLE,item_id[i],&sprite_align,ITEM_ALIGN,NULL);
 			entry_read_int(ITEM_TABLE,item_id[i],&sprite_offset_y,ITEM_OFFSET_Y,NULL);
 		} else {
-			if(!entry_read_string(ITEM_TEMPLATE_TABLE,template,&sprite_name,ITEM_SPRITE,NULL)) {
-				free(template);
+			if(!entry_read_string(ITEM_TEMPLATE_TABLE,mytemplate,&sprite_name,ITEM_SPRITE,NULL)) {
+				free(mytemplate);
 				i++;
 				continue;
 			}
-			entry_read_int(ITEM_TEMPLATE_TABLE,template,&sprite_align,ITEM_ALIGN,NULL);
-			entry_read_int(ITEM_TEMPLATE_TABLE,template,&sprite_offset_y,ITEM_OFFSET_Y,NULL);
-			free(template);
+			entry_read_int(ITEM_TEMPLATE_TABLE,mytemplate,&sprite_align,ITEM_ALIGN,NULL);
+			entry_read_int(ITEM_TEMPLATE_TABLE,mytemplate,&sprite_offset_y,ITEM_OFFSET_Y,NULL);
+			free(mytemplate);
 		}
 
 		item = item_list_add(&item_list);
@@ -925,7 +925,7 @@ item_t * scr_play_compose(context_t * ctx)
 
 	change_map = ctx->change_map;
 
-	if( change_map == TRUE ) {
+	if( change_map == true ) {
 		map_filename = strconcat( MAP_TABLE,"/",ctx->map,NULL);
 		network_send_req_file(ctx,map_filename);
 		free(map_filename);
@@ -948,12 +948,12 @@ item_t * scr_play_compose(context_t * ctx)
 
 		ui_play_compose(ctx,item_list);
 
-		/* force virtual coordinate on map change */
-		if( change_map == TRUE ) {
+		// force virtual coordinate on map change
+		if( change_map == true ) {
 			sdl_force_virtual_x(map_t2p_x(ctx->pos_tx,ctx->pos_ty,default_layer) + default_layer->col_width[ctx->pos_tx%default_layer->col_num]/2 + default_layer->row_width[ctx->pos_ty%default_layer->row_num]/2 );
 			sdl_force_virtual_y(map_t2p_y(ctx->pos_tx,ctx->pos_ty,default_layer) + default_layer->col_height[ctx->pos_tx%default_layer->col_num]/2 + default_layer->row_height[ctx->pos_ty%default_layer->row_num]/2 );
 		}
-		/* set virtual coordinate on the same map */
+		// set virtual coordinate on the same map
 		else {
 			sdl_set_virtual_x(map_t2p_x(ctx->pos_tx,ctx->pos_ty,default_layer) + default_layer->col_width[ctx->pos_tx%default_layer->col_num]/2 + default_layer->row_width[ctx->pos_ty%default_layer->row_num]/2 );
 			sdl_set_virtual_y(map_t2p_y(ctx->pos_tx,ctx->pos_ty,default_layer) + default_layer->col_height[ctx->pos_tx%default_layer->col_num]/2 + default_layer->row_height[ctx->pos_ty%default_layer->row_num]/2 );

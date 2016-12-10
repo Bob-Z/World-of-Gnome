@@ -306,7 +306,7 @@ void scr_select_add_user_character(context_t * context, char * data)
 
 		character_num++;
 
-		character_list = realloc(character_list,sizeof(character_t)*character_num);
+		character_list = (character_t*)realloc(character_list,sizeof(character_t)*character_num);
 
 		character_list[character_num-1].id = strdup(current_string);
 		current_string += strlen(current_string)+1;

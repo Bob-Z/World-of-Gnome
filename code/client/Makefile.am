@@ -1,5 +1,5 @@
 bin_PROGRAMS=wog_client
-wog_client_SOURCES=main_client.c parser_client.c file_client.c imageDB.c client.c textview.c scr_select.c screen.c scr_play.c network_client.c ui_play.c option_client.c
+wog_client_SOURCES=main_client.cpp parser_client.cpp file_client.cpp imageDB.cpp client.cpp textview.cpp scr_select.cpp screen.cpp scr_play.cpp network_client.cpp ui_play.cpp option_client.cpp
 
 wog_client_LDADD=../common/libcommon.a ../sdl_item/libsdl_item.a $(ADD_LIB)
 

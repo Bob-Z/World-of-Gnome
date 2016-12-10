@@ -17,11 +17,17 @@
    Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
-extern "C"
-{
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <lualib.h>
 #include <lauxlib.h>
+
+#ifdef __cplusplus
 }
+#endif
+
 #include "../common/common.h"
 #include "map_server.h"
 #include "character.h"

@@ -70,7 +70,7 @@ void network_request_user_character_list(context_t * context)
 /*********************************************************************
 Player sends an action to server
 *********************************************************************/
-void network_send_action(context_t * context, char * script,...)
+void network_send_action(context_t * context, const char * script,...)
 {
 	va_list ap;
 	char * frame;
@@ -122,13 +122,13 @@ static int async_recv(void * data)
 
 		// Read additional data
 		if( command_size > 0) {
-			buf = malloc(command_size);
+			buf = (char*)malloc(command_size);
 			if( network_read_bytes(context->socket,buf, command_size) == RET_NOK ) {
 				break;
 			}
 		}
 
-		if (!parse_incoming_data(context, command, command_size, buf) ) {
+		if (parse_incoming_data(context, command, command_size, buf) == RET_NOK ) {
 			if( buf ) {
 				free(buf);
 				buf = NULL;
@@ -182,13 +182,13 @@ static int async_data_recv(void * data)
 
 		// Read additional data
 		if( command_size > 0) {
-			buf = malloc(command_size);
+			buf = (char*)malloc(command_size);
 			if( network_read_bytes(context->socket_data,buf, command_size) == RET_NOK ) {
 				break;
 			}
 		}
 
-		if (!parse_incoming_data(context, command, command_size, buf) ) {
+		if (parse_incoming_data(context, command, command_size, buf) == RET_NOK ) {
 			if( buf ) {
 				free(buf);
 				buf = NULL;
@@ -216,10 +216,9 @@ static int async_data_recv(void * data)
 }
 
 /*********************************************************************
-return FALSE on error
-return TRUE if OK
+return RET_NOK on error
 *********************************************************************/
-int network_connect(context_t * context, const char * hostname)
+ret_code_t network_connect(context_t * context, const char * hostname)
 {
 	IPaddress ip;
 	TCPsocket socket;
@@ -228,17 +227,17 @@ int network_connect(context_t * context, const char * hostname)
 
 	if (SDLNet_Init() < 0) {
 		werr(LOGUSER, "Can't init SDLNet: %s\n", SDLNet_GetError());
-		return FALSE;
+		return RET_NOK;
 	}
 
 	if (SDLNet_ResolveHost(&ip, hostname, PORT) < 0) {
 		werr(LOGUSER, "Can't resolve %s:%d : %s\n", hostname,PORT,SDLNet_GetError());
-		return FALSE;
+		return RET_NOK;
 	}
 
 	if (!(socket = SDLNet_TCP_Open(&ip))) {
 		werr(LOGUSER, "Can't connect to %s:%d : %s\n", hostname,PORT,SDLNet_GetError());
-		return FALSE;
+		return RET_NOK;
 	}
 
 	wlog(LOGUSER,"Connected to %s:%d",hostname,PORT);
@@ -248,29 +247,29 @@ int network_connect(context_t * context, const char * hostname)
 
 	SDL_CreateThread(async_recv,"async_recv",(void*)context);
 
-	return TRUE;
+	return RET_OK;
 }
 
 /*********************************************************************
 *********************************************************************/
-int network_open_data_connection(context_t * context)
+ret_code_t network_open_data_connection(context_t * context)
 {
 	IPaddress ip;
 	TCPsocket socket;
 
 	if (SDLNet_ResolveHost(&ip, context->hostname, PORT) < 0) {
 		werr(LOGUSER, "Can't resolve %s:%d : %s\n", context->hostname,PORT,SDLNet_GetError());
-		return FALSE;
+		return RET_NOK;
 	}
 
 	if (!(socket = SDLNet_TCP_Open(&ip))) {
 		werr(LOGUSER, "Can't open data connection to %s:%d : %s\n", context->hostname,PORT,SDLNet_GetError());
-		return FALSE;
+		return RET_NOK;
 	}
 
 	context_set_socket_data(context, socket);
 
 	SDL_CreateThread(async_data_recv,"async_data_recv",(void*)context);
 
-	return TRUE;
+	return RET_OK;
 }

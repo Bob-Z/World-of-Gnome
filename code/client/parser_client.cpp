@@ -27,24 +27,24 @@
 #include "ui_play.h"
 
 /***********************************
- Return FALSE on error, TRUE if OK
+ Return RET_NOK on error
 ***********************************/
-int parse_incoming_data(context_t * context, Uint32 command, Uint32 command_size, char * data)
+ret_code_t parse_incoming_data(context_t * context, Uint32 command, Uint32 command_size, char * data)
 {
 	switch(command) {
 	case CMD_SEND_LOGIN_OK :
 		wlog(LOGDEBUG,"Received CMD_SEND_LOGIN_OK");
-		if(!network_open_data_connection(context)) {
-			return FALSE;
+		if(network_open_data_connection(context) == RET_NOK ) {
+			return RET_NOK;
 		}
-		context_set_connected(context, TRUE);
+		context_set_connected(context, true);
 		wlog(LOGUSER,"Successfully connected");
 		network_request_user_character_list(context);
 		wlog(LOGDEBUG,"Character list requested");
 		break;
 	case CMD_SEND_LOGIN_NOK :
 		wlog(LOGDEBUG,"Received CMD_SEND_LOGIN_NOK");
-		context_set_connected(context, FALSE);
+		context_set_connected(context, false);
 		werr(LOGUSER,"Check your login and password (they are case sensitive)\n");
 		exit(-1);
 		break;
@@ -84,9 +84,9 @@ int parse_incoming_data(context_t * context, Uint32 command, Uint32 command_size
 		break;
 	default:
 		werr(LOGDEV,"Unknown request from server");
-		return FALSE;
+		return RET_NOK;
 		break;
 	}
 
-	return TRUE;
+	return RET_OK;
 }

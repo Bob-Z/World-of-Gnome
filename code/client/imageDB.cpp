@@ -31,14 +31,14 @@ static anim_t * def_anim = NULL;
 static anim_t * default_anim(context_t * ctx)
 {
 	if(def_anim == NULL) {
-		def_anim = malloc(sizeof(anim_t));
+		def_anim = (anim_t*)malloc(sizeof(anim_t));
 
 		def_anim->num_frame = 1;
-		def_anim->tex = malloc(sizeof(SDL_Texture*));
+		def_anim->tex = (SDL_Texture**)malloc(sizeof(SDL_Texture*));
 		def_anim->tex[0] = SDL_CreateTexture(ctx->render, SDL_PIXELFORMAT_ABGR8888, SDL_TEXTUREACCESS_STATIC, 1,1);
 		def_anim->w = 1;
 		def_anim->h = 1;
-		def_anim->delay = malloc(sizeof(Uint32));;
+		def_anim->delay = (Uint32*)malloc(sizeof(Uint32));;
 		def_anim->delay[0] = 0;
 		def_anim->total_duration = 0;
 	}
@@ -85,7 +85,7 @@ anim_t * imageDB_get_anim(context_t * context, const char * image_name)
 
 	SDL_LockMutex(imageDB_mutex);
 	/* Search for a previously loaded anim */
-	anim = list_find(image_list,filename);
+	anim = (anim_t*)list_find(image_list,filename);
 	if(anim) {
 //		wlog(LOGDEBUG,"Image find: %s",filename);
 		free(filename);
@@ -129,7 +129,7 @@ anim_t ** imageDB_get_anim_array(context_t * context, const char ** image_name)
 	int num_image = 0;
 	int current_image = 0;
 
-	anim_output = malloc( sizeof(anim_t*) );
+	anim_output = (anim_t**)malloc( sizeof(anim_t*) );
 	anim_output[0] = NULL;
 
 	if( image_name == NULL ) {
@@ -138,7 +138,7 @@ anim_t ** imageDB_get_anim_array(context_t * context, const char ** image_name)
 
 	while( image_name[current_image] ) {
 		if( image_name[current_image][0] != 0 ) {
-			anim_output = realloc(anim_output,(num_image+2)*sizeof(anim_t*));
+			anim_output = (anim_t**)realloc(anim_output,(num_image+2)*sizeof(anim_t*));
 			anim_output[num_image] = imageDB_get_anim(context,image_name[current_image]);
 			anim_output[num_image+1] = NULL;
 			num_image++;
@@ -159,7 +159,7 @@ void image_DB_remove(char * filename)
 	wlog(LOGDEBUG,"Image remove: %s",filename);
 	/* Clean-up old anim if any */
 	SDL_LockMutex(imageDB_mutex);
-	old_anim = list_find(image_list,filename);
+	old_anim = (anim_t*)list_find(image_list,filename);
 	/* TODO Fix memory leak here */
 	/* If we free the anim, it may still be used by the screen renderer and cause a crash */
 	/* Try to postpone deletion ?? */

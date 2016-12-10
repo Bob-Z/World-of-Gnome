@@ -114,7 +114,7 @@ int main (int argc, char **argv)
 
 	sdl_init(TITLE_NAME, &context->render, &context->window, screen_compose, !maxfps);
 
-	int Mix_flags =  MIX_INIT_FLAC |  MIX_INIT_MOD |  MIX_INIT_MP3 |  MIX_INIT_OGG ;
+	int Mix_flags =  MIX_INIT_FLAC |  MIX_INIT_MP3 |  MIX_INIT_OGG ;
 	int result;
 	if (Mix_flags != (result = Mix_Init(Mix_flags))) {
 		werr(LOGUSER,"Could not initialize mixer (result: %d).\n", result);
@@ -124,7 +124,7 @@ int main (int argc, char **argv)
 	Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 1024);
 
 	/* connect to server */
-	if( network_connect(context,ip) ) {
+	if( network_connect(context,ip) == RET_OK ) {
 		network_login(context, user, pass);
 	} else {
 		werr(LOGUSER,"Can't connect to server. Check server IP address. This error may be due to a service outage on server side. Re-try in a few seconds.\n");
