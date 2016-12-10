@@ -19,8 +19,11 @@
 
 #include <string.h>
 #include <stdlib.h>
+extern "C" 
+{
 #include <lualib.h>
 #include <lauxlib.h>
+}
 #include <unistd.h>
 #include <limits.h>
 #include "common.h"

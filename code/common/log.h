@@ -22,6 +22,10 @@
 
 #include <stdio.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 void log_set_level(char * log_level);
 void log_add_file_filter(const char * file);
 void log_add_func_filter(const char * func);
@@ -36,4 +40,9 @@ void log_print(int type,const char * file,const char * func, int line,FILE *stre
 
 #define wlog(level,str,args...) log_print(TYPELOG,__FILE__,__func__,__LINE__,stdout,level,str, ## args)
 #define werr(level,str,args...) log_print(TYPEERR,__FILE__,__func__,__LINE__,stderr,level,str, ## args)
+
+#ifdef __cplusplus
+}
 #endif
+
+#endif // LOG_H

@@ -27,6 +27,10 @@
 #include <time.h>
 #include <SDL2/SDL.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 static int log_level = 0;
 
 const char *log_level_string[3] = {"user","dev","debug"};
@@ -97,7 +101,7 @@ static int is_allowed_func(const char * func)
 
 /**************************************************
 **************************************************/
-void log_print(int type,const char * file,const char * func,int line,FILE *stream,int level,char * format, ...)
+void log_print(int type,const char * file,const char * func,int line,FILE *stream,int level,const char * format, ...)
 {
 	va_list ap;
 	char buf[10000];
@@ -158,5 +162,10 @@ void log_set_level(char * log)
 		return;
 	}
 }
+
+#ifdef __cplusplus
+}
 #endif
+
+#endif // LOG_C
 

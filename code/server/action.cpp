@@ -17,6 +17,11 @@
    Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
+extern "C"
+{
+#include <lualib.h>
+#include <lauxlib.h>
+}
 #include "../common/common.h"
 #include "map_server.h"
 #include "character.h"
@@ -24,8 +29,6 @@
 #include "inventory.h"
 #include "attribute.h"
 #include "network_server.h"
-#include <lualib.h>
-#include <lauxlib.h>
 #include <stdlib.h>
 
 #define LUAVM_CONTEXT "wog_context"
