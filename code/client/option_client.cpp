@@ -45,7 +45,7 @@ static void parse_client_conf()
 		return;
 	}
 
-	if (!entry_read_int(NULL,CLIENT_CONF_FILE,&version,CLIENT_KEY_VERSION,NULL)) {
+	if (entry_read_int(NULL,CLIENT_CONF_FILE,&version,CLIENT_KEY_VERSION,NULL) == RET_NOK ) {
 		return;
 	}
 

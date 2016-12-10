@@ -22,7 +22,7 @@
 
 char * item_create_empty();
 char * item_create_from_template(const char * my_template);
-int item_destroy(const char * item_id);
+ret_code_t item_destroy(const char * item_id);
 char * resource_new(const char * my_template, int quantity);
 char * item_is_resource(const char * item_id);
 int resource_get_quantity(const char * item_id);

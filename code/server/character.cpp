@@ -36,7 +36,7 @@ void character_send_list(context_t * context)
 	char ** character_list;
 	int i = 0;
 
-	if(!entry_read_list(USERS_TABLE, context->user_name,&character_list,USERS_CHARACTER_LIST,NULL)) {
+	if(entry_read_list(USERS_TABLE, context->user_name,&character_list,USERS_CHARACTER_LIST,NULL) == RET_NOK) {
 		return;
 	}
 
@@ -61,7 +61,7 @@ void character_user_send_list(context_t * context)
 	char * name;
 	int i;
 
-	if(!entry_read_list(USERS_TABLE, context->user_name,&character_list,USERS_CHARACTER_LIST,NULL)) {
+	if(entry_read_list(USERS_TABLE, context->user_name,&character_list,USERS_CHARACTER_LIST,NULL) == RET_NOK ) {
 		return;
 	}
 
@@ -69,12 +69,12 @@ void character_user_send_list(context_t * context)
 
 	data = strdup("");
 	while( character_list[i] != NULL ) {
-		if(!entry_read_string(CHARACTER_TABLE, character_list[i], &type, CHARACTER_KEY_TYPE,NULL)) {
+		if(entry_read_string(CHARACTER_TABLE, character_list[i], &type, CHARACTER_KEY_TYPE,NULL) == RET_NOK ) {
 			i++;
 			continue;
 		}
 
-		if(!entry_read_string(CHARACTER_TABLE, character_list[i], &name, CHARACTER_KEY_NAME,NULL)) {
+		if(entry_read_string(CHARACTER_TABLE, character_list[i], &name, CHARACTER_KEY_NAME,NULL) == RET_NOK ) {
 			free(type);
 			i++;
 			continue;
@@ -198,21 +198,21 @@ char * character_create_from_template(context_t * ctx,const char * my_template,c
 	}
 
 	/* Write position */
-	if(!entry_write_string(CHARACTER_TABLE,new_id,map,CHARACTER_KEY_MAP,NULL)) {
+	if(entry_write_string(CHARACTER_TABLE,new_id,map,CHARACTER_KEY_MAP,NULL) == RET_NOK ) {
 		entry_destroy(CHARACTER_TABLE,new_id);
 		file_delete(CHARACTER_TABLE,new_id);
 		free(new_id);
 		return NULL;
 	}
 
-	if(!entry_write_int(CHARACTER_TABLE,new_id,x,CHARACTER_KEY_POS_X,NULL)) {
+	if(entry_write_int(CHARACTER_TABLE,new_id,x,CHARACTER_KEY_POS_X,NULL) == RET_NOK ) {
 		entry_destroy(CHARACTER_TABLE,new_id);
 		file_delete(CHARACTER_TABLE,new_id);
 		free(new_id);
 		return NULL;
 	}
 
-	if(!entry_write_int(CHARACTER_TABLE,new_id,y,CHARACTER_KEY_POS_Y,NULL)) {
+	if(entry_write_int(CHARACTER_TABLE,new_id,y,CHARACTER_KEY_POS_Y,NULL) == RET_NOK ) {
 		entry_destroy(CHARACTER_TABLE,new_id);
 		file_delete(CHARACTER_TABLE,new_id);
 		free(new_id);
@@ -266,8 +266,8 @@ void character_update_aggro(context_t * agressor)
 
 	/* If the current context is an NPC it might be an aggressor: compute its aggro */
 	if( character_get_npc(agressor->id) && agressor->luaVM != NULL) {
-		if(entry_read_int(CHARACTER_TABLE,agressor->id,&aggro_dist, CHARACTER_KEY_AGGRO_DIST,NULL)) {
-			if(entry_read_string(CHARACTER_TABLE,agressor->id,&aggro_script, CHARACTER_KEY_AGGRO_SCRIPT,NULL)) {
+		if(entry_read_int(CHARACTER_TABLE,agressor->id,&aggro_dist, CHARACTER_KEY_AGGRO_DIST,NULL) == RET_OK ) {
+			if(entry_read_string(CHARACTER_TABLE,agressor->id,&aggro_script, CHARACTER_KEY_AGGRO_SCRIPT,NULL) == RET_OK ) {
 				target = context_get_first();
 
 				while( target != NULL ) {
@@ -324,11 +324,11 @@ void character_update_aggro(context_t * agressor)
 			npc = npc->next;
 			continue;
 		}
-		if(!entry_read_int(CHARACTER_TABLE,npc->id,&aggro_dist, CHARACTER_KEY_AGGRO_DIST,NULL)) {
+		if(entry_read_int(CHARACTER_TABLE,npc->id,&aggro_dist, CHARACTER_KEY_AGGRO_DIST,NULL) == RET_NOK ) {
 			npc = npc->next;
 			continue;
 		}
-		if(!entry_read_string(CHARACTER_TABLE,npc->id,&aggro_script, CHARACTER_KEY_AGGRO_SCRIPT,NULL)) {
+		if(entry_read_string(CHARACTER_TABLE,npc->id,&aggro_script, CHARACTER_KEY_AGGRO_SCRIPT,NULL) == RET_NOK ) {
 			npc = npc->next;
 			continue;
 		}
@@ -366,7 +366,7 @@ static void platform_move(context_t * platform,const char * map, int x, int y, b
 	context_t * current = context_get_first();
 	int is_platform;
 
-	if(!entry_read_int(CHARACTER_TABLE,platform->id,&is_platform, CHARACTER_KEY_PLATFORM,NULL)) {
+	if(entry_read_int(CHARACTER_TABLE,platform->id,&is_platform, CHARACTER_KEY_PLATFORM,NULL) == RET_NOK ) {
 		return;
 	}
 
@@ -508,9 +508,9 @@ int character_set_pos(context_t * ctx, const char * map, int x, int y)
 		i = 0;
 		while(event_id[i]) {
 			script = NULL;
-			if( entry_read_string(MAP_TABLE,map,&script,layer_name,MAP_ENTRY_EVENT_LIST,event_id[i],MAP_EVENT_SCRIPT,NULL) ) {
+			if( entry_read_string(MAP_TABLE,map,&script,layer_name,MAP_ENTRY_EVENT_LIST,event_id[i],MAP_EVENT_SCRIPT,NULL) == RET_OK ) {
 				entry_read_list(MAP_TABLE,map,&param,layer_name,MAP_ENTRY_EVENT_LIST,event_id[i],MAP_EVENT_PARAM,NULL);
-			} else if( entry_read_string(MAP_TABLE,map,&script,MAP_ENTRY_EVENT_LIST,event_id[i],MAP_EVENT_SCRIPT,NULL) ) {
+			} else if( entry_read_string(MAP_TABLE,map,&script,MAP_ENTRY_EVENT_LIST,event_id[i],MAP_EVENT_SCRIPT,NULL) == RET_OK ) {
 				entry_read_list(MAP_TABLE,map,&param,MAP_ENTRY_EVENT_LIST,event_id[i],MAP_EVENT_PARAM,NULL);
 			}
 
@@ -541,7 +541,7 @@ int character_set_pos(context_t * ctx, const char * map, int x, int y)
  *********************************************************/
 int character_set_npc(const char * id, int npc)
 {
-	if(!entry_write_int(CHARACTER_TABLE,id,npc,CHARACTER_KEY_NPC,NULL)) {
+	if(entry_write_int(CHARACTER_TABLE,id,npc,CHARACTER_KEY_NPC,NULL) == RET_NOK ) {
 		return -1;
 	}
 
@@ -561,7 +561,7 @@ int character_get_npc(const char * id)
 {
 	int npc;
 
-	if(!entry_read_int(CHARACTER_TABLE,id,&npc,CHARACTER_KEY_NPC,NULL)) {
+	if(entry_read_int(CHARACTER_TABLE,id,&npc,CHARACTER_KEY_NPC,NULL) == RET_NOK ) {
 		return 0;
 	}
 
@@ -575,7 +575,7 @@ int character_set_portrait(const char * id,const char * portrait)
 {
 	context_t * ctx;
 
-	if(!entry_write_string(CHARACTER_TABLE,id,portrait,CHARACTER_KEY_PORTRAIT,NULL)) {
+	if(entry_write_string(CHARACTER_TABLE,id,portrait,CHARACTER_KEY_PORTRAIT,NULL) == RET_NOK ) {
 		return -1;
 	}
 
@@ -593,7 +593,7 @@ char * character_get_portrait(const char * id)
 {
 	char * portrait;
 
-	if(!entry_read_string(CHARACTER_TABLE,id,&portrait,CHARACTER_KEY_PORTRAIT,NULL)) {
+	if(entry_read_string(CHARACTER_TABLE,id,&portrait,CHARACTER_KEY_PORTRAIT,NULL) == RET_NOK ) {
 		return NULL;
 	}
 
@@ -606,7 +606,7 @@ char * character_get_portrait(const char * id)
 *********************************************************/
 int character_set_ai_script(const char * id, const char * script_name)
 {
-	if(!entry_write_string(CHARACTER_TABLE,id,script_name,CHARACTER_KEY_AI,NULL)) {
+	if(entry_write_string(CHARACTER_TABLE,id,script_name,CHARACTER_KEY_AI,NULL) == RET_NOK ) {
 		return -1;
 	}
 
@@ -643,7 +643,7 @@ int character_set_sprite(const char * id, int index, const char * filename)
 		return RET_NOK;
 	}
 
-	if( !entry_write_list_index(CHARACTER_TABLE, id, filename, index,CHARACTER_KEY_SPRITE,NULL ) ) {
+	if( entry_write_list_index(CHARACTER_TABLE, id, filename, index,CHARACTER_KEY_SPRITE,NULL ) == RET_NOK ) {
 		return RET_NOK;
 	}
 
@@ -684,7 +684,7 @@ int character_set_sprite_dir(const char * id, const char * dir, int index, const
 		break;
 	}
 
-	if( !entry_write_list_index(CHARACTER_TABLE, id, filename, index,key,NULL ) ) {
+	if( entry_write_list_index(CHARACTER_TABLE, id, filename, index,key,NULL ) == RET_NOK ) {
 		return RET_NOK;
 	}
 
@@ -725,7 +725,7 @@ int character_set_sprite_move(const char * id, const char * dir, int index, cons
 		break;
 	}
 
-	if( !entry_write_list_index(CHARACTER_TABLE, id, filename, index,key,NULL ) ) {
+	if( entry_write_list_index(CHARACTER_TABLE, id, filename, index,key,NULL ) == RET_NOK ) {
 		return RET_NOK;
 	}
 

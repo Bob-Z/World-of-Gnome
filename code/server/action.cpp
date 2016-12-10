@@ -1351,6 +1351,8 @@ Input:
  - ID of an event
  - parameter to add
 Output:
+-1 on error
+0 on success
 */
 static int l_map_add_event_param( lua_State* L)
 {
@@ -1667,11 +1669,13 @@ Delete an item
 Input:
  - ID of an item
 Output:
+-1 on error
+0 on success
 */
 static int l_item_destroy( lua_State* L)
 {
 	const char * item;
-	int res;
+	ret_code_t res;
 
 	item = luaL_checkstring(L, -1);
 	res = item_destroy(item);
@@ -2203,7 +2207,7 @@ int action_execute(context_t * context, const char * action, char ** parameters)
 	char ** all_params;
 	int ret;
 
-	if(!entry_read_string(ACTION_TABLE,action,&script,ACTION_KEY_SCRIPT,NULL)) {
+	if(entry_read_string(ACTION_TABLE,action,&script,ACTION_KEY_SCRIPT,NULL) == RET_NOK) {
 		return -1;
 	}
 	entry_read_list(ACTION_TABLE,action,&params,ACTION_KEY_PARAM,NULL);

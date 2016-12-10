@@ -243,13 +243,13 @@ static void compose_attribute(context_t * ctx, item_t * item_list)
 		attribute_string=NULL;
 	}
 
-	if(!entry_get_group_list(CHARACTER_TABLE,ctx->id,&name_list,ATTRIBUTE_GROUP,NULL) ) {
+	if(entry_get_group_list(CHARACTER_TABLE,ctx->id,&name_list,ATTRIBUTE_GROUP,NULL) == RET_NOK ) {
 		return;
 	}
 
 	index=0;
 	while( name_list[index] != NULL) {
-		if(!entry_read_int(CHARACTER_TABLE,ctx->id,&value,ATTRIBUTE_GROUP,name_list[index],ATTRIBUTE_CURRENT,NULL)) {
+		if(entry_read_int(CHARACTER_TABLE,ctx->id,&value,ATTRIBUTE_GROUP,name_list[index],ATTRIBUTE_CURRENT,NULL) == RET_NOK ) {
 			index++;
 			continue;
 		}
@@ -342,7 +342,7 @@ static void compose_action(context_t * ctx,item_t * item_list)
 	action_bar_height = 0;
 
 	/* Read action list for current user */
-	if(!entry_read_list(CHARACTER_TABLE,ctx->id,&action_list,CHARACTER_KEY_ACTION,NULL)) {
+	if(entry_read_list(CHARACTER_TABLE,ctx->id,&action_list,CHARACTER_KEY_ACTION,NULL) == RET_NOK ) {
 		return;
 	}
 
@@ -365,13 +365,13 @@ static void compose_action(context_t * ctx,item_t * item_list)
 			first_action = i;
 		}
 
-		if(!entry_read_string(ACTION_TABLE,action_list[i],&text,ACTION_KEY_TEXT,NULL)) {
+		if(entry_read_string(ACTION_TABLE,action_list[i],&text,ACTION_KEY_TEXT,NULL) == RET_NOK ) {
 			i++;
 			continue;
 		}
-		if(entry_read_string(ACTION_TABLE,action_list[i],&icon_array[0],ACTION_KEY_ICON,NULL)) {
+		if(entry_read_string(ACTION_TABLE,action_list[i],&icon_array[0],ACTION_KEY_ICON,NULL) == RET_OK ) {
 			icon = icon_array;
-		} else if(!entry_read_list(ACTION_TABLE,action_list[i],&icon,ACTION_KEY_ICON,NULL)) {
+		} else if(entry_read_list(ACTION_TABLE,action_list[i],&icon,ACTION_KEY_ICON,NULL) == RET_NOK ) {
 			i++;
 			continue;
 		}
@@ -399,14 +399,14 @@ static void compose_action(context_t * ctx,item_t * item_list)
 
 		free(anim_array);
 
-		if( entry_read_list(ACTION_TABLE,action_list[i],&icon_over,ACTION_KEY_ICON_OVER,NULL) ) {
+		if( entry_read_list(ACTION_TABLE,action_list[i],&icon_over,ACTION_KEY_ICON_OVER,NULL) == RET_OK ) {
 			anim_array = imageDB_get_anim_array(ctx, (const char **)icon_over);
 			item_set_anim_over_array(item,anim_array);
 			free(anim_array);
 			deep_free(icon_over);
 		}
 
-		if( entry_read_list(ACTION_TABLE,action_list[i],&icon_click,ACTION_KEY_ICON_CLICK,NULL) ) {
+		if( entry_read_list(ACTION_TABLE,action_list[i],&icon_click,ACTION_KEY_ICON_CLICK,NULL) == RET_OK ) {
 			anim_array = imageDB_get_anim_array(ctx, (const char **)icon_click);
 			item_set_anim_click_array(item,anim_array);
 			free(anim_array);
@@ -489,8 +489,8 @@ static void compose_equipment(context_t * ctx, item_t * item_list)
 	index=0;
 	while( slot_list && slot_list[index] != NULL) {
 #if 0
-		/* Get the slot name */
-		if(!entry_read_string(CHARACTER_TABLE,ctx->id,&item_name,EQUIPMENT_GROUP,slot_list[index],EQUIPMENT_NAME,NULL)) {
+		// Get the slot name
+		if(entry_read_string(CHARACTER_TABLE,ctx->id,&item_name,EQUIPMENT_GROUP,slot_list[index],EQUIPMENT_NAME,NULL) == RET_NOK ) {
 			name = strdup(slot_list[index]);
 		} else {
 			name = item_name;
@@ -498,11 +498,11 @@ static void compose_equipment(context_t * ctx, item_t * item_list)
 		free(item_name);
 #endif
 		h1 = 0;
-		/* Get the slot icon */
-		if(!entry_read_string(CHARACTER_TABLE,ctx->id,&icon_name,EQUIPMENT_GROUP,slot_list[index],EQUIPMENT_ICON,NULL)) {
+		// Get the slot icon
+		if(entry_read_string(CHARACTER_TABLE,ctx->id,&icon_name,EQUIPMENT_GROUP,slot_list[index],EQUIPMENT_ICON,NULL) == RET_NOK ) {
 			continue;
 		} else {
-			/* load image */
+			// load image
 			anim = imageDB_get_anim(ctx, icon_name);
 			free(icon_name);
 
@@ -524,24 +524,24 @@ static void compose_equipment(context_t * ctx, item_t * item_list)
 			}
 		}
 
-		/* Is there an equipped object ? */
-		if(entry_read_string(CHARACTER_TABLE,ctx->id,&equipped_name,EQUIPMENT_GROUP,slot_list[index],EQUIPMENT_EQUIPPED,NULL) && equipped_name[0]!=0 ) {
+		// Is there an equipped object ?
+		if(entry_read_string(CHARACTER_TABLE,ctx->id,&equipped_name,EQUIPMENT_GROUP,slot_list[index],EQUIPMENT_EQUIPPED,NULL) == RET_OK && equipped_name[0]!=0 ) {
 #if 0
-			/* Get the equipped object name */
-			if(!entry_read_string(ITEM_TABLE,equipped_name,&equipped_text,ITEM_NAME,NULL)) {
+			// Get the equipped object name
+			if(entry_read_string(ITEM_TABLE,equipped_name,&equipped_text,ITEM_NAME,NULL) == RET_NOK ) {
 				werr(LOGDEV,"Can't read object %s name in equipment slot %s",equipped_name,slot_list[index]);
 			}
 			free(equipped_text);
 #endif
-			/* Get its icon */
+			// Get its icon
 			mytemplate = item_is_resource(equipped_name);
 
 			if ( mytemplate == NULL ) {
-				if(!entry_read_string(ITEM_TABLE,equipped_name,&equipped_icon_name,ITEM_ICON,NULL)) {
+				if(entry_read_string(ITEM_TABLE,equipped_name,&equipped_icon_name,ITEM_ICON,NULL) == RET_NOK ) {
 					werr(LOGDEV,"Can't read object %s icon in equipment slot %s",equipped_name,slot_list[index]);
 				}
 			} else {
-				if(!entry_read_string(ITEM_TEMPLATE_TABLE,mytemplate,&equipped_icon_name,ITEM_ICON,NULL)) {
+				if(entry_read_string(ITEM_TEMPLATE_TABLE,mytemplate,&equipped_icon_name,ITEM_ICON,NULL) == RET_NOK ) {
 					werr(LOGDEV,"Can't read item %s icon name (template: %s)",equipped_name,mytemplate);
 				}
 				free(mytemplate);
@@ -595,11 +595,11 @@ static void compose_equipment(context_t * ctx, item_t * item_list)
 		mytemplate = item_is_resource(ctx->selection.inventory);
 
 		if ( mytemplate == NULL ) {
-			if(!entry_read_string(ITEM_TABLE,ctx->selection.inventory,&inventory_icon_name,ITEM_ICON,NULL)) {
+			if(entry_read_string(ITEM_TABLE,ctx->selection.inventory,&inventory_icon_name,ITEM_ICON,NULL) == RET_NOK ) {
 				werr(LOGDEV,"Can't read item %s icon name",ctx->selection.inventory);
 			}
 		} else {
-			if(!entry_read_string(ITEM_TEMPLATE_TABLE,mytemplate,&inventory_icon_name,ITEM_ICON,NULL)) {
+			if(entry_read_string(ITEM_TEMPLATE_TABLE,mytemplate,&inventory_icon_name,ITEM_ICON,NULL) == RET_NOK ) {
 				werr(LOGDEV,"Can't read item %s icon name (template: %s)",ctx->selection.inventory,mytemplate);
 			}
 			free(mytemplate);
@@ -817,7 +817,7 @@ static void compose_inventory(context_t * ctx,item_t * item_list)
 	draw_background(ctx,item_list);
 
 	/* read data from file */
-	if(!entry_read_list(CHARACTER_TABLE,ctx->id,&inventory_list, CHARACTER_KEY_INVENTORY,NULL)) {
+	if(entry_read_list(CHARACTER_TABLE,ctx->id,&inventory_list, CHARACTER_KEY_INVENTORY,NULL) == RET_NOK ) {
 		return;
 	}
 
@@ -826,7 +826,7 @@ static void compose_inventory(context_t * ctx,item_t * item_list)
 
 		if( mytemplate == NULL ) {
 			/* Icon is mandatory for now */
-			if(!entry_read_string(ITEM_TABLE,inventory_list[i],&value,ITEM_ICON,NULL)) {
+			if(entry_read_string(ITEM_TABLE,inventory_list[i],&value,ITEM_ICON,NULL) == RET_NOK ) {
 				i++;
 				continue;
 			}
@@ -834,20 +834,20 @@ static void compose_inventory(context_t * ctx,item_t * item_list)
 			anim = imageDB_get_anim(ctx, value);
 			free(value);
 
-			if(!entry_read_string(ITEM_TABLE,inventory_list[i],&value,ITEM_NAME,NULL)) {
+			if(entry_read_string(ITEM_TABLE,inventory_list[i],&value,ITEM_NAME,NULL) == RET_NOK ) {
 				label = strdup(inventory_list[i]);
 			} else {
 				label = value;
 			}
 
-			if(!entry_read_string(ITEM_TABLE,inventory_list[i],&value,ITEM_DESC,NULL)) {
+			if(entry_read_string(ITEM_TABLE,inventory_list[i],&value,ITEM_DESC,NULL) == RET_NOK ) {
 				description = strdup("");;
 			} else {
 				description = value;
 			}
 		} else {
 			/* Icon is mandatory for now */
-			if(!entry_read_string(ITEM_TEMPLATE_TABLE,mytemplate,&value,ITEM_ICON,NULL)) {
+			if(entry_read_string(ITEM_TEMPLATE_TABLE,mytemplate,&value,ITEM_ICON,NULL) == RET_NOK ) {
 				i++;
 				free(mytemplate);
 				continue;
@@ -856,13 +856,13 @@ static void compose_inventory(context_t * ctx,item_t * item_list)
 			anim = imageDB_get_anim(ctx, value);
 			free(value);
 
-			if(!entry_read_string(ITEM_TEMPLATE_TABLE,mytemplate,&value,ITEM_NAME,NULL)) {
+			if(entry_read_string(ITEM_TEMPLATE_TABLE,mytemplate,&value,ITEM_NAME,NULL) == RET_NOK ) {
 				label = strdup(inventory_list[i]);
 			} else {
 				label = value;
 			}
 
-			if(!entry_read_string(ITEM_TEMPLATE_TABLE,mytemplate,&value,ITEM_DESC,NULL)) {
+			if(entry_read_string(ITEM_TEMPLATE_TABLE,mytemplate,&value,ITEM_DESC,NULL) == RET_NOK ) {
 				description = strdup("");;
 			} else {
 				description = value;
@@ -931,7 +931,7 @@ static void compose_inventory_select(context_t * ctx,item_t * item_list)
 	deep_free(inventory_list);
 
 	/* read data from file */
-	if(!entry_read_list(CHARACTER_TABLE,ctx->id,&inventory_list, CHARACTER_KEY_INVENTORY,NULL)) {
+	if(entry_read_list(CHARACTER_TABLE,ctx->id,&inventory_list, CHARACTER_KEY_INVENTORY,NULL) == RET_NOK ) {
 		return;
 	}
 
@@ -941,11 +941,11 @@ static void compose_inventory_select(context_t * ctx,item_t * item_list)
 		mytemplate = item_is_resource(inventory_list[i]);
 
 		if ( mytemplate == NULL ) {
-			if(!entry_read_string(ITEM_TABLE,inventory_list[i],&icon_name,ITEM_ICON,NULL)) {
+			if(entry_read_string(ITEM_TABLE,inventory_list[i],&icon_name,ITEM_ICON,NULL) == RET_NOK ) {
 				werr(LOGDEV,"Can't read item %s icon name",inventory_list[i]);
 			}
 		} else {
-			if(!entry_read_string(ITEM_TEMPLATE_TABLE,mytemplate,&icon_name,ITEM_ICON,NULL)) {
+			if(entry_read_string(ITEM_TEMPLATE_TABLE,mytemplate,&icon_name,ITEM_ICON,NULL) == RET_NOK ) {
 				werr(LOGDEV,"Can't read item %s icon name (template: %s)",inventory_list[i],mytemplate);
 			}
 			free(mytemplate);

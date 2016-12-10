@@ -35,8 +35,8 @@ int equipment_set_item(const char *id, const char * slot, const char * item)
 		return -1;
 	}
 
-	if( entry_write_string(CHARACTER_TABLE, context->id, item, EQUIPMENT_GROUP, slot, EQUIPMENT_EQUIPPED, NULL)) {
-		/* update client */
+	if( entry_write_string(CHARACTER_TABLE, context->id, item, EQUIPMENT_GROUP, slot, EQUIPMENT_EQUIPPED, NULL) == RET_OK ) {
+		// update client
 		network_send_character_file(context);
 		return 0;
 	}
@@ -58,7 +58,7 @@ char * equipment_get_item(const char *id, const char * slot)
 		return NULL;
 	}
 
-	if(!entry_read_string(CHARACTER_TABLE, context->id, &item, EQUIPMENT_GROUP, slot, EQUIPMENT_EQUIPPED, NULL)) {
+	if(entry_read_string(CHARACTER_TABLE, context->id, &item, EQUIPMENT_GROUP, slot, EQUIPMENT_EQUIPPED, NULL) == RET_NOK) {
 		return NULL;
 	}
 

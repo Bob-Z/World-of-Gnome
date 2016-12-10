@@ -51,7 +51,7 @@ static int npc_script(void * data)
 		if(parameters) {
 			deep_free(parameters);
 		}
-		if(!entry_read_string(CHARACTER_TABLE,context->id,&script,CHARACTER_KEY_AI,NULL)) {
+		if(entry_read_string(CHARACTER_TABLE,context->id,&script,CHARACTER_KEY_AI,NULL) == RET_NOK) {
 			werr(LOGUSER,"No AI script for %s",context->id);
 			break;
 		}
@@ -99,7 +99,7 @@ void instantiate_npc(const char * id)
 	char buf[512];
 
 	// check if it's a NPC
-	if(!entry_read_int(CHARACTER_TABLE,id,&is_npc,CHARACTER_KEY_NPC,NULL)) {
+	if(entry_read_int(CHARACTER_TABLE,id,&is_npc,CHARACTER_KEY_NPC,NULL) == RET_NOK) {
 		return;
 	}
 
@@ -108,23 +108,23 @@ void instantiate_npc(const char * id)
 	}
 
 	// read data of this npc
-	if(!entry_read_int(CHARACTER_TABLE,id,&x,CHARACTER_KEY_POS_X,NULL)) {
+	if(entry_read_int(CHARACTER_TABLE,id,&x,CHARACTER_KEY_POS_X,NULL) == RET_NOK) {
 		return;
 	}
 
-	if(!entry_read_int(CHARACTER_TABLE,id,&y,CHARACTER_KEY_POS_Y,NULL)) {
+	if(entry_read_int(CHARACTER_TABLE,id,&y,CHARACTER_KEY_POS_Y,NULL) == RET_NOK) {
 		return;
 	}
 
-	if(!entry_read_string(CHARACTER_TABLE,id,&map,CHARACTER_KEY_MAP,NULL)) {
+	if(entry_read_string(CHARACTER_TABLE,id,&map,CHARACTER_KEY_MAP,NULL) == RET_NOK) {
 		return;
 	}
 
-	if(!entry_read_string(CHARACTER_TABLE,id,&name,CHARACTER_KEY_NAME,NULL)) {
+	if(entry_read_string(CHARACTER_TABLE,id,&name,CHARACTER_KEY_NAME,NULL) == RET_NOK) {
 		name = strdup("");
 	}
 
-	if(!entry_read_string(CHARACTER_TABLE,id,&type,CHARACTER_KEY_TYPE,NULL)) {
+	if(entry_read_string(CHARACTER_TABLE,id,&type,CHARACTER_KEY_TYPE,NULL) == RET_NOK) {
 		free(map);
 		free(name);
 		return;

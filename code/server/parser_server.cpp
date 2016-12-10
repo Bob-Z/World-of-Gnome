@@ -46,7 +46,7 @@ ret_code_t parse_incoming_data(context_t * context, Uint32 command, Uint32 comma
 		user_name = _strsep(&data,NETWORK_DELIMITER);
 		password = _strsep(&data,NETWORK_DELIMITER);
 
-		if(!entry_read_string(PASSWD_TABLE, user_name, &value, PASSWD_KEY_PASSWORD,NULL)) {
+		if(entry_read_string(PASSWD_TABLE, user_name, &value, PASSWD_KEY_PASSWORD,NULL) == RET_NOK) {
 			return RET_NOK;
 		}
 		if( strcmp(value, password) != 0) {

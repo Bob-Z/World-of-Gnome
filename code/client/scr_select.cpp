@@ -202,7 +202,7 @@ item_t * scr_select_compose(context_t * context)
 	/* Load all anim compute max height and width of anim + string */
 	for(i=0; i<character_num; i++) {
 		/* Compute the marquee file name */
-		if(!entry_read_string(CHARACTER_TABLE,character_list[i].id,&marquee_name,CHARACTER_KEY_MARQUEE,NULL)) {
+		if(entry_read_string(CHARACTER_TABLE,character_list[i].id,&marquee_name,CHARACTER_KEY_MARQUEE,NULL) == RET_NOK ) {
 			continue;
 		}
 		character_list[i].anim  = imageDB_get_anim(context,marquee_name);

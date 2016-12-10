@@ -645,7 +645,7 @@ ret_code_t context_update_from_file(context_t * context)
 		return RET_NOK;
 	}
 
-	if(entry_read_string(CHARACTER_TABLE,context->id,&result, CHARACTER_KEY_NAME,NULL)) {
+	if(entry_read_string(CHARACTER_TABLE,context->id,&result, CHARACTER_KEY_NAME,NULL) == RET_OK ) {
 		free( context->character_name );
 		context->character_name = result;
 	} else {
@@ -653,14 +653,14 @@ ret_code_t context_update_from_file(context_t * context)
 	}
 
 
-	if(entry_read_string(CHARACTER_TABLE,context->id,&result, CHARACTER_KEY_TYPE,NULL)) {
+	if(entry_read_string(CHARACTER_TABLE,context->id,&result, CHARACTER_KEY_TYPE,NULL) == RET_OK ) {
 		free( context->type );
 		context->type = result;
 	} else {
 		ret = RET_NOK;
 	}
 
-	if(entry_read_string(CHARACTER_TABLE,context->id,&result, CHARACTER_KEY_MAP,NULL)) {
+	if(entry_read_string(CHARACTER_TABLE,context->id,&result, CHARACTER_KEY_MAP,NULL) == RET_OK ) {
 		free( context->map );
 		ret = _context_set_map(context, result);
 		free(result);
@@ -669,13 +669,13 @@ ret_code_t context_update_from_file(context_t * context)
 	}
 
 	int pos_tx;
-	if(!entry_read_int(CHARACTER_TABLE,context->id,&pos_tx, CHARACTER_KEY_POS_X,NULL)) {
+	if(entry_read_int(CHARACTER_TABLE,context->id,&pos_tx, CHARACTER_KEY_POS_X,NULL) == RET_NOK ) {
 		ret = RET_NOK;
 	}
 	_context_set_pos_tx(context,pos_tx);
 
 	int pos_ty;
-	if(!entry_read_int(CHARACTER_TABLE,context->id,&pos_ty, CHARACTER_KEY_POS_Y,NULL)) {
+	if(entry_read_int(CHARACTER_TABLE,context->id,&pos_ty, CHARACTER_KEY_POS_Y,NULL) == RET_NOK ) {
 		ret = RET_NOK;
 	}
 	_context_set_pos_ty(context,pos_ty);

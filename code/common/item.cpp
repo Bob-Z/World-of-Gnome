@@ -58,9 +58,9 @@ char * item_create_from_template(const char * my_template)
 
 /*****************************
 Remove an item file
-return -1 if fails
+return RET_NOK on error
 *****************************/
-int item_destroy(const char * item_id)
+ret_code_t item_destroy(const char * item_id)
 {
 	return entry_destroy(ITEM_TABLE,item_id);
 }
@@ -81,12 +81,12 @@ char * resource_new(const char * my_template, int quantity)
 		return NULL;
 	}
 
-	if(!entry_write_string(ITEM_TABLE,new_id,my_template,ITEM_TEMPLATE, NULL)) {
+	if(entry_write_string(ITEM_TABLE,new_id,my_template,ITEM_TEMPLATE, NULL) == RET_NOK ) {
 		entry_destroy(ITEM_TABLE,new_id);
 		return NULL;
 	}
 
-	if(!entry_write_int(ITEM_TABLE,new_id,quantity,ITEM_QUANTITY, NULL)) {
+	if(entry_write_int(ITEM_TABLE,new_id,quantity,ITEM_QUANTITY, NULL) == RET_NOK ) {
 		entry_destroy(ITEM_TABLE,new_id);
 		return NULL;
 	}
@@ -122,7 +122,7 @@ int resource_get_quantity(const char * item_id)
 	}
 	free(my_template);
 
-	if(!entry_read_int(ITEM_TABLE,item_id,&quantity,ITEM_QUANTITY, NULL)) {
+	if(entry_read_int(ITEM_TABLE,item_id,&quantity,ITEM_QUANTITY, NULL) == RET_NOK ) {
 		return -1;
 	}
 
@@ -143,7 +143,7 @@ int resource_set_quantity(context_t * context, const char * item_id, int quantit
 	}
 	free(my_template);
 
-	if(!entry_write_int(ITEM_TABLE,item_id,quantity,ITEM_QUANTITY, NULL)) {
+	if(entry_write_int(ITEM_TABLE,item_id,quantity,ITEM_QUANTITY, NULL) == RET_NOK ) {
 		return -1;
 	}
 
@@ -162,13 +162,13 @@ char * item_get_name(const char * item_id)
 	char * name;
 
 	if( (my_template=item_is_resource(item_id)) != NULL ) {
-		if(entry_read_string(ITEM_TEMPLATE_TABLE,my_template,&name,ITEM_NAME,NULL)) {
+		if(entry_read_string(ITEM_TEMPLATE_TABLE,my_template,&name,ITEM_NAME,NULL) == RET_OK ) {
 			free(my_template);
 			return name;
 		}
 		free(my_template);
 	} else {
-		if(entry_read_string(ITEM_TABLE,item_id,&name,ITEM_NAME,NULL)) {
+		if(entry_read_string(ITEM_TABLE,item_id,&name,ITEM_NAME,NULL) == RET_OK ) {
 			return name;
 		}
 	}

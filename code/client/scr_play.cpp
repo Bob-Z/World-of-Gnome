@@ -195,7 +195,7 @@ static anim_t ** select_sprite(context_t * ctx, const char * image_file_name)
 	}
 
 	/* try default sprite file */
-	if(entry_read_string(CHARACTER_TABLE,ctx->id,&sprite_name,CHARACTER_KEY_SPRITE,NULL)) {
+	if(entry_read_string(CHARACTER_TABLE,ctx->id,&sprite_name,CHARACTER_KEY_SPRITE,NULL) == RET_OK ) {
 		if( sprite_name[0] != 0 ) {
 			sprite_name_array[0] = sprite_name;
 			sprite = imageDB_get_anim_array(player_context,sprite_name_array);
@@ -205,7 +205,7 @@ static anim_t ** select_sprite(context_t * ctx, const char * image_file_name)
 		free(sprite_name);
 	}
 	/* try default sprite list */
-	if(entry_read_list(CHARACTER_TABLE,ctx->id,&sprite_list,CHARACTER_KEY_SPRITE,NULL)) {
+	if(entry_read_list(CHARACTER_TABLE,ctx->id,&sprite_list,CHARACTER_KEY_SPRITE,NULL) == RET_OK ) {
 		sprite = imageDB_get_anim_array(player_context,(const char **)sprite_list);
 		deep_free(sprite_list);
 		return sprite;
@@ -391,7 +391,7 @@ static void set_up_sprite(context_t * ctx, const char * image_file_name)
 	py = map_t2p_y(ctx->pos_tx,ctx->pos_ty,default_layer);
 
 	// Get per sprite zoom
-	if(entry_read_string(CHARACTER_TABLE,ctx->id,&zoom_str,CHARACTER_KEY_ZOOM,NULL)) {
+	if(entry_read_string(CHARACTER_TABLE,ctx->id,&zoom_str,CHARACTER_KEY_ZOOM,NULL) == RET_OK ) {
 		zoom = atof(zoom_str);
 		free(zoom_str);
 	}
@@ -550,7 +550,7 @@ static void compose_item(context_t * ctx,int layer_index)
 
 	sprintf(layer_name,"%s%d",MAP_KEY_LAYER,layer_index);
 
-	if(!entry_get_group_list(MAP_TABLE,ctx->map,&item_id,layer_name,MAP_ENTRY_ITEM_LIST,NULL)) {
+	if(entry_get_group_list(MAP_TABLE,ctx->map,&item_id,layer_name,MAP_ENTRY_ITEM_LIST,NULL) == RET_NOK ) {
 		return;
 	}
 
@@ -560,12 +560,12 @@ static void compose_item(context_t * ctx,int layer_index)
 	while( item_id[i] != NULL ) {
 		sprite_align = ALIGN_CENTER;
 
-		if(!entry_read_int(MAP_TABLE,ctx->map,&x,layer_name,MAP_ENTRY_ITEM_LIST,item_id[i],MAP_ITEM_POS_X,NULL)) {
+		if(entry_read_int(MAP_TABLE,ctx->map,&x,layer_name,MAP_ENTRY_ITEM_LIST,item_id[i],MAP_ITEM_POS_X,NULL) == RET_NOK ) {
 			i++;
 			continue;
 		}
 
-		if(!entry_read_int(MAP_TABLE,ctx->map,&y,layer_name,MAP_ENTRY_ITEM_LIST,item_id[i],MAP_ITEM_POS_Y,NULL)) {
+		if(entry_read_int(MAP_TABLE,ctx->map,&y,layer_name,MAP_ENTRY_ITEM_LIST,item_id[i],MAP_ITEM_POS_Y,NULL) == RET_NOK ) {
 			i++;
 			continue;
 		}
@@ -573,14 +573,14 @@ static void compose_item(context_t * ctx,int layer_index)
 		mytemplate = item_is_resource(item_id[i]);
 
 		if ( mytemplate == NULL ) {
-			if(!entry_read_string(ITEM_TABLE,item_id[i],&sprite_name,ITEM_SPRITE,NULL)) {
+			if(entry_read_string(ITEM_TABLE,item_id[i],&sprite_name,ITEM_SPRITE,NULL) == RET_NOK ) {
 				i++;
 				continue;
 			}
 			entry_read_int(ITEM_TABLE,item_id[i],&sprite_align,ITEM_ALIGN,NULL);
 			entry_read_int(ITEM_TABLE,item_id[i],&sprite_offset_y,ITEM_OFFSET_Y,NULL);
 		} else {
-			if(!entry_read_string(ITEM_TEMPLATE_TABLE,mytemplate,&sprite_name,ITEM_SPRITE,NULL)) {
+			if(entry_read_string(ITEM_TEMPLATE_TABLE,mytemplate,&sprite_name,ITEM_SPRITE,NULL) == RET_NOK ) {
 				free(mytemplate);
 				i++;
 				continue;
@@ -712,7 +712,7 @@ static void compose_map_set(context_t * ctx, int layer_index)
 	layer_t * layer;
 
 	sprintf(layer_name,"%s%d",MAP_KEY_LAYER,layer_index);
-	if(!entry_read_list(MAP_TABLE, ctx->map, &tile_set,layer_name,MAP_KEY_SET,NULL)) {
+	if(entry_read_list(MAP_TABLE, ctx->map, &tile_set,layer_name,MAP_KEY_SET,NULL) == RET_NOK ) {
 		return;
 	}
 
@@ -755,20 +755,20 @@ static void compose_map_scenery(context_t * ctx, int layer_index)
 	char layer_name[SMALL_BUF];
 
 	sprintf(layer_name,"%s%d",MAP_KEY_LAYER,layer_index);
-	if(!entry_get_group_list(MAP_TABLE, ctx->map, &scenery_list,layer_name,MAP_KEY_SCENERY,NULL)) {
+	if(entry_get_group_list(MAP_TABLE, ctx->map, &scenery_list,layer_name,MAP_KEY_SCENERY,NULL) == RET_NOK ) {
 		return;
 	}
 
 	while(scenery_list[i] != NULL ) {
-		if(!entry_read_int(MAP_TABLE, ctx->map, &x,layer_name,MAP_KEY_SCENERY,scenery_list[i],MAP_KEY_SCENERY_X,NULL)) {
+		if(entry_read_int(MAP_TABLE, ctx->map, &x,layer_name,MAP_KEY_SCENERY,scenery_list[i],MAP_KEY_SCENERY_X,NULL) == RET_NOK ) {
 			i++;
 			continue;
 		}
-		if(!entry_read_int(MAP_TABLE, ctx->map, &y,layer_name,MAP_KEY_SCENERY,scenery_list[i],MAP_KEY_SCENERY_Y,NULL)) {
+		if(entry_read_int(MAP_TABLE, ctx->map, &y,layer_name,MAP_KEY_SCENERY,scenery_list[i],MAP_KEY_SCENERY_Y,NULL) == RET_NOK ) {
 			i++;
 			continue;
 		}
-		if(!entry_read_string(MAP_TABLE, ctx->map, &image_name,layer_name,MAP_KEY_SCENERY,scenery_list[i],MAP_KEY_SCENERY_IMAGE,NULL)) {
+		if(entry_read_string(MAP_TABLE, ctx->map, &image_name,layer_name,MAP_KEY_SCENERY,scenery_list[i],MAP_KEY_SCENERY_IMAGE,NULL) == RET_NOK ) {
 			i++;
 			continue;
 		}
@@ -805,7 +805,7 @@ static void compose_type(context_t * ctx,int layer_index)
 	}
 
 	sprintf(layer_name,"%s%d",MAP_KEY_LAYER,layer_index);
-	if( !entry_exist(MAP_TABLE, ctx->map, layer_name,MAP_KEY_TYPE,NULL)) {
+	if( entry_exist(MAP_TABLE, ctx->map, layer_name,MAP_KEY_TYPE,NULL) == RET_NOK ) {
 		return;
 	}
 
@@ -813,7 +813,7 @@ static void compose_type(context_t * ctx,int layer_index)
 
 	for( x=0; x<default_layer->map_w; x++) {
 		for( y=0; y<default_layer->map_h; y++) {
-			if(!entry_read_list_index(MAP_TABLE,ctx->map,&type,x + y * default_layer->map_w,layer_name,MAP_KEY_TYPE,NULL)) {
+			if(entry_read_list_index(MAP_TABLE,ctx->map,&type,x + y * default_layer->map_w,layer_name,MAP_KEY_TYPE,NULL) == RET_NOK ) {
 				continue;
 			}
 
