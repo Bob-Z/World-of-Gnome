@@ -2,25 +2,35 @@ cmake_minimum_required(VERSION 2.8)
 enable_language(CXX)
 enable_language(C)
 
-project(client)
+project(wog_client)
 set(VERSION 0.0.0)
 
-#find_package(PkgConfig REQUIRED)
-#pkg_search_module(....)
+find_package(PkgConfig REQUIRED)
 
-#Path
-#set(COMMON_PATH ${CMAKE_CURRENT_SOURCE_DIR}/common/)
-#set(EXECUTABLE_OUTPUT_PATH bin/${CMAKE_BUILD_YPE})
-#set(LIBRARY_OUTPUT_PATH ${COMMON_PATH}/lib/${CMAKE_BUILD_YPE})
+pkg_search_module(SDL2 REQUIRED sdl2)
+pkg_search_module(SDL2NET REQUIRED SDL2_net>=2.0.0)
+pkg_search_module(SDL2MIXER REQUIRED SDL2_mixer>=2.0.0)
+pkg_search_module(SDL2TTF REQUIRED SDL2_ttf>=2.0.12)
+include_directories(
+        ${SDL2_INCLUDE_DIRS}
+        ${SDL2NET_INCLUDE_DIRS}
+        ${SDL2MIXER_INCLUDE_DIRS}
+        ${SDL2TTF}
+)
 
-#Compile
-#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11"
+pkg_search_module(CONFIG REQUIRED libconfig)
+INCLUDE_DIRECTORIES(${CONFIG_INCLUDE_DIRS})
+
+find_package(Lua50 REQUIRED)
+include_directories(${LUA_INCLUDE_DIR})
 
 
+set(COMMON_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../common/)
+set(SDL_ITEM_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../sdl_item/)
 include_directories( ${COMMON_PATH} )
 
 add_executable(
-	wog_client
+	${PROJECT_NAME}	
 
 	client.cpp
 	file_client.cpp
@@ -34,5 +44,16 @@ add_executable(
 	scr_select.cpp
 	textview.cpp
 	ui_play.cpp
+)
+
+target_link_libraries (${PROJECT_NAME}
+        ${LUA_LIBRARIES}
+        ${COMMON_PATH}/libcommon.so
+        ${SDL2_LIBRARIES}
+        ${SDL2NET_LIBRARIES}
+        ${SDL2MIXER_LIBRARIES}
+        ${SDL2TTF_LIBRARIES}
+        ${CONFIG_LIBRARIES}
+        ${SDL_ITEM_PATH}/libsdl_item.so
 )
 

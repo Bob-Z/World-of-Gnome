@@ -4,31 +4,12 @@ project(World_of_Gnome)
 set(VERSION 0.0.0)
 
 enable_language(CXX)
-enable_language(C)
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -Werror")
+set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} -Wall -Werror")
 
-#find_package(PkgConfig REQUIRED)
-#pkg_search_module(....)
-
-#Path
-#set(COMMON_PATH ${CMAKE_CURRENT_SOURCE_DIR}/common/)
-#set(EXECUTABLE_OUTPUT_PATH bin/${CMAKE_BUILD_YPE})
-#set(LIBRARY_OUTPUT_PATH ${COMMON_PATH}/lib/${CMAKE_BUILD_YPE})
-
-#Compile
-#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11"
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Werror")
-
-
-include_directories( ${COMMON_PATH} )
-
-#add_library(
-#	common
-#	SHARED
-#	${COMMON_PATH}/...
-#)
-
-
+add_subdirectory(sdl_item)
 add_subdirectory(common)
 add_subdirectory(server)
 add_subdirectory(client)

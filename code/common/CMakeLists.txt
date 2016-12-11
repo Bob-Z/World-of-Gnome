@@ -5,22 +5,11 @@ enable_language(C)
 project(common)
 set(VERSION 0.0.0)
 
-#find_package(PkgConfig REQUIRED)
-#pkg_search_module(....)
-
-#Path
-#set(COMMON_PATH ${CMAKE_CURRENT_SOURCE_DIR}/common/)
-#set(EXECUTABLE_OUTPUT_PATH bin/${CMAKE_BUILD_YPE})
-#set(LIBRARY_OUTPUT_PATH ${COMMON_PATH}/lib/${CMAKE_BUILD_YPE})
-
-#Compile
-#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11"
-
-
-#include_directories( ${COMMON_PATH} )
+find_package(Lua50 REQUIRED)
+include_directories(${LUA_INCLUDE_DIR})
 
 add_library(
-	common
+	${PROJECT_NAME}
 	SHARED
 	context.cpp
 	entry.cpp
@@ -36,4 +25,9 @@ add_library(
 	sfx.cpp
 	util.cpp
 )
+
+target_link_libraries (${PROJECT_NAME}
+        ${LUA_LIBRARIES}
+)
+
 
