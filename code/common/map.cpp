@@ -42,7 +42,7 @@ layer_t * map_layer_new(const char * map, int layer_index, layer_t * default_lay
 
 	if( layer_index != DEFAULT_LAYER && default_layer != NULL ) {
 		sprintf(layer_name,"%s%d",MAP_KEY_LAYER,layer_index);
-		if( entry_exist(MAP_TABLE, map, layer_name,MAP_KEY_SET,NULL) == RET_NOK ) {
+		if( entry_exist(MAP_TABLE, map, layer_name,MAP_KEY_SET,NULL) == false ) {
 			return NULL;
 		}
 

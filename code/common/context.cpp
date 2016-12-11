@@ -21,8 +21,8 @@
 #include <stdlib.h>
 extern "C" 
 {
-#include <lualib.h>
-#include <lauxlib.h>
+#include "lualib.h"
+#include "lauxlib.h"
 }
 #include <unistd.h>
 #include <limits.h>
@@ -464,7 +464,7 @@ ret_code_t context_set_type(context_t * context, const char * type)
 
 /**************************************
 **************************************/
-void _context_set_pos_tx(context_t * context, unsigned int pos_tx)
+void _context_set_pos_tx(context_t * context, int pos_tx)
 {
 	context->prev_pos_tx = context->pos_tx;
 	if( context->pos_tx != pos_tx ) {
@@ -475,7 +475,7 @@ void _context_set_pos_tx(context_t * context, unsigned int pos_tx)
 
 /**************************************
 **************************************/
-void context_set_pos_tx(context_t * context, unsigned int pos_tx)
+void context_set_pos_tx(context_t * context, int pos_tx)
 {
 	context_lock_list();
 	_context_set_pos_tx(context,pos_tx);
@@ -484,7 +484,7 @@ void context_set_pos_tx(context_t * context, unsigned int pos_tx)
 
 /**************************************
 **************************************/
-void _context_set_pos_ty(context_t * context, unsigned int pos_ty)
+void _context_set_pos_ty(context_t * context, int pos_ty)
 {
 	context->prev_pos_ty = context->pos_ty;
 	if( context->pos_ty != pos_ty ) {
@@ -495,7 +495,7 @@ void _context_set_pos_ty(context_t * context, unsigned int pos_ty)
 
 /**************************************
 **************************************/
-void context_set_pos_ty(context_t * context, unsigned int pos_ty)
+void context_set_pos_ty(context_t * context, int pos_ty)
 {
 	context_lock_list();
 	_context_set_pos_ty(context,pos_ty);

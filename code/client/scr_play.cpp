@@ -805,7 +805,7 @@ static void compose_type(context_t * ctx,int layer_index)
 	}
 
 	sprintf(layer_name,"%s%d",MAP_KEY_LAYER,layer_index);
-	if( entry_exist(MAP_TABLE, ctx->map, layer_name,MAP_KEY_TYPE,NULL) == RET_NOK ) {
+	if( entry_exist(MAP_TABLE, ctx->map, layer_name,MAP_KEY_TYPE,NULL) == false ) {
 		return;
 	}
 
