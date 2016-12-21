@@ -46,7 +46,7 @@ add_executable(
 
 target_link_libraries (${PROJECT_NAME}
 	${LUA_LIBRARIES}
-	${COMMON_PATH}/libcommon.so
+	common
 	${SDL2_LIBRARIES}
 	${SDL2NET_LIBRARIES}
 	${SDL2MIXER_LIBRARIES}
