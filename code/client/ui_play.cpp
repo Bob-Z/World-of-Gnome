@@ -36,7 +36,7 @@
 #define FONT_SIZE 30
 #define TEXT_FONT "Ubuntu-C.ttf"
 #define TEXT_FONT_SIZE 15
-#define TEXT_TIMEOUT 5000 /* Text display timeout */
+#define TEXT_TIMEOUT 5000 // Text display timeout
 #define ITEM_FONT "Ubuntu-C.ttf"
 #define ITEM_FONT_SIZE 15
 #define SPEAK_FONT "Ubuntu-C.ttf"
@@ -53,14 +53,14 @@
 
 static int current_ui = UI_MAIN;
 static char * last_action = NULL;
-/* main ui */
+// main ui
 static char ** attribute_string = NULL;
 static int action_bar_height;
 static int attribute_height;
 static char text_buffer[2048];
-/* inventory ui */
+// inventory ui
 static char ** inventory_list = NULL;
-/* popup ui */
+// popup ui
 #define MOUSE_WHEEL_SCROLL (20)
 static fifo_t * popup_fifo;
 static char * popup_frame = NULL;
@@ -341,7 +341,7 @@ static void compose_action(context_t * ctx,item_t * item_list)
 
 	action_bar_height = 0;
 
-	/* Read action list for current user */
+	// Read action list for current user
 	if(entry_read_list(CHARACTER_TABLE,ctx->id,&action_list,CHARACTER_KEY_ACTION,NULL) == RET_NOK ) {
 		return;
 	}
@@ -376,13 +376,17 @@ static void compose_action(context_t * ctx,item_t * item_list)
 			continue;
 		}
 
+		layout_t layout = LAYOUT_TOP_LEFT;
+		entry_read_int(ACTION_TABLE,action_list[i],(int*)&layout,ACTION_KEY_ICON_LAYOUT,NULL);
+
 		item = item_list_add(&item_list);
+		item_set_layout(item,layout);
 		item_set_overlay(item,1);
 		item_set_click_left(item,ui_play_cb_action,(void*)strdup(action_list[i]),free);
 		item_set_wheel_up(item,cb_wheel_up_action,NULL,NULL);
 		item_set_wheel_down(item,cb_wheel_down_action,NULL,NULL);
 
-		/* load image */
+		// load image
 		anim_array = imageDB_get_anim_array(ctx, (const char **)icon);
 		if( icon_array[0] == NULL ) {
 			deep_free(icon);
@@ -391,7 +395,7 @@ static void compose_action(context_t * ctx,item_t * item_list)
 		item_set_pos(item,x,sh-anim_array[0]->h);
 		item_set_anim_array(item,anim_array);
 
-		/* calculate next icon start X */
+		// calculate next icon start X
 		x += anim_array[0]->w;
 		if( action_bar_height < anim_array[0]->h ) {
 			action_bar_height = anim_array[0]->h;

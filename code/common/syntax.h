@@ -141,6 +141,7 @@
 #define ACTION_KEY_ICON		"icon"
 #define ACTION_KEY_ICON_OVER	"icon_over"
 #define ACTION_KEY_ICON_CLICK	"icon_click"
+#define ACTION_KEY_ICON_LAYOUT	"icon_layout"
 #define ACTION_KEY_PARAM	"param"
 
 /* item data */
