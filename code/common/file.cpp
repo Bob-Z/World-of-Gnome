@@ -362,7 +362,16 @@ void file_copy(char * src_name, char * dst_name)
 	int i;
 
 	src = fopen(src_name, "rb");
+	if( src == NULL ) {
+		werr(LOGDEV,"Failed to open source file %s\n",src_name);
+		return;
+	}
+
 	dst = fopen(dst_name, "wb");
+	if( dst == NULL ) {
+		werr(LOGDEV,"Failed to open destination file %s\n",dst_name);
+		return;
+	}
 
 	for (i = getc(src); i != EOF; i = getc(src)) {
 		putc(i, dst);
