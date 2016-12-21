@@ -54,6 +54,6 @@ target_link_libraries (${PROJECT_NAME}
         ${SDL2MIXER_LIBRARIES}
         ${SDL2TTF_LIBRARIES}
         ${CONFIG_LIBRARIES}
-        ${SDL_ITEM_PATH}/libsdl_item.so
+	sdl_item
 )
 

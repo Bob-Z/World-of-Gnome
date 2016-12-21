@@ -28,3 +28,5 @@ CMakeFiles/
 cmake_install.cmake
 
 *.so
+
+bin/
