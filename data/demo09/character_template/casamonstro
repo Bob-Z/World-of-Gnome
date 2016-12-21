@@ -1,0 +1,11 @@
+name		= "Casa Monstro";
+
+marquee         = "sprite/casamonstro/marquee.png";
+sprite          = [ "sprite/shadow/spider.png", "sprite/casamonstro/casamonstro.zip" ];
+type            = "casamonstro"
+map             = "M0_0";
+pos_x           = 15;
+pos_y           = 15;
+layer		= 15;
+#align on lower edge of tile
+align           = 1;
