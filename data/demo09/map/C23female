@@ -41,15 +41,24 @@ layer0 = {
 "",
 "character/23/WC_caps_female_leather_cap_female_marquee.zip",
 "",
+"character/23/WC_Crown_Fire_marquee.zip",
+"",
+"character/23/WC_Crown_Gold_marquee.zip",
+"",
+"character/23/WC_Crown_Iron_marquee.zip",
+"",
+"",
+"character/23/WC_Crown_Water_marquee.zip",
+"",
 "character/23/WC_Female_legion1helmet_bronze_marquee.zip",
 "",
 "character/23/WC_Female_legion1helmet_gold_marquee.zip",
 "",
 "character/23/WC_Female_legion1helmet_steel_marquee.zip",
 "",
-"",
 "character/23/WC_Female_legion2helmet_bronze_marquee.zip",
 "",
+"tile/exit.gif",
 "character/23/WC_Female_legion2helmet_gold_marquee.zip",
 "",
 "character/23/WC_Female_legion2helmet_steel_marquee.zip",
@@ -58,8 +67,8 @@ layer0 = {
 "",
 "character/23/WC_Female_legion3helmet_gold_marquee.zip",
 "",
-"tile/exit.gif",
 "character/23/WC_Female_legion3helmet_steel_marquee.zip",
+"tile/exit.gif",
 "",
 "character/23/WC_helms_female_chainhat_female_marquee.zip",
 "",
@@ -68,9 +77,9 @@ layer0 = {
 "character/23/WC_helms_female_metal_helm_female_marquee.zip",
 "",
 "character/23/WC_hoods_female_chain_hood_female_marquee.zip",
-"tile/exit.gif",
 "",
 "character/23/WC_hoods_female_cloth_hood_female_marquee.zip",
+"",
 "",
 "character/23/WC_tiaras_female_bronze_marquee.zip",
 "",
@@ -80,16 +89,7 @@ layer0 = {
 "",
 "character/23/WC_tiaras_female_purple_marquee.zip",
 "",
-"",
 "character/23/WC_tiaras_female_silver_marquee.zip",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
 "",
 "",
 "",
@@ -132,147 +132,171 @@ E2 = {
    pos_x = 5
    pos_y = 2
    script = "set_sprite.lua"
-   param = ( "23", "Female_legion1helmet_bronze" )
+   param = ( "23", "Crown_Fire" )
 }
 E3 = {
    pos_x = 7
    pos_y = 2
    script = "set_sprite.lua"
-   param = ( "23", "Female_legion1helmet_gold" )
+   param = ( "23", "Crown_Gold" )
 }
 E4 = {
    pos_x = 9
    pos_y = 2
    script = "set_sprite.lua"
-   param = ( "23", "Female_legion1helmet_steel" )
+   param = ( "23", "Crown_Iron" )
 }
 E5 = {
    pos_x = 1
    pos_y = 3
    script = "set_sprite.lua"
-   param = ( "23", "Female_legion2helmet_bronze" )
+   param = ( "23", "Crown_Water" )
 }
 E6 = {
    pos_x = 3
    pos_y = 3
    script = "set_sprite.lua"
-   param = ( "23", "Female_legion2helmet_gold" )
+   param = ( "23", "Female_legion1helmet_bronze" )
 }
 E7 = {
    pos_x = 5
    pos_y = 3
    script = "set_sprite.lua"
-   param = ( "23", "Female_legion2helmet_steel" )
+   param = ( "23", "Female_legion1helmet_gold" )
 }
 E8 = {
    pos_x = 7
    pos_y = 3
    script = "set_sprite.lua"
-   param = ( "23", "Female_legion3helmet_bronze" )
+   param = ( "23", "Female_legion1helmet_steel" )
 }
 E9 = {
    pos_x = 9
    pos_y = 3
    script = "set_sprite.lua"
-   param = ( "23", "Female_legion3helmet_gold" )
+   param = ( "23", "Female_legion2helmet_bronze" )
 }
 E10 = {
    pos_x = 1
    pos_y = 4
    script = "set_sprite.lua"
-   param = ( "23", "Female_legion3helmet_steel" )
+   param = ( "23", "Female_legion2helmet_gold" )
 }
 E11 = {
    pos_x = 3
    pos_y = 4
    script = "set_sprite.lua"
-   param = ( "23", "helms_female_chainhat_female" )
+   param = ( "23", "Female_legion2helmet_steel" )
 }
 E12 = {
    pos_x = 5
    pos_y = 4
    script = "set_sprite.lua"
-   param = ( "23", "helms_female_golden_helm_female" )
+   param = ( "23", "Female_legion3helmet_bronze" )
 }
 E13 = {
    pos_x = 7
    pos_y = 4
    script = "set_sprite.lua"
-   param = ( "23", "helms_female_metal_helm_female" )
+   param = ( "23", "Female_legion3helmet_gold" )
 }
 E14 = {
    pos_x = 9
    pos_y = 4
    script = "set_sprite.lua"
-   param = ( "23", "hoods_female_chain_hood_female" )
+   param = ( "23", "Female_legion3helmet_steel" )
 }
 E15 = {
    pos_x = 1
    pos_y = 5
    script = "set_sprite.lua"
-   param = ( "23", "hoods_female_cloth_hood_female" )
+   param = ( "23", "helms_female_chainhat_female" )
 }
 E16 = {
    pos_x = 3
    pos_y = 5
    script = "set_sprite.lua"
-   param = ( "23", "tiaras_female_bronze" )
+   param = ( "23", "helms_female_golden_helm_female" )
 }
 E17 = {
    pos_x = 5
    pos_y = 5
    script = "set_sprite.lua"
-   param = ( "23", "tiaras_female_gold" )
+   param = ( "23", "helms_female_metal_helm_female" )
 }
 E18 = {
    pos_x = 7
    pos_y = 5
    script = "set_sprite.lua"
-   param = ( "23", "tiaras_female_iron" )
+   param = ( "23", "hoods_female_chain_hood_female" )
 }
 E19 = {
    pos_x = 9
    pos_y = 5
    script = "set_sprite.lua"
-   param = ( "23", "tiaras_female_purple" )
+   param = ( "23", "hoods_female_cloth_hood_female" )
 }
 E20 = {
    pos_x = 1
    pos_y = 6
    script = "set_sprite.lua"
-   param = ( "23", "tiaras_female_silver" )
+   param = ( "23", "tiaras_female_bronze" )
 }
 E21 = {
+   pos_x = 3
+   pos_y = 6
+   script = "set_sprite.lua"
+   param = ( "23", "tiaras_female_gold" )
+}
+E22 = {
+   pos_x = 5
+   pos_y = 6
+   script = "set_sprite.lua"
+   param = ( "23", "tiaras_female_iron" )
+}
+E23 = {
+   pos_x = 7
+   pos_y = 6
+   script = "set_sprite.lua"
+   param = ( "23", "tiaras_female_purple" )
+}
+E24 = {
+   pos_x = 9
+   pos_y = 6
+   script = "set_sprite.lua"
+   param = ( "23", "tiaras_female_silver" )
+}
+E25 = {
    pos_x = 0
    pos_y = 4
    script = "goto_character_map.lua"
    param = ( "22", "1", "1" )
 }
-E22 = {
+E26 = {
    pos_x = 10
    pos_y = 4
    script = "goto_character_map.lua"
    param = ( "24", "1", "1" )
 }
-E23 = {
+E27 = {
    pos_x = 0
    pos_y = 0
    script = "set_sprite.lua"
    param = ( "23", "" )
 }
-E24 = {
+E28 = {
    pos_x = 0
    pos_y = 8
    script = "set_sprite.lua"
    param = ( "23", "" )
 }
-E25 = {
+E29 = {
    pos_x = 10
    pos_y = 0
    script = "set_sprite.lua"
    param = ( "23", "" )
 }
-E26 = {
+E30 = {
    pos_x = 10
    pos_y = 8
    script = "set_sprite.lua"

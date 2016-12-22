@@ -9,10 +9,10 @@
 9- Shoes
 10- Legs civil
 11- Legs military
-12- Belt
-13- Buckles
-14- Torso civil
-15- Torso military
+12- Torso civil
+13- Torso military
+14- Belt
+15- Buckles
 16- Arms
 17- Shoulder
 18- Aprons

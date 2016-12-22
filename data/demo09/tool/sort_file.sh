@@ -9,6 +9,7 @@ LONGEARS_BASE=Long_ears
 APRONS_BASE=Aprons
 REPTILE_BASE=Reptile
 CLOTHES01_BASE=Clothes01
+CROWNS_BASE=Crowns
 
 DEST_DIR=output
 mkdir $DEST_DIR > /dev/null 2>&1
@@ -208,6 +209,7 @@ echo $NUM_DIR- Head >> $DIR_LIST
 mkdir $DIR
 $COMMAND $ULPC_BASE/head/??_* $DIR
 $COMMAND $LEGION_BASE/Helmet/??_*helmet* $DIR
+$COMMAND $CROWNS_BASE/??_* $DIR
 
 let "NUM_DIR=$NUM_DIR+1"
 DIR=$DEST_DIR/$NUM_DIR

@@ -6,8 +6,8 @@ attribute = {
         current = 14
       }
 }
-width = 9
-height = 7
+width = 5
+height = 5
 tile_width = 64
 tile_height = 64
 warp_x = 0
@@ -18,61 +18,23 @@ layer0 = {
 "",
 "",
 "",
-"",
-"",
-"",
-"",
 "tile/fog.png",
 "",
 "",
 "",
 "",
 "",
-"",
-"",
-"",
-"",
-"",
-"character/14/WC_male_sleevless_black_marquee.zip",
-"",
-"character/14/WC_male_sleevless_blue_marquee.zip",
-"",
-"character/14/WC_male_sleevless_brown_marquee.zip",
-"",
-"character/14/WC_male_sleevless_red_marquee.zip",
-"",
 "tile/exit.gif",
-"character/14/WC_male_sleevless_white_marquee.zip",
+"character/14/WC_cloth_male_white_cloth_male_marquee.zip",
 "",
-"character/14/WC_shirt_marquee.zip",
-"",
-"character/14/WC_shirts_longsleeve_male_brown_longsleeve_marquee.zip",
-"",
-"character/14/WC_shirts_longsleeve_male_maroon_longsleeve_marquee.zip",
+"character/14/WC_leather_male_leather_male_marquee.zip",
 "tile/exit.gif",
-"",
-"character/14/WC_shirts_longsleeve_male_teal_longsleeve_marquee.zip",
-"",
-"character/14/WC_shirts_longsleeve_male_white_longsleeve_marquee.zip",
-"",
-"character/14/WC_vest_marquee.zip",
-"",
-"character/14/WC_vest_w_shirt_cutout_marquee.zip",
-"",
-"",
-"",
-"",
-"",
 "",
 "",
 "",
 "",
 "",
 "tile/fog.png",
-"",
-"",
-"",
-"",
 "",
 "",
 "",
@@ -84,107 +46,47 @@ E0 = {
    pos_x = 1
    pos_y = 2
    script = "set_sprite.lua"
-   param = ( "14", "male_sleevless_black" )
+   param = ( "14", "cloth_male_white_cloth_male" )
 }
 E1 = {
    pos_x = 3
    pos_y = 2
    script = "set_sprite.lua"
-   param = ( "14", "male_sleevless_blue" )
+   param = ( "14", "leather_male_leather_male" )
 }
 E2 = {
-   pos_x = 5
-   pos_y = 2
-   script = "set_sprite.lua"
-   param = ( "14", "male_sleevless_brown" )
-}
-E3 = {
-   pos_x = 7
-   pos_y = 2
-   script = "set_sprite.lua"
-   param = ( "14", "male_sleevless_red" )
-}
-E4 = {
-   pos_x = 1
-   pos_y = 3
-   script = "set_sprite.lua"
-   param = ( "14", "male_sleevless_white" )
-}
-E5 = {
-   pos_x = 3
-   pos_y = 3
-   script = "set_sprite.lua"
-   param = ( "14", "shirt" )
-}
-E6 = {
-   pos_x = 5
-   pos_y = 3
-   script = "set_sprite.lua"
-   param = ( "14", "shirts_longsleeve_male_brown_longsleeve" )
-}
-E7 = {
-   pos_x = 7
-   pos_y = 3
-   script = "set_sprite.lua"
-   param = ( "14", "shirts_longsleeve_male_maroon_longsleeve" )
-}
-E8 = {
-   pos_x = 1
-   pos_y = 4
-   script = "set_sprite.lua"
-   param = ( "14", "shirts_longsleeve_male_teal_longsleeve" )
-}
-E9 = {
-   pos_x = 3
-   pos_y = 4
-   script = "set_sprite.lua"
-   param = ( "14", "shirts_longsleeve_male_white_longsleeve" )
-}
-E10 = {
-   pos_x = 5
-   pos_y = 4
-   script = "set_sprite.lua"
-   param = ( "14", "vest" )
-}
-E11 = {
-   pos_x = 7
-   pos_y = 4
-   script = "set_sprite.lua"
-   param = ( "14", "vest_w_shirt_cutout" )
-}
-E12 = {
    pos_x = 0
-   pos_y = 3
+   pos_y = 2
    script = "goto_character_map.lua"
    param = ( "13", "1", "1" )
 }
-E13 = {
-   pos_x = 8
-   pos_y = 3
+E3 = {
+   pos_x = 4
+   pos_y = 2
    script = "goto_character_map.lua"
    param = ( "15", "1", "1" )
 }
-E14 = {
+E4 = {
    pos_x = 0
    pos_y = 0
    script = "set_sprite.lua"
    param = ( "14", "" )
 }
-E15 = {
+E5 = {
    pos_x = 0
-   pos_y = 6
+   pos_y = 4
    script = "set_sprite.lua"
    param = ( "14", "" )
 }
-E16 = {
-   pos_x = 8
+E6 = {
+   pos_x = 4
    pos_y = 0
    script = "set_sprite.lua"
    param = ( "14", "" )
 }
-E17 = {
-   pos_x = 8
-   pos_y = 6
+E7 = {
+   pos_x = 4
+   pos_y = 4
    script = "set_sprite.lua"
    param = ( "14", "" )
 }

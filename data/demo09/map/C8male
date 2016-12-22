@@ -699,16 +699,6 @@ layer0 = {
 "",
 "character/8/WC_Male_Hair_single_white_marquee.zip",
 "",
-"character/8/WC_male_HalfMessy_black_marquee.zip",
-"",
-"character/8/WC_male_HalfMessy_brunette_marquee.zip",
-"",
-"character/8/WC_male_HalfMessy_gold_marquee.zip",
-"",
-"character/8/WC_male_HalfMessy_red0_marquee.zip",
-"",
-"character/8/WC_male_HalfMessy_red_marquee.zip",
-"",
 "character/8/WC_male_jewfro_black_marquee.zip",
 "",
 "character/8/WC_male_jewfro_blonde2_marquee.zip",
@@ -729,7 +719,6 @@ layer0 = {
 "",
 "character/8/WC_male_jewfro_dark-blonde_marquee.zip",
 "",
-"",
 "character/8/WC_male_jewfro_gold_marquee.zip",
 "",
 "character/8/WC_male_jewfro_gray2_marquee.zip",
@@ -739,6 +728,7 @@ layer0 = {
 "character/8/WC_male_jewfro_green2_marquee.zip",
 "",
 "character/8/WC_male_jewfro_green_marquee.zip",
+"",
 "",
 "character/8/WC_male_jewfro_light-blonde2_marquee.zip",
 "",
@@ -794,7 +784,6 @@ layer0 = {
 "",
 "character/8/WC_male_long_gray2_marquee.zip",
 "",
-"",
 "character/8/WC_male_long_gray_marquee.zip",
 "",
 "character/8/WC_male_long_green2_marquee.zip",
@@ -804,6 +793,7 @@ layer0 = {
 "character/8/WC_male_longhawk_black_marquee.zip",
 "",
 "character/8/WC_male_longhawk_blonde2_marquee.zip",
+"",
 "",
 "character/8/WC_male_longhawk_blonde_marquee.zip",
 "",
@@ -859,7 +849,6 @@ layer0 = {
 "",
 "character/8/WC_male_longhawk_white-cyan_marquee.zip",
 "",
-"",
 "character/8/WC_male_longhawk_white_marquee.zip",
 "",
 "character/8/WC_male_longknot_black_marquee.zip",
@@ -869,6 +858,7 @@ layer0 = {
 "character/8/WC_male_longknot_blonde_marquee.zip",
 "",
 "character/8/WC_male_longknot_blue2_marquee.zip",
+"",
 "",
 "character/8/WC_male_longknot_blue_marquee.zip",
 "",
@@ -924,7 +914,6 @@ layer0 = {
 "",
 "character/8/WC_male_long_light-blonde2_marquee.zip",
 "",
-"",
 "character/8/WC_male_long_light-blonde_marquee.zip",
 "",
 "character/8/WC_male_long_marquee.zip",
@@ -934,6 +923,7 @@ layer0 = {
 "character/8/WC_male_long_pink_marquee.zip",
 "",
 "character/8/WC_male_long_purple_marquee.zip",
+"",
 "",
 "character/8/WC_male_long_raven2_marquee.zip",
 "",
@@ -989,7 +979,6 @@ layer0 = {
 "",
 "character/8/WC_male_loose_marquee.zip",
 "",
-"",
 "character/8/WC_male_loose_pink2_marquee.zip",
 "",
 "character/8/WC_male_loose_pink_marquee.zip",
@@ -999,6 +988,7 @@ layer0 = {
 "character/8/WC_male_loose_raven2_marquee.zip",
 "",
 "character/8/WC_male_loose_raven_marquee.zip",
+"",
 "",
 "character/8/WC_male_loose_redhead2_marquee.zip",
 "",
@@ -1054,7 +1044,6 @@ layer0 = {
 "",
 "character/8/WC_male_messy1_pink_marquee.zip",
 "",
-"",
 "character/8/WC_male_messy1_purple_marquee.zip",
 "",
 "character/8/WC_male_messy1_raven2_marquee.zip",
@@ -1064,6 +1053,7 @@ layer0 = {
 "character/8/WC_male_messy1_redhead2_marquee.zip",
 "",
 "character/8/WC_male_messy1_redhead_marquee.zip",
+"",
 "",
 "character/8/WC_male_messy1_ruby-red_marquee.zip",
 "",
@@ -1119,7 +1109,6 @@ layer0 = {
 "",
 "character/8/WC_male_messy2_raven2_marquee.zip",
 "",
-"",
 "character/8/WC_male_messy2_raven_marquee.zip",
 "",
 "character/8/WC_male_messy2_redhead2_marquee.zip",
@@ -1129,6 +1118,7 @@ layer0 = {
 "character/8/WC_male_messy2_ruby-red_marquee.zip",
 "",
 "character/8/WC_male_messy2_white-blonde2_marquee.zip",
+"",
 "",
 "character/8/WC_male_messy2_white-blonde_marquee.zip",
 "",
@@ -1184,7 +1174,6 @@ layer0 = {
 "",
 "character/8/WC_male_mohawk_redhead2_marquee.zip",
 "",
-"tile/exit.gif",
 "character/8/WC_male_mohawk_redhead_marquee.zip",
 "",
 "character/8/WC_male_mohawk_ruby-red_marquee.zip",
@@ -1195,6 +1184,7 @@ layer0 = {
 "",
 "character/8/WC_male_mohawk_white-cyan_marquee.zip",
 "",
+"tile/exit.gif",
 "character/8/WC_male_mohawk_white_marquee.zip",
 "",
 "character/8/WC_male_page2_black_marquee.zip",
@@ -1248,7 +1238,6 @@ layer0 = {
 "character/8/WC_male_page2_redhead_marquee.zip",
 "",
 "character/8/WC_male_page2_ruby-red_marquee.zip",
-"tile/exit.gif",
 "",
 "character/8/WC_male_page2_white-blonde2_marquee.zip",
 "",
@@ -1259,6 +1248,7 @@ layer0 = {
 "character/8/WC_male_page2_white_marquee.zip",
 "",
 "character/8/WC_male_page_black_marquee.zip",
+"tile/exit.gif",
 "",
 "character/8/WC_male_page_blonde2_marquee.zip",
 "",
@@ -1314,7 +1304,6 @@ layer0 = {
 "",
 "character/8/WC_male_page_white-blonde_marquee.zip",
 "",
-"",
 "character/8/WC_male_page_white-cyan_marquee.zip",
 "",
 "character/8/WC_male_page_white_marquee.zip",
@@ -1324,6 +1313,7 @@ layer0 = {
 "character/8/WC_male_parted_blonde2_marquee.zip",
 "",
 "character/8/WC_male_parted_blonde_marquee.zip",
+"",
 "",
 "character/8/WC_male_parted_blue2_marquee.zip",
 "",
@@ -1379,7 +1369,6 @@ layer0 = {
 "",
 "character/8/WC_male_parted_white_marquee.zip",
 "",
-"",
 "character/8/WC_male_pixie_black_marquee.zip",
 "",
 "character/8/WC_male_pixie_blonde2_marquee.zip",
@@ -1389,6 +1378,7 @@ layer0 = {
 "character/8/WC_male_pixie_blue2_marquee.zip",
 "",
 "character/8/WC_male_pixie_blue_marquee.zip",
+"",
 "",
 "character/8/WC_male_pixie_brown2_marquee.zip",
 "",
@@ -1444,7 +1434,6 @@ layer0 = {
 "",
 "character/8/WC_male_plain_blonde2_marquee.zip",
 "",
-"",
 "character/8/WC_male_plain_blonde_marquee.zip",
 "",
 "character/8/WC_male_plain_blue2_marquee.zip",
@@ -1454,6 +1443,7 @@ layer0 = {
 "character/8/WC_male_plain_brown2_marquee.zip",
 "",
 "character/8/WC_male_plain_brown_marquee.zip",
+"",
 "",
 "character/8/WC_male_plain_brunette2_marquee.zip",
 "",
@@ -1509,7 +1499,6 @@ layer0 = {
 "",
 "character/8/WC_male_plain_white_marquee.zip",
 "",
-"",
 "character/8/WC_male_ponytail2_black_marquee.zip",
 "",
 "character/8/WC_male_ponytail2_blonde2_marquee.zip",
@@ -1519,6 +1508,7 @@ layer0 = {
 "character/8/WC_male_ponytail2_blue2_marquee.zip",
 "",
 "character/8/WC_male_ponytail2_blue_marquee.zip",
+"",
 "",
 "character/8/WC_male_ponytail2_brown2_marquee.zip",
 "",
@@ -1574,7 +1564,6 @@ layer0 = {
 "",
 "character/8/WC_male_ponytail_blonde2_marquee.zip",
 "",
-"",
 "character/8/WC_male_ponytail_blonde_marquee.zip",
 "",
 "character/8/WC_male_ponytail_blue2_marquee.zip",
@@ -1584,6 +1573,7 @@ layer0 = {
 "character/8/WC_male_ponytail_brown2_marquee.zip",
 "",
 "character/8/WC_male_ponytail_brown_marquee.zip",
+"",
 "",
 "character/8/WC_male_ponytail_brunette2_marquee.zip",
 "",
@@ -1639,7 +1629,6 @@ layer0 = {
 "",
 "character/8/WC_male_princess_blue2_marquee.zip",
 "",
-"",
 "character/8/WC_male_princess_blue_marquee.zip",
 "",
 "character/8/WC_male_princess_brown2_marquee.zip",
@@ -1649,6 +1638,7 @@ layer0 = {
 "character/8/WC_male_princess_brunette2_marquee.zip",
 "",
 "character/8/WC_male_princess_brunette_marquee.zip",
+"",
 "",
 "character/8/WC_male_princess_dark-blonde_marquee.zip",
 "",
@@ -1704,7 +1694,6 @@ layer0 = {
 "",
 "character/8/WC_male_shorthawk_brown2_marquee.zip",
 "",
-"",
 "character/8/WC_male_shorthawk_brown_marquee.zip",
 "",
 "character/8/WC_male_shorthawk_brunette2_marquee.zip",
@@ -1714,6 +1703,7 @@ layer0 = {
 "character/8/WC_male_shorthawk_dark-blonde_marquee.zip",
 "",
 "character/8/WC_male_shorthawk_gold_marquee.zip",
+"",
 "",
 "character/8/WC_male_shorthawk_gray2_marquee.zip",
 "",
@@ -1769,7 +1759,6 @@ layer0 = {
 "",
 "character/8/WC_male_shortknot_brunette2_marquee.zip",
 "",
-"",
 "character/8/WC_male_shortknot_brunette_marquee.zip",
 "",
 "character/8/WC_male_shortknot_dark-blonde_marquee.zip",
@@ -1779,6 +1768,7 @@ layer0 = {
 "character/8/WC_male_shortknot_gray2_marquee.zip",
 "",
 "character/8/WC_male_shortknot_gray_marquee.zip",
+"",
 "",
 "character/8/WC_male_shortknot_green2_marquee.zip",
 "",
@@ -1834,7 +1824,6 @@ layer0 = {
 "",
 "character/8/WC_male_shoulderl_dark-blonde_marquee.zip",
 "",
-"",
 "character/8/WC_male_shoulderl_gold_marquee.zip",
 "",
 "character/8/WC_male_shoulderl_gray2_marquee.zip",
@@ -1844,6 +1833,7 @@ layer0 = {
 "character/8/WC_male_shoulderl_green2_marquee.zip",
 "",
 "character/8/WC_male_shoulderl_green_marquee.zip",
+"",
 "",
 "character/8/WC_male_shoulderl_light-blonde2_marquee.zip",
 "",
@@ -1899,7 +1889,6 @@ layer0 = {
 "",
 "character/8/WC_male_shoulderr_gray2_marquee.zip",
 "",
-"",
 "character/8/WC_male_shoulderr_gray_marquee.zip",
 "",
 "character/8/WC_male_shoulderr_green2_marquee.zip",
@@ -1909,6 +1898,7 @@ layer0 = {
 "character/8/WC_male_shoulderr_light-blonde2_marquee.zip",
 "",
 "character/8/WC_male_shoulderr_light-blonde_marquee.zip",
+"",
 "",
 "character/8/WC_male_shoulderr_marquee.zip",
 "",
@@ -1964,7 +1954,6 @@ layer0 = {
 "",
 "character/8/WC_male_swoop_green2_marquee.zip",
 "",
-"",
 "character/8/WC_male_swoop_green_marquee.zip",
 "",
 "character/8/WC_male_swoop_light-blonde2_marquee.zip",
@@ -1974,6 +1963,7 @@ layer0 = {
 "character/8/WC_male_swoop_marquee.zip",
 "",
 "character/8/WC_male_swoop_pink2_marquee.zip",
+"",
 "",
 "character/8/WC_male_swoop_pink_marquee.zip",
 "",
@@ -2029,7 +2019,6 @@ layer0 = {
 "",
 "character/8/WC_male_unkempt_light-blonde2_marquee.zip",
 "",
-"",
 "character/8/WC_male_unkempt_light-blonde_marquee.zip",
 "",
 "character/8/WC_male_unkempt_marquee.zip",
@@ -2039,6 +2028,7 @@ layer0 = {
 "character/8/WC_male_unkempt_pink_marquee.zip",
 "",
 "character/8/WC_male_unkempt_purple_marquee.zip",
+"",
 "",
 "character/8/WC_male_unkempt_raven2_marquee.zip",
 "",
@@ -2094,7 +2084,6 @@ layer0 = {
 "",
 "character/8/WC_male_xlongknot_blonde_marquee.zip",
 "",
-"",
 "character/8/WC_male_xlongknot_blue2_marquee.zip",
 "",
 "character/8/WC_male_xlongknot_blue_marquee.zip",
@@ -2104,6 +2093,7 @@ layer0 = {
 "character/8/WC_male_xlongknot_brown_marquee.zip",
 "",
 "character/8/WC_male_xlongknot_brunette2_marquee.zip",
+"",
 "",
 "character/8/WC_male_xlongknot_brunette_marquee.zip",
 "",
@@ -2159,7 +2149,6 @@ layer0 = {
 "",
 "character/8/WC_male_xlong_pink_marquee.zip",
 "",
-"",
 "character/8/WC_male_xlong_purple_marquee.zip",
 "",
 "character/8/WC_male_xlong_raven2_marquee.zip",
@@ -2170,6 +2159,7 @@ layer0 = {
 "",
 "character/8/WC_male_xlong_redhead_marquee.zip",
 "",
+"",
 "character/8/WC_male_xlong_ruby-red_marquee.zip",
 "",
 "character/8/WC_male_xlong_white-blonde2_marquee.zip",
@@ -2179,6 +2169,16 @@ layer0 = {
 "character/8/WC_male_xlong_white-cyan_marquee.zip",
 "",
 "character/8/WC_male_xlong_white_marquee.zip",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
 "",
 "",
 "",
@@ -3999,4407 +3999,4377 @@ E273 = {
    pos_x = 35
    pos_y = 10
    script = "set_sprite.lua"
-   param = ( "8", "male_HalfMessy_black" )
+   param = ( "8", "male_jewfro_black" )
 }
 E274 = {
    pos_x = 37
    pos_y = 10
    script = "set_sprite.lua"
-   param = ( "8", "male_HalfMessy_brunette" )
+   param = ( "8", "male_jewfro_blonde2" )
 }
 E275 = {
    pos_x = 39
    pos_y = 10
    script = "set_sprite.lua"
-   param = ( "8", "male_HalfMessy_gold" )
+   param = ( "8", "male_jewfro_blonde" )
 }
 E276 = {
    pos_x = 41
    pos_y = 10
    script = "set_sprite.lua"
-   param = ( "8", "male_HalfMessy_red0" )
+   param = ( "8", "male_jewfro_blue2" )
 }
 E277 = {
    pos_x = 43
    pos_y = 10
    script = "set_sprite.lua"
-   param = ( "8", "male_HalfMessy_red" )
+   param = ( "8", "male_jewfro_blue" )
 }
 E278 = {
    pos_x = 45
    pos_y = 10
    script = "set_sprite.lua"
-   param = ( "8", "male_jewfro_black" )
+   param = ( "8", "male_jewfro_brown2" )
 }
 E279 = {
    pos_x = 47
    pos_y = 10
    script = "set_sprite.lua"
-   param = ( "8", "male_jewfro_blonde2" )
+   param = ( "8", "male_jewfro_brown" )
 }
 E280 = {
    pos_x = 49
    pos_y = 10
    script = "set_sprite.lua"
-   param = ( "8", "male_jewfro_blonde" )
+   param = ( "8", "male_jewfro_brunette2" )
 }
 E281 = {
    pos_x = 51
    pos_y = 10
    script = "set_sprite.lua"
-   param = ( "8", "male_jewfro_blue2" )
+   param = ( "8", "male_jewfro_brunette" )
 }
 E282 = {
    pos_x = 53
    pos_y = 10
    script = "set_sprite.lua"
-   param = ( "8", "male_jewfro_blue" )
+   param = ( "8", "male_jewfro_dark-blonde" )
 }
 E283 = {
    pos_x = 55
    pos_y = 10
    script = "set_sprite.lua"
-   param = ( "8", "male_jewfro_brown2" )
+   param = ( "8", "male_jewfro_gold" )
 }
 E284 = {
    pos_x = 57
    pos_y = 10
    script = "set_sprite.lua"
-   param = ( "8", "male_jewfro_brown" )
+   param = ( "8", "male_jewfro_gray2" )
 }
 E285 = {
    pos_x = 59
    pos_y = 10
    script = "set_sprite.lua"
-   param = ( "8", "male_jewfro_brunette2" )
+   param = ( "8", "male_jewfro_gray" )
 }
 E286 = {
    pos_x = 61
    pos_y = 10
    script = "set_sprite.lua"
-   param = ( "8", "male_jewfro_brunette" )
+   param = ( "8", "male_jewfro_green2" )
 }
 E287 = {
    pos_x = 63
    pos_y = 10
    script = "set_sprite.lua"
-   param = ( "8", "male_jewfro_dark-blonde" )
+   param = ( "8", "male_jewfro_green" )
 }
 E288 = {
    pos_x = 1
    pos_y = 11
    script = "set_sprite.lua"
-   param = ( "8", "male_jewfro_gold" )
+   param = ( "8", "male_jewfro_light-blonde2" )
 }
 E289 = {
    pos_x = 3
    pos_y = 11
    script = "set_sprite.lua"
-   param = ( "8", "male_jewfro_gray2" )
+   param = ( "8", "male_jewfro_light-blonde" )
 }
 E290 = {
    pos_x = 5
    pos_y = 11
    script = "set_sprite.lua"
-   param = ( "8", "male_jewfro_gray" )
+   param = ( "8", "male_jewfro" )
 }
 E291 = {
    pos_x = 7
    pos_y = 11
    script = "set_sprite.lua"
-   param = ( "8", "male_jewfro_green2" )
+   param = ( "8", "male_jewfro_pink2" )
 }
 E292 = {
    pos_x = 9
    pos_y = 11
    script = "set_sprite.lua"
-   param = ( "8", "male_jewfro_green" )
+   param = ( "8", "male_jewfro_pink" )
 }
 E293 = {
    pos_x = 11
    pos_y = 11
    script = "set_sprite.lua"
-   param = ( "8", "male_jewfro_light-blonde2" )
+   param = ( "8", "male_jewfro_purple" )
 }
 E294 = {
    pos_x = 13
    pos_y = 11
    script = "set_sprite.lua"
-   param = ( "8", "male_jewfro_light-blonde" )
+   param = ( "8", "male_jewfro_raven2" )
 }
 E295 = {
    pos_x = 15
    pos_y = 11
    script = "set_sprite.lua"
-   param = ( "8", "male_jewfro" )
+   param = ( "8", "male_jewfro_raven" )
 }
 E296 = {
    pos_x = 17
    pos_y = 11
    script = "set_sprite.lua"
-   param = ( "8", "male_jewfro_pink2" )
+   param = ( "8", "male_jewfro_redhead2" )
 }
 E297 = {
    pos_x = 19
    pos_y = 11
    script = "set_sprite.lua"
-   param = ( "8", "male_jewfro_pink" )
+   param = ( "8", "male_jewfro_redhead" )
 }
 E298 = {
    pos_x = 21
    pos_y = 11
    script = "set_sprite.lua"
-   param = ( "8", "male_jewfro_purple" )
+   param = ( "8", "male_jewfro_ruby-red" )
 }
 E299 = {
    pos_x = 23
    pos_y = 11
    script = "set_sprite.lua"
-   param = ( "8", "male_jewfro_raven2" )
+   param = ( "8", "male_jewfro_white-blonde2" )
 }
 E300 = {
    pos_x = 25
    pos_y = 11
    script = "set_sprite.lua"
-   param = ( "8", "male_jewfro_raven" )
+   param = ( "8", "male_jewfro_white-blonde" )
 }
 E301 = {
    pos_x = 27
    pos_y = 11
    script = "set_sprite.lua"
-   param = ( "8", "male_jewfro_redhead2" )
+   param = ( "8", "male_jewfro_white-cyan" )
 }
 E302 = {
    pos_x = 29
    pos_y = 11
    script = "set_sprite.lua"
-   param = ( "8", "male_jewfro_redhead" )
+   param = ( "8", "male_jewfro_white" )
 }
 E303 = {
    pos_x = 31
    pos_y = 11
    script = "set_sprite.lua"
-   param = ( "8", "male_jewfro_ruby-red" )
+   param = ( "8", "male_long_black" )
 }
 E304 = {
    pos_x = 33
    pos_y = 11
    script = "set_sprite.lua"
-   param = ( "8", "male_jewfro_white-blonde2" )
+   param = ( "8", "male_long_blonde2" )
 }
 E305 = {
    pos_x = 35
    pos_y = 11
    script = "set_sprite.lua"
-   param = ( "8", "male_jewfro_white-blonde" )
+   param = ( "8", "male_long_blonde" )
 }
 E306 = {
    pos_x = 37
    pos_y = 11
    script = "set_sprite.lua"
-   param = ( "8", "male_jewfro_white-cyan" )
+   param = ( "8", "male_long_blue2" )
 }
 E307 = {
    pos_x = 39
    pos_y = 11
    script = "set_sprite.lua"
-   param = ( "8", "male_jewfro_white" )
+   param = ( "8", "male_long_blue" )
 }
 E308 = {
    pos_x = 41
    pos_y = 11
    script = "set_sprite.lua"
-   param = ( "8", "male_long_black" )
+   param = ( "8", "male_long_brown2" )
 }
 E309 = {
    pos_x = 43
    pos_y = 11
    script = "set_sprite.lua"
-   param = ( "8", "male_long_blonde2" )
+   param = ( "8", "male_long_brown" )
 }
 E310 = {
    pos_x = 45
    pos_y = 11
    script = "set_sprite.lua"
-   param = ( "8", "male_long_blonde" )
+   param = ( "8", "male_long_brunette2" )
 }
 E311 = {
    pos_x = 47
    pos_y = 11
    script = "set_sprite.lua"
-   param = ( "8", "male_long_blue2" )
+   param = ( "8", "male_long_brunette" )
 }
 E312 = {
    pos_x = 49
    pos_y = 11
    script = "set_sprite.lua"
-   param = ( "8", "male_long_blue" )
+   param = ( "8", "male_long_dark-blonde" )
 }
 E313 = {
    pos_x = 51
    pos_y = 11
    script = "set_sprite.lua"
-   param = ( "8", "male_long_brown2" )
+   param = ( "8", "male_long_gold" )
 }
 E314 = {
    pos_x = 53
    pos_y = 11
    script = "set_sprite.lua"
-   param = ( "8", "male_long_brown" )
+   param = ( "8", "male_long_gray2" )
 }
 E315 = {
    pos_x = 55
    pos_y = 11
    script = "set_sprite.lua"
-   param = ( "8", "male_long_brunette2" )
+   param = ( "8", "male_long_gray" )
 }
 E316 = {
    pos_x = 57
    pos_y = 11
    script = "set_sprite.lua"
-   param = ( "8", "male_long_brunette" )
+   param = ( "8", "male_long_green2" )
 }
 E317 = {
    pos_x = 59
    pos_y = 11
    script = "set_sprite.lua"
-   param = ( "8", "male_long_dark-blonde" )
+   param = ( "8", "male_long_green" )
 }
 E318 = {
    pos_x = 61
    pos_y = 11
    script = "set_sprite.lua"
-   param = ( "8", "male_long_gold" )
+   param = ( "8", "male_longhawk_black" )
 }
 E319 = {
    pos_x = 63
    pos_y = 11
    script = "set_sprite.lua"
-   param = ( "8", "male_long_gray2" )
+   param = ( "8", "male_longhawk_blonde2" )
 }
 E320 = {
    pos_x = 1
    pos_y = 12
    script = "set_sprite.lua"
-   param = ( "8", "male_long_gray" )
+   param = ( "8", "male_longhawk_blonde" )
 }
 E321 = {
    pos_x = 3
    pos_y = 12
    script = "set_sprite.lua"
-   param = ( "8", "male_long_green2" )
+   param = ( "8", "male_longhawk_blue2" )
 }
 E322 = {
    pos_x = 5
    pos_y = 12
    script = "set_sprite.lua"
-   param = ( "8", "male_long_green" )
+   param = ( "8", "male_longhawk_blue" )
 }
 E323 = {
    pos_x = 7
    pos_y = 12
    script = "set_sprite.lua"
-   param = ( "8", "male_longhawk_black" )
+   param = ( "8", "male_longhawk_brown2" )
 }
 E324 = {
    pos_x = 9
    pos_y = 12
    script = "set_sprite.lua"
-   param = ( "8", "male_longhawk_blonde2" )
+   param = ( "8", "male_longhawk_brown" )
 }
 E325 = {
    pos_x = 11
    pos_y = 12
    script = "set_sprite.lua"
-   param = ( "8", "male_longhawk_blonde" )
+   param = ( "8", "male_longhawk_brunette2" )
 }
 E326 = {
    pos_x = 13
    pos_y = 12
    script = "set_sprite.lua"
-   param = ( "8", "male_longhawk_blue2" )
+   param = ( "8", "male_longhawk_brunette" )
 }
 E327 = {
    pos_x = 15
    pos_y = 12
    script = "set_sprite.lua"
-   param = ( "8", "male_longhawk_blue" )
+   param = ( "8", "male_longhawk_dark-blonde" )
 }
 E328 = {
    pos_x = 17
    pos_y = 12
    script = "set_sprite.lua"
-   param = ( "8", "male_longhawk_brown2" )
+   param = ( "8", "male_longhawk_gold" )
 }
 E329 = {
    pos_x = 19
    pos_y = 12
    script = "set_sprite.lua"
-   param = ( "8", "male_longhawk_brown" )
+   param = ( "8", "male_longhawk_gray2" )
 }
 E330 = {
    pos_x = 21
    pos_y = 12
    script = "set_sprite.lua"
-   param = ( "8", "male_longhawk_brunette2" )
+   param = ( "8", "male_longhawk_gray" )
 }
 E331 = {
    pos_x = 23
    pos_y = 12
    script = "set_sprite.lua"
-   param = ( "8", "male_longhawk_brunette" )
+   param = ( "8", "male_longhawk_green2" )
 }
 E332 = {
    pos_x = 25
    pos_y = 12
    script = "set_sprite.lua"
-   param = ( "8", "male_longhawk_dark-blonde" )
+   param = ( "8", "male_longhawk_green" )
 }
 E333 = {
    pos_x = 27
    pos_y = 12
    script = "set_sprite.lua"
-   param = ( "8", "male_longhawk_gold" )
+   param = ( "8", "male_longhawk_light-blonde2" )
 }
 E334 = {
    pos_x = 29
    pos_y = 12
    script = "set_sprite.lua"
-   param = ( "8", "male_longhawk_gray2" )
+   param = ( "8", "male_longhawk_light-blonde" )
 }
 E335 = {
    pos_x = 31
    pos_y = 12
    script = "set_sprite.lua"
-   param = ( "8", "male_longhawk_gray" )
+   param = ( "8", "male_longhawk" )
 }
 E336 = {
    pos_x = 33
    pos_y = 12
    script = "set_sprite.lua"
-   param = ( "8", "male_longhawk_green2" )
+   param = ( "8", "male_longhawk_pink2" )
 }
 E337 = {
    pos_x = 35
    pos_y = 12
    script = "set_sprite.lua"
-   param = ( "8", "male_longhawk_green" )
+   param = ( "8", "male_longhawk_pink" )
 }
 E338 = {
    pos_x = 37
    pos_y = 12
    script = "set_sprite.lua"
-   param = ( "8", "male_longhawk_light-blonde2" )
+   param = ( "8", "male_longhawk_purple" )
 }
 E339 = {
    pos_x = 39
    pos_y = 12
    script = "set_sprite.lua"
-   param = ( "8", "male_longhawk_light-blonde" )
+   param = ( "8", "male_longhawk_raven2" )
 }
 E340 = {
    pos_x = 41
    pos_y = 12
    script = "set_sprite.lua"
-   param = ( "8", "male_longhawk" )
+   param = ( "8", "male_longhawk_raven" )
 }
 E341 = {
    pos_x = 43
    pos_y = 12
    script = "set_sprite.lua"
-   param = ( "8", "male_longhawk_pink2" )
+   param = ( "8", "male_longhawk_redhead2" )
 }
 E342 = {
    pos_x = 45
    pos_y = 12
    script = "set_sprite.lua"
-   param = ( "8", "male_longhawk_pink" )
+   param = ( "8", "male_longhawk_redhead" )
 }
 E343 = {
    pos_x = 47
    pos_y = 12
    script = "set_sprite.lua"
-   param = ( "8", "male_longhawk_purple" )
+   param = ( "8", "male_longhawk_ruby-red" )
 }
 E344 = {
    pos_x = 49
    pos_y = 12
    script = "set_sprite.lua"
-   param = ( "8", "male_longhawk_raven2" )
+   param = ( "8", "male_longhawk_white-blonde2" )
 }
 E345 = {
    pos_x = 51
    pos_y = 12
    script = "set_sprite.lua"
-   param = ( "8", "male_longhawk_raven" )
+   param = ( "8", "male_longhawk_white-blonde" )
 }
 E346 = {
    pos_x = 53
    pos_y = 12
    script = "set_sprite.lua"
-   param = ( "8", "male_longhawk_redhead2" )
+   param = ( "8", "male_longhawk_white-cyan" )
 }
 E347 = {
    pos_x = 55
    pos_y = 12
    script = "set_sprite.lua"
-   param = ( "8", "male_longhawk_redhead" )
+   param = ( "8", "male_longhawk_white" )
 }
 E348 = {
    pos_x = 57
    pos_y = 12
    script = "set_sprite.lua"
-   param = ( "8", "male_longhawk_ruby-red" )
+   param = ( "8", "male_longknot_black" )
 }
 E349 = {
    pos_x = 59
    pos_y = 12
    script = "set_sprite.lua"
-   param = ( "8", "male_longhawk_white-blonde2" )
+   param = ( "8", "male_longknot_blonde2" )
 }
 E350 = {
    pos_x = 61
    pos_y = 12
    script = "set_sprite.lua"
-   param = ( "8", "male_longhawk_white-blonde" )
+   param = ( "8", "male_longknot_blonde" )
 }
 E351 = {
    pos_x = 63
    pos_y = 12
    script = "set_sprite.lua"
-   param = ( "8", "male_longhawk_white-cyan" )
+   param = ( "8", "male_longknot_blue2" )
 }
 E352 = {
    pos_x = 1
    pos_y = 13
    script = "set_sprite.lua"
-   param = ( "8", "male_longhawk_white" )
+   param = ( "8", "male_longknot_blue" )
 }
 E353 = {
    pos_x = 3
    pos_y = 13
    script = "set_sprite.lua"
-   param = ( "8", "male_longknot_black" )
+   param = ( "8", "male_longknot_brown2" )
 }
 E354 = {
    pos_x = 5
    pos_y = 13
    script = "set_sprite.lua"
-   param = ( "8", "male_longknot_blonde2" )
+   param = ( "8", "male_longknot_brown" )
 }
 E355 = {
    pos_x = 7
    pos_y = 13
    script = "set_sprite.lua"
-   param = ( "8", "male_longknot_blonde" )
+   param = ( "8", "male_longknot_brunette2" )
 }
 E356 = {
    pos_x = 9
    pos_y = 13
    script = "set_sprite.lua"
-   param = ( "8", "male_longknot_blue2" )
+   param = ( "8", "male_longknot_brunette" )
 }
 E357 = {
    pos_x = 11
    pos_y = 13
    script = "set_sprite.lua"
-   param = ( "8", "male_longknot_blue" )
+   param = ( "8", "male_longknot_dark-blonde" )
 }
 E358 = {
    pos_x = 13
    pos_y = 13
    script = "set_sprite.lua"
-   param = ( "8", "male_longknot_brown2" )
+   param = ( "8", "male_longknot_gold" )
 }
 E359 = {
    pos_x = 15
    pos_y = 13
    script = "set_sprite.lua"
-   param = ( "8", "male_longknot_brown" )
+   param = ( "8", "male_longknot_gray2" )
 }
 E360 = {
    pos_x = 17
    pos_y = 13
    script = "set_sprite.lua"
-   param = ( "8", "male_longknot_brunette2" )
+   param = ( "8", "male_longknot_gray" )
 }
 E361 = {
    pos_x = 19
    pos_y = 13
    script = "set_sprite.lua"
-   param = ( "8", "male_longknot_brunette" )
+   param = ( "8", "male_longknot_green2" )
 }
 E362 = {
    pos_x = 21
    pos_y = 13
    script = "set_sprite.lua"
-   param = ( "8", "male_longknot_dark-blonde" )
+   param = ( "8", "male_longknot_green" )
 }
 E363 = {
    pos_x = 23
    pos_y = 13
    script = "set_sprite.lua"
-   param = ( "8", "male_longknot_gold" )
+   param = ( "8", "male_longknot_light-blonde2" )
 }
 E364 = {
    pos_x = 25
    pos_y = 13
    script = "set_sprite.lua"
-   param = ( "8", "male_longknot_gray2" )
+   param = ( "8", "male_longknot_light-blonde" )
 }
 E365 = {
    pos_x = 27
    pos_y = 13
    script = "set_sprite.lua"
-   param = ( "8", "male_longknot_gray" )
+   param = ( "8", "male_longknot" )
 }
 E366 = {
    pos_x = 29
    pos_y = 13
    script = "set_sprite.lua"
-   param = ( "8", "male_longknot_green2" )
+   param = ( "8", "male_longknot_pink2" )
 }
 E367 = {
    pos_x = 31
    pos_y = 13
    script = "set_sprite.lua"
-   param = ( "8", "male_longknot_green" )
+   param = ( "8", "male_longknot_pink" )
 }
 E368 = {
    pos_x = 33
    pos_y = 13
    script = "set_sprite.lua"
-   param = ( "8", "male_longknot_light-blonde2" )
+   param = ( "8", "male_longknot_purple" )
 }
 E369 = {
    pos_x = 35
    pos_y = 13
    script = "set_sprite.lua"
-   param = ( "8", "male_longknot_light-blonde" )
+   param = ( "8", "male_longknot_raven2" )
 }
 E370 = {
    pos_x = 37
    pos_y = 13
    script = "set_sprite.lua"
-   param = ( "8", "male_longknot" )
+   param = ( "8", "male_longknot_raven" )
 }
 E371 = {
    pos_x = 39
    pos_y = 13
    script = "set_sprite.lua"
-   param = ( "8", "male_longknot_pink2" )
+   param = ( "8", "male_longknot_redhead2" )
 }
 E372 = {
    pos_x = 41
    pos_y = 13
    script = "set_sprite.lua"
-   param = ( "8", "male_longknot_pink" )
+   param = ( "8", "male_longknot_redhead" )
 }
 E373 = {
    pos_x = 43
    pos_y = 13
    script = "set_sprite.lua"
-   param = ( "8", "male_longknot_purple" )
+   param = ( "8", "male_longknot_ruby-red" )
 }
 E374 = {
    pos_x = 45
    pos_y = 13
    script = "set_sprite.lua"
-   param = ( "8", "male_longknot_raven2" )
+   param = ( "8", "male_longknot_white-blonde2" )
 }
 E375 = {
    pos_x = 47
    pos_y = 13
    script = "set_sprite.lua"
-   param = ( "8", "male_longknot_raven" )
+   param = ( "8", "male_longknot_white-blonde" )
 }
 E376 = {
    pos_x = 49
    pos_y = 13
    script = "set_sprite.lua"
-   param = ( "8", "male_longknot_redhead2" )
+   param = ( "8", "male_longknot_white-cyan" )
 }
 E377 = {
    pos_x = 51
    pos_y = 13
    script = "set_sprite.lua"
-   param = ( "8", "male_longknot_redhead" )
+   param = ( "8", "male_longknot_white" )
 }
 E378 = {
    pos_x = 53
    pos_y = 13
    script = "set_sprite.lua"
-   param = ( "8", "male_longknot_ruby-red" )
+   param = ( "8", "male_long_light-blonde2" )
 }
 E379 = {
    pos_x = 55
    pos_y = 13
    script = "set_sprite.lua"
-   param = ( "8", "male_longknot_white-blonde2" )
+   param = ( "8", "male_long_light-blonde" )
 }
 E380 = {
    pos_x = 57
    pos_y = 13
    script = "set_sprite.lua"
-   param = ( "8", "male_longknot_white-blonde" )
+   param = ( "8", "male_long" )
 }
 E381 = {
    pos_x = 59
    pos_y = 13
    script = "set_sprite.lua"
-   param = ( "8", "male_longknot_white-cyan" )
+   param = ( "8", "male_long_pink2" )
 }
 E382 = {
    pos_x = 61
    pos_y = 13
    script = "set_sprite.lua"
-   param = ( "8", "male_longknot_white" )
+   param = ( "8", "male_long_pink" )
 }
 E383 = {
    pos_x = 63
    pos_y = 13
    script = "set_sprite.lua"
-   param = ( "8", "male_long_light-blonde2" )
+   param = ( "8", "male_long_purple" )
 }
 E384 = {
    pos_x = 1
    pos_y = 14
    script = "set_sprite.lua"
-   param = ( "8", "male_long_light-blonde" )
+   param = ( "8", "male_long_raven2" )
 }
 E385 = {
    pos_x = 3
    pos_y = 14
    script = "set_sprite.lua"
-   param = ( "8", "male_long" )
+   param = ( "8", "male_long_raven" )
 }
 E386 = {
    pos_x = 5
    pos_y = 14
    script = "set_sprite.lua"
-   param = ( "8", "male_long_pink2" )
+   param = ( "8", "male_long_redhead2" )
 }
 E387 = {
    pos_x = 7
    pos_y = 14
    script = "set_sprite.lua"
-   param = ( "8", "male_long_pink" )
+   param = ( "8", "male_long_redhead" )
 }
 E388 = {
    pos_x = 9
    pos_y = 14
    script = "set_sprite.lua"
-   param = ( "8", "male_long_purple" )
+   param = ( "8", "male_long_ruby-red" )
 }
 E389 = {
    pos_x = 11
    pos_y = 14
    script = "set_sprite.lua"
-   param = ( "8", "male_long_raven2" )
+   param = ( "8", "male_long_white-blonde2" )
 }
 E390 = {
    pos_x = 13
    pos_y = 14
    script = "set_sprite.lua"
-   param = ( "8", "male_long_raven" )
+   param = ( "8", "male_long_white-blonde" )
 }
 E391 = {
    pos_x = 15
    pos_y = 14
    script = "set_sprite.lua"
-   param = ( "8", "male_long_redhead2" )
+   param = ( "8", "male_long_white-cyan" )
 }
 E392 = {
    pos_x = 17
    pos_y = 14
    script = "set_sprite.lua"
-   param = ( "8", "male_long_redhead" )
+   param = ( "8", "male_long_white" )
 }
 E393 = {
    pos_x = 19
    pos_y = 14
    script = "set_sprite.lua"
-   param = ( "8", "male_long_ruby-red" )
+   param = ( "8", "male_loose_black" )
 }
 E394 = {
    pos_x = 21
    pos_y = 14
    script = "set_sprite.lua"
-   param = ( "8", "male_long_white-blonde2" )
+   param = ( "8", "male_loose_blonde2" )
 }
 E395 = {
    pos_x = 23
    pos_y = 14
    script = "set_sprite.lua"
-   param = ( "8", "male_long_white-blonde" )
+   param = ( "8", "male_loose_blonde" )
 }
 E396 = {
    pos_x = 25
    pos_y = 14
    script = "set_sprite.lua"
-   param = ( "8", "male_long_white-cyan" )
+   param = ( "8", "male_loose_blue2" )
 }
 E397 = {
    pos_x = 27
    pos_y = 14
    script = "set_sprite.lua"
-   param = ( "8", "male_long_white" )
+   param = ( "8", "male_loose_blue" )
 }
 E398 = {
    pos_x = 29
    pos_y = 14
    script = "set_sprite.lua"
-   param = ( "8", "male_loose_black" )
+   param = ( "8", "male_loose_brown2" )
 }
 E399 = {
    pos_x = 31
    pos_y = 14
    script = "set_sprite.lua"
-   param = ( "8", "male_loose_blonde2" )
+   param = ( "8", "male_loose_brown" )
 }
 E400 = {
    pos_x = 33
    pos_y = 14
    script = "set_sprite.lua"
-   param = ( "8", "male_loose_blonde" )
+   param = ( "8", "male_loose_brunette2" )
 }
 E401 = {
    pos_x = 35
    pos_y = 14
    script = "set_sprite.lua"
-   param = ( "8", "male_loose_blue2" )
+   param = ( "8", "male_loose_brunette" )
 }
 E402 = {
    pos_x = 37
    pos_y = 14
    script = "set_sprite.lua"
-   param = ( "8", "male_loose_blue" )
+   param = ( "8", "male_loose_dark-blonde" )
 }
 E403 = {
    pos_x = 39
    pos_y = 14
    script = "set_sprite.lua"
-   param = ( "8", "male_loose_brown2" )
+   param = ( "8", "male_loose_gold" )
 }
 E404 = {
    pos_x = 41
    pos_y = 14
    script = "set_sprite.lua"
-   param = ( "8", "male_loose_brown" )
+   param = ( "8", "male_loose_gray2" )
 }
 E405 = {
    pos_x = 43
    pos_y = 14
    script = "set_sprite.lua"
-   param = ( "8", "male_loose_brunette2" )
+   param = ( "8", "male_loose_gray" )
 }
 E406 = {
    pos_x = 45
    pos_y = 14
    script = "set_sprite.lua"
-   param = ( "8", "male_loose_brunette" )
+   param = ( "8", "male_loose_green2" )
 }
 E407 = {
    pos_x = 47
    pos_y = 14
    script = "set_sprite.lua"
-   param = ( "8", "male_loose_dark-blonde" )
+   param = ( "8", "male_loose_green" )
 }
 E408 = {
    pos_x = 49
    pos_y = 14
    script = "set_sprite.lua"
-   param = ( "8", "male_loose_gold" )
+   param = ( "8", "male_loose_light-blonde2" )
 }
 E409 = {
    pos_x = 51
    pos_y = 14
    script = "set_sprite.lua"
-   param = ( "8", "male_loose_gray2" )
+   param = ( "8", "male_loose_light-blonde" )
 }
 E410 = {
    pos_x = 53
    pos_y = 14
    script = "set_sprite.lua"
-   param = ( "8", "male_loose_gray" )
+   param = ( "8", "male_loose" )
 }
 E411 = {
    pos_x = 55
    pos_y = 14
    script = "set_sprite.lua"
-   param = ( "8", "male_loose_green2" )
+   param = ( "8", "male_loose_pink2" )
 }
 E412 = {
    pos_x = 57
    pos_y = 14
    script = "set_sprite.lua"
-   param = ( "8", "male_loose_green" )
+   param = ( "8", "male_loose_pink" )
 }
 E413 = {
    pos_x = 59
    pos_y = 14
    script = "set_sprite.lua"
-   param = ( "8", "male_loose_light-blonde2" )
+   param = ( "8", "male_loose_purple" )
 }
 E414 = {
    pos_x = 61
    pos_y = 14
    script = "set_sprite.lua"
-   param = ( "8", "male_loose_light-blonde" )
+   param = ( "8", "male_loose_raven2" )
 }
 E415 = {
    pos_x = 63
    pos_y = 14
    script = "set_sprite.lua"
-   param = ( "8", "male_loose" )
+   param = ( "8", "male_loose_raven" )
 }
 E416 = {
    pos_x = 1
    pos_y = 15
    script = "set_sprite.lua"
-   param = ( "8", "male_loose_pink2" )
+   param = ( "8", "male_loose_redhead2" )
 }
 E417 = {
    pos_x = 3
    pos_y = 15
    script = "set_sprite.lua"
-   param = ( "8", "male_loose_pink" )
+   param = ( "8", "male_loose_redhead" )
 }
 E418 = {
    pos_x = 5
    pos_y = 15
    script = "set_sprite.lua"
-   param = ( "8", "male_loose_purple" )
+   param = ( "8", "male_loose_ruby-red" )
 }
 E419 = {
    pos_x = 7
    pos_y = 15
    script = "set_sprite.lua"
-   param = ( "8", "male_loose_raven2" )
+   param = ( "8", "male_loose_white-blonde2" )
 }
 E420 = {
    pos_x = 9
    pos_y = 15
    script = "set_sprite.lua"
-   param = ( "8", "male_loose_raven" )
+   param = ( "8", "male_loose_white-blonde" )
 }
 E421 = {
    pos_x = 11
    pos_y = 15
    script = "set_sprite.lua"
-   param = ( "8", "male_loose_redhead2" )
+   param = ( "8", "male_loose_white-cyan" )
 }
 E422 = {
    pos_x = 13
    pos_y = 15
    script = "set_sprite.lua"
-   param = ( "8", "male_loose_redhead" )
+   param = ( "8", "male_loose_white" )
 }
 E423 = {
    pos_x = 15
    pos_y = 15
    script = "set_sprite.lua"
-   param = ( "8", "male_loose_ruby-red" )
+   param = ( "8", "male_messy1_black" )
 }
 E424 = {
    pos_x = 17
    pos_y = 15
    script = "set_sprite.lua"
-   param = ( "8", "male_loose_white-blonde2" )
+   param = ( "8", "male_messy1_blonde2" )
 }
 E425 = {
    pos_x = 19
    pos_y = 15
    script = "set_sprite.lua"
-   param = ( "8", "male_loose_white-blonde" )
+   param = ( "8", "male_messy1_blonde" )
 }
 E426 = {
    pos_x = 21
    pos_y = 15
    script = "set_sprite.lua"
-   param = ( "8", "male_loose_white-cyan" )
+   param = ( "8", "male_messy1_blue2" )
 }
 E427 = {
    pos_x = 23
    pos_y = 15
    script = "set_sprite.lua"
-   param = ( "8", "male_loose_white" )
+   param = ( "8", "male_messy1_blue" )
 }
 E428 = {
    pos_x = 25
    pos_y = 15
    script = "set_sprite.lua"
-   param = ( "8", "male_messy1_black" )
+   param = ( "8", "male_messy1_brown2" )
 }
 E429 = {
    pos_x = 27
    pos_y = 15
    script = "set_sprite.lua"
-   param = ( "8", "male_messy1_blonde2" )
+   param = ( "8", "male_messy1_brown" )
 }
 E430 = {
    pos_x = 29
    pos_y = 15
    script = "set_sprite.lua"
-   param = ( "8", "male_messy1_blonde" )
+   param = ( "8", "male_messy1_brunette2" )
 }
 E431 = {
    pos_x = 31
    pos_y = 15
    script = "set_sprite.lua"
-   param = ( "8", "male_messy1_blue2" )
+   param = ( "8", "male_messy1_brunette" )
 }
 E432 = {
    pos_x = 33
    pos_y = 15
    script = "set_sprite.lua"
-   param = ( "8", "male_messy1_blue" )
+   param = ( "8", "male_messy1_dark-blonde" )
 }
 E433 = {
    pos_x = 35
    pos_y = 15
    script = "set_sprite.lua"
-   param = ( "8", "male_messy1_brown2" )
+   param = ( "8", "male_messy1_gold" )
 }
 E434 = {
    pos_x = 37
    pos_y = 15
    script = "set_sprite.lua"
-   param = ( "8", "male_messy1_brown" )
+   param = ( "8", "male_messy1_gray2" )
 }
 E435 = {
    pos_x = 39
    pos_y = 15
    script = "set_sprite.lua"
-   param = ( "8", "male_messy1_brunette2" )
+   param = ( "8", "male_messy1_gray" )
 }
 E436 = {
    pos_x = 41
    pos_y = 15
    script = "set_sprite.lua"
-   param = ( "8", "male_messy1_brunette" )
+   param = ( "8", "male_messy1_green2" )
 }
 E437 = {
    pos_x = 43
    pos_y = 15
    script = "set_sprite.lua"
-   param = ( "8", "male_messy1_dark-blonde" )
+   param = ( "8", "male_messy1_green" )
 }
 E438 = {
    pos_x = 45
    pos_y = 15
    script = "set_sprite.lua"
-   param = ( "8", "male_messy1_gold" )
+   param = ( "8", "male_messy1_light-blonde2" )
 }
 E439 = {
    pos_x = 47
    pos_y = 15
    script = "set_sprite.lua"
-   param = ( "8", "male_messy1_gray2" )
+   param = ( "8", "male_messy1_light-blonde" )
 }
 E440 = {
    pos_x = 49
    pos_y = 15
    script = "set_sprite.lua"
-   param = ( "8", "male_messy1_gray" )
+   param = ( "8", "male_messy1" )
 }
 E441 = {
    pos_x = 51
    pos_y = 15
    script = "set_sprite.lua"
-   param = ( "8", "male_messy1_green2" )
+   param = ( "8", "male_messy1_pink2" )
 }
 E442 = {
    pos_x = 53
    pos_y = 15
    script = "set_sprite.lua"
-   param = ( "8", "male_messy1_green" )
+   param = ( "8", "male_messy1_pink" )
 }
 E443 = {
    pos_x = 55
    pos_y = 15
    script = "set_sprite.lua"
-   param = ( "8", "male_messy1_light-blonde2" )
+   param = ( "8", "male_messy1_purple" )
 }
 E444 = {
    pos_x = 57
    pos_y = 15
    script = "set_sprite.lua"
-   param = ( "8", "male_messy1_light-blonde" )
+   param = ( "8", "male_messy1_raven2" )
 }
 E445 = {
    pos_x = 59
    pos_y = 15
    script = "set_sprite.lua"
-   param = ( "8", "male_messy1" )
+   param = ( "8", "male_messy1_raven" )
 }
 E446 = {
    pos_x = 61
    pos_y = 15
    script = "set_sprite.lua"
-   param = ( "8", "male_messy1_pink2" )
+   param = ( "8", "male_messy1_redhead2" )
 }
 E447 = {
    pos_x = 63
    pos_y = 15
    script = "set_sprite.lua"
-   param = ( "8", "male_messy1_pink" )
+   param = ( "8", "male_messy1_redhead" )
 }
 E448 = {
    pos_x = 1
    pos_y = 16
    script = "set_sprite.lua"
-   param = ( "8", "male_messy1_purple" )
+   param = ( "8", "male_messy1_ruby-red" )
 }
 E449 = {
    pos_x = 3
    pos_y = 16
    script = "set_sprite.lua"
-   param = ( "8", "male_messy1_raven2" )
+   param = ( "8", "male_messy1_white-blonde2" )
 }
 E450 = {
    pos_x = 5
    pos_y = 16
    script = "set_sprite.lua"
-   param = ( "8", "male_messy1_raven" )
+   param = ( "8", "male_messy1_white-blonde" )
 }
 E451 = {
    pos_x = 7
    pos_y = 16
    script = "set_sprite.lua"
-   param = ( "8", "male_messy1_redhead2" )
+   param = ( "8", "male_messy1_white-cyan" )
 }
 E452 = {
    pos_x = 9
    pos_y = 16
    script = "set_sprite.lua"
-   param = ( "8", "male_messy1_redhead" )
+   param = ( "8", "male_messy1_white" )
 }
 E453 = {
    pos_x = 11
    pos_y = 16
    script = "set_sprite.lua"
-   param = ( "8", "male_messy1_ruby-red" )
+   param = ( "8", "male_messy2_black" )
 }
 E454 = {
    pos_x = 13
    pos_y = 16
    script = "set_sprite.lua"
-   param = ( "8", "male_messy1_white-blonde2" )
+   param = ( "8", "male_messy2_blonde2" )
 }
 E455 = {
    pos_x = 15
    pos_y = 16
    script = "set_sprite.lua"
-   param = ( "8", "male_messy1_white-blonde" )
+   param = ( "8", "male_messy2_blonde" )
 }
 E456 = {
    pos_x = 17
    pos_y = 16
    script = "set_sprite.lua"
-   param = ( "8", "male_messy1_white-cyan" )
+   param = ( "8", "male_messy2_blue2" )
 }
 E457 = {
    pos_x = 19
    pos_y = 16
    script = "set_sprite.lua"
-   param = ( "8", "male_messy1_white" )
+   param = ( "8", "male_messy2_blue" )
 }
 E458 = {
    pos_x = 21
    pos_y = 16
    script = "set_sprite.lua"
-   param = ( "8", "male_messy2_black" )
+   param = ( "8", "male_messy2_brown2" )
 }
 E459 = {
    pos_x = 23
    pos_y = 16
    script = "set_sprite.lua"
-   param = ( "8", "male_messy2_blonde2" )
+   param = ( "8", "male_messy2_brown" )
 }
 E460 = {
    pos_x = 25
    pos_y = 16
    script = "set_sprite.lua"
-   param = ( "8", "male_messy2_blonde" )
+   param = ( "8", "male_messy2_brunette2" )
 }
 E461 = {
    pos_x = 27
    pos_y = 16
    script = "set_sprite.lua"
-   param = ( "8", "male_messy2_blue2" )
+   param = ( "8", "male_messy2_brunette" )
 }
 E462 = {
    pos_x = 29
    pos_y = 16
    script = "set_sprite.lua"
-   param = ( "8", "male_messy2_blue" )
+   param = ( "8", "male_messy2_dark-blonde" )
 }
 E463 = {
    pos_x = 31
    pos_y = 16
    script = "set_sprite.lua"
-   param = ( "8", "male_messy2_brown2" )
+   param = ( "8", "male_messy2_gold" )
 }
 E464 = {
    pos_x = 33
    pos_y = 16
    script = "set_sprite.lua"
-   param = ( "8", "male_messy2_brown" )
+   param = ( "8", "male_messy2_gray2" )
 }
 E465 = {
    pos_x = 35
    pos_y = 16
    script = "set_sprite.lua"
-   param = ( "8", "male_messy2_brunette2" )
+   param = ( "8", "male_messy2_gray" )
 }
 E466 = {
    pos_x = 37
    pos_y = 16
    script = "set_sprite.lua"
-   param = ( "8", "male_messy2_brunette" )
+   param = ( "8", "male_messy2_green2" )
 }
 E467 = {
    pos_x = 39
    pos_y = 16
    script = "set_sprite.lua"
-   param = ( "8", "male_messy2_dark-blonde" )
+   param = ( "8", "male_messy2_green" )
 }
 E468 = {
    pos_x = 41
    pos_y = 16
    script = "set_sprite.lua"
-   param = ( "8", "male_messy2_gold" )
+   param = ( "8", "male_messy2_light-blonde2" )
 }
 E469 = {
    pos_x = 43
    pos_y = 16
    script = "set_sprite.lua"
-   param = ( "8", "male_messy2_gray2" )
+   param = ( "8", "male_messy2_light-blonde" )
 }
 E470 = {
    pos_x = 45
    pos_y = 16
    script = "set_sprite.lua"
-   param = ( "8", "male_messy2_gray" )
+   param = ( "8", "male_messy2" )
 }
 E471 = {
    pos_x = 47
    pos_y = 16
    script = "set_sprite.lua"
-   param = ( "8", "male_messy2_green2" )
+   param = ( "8", "male_messy2_pink2" )
 }
 E472 = {
    pos_x = 49
    pos_y = 16
    script = "set_sprite.lua"
-   param = ( "8", "male_messy2_green" )
+   param = ( "8", "male_messy2_pink" )
 }
 E473 = {
    pos_x = 51
    pos_y = 16
    script = "set_sprite.lua"
-   param = ( "8", "male_messy2_light-blonde2" )
+   param = ( "8", "male_messy2_purple" )
 }
 E474 = {
    pos_x = 53
    pos_y = 16
    script = "set_sprite.lua"
-   param = ( "8", "male_messy2_light-blonde" )
+   param = ( "8", "male_messy2_raven2" )
 }
 E475 = {
    pos_x = 55
    pos_y = 16
    script = "set_sprite.lua"
-   param = ( "8", "male_messy2" )
+   param = ( "8", "male_messy2_raven" )
 }
 E476 = {
    pos_x = 57
    pos_y = 16
    script = "set_sprite.lua"
-   param = ( "8", "male_messy2_pink2" )
+   param = ( "8", "male_messy2_redhead2" )
 }
 E477 = {
    pos_x = 59
    pos_y = 16
    script = "set_sprite.lua"
-   param = ( "8", "male_messy2_pink" )
+   param = ( "8", "male_messy2_redhead" )
 }
 E478 = {
    pos_x = 61
    pos_y = 16
    script = "set_sprite.lua"
-   param = ( "8", "male_messy2_purple" )
+   param = ( "8", "male_messy2_ruby-red" )
 }
 E479 = {
    pos_x = 63
    pos_y = 16
    script = "set_sprite.lua"
-   param = ( "8", "male_messy2_raven2" )
+   param = ( "8", "male_messy2_white-blonde2" )
 }
 E480 = {
    pos_x = 1
    pos_y = 17
    script = "set_sprite.lua"
-   param = ( "8", "male_messy2_raven" )
+   param = ( "8", "male_messy2_white-blonde" )
 }
 E481 = {
    pos_x = 3
    pos_y = 17
    script = "set_sprite.lua"
-   param = ( "8", "male_messy2_redhead2" )
+   param = ( "8", "male_messy2_white-cyan" )
 }
 E482 = {
    pos_x = 5
    pos_y = 17
    script = "set_sprite.lua"
-   param = ( "8", "male_messy2_redhead" )
+   param = ( "8", "male_messy2_white" )
 }
 E483 = {
    pos_x = 7
    pos_y = 17
    script = "set_sprite.lua"
-   param = ( "8", "male_messy2_ruby-red" )
+   param = ( "8", "male_mohawk_black" )
 }
 E484 = {
    pos_x = 9
    pos_y = 17
    script = "set_sprite.lua"
-   param = ( "8", "male_messy2_white-blonde2" )
+   param = ( "8", "male_mohawk_blonde2" )
 }
 E485 = {
    pos_x = 11
    pos_y = 17
    script = "set_sprite.lua"
-   param = ( "8", "male_messy2_white-blonde" )
+   param = ( "8", "male_mohawk_blonde" )
 }
 E486 = {
    pos_x = 13
    pos_y = 17
    script = "set_sprite.lua"
-   param = ( "8", "male_messy2_white-cyan" )
+   param = ( "8", "male_mohawk_blue2" )
 }
 E487 = {
    pos_x = 15
    pos_y = 17
    script = "set_sprite.lua"
-   param = ( "8", "male_messy2_white" )
+   param = ( "8", "male_mohawk_blue" )
 }
 E488 = {
    pos_x = 17
    pos_y = 17
    script = "set_sprite.lua"
-   param = ( "8", "male_mohawk_black" )
+   param = ( "8", "male_mohawk_brown2" )
 }
 E489 = {
    pos_x = 19
    pos_y = 17
    script = "set_sprite.lua"
-   param = ( "8", "male_mohawk_blonde2" )
+   param = ( "8", "male_mohawk_brown" )
 }
 E490 = {
    pos_x = 21
    pos_y = 17
    script = "set_sprite.lua"
-   param = ( "8", "male_mohawk_blonde" )
+   param = ( "8", "male_mohawk_brunette2" )
 }
 E491 = {
    pos_x = 23
    pos_y = 17
    script = "set_sprite.lua"
-   param = ( "8", "male_mohawk_blue2" )
+   param = ( "8", "male_mohawk_brunette" )
 }
 E492 = {
    pos_x = 25
    pos_y = 17
    script = "set_sprite.lua"
-   param = ( "8", "male_mohawk_blue" )
+   param = ( "8", "male_mohawk_dark-blonde" )
 }
 E493 = {
    pos_x = 27
    pos_y = 17
    script = "set_sprite.lua"
-   param = ( "8", "male_mohawk_brown2" )
+   param = ( "8", "male_mohawk_gold" )
 }
 E494 = {
    pos_x = 29
    pos_y = 17
    script = "set_sprite.lua"
-   param = ( "8", "male_mohawk_brown" )
+   param = ( "8", "male_mohawk_gray2" )
 }
 E495 = {
    pos_x = 31
    pos_y = 17
    script = "set_sprite.lua"
-   param = ( "8", "male_mohawk_brunette2" )
+   param = ( "8", "male_mohawk_gray" )
 }
 E496 = {
    pos_x = 33
    pos_y = 17
    script = "set_sprite.lua"
-   param = ( "8", "male_mohawk_brunette" )
+   param = ( "8", "male_mohawk_green2" )
 }
 E497 = {
    pos_x = 35
    pos_y = 17
    script = "set_sprite.lua"
-   param = ( "8", "male_mohawk_dark-blonde" )
+   param = ( "8", "male_mohawk_green" )
 }
 E498 = {
    pos_x = 37
    pos_y = 17
    script = "set_sprite.lua"
-   param = ( "8", "male_mohawk_gold" )
+   param = ( "8", "male_mohawk_light-blonde2" )
 }
 E499 = {
    pos_x = 39
    pos_y = 17
    script = "set_sprite.lua"
-   param = ( "8", "male_mohawk_gray2" )
+   param = ( "8", "male_mohawk_light-blonde" )
 }
 E500 = {
    pos_x = 41
    pos_y = 17
    script = "set_sprite.lua"
-   param = ( "8", "male_mohawk_gray" )
+   param = ( "8", "male_mohawk" )
 }
 E501 = {
    pos_x = 43
    pos_y = 17
    script = "set_sprite.lua"
-   param = ( "8", "male_mohawk_green2" )
+   param = ( "8", "male_mohawk_pink2" )
 }
 E502 = {
    pos_x = 45
    pos_y = 17
    script = "set_sprite.lua"
-   param = ( "8", "male_mohawk_green" )
+   param = ( "8", "male_mohawk_pink" )
 }
 E503 = {
    pos_x = 47
    pos_y = 17
    script = "set_sprite.lua"
-   param = ( "8", "male_mohawk_light-blonde2" )
+   param = ( "8", "male_mohawk_purple" )
 }
 E504 = {
    pos_x = 49
    pos_y = 17
    script = "set_sprite.lua"
-   param = ( "8", "male_mohawk_light-blonde" )
+   param = ( "8", "male_mohawk_raven2" )
 }
 E505 = {
    pos_x = 51
    pos_y = 17
    script = "set_sprite.lua"
-   param = ( "8", "male_mohawk" )
+   param = ( "8", "male_mohawk_raven" )
 }
 E506 = {
    pos_x = 53
    pos_y = 17
    script = "set_sprite.lua"
-   param = ( "8", "male_mohawk_pink2" )
+   param = ( "8", "male_mohawk_redhead2" )
 }
 E507 = {
    pos_x = 55
    pos_y = 17
    script = "set_sprite.lua"
-   param = ( "8", "male_mohawk_pink" )
+   param = ( "8", "male_mohawk_redhead" )
 }
 E508 = {
    pos_x = 57
    pos_y = 17
    script = "set_sprite.lua"
-   param = ( "8", "male_mohawk_purple" )
+   param = ( "8", "male_mohawk_ruby-red" )
 }
 E509 = {
    pos_x = 59
    pos_y = 17
    script = "set_sprite.lua"
-   param = ( "8", "male_mohawk_raven2" )
+   param = ( "8", "male_mohawk_white-blonde2" )
 }
 E510 = {
    pos_x = 61
    pos_y = 17
    script = "set_sprite.lua"
-   param = ( "8", "male_mohawk_raven" )
+   param = ( "8", "male_mohawk_white-blonde" )
 }
 E511 = {
    pos_x = 63
    pos_y = 17
    script = "set_sprite.lua"
-   param = ( "8", "male_mohawk_redhead2" )
+   param = ( "8", "male_mohawk_white-cyan" )
 }
 E512 = {
    pos_x = 1
    pos_y = 18
    script = "set_sprite.lua"
-   param = ( "8", "male_mohawk_redhead" )
+   param = ( "8", "male_mohawk_white" )
 }
 E513 = {
    pos_x = 3
    pos_y = 18
    script = "set_sprite.lua"
-   param = ( "8", "male_mohawk_ruby-red" )
+   param = ( "8", "male_page2_black" )
 }
 E514 = {
    pos_x = 5
    pos_y = 18
    script = "set_sprite.lua"
-   param = ( "8", "male_mohawk_white-blonde2" )
+   param = ( "8", "male_page2_blonde2" )
 }
 E515 = {
    pos_x = 7
    pos_y = 18
    script = "set_sprite.lua"
-   param = ( "8", "male_mohawk_white-blonde" )
+   param = ( "8", "male_page2_blonde" )
 }
 E516 = {
    pos_x = 9
    pos_y = 18
    script = "set_sprite.lua"
-   param = ( "8", "male_mohawk_white-cyan" )
+   param = ( "8", "male_page2_blue2" )
 }
 E517 = {
    pos_x = 11
    pos_y = 18
    script = "set_sprite.lua"
-   param = ( "8", "male_mohawk_white" )
+   param = ( "8", "male_page2_blue" )
 }
 E518 = {
    pos_x = 13
    pos_y = 18
    script = "set_sprite.lua"
-   param = ( "8", "male_page2_black" )
+   param = ( "8", "male_page2_brown2" )
 }
 E519 = {
    pos_x = 15
    pos_y = 18
    script = "set_sprite.lua"
-   param = ( "8", "male_page2_blonde2" )
+   param = ( "8", "male_page2_brown" )
 }
 E520 = {
    pos_x = 17
    pos_y = 18
    script = "set_sprite.lua"
-   param = ( "8", "male_page2_blonde" )
+   param = ( "8", "male_page2_brunette2" )
 }
 E521 = {
    pos_x = 19
    pos_y = 18
    script = "set_sprite.lua"
-   param = ( "8", "male_page2_blue2" )
+   param = ( "8", "male_page2_brunette" )
 }
 E522 = {
    pos_x = 21
    pos_y = 18
    script = "set_sprite.lua"
-   param = ( "8", "male_page2_blue" )
+   param = ( "8", "male_page2_dark-blonde" )
 }
 E523 = {
    pos_x = 23
    pos_y = 18
    script = "set_sprite.lua"
-   param = ( "8", "male_page2_brown2" )
+   param = ( "8", "male_page2_gold" )
 }
 E524 = {
    pos_x = 25
    pos_y = 18
    script = "set_sprite.lua"
-   param = ( "8", "male_page2_brown" )
+   param = ( "8", "male_page2_gray2" )
 }
 E525 = {
    pos_x = 27
    pos_y = 18
    script = "set_sprite.lua"
-   param = ( "8", "male_page2_brunette2" )
+   param = ( "8", "male_page2_gray" )
 }
 E526 = {
    pos_x = 29
    pos_y = 18
    script = "set_sprite.lua"
-   param = ( "8", "male_page2_brunette" )
+   param = ( "8", "male_page2_green2" )
 }
 E527 = {
    pos_x = 31
    pos_y = 18
    script = "set_sprite.lua"
-   param = ( "8", "male_page2_dark-blonde" )
+   param = ( "8", "male_page2_green" )
 }
 E528 = {
    pos_x = 33
    pos_y = 18
    script = "set_sprite.lua"
-   param = ( "8", "male_page2_gold" )
+   param = ( "8", "male_page2_light-blonde2" )
 }
 E529 = {
    pos_x = 35
    pos_y = 18
    script = "set_sprite.lua"
-   param = ( "8", "male_page2_gray2" )
+   param = ( "8", "male_page2_light-blonde" )
 }
 E530 = {
    pos_x = 37
    pos_y = 18
    script = "set_sprite.lua"
-   param = ( "8", "male_page2_gray" )
+   param = ( "8", "male_page2" )
 }
 E531 = {
    pos_x = 39
    pos_y = 18
    script = "set_sprite.lua"
-   param = ( "8", "male_page2_green2" )
+   param = ( "8", "male_page2_pink2" )
 }
 E532 = {
    pos_x = 41
    pos_y = 18
    script = "set_sprite.lua"
-   param = ( "8", "male_page2_green" )
+   param = ( "8", "male_page2_pink" )
 }
 E533 = {
    pos_x = 43
    pos_y = 18
    script = "set_sprite.lua"
-   param = ( "8", "male_page2_light-blonde2" )
+   param = ( "8", "male_page2_purple" )
 }
 E534 = {
    pos_x = 45
    pos_y = 18
    script = "set_sprite.lua"
-   param = ( "8", "male_page2_light-blonde" )
+   param = ( "8", "male_page2_raven2" )
 }
 E535 = {
    pos_x = 47
    pos_y = 18
    script = "set_sprite.lua"
-   param = ( "8", "male_page2" )
+   param = ( "8", "male_page2_raven" )
 }
 E536 = {
    pos_x = 49
    pos_y = 18
    script = "set_sprite.lua"
-   param = ( "8", "male_page2_pink2" )
+   param = ( "8", "male_page2_redhead2" )
 }
 E537 = {
    pos_x = 51
    pos_y = 18
    script = "set_sprite.lua"
-   param = ( "8", "male_page2_pink" )
+   param = ( "8", "male_page2_redhead" )
 }
 E538 = {
    pos_x = 53
    pos_y = 18
    script = "set_sprite.lua"
-   param = ( "8", "male_page2_purple" )
+   param = ( "8", "male_page2_ruby-red" )
 }
 E539 = {
    pos_x = 55
    pos_y = 18
    script = "set_sprite.lua"
-   param = ( "8", "male_page2_raven2" )
+   param = ( "8", "male_page2_white-blonde2" )
 }
 E540 = {
    pos_x = 57
    pos_y = 18
    script = "set_sprite.lua"
-   param = ( "8", "male_page2_raven" )
+   param = ( "8", "male_page2_white-blonde" )
 }
 E541 = {
    pos_x = 59
    pos_y = 18
    script = "set_sprite.lua"
-   param = ( "8", "male_page2_redhead2" )
+   param = ( "8", "male_page2_white-cyan" )
 }
 E542 = {
    pos_x = 61
    pos_y = 18
    script = "set_sprite.lua"
-   param = ( "8", "male_page2_redhead" )
+   param = ( "8", "male_page2_white" )
 }
 E543 = {
    pos_x = 63
    pos_y = 18
    script = "set_sprite.lua"
-   param = ( "8", "male_page2_ruby-red" )
+   param = ( "8", "male_page_black" )
 }
 E544 = {
    pos_x = 1
    pos_y = 19
    script = "set_sprite.lua"
-   param = ( "8", "male_page2_white-blonde2" )
+   param = ( "8", "male_page_blonde2" )
 }
 E545 = {
    pos_x = 3
    pos_y = 19
    script = "set_sprite.lua"
-   param = ( "8", "male_page2_white-blonde" )
+   param = ( "8", "male_page_blonde" )
 }
 E546 = {
    pos_x = 5
    pos_y = 19
    script = "set_sprite.lua"
-   param = ( "8", "male_page2_white-cyan" )
+   param = ( "8", "male_page_blue2" )
 }
 E547 = {
    pos_x = 7
    pos_y = 19
    script = "set_sprite.lua"
-   param = ( "8", "male_page2_white" )
+   param = ( "8", "male_page_blue" )
 }
 E548 = {
    pos_x = 9
    pos_y = 19
    script = "set_sprite.lua"
-   param = ( "8", "male_page_black" )
+   param = ( "8", "male_page_brown2" )
 }
 E549 = {
    pos_x = 11
    pos_y = 19
    script = "set_sprite.lua"
-   param = ( "8", "male_page_blonde2" )
+   param = ( "8", "male_page_brown" )
 }
 E550 = {
    pos_x = 13
    pos_y = 19
    script = "set_sprite.lua"
-   param = ( "8", "male_page_blonde" )
+   param = ( "8", "male_page_brunette2" )
 }
 E551 = {
    pos_x = 15
    pos_y = 19
    script = "set_sprite.lua"
-   param = ( "8", "male_page_blue2" )
+   param = ( "8", "male_page_brunette" )
 }
 E552 = {
    pos_x = 17
    pos_y = 19
    script = "set_sprite.lua"
-   param = ( "8", "male_page_blue" )
+   param = ( "8", "male_page_dark-blonde" )
 }
 E553 = {
    pos_x = 19
    pos_y = 19
    script = "set_sprite.lua"
-   param = ( "8", "male_page_brown2" )
+   param = ( "8", "male_page_gold" )
 }
 E554 = {
    pos_x = 21
    pos_y = 19
    script = "set_sprite.lua"
-   param = ( "8", "male_page_brown" )
+   param = ( "8", "male_page_gray2" )
 }
 E555 = {
    pos_x = 23
    pos_y = 19
    script = "set_sprite.lua"
-   param = ( "8", "male_page_brunette2" )
+   param = ( "8", "male_page_gray" )
 }
 E556 = {
    pos_x = 25
    pos_y = 19
    script = "set_sprite.lua"
-   param = ( "8", "male_page_brunette" )
+   param = ( "8", "male_page_green2" )
 }
 E557 = {
    pos_x = 27
    pos_y = 19
    script = "set_sprite.lua"
-   param = ( "8", "male_page_dark-blonde" )
+   param = ( "8", "male_page_green" )
 }
 E558 = {
    pos_x = 29
    pos_y = 19
    script = "set_sprite.lua"
-   param = ( "8", "male_page_gold" )
+   param = ( "8", "male_page_light-blonde2" )
 }
 E559 = {
    pos_x = 31
    pos_y = 19
    script = "set_sprite.lua"
-   param = ( "8", "male_page_gray2" )
+   param = ( "8", "male_page_light-blonde" )
 }
 E560 = {
    pos_x = 33
    pos_y = 19
    script = "set_sprite.lua"
-   param = ( "8", "male_page_gray" )
+   param = ( "8", "male_page" )
 }
 E561 = {
    pos_x = 35
    pos_y = 19
    script = "set_sprite.lua"
-   param = ( "8", "male_page_green2" )
+   param = ( "8", "male_page_pink2" )
 }
 E562 = {
    pos_x = 37
    pos_y = 19
    script = "set_sprite.lua"
-   param = ( "8", "male_page_green" )
+   param = ( "8", "male_page_pink" )
 }
 E563 = {
    pos_x = 39
    pos_y = 19
    script = "set_sprite.lua"
-   param = ( "8", "male_page_light-blonde2" )
+   param = ( "8", "male_page_purple" )
 }
 E564 = {
    pos_x = 41
    pos_y = 19
    script = "set_sprite.lua"
-   param = ( "8", "male_page_light-blonde" )
+   param = ( "8", "male_page_raven2" )
 }
 E565 = {
    pos_x = 43
    pos_y = 19
    script = "set_sprite.lua"
-   param = ( "8", "male_page" )
+   param = ( "8", "male_page_raven" )
 }
 E566 = {
    pos_x = 45
    pos_y = 19
    script = "set_sprite.lua"
-   param = ( "8", "male_page_pink2" )
+   param = ( "8", "male_page_redhead2" )
 }
 E567 = {
    pos_x = 47
    pos_y = 19
    script = "set_sprite.lua"
-   param = ( "8", "male_page_pink" )
+   param = ( "8", "male_page_redhead" )
 }
 E568 = {
    pos_x = 49
    pos_y = 19
    script = "set_sprite.lua"
-   param = ( "8", "male_page_purple" )
+   param = ( "8", "male_page_ruby-red" )
 }
 E569 = {
    pos_x = 51
    pos_y = 19
    script = "set_sprite.lua"
-   param = ( "8", "male_page_raven2" )
+   param = ( "8", "male_page_white-blonde2" )
 }
 E570 = {
    pos_x = 53
    pos_y = 19
    script = "set_sprite.lua"
-   param = ( "8", "male_page_raven" )
+   param = ( "8", "male_page_white-blonde" )
 }
 E571 = {
    pos_x = 55
    pos_y = 19
    script = "set_sprite.lua"
-   param = ( "8", "male_page_redhead2" )
+   param = ( "8", "male_page_white-cyan" )
 }
 E572 = {
    pos_x = 57
    pos_y = 19
    script = "set_sprite.lua"
-   param = ( "8", "male_page_redhead" )
+   param = ( "8", "male_page_white" )
 }
 E573 = {
    pos_x = 59
    pos_y = 19
    script = "set_sprite.lua"
-   param = ( "8", "male_page_ruby-red" )
+   param = ( "8", "male_parted_black" )
 }
 E574 = {
    pos_x = 61
    pos_y = 19
    script = "set_sprite.lua"
-   param = ( "8", "male_page_white-blonde2" )
+   param = ( "8", "male_parted_blonde2" )
 }
 E575 = {
    pos_x = 63
    pos_y = 19
    script = "set_sprite.lua"
-   param = ( "8", "male_page_white-blonde" )
+   param = ( "8", "male_parted_blonde" )
 }
 E576 = {
    pos_x = 1
    pos_y = 20
    script = "set_sprite.lua"
-   param = ( "8", "male_page_white-cyan" )
+   param = ( "8", "male_parted_blue2" )
 }
 E577 = {
    pos_x = 3
    pos_y = 20
    script = "set_sprite.lua"
-   param = ( "8", "male_page_white" )
+   param = ( "8", "male_parted_blue" )
 }
 E578 = {
    pos_x = 5
    pos_y = 20
    script = "set_sprite.lua"
-   param = ( "8", "male_parted_black" )
+   param = ( "8", "male_parted_brown2" )
 }
 E579 = {
    pos_x = 7
    pos_y = 20
    script = "set_sprite.lua"
-   param = ( "8", "male_parted_blonde2" )
+   param = ( "8", "male_parted_brown" )
 }
 E580 = {
    pos_x = 9
    pos_y = 20
    script = "set_sprite.lua"
-   param = ( "8", "male_parted_blonde" )
+   param = ( "8", "male_parted_brunette2" )
 }
 E581 = {
    pos_x = 11
    pos_y = 20
    script = "set_sprite.lua"
-   param = ( "8", "male_parted_blue2" )
+   param = ( "8", "male_parted_brunette" )
 }
 E582 = {
    pos_x = 13
    pos_y = 20
    script = "set_sprite.lua"
-   param = ( "8", "male_parted_blue" )
+   param = ( "8", "male_parted_dark-blonde" )
 }
 E583 = {
    pos_x = 15
    pos_y = 20
    script = "set_sprite.lua"
-   param = ( "8", "male_parted_brown2" )
+   param = ( "8", "male_parted_gold" )
 }
 E584 = {
    pos_x = 17
    pos_y = 20
    script = "set_sprite.lua"
-   param = ( "8", "male_parted_brown" )
+   param = ( "8", "male_parted_gray2" )
 }
 E585 = {
    pos_x = 19
    pos_y = 20
    script = "set_sprite.lua"
-   param = ( "8", "male_parted_brunette2" )
+   param = ( "8", "male_parted_gray" )
 }
 E586 = {
    pos_x = 21
    pos_y = 20
    script = "set_sprite.lua"
-   param = ( "8", "male_parted_brunette" )
+   param = ( "8", "male_parted_green2" )
 }
 E587 = {
    pos_x = 23
    pos_y = 20
    script = "set_sprite.lua"
-   param = ( "8", "male_parted_dark-blonde" )
+   param = ( "8", "male_parted_green" )
 }
 E588 = {
    pos_x = 25
    pos_y = 20
    script = "set_sprite.lua"
-   param = ( "8", "male_parted_gold" )
+   param = ( "8", "male_parted_light-blonde2" )
 }
 E589 = {
    pos_x = 27
    pos_y = 20
    script = "set_sprite.lua"
-   param = ( "8", "male_parted_gray2" )
+   param = ( "8", "male_parted_light-blonde" )
 }
 E590 = {
    pos_x = 29
    pos_y = 20
    script = "set_sprite.lua"
-   param = ( "8", "male_parted_gray" )
+   param = ( "8", "male_parted" )
 }
 E591 = {
    pos_x = 31
    pos_y = 20
    script = "set_sprite.lua"
-   param = ( "8", "male_parted_green2" )
+   param = ( "8", "male_parted_pink2" )
 }
 E592 = {
    pos_x = 33
    pos_y = 20
    script = "set_sprite.lua"
-   param = ( "8", "male_parted_green" )
+   param = ( "8", "male_parted_pink" )
 }
 E593 = {
    pos_x = 35
    pos_y = 20
    script = "set_sprite.lua"
-   param = ( "8", "male_parted_light-blonde2" )
+   param = ( "8", "male_parted_purple" )
 }
 E594 = {
    pos_x = 37
    pos_y = 20
    script = "set_sprite.lua"
-   param = ( "8", "male_parted_light-blonde" )
+   param = ( "8", "male_parted_raven2" )
 }
 E595 = {
    pos_x = 39
    pos_y = 20
    script = "set_sprite.lua"
-   param = ( "8", "male_parted" )
+   param = ( "8", "male_parted_raven" )
 }
 E596 = {
    pos_x = 41
    pos_y = 20
    script = "set_sprite.lua"
-   param = ( "8", "male_parted_pink2" )
+   param = ( "8", "male_parted_redhead2" )
 }
 E597 = {
    pos_x = 43
    pos_y = 20
    script = "set_sprite.lua"
-   param = ( "8", "male_parted_pink" )
+   param = ( "8", "male_parted_redhead" )
 }
 E598 = {
    pos_x = 45
    pos_y = 20
    script = "set_sprite.lua"
-   param = ( "8", "male_parted_purple" )
+   param = ( "8", "male_parted_ruby-red" )
 }
 E599 = {
    pos_x = 47
    pos_y = 20
    script = "set_sprite.lua"
-   param = ( "8", "male_parted_raven2" )
+   param = ( "8", "male_parted_white-blonde2" )
 }
 E600 = {
    pos_x = 49
    pos_y = 20
    script = "set_sprite.lua"
-   param = ( "8", "male_parted_raven" )
+   param = ( "8", "male_parted_white-blonde" )
 }
 E601 = {
    pos_x = 51
    pos_y = 20
    script = "set_sprite.lua"
-   param = ( "8", "male_parted_redhead2" )
+   param = ( "8", "male_parted_white-cyan" )
 }
 E602 = {
    pos_x = 53
    pos_y = 20
    script = "set_sprite.lua"
-   param = ( "8", "male_parted_redhead" )
+   param = ( "8", "male_parted_white" )
 }
 E603 = {
    pos_x = 55
    pos_y = 20
    script = "set_sprite.lua"
-   param = ( "8", "male_parted_ruby-red" )
+   param = ( "8", "male_pixie_black" )
 }
 E604 = {
    pos_x = 57
    pos_y = 20
    script = "set_sprite.lua"
-   param = ( "8", "male_parted_white-blonde2" )
+   param = ( "8", "male_pixie_blonde2" )
 }
 E605 = {
    pos_x = 59
    pos_y = 20
    script = "set_sprite.lua"
-   param = ( "8", "male_parted_white-blonde" )
+   param = ( "8", "male_pixie_blonde" )
 }
 E606 = {
    pos_x = 61
    pos_y = 20
    script = "set_sprite.lua"
-   param = ( "8", "male_parted_white-cyan" )
+   param = ( "8", "male_pixie_blue2" )
 }
 E607 = {
    pos_x = 63
    pos_y = 20
    script = "set_sprite.lua"
-   param = ( "8", "male_parted_white" )
+   param = ( "8", "male_pixie_blue" )
 }
 E608 = {
    pos_x = 1
    pos_y = 21
    script = "set_sprite.lua"
-   param = ( "8", "male_pixie_black" )
+   param = ( "8", "male_pixie_brown2" )
 }
 E609 = {
    pos_x = 3
    pos_y = 21
    script = "set_sprite.lua"
-   param = ( "8", "male_pixie_blonde2" )
+   param = ( "8", "male_pixie_brown" )
 }
 E610 = {
    pos_x = 5
    pos_y = 21
    script = "set_sprite.lua"
-   param = ( "8", "male_pixie_blonde" )
+   param = ( "8", "male_pixie_brunette2" )
 }
 E611 = {
    pos_x = 7
    pos_y = 21
    script = "set_sprite.lua"
-   param = ( "8", "male_pixie_blue2" )
+   param = ( "8", "male_pixie_brunette" )
 }
 E612 = {
    pos_x = 9
    pos_y = 21
    script = "set_sprite.lua"
-   param = ( "8", "male_pixie_blue" )
+   param = ( "8", "male_pixie_dark-blonde" )
 }
 E613 = {
    pos_x = 11
    pos_y = 21
    script = "set_sprite.lua"
-   param = ( "8", "male_pixie_brown2" )
+   param = ( "8", "male_pixie_gold" )
 }
 E614 = {
    pos_x = 13
    pos_y = 21
    script = "set_sprite.lua"
-   param = ( "8", "male_pixie_brown" )
+   param = ( "8", "male_pixie_gray2" )
 }
 E615 = {
    pos_x = 15
    pos_y = 21
    script = "set_sprite.lua"
-   param = ( "8", "male_pixie_brunette2" )
+   param = ( "8", "male_pixie_gray" )
 }
 E616 = {
    pos_x = 17
    pos_y = 21
    script = "set_sprite.lua"
-   param = ( "8", "male_pixie_brunette" )
+   param = ( "8", "male_pixie_green2" )
 }
 E617 = {
    pos_x = 19
    pos_y = 21
    script = "set_sprite.lua"
-   param = ( "8", "male_pixie_dark-blonde" )
+   param = ( "8", "male_pixie_green" )
 }
 E618 = {
    pos_x = 21
    pos_y = 21
    script = "set_sprite.lua"
-   param = ( "8", "male_pixie_gold" )
+   param = ( "8", "male_pixie_light-blonde2" )
 }
 E619 = {
    pos_x = 23
    pos_y = 21
    script = "set_sprite.lua"
-   param = ( "8", "male_pixie_gray2" )
+   param = ( "8", "male_pixie_light-blonde" )
 }
 E620 = {
    pos_x = 25
    pos_y = 21
    script = "set_sprite.lua"
-   param = ( "8", "male_pixie_gray" )
+   param = ( "8", "male_pixie" )
 }
 E621 = {
    pos_x = 27
    pos_y = 21
    script = "set_sprite.lua"
-   param = ( "8", "male_pixie_green2" )
+   param = ( "8", "male_pixie_pink2" )
 }
 E622 = {
    pos_x = 29
    pos_y = 21
    script = "set_sprite.lua"
-   param = ( "8", "male_pixie_green" )
+   param = ( "8", "male_pixie_pink" )
 }
 E623 = {
    pos_x = 31
    pos_y = 21
    script = "set_sprite.lua"
-   param = ( "8", "male_pixie_light-blonde2" )
+   param = ( "8", "male_pixie_purple" )
 }
 E624 = {
    pos_x = 33
    pos_y = 21
    script = "set_sprite.lua"
-   param = ( "8", "male_pixie_light-blonde" )
+   param = ( "8", "male_pixie_raven2" )
 }
 E625 = {
    pos_x = 35
    pos_y = 21
    script = "set_sprite.lua"
-   param = ( "8", "male_pixie" )
+   param = ( "8", "male_pixie_raven" )
 }
 E626 = {
    pos_x = 37
    pos_y = 21
    script = "set_sprite.lua"
-   param = ( "8", "male_pixie_pink2" )
+   param = ( "8", "male_pixie_redhead2" )
 }
 E627 = {
    pos_x = 39
    pos_y = 21
    script = "set_sprite.lua"
-   param = ( "8", "male_pixie_pink" )
+   param = ( "8", "male_pixie_redhead" )
 }
 E628 = {
    pos_x = 41
    pos_y = 21
    script = "set_sprite.lua"
-   param = ( "8", "male_pixie_purple" )
+   param = ( "8", "male_pixie_ruby-red" )
 }
 E629 = {
    pos_x = 43
    pos_y = 21
    script = "set_sprite.lua"
-   param = ( "8", "male_pixie_raven2" )
+   param = ( "8", "male_pixie_white-blonde2" )
 }
 E630 = {
    pos_x = 45
    pos_y = 21
    script = "set_sprite.lua"
-   param = ( "8", "male_pixie_raven" )
+   param = ( "8", "male_pixie_white-blonde" )
 }
 E631 = {
    pos_x = 47
    pos_y = 21
    script = "set_sprite.lua"
-   param = ( "8", "male_pixie_redhead2" )
+   param = ( "8", "male_pixie_white-cyan" )
 }
 E632 = {
    pos_x = 49
    pos_y = 21
    script = "set_sprite.lua"
-   param = ( "8", "male_pixie_redhead" )
+   param = ( "8", "male_pixie_white" )
 }
 E633 = {
    pos_x = 51
    pos_y = 21
    script = "set_sprite.lua"
-   param = ( "8", "male_pixie_ruby-red" )
+   param = ( "8", "male_plain_black" )
 }
 E634 = {
    pos_x = 53
    pos_y = 21
    script = "set_sprite.lua"
-   param = ( "8", "male_pixie_white-blonde2" )
+   param = ( "8", "male_plain_blonde2" )
 }
 E635 = {
    pos_x = 55
    pos_y = 21
    script = "set_sprite.lua"
-   param = ( "8", "male_pixie_white-blonde" )
+   param = ( "8", "male_plain_blonde" )
 }
 E636 = {
    pos_x = 57
    pos_y = 21
    script = "set_sprite.lua"
-   param = ( "8", "male_pixie_white-cyan" )
+   param = ( "8", "male_plain_blue2" )
 }
 E637 = {
    pos_x = 59
    pos_y = 21
    script = "set_sprite.lua"
-   param = ( "8", "male_pixie_white" )
+   param = ( "8", "male_plain_blue" )
 }
 E638 = {
    pos_x = 61
    pos_y = 21
    script = "set_sprite.lua"
-   param = ( "8", "male_plain_black" )
+   param = ( "8", "male_plain_brown2" )
 }
 E639 = {
    pos_x = 63
    pos_y = 21
    script = "set_sprite.lua"
-   param = ( "8", "male_plain_blonde2" )
+   param = ( "8", "male_plain_brown" )
 }
 E640 = {
    pos_x = 1
    pos_y = 22
    script = "set_sprite.lua"
-   param = ( "8", "male_plain_blonde" )
+   param = ( "8", "male_plain_brunette2" )
 }
 E641 = {
    pos_x = 3
    pos_y = 22
    script = "set_sprite.lua"
-   param = ( "8", "male_plain_blue2" )
+   param = ( "8", "male_plain_brunette" )
 }
 E642 = {
    pos_x = 5
    pos_y = 22
    script = "set_sprite.lua"
-   param = ( "8", "male_plain_blue" )
+   param = ( "8", "male_plain_dark-blonde" )
 }
 E643 = {
    pos_x = 7
    pos_y = 22
    script = "set_sprite.lua"
-   param = ( "8", "male_plain_brown2" )
+   param = ( "8", "male_plain_gold" )
 }
 E644 = {
    pos_x = 9
    pos_y = 22
    script = "set_sprite.lua"
-   param = ( "8", "male_plain_brown" )
+   param = ( "8", "male_plain_gray2" )
 }
 E645 = {
    pos_x = 11
    pos_y = 22
    script = "set_sprite.lua"
-   param = ( "8", "male_plain_brunette2" )
+   param = ( "8", "male_plain_gray" )
 }
 E646 = {
    pos_x = 13
    pos_y = 22
    script = "set_sprite.lua"
-   param = ( "8", "male_plain_brunette" )
+   param = ( "8", "male_plain_green2" )
 }
 E647 = {
    pos_x = 15
    pos_y = 22
    script = "set_sprite.lua"
-   param = ( "8", "male_plain_dark-blonde" )
+   param = ( "8", "male_plain_green" )
 }
 E648 = {
    pos_x = 17
    pos_y = 22
    script = "set_sprite.lua"
-   param = ( "8", "male_plain_gold" )
+   param = ( "8", "male_plain_light-blonde2" )
 }
 E649 = {
    pos_x = 19
    pos_y = 22
    script = "set_sprite.lua"
-   param = ( "8", "male_plain_gray2" )
+   param = ( "8", "male_plain_light-blonde" )
 }
 E650 = {
    pos_x = 21
    pos_y = 22
    script = "set_sprite.lua"
-   param = ( "8", "male_plain_gray" )
+   param = ( "8", "male_plain" )
 }
 E651 = {
    pos_x = 23
    pos_y = 22
    script = "set_sprite.lua"
-   param = ( "8", "male_plain_green2" )
+   param = ( "8", "male_plain_pink2" )
 }
 E652 = {
    pos_x = 25
    pos_y = 22
    script = "set_sprite.lua"
-   param = ( "8", "male_plain_green" )
+   param = ( "8", "male_plain_pink" )
 }
 E653 = {
    pos_x = 27
    pos_y = 22
    script = "set_sprite.lua"
-   param = ( "8", "male_plain_light-blonde2" )
+   param = ( "8", "male_plain_purple" )
 }
 E654 = {
    pos_x = 29
    pos_y = 22
    script = "set_sprite.lua"
-   param = ( "8", "male_plain_light-blonde" )
+   param = ( "8", "male_plain_raven2" )
 }
 E655 = {
    pos_x = 31
    pos_y = 22
    script = "set_sprite.lua"
-   param = ( "8", "male_plain" )
+   param = ( "8", "male_plain_raven" )
 }
 E656 = {
    pos_x = 33
    pos_y = 22
    script = "set_sprite.lua"
-   param = ( "8", "male_plain_pink2" )
+   param = ( "8", "male_plain_redhead2" )
 }
 E657 = {
    pos_x = 35
    pos_y = 22
    script = "set_sprite.lua"
-   param = ( "8", "male_plain_pink" )
+   param = ( "8", "male_plain_redhead" )
 }
 E658 = {
    pos_x = 37
    pos_y = 22
    script = "set_sprite.lua"
-   param = ( "8", "male_plain_purple" )
+   param = ( "8", "male_plain_ruby-red" )
 }
 E659 = {
    pos_x = 39
    pos_y = 22
    script = "set_sprite.lua"
-   param = ( "8", "male_plain_raven2" )
+   param = ( "8", "male_plain_shadows-darkbody" )
 }
 E660 = {
    pos_x = 41
    pos_y = 22
    script = "set_sprite.lua"
-   param = ( "8", "male_plain_raven" )
+   param = ( "8", "male_plain_shadows-lightbody" )
 }
 E661 = {
    pos_x = 43
    pos_y = 22
    script = "set_sprite.lua"
-   param = ( "8", "male_plain_redhead2" )
+   param = ( "8", "male_plain_shadows-tanned2body" )
 }
 E662 = {
    pos_x = 45
    pos_y = 22
    script = "set_sprite.lua"
-   param = ( "8", "male_plain_redhead" )
+   param = ( "8", "male_plain_shadows-tannedbody" )
 }
 E663 = {
    pos_x = 47
    pos_y = 22
    script = "set_sprite.lua"
-   param = ( "8", "male_plain_ruby-red" )
+   param = ( "8", "male_plain_white-blonde2" )
 }
 E664 = {
    pos_x = 49
    pos_y = 22
    script = "set_sprite.lua"
-   param = ( "8", "male_plain_shadows-darkbody" )
+   param = ( "8", "male_plain_white-blonde" )
 }
 E665 = {
    pos_x = 51
    pos_y = 22
    script = "set_sprite.lua"
-   param = ( "8", "male_plain_shadows-lightbody" )
+   param = ( "8", "male_plain_white-cyan" )
 }
 E666 = {
    pos_x = 53
    pos_y = 22
    script = "set_sprite.lua"
-   param = ( "8", "male_plain_shadows-tanned2body" )
+   param = ( "8", "male_plain_white" )
 }
 E667 = {
    pos_x = 55
    pos_y = 22
    script = "set_sprite.lua"
-   param = ( "8", "male_plain_shadows-tannedbody" )
+   param = ( "8", "male_ponytail2_black" )
 }
 E668 = {
    pos_x = 57
    pos_y = 22
    script = "set_sprite.lua"
-   param = ( "8", "male_plain_white-blonde2" )
+   param = ( "8", "male_ponytail2_blonde2" )
 }
 E669 = {
    pos_x = 59
    pos_y = 22
    script = "set_sprite.lua"
-   param = ( "8", "male_plain_white-blonde" )
+   param = ( "8", "male_ponytail2_blonde" )
 }
 E670 = {
    pos_x = 61
    pos_y = 22
    script = "set_sprite.lua"
-   param = ( "8", "male_plain_white-cyan" )
+   param = ( "8", "male_ponytail2_blue2" )
 }
 E671 = {
    pos_x = 63
    pos_y = 22
    script = "set_sprite.lua"
-   param = ( "8", "male_plain_white" )
+   param = ( "8", "male_ponytail2_blue" )
 }
 E672 = {
    pos_x = 1
    pos_y = 23
    script = "set_sprite.lua"
-   param = ( "8", "male_ponytail2_black" )
+   param = ( "8", "male_ponytail2_brown2" )
 }
 E673 = {
    pos_x = 3
    pos_y = 23
    script = "set_sprite.lua"
-   param = ( "8", "male_ponytail2_blonde2" )
+   param = ( "8", "male_ponytail2_brown" )
 }
 E674 = {
    pos_x = 5
    pos_y = 23
    script = "set_sprite.lua"
-   param = ( "8", "male_ponytail2_blonde" )
+   param = ( "8", "male_ponytail2_brunette2" )
 }
 E675 = {
    pos_x = 7
    pos_y = 23
    script = "set_sprite.lua"
-   param = ( "8", "male_ponytail2_blue2" )
+   param = ( "8", "male_ponytail2_brunette" )
 }
 E676 = {
    pos_x = 9
    pos_y = 23
    script = "set_sprite.lua"
-   param = ( "8", "male_ponytail2_blue" )
+   param = ( "8", "male_ponytail2_dark-blonde" )
 }
 E677 = {
    pos_x = 11
    pos_y = 23
    script = "set_sprite.lua"
-   param = ( "8", "male_ponytail2_brown2" )
+   param = ( "8", "male_ponytail2_gold" )
 }
 E678 = {
    pos_x = 13
    pos_y = 23
    script = "set_sprite.lua"
-   param = ( "8", "male_ponytail2_brown" )
+   param = ( "8", "male_ponytail2_gray2" )
 }
 E679 = {
    pos_x = 15
    pos_y = 23
    script = "set_sprite.lua"
-   param = ( "8", "male_ponytail2_brunette2" )
+   param = ( "8", "male_ponytail2_gray" )
 }
 E680 = {
    pos_x = 17
    pos_y = 23
    script = "set_sprite.lua"
-   param = ( "8", "male_ponytail2_brunette" )
+   param = ( "8", "male_ponytail2_green2" )
 }
 E681 = {
    pos_x = 19
    pos_y = 23
    script = "set_sprite.lua"
-   param = ( "8", "male_ponytail2_dark-blonde" )
+   param = ( "8", "male_ponytail2_green" )
 }
 E682 = {
    pos_x = 21
    pos_y = 23
    script = "set_sprite.lua"
-   param = ( "8", "male_ponytail2_gold" )
+   param = ( "8", "male_ponytail2_light-blonde2" )
 }
 E683 = {
    pos_x = 23
    pos_y = 23
    script = "set_sprite.lua"
-   param = ( "8", "male_ponytail2_gray2" )
+   param = ( "8", "male_ponytail2_light-blonde" )
 }
 E684 = {
    pos_x = 25
    pos_y = 23
    script = "set_sprite.lua"
-   param = ( "8", "male_ponytail2_gray" )
+   param = ( "8", "male_ponytail2" )
 }
 E685 = {
    pos_x = 27
    pos_y = 23
    script = "set_sprite.lua"
-   param = ( "8", "male_ponytail2_green2" )
+   param = ( "8", "male_ponytail2_pink2" )
 }
 E686 = {
    pos_x = 29
    pos_y = 23
    script = "set_sprite.lua"
-   param = ( "8", "male_ponytail2_green" )
+   param = ( "8", "male_ponytail2_pink" )
 }
 E687 = {
    pos_x = 31
    pos_y = 23
    script = "set_sprite.lua"
-   param = ( "8", "male_ponytail2_light-blonde2" )
+   param = ( "8", "male_ponytail2_purple" )
 }
 E688 = {
    pos_x = 33
    pos_y = 23
    script = "set_sprite.lua"
-   param = ( "8", "male_ponytail2_light-blonde" )
+   param = ( "8", "male_ponytail2_raven2" )
 }
 E689 = {
    pos_x = 35
    pos_y = 23
    script = "set_sprite.lua"
-   param = ( "8", "male_ponytail2" )
+   param = ( "8", "male_ponytail2_raven" )
 }
 E690 = {
    pos_x = 37
    pos_y = 23
    script = "set_sprite.lua"
-   param = ( "8", "male_ponytail2_pink2" )
+   param = ( "8", "male_ponytail2_redhead2" )
 }
 E691 = {
    pos_x = 39
    pos_y = 23
    script = "set_sprite.lua"
-   param = ( "8", "male_ponytail2_pink" )
+   param = ( "8", "male_ponytail2_redhead" )
 }
 E692 = {
    pos_x = 41
    pos_y = 23
    script = "set_sprite.lua"
-   param = ( "8", "male_ponytail2_purple" )
+   param = ( "8", "male_ponytail2_ruby-red" )
 }
 E693 = {
    pos_x = 43
    pos_y = 23
    script = "set_sprite.lua"
-   param = ( "8", "male_ponytail2_raven2" )
+   param = ( "8", "male_ponytail2_white-blonde2" )
 }
 E694 = {
    pos_x = 45
    pos_y = 23
    script = "set_sprite.lua"
-   param = ( "8", "male_ponytail2_raven" )
+   param = ( "8", "male_ponytail2_white-blonde" )
 }
 E695 = {
    pos_x = 47
    pos_y = 23
    script = "set_sprite.lua"
-   param = ( "8", "male_ponytail2_redhead2" )
+   param = ( "8", "male_ponytail2_white-cyan" )
 }
 E696 = {
    pos_x = 49
    pos_y = 23
    script = "set_sprite.lua"
-   param = ( "8", "male_ponytail2_redhead" )
+   param = ( "8", "male_ponytail2_white" )
 }
 E697 = {
    pos_x = 51
    pos_y = 23
    script = "set_sprite.lua"
-   param = ( "8", "male_ponytail2_ruby-red" )
+   param = ( "8", "male_ponytail_black" )
 }
 E698 = {
    pos_x = 53
    pos_y = 23
    script = "set_sprite.lua"
-   param = ( "8", "male_ponytail2_white-blonde2" )
+   param = ( "8", "male_ponytail_blonde2" )
 }
 E699 = {
    pos_x = 55
    pos_y = 23
    script = "set_sprite.lua"
-   param = ( "8", "male_ponytail2_white-blonde" )
+   param = ( "8", "male_ponytail_blonde" )
 }
 E700 = {
    pos_x = 57
    pos_y = 23
    script = "set_sprite.lua"
-   param = ( "8", "male_ponytail2_white-cyan" )
+   param = ( "8", "male_ponytail_blue2" )
 }
 E701 = {
    pos_x = 59
    pos_y = 23
    script = "set_sprite.lua"
-   param = ( "8", "male_ponytail2_white" )
+   param = ( "8", "male_ponytail_blue" )
 }
 E702 = {
    pos_x = 61
    pos_y = 23
    script = "set_sprite.lua"
-   param = ( "8", "male_ponytail_black" )
+   param = ( "8", "male_ponytail_brown2" )
 }
 E703 = {
    pos_x = 63
    pos_y = 23
    script = "set_sprite.lua"
-   param = ( "8", "male_ponytail_blonde2" )
+   param = ( "8", "male_ponytail_brown" )
 }
 E704 = {
    pos_x = 1
    pos_y = 24
    script = "set_sprite.lua"
-   param = ( "8", "male_ponytail_blonde" )
+   param = ( "8", "male_ponytail_brunette2" )
 }
 E705 = {
    pos_x = 3
    pos_y = 24
    script = "set_sprite.lua"
-   param = ( "8", "male_ponytail_blue2" )
+   param = ( "8", "male_ponytail_brunette" )
 }
 E706 = {
    pos_x = 5
    pos_y = 24
    script = "set_sprite.lua"
-   param = ( "8", "male_ponytail_blue" )
+   param = ( "8", "male_ponytail_dark-blonde" )
 }
 E707 = {
    pos_x = 7
    pos_y = 24
    script = "set_sprite.lua"
-   param = ( "8", "male_ponytail_brown2" )
+   param = ( "8", "male_ponytail_gold" )
 }
 E708 = {
    pos_x = 9
    pos_y = 24
    script = "set_sprite.lua"
-   param = ( "8", "male_ponytail_brown" )
+   param = ( "8", "male_ponytail_gray2" )
 }
 E709 = {
    pos_x = 11
    pos_y = 24
    script = "set_sprite.lua"
-   param = ( "8", "male_ponytail_brunette2" )
+   param = ( "8", "male_ponytail_gray" )
 }
 E710 = {
    pos_x = 13
    pos_y = 24
    script = "set_sprite.lua"
-   param = ( "8", "male_ponytail_brunette" )
+   param = ( "8", "male_ponytail_green2" )
 }
 E711 = {
    pos_x = 15
    pos_y = 24
    script = "set_sprite.lua"
-   param = ( "8", "male_ponytail_dark-blonde" )
+   param = ( "8", "male_ponytail_green" )
 }
 E712 = {
    pos_x = 17
    pos_y = 24
    script = "set_sprite.lua"
-   param = ( "8", "male_ponytail_gold" )
+   param = ( "8", "male_ponytail_light-blonde2" )
 }
 E713 = {
    pos_x = 19
    pos_y = 24
    script = "set_sprite.lua"
-   param = ( "8", "male_ponytail_gray2" )
+   param = ( "8", "male_ponytail_light-blonde" )
 }
 E714 = {
    pos_x = 21
    pos_y = 24
    script = "set_sprite.lua"
-   param = ( "8", "male_ponytail_gray" )
+   param = ( "8", "male_ponytail" )
 }
 E715 = {
    pos_x = 23
    pos_y = 24
    script = "set_sprite.lua"
-   param = ( "8", "male_ponytail_green2" )
+   param = ( "8", "male_ponytail_pink2" )
 }
 E716 = {
    pos_x = 25
    pos_y = 24
    script = "set_sprite.lua"
-   param = ( "8", "male_ponytail_green" )
+   param = ( "8", "male_ponytail_pink" )
 }
 E717 = {
    pos_x = 27
    pos_y = 24
    script = "set_sprite.lua"
-   param = ( "8", "male_ponytail_light-blonde2" )
+   param = ( "8", "male_ponytail_purple" )
 }
 E718 = {
    pos_x = 29
    pos_y = 24
    script = "set_sprite.lua"
-   param = ( "8", "male_ponytail_light-blonde" )
+   param = ( "8", "male_ponytail_raven2" )
 }
 E719 = {
    pos_x = 31
    pos_y = 24
    script = "set_sprite.lua"
-   param = ( "8", "male_ponytail" )
+   param = ( "8", "male_ponytail_raven" )
 }
 E720 = {
    pos_x = 33
    pos_y = 24
    script = "set_sprite.lua"
-   param = ( "8", "male_ponytail_pink2" )
+   param = ( "8", "male_ponytail_redhead2" )
 }
 E721 = {
    pos_x = 35
    pos_y = 24
    script = "set_sprite.lua"
-   param = ( "8", "male_ponytail_pink" )
+   param = ( "8", "male_ponytail_redhead" )
 }
 E722 = {
    pos_x = 37
    pos_y = 24
    script = "set_sprite.lua"
-   param = ( "8", "male_ponytail_purple" )
+   param = ( "8", "male_ponytail_ruby-red" )
 }
 E723 = {
    pos_x = 39
    pos_y = 24
    script = "set_sprite.lua"
-   param = ( "8", "male_ponytail_raven2" )
+   param = ( "8", "male_ponytail_white-blonde2" )
 }
 E724 = {
    pos_x = 41
    pos_y = 24
    script = "set_sprite.lua"
-   param = ( "8", "male_ponytail_raven" )
+   param = ( "8", "male_ponytail_white-blonde" )
 }
 E725 = {
    pos_x = 43
    pos_y = 24
    script = "set_sprite.lua"
-   param = ( "8", "male_ponytail_redhead2" )
+   param = ( "8", "male_ponytail_white-cyan" )
 }
 E726 = {
    pos_x = 45
    pos_y = 24
    script = "set_sprite.lua"
-   param = ( "8", "male_ponytail_redhead" )
+   param = ( "8", "male_ponytail_white" )
 }
 E727 = {
    pos_x = 47
    pos_y = 24
    script = "set_sprite.lua"
-   param = ( "8", "male_ponytail_ruby-red" )
+   param = ( "8", "male_princess_black" )
 }
 E728 = {
    pos_x = 49
    pos_y = 24
    script = "set_sprite.lua"
-   param = ( "8", "male_ponytail_white-blonde2" )
+   param = ( "8", "male_princess_blonde2" )
 }
 E729 = {
    pos_x = 51
    pos_y = 24
    script = "set_sprite.lua"
-   param = ( "8", "male_ponytail_white-blonde" )
+   param = ( "8", "male_princess_blonde" )
 }
 E730 = {
    pos_x = 53
    pos_y = 24
    script = "set_sprite.lua"
-   param = ( "8", "male_ponytail_white-cyan" )
+   param = ( "8", "male_princess_blue2" )
 }
 E731 = {
    pos_x = 55
    pos_y = 24
    script = "set_sprite.lua"
-   param = ( "8", "male_ponytail_white" )
+   param = ( "8", "male_princess_blue" )
 }
 E732 = {
    pos_x = 57
    pos_y = 24
    script = "set_sprite.lua"
-   param = ( "8", "male_princess_black" )
+   param = ( "8", "male_princess_brown2" )
 }
 E733 = {
    pos_x = 59
    pos_y = 24
    script = "set_sprite.lua"
-   param = ( "8", "male_princess_blonde2" )
+   param = ( "8", "male_princess_brown" )
 }
 E734 = {
    pos_x = 61
    pos_y = 24
    script = "set_sprite.lua"
-   param = ( "8", "male_princess_blonde" )
+   param = ( "8", "male_princess_brunette2" )
 }
 E735 = {
    pos_x = 63
    pos_y = 24
    script = "set_sprite.lua"
-   param = ( "8", "male_princess_blue2" )
+   param = ( "8", "male_princess_brunette" )
 }
 E736 = {
    pos_x = 1
    pos_y = 25
    script = "set_sprite.lua"
-   param = ( "8", "male_princess_blue" )
+   param = ( "8", "male_princess_dark-blonde" )
 }
 E737 = {
    pos_x = 3
    pos_y = 25
    script = "set_sprite.lua"
-   param = ( "8", "male_princess_brown2" )
+   param = ( "8", "male_princess_gold" )
 }
 E738 = {
    pos_x = 5
    pos_y = 25
    script = "set_sprite.lua"
-   param = ( "8", "male_princess_brown" )
+   param = ( "8", "male_princess_gray2" )
 }
 E739 = {
    pos_x = 7
    pos_y = 25
    script = "set_sprite.lua"
-   param = ( "8", "male_princess_brunette2" )
+   param = ( "8", "male_princess_gray" )
 }
 E740 = {
    pos_x = 9
    pos_y = 25
    script = "set_sprite.lua"
-   param = ( "8", "male_princess_brunette" )
+   param = ( "8", "male_princess_green2" )
 }
 E741 = {
    pos_x = 11
    pos_y = 25
    script = "set_sprite.lua"
-   param = ( "8", "male_princess_dark-blonde" )
+   param = ( "8", "male_princess_green" )
 }
 E742 = {
    pos_x = 13
    pos_y = 25
    script = "set_sprite.lua"
-   param = ( "8", "male_princess_gold" )
+   param = ( "8", "male_princess_light-blonde2" )
 }
 E743 = {
    pos_x = 15
    pos_y = 25
    script = "set_sprite.lua"
-   param = ( "8", "male_princess_gray2" )
+   param = ( "8", "male_princess_light-blonde" )
 }
 E744 = {
    pos_x = 17
    pos_y = 25
    script = "set_sprite.lua"
-   param = ( "8", "male_princess_gray" )
+   param = ( "8", "male_princess" )
 }
 E745 = {
    pos_x = 19
    pos_y = 25
    script = "set_sprite.lua"
-   param = ( "8", "male_princess_green2" )
+   param = ( "8", "male_princess_pink2" )
 }
 E746 = {
    pos_x = 21
    pos_y = 25
    script = "set_sprite.lua"
-   param = ( "8", "male_princess_green" )
+   param = ( "8", "male_princess_pink" )
 }
 E747 = {
    pos_x = 23
    pos_y = 25
    script = "set_sprite.lua"
-   param = ( "8", "male_princess_light-blonde2" )
+   param = ( "8", "male_princess_purple" )
 }
 E748 = {
    pos_x = 25
    pos_y = 25
    script = "set_sprite.lua"
-   param = ( "8", "male_princess_light-blonde" )
+   param = ( "8", "male_princess_raven2" )
 }
 E749 = {
    pos_x = 27
    pos_y = 25
    script = "set_sprite.lua"
-   param = ( "8", "male_princess" )
+   param = ( "8", "male_princess_raven" )
 }
 E750 = {
    pos_x = 29
    pos_y = 25
    script = "set_sprite.lua"
-   param = ( "8", "male_princess_pink2" )
+   param = ( "8", "male_princess_redhead2" )
 }
 E751 = {
    pos_x = 31
    pos_y = 25
    script = "set_sprite.lua"
-   param = ( "8", "male_princess_pink" )
+   param = ( "8", "male_princess_redhead" )
 }
 E752 = {
    pos_x = 33
    pos_y = 25
    script = "set_sprite.lua"
-   param = ( "8", "male_princess_purple" )
+   param = ( "8", "male_princess_ruby-red" )
 }
 E753 = {
    pos_x = 35
    pos_y = 25
    script = "set_sprite.lua"
-   param = ( "8", "male_princess_raven2" )
+   param = ( "8", "male_princess_white-blonde2" )
 }
 E754 = {
    pos_x = 37
    pos_y = 25
    script = "set_sprite.lua"
-   param = ( "8", "male_princess_raven" )
+   param = ( "8", "male_princess_white-blonde" )
 }
 E755 = {
    pos_x = 39
    pos_y = 25
    script = "set_sprite.lua"
-   param = ( "8", "male_princess_redhead2" )
+   param = ( "8", "male_princess_white-cyan" )
 }
 E756 = {
    pos_x = 41
    pos_y = 25
    script = "set_sprite.lua"
-   param = ( "8", "male_princess_redhead" )
+   param = ( "8", "male_princess_white" )
 }
 E757 = {
    pos_x = 43
    pos_y = 25
    script = "set_sprite.lua"
-   param = ( "8", "male_princess_ruby-red" )
+   param = ( "8", "male_shorthawk_black" )
 }
 E758 = {
    pos_x = 45
    pos_y = 25
    script = "set_sprite.lua"
-   param = ( "8", "male_princess_white-blonde2" )
+   param = ( "8", "male_shorthawk_blonde2" )
 }
 E759 = {
    pos_x = 47
    pos_y = 25
    script = "set_sprite.lua"
-   param = ( "8", "male_princess_white-blonde" )
+   param = ( "8", "male_shorthawk_blonde" )
 }
 E760 = {
    pos_x = 49
    pos_y = 25
    script = "set_sprite.lua"
-   param = ( "8", "male_princess_white-cyan" )
+   param = ( "8", "male_shorthawk_blue2" )
 }
 E761 = {
    pos_x = 51
    pos_y = 25
    script = "set_sprite.lua"
-   param = ( "8", "male_princess_white" )
+   param = ( "8", "male_shorthawk_blue" )
 }
 E762 = {
    pos_x = 53
    pos_y = 25
    script = "set_sprite.lua"
-   param = ( "8", "male_shorthawk_black" )
+   param = ( "8", "male_shorthawk_brown2" )
 }
 E763 = {
    pos_x = 55
    pos_y = 25
    script = "set_sprite.lua"
-   param = ( "8", "male_shorthawk_blonde2" )
+   param = ( "8", "male_shorthawk_brown" )
 }
 E764 = {
    pos_x = 57
    pos_y = 25
    script = "set_sprite.lua"
-   param = ( "8", "male_shorthawk_blonde" )
+   param = ( "8", "male_shorthawk_brunette2" )
 }
 E765 = {
    pos_x = 59
    pos_y = 25
    script = "set_sprite.lua"
-   param = ( "8", "male_shorthawk_blue2" )
+   param = ( "8", "male_shorthawk_brunette" )
 }
 E766 = {
    pos_x = 61
    pos_y = 25
    script = "set_sprite.lua"
-   param = ( "8", "male_shorthawk_blue" )
+   param = ( "8", "male_shorthawk_dark-blonde" )
 }
 E767 = {
    pos_x = 63
    pos_y = 25
    script = "set_sprite.lua"
-   param = ( "8", "male_shorthawk_brown2" )
+   param = ( "8", "male_shorthawk_gold" )
 }
 E768 = {
    pos_x = 1
    pos_y = 26
    script = "set_sprite.lua"
-   param = ( "8", "male_shorthawk_brown" )
+   param = ( "8", "male_shorthawk_gray2" )
 }
 E769 = {
    pos_x = 3
    pos_y = 26
    script = "set_sprite.lua"
-   param = ( "8", "male_shorthawk_brunette2" )
+   param = ( "8", "male_shorthawk_gray" )
 }
 E770 = {
    pos_x = 5
    pos_y = 26
    script = "set_sprite.lua"
-   param = ( "8", "male_shorthawk_brunette" )
+   param = ( "8", "male_shorthawk_green2" )
 }
 E771 = {
    pos_x = 7
    pos_y = 26
    script = "set_sprite.lua"
-   param = ( "8", "male_shorthawk_dark-blonde" )
+   param = ( "8", "male_shorthawk_green" )
 }
 E772 = {
    pos_x = 9
    pos_y = 26
    script = "set_sprite.lua"
-   param = ( "8", "male_shorthawk_gold" )
+   param = ( "8", "male_shorthawk_light-blonde2" )
 }
 E773 = {
    pos_x = 11
    pos_y = 26
    script = "set_sprite.lua"
-   param = ( "8", "male_shorthawk_gray2" )
+   param = ( "8", "male_shorthawk_light-blonde" )
 }
 E774 = {
    pos_x = 13
    pos_y = 26
    script = "set_sprite.lua"
-   param = ( "8", "male_shorthawk_gray" )
+   param = ( "8", "male_shorthawk" )
 }
 E775 = {
    pos_x = 15
    pos_y = 26
    script = "set_sprite.lua"
-   param = ( "8", "male_shorthawk_green2" )
+   param = ( "8", "male_shorthawk_pink2" )
 }
 E776 = {
    pos_x = 17
    pos_y = 26
    script = "set_sprite.lua"
-   param = ( "8", "male_shorthawk_green" )
+   param = ( "8", "male_shorthawk_pink" )
 }
 E777 = {
    pos_x = 19
    pos_y = 26
    script = "set_sprite.lua"
-   param = ( "8", "male_shorthawk_light-blonde2" )
+   param = ( "8", "male_shorthawk_purple" )
 }
 E778 = {
    pos_x = 21
    pos_y = 26
    script = "set_sprite.lua"
-   param = ( "8", "male_shorthawk_light-blonde" )
+   param = ( "8", "male_shorthawk_raven2" )
 }
 E779 = {
    pos_x = 23
    pos_y = 26
    script = "set_sprite.lua"
-   param = ( "8", "male_shorthawk" )
+   param = ( "8", "male_shorthawk_raven" )
 }
 E780 = {
    pos_x = 25
    pos_y = 26
    script = "set_sprite.lua"
-   param = ( "8", "male_shorthawk_pink2" )
+   param = ( "8", "male_shorthawk_redhead2" )
 }
 E781 = {
    pos_x = 27
    pos_y = 26
    script = "set_sprite.lua"
-   param = ( "8", "male_shorthawk_pink" )
+   param = ( "8", "male_shorthawk_redhead" )
 }
 E782 = {
    pos_x = 29
    pos_y = 26
    script = "set_sprite.lua"
-   param = ( "8", "male_shorthawk_purple" )
+   param = ( "8", "male_shorthawk_ruby-red" )
 }
 E783 = {
    pos_x = 31
    pos_y = 26
    script = "set_sprite.lua"
-   param = ( "8", "male_shorthawk_raven2" )
+   param = ( "8", "male_shorthawk_white-blonde2" )
 }
 E784 = {
    pos_x = 33
    pos_y = 26
    script = "set_sprite.lua"
-   param = ( "8", "male_shorthawk_raven" )
+   param = ( "8", "male_shorthawk_white-blonde" )
 }
 E785 = {
    pos_x = 35
    pos_y = 26
    script = "set_sprite.lua"
-   param = ( "8", "male_shorthawk_redhead2" )
+   param = ( "8", "male_shorthawk_white-cyan" )
 }
 E786 = {
    pos_x = 37
    pos_y = 26
    script = "set_sprite.lua"
-   param = ( "8", "male_shorthawk_redhead" )
+   param = ( "8", "male_shorthawk_white" )
 }
 E787 = {
    pos_x = 39
    pos_y = 26
    script = "set_sprite.lua"
-   param = ( "8", "male_shorthawk_ruby-red" )
+   param = ( "8", "male_shortknot_black" )
 }
 E788 = {
    pos_x = 41
    pos_y = 26
    script = "set_sprite.lua"
-   param = ( "8", "male_shorthawk_white-blonde2" )
+   param = ( "8", "male_shortknot_blonde2" )
 }
 E789 = {
    pos_x = 43
    pos_y = 26
    script = "set_sprite.lua"
-   param = ( "8", "male_shorthawk_white-blonde" )
+   param = ( "8", "male_shortknot_blonde" )
 }
 E790 = {
    pos_x = 45
    pos_y = 26
    script = "set_sprite.lua"
-   param = ( "8", "male_shorthawk_white-cyan" )
+   param = ( "8", "male_shortknot_blue2" )
 }
 E791 = {
    pos_x = 47
    pos_y = 26
    script = "set_sprite.lua"
-   param = ( "8", "male_shorthawk_white" )
+   param = ( "8", "male_shortknot_blue" )
 }
 E792 = {
    pos_x = 49
    pos_y = 26
    script = "set_sprite.lua"
-   param = ( "8", "male_shortknot_black" )
+   param = ( "8", "male_shortknot_brown2" )
 }
 E793 = {
    pos_x = 51
    pos_y = 26
    script = "set_sprite.lua"
-   param = ( "8", "male_shortknot_blonde2" )
+   param = ( "8", "male_shortknot_brown" )
 }
 E794 = {
    pos_x = 53
    pos_y = 26
    script = "set_sprite.lua"
-   param = ( "8", "male_shortknot_blonde" )
+   param = ( "8", "male_shortknot_brunette2" )
 }
 E795 = {
    pos_x = 55
    pos_y = 26
    script = "set_sprite.lua"
-   param = ( "8", "male_shortknot_blue2" )
+   param = ( "8", "male_shortknot_brunette" )
 }
 E796 = {
    pos_x = 57
    pos_y = 26
    script = "set_sprite.lua"
-   param = ( "8", "male_shortknot_blue" )
+   param = ( "8", "male_shortknot_dark-blonde" )
 }
 E797 = {
    pos_x = 59
    pos_y = 26
    script = "set_sprite.lua"
-   param = ( "8", "male_shortknot_brown2" )
+   param = ( "8", "male_shortknot_gold" )
 }
 E798 = {
    pos_x = 61
    pos_y = 26
    script = "set_sprite.lua"
-   param = ( "8", "male_shortknot_brown" )
+   param = ( "8", "male_shortknot_gray2" )
 }
 E799 = {
    pos_x = 63
    pos_y = 26
    script = "set_sprite.lua"
-   param = ( "8", "male_shortknot_brunette2" )
+   param = ( "8", "male_shortknot_gray" )
 }
 E800 = {
    pos_x = 1
    pos_y = 27
    script = "set_sprite.lua"
-   param = ( "8", "male_shortknot_brunette" )
+   param = ( "8", "male_shortknot_green2" )
 }
 E801 = {
    pos_x = 3
    pos_y = 27
    script = "set_sprite.lua"
-   param = ( "8", "male_shortknot_dark-blonde" )
+   param = ( "8", "male_shortknot_green" )
 }
 E802 = {
    pos_x = 5
    pos_y = 27
    script = "set_sprite.lua"
-   param = ( "8", "male_shortknot_gold" )
+   param = ( "8", "male_shortknot_light-blonde2" )
 }
 E803 = {
    pos_x = 7
    pos_y = 27
    script = "set_sprite.lua"
-   param = ( "8", "male_shortknot_gray2" )
+   param = ( "8", "male_shortknot_light-blonde" )
 }
 E804 = {
    pos_x = 9
    pos_y = 27
    script = "set_sprite.lua"
-   param = ( "8", "male_shortknot_gray" )
+   param = ( "8", "male_shortknot" )
 }
 E805 = {
    pos_x = 11
    pos_y = 27
    script = "set_sprite.lua"
-   param = ( "8", "male_shortknot_green2" )
+   param = ( "8", "male_shortknot_pink2" )
 }
 E806 = {
    pos_x = 13
    pos_y = 27
    script = "set_sprite.lua"
-   param = ( "8", "male_shortknot_green" )
+   param = ( "8", "male_shortknot_pink" )
 }
 E807 = {
    pos_x = 15
    pos_y = 27
    script = "set_sprite.lua"
-   param = ( "8", "male_shortknot_light-blonde2" )
+   param = ( "8", "male_shortknot_purple" )
 }
 E808 = {
    pos_x = 17
    pos_y = 27
    script = "set_sprite.lua"
-   param = ( "8", "male_shortknot_light-blonde" )
+   param = ( "8", "male_shortknot_raven2" )
 }
 E809 = {
    pos_x = 19
    pos_y = 27
    script = "set_sprite.lua"
-   param = ( "8", "male_shortknot" )
+   param = ( "8", "male_shortknot_raven" )
 }
 E810 = {
    pos_x = 21
    pos_y = 27
    script = "set_sprite.lua"
-   param = ( "8", "male_shortknot_pink2" )
+   param = ( "8", "male_shortknot_redhead2" )
 }
 E811 = {
    pos_x = 23
    pos_y = 27
    script = "set_sprite.lua"
-   param = ( "8", "male_shortknot_pink" )
+   param = ( "8", "male_shortknot_redhead" )
 }
 E812 = {
    pos_x = 25
    pos_y = 27
    script = "set_sprite.lua"
-   param = ( "8", "male_shortknot_purple" )
+   param = ( "8", "male_shortknot_ruby-red" )
 }
 E813 = {
    pos_x = 27
    pos_y = 27
    script = "set_sprite.lua"
-   param = ( "8", "male_shortknot_raven2" )
+   param = ( "8", "male_shortknot_white-blonde2" )
 }
 E814 = {
    pos_x = 29
    pos_y = 27
    script = "set_sprite.lua"
-   param = ( "8", "male_shortknot_raven" )
+   param = ( "8", "male_shortknot_white-blonde" )
 }
 E815 = {
    pos_x = 31
    pos_y = 27
    script = "set_sprite.lua"
-   param = ( "8", "male_shortknot_redhead2" )
+   param = ( "8", "male_shortknot_white-cyan" )
 }
 E816 = {
    pos_x = 33
    pos_y = 27
    script = "set_sprite.lua"
-   param = ( "8", "male_shortknot_redhead" )
+   param = ( "8", "male_shortknot_white" )
 }
 E817 = {
    pos_x = 35
    pos_y = 27
    script = "set_sprite.lua"
-   param = ( "8", "male_shortknot_ruby-red" )
+   param = ( "8", "male_shoulderl_black" )
 }
 E818 = {
    pos_x = 37
    pos_y = 27
    script = "set_sprite.lua"
-   param = ( "8", "male_shortknot_white-blonde2" )
+   param = ( "8", "male_shoulderl_blonde2" )
 }
 E819 = {
    pos_x = 39
    pos_y = 27
    script = "set_sprite.lua"
-   param = ( "8", "male_shortknot_white-blonde" )
+   param = ( "8", "male_shoulderl_blonde" )
 }
 E820 = {
    pos_x = 41
    pos_y = 27
    script = "set_sprite.lua"
-   param = ( "8", "male_shortknot_white-cyan" )
+   param = ( "8", "male_shoulderl_blue2" )
 }
 E821 = {
    pos_x = 43
    pos_y = 27
    script = "set_sprite.lua"
-   param = ( "8", "male_shortknot_white" )
+   param = ( "8", "male_shoulderl_blue" )
 }
 E822 = {
    pos_x = 45
    pos_y = 27
    script = "set_sprite.lua"
-   param = ( "8", "male_shoulderl_black" )
+   param = ( "8", "male_shoulderl_brown2" )
 }
 E823 = {
    pos_x = 47
    pos_y = 27
    script = "set_sprite.lua"
-   param = ( "8", "male_shoulderl_blonde2" )
+   param = ( "8", "male_shoulderl_brown" )
 }
 E824 = {
    pos_x = 49
    pos_y = 27
    script = "set_sprite.lua"
-   param = ( "8", "male_shoulderl_blonde" )
+   param = ( "8", "male_shoulderl_brunette2" )
 }
 E825 = {
    pos_x = 51
    pos_y = 27
    script = "set_sprite.lua"
-   param = ( "8", "male_shoulderl_blue2" )
+   param = ( "8", "male_shoulderl_brunette" )
 }
 E826 = {
    pos_x = 53
    pos_y = 27
    script = "set_sprite.lua"
-   param = ( "8", "male_shoulderl_blue" )
+   param = ( "8", "male_shoulderl_dark-blonde" )
 }
 E827 = {
    pos_x = 55
    pos_y = 27
    script = "set_sprite.lua"
-   param = ( "8", "male_shoulderl_brown2" )
+   param = ( "8", "male_shoulderl_gold" )
 }
 E828 = {
    pos_x = 57
    pos_y = 27
    script = "set_sprite.lua"
-   param = ( "8", "male_shoulderl_brown" )
+   param = ( "8", "male_shoulderl_gray2" )
 }
 E829 = {
    pos_x = 59
    pos_y = 27
    script = "set_sprite.lua"
-   param = ( "8", "male_shoulderl_brunette2" )
+   param = ( "8", "male_shoulderl_gray" )
 }
 E830 = {
    pos_x = 61
    pos_y = 27
    script = "set_sprite.lua"
-   param = ( "8", "male_shoulderl_brunette" )
+   param = ( "8", "male_shoulderl_green2" )
 }
 E831 = {
    pos_x = 63
    pos_y = 27
    script = "set_sprite.lua"
-   param = ( "8", "male_shoulderl_dark-blonde" )
+   param = ( "8", "male_shoulderl_green" )
 }
 E832 = {
    pos_x = 1
    pos_y = 28
    script = "set_sprite.lua"
-   param = ( "8", "male_shoulderl_gold" )
+   param = ( "8", "male_shoulderl_light-blonde2" )
 }
 E833 = {
    pos_x = 3
    pos_y = 28
    script = "set_sprite.lua"
-   param = ( "8", "male_shoulderl_gray2" )
+   param = ( "8", "male_shoulderl_light-blonde" )
 }
 E834 = {
    pos_x = 5
    pos_y = 28
    script = "set_sprite.lua"
-   param = ( "8", "male_shoulderl_gray" )
+   param = ( "8", "male_shoulderl" )
 }
 E835 = {
    pos_x = 7
    pos_y = 28
    script = "set_sprite.lua"
-   param = ( "8", "male_shoulderl_green2" )
+   param = ( "8", "male_shoulderl_pink2" )
 }
 E836 = {
    pos_x = 9
    pos_y = 28
    script = "set_sprite.lua"
-   param = ( "8", "male_shoulderl_green" )
+   param = ( "8", "male_shoulderl_pink" )
 }
 E837 = {
    pos_x = 11
    pos_y = 28
    script = "set_sprite.lua"
-   param = ( "8", "male_shoulderl_light-blonde2" )
+   param = ( "8", "male_shoulderl_purple" )
 }
 E838 = {
    pos_x = 13
    pos_y = 28
    script = "set_sprite.lua"
-   param = ( "8", "male_shoulderl_light-blonde" )
+   param = ( "8", "male_shoulderl_raven2" )
 }
 E839 = {
    pos_x = 15
    pos_y = 28
    script = "set_sprite.lua"
-   param = ( "8", "male_shoulderl" )
+   param = ( "8", "male_shoulderl_raven" )
 }
 E840 = {
    pos_x = 17
    pos_y = 28
    script = "set_sprite.lua"
-   param = ( "8", "male_shoulderl_pink2" )
+   param = ( "8", "male_shoulderl_redhead2" )
 }
 E841 = {
    pos_x = 19
    pos_y = 28
    script = "set_sprite.lua"
-   param = ( "8", "male_shoulderl_pink" )
+   param = ( "8", "male_shoulderl_redhead" )
 }
 E842 = {
    pos_x = 21
    pos_y = 28
    script = "set_sprite.lua"
-   param = ( "8", "male_shoulderl_purple" )
+   param = ( "8", "male_shoulderl_ruby-red" )
 }
 E843 = {
    pos_x = 23
    pos_y = 28
    script = "set_sprite.lua"
-   param = ( "8", "male_shoulderl_raven2" )
+   param = ( "8", "male_shoulderl_white-blonde2" )
 }
 E844 = {
    pos_x = 25
    pos_y = 28
    script = "set_sprite.lua"
-   param = ( "8", "male_shoulderl_raven" )
+   param = ( "8", "male_shoulderl_white-blonde" )
 }
 E845 = {
    pos_x = 27
    pos_y = 28
    script = "set_sprite.lua"
-   param = ( "8", "male_shoulderl_redhead2" )
+   param = ( "8", "male_shoulderl_white-cyan" )
 }
 E846 = {
    pos_x = 29
    pos_y = 28
    script = "set_sprite.lua"
-   param = ( "8", "male_shoulderl_redhead" )
+   param = ( "8", "male_shoulderl_white" )
 }
 E847 = {
    pos_x = 31
    pos_y = 28
    script = "set_sprite.lua"
-   param = ( "8", "male_shoulderl_ruby-red" )
+   param = ( "8", "male_shoulderr_black" )
 }
 E848 = {
    pos_x = 33
    pos_y = 28
    script = "set_sprite.lua"
-   param = ( "8", "male_shoulderl_white-blonde2" )
+   param = ( "8", "male_shoulderr_blonde2" )
 }
 E849 = {
    pos_x = 35
    pos_y = 28
    script = "set_sprite.lua"
-   param = ( "8", "male_shoulderl_white-blonde" )
+   param = ( "8", "male_shoulderr_blonde" )
 }
 E850 = {
    pos_x = 37
    pos_y = 28
    script = "set_sprite.lua"
-   param = ( "8", "male_shoulderl_white-cyan" )
+   param = ( "8", "male_shoulderr_blue2" )
 }
 E851 = {
    pos_x = 39
    pos_y = 28
    script = "set_sprite.lua"
-   param = ( "8", "male_shoulderl_white" )
+   param = ( "8", "male_shoulderr_blue" )
 }
 E852 = {
    pos_x = 41
    pos_y = 28
    script = "set_sprite.lua"
-   param = ( "8", "male_shoulderr_black" )
+   param = ( "8", "male_shoulderr_brown2" )
 }
 E853 = {
    pos_x = 43
    pos_y = 28
    script = "set_sprite.lua"
-   param = ( "8", "male_shoulderr_blonde2" )
+   param = ( "8", "male_shoulderr_brown" )
 }
 E854 = {
    pos_x = 45
    pos_y = 28
    script = "set_sprite.lua"
-   param = ( "8", "male_shoulderr_blonde" )
+   param = ( "8", "male_shoulderr_brunette2" )
 }
 E855 = {
    pos_x = 47
    pos_y = 28
    script = "set_sprite.lua"
-   param = ( "8", "male_shoulderr_blue2" )
+   param = ( "8", "male_shoulderr_brunette" )
 }
 E856 = {
    pos_x = 49
    pos_y = 28
    script = "set_sprite.lua"
-   param = ( "8", "male_shoulderr_blue" )
+   param = ( "8", "male_shoulderr_dark-blonde" )
 }
 E857 = {
    pos_x = 51
    pos_y = 28
    script = "set_sprite.lua"
-   param = ( "8", "male_shoulderr_brown2" )
+   param = ( "8", "male_shoulderr_gold" )
 }
 E858 = {
    pos_x = 53
    pos_y = 28
    script = "set_sprite.lua"
-   param = ( "8", "male_shoulderr_brown" )
+   param = ( "8", "male_shoulderr_gray2" )
 }
 E859 = {
    pos_x = 55
    pos_y = 28
    script = "set_sprite.lua"
-   param = ( "8", "male_shoulderr_brunette2" )
+   param = ( "8", "male_shoulderr_gray" )
 }
 E860 = {
    pos_x = 57
    pos_y = 28
    script = "set_sprite.lua"
-   param = ( "8", "male_shoulderr_brunette" )
+   param = ( "8", "male_shoulderr_green2" )
 }
 E861 = {
    pos_x = 59
    pos_y = 28
    script = "set_sprite.lua"
-   param = ( "8", "male_shoulderr_dark-blonde" )
+   param = ( "8", "male_shoulderr_green" )
 }
 E862 = {
    pos_x = 61
    pos_y = 28
    script = "set_sprite.lua"
-   param = ( "8", "male_shoulderr_gold" )
+   param = ( "8", "male_shoulderr_light-blonde2" )
 }
 E863 = {
    pos_x = 63
    pos_y = 28
    script = "set_sprite.lua"
-   param = ( "8", "male_shoulderr_gray2" )
+   param = ( "8", "male_shoulderr_light-blonde" )
 }
 E864 = {
    pos_x = 1
    pos_y = 29
    script = "set_sprite.lua"
-   param = ( "8", "male_shoulderr_gray" )
+   param = ( "8", "male_shoulderr" )
 }
 E865 = {
    pos_x = 3
    pos_y = 29
    script = "set_sprite.lua"
-   param = ( "8", "male_shoulderr_green2" )
+   param = ( "8", "male_shoulderr_pink2" )
 }
 E866 = {
    pos_x = 5
    pos_y = 29
    script = "set_sprite.lua"
-   param = ( "8", "male_shoulderr_green" )
+   param = ( "8", "male_shoulderr_pink" )
 }
 E867 = {
    pos_x = 7
    pos_y = 29
    script = "set_sprite.lua"
-   param = ( "8", "male_shoulderr_light-blonde2" )
+   param = ( "8", "male_shoulderr_purple" )
 }
 E868 = {
    pos_x = 9
    pos_y = 29
    script = "set_sprite.lua"
-   param = ( "8", "male_shoulderr_light-blonde" )
+   param = ( "8", "male_shoulderr_raven2" )
 }
 E869 = {
    pos_x = 11
    pos_y = 29
    script = "set_sprite.lua"
-   param = ( "8", "male_shoulderr" )
+   param = ( "8", "male_shoulderr_raven" )
 }
 E870 = {
    pos_x = 13
    pos_y = 29
    script = "set_sprite.lua"
-   param = ( "8", "male_shoulderr_pink2" )
+   param = ( "8", "male_shoulderr_redhead2" )
 }
 E871 = {
    pos_x = 15
    pos_y = 29
    script = "set_sprite.lua"
-   param = ( "8", "male_shoulderr_pink" )
+   param = ( "8", "male_shoulderr_redhead" )
 }
 E872 = {
    pos_x = 17
    pos_y = 29
    script = "set_sprite.lua"
-   param = ( "8", "male_shoulderr_purple" )
+   param = ( "8", "male_shoulderr_ruby-red" )
 }
 E873 = {
    pos_x = 19
    pos_y = 29
    script = "set_sprite.lua"
-   param = ( "8", "male_shoulderr_raven2" )
+   param = ( "8", "male_shoulderr_white-blonde2" )
 }
 E874 = {
    pos_x = 21
    pos_y = 29
    script = "set_sprite.lua"
-   param = ( "8", "male_shoulderr_raven" )
+   param = ( "8", "male_shoulderr_white-blonde" )
 }
 E875 = {
    pos_x = 23
    pos_y = 29
    script = "set_sprite.lua"
-   param = ( "8", "male_shoulderr_redhead2" )
+   param = ( "8", "male_shoulderr_white-cyan" )
 }
 E876 = {
    pos_x = 25
    pos_y = 29
    script = "set_sprite.lua"
-   param = ( "8", "male_shoulderr_redhead" )
+   param = ( "8", "male_shoulderr_white" )
 }
 E877 = {
    pos_x = 27
    pos_y = 29
    script = "set_sprite.lua"
-   param = ( "8", "male_shoulderr_ruby-red" )
+   param = ( "8", "male_swoop_black" )
 }
 E878 = {
    pos_x = 29
    pos_y = 29
    script = "set_sprite.lua"
-   param = ( "8", "male_shoulderr_white-blonde2" )
+   param = ( "8", "male_swoop_blonde2" )
 }
 E879 = {
    pos_x = 31
    pos_y = 29
    script = "set_sprite.lua"
-   param = ( "8", "male_shoulderr_white-blonde" )
+   param = ( "8", "male_swoop_blonde" )
 }
 E880 = {
    pos_x = 33
    pos_y = 29
    script = "set_sprite.lua"
-   param = ( "8", "male_shoulderr_white-cyan" )
+   param = ( "8", "male_swoop_blue2" )
 }
 E881 = {
    pos_x = 35
    pos_y = 29
    script = "set_sprite.lua"
-   param = ( "8", "male_shoulderr_white" )
+   param = ( "8", "male_swoop_blue" )
 }
 E882 = {
    pos_x = 37
    pos_y = 29
    script = "set_sprite.lua"
-   param = ( "8", "male_swoop_black" )
+   param = ( "8", "male_swoop_brown2" )
 }
 E883 = {
    pos_x = 39
    pos_y = 29
    script = "set_sprite.lua"
-   param = ( "8", "male_swoop_blonde2" )
+   param = ( "8", "male_swoop_brown" )
 }
 E884 = {
    pos_x = 41
    pos_y = 29
    script = "set_sprite.lua"
-   param = ( "8", "male_swoop_blonde" )
+   param = ( "8", "male_swoop_brunette2" )
 }
 E885 = {
    pos_x = 43
    pos_y = 29
    script = "set_sprite.lua"
-   param = ( "8", "male_swoop_blue2" )
+   param = ( "8", "male_swoop_brunette" )
 }
 E886 = {
    pos_x = 45
    pos_y = 29
    script = "set_sprite.lua"
-   param = ( "8", "male_swoop_blue" )
+   param = ( "8", "male_swoop_dark-blonde" )
 }
 E887 = {
    pos_x = 47
    pos_y = 29
    script = "set_sprite.lua"
-   param = ( "8", "male_swoop_brown2" )
+   param = ( "8", "male_swoop_gold" )
 }
 E888 = {
    pos_x = 49
    pos_y = 29
    script = "set_sprite.lua"
-   param = ( "8", "male_swoop_brown" )
+   param = ( "8", "male_swoop_gray2" )
 }
 E889 = {
    pos_x = 51
    pos_y = 29
    script = "set_sprite.lua"
-   param = ( "8", "male_swoop_brunette2" )
+   param = ( "8", "male_swoop_gray" )
 }
 E890 = {
    pos_x = 53
    pos_y = 29
    script = "set_sprite.lua"
-   param = ( "8", "male_swoop_brunette" )
+   param = ( "8", "male_swoop_green2" )
 }
 E891 = {
    pos_x = 55
    pos_y = 29
    script = "set_sprite.lua"
-   param = ( "8", "male_swoop_dark-blonde" )
+   param = ( "8", "male_swoop_green" )
 }
 E892 = {
    pos_x = 57
    pos_y = 29
    script = "set_sprite.lua"
-   param = ( "8", "male_swoop_gold" )
+   param = ( "8", "male_swoop_light-blonde2" )
 }
 E893 = {
    pos_x = 59
    pos_y = 29
    script = "set_sprite.lua"
-   param = ( "8", "male_swoop_gray2" )
+   param = ( "8", "male_swoop_light-blonde" )
 }
 E894 = {
    pos_x = 61
    pos_y = 29
    script = "set_sprite.lua"
-   param = ( "8", "male_swoop_gray" )
+   param = ( "8", "male_swoop" )
 }
 E895 = {
    pos_x = 63
    pos_y = 29
    script = "set_sprite.lua"
-   param = ( "8", "male_swoop_green2" )
+   param = ( "8", "male_swoop_pink2" )
 }
 E896 = {
    pos_x = 1
    pos_y = 30
    script = "set_sprite.lua"
-   param = ( "8", "male_swoop_green" )
+   param = ( "8", "male_swoop_pink" )
 }
 E897 = {
    pos_x = 3
    pos_y = 30
    script = "set_sprite.lua"
-   param = ( "8", "male_swoop_light-blonde2" )
+   param = ( "8", "male_swoop_purple" )
 }
 E898 = {
    pos_x = 5
    pos_y = 30
    script = "set_sprite.lua"
-   param = ( "8", "male_swoop_light-blonde" )
+   param = ( "8", "male_swoop_raven2" )
 }
 E899 = {
    pos_x = 7
    pos_y = 30
    script = "set_sprite.lua"
-   param = ( "8", "male_swoop" )
+   param = ( "8", "male_swoop_raven" )
 }
 E900 = {
    pos_x = 9
    pos_y = 30
    script = "set_sprite.lua"
-   param = ( "8", "male_swoop_pink2" )
+   param = ( "8", "male_swoop_redhead2" )
 }
 E901 = {
    pos_x = 11
    pos_y = 30
    script = "set_sprite.lua"
-   param = ( "8", "male_swoop_pink" )
+   param = ( "8", "male_swoop_redhead" )
 }
 E902 = {
    pos_x = 13
    pos_y = 30
    script = "set_sprite.lua"
-   param = ( "8", "male_swoop_purple" )
+   param = ( "8", "male_swoop_ruby-red" )
 }
 E903 = {
    pos_x = 15
    pos_y = 30
    script = "set_sprite.lua"
-   param = ( "8", "male_swoop_raven2" )
+   param = ( "8", "male_swoop_white-blonde2" )
 }
 E904 = {
    pos_x = 17
    pos_y = 30
    script = "set_sprite.lua"
-   param = ( "8", "male_swoop_raven" )
+   param = ( "8", "male_swoop_white-blonde" )
 }
 E905 = {
    pos_x = 19
    pos_y = 30
    script = "set_sprite.lua"
-   param = ( "8", "male_swoop_redhead2" )
+   param = ( "8", "male_swoop_white-cyan" )
 }
 E906 = {
    pos_x = 21
    pos_y = 30
    script = "set_sprite.lua"
-   param = ( "8", "male_swoop_redhead" )
+   param = ( "8", "male_swoop_white" )
 }
 E907 = {
    pos_x = 23
    pos_y = 30
    script = "set_sprite.lua"
-   param = ( "8", "male_swoop_ruby-red" )
+   param = ( "8", "male_unkempt_black" )
 }
 E908 = {
    pos_x = 25
    pos_y = 30
    script = "set_sprite.lua"
-   param = ( "8", "male_swoop_white-blonde2" )
+   param = ( "8", "male_unkempt_blonde2" )
 }
 E909 = {
    pos_x = 27
    pos_y = 30
    script = "set_sprite.lua"
-   param = ( "8", "male_swoop_white-blonde" )
+   param = ( "8", "male_unkempt_blonde" )
 }
 E910 = {
    pos_x = 29
    pos_y = 30
    script = "set_sprite.lua"
-   param = ( "8", "male_swoop_white-cyan" )
+   param = ( "8", "male_unkempt_blue2" )
 }
 E911 = {
    pos_x = 31
    pos_y = 30
    script = "set_sprite.lua"
-   param = ( "8", "male_swoop_white" )
+   param = ( "8", "male_unkempt_blue" )
 }
 E912 = {
    pos_x = 33
    pos_y = 30
    script = "set_sprite.lua"
-   param = ( "8", "male_unkempt_black" )
+   param = ( "8", "male_unkempt_brown2" )
 }
 E913 = {
    pos_x = 35
    pos_y = 30
    script = "set_sprite.lua"
-   param = ( "8", "male_unkempt_blonde2" )
+   param = ( "8", "male_unkempt_brown" )
 }
 E914 = {
    pos_x = 37
    pos_y = 30
    script = "set_sprite.lua"
-   param = ( "8", "male_unkempt_blonde" )
+   param = ( "8", "male_unkempt_brunette2" )
 }
 E915 = {
    pos_x = 39
    pos_y = 30
    script = "set_sprite.lua"
-   param = ( "8", "male_unkempt_blue2" )
+   param = ( "8", "male_unkempt_brunette" )
 }
 E916 = {
    pos_x = 41
    pos_y = 30
    script = "set_sprite.lua"
-   param = ( "8", "male_unkempt_blue" )
+   param = ( "8", "male_unkempt_dark-blonde" )
 }
 E917 = {
    pos_x = 43
    pos_y = 30
    script = "set_sprite.lua"
-   param = ( "8", "male_unkempt_brown2" )
+   param = ( "8", "male_unkempt_gold" )
 }
 E918 = {
    pos_x = 45
    pos_y = 30
    script = "set_sprite.lua"
-   param = ( "8", "male_unkempt_brown" )
+   param = ( "8", "male_unkempt_gray2" )
 }
 E919 = {
    pos_x = 47
    pos_y = 30
    script = "set_sprite.lua"
-   param = ( "8", "male_unkempt_brunette2" )
+   param = ( "8", "male_unkempt_gray" )
 }
 E920 = {
    pos_x = 49
    pos_y = 30
    script = "set_sprite.lua"
-   param = ( "8", "male_unkempt_brunette" )
+   param = ( "8", "male_unkempt_green2" )
 }
 E921 = {
    pos_x = 51
    pos_y = 30
    script = "set_sprite.lua"
-   param = ( "8", "male_unkempt_dark-blonde" )
+   param = ( "8", "male_unkempt_green" )
 }
 E922 = {
    pos_x = 53
    pos_y = 30
    script = "set_sprite.lua"
-   param = ( "8", "male_unkempt_gold" )
+   param = ( "8", "male_unkempt_light-blonde2" )
 }
 E923 = {
    pos_x = 55
    pos_y = 30
    script = "set_sprite.lua"
-   param = ( "8", "male_unkempt_gray2" )
+   param = ( "8", "male_unkempt_light-blonde" )
 }
 E924 = {
    pos_x = 57
    pos_y = 30
    script = "set_sprite.lua"
-   param = ( "8", "male_unkempt_gray" )
+   param = ( "8", "male_unkempt" )
 }
 E925 = {
    pos_x = 59
    pos_y = 30
    script = "set_sprite.lua"
-   param = ( "8", "male_unkempt_green2" )
+   param = ( "8", "male_unkempt_pink2" )
 }
 E926 = {
    pos_x = 61
    pos_y = 30
    script = "set_sprite.lua"
-   param = ( "8", "male_unkempt_green" )
+   param = ( "8", "male_unkempt_pink" )
 }
 E927 = {
    pos_x = 63
    pos_y = 30
    script = "set_sprite.lua"
-   param = ( "8", "male_unkempt_light-blonde2" )
+   param = ( "8", "male_unkempt_purple" )
 }
 E928 = {
    pos_x = 1
    pos_y = 31
    script = "set_sprite.lua"
-   param = ( "8", "male_unkempt_light-blonde" )
+   param = ( "8", "male_unkempt_raven2" )
 }
 E929 = {
    pos_x = 3
    pos_y = 31
    script = "set_sprite.lua"
-   param = ( "8", "male_unkempt" )
+   param = ( "8", "male_unkempt_raven" )
 }
 E930 = {
    pos_x = 5
    pos_y = 31
    script = "set_sprite.lua"
-   param = ( "8", "male_unkempt_pink2" )
+   param = ( "8", "male_unkempt_redhead2" )
 }
 E931 = {
    pos_x = 7
    pos_y = 31
    script = "set_sprite.lua"
-   param = ( "8", "male_unkempt_pink" )
+   param = ( "8", "male_unkempt_redhead" )
 }
 E932 = {
    pos_x = 9
    pos_y = 31
    script = "set_sprite.lua"
-   param = ( "8", "male_unkempt_purple" )
+   param = ( "8", "male_unkempt_ruby-red" )
 }
 E933 = {
    pos_x = 11
    pos_y = 31
    script = "set_sprite.lua"
-   param = ( "8", "male_unkempt_raven2" )
+   param = ( "8", "male_unkempt_white-blonde2" )
 }
 E934 = {
    pos_x = 13
    pos_y = 31
    script = "set_sprite.lua"
-   param = ( "8", "male_unkempt_raven" )
+   param = ( "8", "male_unkempt_white-blonde" )
 }
 E935 = {
    pos_x = 15
    pos_y = 31
    script = "set_sprite.lua"
-   param = ( "8", "male_unkempt_redhead2" )
+   param = ( "8", "male_unkempt_white-cyan" )
 }
 E936 = {
    pos_x = 17
    pos_y = 31
    script = "set_sprite.lua"
-   param = ( "8", "male_unkempt_redhead" )
+   param = ( "8", "male_unkempt_white" )
 }
 E937 = {
    pos_x = 19
    pos_y = 31
    script = "set_sprite.lua"
-   param = ( "8", "male_unkempt_ruby-red" )
+   param = ( "8", "male_xlong_black" )
 }
 E938 = {
    pos_x = 21
    pos_y = 31
    script = "set_sprite.lua"
-   param = ( "8", "male_unkempt_white-blonde2" )
+   param = ( "8", "male_xlong_blonde2" )
 }
 E939 = {
    pos_x = 23
    pos_y = 31
    script = "set_sprite.lua"
-   param = ( "8", "male_unkempt_white-blonde" )
+   param = ( "8", "male_xlong_blonde" )
 }
 E940 = {
    pos_x = 25
    pos_y = 31
    script = "set_sprite.lua"
-   param = ( "8", "male_unkempt_white-cyan" )
+   param = ( "8", "male_xlong_blue2" )
 }
 E941 = {
    pos_x = 27
    pos_y = 31
    script = "set_sprite.lua"
-   param = ( "8", "male_unkempt_white" )
+   param = ( "8", "male_xlong_blue" )
 }
 E942 = {
    pos_x = 29
    pos_y = 31
    script = "set_sprite.lua"
-   param = ( "8", "male_xlong_black" )
+   param = ( "8", "male_xlong_brown2" )
 }
 E943 = {
    pos_x = 31
    pos_y = 31
    script = "set_sprite.lua"
-   param = ( "8", "male_xlong_blonde2" )
+   param = ( "8", "male_xlong_brown" )
 }
 E944 = {
    pos_x = 33
    pos_y = 31
    script = "set_sprite.lua"
-   param = ( "8", "male_xlong_blonde" )
+   param = ( "8", "male_xlong_brunette2" )
 }
 E945 = {
    pos_x = 35
    pos_y = 31
    script = "set_sprite.lua"
-   param = ( "8", "male_xlong_blue2" )
+   param = ( "8", "male_xlong_brunette" )
 }
 E946 = {
    pos_x = 37
    pos_y = 31
    script = "set_sprite.lua"
-   param = ( "8", "male_xlong_blue" )
+   param = ( "8", "male_xlong_dark-blonde" )
 }
 E947 = {
    pos_x = 39
    pos_y = 31
    script = "set_sprite.lua"
-   param = ( "8", "male_xlong_brown2" )
+   param = ( "8", "male_xlong_gold" )
 }
 E948 = {
    pos_x = 41
    pos_y = 31
    script = "set_sprite.lua"
-   param = ( "8", "male_xlong_brown" )
+   param = ( "8", "male_xlong_gray2" )
 }
 E949 = {
    pos_x = 43
    pos_y = 31
    script = "set_sprite.lua"
-   param = ( "8", "male_xlong_brunette2" )
+   param = ( "8", "male_xlong_gray" )
 }
 E950 = {
    pos_x = 45
    pos_y = 31
    script = "set_sprite.lua"
-   param = ( "8", "male_xlong_brunette" )
+   param = ( "8", "male_xlong_green2" )
 }
 E951 = {
    pos_x = 47
    pos_y = 31
    script = "set_sprite.lua"
-   param = ( "8", "male_xlong_dark-blonde" )
+   param = ( "8", "male_xlong_green" )
 }
 E952 = {
    pos_x = 49
    pos_y = 31
    script = "set_sprite.lua"
-   param = ( "8", "male_xlong_gold" )
+   param = ( "8", "male_xlongknot_black" )
 }
 E953 = {
    pos_x = 51
    pos_y = 31
    script = "set_sprite.lua"
-   param = ( "8", "male_xlong_gray2" )
+   param = ( "8", "male_xlongknot_blonde2" )
 }
 E954 = {
    pos_x = 53
    pos_y = 31
    script = "set_sprite.lua"
-   param = ( "8", "male_xlong_gray" )
+   param = ( "8", "male_xlongknot_blonde" )
 }
 E955 = {
    pos_x = 55
    pos_y = 31
    script = "set_sprite.lua"
-   param = ( "8", "male_xlong_green2" )
+   param = ( "8", "male_xlongknot_blue2" )
 }
 E956 = {
    pos_x = 57
    pos_y = 31
    script = "set_sprite.lua"
-   param = ( "8", "male_xlong_green" )
+   param = ( "8", "male_xlongknot_blue" )
 }
 E957 = {
    pos_x = 59
    pos_y = 31
    script = "set_sprite.lua"
-   param = ( "8", "male_xlongknot_black" )
+   param = ( "8", "male_xlongknot_brown2" )
 }
 E958 = {
    pos_x = 61
    pos_y = 31
    script = "set_sprite.lua"
-   param = ( "8", "male_xlongknot_blonde2" )
+   param = ( "8", "male_xlongknot_brown" )
 }
 E959 = {
    pos_x = 63
    pos_y = 31
    script = "set_sprite.lua"
-   param = ( "8", "male_xlongknot_blonde" )
+   param = ( "8", "male_xlongknot_brunette2" )
 }
 E960 = {
    pos_x = 1
    pos_y = 32
    script = "set_sprite.lua"
-   param = ( "8", "male_xlongknot_blue2" )
+   param = ( "8", "male_xlongknot_brunette" )
 }
 E961 = {
    pos_x = 3
    pos_y = 32
    script = "set_sprite.lua"
-   param = ( "8", "male_xlongknot_blue" )
+   param = ( "8", "male_xlongknot_dark-blonde" )
 }
 E962 = {
    pos_x = 5
    pos_y = 32
    script = "set_sprite.lua"
-   param = ( "8", "male_xlongknot_brown2" )
+   param = ( "8", "male_xlongknot_gold" )
 }
 E963 = {
    pos_x = 7
    pos_y = 32
    script = "set_sprite.lua"
-   param = ( "8", "male_xlongknot_brown" )
+   param = ( "8", "male_xlongknot_gray2" )
 }
 E964 = {
    pos_x = 9
    pos_y = 32
    script = "set_sprite.lua"
-   param = ( "8", "male_xlongknot_brunette2" )
+   param = ( "8", "male_xlongknot_gray" )
 }
 E965 = {
    pos_x = 11
    pos_y = 32
    script = "set_sprite.lua"
-   param = ( "8", "male_xlongknot_brunette" )
+   param = ( "8", "male_xlongknot_green2" )
 }
 E966 = {
    pos_x = 13
    pos_y = 32
    script = "set_sprite.lua"
-   param = ( "8", "male_xlongknot_dark-blonde" )
+   param = ( "8", "male_xlongknot_green" )
 }
 E967 = {
    pos_x = 15
    pos_y = 32
    script = "set_sprite.lua"
-   param = ( "8", "male_xlongknot_gold" )
+   param = ( "8", "male_xlongknot_light-blonde2" )
 }
 E968 = {
    pos_x = 17
    pos_y = 32
    script = "set_sprite.lua"
-   param = ( "8", "male_xlongknot_gray2" )
+   param = ( "8", "male_xlongknot_light-blonde" )
 }
 E969 = {
    pos_x = 19
    pos_y = 32
    script = "set_sprite.lua"
-   param = ( "8", "male_xlongknot_gray" )
+   param = ( "8", "male_xlongknot" )
 }
 E970 = {
    pos_x = 21
    pos_y = 32
    script = "set_sprite.lua"
-   param = ( "8", "male_xlongknot_green2" )
+   param = ( "8", "male_xlongknot_pink2" )
 }
 E971 = {
    pos_x = 23
    pos_y = 32
    script = "set_sprite.lua"
-   param = ( "8", "male_xlongknot_green" )
+   param = ( "8", "male_xlongknot_pink" )
 }
 E972 = {
    pos_x = 25
    pos_y = 32
    script = "set_sprite.lua"
-   param = ( "8", "male_xlongknot_light-blonde2" )
+   param = ( "8", "male_xlongknot_purple" )
 }
 E973 = {
    pos_x = 27
    pos_y = 32
    script = "set_sprite.lua"
-   param = ( "8", "male_xlongknot_light-blonde" )
+   param = ( "8", "male_xlongknot_raven2" )
 }
 E974 = {
    pos_x = 29
    pos_y = 32
    script = "set_sprite.lua"
-   param = ( "8", "male_xlongknot" )
+   param = ( "8", "male_xlongknot_raven" )
 }
 E975 = {
    pos_x = 31
    pos_y = 32
    script = "set_sprite.lua"
-   param = ( "8", "male_xlongknot_pink2" )
+   param = ( "8", "male_xlongknot_redhead2" )
 }
 E976 = {
    pos_x = 33
    pos_y = 32
    script = "set_sprite.lua"
-   param = ( "8", "male_xlongknot_pink" )
+   param = ( "8", "male_xlongknot_redhead" )
 }
 E977 = {
    pos_x = 35
    pos_y = 32
    script = "set_sprite.lua"
-   param = ( "8", "male_xlongknot_purple" )
+   param = ( "8", "male_xlongknot_ruby-red" )
 }
 E978 = {
    pos_x = 37
    pos_y = 32
    script = "set_sprite.lua"
-   param = ( "8", "male_xlongknot_raven2" )
+   param = ( "8", "male_xlongknot_white-blonde2" )
 }
 E979 = {
    pos_x = 39
    pos_y = 32
    script = "set_sprite.lua"
-   param = ( "8", "male_xlongknot_raven" )
+   param = ( "8", "male_xlongknot_white-blonde" )
 }
 E980 = {
    pos_x = 41
    pos_y = 32
    script = "set_sprite.lua"
-   param = ( "8", "male_xlongknot_redhead2" )
+   param = ( "8", "male_xlongknot_white-cyan" )
 }
 E981 = {
    pos_x = 43
    pos_y = 32
    script = "set_sprite.lua"
-   param = ( "8", "male_xlongknot_redhead" )
+   param = ( "8", "male_xlongknot_white" )
 }
 E982 = {
    pos_x = 45
    pos_y = 32
    script = "set_sprite.lua"
-   param = ( "8", "male_xlongknot_ruby-red" )
+   param = ( "8", "male_xlong_light-blonde2" )
 }
 E983 = {
    pos_x = 47
    pos_y = 32
    script = "set_sprite.lua"
-   param = ( "8", "male_xlongknot_white-blonde2" )
+   param = ( "8", "male_xlong_light-blonde" )
 }
 E984 = {
    pos_x = 49
    pos_y = 32
    script = "set_sprite.lua"
-   param = ( "8", "male_xlongknot_white-blonde" )
+   param = ( "8", "male_xlong" )
 }
 E985 = {
    pos_x = 51
    pos_y = 32
    script = "set_sprite.lua"
-   param = ( "8", "male_xlongknot_white-cyan" )
+   param = ( "8", "male_xlong_pink2" )
 }
 E986 = {
    pos_x = 53
    pos_y = 32
    script = "set_sprite.lua"
-   param = ( "8", "male_xlongknot_white" )
+   param = ( "8", "male_xlong_pink" )
 }
 E987 = {
    pos_x = 55
    pos_y = 32
    script = "set_sprite.lua"
-   param = ( "8", "male_xlong_light-blonde2" )
+   param = ( "8", "male_xlong_purple" )
 }
 E988 = {
    pos_x = 57
    pos_y = 32
    script = "set_sprite.lua"
-   param = ( "8", "male_xlong_light-blonde" )
+   param = ( "8", "male_xlong_raven2" )
 }
 E989 = {
    pos_x = 59
    pos_y = 32
    script = "set_sprite.lua"
-   param = ( "8", "male_xlong" )
+   param = ( "8", "male_xlong_raven" )
 }
 E990 = {
    pos_x = 61
    pos_y = 32
    script = "set_sprite.lua"
-   param = ( "8", "male_xlong_pink2" )
+   param = ( "8", "male_xlong_redhead2" )
 }
 E991 = {
    pos_x = 63
    pos_y = 32
    script = "set_sprite.lua"
-   param = ( "8", "male_xlong_pink" )
+   param = ( "8", "male_xlong_redhead" )
 }
 E992 = {
    pos_x = 1
    pos_y = 33
    script = "set_sprite.lua"
-   param = ( "8", "male_xlong_purple" )
+   param = ( "8", "male_xlong_ruby-red" )
 }
 E993 = {
    pos_x = 3
    pos_y = 33
    script = "set_sprite.lua"
-   param = ( "8", "male_xlong_raven2" )
+   param = ( "8", "male_xlong_white-blonde2" )
 }
 E994 = {
    pos_x = 5
    pos_y = 33
    script = "set_sprite.lua"
-   param = ( "8", "male_xlong_raven" )
+   param = ( "8", "male_xlong_white-blonde" )
 }
 E995 = {
    pos_x = 7
    pos_y = 33
    script = "set_sprite.lua"
-   param = ( "8", "male_xlong_redhead2" )
+   param = ( "8", "male_xlong_white-cyan" )
 }
 E996 = {
    pos_x = 9
    pos_y = 33
    script = "set_sprite.lua"
-   param = ( "8", "male_xlong_redhead" )
-}
-E997 = {
-   pos_x = 11
-   pos_y = 33
-   script = "set_sprite.lua"
-   param = ( "8", "male_xlong_ruby-red" )
-}
-E998 = {
-   pos_x = 13
-   pos_y = 33
-   script = "set_sprite.lua"
-   param = ( "8", "male_xlong_white-blonde2" )
-}
-E999 = {
-   pos_x = 15
-   pos_y = 33
-   script = "set_sprite.lua"
-   param = ( "8", "male_xlong_white-blonde" )
-}
-E1000 = {
-   pos_x = 17
-   pos_y = 33
-   script = "set_sprite.lua"
-   param = ( "8", "male_xlong_white-cyan" )
-}
-E1001 = {
-   pos_x = 19
-   pos_y = 33
-   script = "set_sprite.lua"
    param = ( "8", "male_xlong_white" )
 }
-E1002 = {
+E997 = {
    pos_x = 0
    pos_y = 18
    script = "goto_character_map.lua"
    param = ( "7", "1", "1" )
 }
-E1003 = {
+E998 = {
    pos_x = 64
    pos_y = 18
    script = "goto_character_map.lua"
    param = ( "9", "1", "1" )
 }
-E1004 = {
+E999 = {
    pos_x = 0
    pos_y = 0
    script = "set_sprite.lua"
    param = ( "8", "" )
 }
-E1005 = {
+E1000 = {
    pos_x = 0
    pos_y = 35
    script = "set_sprite.lua"
    param = ( "8", "" )
 }
-E1006 = {
+E1001 = {
    pos_x = 64
    pos_y = 0
    script = "set_sprite.lua"
    param = ( "8", "" )
 }
-E1007 = {
+E1002 = {
    pos_x = 64
    pos_y = 35
    script = "set_sprite.lua"
