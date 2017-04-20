@@ -983,7 +983,7 @@ item_t * scr_play_compose(context_t * ctx)
 	if( sfx && sfx[0]!=0 ) {
 		sfx_play(ctx,sfx,NO_RESTART);
 		int sfx_volume = 100; // 100%
-	        sfx_volume = entry_read_int(MAP_TABLE,ctx->map,&sfx_volume,MAP_SFX_VOLUME,NULL);
+	        entry_read_int(MAP_TABLE,ctx->map,&sfx_volume,MAP_SFX_VOLUME,NULL);
 		sfx_set_volume(sfx_volume);
 	}
 
