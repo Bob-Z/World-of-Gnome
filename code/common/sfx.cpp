@@ -86,3 +86,9 @@ void sfx_stop(context_t* ctx,const char * filename)
 	return;
 }
 
+/****************************************
+*****************************************/
+void sfx_set_volume(int volume_per_cent)
+{
+    Mix_VolumeMusic(volume_per_cent * MIX_MAX_VOLUME);
+}

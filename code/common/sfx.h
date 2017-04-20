@@ -28,5 +28,6 @@
 
 void sfx_play(context_t* ctx,const char * filename, int restart);
 void sfx_stop(context_t* ctx,const char * filename);
+void sfx_set_volume(int volume_per_cent);
 
 #endif
