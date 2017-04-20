@@ -184,6 +184,10 @@ item_t * scr_select_compose(context_t * context)
 		sfx_play(context,sfx_filename,NO_RESTART);
 	}
 
+	int sfx_volume = 100; // 100%
+	entry_read_int(NULL,CLIENT_CONF_FILE,&sfx_volume,CLIENT_KEY_SFX_VOLUME_SELECT_CHARACTER,NULL);
+        sfx_set_volume(sfx_volume);
+
 	if(item_list) {
 		item_list_free(item_list);
 		item_list = NULL;
