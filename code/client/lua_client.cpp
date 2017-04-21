@@ -1,0 +1,77 @@
+/*
+   World of Gnome is a 2D multiplayer role playing game.
+   Copyright (C) 2013-2017 carabobz@gmail.com
+
+   This program is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation; either version 3 of the License, or
+   (at your option) any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with this program; if not, write to the Free Software Foundation,
+   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
+*/
+
+#include "context.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+#include <lua.h>
+#include <lualib.h>
+#include <lauxlib.h>
+#ifdef __cplusplus
+}
+#endif
+
+lua_State * luaVM = nullptr;
+
+/***********************************
+ player_get_id
+Input:
+Output: ID of the current context
+***********************************/
+static int l_player_get_id( lua_State* L)
+{
+        context_t * context;
+
+	context = context_get_player();
+        lua_pushstring(L, context->id);
+        return 1;  // number of results
+}
+
+/***********************************
+***********************************/
+static void register_lua_functions()
+{
+	// player func
+	lua_pushcfunction(luaVM, l_player_get_id);
+	lua_setglobal(luaVM, "player_get_id");
+}
+
+/***********************************
+***********************************/
+void init_lua()
+{
+	luaVM = lua_open();
+        lua_baselibopen(luaVM);
+        lua_tablibopen(luaVM);
+        lua_iolibopen(luaVM);
+        lua_strlibopen(luaVM);
+        lua_mathlibopen(luaVM);
+
+        register_lua_functions();
+}
+
+/***********************************
+***********************************/
+lua_State * get_luaVM()
+{
+	return luaVM;
+}
+

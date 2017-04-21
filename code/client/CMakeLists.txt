@@ -44,6 +44,7 @@ add_executable(
 	scr_select.cpp
 	textview.cpp
 	ui_play.cpp
+	lua_client.cpp
 )
 
 target_link_libraries (${PROJECT_NAME}

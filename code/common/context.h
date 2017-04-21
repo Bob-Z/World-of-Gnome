@@ -1,6 +1,6 @@
 /*
    World of Gnome is a 2D multiplayer role playing game.
-   Copyright (C) 2013-2016 carabobz@gmail.com
+   Copyright (C) 2013-2017 carabobz@gmail.com
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -20,9 +20,15 @@
 #ifndef CONTEXT_H
 #define CONTEXT_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 #include <lua.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_net.h>
+#ifdef __cplusplus
+}
+#endif
 
 #include "types.h"
 
@@ -78,7 +84,6 @@ typedef struct context {
 	struct context*	next;
 } context_t;
 
-
 void context_init(context_t * context);
 context_t * context_new(void);
 void context_free(context_t * context);
@@ -107,7 +112,6 @@ ret_code_t context_set_selected_character(context_t * context, const char * sele
 ret_code_t context_set_selected_tile(context_t * context, const char * selected_map, int selected_map_x, int selected_map_y);
 ret_code_t context_set_selected_equipment(context_t * context, const char * selected_equipment);
 ret_code_t context_set_selected_item(context_t * context, const char * selected_item);
-
 ret_code_t context_update_from_file(context_t * context);
 void context_spread(context_t * context);
 void context_add_or_update_from_network_frame(context_t * context, char * data);
@@ -126,3 +130,4 @@ void context_reset_all_position();
 bool context_is_npc(context_t * ctx);
 
 #endif
+
