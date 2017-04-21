@@ -19,6 +19,22 @@ sprite_w       = [ "sprite/shadow/human.png","sprite/maskman/W.png" ];
 sprite_e       = [ "sprite/shadow/human.png","sprite/maskman/E.png" ];
 ai              = "ai/ai_random.lua";
 ai_params       = [ "1000" ];
-action          = [ "summon_dragon", "summon_casamonstro ];
+action          = [
+        "summon_dragon"
+        ,"summon_casamonstro"
+        ,"summon_bee"
+        ,"summon_spider01"
+        ,"summon_spider02"
+        ,"summon_spider03"
+        ,"summon_spider04"
+        ,"summon_spider05"
+        ,"summon_spider06"
+        ,"summon_spider07"
+        ,"summon_spider08"
+        ,"summon_spider09"
+        ,"summon_spider10"
+        ,"summon_spider11"
+];
+
 #allowed_tile_script    = "allowed_tile/ground_stair.lua";
 #inventory      = [ ];
