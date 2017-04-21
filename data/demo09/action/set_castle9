@@ -1,0 +1,6 @@
+text            = "Build a castle";
+icon            = [ "ui/button_up.png", "ui/castle9.png" ];
+#icon_over       = "icon/bat_over.png";
+icon_click      = [ "ui/button_down.png", "ui/castle9.png" ];
+script          = "action/add_scenery.lua";
+param		= ( "scenery/castle9.png" );
