@@ -1,0 +1,20 @@
+name		= "Small demon";
+
+marquee         = "sprite/small_demon/S.zip";
+sprite          = [ "sprite/shadow/small_demon.png", "sprite/small_demon/S.png" ];
+type            = "small_demon"
+map             = "M0_0";
+pos_x           = 15;
+pos_y           = 15;
+layer		= 15;
+#align on lower edge of tile
+align           = 1;
+sprite_n   = [ "sprite/shadow/small_demon.png", "sprite/small_demon/N.zip" ];
+sprite_s   = [ "sprite/shadow/small_demon.png", "sprite/small_demon/S.zip" ];
+sprite_e   = [ "sprite/shadow/small_demon.png", "sprite/small_demon/E.zip" ];
+sprite_w   = [ "sprite/shadow/small_demon.png", "sprite/small_demon/W.zip" ];
+ai              = "ai/ai_random.lua";
+ai_params       = [ "1000" ];
+#action          = [ "summon_fish1","summon_fish2","summon_fish3","summon_fish4","summon_fish5","summon_dragon", "summon_flappy", "set_campfire", "set_snowtree", "set_fireplace", "set_tree", "set_orangetree1", "set_orangetree2"];
+#allowed_tile_script    = "allowed_tile/ground_stair.lua";
+#inventory      = [ ];
