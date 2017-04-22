@@ -1,0 +1,7 @@
+text            = "Summon gray horse"
+icon            = [ "ui/button_up.png", "ui/horse_gray.png"]
+#layout 1 is center
+icon_layout     = 1
+icon_click      = [ "ui/button_down.png", "ui/horse_gray.png" ]
+script          = "action/summon.lua"
+param		= ( "horse_gray" )
