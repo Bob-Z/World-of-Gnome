@@ -70,9 +70,9 @@ end
 res = character_set_pos(player_id,new_map,player_x,player_y)
 
 if res == -1 then
-	-- Only human can create map
+	-- Only faerie can create map
 	player_type = character_get_type(player_id)
-	if player_type ~= "human" then
+	if player_type ~= "faerie" then
 		return -1
 	end
 	call_script("add_map.lua",new_map,new_map_x,new_map_y)

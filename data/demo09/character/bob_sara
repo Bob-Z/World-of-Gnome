@@ -2,7 +2,7 @@ name		= "Sara";
 
 marquee         = "marquee/sara.png";
 sprite          = [ "sprite/shadow/human.png","sprite/sara_down.png"];
-type            = "human"
+type            = "faerie"
 map             = "M0_0";
 pos_x           = 15;
 pos_y           = 15;
