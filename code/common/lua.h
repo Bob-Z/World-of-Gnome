@@ -1,6 +1,6 @@
 /*
    World of Gnome is a 2D multiplayer role playing game.
-   Copyright (C) 2013-2016 carabobz@gmail.com
+   Copyright (C) 2013-2017 carabobz@gmail.com
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -17,32 +17,9 @@
    Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
-#ifndef WOG_COMMON_INCLUDE
-#define WOG_COMMON_INCLUDE
+#ifndef LUA_H
+#define LUA_H
 
-#include <SDL2/SDL_net.h>
-
-#include "types.h"
-#include "util.h"
-#include "const.h"
-#include "list.h"
-#include "syntax.h"
-#include "context.h"
-#include "file.h"
-#include "network.h"
-#include "protocol.h"
-#include "client_server.h"
-#include "map.h"
-#include "entry.h"
-#include "log.h"
-#include "mutex.h"
-#include "item.h"
-#include "fifo.h"
-#include "font.h"
-#include "sfx.h"
-#include "lua.h"
-
-#define RET_OK		(0)
-#define RET_NOK		(-1)
+int lua_execute_script(lua_State* p_pLuaVm, const char * script, const char ** parameters);
 
 #endif

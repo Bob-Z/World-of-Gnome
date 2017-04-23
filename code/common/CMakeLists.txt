@@ -24,6 +24,7 @@ add_library(
 	network.cpp
 	sfx.cpp
 	util.cpp
+	lua.cpp
 )
 
 target_link_libraries (${PROJECT_NAME}
