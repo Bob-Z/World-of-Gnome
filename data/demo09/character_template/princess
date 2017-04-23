@@ -20,6 +20,7 @@ ai_params       = [ "1000" ];
 action          = [ 
         "summon_cat_white"
         ,"summon_cat_black"
+        ,"summon_cat_white1"
         ,"summon_dog"
         ,"summon_rat"
         ,"summon_chicken"

@@ -1,0 +1,7 @@
+text            = "Summon white cat";
+icon            = [ "ui/button_up.png", "ui/cat_white1.png" ];
+#layout 1 is center
+icon_layout     = 1
+icon_click      = [ "ui/button_down.png", "ui/cat_white1.png" ];
+script          = "action/summon.lua";
+param		= ( "cat_white1" );
