@@ -1,6 +1,6 @@
 /*
    World of Gnome is a 2D multiplayer role playing game.
-   Copyright (C) 2013-2016 carabobz@gmail.com
+   Copyright (C) 2013-2017 carabobz@gmail.com
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -31,17 +31,17 @@
 #include <limits.h>
 
 #define ITEM_FONT "Ubuntu-C.ttf"
-#define ITEM_FONT_SIZE 15
+#define ITEM_FONT_SIZE (15)
 
 #define NORTH (1<<0)
 #define SOUTH (1<<1)
 #define EAST (1<<2)
 #define WEST (1<<3)
 
-#define ALIGN_CENTER	0
-#define ALIGN_LOWER	1
+#define ALIGN_CENTER	(0)
+#define ALIGN_LOWER	(1)
 
-#define MAX_LAYER	100
+#define MAX_LAYER	(100)
 
 static item_t * item_list = nullptr;
 static bool change_map = false;
@@ -501,6 +501,8 @@ static void set_up_sprite(context_t * ctx, const char * image_file_name)
 
 	item_set_zoom_x(item,zoom * default_layer->map_zoom );
 	item_set_zoom_y(item,zoom * default_layer->map_zoom );
+
+	entry_read_string(CHARACTER_TABLE,ctx->id,&item->draw_script,CHARACTER_KEY_DRAW_SCRIPT,nullptr);
 }
 
 /**********************************

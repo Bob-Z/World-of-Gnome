@@ -153,7 +153,20 @@ void screen_display(context_t * ctx)
 
 		SDL_RenderClear(ctx->render);
 
-		sdl_blit_item_list(ctx->render,item_list);
+//		sdl_blit_item_list(ctx->render,item_list);
+		item_t * item;
+
+		item = item_list;
+		while(item != nullptr)  {
+			if( item->draw_script != nullptr ) {
+				item->move_start_tick = 0; // no smooth move
+				item->rect.x = item->to_px;
+				item->rect.y = item->to_py;
+			}
+
+			sdl_blit_item(ctx->render,item);
+			item = item->next;
+		}
 
 		sdl_blit_to_screen(ctx->render);
 
