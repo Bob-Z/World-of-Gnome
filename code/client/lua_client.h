@@ -27,6 +27,6 @@ extern "C" {
 }
 #endif
 
-void init_lua();
+void lua_init();
 lua_State * get_luaVM();
 

@@ -1,6 +1,6 @@
 /*
    World of Gnome is a 2D multiplayer role playing game.
-   Copyright (C) 2013-2016 carabobz@gmail.com
+   Copyright (C) 2013-2017 carabobz@gmail.com
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@
 #include <unistd.h>
 #include <errno.h>
 
-list_t * file_list = NULL;
+list_t * file_list = nullptr;
 
 typedef struct file_tag {
 	Uint32 timestamp;
@@ -43,7 +43,7 @@ void file_lock(const char * filename)
 
 	SDL_LockMutex(file_list_mutex);
 	file_data = (file_t *)list_find(file_list,filename);
-	if( file_data == NULL ) {
+	if( file_data == nullptr ) {
 		file_data = (file_t*)malloc(sizeof(file_t));
 		file_data->timestamp = 0;
 		file_data->mutex = SDL_CreateMutex();
@@ -66,7 +66,7 @@ void file_unlock(const char * filename)
 	file_data = (file_t *)list_find(file_list,filename);
 	SDL_UnlockMutex(file_list_mutex);
 
-	if( file_data == NULL ) {
+	if( file_data == nullptr ) {
 		return;
 	}
 
@@ -89,7 +89,7 @@ void file_update(context_t * context, const char * filename)
 	file_data = (file_t *)list_find(file_list,filename);
 	SDL_UnlockMutex(file_list_mutex);
 
-	/* Avoid flooding the server */
+	// Avoid flooding the server
 	if( file_data->timestamp != 0 && file_data->timestamp + FILE_REQUEST_TIMEOUT > current_time ) {
 		//wlog(LOGDEBUG,"Previous request of file  %s has been %d ms ago",filename,current_time - file_data->timestamp );
 		return;
@@ -108,11 +108,11 @@ static int mkdir_all(const char * pathname)
 	char * token;
 	char * source;
 	int ret = -1;
-	char * directory = NULL;
-	char * new_directory = NULL;
+	char * directory = nullptr;
+	char * new_directory = nullptr;
 	char *saveptr;
 
-	if(pathname == NULL) {
+	if(pathname == nullptr) {
 		return -1;
 	}
 
@@ -121,12 +121,12 @@ static int mkdir_all(const char * pathname)
 	token =  strtok_r(source,"/",&saveptr);
 
 	directory = strdup("");
-	while( token != NULL ) {
-		new_directory = strconcat(directory,"/",token,NULL);
+	while( token != nullptr ) {
+		new_directory = strconcat(directory,"/",token,nullptr);
 		free(directory);
 		directory = new_directory;
 		ret = mkdir(directory,0775);
-		token =  strtok_r(NULL,"/",&saveptr);
+		token =  strtok_r(nullptr,"/",&saveptr);
 	}
 
 	free(directory);
@@ -137,8 +137,8 @@ static int mkdir_all(const char * pathname)
 
 /****************************
   Parameter 1: Name of the table to create the new file
-  Parameter 2: Name of the file you want to create, if NULL an available file is created.
-		if the suggested name is not available the function return NULL
+  Parameter 2: Name of the file you want to create, if nullptr an available file is created.
+		if the suggested name is not available the function return nullptr
   return the name of an available empty file
   if success the file is created on disk
   the return string must be freed by caller
@@ -154,20 +154,20 @@ char * file_new(const char * table, const char * suggested_name)
 	int index = 0;
 	int fd;
 	struct stat sts;
-	const char * selected_name = NULL;
+	const char * selected_name = nullptr;
 
-	dirname = strconcat(base_directory,"/",table,NULL);
+	dirname = strconcat(base_directory,"/",table,nullptr);
 
 	SDL_LockMutex(character_dir_mutex);
 
 	if( suggested_name && suggested_name[0] != 0) {
-		fullname = strconcat(dirname,"/",suggested_name,NULL );
+		fullname = strconcat(dirname,"/",suggested_name,nullptr );
 		if( stat(fullname, &sts) != -1) {
 			SDL_UnlockMutex(character_dir_mutex);
 			free(dirname);
 			free(fullname);
 			/* File exists */
-			return NULL;
+			return nullptr;
 		}
 		free(fullname);
 		selected_name = suggested_name;
@@ -175,17 +175,17 @@ char * file_new(const char * table, const char * suggested_name)
 
 		dir = opendir(dirname);
 
-		if( dir == NULL ) {
+		if( dir == nullptr ) {
 			mkdir_all(dirname);
 			dir = opendir(dirname);
-			if(dir == NULL) {
-				return NULL;
+			if(dir == nullptr) {
+				return nullptr;
 			}
 		}
 
 		sprintf(tag,"A%05x",index);
 
-		while(( ent = readdir(dir)) != NULL ) {
+		while(( ent = readdir(dir)) != nullptr ) {
 			if( strcmp(ent->d_name,".") == 0 ) {
 				continue;
 			}
@@ -205,7 +205,7 @@ char * file_new(const char * table, const char * suggested_name)
 		selected_name = tag;
 	}
 
-	filename = strconcat(dirname,"/",selected_name,NULL);
+	filename = strconcat(dirname,"/",selected_name,nullptr);
 	free(dirname);
 
 	fd = creat(filename, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH);
@@ -233,9 +233,9 @@ ret_code_t file_get_contents(const char *filename,char **contents,int *length)
 	char error_buf[SMALL_BUF];
 	char * error_str;
 
-	*contents = NULL;
+	*contents = nullptr;
 
-	fullname = strconcat(base_directory,"/",filename,NULL);
+	fullname = strconcat(base_directory,"/",filename,nullptr);
 
 	file_lock(filename);
 
@@ -267,7 +267,7 @@ ret_code_t file_get_contents(const char *filename,char **contents,int *length)
 	}
 
 	buf = (char*)malloc(sts.st_size);
-	if( buf == NULL) {
+	if( buf == nullptr) {
 		close(fd);
 		file_unlock(filename);
 		free(fullname);
@@ -299,6 +299,7 @@ ret_code_t file_get_contents(const char *filename,char **contents,int *length)
 
 	return RET_OK;
 }
+
 /****************************
   file_set_contents
   filename is "table/dir/file"
@@ -312,7 +313,7 @@ ret_code_t file_set_contents(const char *filename,const char *contents,int lengt
 	char error_buf[SMALL_BUF];
 	char * error_str;
 
-	fullname = strconcat(base_directory,"/",filename,NULL);
+	fullname = strconcat(base_directory,"/",filename,nullptr);
 
 	file_lock(filename);
 
@@ -362,13 +363,13 @@ void file_copy(char * src_name, char * dst_name)
 	int i;
 
 	src = fopen(src_name, "rb");
-	if( src == NULL ) {
+	if( src == nullptr ) {
 		werr(LOGDEV,"Failed to open source file %s\n",src_name);
 		return;
 	}
 
 	dst = fopen(dst_name, "wb");
-	if( dst == NULL ) {
+	if( dst == nullptr ) {
 		werr(LOGDEV,"Failed to open destination file %s\n",dst_name);
 		return;
 	}
@@ -417,7 +418,7 @@ int file_delete(const char * table, const char * filename)
 	char * fullname;
 	int res;
 
-	fullname = strconcat(base_directory,"/",table,"/",filename,NULL);
+	fullname = strconcat(base_directory,"/",table,"/",filename,nullptr);
 	res = unlink(fullname);
 	free(fullname);
 

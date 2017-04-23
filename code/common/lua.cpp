@@ -36,13 +36,17 @@ return -1 on error or return value from execution
 int lua_execute_script(lua_State* p_pLuaVm, const char * p_pScript, const char ** p_pParameters)
 {
 	// Load script
-	char * l_pFilename;
-	l_pFilename = strconcat(base_directory,"/",SCRIPT_TABLE,"/",p_pScript,NULL);
+	char * l_pFullPath;
+	l_pFullPath = strconcat(base_directory,"/",SCRIPT_TABLE,"/",p_pScript,NULL);
 
-	if (luaL_loadfile(p_pLuaVm, l_pFilename) != 0 ) {
+	if (luaL_loadfile(p_pLuaVm, l_pFullPath) != 0 ) {
+	        if(client_server == CLIENT) {
+
+		}
+
 		// If something went wrong, error message is at the top of the stack
-		werr(LOGUSER,"Couldn't load LUA script %s: %s\n", l_pFilename, lua_tostring(p_pLuaVm, -1));
-		free(l_pFilename);
+		werr(LOGUSER,"Couldn't load LUA script %s: %s\n", l_pFullPath, lua_tostring(p_pLuaVm, -1));
+		free(l_pFullPath);
 		return -1;
 	}
 
@@ -63,11 +67,11 @@ int lua_execute_script(lua_State* p_pLuaVm, const char * p_pScript, const char *
 
 	// Ask Lua to call the f function with the given parameters
 	if (lua_pcall(p_pLuaVm, l_ParamNum, 1, 0) != 0) {
-		werr(LOGUSER,"Error running LUA script %s: %s\n", l_pFilename, lua_tostring(p_pLuaVm, -1));
-		free(l_pFilename);
+		werr(LOGUSER,"Error running LUA script %s: %s\n", l_pFullPath, lua_tostring(p_pLuaVm, -1));
+		free(l_pFullPath);
 		return -1;
 	}
-	free(l_pFilename);
+	free(l_pFullPath);
 
 	// retrieve result
 	if (!lua_isnumber(p_pLuaVm, -1)) {

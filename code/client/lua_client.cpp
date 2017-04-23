@@ -29,7 +29,7 @@ extern "C" {
 }
 #endif
 
-lua_State * luaVM = nullptr;
+static lua_State * luaVM = nullptr;
 
 /***********************************
  player_get_id
@@ -56,7 +56,7 @@ static void register_lua_functions()
 
 /***********************************
 ***********************************/
-void init_lua()
+void lua_init()
 {
 	luaVM = lua_open();
         lua_baselibopen(luaVM);
