@@ -1,6 +1,6 @@
 /*
    World of Gnome is a 2D multiplayer role playing game.
-   Copyright (C) 2013-2016 carabobz@gmail.com
+   Copyright (C) 2013-2017 carabobz@gmail.com
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@
 #include "option_client.h"
 
 static int screen_end = -1;
-static item_t * item_list = NULL;
+static item_t * item_list = nullptr;
 static int current_screen=SCREEN_SELECT;
 static int compose = 0;
 static int virtual_x[SCREEN_LAST];
@@ -36,7 +36,7 @@ static double virtual_z[SCREEN_LAST];
 #define ITEM_FONT "Ubuntu-C.ttf"
 #define ITEM_FONT_SIZE 15
 #define NUM_SAMPLE (50)
-static item_t * frame_rate = NULL;
+static item_t * frame_rate = nullptr;
 
 /***********************************************
 Called by other thread to request compose update.
@@ -69,7 +69,7 @@ create a list of item for the currently selected screen
 ******************************************************/
 static void compose_scr(context_t * context)
 {
-	static TTF_Font * font = NULL;
+	static TTF_Font * font = nullptr;
 	option_t * option = option_get();
 
 	SDL_SetRenderDrawColor(context->render, 0, 0, 0, 255);
