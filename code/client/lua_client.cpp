@@ -18,6 +18,7 @@
 */
 
 #include "context.h"
+#include "../common/common.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -46,12 +47,33 @@ static int l_player_get_id( lua_State* L)
 }
 
 /***********************************
+ print_text_debug
+
+Print a message in the client's log (mainly for debug purpose)
+
+Input:
+ - message
+Output:
+***********************************/
+static int l_print_text_debug( lua_State* L)
+{
+        const char * string;
+
+        string = luaL_checkstring(L, -1);
+        wlog(LOGDEV,(char*)string);
+        return 0;  // number of results
+}
+
+/***********************************
 ***********************************/
 static void register_lua_functions()
 {
 	// player func
 	lua_pushcfunction(luaVM, l_player_get_id);
 	lua_setglobal(luaVM, "player_get_id");
+	// debug func
+	lua_pushcfunction(luaVM, l_print_text_debug);
+	lua_setglobal(luaVM, "print_text_debug");
 }
 
 /***********************************
