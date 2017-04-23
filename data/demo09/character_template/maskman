@@ -25,6 +25,7 @@ action          = [
         ,"summon_grue"
         ,"summon_small_demon"
         ,"summon_bee"
+        ,"summon_beetle"
         ,"summon_spider01"
         ,"summon_spider02"
         ,"summon_spider03"
