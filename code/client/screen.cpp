@@ -163,6 +163,9 @@ void screen_display(context_t * ctx)
 				item->move_start_tick = 0; // no smooth move
 				item->rect.x = item->to_px;
 				item->rect.y = item->to_py;
+
+				lua_pushlightuserdata(get_luaVM(),item);
+				lua_setglobal (get_luaVM(), "current_item");
 				if ( lua_execute_script(get_luaVM(), item->draw_script, nullptr) == -1 ){
 					char * l_pTablePath;
 					l_pTablePath = strconcat(SCRIPT_TABLE,"/",item->draw_script,NULL);
@@ -171,6 +174,7 @@ void screen_display(context_t * ctx)
 					file_unlock(l_pTablePath);
 					free(l_pTablePath);
 				}
+				lua_pop(get_luaVM(),1);
 			}
 
 			sdl_blit_item(ctx->render,item);

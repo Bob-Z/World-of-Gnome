@@ -19,6 +19,7 @@
 
 #include "context.h"
 #include "../common/common.h"
+#include "../sdl_item/item.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -47,6 +48,25 @@ static int l_player_get_id( lua_State* L)
 }
 
 /***********************************
+ item set_x
+Input: X ccordinate in pixel
+Output:
+***********************************/
+static int l_item_set_x( lua_State* L)
+{
+        item_t * item;
+
+        lua_getglobal(L,"current_item");
+        item = (item_t*)lua_touserdata(L, -1);
+        lua_pop(L,1);
+
+	int l_X;
+	l_X = luaL_checkint(L, -1);
+	item->rect.x = l_X;
+	return 0; // number of results
+}
+
+/***********************************
  print_text_debug
 
 Print a message in the client's log (mainly for debug purpose)
@@ -71,6 +91,9 @@ static void register_lua_functions()
 	// player func
 	lua_pushcfunction(luaVM, l_player_get_id);
 	lua_setglobal(luaVM, "player_get_id");
+	// item func
+	lua_pushcfunction(luaVM, l_item_set_x);
+	lua_setglobal(luaVM, "item_set_x");
 	// debug func
 	lua_pushcfunction(luaVM, l_print_text_debug);
 	lua_setglobal(luaVM, "print_text_debug");
