@@ -38,12 +38,12 @@ static lua_State * luaVM = nullptr;
 Input:
 Output: ID of the current context
 ***********************************/
-static int l_player_get_id( lua_State* L)
+static int l_player_get_id( lua_State* p_pLuaState)
 {
-        context_t * context;
+        context_t * l_pContext;
 
-	context = context_get_player();
-        lua_pushstring(L, context->id);
+	l_pContext = context_get_player();
+        lua_pushstring(p_pLuaState, l_pContext->id);
         return 1;  // number of results
 }
 
@@ -52,18 +52,71 @@ static int l_player_get_id( lua_State* L)
 Input: X ccordinate in pixel
 Output:
 ***********************************/
-static int l_item_set_x( lua_State* L)
+static int l_item_set_x( lua_State* p_pLuaState)
 {
-        item_t * item;
+        item_t * l_pItem;
 
-        lua_getglobal(L,"current_item");
-        item = (item_t*)lua_touserdata(L, -1);
-        lua_pop(L,1);
+        lua_getglobal(p_pLuaState,"current_item");
+        l_pItem = (item_t*)lua_touserdata(p_pLuaState, -1);
+        lua_pop(p_pLuaState,1);
 
 	int l_X;
-	l_X = luaL_checkint(L, -1);
-	item->rect.x = l_X;
+	l_X = luaL_checkint(p_pLuaState, -1);
+	l_pItem->rect.x = l_X;
 	return 0; // number of results
+}
+
+/***********************************
+ item set_y
+Input: Y ccordinate in pixel
+Output:
+***********************************/
+static int l_item_set_y( lua_State* p_pLuaState)
+{
+        item_t * l_pItem;
+
+        lua_getglobal(p_pLuaState,"current_item");
+        l_pItem = (item_t*)lua_touserdata(p_pLuaState, -1);
+        lua_pop(p_pLuaState,1);
+
+	int l_Y;
+	l_Y = luaL_checkint(p_pLuaState, -1);
+	l_pItem->rect.y = l_Y;
+	return 0; // number of results
+}
+
+/***********************************
+ item get_x
+Input:
+Output: X ccordinate in pixel
+***********************************/
+static int l_item_get_x( lua_State* p_pLuaState)
+{
+        item_t * l_pItem;
+
+        lua_getglobal(p_pLuaState,"current_item");
+        l_pItem = (item_t*)lua_touserdata(p_pLuaState, -1);
+        lua_pop(p_pLuaState,1);
+
+	lua_pushnumber(p_pLuaState, l_pItem->rect.x);
+	return 1; // number of results
+}
+
+/***********************************
+ item get_y
+Input:
+Output: Y ccordinate in pixel
+***********************************/
+static int l_item_get_y( lua_State* p_pLuaState)
+{
+        item_t * l_pItem;
+
+        lua_getglobal(p_pLuaState,"current_item");
+        l_pItem = (item_t*)lua_touserdata(p_pLuaState, -1);
+        lua_pop(p_pLuaState,1);
+
+	lua_pushnumber(p_pLuaState, l_pItem->rect.y);
+	return 1; // number of results
 }
 
 /***********************************
@@ -75,12 +128,12 @@ Input:
  - message
 Output:
 ***********************************/
-static int l_print_text_debug( lua_State* L)
+static int l_print_text_debug( lua_State* p_pLuaState)
 {
-        const char * string;
+        const char * l_pString;
 
-        string = luaL_checkstring(L, -1);
-        wlog(LOGDEV,(char*)string);
+        l_pString = luaL_checkstring(p_pLuaState, -1);
+        wlog(LOGDEV,(char*)l_pString);
         return 0;  // number of results
 }
 
@@ -94,6 +147,12 @@ static void register_lua_functions()
 	// item func
 	lua_pushcfunction(luaVM, l_item_set_x);
 	lua_setglobal(luaVM, "item_set_x");
+	lua_pushcfunction(luaVM, l_item_set_y);
+	lua_setglobal(luaVM, "item_set_y");
+	lua_pushcfunction(luaVM, l_item_get_x);
+	lua_setglobal(luaVM, "item_get_x");
+	lua_pushcfunction(luaVM, l_item_get_y);
+	lua_setglobal(luaVM, "item_get_y");
 	// debug func
 	lua_pushcfunction(luaVM, l_print_text_debug);
 	lua_setglobal(luaVM, "print_text_debug");
