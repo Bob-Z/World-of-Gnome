@@ -19,6 +19,7 @@
 
 #include "context.h"
 #include "../common/common.h"
+#include "../sdl_item/sdl.h"
 #include "../sdl_item/item.h"
 
 #ifdef __cplusplus
@@ -120,6 +121,24 @@ static int l_item_get_y( lua_State* p_pLuaState)
 }
 
 /***********************************
+ get_tick
+
+Get application tick in milliseconds
+
+Input:
+Output:
+ - tick in milliseconds
+***********************************/
+static int l_get_tick(lua_State* p_pLuaState)
+{
+	Uint32 l_CurrentTime;
+        l_CurrentTime = sdl_get_global_time();
+
+	lua_pushnumber(p_pLuaState, l_CurrentTime);
+	return 1; // number of results
+}
+
+/***********************************
  print_text_debug
 
 Print a message in the client's log (mainly for debug purpose)
@@ -128,7 +147,7 @@ Input:
  - message
 Output:
 ***********************************/
-static int l_print_text_debug( lua_State* p_pLuaState)
+static int l_print_text_debug(lua_State* p_pLuaState)
 {
         const char * l_pString;
 
@@ -153,6 +172,9 @@ static void register_lua_functions()
 	lua_setglobal(luaVM, "item_get_x");
 	lua_pushcfunction(luaVM, l_item_get_y);
 	lua_setglobal(luaVM, "item_get_y");
+	// utility  func
+	lua_pushcfunction(luaVM, l_get_tick);
+	lua_setglobal(luaVM, "get_tick");
 	// debug func
 	lua_pushcfunction(luaVM, l_print_text_debug);
 	lua_setglobal(luaVM, "print_text_debug");
