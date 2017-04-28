@@ -1,6 +1,6 @@
 /*
    World of Gnome is a 2D multiplayer role playing game.
-   Copyright (C) 2013-2016 carabobz@gmail.com
+   Copyright (C) 2013-2017 carabobz@gmail.com
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -26,6 +26,7 @@
 #include <stdlib.h>
 #include "../sdl_item/sdl.h"
 #include "screen.h"
+#include "lua_client.h"
 #include "option_client.h"
 #include <SDL2/SDL_mixer.h>
 
@@ -58,6 +59,8 @@ int main (int argc, char **argv)
 	int maxfps = false;
 
 	base_directory = strconcat(getenv("HOME"),"/.config/wog/client",NULL);
+
+	lua_init();
 
 	option_init();
 	option = option_get();

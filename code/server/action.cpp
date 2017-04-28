@@ -1,6 +1,6 @@
 /*
    World of Gnome is a 2D multiplayer role playing game.
-   Copyright (C) 2013-2016 carabobz@gmail.com
+   Copyright (C) 2013-2017 carabobz@gmail.com
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -53,7 +53,7 @@ static int l_player_get_id( lua_State* L)
 	context = (context_t*)lua_touserdata(L, -1);
 	lua_pop(L,1);
 	lua_pushstring(L, context->id);
-	return 1;  /* number of results */
+	return 1;  // number of results
 }
 
 /* character_create_from_template
@@ -91,7 +91,7 @@ static int l_character_create_from_template( lua_State* L)
 	if( res) {
 		free(res);
 	}
-	return 1;  /* number of results */
+	return 1;  // number of results
 }
 
 /* character_get_selected_map_tile_x
@@ -106,12 +106,12 @@ static int l_character_get_selected_map_tile_x( lua_State* L)
 
 	id = luaL_checkstring(L, -1);
 	target = context_find(id);
-	if( target == NULL ) {
+	if( target == nullptr ) {
 		werr(LOGDEV,"Cannot find context with ID %s",id);
-		return 0;  /* number of results */
+		return 0;  // number of results
 	}
 	lua_pushnumber(L, target->selection.map_coord[0]);
-	return 1;  /* number of results */
+	return 1;  // number of results
 }
 
 /* character_get_selected_map_tile_y
@@ -126,12 +126,12 @@ static int l_character_get_selected_map_tile_y( lua_State* L)
 
 	id = luaL_checkstring(L, -1);
 	target = context_find(id);
-	if( target == NULL ) {
+	if( target == nullptr ) {
 		werr(LOGDEV,"Cannot find context with ID %s",id);
-		return 0;  /* number of results */
+		return 0;  // number of results
 	}
 	lua_pushnumber(L, target->selection.map_coord[1]);
-	return 1;  /* number of results */
+	return 1;  // number of results
 }
 
 /* character_get_selected_map
@@ -146,12 +146,12 @@ static int l_character_get_selected_map( lua_State* L)
 
 	id = luaL_checkstring(L, -1);
 	target = context_find(id);
-	if( target == NULL ) {
+	if( target == nullptr ) {
 		werr(LOGDEV,"Cannot find context with ID %s",id);
-		return 0;  /* number of results */
+		return 0;  // number of results
 	}
 	lua_pushstring(L, target->selection.map);
-	return 1;  /* number of results */
+	return 1;  // number of results
 }
 
 /* character_set_selected_tile
@@ -176,16 +176,16 @@ static int l_character_set_selected_tile( lua_State* L)
 	y = luaL_checkint(L, -1);
 
 	target = context_find(id);
-	if( target == NULL ) {
+	if( target == nullptr ) {
 		werr(LOGDEV,"Cannot find context with ID %s",id);
-		return 0;  /* number of results */
+		return 0;  // number of results
 	}
 
 	if( context_set_selected_tile(target,selected_map,x,y) == RET_OK ) {
 		network_send_context_to_context(target,target);
 	}
 
-	return 0;  /* number of results */
+	return 0;  // number of results
 }
 
 /* character_get_selected_inventory_id
@@ -200,12 +200,12 @@ static int l_character_get_selected_inventory_id( lua_State* L)
 
 	id = luaL_checkstring(L, -1);
 	target = context_find(id);
-	if( target == NULL ) {
+	if( target == nullptr ) {
 		werr(LOGDEV,"Cannot find context with ID %s",id);
-		return 0;  /* number of results */
+		return 0;  // number of results
 	}
 	lua_pushstring(L, target->selection.inventory);
-	return 1;  /* number of results */
+	return 1;  // number of results
 }
 
 /* character_set_selected_inventory_id
@@ -224,16 +224,16 @@ static int l_character_set_selected_inventory_id( lua_State* L)
 	selected_item = luaL_checkstring(L, -1);
 
 	target = context_find(id);
-	if( target == NULL ) {
+	if( target == nullptr ) {
 		werr(LOGDEV,"Cannot find context with ID %s",id);
-		return 0;  /* number of results */
+		return 0;  // number of results
 	}
 
 	if( context_set_selected_item(target,selected_item) == RET_OK ) {
 		network_send_context_to_context(target,target);
 	}
 
-	return 0;  /* number of results */
+	return 0;  // number of results
 }
 
 /* character_get_selected_equipment_slot
@@ -248,12 +248,12 @@ static int l_character_get_selected_equipment_slot( lua_State* L)
 
 	id = luaL_checkstring(L, -1);
 	target = context_find(id);
-	if( target == NULL ) {
+	if( target == nullptr ) {
 		werr(LOGDEV,"Cannot find context with ID %s",id);
-		return 0;  /* number of results */
+		return 0;  // number of results
 	}
 	lua_pushstring(L, target->selection.equipment);
-	return 1;  /* number of results */
+	return 1;  // number of results
 }
 
 /* character_set_selected_equipment_slot
@@ -272,16 +272,16 @@ static int l_character_set_selected_equipment_slot( lua_State* L)
 	selected_equipment = luaL_checkstring(L, -1);
 
 	target = context_find(id);
-	if( target == NULL ) {
+	if( target == nullptr ) {
 		werr(LOGDEV,"Cannot find context with ID %s",id);
-		return 0;  /* number of results */
+		return 0;  // number of results
 	}
 
 	if( context_set_selected_equipment(target,selected_equipment) == RET_OK ) {
 		network_send_context_to_context(target,target);
 	}
 
-	return 0;  /* number of results */
+	return 0;  // number of results
 }
 
 /* character_get_selected_character_id
@@ -296,12 +296,12 @@ static int l_character_get_selected_character_id( lua_State* L)
 
 	id = luaL_checkstring(L, -1);
 	target = context_find(id);
-	if( target == NULL ) {
+	if( target == nullptr ) {
 		werr(LOGDEV,"Cannot find context with ID %s",id);
-		return 0;  /* number of results */
+		return 0;  // number of results
 	}
 	lua_pushstring(L, target->selection.id);
-	return 1;  /* number of results */
+	return 1;  // number of results
 }
 
 /* character_set_selected_character_id
@@ -320,16 +320,16 @@ static int l_character_set_selected_character_id( lua_State* L)
 	selected_id = luaL_checkstring(L, -1);
 
 	target = context_find(id);
-	if( target == NULL ) {
+	if( target == nullptr ) {
 		werr(LOGDEV,"Cannot find context with ID %s",id);
-		return 0;  /* number of results */
+		return 0;  // number of results
 	}
 
 	if( context_set_selected_character(target,selected_id) == RET_OK ) {
 		network_send_context_to_context(target,target);
 	}
 
-	return 0;  /* number of results */
+	return 0;  // number of results
 }
 
 /* character_get_map
@@ -344,12 +344,12 @@ static int l_character_get_map( lua_State* L)
 
 	id = luaL_checkstring(L, -1);
 	target = context_find(id);
-	if( target == NULL ) {
+	if( target == nullptr ) {
 		werr(LOGDEV,"Cannot find context with ID %s",id);
-		return 0;  /* number of results */
+		return 0;  // number of results
 	}
 	lua_pushstring(L, target->map);
-	return 1;  /* number of results */
+	return 1;  // number of results
 }
 
 /* character_get_map_w
@@ -364,10 +364,10 @@ static int l_character_get_map_w( lua_State* L)
 	int map_w = -1;
 
 	map = luaL_checkstring(L, -1);
-	entry_read_int(MAP_TABLE,map,&map_w,MAP_KEY_WIDTH,NULL);
+	entry_read_int(MAP_TABLE,map,&map_w,MAP_KEY_WIDTH,nullptr);
 
 	lua_pushnumber(L, map_w);
-	return 1;  /* number of results */
+	return 1;  // number of results
 }
 
 /* character_get_map_h
@@ -382,10 +382,10 @@ static int l_character_get_map_h( lua_State* L)
 	int map_h = -1;
 
 	map = luaL_checkstring(L, -1);
-	entry_read_int(MAP_TABLE,map,&map_h,MAP_KEY_HEIGHT,NULL);
+	entry_read_int(MAP_TABLE,map,&map_h,MAP_KEY_HEIGHT,nullptr);
 
 	lua_pushnumber(L, map_h);
-	return 1;  /* number of results */
+	return 1;  // number of results
 }
 
 /* character_get_x
@@ -400,12 +400,12 @@ static int l_character_get_x( lua_State* L)
 
 	id = luaL_checkstring(L, -1);
 	target = context_find(id);
-	if( target == NULL ) {
+	if( target == nullptr ) {
 		werr(LOGDEV,"Cannot find context with ID %s",id);
-		return 0;  /* number of results */
+		return 0;  // number of results
 	}
 	lua_pushnumber(L, target->pos_tx);
-	return 1;  /* number of results */
+	return 1;  // number of results
 }
 
 /* character_get_y
@@ -420,12 +420,12 @@ static int l_character_get_y( lua_State* L)
 
 	id = luaL_checkstring(L, -1);
 	target = context_find(id);
-	if( target == NULL ) {
+	if( target == nullptr ) {
 		werr(LOGDEV,"Cannot find context with ID %s",id);
-		return 0;  /* number of results */
+		return 0;  // number of results
 	}
 	lua_pushnumber(L, target->pos_ty);
-	return 1;  /* number of results */
+	return 1;  // number of results
 }
 
 /* character_get_name
@@ -440,12 +440,12 @@ static int l_character_get_name( lua_State* L)
 
 	id = luaL_checkstring(L, -1);
 	target = context_find(id);
-	if( target == NULL ) {
+	if( target == nullptr ) {
 		werr(LOGDEV,"Cannot find context with ID %s",id);
-		return 0;  /* number of results */
+		return 0;  // number of results
 	}
 	lua_pushstring(L, target->character_name);
-	return 1;  /* number of results */
+	return 1;  // number of results
 }
 
 /* character_get_type
@@ -460,12 +460,12 @@ static int l_character_get_type( lua_State* L)
 
 	id = luaL_checkstring(L, -1);
 	target = context_find(id);
-	if( target == NULL ) {
+	if( target == nullptr ) {
 		werr(LOGDEV,"Cannot find context with ID %s",id);
-		return 0;  /* number of results */
+		return 0;  // number of results
 	}
 	lua_pushstring(L, target->type);
-	return 1;  /* number of results */
+	return 1;  // number of results
 }
 
 /* character_out_of_game
@@ -485,7 +485,7 @@ static int l_character_out_of_game( lua_State* L)
 	id = luaL_checkstring(L, -1);
 	res = character_out_of_game(id);
 	lua_pushnumber(L, res);
-	return 1;  /* number of results */
+	return 1;  // number of results
 }
 /* character_disconnect
 
@@ -504,7 +504,7 @@ static int l_character_disconnect( lua_State* L)
 	id = luaL_checkstring(L, -1);
 	res = character_disconnect(id);
 	lua_pushnumber(L, res);
-	return 1;  /* number of results */
+	return 1;  // number of results
 }
 
 /* character_delete
@@ -527,7 +527,7 @@ static int l_character_delete( lua_State* L)
 		res = file_delete(CHARACTER_TABLE,id);
 	}
 	lua_pushnumber(L, res);
-	return 1;  /* number of results */
+	return 1;  // number of results
 }
 
 /* character_set_pos
@@ -561,7 +561,7 @@ static int l_character_set_pos( lua_State* L)
 	ctx = context_find(id);
 	res = character_set_pos(ctx,map,x,y);
 	lua_pushnumber(L, res);
-	return 1;  /* number of results */
+	return 1;  // number of results
 }
 
 /* character_set_npc
@@ -584,7 +584,7 @@ static int l_character_set_npc( lua_State* L)
 
 	res = character_set_npc(id,npc);
 	lua_pushnumber(L, res);
-	return 1;  /* number of results */
+	return 1;  // number of results
 }
 
 /* character_get_npc
@@ -606,7 +606,7 @@ static int l_character_get_npc( lua_State* L)
 
 	res = character_get_npc(id);
 	lua_pushnumber(L, res);
-	return 1;  /* number of results */
+	return 1;  // number of results
 }
 
 /* character_get_portrait
@@ -629,7 +629,7 @@ static int l_character_get_portrait( lua_State* L)
 	if( res) {
 		free(res);
 	}
-	return 1;  /* number of results */
+	return 1;  // number of results
 }
 
 /* character_set_portrait
@@ -652,7 +652,7 @@ static int l_character_set_portrait( lua_State* L)
 
 	res = character_set_portrait(id,portrait);
 	lua_pushnumber(L, res);
-	return 1;  /* number of results */
+	return 1;  // number of results
 }
 
 /* character_set_ai_script
@@ -675,7 +675,7 @@ static int l_character_set_ai_script( lua_State* L)
 
 	res = character_set_ai_script(id,script_name);
 	lua_pushnumber(L, res);
-	return 1;  /* number of results */
+	return 1;  // number of results
 }
 
 /* character_set sprite
@@ -701,7 +701,7 @@ static int l_character_set_sprite( lua_State* L)
 
 	res = character_set_sprite(id,index,sprite_name);
 	lua_pushnumber(L, res);
-	return 1;  /* number of results */
+	return 1;  // number of results
 }
 
 /* character_set_sprite_dir
@@ -730,7 +730,7 @@ static int l_character_set_sprite_dir( lua_State* L)
 
 	res = character_set_sprite_dir(id,dir,index,sprite_name);
 	lua_pushnumber(L, res);
-	return 1;  /* number of results */
+	return 1;  // number of results
 }
 
 /* character_set_sprite_move
@@ -759,7 +759,7 @@ static int l_character_set_sprite_move( lua_State* L)
 
 	res = character_set_sprite_move(id,dir,index,sprite_name);
 	lua_pushnumber(L, res);
-	return 1;  /* number of results */
+	return 1;  // number of results
 }
 
 /* character_broadcast
@@ -779,7 +779,7 @@ static int l_character_broadcast( lua_State* L)
 	character = luaL_checkstring(L, -1);
 	character_broadcast(character);
 	lua_pushnumber(L, res);
-	return 1;  /* number of results */
+	return 1;  // number of results
 }
 
 /* character_wake_up
@@ -799,7 +799,7 @@ static int l_character_wake_up( lua_State* L)
 
 	res = character_wake_up(id);
 	lua_pushnumber(L, res);
-	return 1;  /* number of results */
+	return 1;  // number of results
 }
 
 /* map_new
@@ -833,7 +833,7 @@ static int l_map_new( lua_State* L)
 	if( map_name ) {
 		free(map_name);
 	}
-	return 1;  /* number of results */
+	return 1;  // number of results
 }
 
 /* map_add_layer
@@ -873,7 +873,7 @@ static int l_map_add_layer( lua_State* L)
 	default_type = luaL_checkstring(L, -1);
 	res = map_add_layer(map_name,layer,x,y,tile_x,tile_y,default_tile,default_type);
 	lua_pushnumber(L, res);
-	return 1;  /* number of results */
+	return 1;  // number of results
 }
 
 /* map_delete_layer
@@ -895,7 +895,7 @@ static int l_map_delete_layer( lua_State* L)
 	layer = luaL_checkint(L, -1);
 	res = map_delete_layer(map_name,layer);
 	lua_pushnumber(L, res);
-	return 1;  /* number of results */
+	return 1;  // number of results
 }
 
 /* map_set_tile
@@ -927,7 +927,7 @@ static int l_map_set_tile( lua_State* L)
 	y = luaL_checkint(L, -1);
 	res = map_set_tile(map, layer, tile, x, y,true);
 	lua_pushnumber(L, res);
-	return 1;  /* number of results */
+	return 1;  // number of results
 }
 
 /* map_set_tile_no_update
@@ -960,7 +960,7 @@ static int l_map_set_tile_no_update( lua_State* L)
 	y = luaL_checkint(L, -1);
 	res = map_set_tile(map, layer, tile, x, y,false);
 	lua_pushnumber(L, res);
-	return 1;  /* number of results */
+	return 1;  // number of results
 }
 
 /* map_set_tile_array
@@ -974,7 +974,7 @@ Output: -1 on error, 0 otherwise
 */
 static int l_map_set_tile_array( lua_State* L)
 {
-	const char **arg = NULL;
+	const char **arg = nullptr;
 	int i;
 	const char * map;
 	int layer;
@@ -992,13 +992,13 @@ static int l_map_set_tile_array( lua_State* L)
 		// removes 'value'; keeps 'key' for next iteration
 		lua_pop(L, 1);
 	}
-	arg[i]=NULL;
+	arg[i]=nullptr;
 
 	map_set_tile_array(map,layer,arg);
 
 	free(arg);
 	lua_pushnumber(L, 0);
-	return 1;  /* number of results */
+	return 1;  // number of results
 }
 
 /* map_set_tile_type
@@ -1029,7 +1029,7 @@ static int l_map_set_tile_type( lua_State* L)
 	y = luaL_checkint(L, -1);
 	res = map_set_tile_type(map,layer,type,x,y,true);
 	lua_pushnumber(L, res);
-	return 1;  /* number of results */
+	return 1;  // number of results
 }
 
 /* map_set_tile_type_no_update
@@ -1061,7 +1061,7 @@ static int l_map_set_tile_type_no_update( lua_State* L)
 	y = luaL_checkint(L, -1);
 	res = map_set_tile_type(map,layer,type,x,y,true);
 	lua_pushnumber(L, res);
-	return 1;  /* number of results */
+	return 1;  // number of results
 }
 
 /* map_broadcast
@@ -1081,7 +1081,7 @@ static int l_map_broadcast( lua_State* L)
 	map = luaL_checkstring(L, -1);
 	map_broadcast(map);
 	lua_pushnumber(L, res);
-	return 1;  /* number of results */
+	return 1;  // number of results
 }
 
 /* map_set_offscreen
@@ -1103,7 +1103,7 @@ static int l_map_set_offscreen( lua_State* L)
 	script = luaL_checkstring(L, -1);
 	res = map_set_offscreen(map,script);
 	lua_pushnumber(L, res);
-	return 1;  /* number of results */
+	return 1;  // number of results
 }
 
 /* map_set_custom_column
@@ -1134,7 +1134,7 @@ static int l_map_set_custom_column( lua_State* L)
 	height = luaL_checkint(L, -1);
 	res = map_set_custom_column(map,layer,num,width,height);
 	lua_pushnumber(L, res);
-	return 1;  /* number of results */
+	return 1;  // number of results
 }
 
 /* map_set_custom_row
@@ -1165,7 +1165,7 @@ static int l_map_set_custom_row( lua_State* L)
 	height = luaL_checkint(L, -1);
 	res = map_set_custom_row(map,layer,num,width,height);
 	lua_pushnumber(L, res);
-	return 1;  /* number of results */
+	return 1;  // number of results
 }
 
 /* print_text_id
@@ -1186,7 +1186,7 @@ static int l_print_text_id( lua_State* L)
 	string = luaL_checkstring(L, -1);
 	/* add a trailing \n */
 	network_send_text(id,string);
-	return 0;  /* number of results */
+	return 0;  // number of results
 }
 
 /* print_text_map
@@ -1207,7 +1207,7 @@ static int l_print_text_map( lua_State* L)
 	string = luaL_checkstring(L, -1);
 	/* add a trailing \n */
 	context_broadcast_text(map,string);
-	return 0;  /* number of results */
+	return 0;  // number of results
 }
 
 /* print_text_server
@@ -1224,8 +1224,8 @@ static int l_print_text_server( lua_State* L)
 
 	string = luaL_checkstring(L, -1);
 	/* add a trailing \n */
-	context_broadcast_text(NULL,string);
-	return 0;  /* number of results */
+	context_broadcast_text(nullptr,string);
+	return 0;  // number of results
 }
 
 /* print_text_debug
@@ -1242,7 +1242,7 @@ static int l_print_text_debug( lua_State* L)
 
 	string = luaL_checkstring(L, -1);
 	wlog(LOGDEV,(char*)string);
-	return 0;  /* number of results */
+	return 0;  // number of results
 }
 
 /* map_add_item
@@ -1273,7 +1273,7 @@ static int l_map_add_item( lua_State* L)
 	y = luaL_checkint(L, -1);
 	res = map_add_item(map,layer,item,x,y);
 	lua_pushnumber(L, res);
-	return 1;  /* number of results */
+	return 1;  // number of results
 }
 
 /* map_delete_item
@@ -1304,7 +1304,7 @@ static int l_map_delete_item( lua_State* L)
 	if(res) {
 		free(res);
 	}
-	return 1;  /* number of results */
+	return 1;  // number of results
 }
 
 /* map_add_event
@@ -1338,7 +1338,7 @@ static int l_map_add_event( lua_State* L)
 	if(res) {
 		free(res);
 	}
-	return 1;  /* number of results */
+	return 1;  // number of results
 }
 
 /* map_add_event_param
@@ -1368,7 +1368,7 @@ static int l_map_add_event_param( lua_State* L)
 	param = luaL_checkstring(L, -1);
 	res = map_add_event_param(map,layer,event_id,param);
 	lua_pushnumber(L, res);
-	return 1;  /* number of results */
+	return 1;  // number of results
 }
 
 /* map_delete_event
@@ -1399,7 +1399,7 @@ static int l_map_delete_event( lua_State* L)
 	y = luaL_checkint(L, -1);
 	res = map_delete_event(map,layer,script,x,y);
 	lua_pushnumber(L, res);
-	return 1;  /* number of results */
+	return 1;  // number of results
 }
 
 /* map_add_scenery
@@ -1433,7 +1433,7 @@ static int l_map_add_scenery( lua_State* L)
 	if(res) {
 		free(res);
 	}
-	return 1;  /* number of results */
+	return 1;  // number of results
 }
 
 /* tile_get_x
@@ -1454,9 +1454,9 @@ static int l_tile_get_x( lua_State* L)
 	layer = luaL_checkint(L, -3);
 	x = luaL_checkint(L, -2);
 	y = luaL_checkint(L, -1);
-	map_get_tile_coord(map,layer,x,y,&res,NULL);
+	map_get_tile_coord(map,layer,x,y,&res,nullptr);
 	lua_pushnumber(L, res);
-	return 1;  /* number of results */
+	return 1;  // number of results
 }
 
 /* tile_get_y
@@ -1477,9 +1477,9 @@ static int l_tile_get_y( lua_State* L)
 	layer = luaL_checkint(L, -3);
 	x = luaL_checkint(L, -2);
 	y = luaL_checkint(L, -1);
-	map_get_tile_coord(map,layer,x,y,NULL,&res);
+	map_get_tile_coord(map,layer,x,y,nullptr,&res);
 	lua_pushnumber(L, res);
-	return 1;  /* number of results */
+	return 1;  // number of results
 }
 /* inventory_delete
 
@@ -1500,7 +1500,7 @@ static int l_inventory_delete( lua_State* L)
 	item = luaL_checkstring(L, -1);
 	res = inventory_delete(id,item);
 	lua_pushnumber(L, res);
-	return 1;  /* number of results */
+	return 1;  // number of results
 }
 
 /* inventory_add
@@ -1522,7 +1522,7 @@ static int l_inventory_add( lua_State* L)
 	item = luaL_checkstring(L, -1);
 	res = inventory_add(id,item);
 	lua_pushnumber(L, res);
-	return 1;  /* number of results */
+	return 1;  // number of results
 }
 
 /* inventory_get_by_name
@@ -1547,7 +1547,7 @@ static int l_inventory_get_by_name( lua_State* L)
 	if( res) {
 		free(res);
 	}
-	return 1;  /* number of results */
+	return 1;  // number of results
 }
 
 /* item_create_empty
@@ -1566,7 +1566,7 @@ static int l_item_create_empty( lua_State* L)
 	if( res) {
 		free(res);
 	}
-	return 1;  /* number of results */
+	return 1;  // number of results
 }
 
 /* item_create_from_template
@@ -1587,7 +1587,7 @@ static int l_item_create_from_template( lua_State* L)
 	if( res) {
 		free(res);
 	}
-	return 1;  /* number of results */
+	return 1;  // number of results
 }
 
 /* resource_new
@@ -1613,7 +1613,7 @@ static int l_resource_new( lua_State* L)
 	if( resource) {
 		free(resource);
 	}
-	return 1;  /* number of results */
+	return 1;  // number of results
 }
 
 /* resource_get_quantity
@@ -1632,7 +1632,7 @@ static int l_resource_get_quantity( lua_State* L)
 	resource = luaL_checkstring(L, -1);
 	res = resource_get_quantity(resource);
 	lua_pushnumber(L, res);
-	return 1;  /* number of results */
+	return 1;  // number of results
 }
 
 /* resource_set_quantity
@@ -1659,7 +1659,7 @@ static int l_resource_set_quantity( lua_State* L)
 	quantity = luaL_checkint(L, -1);
 	res = resource_set_quantity(context,resource,quantity);
 	lua_pushnumber(L, res);
-	return 1;  /* number of results */
+	return 1;  // number of results
 }
 
 /* item_destroy
@@ -1680,7 +1680,7 @@ static int l_item_destroy( lua_State* L)
 	item = luaL_checkstring(L, -1);
 	res = item_destroy(item);
 	lua_pushnumber(L, res);
-	return 1;  /* number of results */
+	return 1;  // number of results
 }
 
 /* map_get_tile
@@ -1712,7 +1712,7 @@ static int l_map_get_tile( lua_State* L)
 	if( res) {
 		free(res);
 	}
-	return 1;  /* number of results */
+	return 1;  // number of results
 }
 
 /* map_get_tile_type
@@ -1741,7 +1741,7 @@ static int l_map_get_tile_type( lua_State* L)
 	res = map_get_tile_type(map,layer,x,y);
 	lua_pushstring(L, res);
 	free(res);
-	return 1;  /* number of results */
+	return 1;  // number of results
 }
 
 /* map_get_character
@@ -1770,7 +1770,7 @@ static int l_map_get_character( lua_State* L)
 	res = map_get_character(map,x,y);
 	if( res) {
 		cur_res = res;
-		while(*cur_res != NULL) {
+		while(*cur_res != nullptr) {
 			lua_pushstring(L, *cur_res);
 			free(*cur_res);
 			res_num++;
@@ -1779,7 +1779,7 @@ static int l_map_get_character( lua_State* L)
 		free(res);
 	}
 
-	return res_num;  /* number of results */
+	return res_num;  // number of results
 }
 
 /* map_get_item
@@ -1811,7 +1811,7 @@ static int l_map_get_item( lua_State* L)
 	res = map_get_item(map,layer,x,y);
 	if( res) {
 		cur_res = res;
-		while(*cur_res != NULL) {
+		while(*cur_res != nullptr) {
 			lua_pushstring(L, *cur_res);
 			free(*cur_res);
 			res_num++;
@@ -1820,7 +1820,7 @@ static int l_map_get_item( lua_State* L)
 		free(res);
 	}
 
-	return res_num;  /* number of results */
+	return res_num;  // number of results
 }
 
 /* character_attribute_change
@@ -1851,7 +1851,7 @@ static int l_character_attribute_change( lua_State* L)
 
 	res = attribute_change(context,CHARACTER_TABLE,id,attribute,value);
 	lua_pushnumber(L, res);
-	return 1;  /* number of results */
+	return 1;  // number of results
 }
 
 /* character_attribute_get
@@ -1873,7 +1873,7 @@ static int l_character_attribute_get( lua_State* L)
 	attribute = luaL_checkstring(L, -1);
 	res = attribute_get(CHARACTER_TABLE,id,attribute);
 	lua_pushnumber(L, res);
-	return 1;  /* number of results */
+	return 1;  // number of results
 }
 
 /* character_attribute_set
@@ -1898,7 +1898,7 @@ static int l_character_attribute_set( lua_State* L)
 	value = luaL_checkint(L, -1);
 	res = attribute_set(CHARACTER_TABLE,id,attribute,value);
 	lua_pushnumber(L, res);
-	return 1;  /* number of results */
+	return 1;  // number of results
 }
 
 /* character_attribute_tag_get
@@ -1923,7 +1923,7 @@ static int l_character_attribute_tag_get( lua_State* L)
 	if(res) {
 		free(res);
 	}
-	return 1;  /* number of results */
+	return 1;  // number of results
 }
 
 /* character_attribute_tag_set
@@ -1948,7 +1948,7 @@ static int l_character_attribute_tag_set( lua_State* L)
 	value = luaL_checkstring(L, -1);
 	res = attribute_tag_set(CHARACTER_TABLE,id,attribute,value);
 	lua_pushnumber(L, res);
-	return 1;  /* number of results */
+	return 1;  // number of results
 }
 
 /* map_attribute_change
@@ -1979,7 +1979,7 @@ static int l_map_attribute_change( lua_State* L)
 
 	res = attribute_change(context,MAP_TABLE,id,attribute,value);
 	lua_pushnumber(L, res);
-	return 1;  /* number of results */
+	return 1;  // number of results
 }
 
 /* map_attribute_get
@@ -2001,7 +2001,7 @@ static int l_map_attribute_get( lua_State* L)
 	attribute = luaL_checkstring(L, -1);
 	res = attribute_get(MAP_TABLE,id,attribute);
 	lua_pushnumber(L, res);
-	return 1;  /* number of results */
+	return 1;  // number of results
 }
 
 /* map_attribute_set
@@ -2026,7 +2026,7 @@ static int l_map_attribute_set( lua_State* L)
 	value = luaL_checkint(L, -1);
 	res = attribute_set(MAP_TABLE,id,attribute,value);
 	lua_pushnumber(L, res);
-	return 1;  /* number of results */
+	return 1;  // number of results
 }
 
 /* equipment_slot_add_item
@@ -2051,7 +2051,7 @@ static int l_equipment_slot_set_item( lua_State* L)
 	item = luaL_checkstring(L, -1);
 	res = equipment_set_item(id,slot,item);
 	lua_pushnumber(L, res);
-	return 1;  /* number of results */
+	return 1;  // number of results
 }
 
 /* equipment_slot_get_item
@@ -2072,12 +2072,12 @@ static int l_equipment_slot_get_item( lua_State* L)
 	id = luaL_checkstring(L, -2);
 	slot = luaL_checkstring(L, -1);
 	item = equipment_get_item(id,slot);
-	if( item == NULL ) {
-		return 0;  /* number of results */
+	if( item == nullptr ) {
+		return 0;  // number of results
 	}
 	lua_pushstring(L, item);
 	free(item);
-	return 1;  /* number of results */
+	return 1;  // number of results
 }
 
 /* get_base_directory
@@ -2087,7 +2087,7 @@ Output: input data base directory
 static int l_get_base_directory( lua_State* L)
 {
 	lua_pushstring(L, base_directory);
-	return 1;  /* number of results */
+	return 1;  // number of results
 }
 
 /* popup_send
@@ -2102,7 +2102,7 @@ Output: -1 on error, 0 otherwise
 static int l_popup_send( lua_State* L)
 {
 	int num_arg;
-	const char **arg = NULL;
+	const char **arg = nullptr;
 	int i;
 
 	num_arg = lua_gettop(L);
@@ -2111,13 +2111,13 @@ static int l_popup_send( lua_State* L)
 	for(i=0; i<num_arg; i++) {
 		arg[i] = luaL_checkstring(L, -num_arg+i);
 	}
-	arg[i]=NULL;
+	arg[i]=nullptr;
 
 	network_send_popup(arg[0],&arg[1]);
 
 	free(arg);
 	lua_pushnumber(L, 0);
-	return 1;  /* number of results */
+	return 1;  // number of results
 }
 
 /**************************************
@@ -2126,7 +2126,7 @@ static void action_chat(context_t * context, const char * text)
 {
 	char * new_text;
 
-	new_text = strconcat(context->character_name,":",text,NULL);
+	new_text = strconcat(context->character_name,":",text,nullptr);
 
 	network_broadcast_text(context,new_text);
 
@@ -2139,11 +2139,7 @@ return -1 if the script do not return something
 **************************************/
 int action_execute_script(context_t * context, const char * script, const char ** parameters)
 {
-	char * filename;
-	int param_num = 0;
-	int return_value;
-
-	if(script == NULL) {
+	if(script == nullptr) {
 		return -1;
 	}
 
@@ -2153,47 +2149,7 @@ int action_execute_script(context_t * context, const char * script, const char *
 		return -1;
 	}
 
-	/* Load script */
-	filename = strconcat(base_directory,"/",SCRIPT_TABLE,"/",script,NULL);
-
-	if (luaL_loadfile(context->luaVM, filename) != 0 ) {
-		/* If something went wrong, error message is at the top of */
-		/* the stack */
-		werr(LOGUSER,"Couldn't load LUA script %s: %s\n", filename, lua_tostring(context->luaVM, -1));
-		free(filename);
-		return -1;
-	}
-
-	/* Fake call to read global variable from the script file (i.e. the f function */
-	lua_pcall(context->luaVM, 0, 0, 0);
-
-	/* push f function on LUA VM stack */
-	lua_getglobal(context->luaVM,"f");
-
-	/* push parameters on lua VM stack (only strings parameters are supported) */
-	if(parameters != NULL ) {
-		while(parameters[param_num] != NULL ) {
-			lua_pushstring(context->luaVM,parameters[param_num]);
-			param_num++;
-		}
-	}
-
-	/* Ask Lua to call the f function with the given parameters */
-	if (lua_pcall(context->luaVM, param_num, 1, 0) != 0) {
-		werr(LOGUSER,"Error running LUA script %s: %s\n", filename, lua_tostring(context->luaVM, -1));
-		free(filename);
-		return -1;
-	}
-	free(filename);
-
-	/* retrieve result */
-	if (!lua_isnumber(context->luaVM, -1)) {
-		lua_pop(context->luaVM, 1);
-		return -1;
-	}
-	return_value = lua_tonumber(context->luaVM, -1);
-	lua_pop(context->luaVM, 1);
-	return return_value;
+	return lua_execute_script(context->luaVM,script,parameters);
 }
 
 /**************************************
@@ -2207,10 +2163,10 @@ int action_execute(context_t * context, const char * action, char ** parameters)
 	char ** all_params;
 	int ret;
 
-	if(entry_read_string(ACTION_TABLE,action,&script,ACTION_KEY_SCRIPT,NULL) == RET_NOK) {
+	if(entry_read_string(ACTION_TABLE,action,&script,ACTION_KEY_SCRIPT,nullptr) == RET_NOK) {
 		return -1;
 	}
-	entry_read_list(ACTION_TABLE,action,&params,ACTION_KEY_PARAM,NULL);
+	entry_read_list(ACTION_TABLE,action,&params,ACTION_KEY_PARAM,nullptr);
 
 	all_params = add_array(params,parameters);
 
@@ -2234,7 +2190,7 @@ static int l_call_script( lua_State* L)
 {
 	const char * script;
 	int num_arg;
-	char **arg = NULL;
+	char **arg = nullptr;
 	int i;
 	int res;
 	context_t * context;
@@ -2248,9 +2204,9 @@ static int l_call_script( lua_State* L)
 	if(num_arg > 1 ) {
 		arg = (char**)malloc(sizeof(char*)*num_arg);
 		for(i=0; i<num_arg-1; i++) {
-			arg[i] = (char *)luaL_checkstring(L, -num_arg+1+i); /* FIXME wrong casting ? */
+			arg[i] = (char *)luaL_checkstring(L, -num_arg+1+i); // FIXME wrong casting ?
 		}
-		arg[i] = NULL; /* End of list */
+		arg[i] = nullptr; // End of list
 	}
 
 	res = action_execute_script(context, script, (const char**)arg);
@@ -2259,7 +2215,7 @@ static int l_call_script( lua_State* L)
 		free(arg);
 	}
 	lua_pushnumber(L, res);
-	return 1;  /* number of results */
+	return 1;  // number of results
 }
 
 /***************************************************
@@ -2274,7 +2230,7 @@ static int l_call_action( lua_State* L)
 {
 	const char * action;
 	int num_arg;
-	char **arg = NULL;
+	char **arg = nullptr;
 	int i;
 	int res;
 	context_t * context;
@@ -2288,9 +2244,9 @@ static int l_call_action( lua_State* L)
 	if(num_arg > 1 ) {
 		arg = (char**)malloc(sizeof(char*)*num_arg);
 		for(i=0; i<num_arg-1; i++) {
-			arg[i] = (char *)luaL_checkstring(L, -num_arg+1+i); /* FIXME wrong casting ? */
+			arg[i] = (char *)luaL_checkstring(L, -num_arg+1+i); // FIXME wrong casting ?
 		}
-		arg[i] = NULL; /* End of list */
+		arg[i] = nullptr; // End of list
 	}
 
 	res = action_execute(context, action, arg);
@@ -2299,7 +2255,7 @@ static int l_call_action( lua_State* L)
 		free(arg);
 	}
 	lua_pushnumber(L, res);
-	return 1;  /* number of results */
+	return 1;  // number of results
 }
 
 /***************************************************

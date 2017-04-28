@@ -1,5 +1,6 @@
 name		= "Maskman";
 
+draw_script     = "draw/smooth.lua"
 marquee         = "marquee/maskman.png";
 sprite          = [ "sprite/shadow/human.png","sprite/maskman/S.png" ];
 type            = "human"

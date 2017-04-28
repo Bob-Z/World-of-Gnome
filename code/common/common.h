@@ -40,6 +40,7 @@
 #include "fifo.h"
 #include "font.h"
 #include "sfx.h"
+#include "lua.h"
 
 #define RET_OK		(0)
 #define RET_NOK		(-1)

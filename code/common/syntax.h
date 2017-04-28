@@ -1,6 +1,6 @@
 /*
    World of Gnome is a 2D multiplayer role playing game.
-   Copyright (C) 2013-2016 carabobz@gmail.com
+   Copyright (C) 2013-2017 carabobz@gmail.com
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -88,6 +88,7 @@
 #define CHARACTER_KEY_MOV_W_SPRITE	"sprite_move_w"
 #define CHARACTER_KEY_MOV_E_SPRITE	"sprite_move_e"
 #define CHARACTER_KEY_PLATFORM		"platform"
+#define CHARACTER_KEY_DRAW_SCRIPT	"draw_script"
 
 #define CHARACTER_TEMPLATE_TABLE	"character_template"
 

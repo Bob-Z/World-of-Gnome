@@ -17,16 +17,9 @@
    Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-#include <lua.h>
-#include <lualib.h>
-#include <lauxlib.h>
-#ifdef __cplusplus
-}
-#endif
+#ifndef LUA_H
+#define LUA_H
 
-void lua_init();
-lua_State * get_luaVM();
+int lua_execute_script(lua_State* p_pLuaVm, const char * script, const char ** parameters);
 
+#endif

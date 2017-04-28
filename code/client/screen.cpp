@@ -24,6 +24,7 @@
 #include "scr_select.h"
 #include "scr_play.h"
 #include "option_client.h"
+#include "lua_client.h"
 
 static int screen_end = -1;
 static item_t * item_list = nullptr;
@@ -153,7 +154,42 @@ void screen_display(context_t * ctx)
 
 		SDL_RenderClear(ctx->render);
 
-		sdl_blit_item_list(ctx->render,item_list);
+//		sdl_blit_item_list(ctx->render,item_list);
+		item_t * item;
+
+		item = item_list;
+		while(item != nullptr)  {
+			if( item->user_ptr != nullptr ) {
+				context_t * ctx_drawn = (context_t *)item->user_ptr;
+				char * draw_script;
+				if( entry_read_string(CHARACTER_TABLE,ctx_drawn->id,&draw_script,CHARACTER_KEY_DRAW_SCRIPT,nullptr) != -1)
+				{
+					item->move_start_tick = 0; // no smooth move
+					item->rect.x = item->to_px;
+					item->rect.y = item->to_py;
+
+					lua_pushlightuserdata(get_luaVM(),item);
+					lua_setglobal (get_luaVM(), "current_item");
+
+					lua_pushlightuserdata(get_luaVM(),ctx_drawn);
+					lua_setglobal (get_luaVM(), "current_context");
+
+					if ( lua_execute_script(get_luaVM(), draw_script, nullptr) == -1 ){
+						char * l_pTablePath;
+						l_pTablePath = strconcat(SCRIPT_TABLE,"/",draw_script,NULL);
+						file_lock(l_pTablePath);
+						file_update(ctx, l_pTablePath);
+						file_unlock(l_pTablePath);
+						free(l_pTablePath);
+					}
+					lua_pop(get_luaVM(),1);
+					free(draw_script);
+				}
+			}
+
+			sdl_blit_item(ctx->render,item);
+			item = item->next;
+		}
 
 		sdl_blit_to_screen(ctx->render);
 

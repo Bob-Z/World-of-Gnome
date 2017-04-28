@@ -1,6 +1,6 @@
 /*
    World of Gnome is a 2D multiplayer role playing game.
-   Copyright (C) 2016 carabobz@gmail.com
+   Copyright (C) 2016-2017 carabobz@gmail.com
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
 
 #include "common.h"
 
-static list_t * font_list = NULL;
+static list_t * font_list = nullptr;
 
 /****************************************
 *****************************************/
@@ -32,15 +32,16 @@ TTF_Font * font_get(context_t* ctx,const char * filename, int size)
 
 	font = (TTF_Font*)list_find(font_list,filename);
 
-	if( font ) {
+	if( font != nullptr ) {
 		file_unlock(filename);
 		return font;
 	}
 
-	fullname = strconcat(base_directory,"/",filename,NULL);
+	fullname = strconcat(base_directory,"/",filename,nullptr);
 	font = TTF_OpenFont(fullname, size);
 	free(fullname);
-	if( font ) {
+
+	if( font != nullptr ) {
 		list_update(&font_list,filename,font);
 		file_unlock(filename);
 		return font;
@@ -50,6 +51,6 @@ TTF_Font * font_get(context_t* ctx,const char * filename, int size)
 
 	file_unlock(filename);
 
-	return NULL;
+	return nullptr;
 }
 

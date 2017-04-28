@@ -1,5 +1,6 @@
 name		= "Sara";
 
+draw_script	= "draw/smooth.lua"
 marquee         = "marquee/sara.png";
 sprite          = [ "sprite/shadow/human.png","sprite/sara_down.png"];
 type            = "faerie"

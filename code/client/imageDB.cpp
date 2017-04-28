@@ -1,6 +1,6 @@
 /*
    World of Gnome is a 2D multiplayer role playing game.
-   Copyright (C) 2013-2016 carabobz@gmail.com
+   Copyright (C) 2013-2017 carabobz@gmail.com
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -22,15 +22,15 @@
 #include "../common/common.h"
 #include "../sdl_item/anim.h"
 
-static list_t * image_list = NULL;
+static list_t * image_list = nullptr;
 
-static anim_t * def_anim = NULL;
+static anim_t * def_anim = nullptr;
 
 /**************************
 **************************/
 static anim_t * default_anim(context_t * ctx)
 {
-	if(def_anim == NULL) {
+	if(def_anim == nullptr) {
 		def_anim = (anim_t*)malloc(sizeof(anim_t));
 
 		def_anim->num_frame = 1;
@@ -53,7 +53,7 @@ static anim_t * image_load(context_t * ctx, char * filename)
 	char * fullname;
 	anim_t * anim;
 
-	fullname = strconcat(base_directory,"/",filename,NULL);
+	fullname = strconcat(base_directory,"/",filename,nullptr);
 
 	anim = anim_load(ctx->render, fullname);
 
@@ -71,7 +71,7 @@ anim_t * imageDB_get_anim(context_t * context, const char * image_name)
 	anim_t * anim;
 	char * filename;
 
-	if( image_name == NULL ) {
+	if( image_name == nullptr ) {
 		return default_anim(context);
 	}
 
@@ -79,7 +79,7 @@ anim_t * imageDB_get_anim(context_t * context, const char * image_name)
 		return default_anim(context);
 	}
 
-	filename = strconcat(IMAGE_TABLE,"/",image_name,NULL);
+	filename = strconcat(IMAGE_TABLE,"/",image_name,nullptr);
 
 //	wlog(LOGDEBUG,"Image get: %s",filename);
 
@@ -93,7 +93,7 @@ anim_t * imageDB_get_anim(context_t * context, const char * image_name)
 		return anim;
 	}
 
-	/* Try to load from a file */
+	// Try to load from a file
 	file_lock(filename);
 
 	anim = image_load(context,filename);
@@ -107,7 +107,7 @@ anim_t * imageDB_get_anim(context_t * context, const char * image_name)
 		return anim;
 	}
 
-	/* Request an update to the server */
+	// Request an update to the server
 //	wlog(LOGDEBUG,"Image asked: %s",filename);
 	file_update(context,filename);
 
@@ -119,20 +119,20 @@ anim_t * imageDB_get_anim(context_t * context, const char * image_name)
 }
 
 /******************************************************
-Return a pointer to a NULL terminated array of anim_t object
-image_name is a NULL terminated array of image files path
+Return a pointer to a nullptr terminated array of anim_t object
+image_name is a nullptr terminated array of image files path
 return pointer MUST BE FREED
 *******************************************************/
 anim_t ** imageDB_get_anim_array(context_t * context, const char ** image_name)
 {
-	anim_t ** anim_output = NULL;
+	anim_t ** anim_output = nullptr;
 	int num_image = 0;
 	int current_image = 0;
 
 	anim_output = (anim_t**)malloc( sizeof(anim_t*) );
-	anim_output[0] = NULL;
+	anim_output[0] = nullptr;
 
-	if( image_name == NULL ) {
+	if( image_name == nullptr ) {
 		return anim_output;
 	}
 
@@ -140,7 +140,7 @@ anim_t ** imageDB_get_anim_array(context_t * context, const char ** image_name)
 		if( image_name[current_image][0] != 0 ) {
 			anim_output = (anim_t**)realloc(anim_output,(num_image+2)*sizeof(anim_t*));
 			anim_output[num_image] = imageDB_get_anim(context,image_name[current_image]);
-			anim_output[num_image+1] = NULL;
+			anim_output[num_image+1] = nullptr;
 			num_image++;
 		}
 		current_image++;
@@ -167,7 +167,7 @@ void image_DB_remove(char * filename)
 //		si_anim_free(old_anim);
 	}
 
-	list_update(&image_list,filename,NULL);
+	list_update(&image_list,filename,nullptr);
 
 	SDL_UnlockMutex(imageDB_mutex);
 }

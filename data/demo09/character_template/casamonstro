@@ -1,5 +1,6 @@
 name		= "Casa Monstro";
 
+draw_script     = "draw/smooth.lua"
 marquee         = "sprite/casamonstro/marquee.png";
 sprite          = [ "sprite/shadow/spider.png", "sprite/casamonstro/casamonstro.zip" ];
 type            = "casamonstro"
