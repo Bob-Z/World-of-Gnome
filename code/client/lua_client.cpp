@@ -18,6 +18,7 @@
 */
 
 #include "context.h"
+#include "imageDB.h"
 #include "../common/common.h"
 #include "../sdl_item/sdl.h"
 #include "../sdl_item/item.h"
@@ -66,7 +67,7 @@ static int l_context_get_id(lua_State* p_pLuaState)
 }
 
 /***********************************
- item set_x
+ item_set_x
 Input: X ccordinate in pixel
 Output:
 ***********************************/
@@ -85,7 +86,7 @@ static int l_item_set_x( lua_State* p_pLuaState)
 }
 
 /***********************************
- item set_y
+ item_set_y
 Input: Y ccordinate in pixel
 Output:
 ***********************************/
@@ -104,7 +105,7 @@ static int l_item_set_y( lua_State* p_pLuaState)
 }
 
 /***********************************
- item get_x
+ item_get_x
 Input:
 Output: X ccordinate in pixel
 ***********************************/
@@ -121,7 +122,7 @@ static int l_item_get_x( lua_State* p_pLuaState)
 }
 
 /***********************************
- item get_y
+ item_get_y
 Input:
 Output: Y ccordinate in pixel
 ***********************************/
@@ -138,7 +139,7 @@ static int l_item_get_y( lua_State* p_pLuaState)
 }
 
 /***********************************
- item set_anim_start_tick
+ item_set_anim_start_tick
 Input: Tick from when animation will be calculated
 Output: 
 ***********************************/
@@ -153,6 +154,57 @@ static int l_item_set_anim_start_tick( lua_State* p_pLuaState)
 	int l_Tick;
 	l_Tick = luaL_checkint(p_pLuaState, -1);
 	l_pItem->anim_start_tick = l_Tick;
+
+	return 0; // number of results
+}
+
+/***********************************
+ item_set_anim_from_context
+Input:
+ - ID of context
+ - entry name in context file
+Output:
+***********************************/
+static int l_item_set_anim_from_context( lua_State* p_pLuaState)
+{
+        item_t * l_pItem;
+        lua_getglobal(p_pLuaState,"current_item");
+        l_pItem = (item_t*)lua_touserdata(p_pLuaState, -1);
+        lua_pop(p_pLuaState,1);
+
+	const char * l_pId;
+        l_pId = luaL_checkstring(p_pLuaState, -2);
+	const char * l_pEntryName;
+        l_pEntryName = luaL_checkstring(p_pLuaState, -1);
+
+	anim_t ** anim_array;
+
+	char * sprite_name = nullptr;
+	if( entry_read_string(CHARACTER_TABLE,l_pId,&sprite_name,l_pEntryName,nullptr) != -1) {
+		if(sprite_name[0] != 0) {
+			char * sprite_name_array[2] = { nullptr, nullptr };
+			sprite_name_array[0] = sprite_name;
+			anim_array = imageDB_get_anim_array(context_get_player(),(const char **)sprite_name_array);
+			free(sprite_name);
+
+			item_set_anim_array(l_pItem,anim_array);
+			return 0;
+		}
+		free(sprite_name);
+	}
+
+	char ** sprite_list = nullptr;
+	if( entry_read_list(CHARACTER_TABLE,l_pId,&sprite_list,l_pEntryName,nullptr) != -1 ) {
+		anim_array = imageDB_get_anim_array(context_get_player(),(const char **)sprite_list);
+                deep_free(sprite_list);
+
+		item_set_anim_array(l_pItem,anim_array);
+		return 0;
+	}
+
+	char l_pErrorMessage[1024];
+	snprintf(l_pErrorMessage,sizeof(l_pErrorMessage),"LUA item_set_anim_from_context: Failed to get %s in %s", l_pEntryName, l_pId);
+	werr(LOGDEV,l_pErrorMessage);
 
 	return 0; // number of results
 }
@@ -214,6 +266,8 @@ static void register_lua_functions()
 	lua_setglobal(luaVM, "item_get_y");
 	lua_pushcfunction(luaVM, l_item_set_anim_start_tick);
 	lua_setglobal(luaVM, "item_set_anim_start_tick");
+	lua_pushcfunction(luaVM, l_item_set_anim_from_context);
+	lua_setglobal(luaVM, "item_set_anim_from_context");
 	// utility  func
 	lua_pushcfunction(luaVM, l_get_tick);
 	lua_setglobal(luaVM, "get_tick");
