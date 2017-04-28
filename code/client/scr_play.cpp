@@ -135,19 +135,13 @@ Select sprite image to display
 Return nullptr if no sprite can be found
 Returned anim_t ** must be FREED
 **********************************/
-static anim_t ** select_sprite(context_t * ctx, const char * image_file_name)
+static anim_t ** select_sprite(context_t * ctx)
 {
 	anim_t ** sprite;
 	char * sprite_name = nullptr;
 	char ** sprite_list = nullptr;
 	const char * sprite_name_array[2] = { nullptr, nullptr };
 	context_t * player_context = context_get_player();
-
-	if( image_file_name ) {
-		sprite_name_array[0] = image_file_name;
-		sprite = imageDB_get_anim_array(player_context,sprite_name_array);
-		return sprite;
-	}
 
 	// Try to find a sprite depending on the orientation
 	if( ctx->orientation & NORTH ) {
@@ -218,7 +212,7 @@ static anim_t ** select_sprite(context_t * ctx, const char * image_file_name)
 Select sprite image to display when sprite is moving
 Return nullptr if no sprite can be found
 **********************************/
-static anim_t ** select_sprite_move(context_t * ctx, const char * image_file_name)
+static anim_t ** select_sprite_move(context_t * ctx)
 {
 	anim_t ** sprite;
 	char * sprite_name = nullptr;
@@ -226,13 +220,7 @@ static anim_t ** select_sprite_move(context_t * ctx, const char * image_file_nam
 	const char * sprite_name_array[2] = { nullptr, nullptr };
 	context_t * player_context = context_get_player();
 
-	if( image_file_name ) {
-		sprite_name_array[0] = image_file_name;
-		sprite = imageDB_get_anim_array(player_context,sprite_name_array);
-		return sprite;
-	}
-
-	/* Try to find a sprite depending on the orientation */
+	// Try to find a sprite depending on the orientation
 	if( ctx->orientation & NORTH ) {
 		entry_read_string(CHARACTER_TABLE,ctx->id,&sprite_name,CHARACTER_KEY_MOV_N_SPRITE,nullptr);
 	}
@@ -253,7 +241,7 @@ static anim_t ** select_sprite_move(context_t * ctx, const char * image_file_nam
 		return sprite;
 	}
 
-	/* Try sprite lists */
+	// Try sprite lists
 	if( ctx->orientation & NORTH ) {
 		entry_read_list(CHARACTER_TABLE,ctx->id,&sprite_list,CHARACTER_KEY_MOV_N_SPRITE,nullptr);
 	}
@@ -279,7 +267,7 @@ static anim_t ** select_sprite_move(context_t * ctx, const char * image_file_nam
 Draw a single sprite
 if image_file_name is not nullptr, this file is used as an image rather than the normal sprite image
 **********************************/
-static void set_up_sprite(context_t * ctx, const char * image_file_name)
+static void set_up_sprite(context_t * ctx)
 {
 	anim_t ** sprite_list;
 	anim_t ** sprite_move_list;
@@ -375,7 +363,7 @@ static void set_up_sprite(context_t * ctx, const char * image_file_name)
 	}
 
 	// Select sprite to display
-	sprite_list = select_sprite(ctx,image_file_name);
+	sprite_list = select_sprite(ctx);
 	if( sprite_list == nullptr ) {
 		return;
 	}
@@ -383,7 +371,7 @@ static void set_up_sprite(context_t * ctx, const char * image_file_name)
 		free(sprite_list);
 		return;
 	}
-	sprite_move_list = select_sprite_move(ctx,image_file_name);
+	sprite_move_list = select_sprite_move(ctx);
 
 	// Get position in pixel
 	px = map_t2p_x(ctx->pos_tx,ctx->pos_ty,default_layer);
@@ -520,7 +508,7 @@ static void compose_sprite(int layer_index)
 		entry_read_int(CHARACTER_TABLE,ctx->id,&layer,CHARACTER_LAYER,nullptr);
 
 		if( layer == layer_index ) {
-			set_up_sprite(ctx,nullptr);
+			set_up_sprite(ctx);
 		}
 		ctx = ctx->next;
 	}
@@ -879,7 +867,7 @@ static void compose_select()
 	}
 
 	// Sprite selection
-	if( option && option->cursor_sprite ) {
+	if( option && option->cursor_character_draw_script ) {
 		if( ctx->selection.id[0] != 0) {
 			context_t * selected_context = nullptr;
 			selected_context = context_find(ctx->selection.id);
@@ -887,7 +875,9 @@ static void compose_select()
 				return;
 			}
 
-			set_up_sprite(selected_context, option->cursor_sprite);
+			item = item_list_add(&item_list);
+			item->user_ptr = selected_context;
+			item->user1_ptr = option->cursor_character_draw_script;
 		}
 	}
 }

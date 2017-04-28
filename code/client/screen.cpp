@@ -135,7 +135,6 @@ void screen_display(context_t * ctx)
 	}
 
 	while( screen_running == true) {
-
 		frame_start(ctx);
 
 		if(compose) {
@@ -162,10 +161,19 @@ void screen_display(context_t * ctx)
 		while(item != nullptr)  {
 			if( item->user_ptr != nullptr ) {
 				context_t * ctx_drawn = (context_t *)item->user_ptr;
-				char * draw_script;
-				if( entry_read_string(CHARACTER_TABLE,ctx_drawn->id,&draw_script,CHARACTER_KEY_DRAW_SCRIPT,nullptr) != -1)
-				{
-					// FIXME: remove this and all related move code here and sdl_item
+
+				char * draw_script = nullptr;
+
+				// Drawing script not directly attached to context (i.e. for cursor)
+				if( item->user1_ptr != nullptr ) {
+					draw_script = strdup((const char *)item->user1_ptr);
+				}
+				else {
+					 entry_read_string(CHARACTER_TABLE,ctx_drawn->id,&draw_script,CHARACTER_KEY_DRAW_SCRIPT,nullptr);
+				}
+
+				if( draw_script != nullptr ) {
+					// FIXME: remove these 3 lines and all related move code here and sdl_item
 					item->move_start_tick = 0; // no smooth move
 					item->rect.x = item->to_px;
 					item->rect.y = item->to_py;
@@ -184,7 +192,6 @@ void screen_display(context_t * ctx)
 						file_unlock(l_pTablePath);
 						free(l_pTablePath);
 					}
-					lua_pop(get_luaVM(),1);
 					free(draw_script);
 				}
 			}
