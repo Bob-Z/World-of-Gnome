@@ -40,10 +40,6 @@ int lua_execute_script(lua_State* p_pLuaVm, const char * p_pScript, const char *
 	l_pFullPath = strconcat(base_directory,"/",SCRIPT_TABLE,"/",p_pScript,NULL);
 
 	if (luaL_loadfile(p_pLuaVm, l_pFullPath) != 0 ) {
-	        if(client_server == CLIENT) {
-
-		}
-
 		// If something went wrong, error message is at the top of the stack
 		werr(LOGUSER,"Couldn't load LUA script %s: %s\n", l_pFullPath, lua_tostring(p_pLuaVm, -1));
 		free(l_pFullPath);
@@ -66,6 +62,7 @@ int lua_execute_script(lua_State* p_pLuaVm, const char * p_pScript, const char *
 	}
 
 	// Ask Lua to call the f function with the given parameters
+	// number of arhument = l_ParamNum, number of result = 1
 	if (lua_pcall(p_pLuaVm, l_ParamNum, 1, 0) != 0) {
 		werr(LOGUSER,"Error running LUA script %s: %s\n", l_pFullPath, lua_tostring(p_pLuaVm, -1));
 		free(l_pFullPath);
@@ -73,7 +70,7 @@ int lua_execute_script(lua_State* p_pLuaVm, const char * p_pScript, const char *
 	}
 	free(l_pFullPath);
 
-	// retrieve result
+	// we expect a number as the result
 	if (!lua_isnumber(p_pLuaVm, -1)) {
 		lua_pop(p_pLuaVm, 1);
 		return -1;
@@ -81,7 +78,10 @@ int lua_execute_script(lua_State* p_pLuaVm, const char * p_pScript, const char *
 
 	int l_ReturnValue;
 	l_ReturnValue = lua_tonumber(p_pLuaVm, -1);
+
+	// Remove returned value from stack
 	lua_pop(p_pLuaVm, 1);
+
 	return l_ReturnValue;
 }
 
