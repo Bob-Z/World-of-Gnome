@@ -854,7 +854,6 @@ static void compose_select()
 	int x;
 	int y;
 	context_t * ctx = context_get_player();
-	context_t * selected_context = nullptr;
 
 	// Tile selection
 	if( option && option->cursor_tile ) {
@@ -882,6 +881,7 @@ static void compose_select()
 	// Sprite selection
 	if( option && option->cursor_sprite ) {
 		if( ctx->selection.id[0] != 0) {
+			context_t * selected_context = nullptr;
 			selected_context = context_find(ctx->selection.id);
 			if( selected_context == nullptr ) {
 				return;

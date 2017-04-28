@@ -26,17 +26,16 @@
 #include "option_client.h"
 #include "lua_client.h"
 
-static int screen_end = -1;
+static bool screen_running = true;
 static item_t * item_list = nullptr;
 static int current_screen=SCREEN_SELECT;
-static int compose = 0;
+static bool compose = 0;
 static int virtual_x[SCREEN_LAST];
 static int virtual_y[SCREEN_LAST];
 static double virtual_z[SCREEN_LAST];
 
 #define ITEM_FONT "Ubuntu-C.ttf"
 #define ITEM_FONT_SIZE 15
-#define NUM_SAMPLE (50)
 static item_t * frame_rate = nullptr;
 
 /***********************************************
@@ -133,7 +132,7 @@ void screen_display(context_t * ctx)
 		virtual_z[i] = -1.0;
 	}
 
-	while( screen_end == -1) {
+	while( screen_running == true) {
 
 		frame_start(ctx);
 
@@ -227,5 +226,6 @@ End the rendering
 ************************************************/
 void screen_quit()
 {
-	screen_end = 1;
+	screen_running = false;
 }
+
