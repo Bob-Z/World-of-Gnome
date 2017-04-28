@@ -1,6 +1,6 @@
 /*
    World of Gnome is a 2D multiplayer role playing game.
-   Copyright (C) 2013-2016 carabobz@gmail.com
+   Copyright (C) 2013-2017 carabobz@gmail.com
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -42,7 +42,7 @@ static int async_send(void * user_data)
 	send_data_t * data = (send_data_t *)user_data;
 	context_t * context = data->context;
 
-	if( context == NULL ) {
+	if( context == nullptr ) {
 		goto async_send_free;
 	}
 
@@ -114,7 +114,7 @@ void network_send_command(context_t * context, Uint32 command, long int count, c
 
 	thread = SDL_CreateThread(async_send,"async_send",(void*)send_data);
 
-	if( thread == NULL) {
+	if( thread == nullptr) {
 		free(send_data->data);
 		free(send_data);
 	}
@@ -130,7 +130,7 @@ void network_send_entry_int(context_t * context, const char * table, const char 
 
 	sprintf(buf,"%d",value);
 
-	frame = strconcat(ENTRY_TYPE_INT,NETWORK_DELIMITER,table,NETWORK_DELIMITER,file,NETWORK_DELIMITER,path,NETWORK_DELIMITER,buf,NULL);
+	frame = strconcat(ENTRY_TYPE_INT,NETWORK_DELIMITER,table,NETWORK_DELIMITER,file,NETWORK_DELIMITER,path,NETWORK_DELIMITER,buf,nullptr);
 
 	wlog(LOGDEBUG,"Send CMD_SEND_ENTRY to %s :%s",context->id,frame);
 	network_send_command(context, CMD_SEND_ENTRY, strlen(frame)+1, frame,false);
@@ -150,21 +150,21 @@ void network_send_req_file(context_t * context, const char * file)
 	char * frame;
 
 	// Sanity check
-	if(file == NULL) {
-		werr(LOGDEV,"network_send_req_file_checksum called with NULL");
+	if(file == nullptr) {
+		werr(LOGDEV,"network_send_req_file_checksum called with nullptr");
 		return;
 	}
 
 	// Compute checksum of local file
-	filename = strconcat(base_directory,"/",file,NULL);
+	filename = strconcat(base_directory,"/",file,nullptr);
 
 	cksum = checksum_file(filename);
-	if( cksum == NULL ) {
+	if( cksum == nullptr ) {
 		cksum = strdup("0");
 	}
 	free(filename);
 
-	frame = strconcat(file,NETWORK_DELIMITER,cksum,NULL);
+	frame = strconcat(file,NETWORK_DELIMITER,cksum,nullptr);
 
 	wlog(LOGDEBUG,"Send CMD_REQ_FILE :%s",file);
 	network_send_command(context, CMD_REQ_FILE, strlen(frame)+1, frame,true);
@@ -226,20 +226,21 @@ void network_send_context_to_context(context_t * dest_ctx, context_t * src_ctx)
 	char data[BIG_BUF];
 	int  data_size = 0;
 
-	/* Skip if Dest context is an NPC */
+	// Skip if Dest context is an NPC
 	if( context_is_npc(dest_ctx) ) {
 		return;
 	}
-	/* Source context is not ready yet */
+	// Source context is not ready yet
 	if( src_ctx->in_game == 0 ) {
 		return;
 	}
-	if( src_ctx->user_name == NULL ) {
+	if( src_ctx->user_name == nullptr ) {
 		return;
 	}
 
 	add_str(data,&data_size,src_ctx->user_name);
 	add_str(data,&data_size,src_ctx->character_name);
+	add_int(data,&data_size,src_ctx->npc);
 	add_str(data,&data_size,src_ctx->map);
 	add_int(data,&data_size,src_ctx->in_game);
 	add_int(data,&data_size,src_ctx->connected);
@@ -266,12 +267,12 @@ return 0 on success
 *********************************************************************/
 int network_send_file(context_t * context, char * filename)
 {
-	char * file_data = NULL;
+	char * file_data = nullptr;
 	int file_length = 0;
 	int res = 0;
 	Uint32 count = 0;
-	char * frame = NULL;
-	char * ptr = NULL;
+	char * frame = nullptr;
+	char * ptr = nullptr;
 
 	// Check if NPC
 	if( context_is_npc(context) == true ) {
@@ -279,7 +280,7 @@ int network_send_file(context_t * context, char * filename)
 	}
 
 	// Never send files with password
-	if ( strstr(filename,PASSWD_TABLE) != NULL ) {
+	if ( strstr(filename,PASSWD_TABLE) != nullptr ) {
 		werr(LOGUSER,"send_file : Do not serve personal file  \"%s\"",filename);
 		return -1;
 	}
@@ -294,7 +295,7 @@ int network_send_file(context_t * context, char * filename)
 	// Prepare the frame = file_name_size + file_name + file_data_size + file_data
 	count = sizeof(Uint32)+strlen(filename)+1+sizeof(Uint32)+file_length;
 	frame = (char*)malloc(count);
-	if( frame == NULL) {
+	if( frame == nullptr) {
 		free(file_data);
 		werr(LOGUSER,"send_file : Error allocating memory");
 		return -1;
@@ -336,7 +337,7 @@ int network_send_table_file(context_t * context, const char * table, const char 
 	char * filename;
 	int ret;
 
-	filename = strconcat(table,"/",id,NULL);
+	filename = strconcat(table,"/",id,nullptr);
 	ret = network_send_file(context,filename);
 	free(filename);
 
@@ -348,7 +349,7 @@ int network_send_table_file(context_t * context, const char * table, const char 
 void network_send_text(const char * id, const char * string)
 {
 	context_t * context = context_find(id);
-	if( context == NULL ) {
+	if( context == nullptr ) {
 		werr(LOGDEV,"Could not find context %s",id);
 		return;
 	}
@@ -356,3 +357,4 @@ void network_send_text(const char * id, const char * string)
 	wlog(LOGDEBUG,"Send CMD_SEND_TEXT :\"%s\" to %s (%s)",string,context->character_name,context->user_name);
 	network_send_command(context, CMD_SEND_TEXT, strlen(string)+1, string,false);
 }
+

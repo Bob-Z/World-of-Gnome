@@ -52,6 +52,7 @@ typedef struct context {
 	SDL_Renderer * render;
 	SDL_Window * window;
 
+	int		npc;	// 1 = NPC
 	char *		character_name;
 	char *		map;	// map name
 	int		pos_tx;	// player position (in tile)
@@ -102,6 +103,7 @@ ret_code_t context_set_map(context_t * context, const char * name);
 int context_set_map_w(context_t * context, int width);
 int context_set_map_h(context_t * context, int height);
 ret_code_t context_set_type(context_t * context, const char * name);
+void context_set_npc(context_t * context, int npc);
 void context_set_pos_tx(context_t * context, int pos);
 void context_set_pos_ty(context_t * context, int pos);
 void context_set_tile_x(context_t * context, unsigned int pos);

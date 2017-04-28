@@ -67,6 +67,25 @@ static int l_context_get_id(lua_State* p_pLuaState)
 }
 
 /***********************************
+ context_get_npc
+Input:
+Output: 1 if context is an NPC
+***********************************/
+static int l_context_get_npc( lua_State* p_pLuaState)
+{
+        context_t * l_pContext;
+
+        lua_getglobal(p_pLuaState,"current_context");
+        l_pContext = (context_t*)lua_touserdata(p_pLuaState, -1);
+        lua_pop(p_pLuaState,1);
+
+	int npc = 1;
+	entry_read_int(CHARACTER_TABLE,l_pContext->id,&npc,CHARACTER_KEY_NPC,NULL);
+	lua_pushnumber(p_pLuaState, npc);
+	return 1; // number of results
+}
+
+/***********************************
  item_set_x
 Input: X ccordinate in pixel
 Output:
@@ -180,7 +199,7 @@ static int l_item_set_anim_from_context( lua_State* p_pLuaState)
 	anim_t ** anim_array;
 
 	char * sprite_name = nullptr;
-	if( entry_read_string(CHARACTER_TABLE,l_pId,&sprite_name,l_pEntryName,nullptr) != -1) {
+	if( entry_read_string(CHARACTER_TABLE,l_pId,&sprite_name,l_pEntryName,nullptr) == RET_OK) {
 		if(sprite_name[0] != 0) {
 			char * sprite_name_array[2] = { nullptr, nullptr };
 			sprite_name_array[0] = sprite_name;
@@ -194,7 +213,7 @@ static int l_item_set_anim_from_context( lua_State* p_pLuaState)
 	}
 
 	char ** sprite_list = nullptr;
-	if( entry_read_list(CHARACTER_TABLE,l_pId,&sprite_list,l_pEntryName,nullptr) != -1 ) {
+	if( entry_read_list(CHARACTER_TABLE,l_pId,&sprite_list,l_pEntryName,nullptr) == RET_OK ) {
 		anim_array = imageDB_get_anim_array(context_get_player(),(const char **)sprite_list);
                 deep_free(sprite_list);
 
@@ -255,6 +274,8 @@ static void register_lua_functions()
 	// context func
 	lua_pushcfunction(luaVM, l_context_get_id);
 	lua_setglobal(luaVM, "context_get_id");
+	lua_pushcfunction(luaVM, l_context_get_npc);
+	lua_setglobal(luaVM, "context_get_npc");
 	// item func
 	lua_pushcfunction(luaVM, l_item_set_x);
 	lua_setglobal(luaVM, "item_set_x");
