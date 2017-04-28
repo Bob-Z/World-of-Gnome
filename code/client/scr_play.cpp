@@ -502,7 +502,7 @@ static void set_up_sprite(context_t * ctx, const char * image_file_name)
 	item_set_zoom_x(item,zoom * default_layer->map_zoom );
 	item_set_zoom_y(item,zoom * default_layer->map_zoom );
 
-	entry_read_string(CHARACTER_TABLE,ctx->id,&item->draw_script,CHARACTER_KEY_DRAW_SCRIPT,nullptr);
+	item->user_ptr = ctx;
 }
 
 /**********************************

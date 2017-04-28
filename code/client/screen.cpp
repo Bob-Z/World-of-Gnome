@@ -159,22 +159,32 @@ void screen_display(context_t * ctx)
 
 		item = item_list;
 		while(item != nullptr)  {
-			if( item->draw_script != nullptr ) {
-				item->move_start_tick = 0; // no smooth move
-				item->rect.x = item->to_px;
-				item->rect.y = item->to_py;
+			if( item->user_ptr != nullptr ) {
+				context_t * ctx_drawn = (context_t *)item->user_ptr;
+				char * draw_script;
+				if( entry_read_string(CHARACTER_TABLE,ctx_drawn->id,&draw_script,CHARACTER_KEY_DRAW_SCRIPT,nullptr) != -1)
+				{
+					item->move_start_tick = 0; // no smooth move
+					item->rect.x = item->to_px;
+					item->rect.y = item->to_py;
 
-				lua_pushlightuserdata(get_luaVM(),item);
-				lua_setglobal (get_luaVM(), "current_item");
-				if ( lua_execute_script(get_luaVM(), item->draw_script, nullptr) == -1 ){
-					char * l_pTablePath;
-					l_pTablePath = strconcat(SCRIPT_TABLE,"/",item->draw_script,NULL);
-					file_lock(l_pTablePath);
-					file_update(ctx, l_pTablePath);
-					file_unlock(l_pTablePath);
-					free(l_pTablePath);
+					lua_pushlightuserdata(get_luaVM(),item);
+					lua_setglobal (get_luaVM(), "current_item");
+
+					lua_pushlightuserdata(get_luaVM(),ctx_drawn);
+					lua_setglobal (get_luaVM(), "current_context");
+
+					if ( lua_execute_script(get_luaVM(), draw_script, nullptr) == -1 ){
+						char * l_pTablePath;
+						l_pTablePath = strconcat(SCRIPT_TABLE,"/",draw_script,NULL);
+						file_lock(l_pTablePath);
+						file_update(ctx, l_pTablePath);
+						file_unlock(l_pTablePath);
+						free(l_pTablePath);
+					}
+					lua_pop(get_luaVM(),1);
+					free(draw_script);
 				}
-				lua_pop(get_luaVM(),1);
 			}
 
 			sdl_blit_item(ctx->render,item);
