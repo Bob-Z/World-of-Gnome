@@ -39,13 +39,30 @@ static lua_State * luaVM = nullptr;
 Input:
 Output: ID of the current context
 ***********************************/
-static int l_player_get_id( lua_State* p_pLuaState)
+static int l_player_get_id(lua_State* p_pLuaState)
 {
         context_t * l_pContext;
 
 	l_pContext = context_get_player();
         lua_pushstring(p_pLuaState, l_pContext->id);
         return 1;  // number of results
+}
+
+/***********************************
+ context_get_id
+Input:
+Output: ID of current context
+***********************************/
+static int l_context_get_id(lua_State* p_pLuaState)
+{
+        context_t * l_pContext;
+
+        lua_getglobal(p_pLuaState,"current_context");
+        l_pContext = (context_t*)lua_touserdata(p_pLuaState, -1);
+        lua_pop(p_pLuaState,1);
+
+	lua_pushstring(p_pLuaState, l_pContext->id);
+	return 1; // number of results
 }
 
 /***********************************
@@ -183,6 +200,9 @@ static void register_lua_functions()
 	// player func
 	lua_pushcfunction(luaVM, l_player_get_id);
 	lua_setglobal(luaVM, "player_get_id");
+	// context func
+	lua_pushcfunction(luaVM, l_context_get_id);
+	lua_setglobal(luaVM, "context_get_id");
 	// item func
 	lua_pushcfunction(luaVM, l_item_set_x);
 	lua_setglobal(luaVM, "item_set_x");
