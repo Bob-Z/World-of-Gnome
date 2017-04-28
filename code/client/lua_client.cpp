@@ -79,9 +79,7 @@ static int l_context_get_npc( lua_State* p_pLuaState)
         l_pContext = (context_t*)lua_touserdata(p_pLuaState, -1);
         lua_pop(p_pLuaState,1);
 
-	int npc = 1;
-	entry_read_int(CHARACTER_TABLE,l_pContext->id,&npc,CHARACTER_KEY_NPC,NULL);
-	lua_pushnumber(p_pLuaState, npc);
+	lua_pushnumber(p_pLuaState, l_pContext->npc);
 	return 1; // number of results
 }
 
