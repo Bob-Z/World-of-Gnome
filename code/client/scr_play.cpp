@@ -149,7 +149,7 @@ static anim_t ** select_sprite(context_t * ctx, const char * image_file_name)
 		return sprite;
 	}
 
-	/* Try to find a sprite depending on the orientation */
+	// Try to find a sprite depending on the orientation
 	if( ctx->orientation & NORTH ) {
 		entry_read_string(CHARACTER_TABLE,ctx->id,&sprite_name,CHARACTER_KEY_DIR_N_SPRITE,nullptr);
 	}
@@ -173,7 +173,7 @@ static anim_t ** select_sprite(context_t * ctx, const char * image_file_name)
 		free(sprite_name);
 	}
 
-	/* Try sprite lists */
+	// Try sprite lists
 	if( ctx->orientation & NORTH ) {
 		entry_read_list(CHARACTER_TABLE,ctx->id,&sprite_list,CHARACTER_KEY_DIR_N_SPRITE,nullptr);
 	}
@@ -193,7 +193,7 @@ static anim_t ** select_sprite(context_t * ctx, const char * image_file_name)
 		return sprite;
 	}
 
-	/* try default sprite file */
+	// try default sprite file
 	if(entry_read_string(CHARACTER_TABLE,ctx->id,&sprite_name,CHARACTER_KEY_SPRITE,nullptr) == RET_OK ) {
 		if( sprite_name[0] != 0 ) {
 			sprite_name_array[0] = sprite_name;
@@ -203,7 +203,7 @@ static anim_t ** select_sprite(context_t * ctx, const char * image_file_name)
 		}
 		free(sprite_name);
 	}
-	/* try default sprite list */
+	// try default sprite list
 	if(entry_read_list(CHARACTER_TABLE,ctx->id,&sprite_list,CHARACTER_KEY_SPRITE,nullptr) == RET_OK ) {
 		sprite = imageDB_get_anim_array(player_context,(const char **)sprite_list);
 		deep_free(sprite_list);
@@ -508,9 +508,10 @@ static void set_up_sprite(context_t * ctx, const char * image_file_name)
 /**********************************
 Compose sprites
 **********************************/
-static void compose_sprite(context_t * ctx,int layer_index)
+static void compose_sprite(int layer_index)
 {
 	int layer;
+	context_t * ctx = context_get_player();
 
 	context_lock_list();
 
@@ -530,7 +531,7 @@ static void compose_sprite(context_t * ctx,int layer_index)
 /**********************************
 Compose item on map
 **********************************/
-static void compose_item(context_t * ctx,int layer_index)
+static void compose_item(int layer_index)
 {
 	char * sprite_name = nullptr;
 	int sprite_align = ALIGN_CENTER;
@@ -548,6 +549,7 @@ static void compose_item(context_t * ctx,int layer_index)
 	int quantity;
 	char buf[SMALL_BUF];
 	char layer_name[SMALL_BUF];
+	context_t * ctx = context_get_player();
 
 	sprintf(layer_name,"%s%d",MAP_KEY_LAYER,layer_index);
 
@@ -674,12 +676,14 @@ static void cb_over(void *arg,int x,int y)
 /**********************************
 Set sdl_item item for mouse button callback
 **********************************/
-static void compose_map_button(context_t * ctx)
+static void compose_map_button()
 {
 	int x = 0;
 	int y = 0;
 	item_t * item;
 	anim_t * anim = nullptr;
+
+	context_t * ctx = context_get_player();
 
 	if ( option && option->cursor_over_tile ) {
 		anim = imageDB_get_anim(ctx,option->cursor_over_tile);
@@ -701,7 +705,7 @@ static void compose_map_button(context_t * ctx)
 /**********************************
 Draw the "set" keyword of a layer
 **********************************/
-static void compose_map_set(context_t * ctx, int layer_index)
+static void compose_map_set(int layer_index)
 {
 	int i = 0;
 	int x = 0;
@@ -711,6 +715,7 @@ static void compose_map_set(context_t * ctx, int layer_index)
 	char ** tile_set = nullptr;
 	char layer_name[SMALL_BUF];
 	layer_t * layer;
+	context_t * ctx = context_get_player();
 
 	sprintf(layer_name,"%s%d",MAP_KEY_LAYER,layer_index);
 	if(entry_read_list(MAP_TABLE, ctx->map, &tile_set,layer_name,MAP_KEY_SET,nullptr) == RET_NOK ) {
@@ -747,7 +752,7 @@ static void compose_map_set(context_t * ctx, int layer_index)
 /**********************************
 Draw the "list" keyword of a layer
 **********************************/
-static void compose_map_scenery(context_t * ctx, int layer_index)
+static void compose_map_scenery(int layer_index)
 {
 	int i = 0;
 	int x = 0;
@@ -757,6 +762,7 @@ static void compose_map_scenery(context_t * ctx, int layer_index)
 	item_t * item;
 	char ** scenery_list = nullptr;
 	char layer_name[SMALL_BUF];
+	context_t * ctx = context_get_player();
 
 	sprintf(layer_name,"%s%d",MAP_KEY_LAYER,layer_index);
 	if(entry_get_group_list(MAP_TABLE, ctx->map, &scenery_list,layer_name,MAP_KEY_SCENERY,nullptr) == RET_NOK ) {
@@ -793,7 +799,7 @@ static void compose_map_scenery(context_t * ctx, int layer_index)
 /**********************************
 Show tiles types
 **********************************/
-static void compose_type(context_t * ctx,int layer_index)
+static void compose_type(int layer_index)
 {
 	int x = 0;
 	int y = 0;
@@ -803,6 +809,7 @@ static void compose_type(context_t * ctx,int layer_index)
 	int w;
 	int h;
 	char layer_name[SMALL_BUF];
+	context_t * ctx = context_get_player();
 
 	if( option->show_tile_type == false) {
 		return;
@@ -838,7 +845,7 @@ static void compose_type(context_t * ctx,int layer_index)
 /**********************************
 Compose select cursor
 **********************************/
-static void compose_select(context_t * ctx)
+static void compose_select()
 {
 	item_t * item;
 	anim_t * anim;
@@ -846,9 +853,10 @@ static void compose_select(context_t * ctx)
 	int pos_ty;
 	int x;
 	int y;
+	context_t * ctx = context_get_player();
 	context_t * selected_context = nullptr;
 
-	/* Tile selection */
+	// Tile selection
 	if( option && option->cursor_tile ) {
 		if( ctx->selection.map[0] != 0) {
 			if( !strcmp(ctx->selection.map, ctx->map) ) {
@@ -860,7 +868,7 @@ static void compose_select(context_t * ctx)
 
 					item = item_list_add(&item_list);
 
-					/* get pixel coordinate from tile coordinate */
+					// get pixel coordinate from tile coordinate
 					x = map_t2p_x(pos_tx,pos_ty,default_layer);
 					y = map_t2p_y(pos_tx,pos_ty,default_layer);
 
@@ -871,7 +879,7 @@ static void compose_select(context_t * ctx)
 		}
 	}
 
-	/* Sprite selection */
+	// Sprite selection
 	if( option && option->cursor_sprite ) {
 		if( ctx->selection.id[0] != 0) {
 			selected_context = context_find(ctx->selection.id);
@@ -941,14 +949,14 @@ item_t * scr_play_compose(context_t * ctx)
 
 	if( default_layer && default_layer->active ) { // Make sure map data are available
 		for(layer_index = 0; layer_index < MAX_LAYER; layer_index++) {
-			compose_map_set(ctx,layer_index);
-			compose_map_scenery(ctx,layer_index);
-			compose_item(ctx,layer_index);
-			compose_sprite(ctx,layer_index);
-			compose_type(ctx,layer_index);
+			compose_map_set(layer_index);
+			compose_map_scenery(layer_index);
+			compose_item(layer_index);
+			compose_sprite(layer_index);
+			compose_type(layer_index);
 		}
-		compose_map_button(ctx);
-		compose_select(ctx);
+		compose_map_button();
+		compose_select();
 
 		ui_play_compose(ctx,item_list);
 
