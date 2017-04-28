@@ -29,7 +29,7 @@
 static bool screen_running = true;
 static item_t * item_list = nullptr;
 static int current_screen=SCREEN_SELECT;
-static bool compose = 0;
+static int compose = 0;
 static int virtual_x[SCREEN_LAST];
 static int virtual_y[SCREEN_LAST];
 static double virtual_z[SCREEN_LAST];
@@ -165,6 +165,7 @@ void screen_display(context_t * ctx)
 				char * draw_script;
 				if( entry_read_string(CHARACTER_TABLE,ctx_drawn->id,&draw_script,CHARACTER_KEY_DRAW_SCRIPT,nullptr) != -1)
 				{
+					// FIXME: remove this and all related move code here and sdl_item
 					item->move_start_tick = 0; // no smooth move
 					item->rect.x = item->to_px;
 					item->rect.y = item->to_py;
