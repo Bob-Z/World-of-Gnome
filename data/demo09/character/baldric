@@ -1,5 +1,6 @@
 name		= "Baldric";
 
+draw_script     = "draw/smooth.lua"
 npc		= 1;
 marquee         = "marquee/baldric.png";
 sprite          = [ "sprite/shadow/human.png","sprite/baldric_down.png" ];

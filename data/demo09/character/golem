@@ -1,5 +1,6 @@
 name		= "Golem";
 
+draw_script     = "draw/smooth.lua"
 npc		= 1;
 marquee         = "marquee/golem.png";
 sprite          = [ "sprite/shadow/human.png","sprite/golem/S.png" ];

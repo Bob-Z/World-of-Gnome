@@ -1,5 +1,6 @@
 name		= "Goblin";
 
+draw_script     = "draw/smooth.lua"
 npc		= 1;
 marquee         = "marquee/goblin.png";
 sprite          = [ "sprite/shadow/human.png","sprite/goblin_down.png" ];

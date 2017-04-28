@@ -1,3 +1,4 @@
+draw_script     = "draw/smooth.lua"
 name		= "Horse (brown)";
 
 marquee         = "ui/horse_brown.png";

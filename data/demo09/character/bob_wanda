@@ -1,5 +1,6 @@
 name		= "Wanda";
 
+draw_script     = "draw/smooth.lua"
 marquee         = "marquee/princess.png";
 sprite          = [ "sprite/shadow/human.png","sprite/princess_left.gif" ];
 type            = "human"

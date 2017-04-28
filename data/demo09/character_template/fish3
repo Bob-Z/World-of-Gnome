@@ -1,3 +1,4 @@
+draw_script     = "draw/smooth.lua"
 marquee		= "sprite/fish3.png";
 sprite		= "sprite/fish3.png";
 type		= "fish3"

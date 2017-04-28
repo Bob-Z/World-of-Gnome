@@ -1,4 +1,5 @@
 name = "Spider 7"
+draw_script     = "draw/smooth.lua"
 marquee = "sprite/spider07/marquee.png"
 sprite = [ "sprite/shadow/spider.png", "sprite/spider07/S.png" ]
 type = "spider"

@@ -1,5 +1,6 @@
 name		= "General Kurtz";
 
+draw_script     = "draw/smooth.lua"
 npc		= 0;
 marquee         = "marquee/baldric.png";
 sprite          = [ "sprite/shadow/human.png","sprite/baldric_down.png" ];

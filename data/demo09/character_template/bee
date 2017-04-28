@@ -1,5 +1,6 @@
 name		= "Bee";
 
+draw_script     = "draw/smooth.lua"
 marquee         = "ui/bee.png";
 sprite          = [ "sprite/bee_shadow_down.zip", "sprite/bee_down.zip" ];
 type            = "bee"
