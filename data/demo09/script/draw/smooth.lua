@@ -1,4 +1,6 @@
-function f (move_x,move_y)
+function f ()
+
+print_text_debug("smooth")
 
 -- id = player_get_id()
 id = context_get_id()
