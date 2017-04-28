@@ -121,6 +121,26 @@ static int l_item_get_y( lua_State* p_pLuaState)
 }
 
 /***********************************
+ item set_anim_start_tick
+Input: Tick from when animation will be calculated
+Output: 
+***********************************/
+static int l_item_set_anim_start_tick( lua_State* p_pLuaState)
+{
+        item_t * l_pItem;
+
+        lua_getglobal(p_pLuaState,"current_item");
+        l_pItem = (item_t*)lua_touserdata(p_pLuaState, -1);
+        lua_pop(p_pLuaState,1);
+
+	int l_Tick;
+	l_Tick = luaL_checkint(p_pLuaState, -1);
+	l_pItem->anim_start_tick = l_Tick;
+
+	return 0; // number of results
+}
+
+/***********************************
  get_tick
 
 Get application tick in milliseconds
@@ -172,6 +192,8 @@ static void register_lua_functions()
 	lua_setglobal(luaVM, "item_get_x");
 	lua_pushcfunction(luaVM, l_item_get_y);
 	lua_setglobal(luaVM, "item_get_y");
+	lua_pushcfunction(luaVM, l_item_set_anim_start_tick);
+	lua_setglobal(luaVM, "item_set_anim_start_tick");
 	// utility  func
 	lua_pushcfunction(luaVM, l_get_tick);
 	lua_setglobal(luaVM, "get_tick");
