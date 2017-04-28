@@ -1,3 +1,4 @@
+draw_script     = "draw/smooth.lua"
 marquee         = "marquee/white_ball.jpg";
 sprite          = "sprite/white_ball.png";
 name = "Blop";
