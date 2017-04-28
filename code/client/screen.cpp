@@ -36,7 +36,9 @@ static double virtual_z[SCREEN_LAST];
 
 #define ITEM_FONT "Ubuntu-C.ttf"
 #define ITEM_FONT_SIZE 15
+
 static item_t * frame_rate = nullptr;
+static constexpr int const& FPS_DISPLAY_PERIOD = 1000;
 
 /***********************************************
 Called by other thread to request compose update.
@@ -108,8 +110,8 @@ static void display_fps()
 		if( option->show_fps ) {
 			num_frame++;
 			new_timer = SDL_GetTicks();
-			if( timer + 1000 < new_timer ) {
-				sample = (double)num_frame / ((double)new_timer - (double)timer ) * 1000.0;
+			if( timer + FPS_DISPLAY_PERIOD < new_timer ) {
+				sample = (double)num_frame / ((double)new_timer - (double)timer ) * (double)FPS_DISPLAY_PERIOD;
 				num_frame = 0;
 				timer = new_timer;
 				sprintf(fps,"%f",sample);
