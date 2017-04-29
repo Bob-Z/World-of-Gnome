@@ -1,5 +1,6 @@
 name		= "Beetle";
 
+draw_script     = "draw/smooth.lua"
 marquee         = "sprite/beetle/S.png";
 sprite          = [ "sprite/shadow/beetle.png", "sprite/beetle/S.png" ];
 type            = "beetle"
