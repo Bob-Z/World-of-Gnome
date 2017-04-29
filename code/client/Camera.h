@@ -25,11 +25,17 @@ public:
 	~Camera();
 
 	Screen getScreen();
-	int getZoom();
 	void setScreen(Screen & p_Screen);
+	int getZoom();
 	void setZoom(int p_Zoom);
+	int getX();
+	void setX(int p_X);
+	int getY();
+	void setY(int p_Y);
 private:
         Screen m_Screen;
         int m_Zoom;
+        int m_X;
+        int m_Y;
 };
 
