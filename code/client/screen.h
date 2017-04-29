@@ -23,6 +23,8 @@
 #include "../sdl_item/item.h"
 #include "../common/common.h"
 
+class Camera;
+
 enum class Screen {
 	SELECT
 	, PLAY
@@ -34,6 +36,7 @@ void screen_compose();
 void screen_set_screen(Screen p_Screen);
 void screen_quit();
 Screen screen_get_current_screen();
+Camera * screen_get_camera();
 
 #endif // SCREEN_H
 

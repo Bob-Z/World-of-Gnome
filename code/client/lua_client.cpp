@@ -295,7 +295,7 @@ Get current camera zoom
 
 Input:
 Output:
- - zoom factor (1.0 = 100%)
+ - zoom factor ( +1 for one level of zoom, -1 for UNzoom)
 ***********************************/
 static int l_camera_get_zoom(lua_State* p_pLuaState)
 {
@@ -327,6 +327,25 @@ static int l_camera_set_coord(lua_State* p_pLuaState)
 
 	sdl_force_virtual_x(l_X);
 	sdl_force_virtual_y(l_Y);
+
+	return 0; // number of results
+}
+
+/***********************************
+ camera_set_zoom
+
+Set camera zoom
+
+Input:
+ - Zoom level (1.0 = 100%)
+Output:
+***********************************/
+static int l_camera_set_zoom(lua_State* p_pLuaState)
+{
+	double l_Zoom;
+        l_Zoom = luaL_checknumber(p_pLuaState, -1);
+
+	sdl_force_virtual_z(l_Zoom);
 
 	return 0; // number of results
 }
@@ -401,6 +420,8 @@ static void register_lua_functions()
 	lua_setglobal(luaVM, "camera_get_screen");
 	lua_pushcfunction(luaVM, l_camera_get_zoom);
 	lua_setglobal(luaVM, "camera_get_zoom");
+	lua_pushcfunction(luaVM, l_camera_set_zoom);
+	lua_setglobal(luaVM, "camera_set_zoom");
 	lua_pushcfunction(luaVM, l_camera_set_coord);
 	lua_setglobal(luaVM, "camera_set_coord");
 	// utility  func

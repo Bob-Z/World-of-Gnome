@@ -1,6 +1,6 @@
 /*
    World of Gnome is a 2D multiplayer role playing game.
-   Copyright (C) 2013-2017 carabobz@gmail.com
+   Copyright (C) 2017 carabobz@gmail.com
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@
 
 /******************************************************
 ******************************************************/
-Camera::Camera() : m_Screen(Screen::SELECT), m_Zoom(1.0)
+Camera::Camera() : m_Screen(Screen::SELECT), m_Zoom(0)
 {
 }
 
@@ -40,7 +40,7 @@ Screen Camera::getScreen()
 
 /******************************************************
 ******************************************************/
-double Camera::getZoom()
+int Camera::getZoom()
 {
 	return m_Zoom;
 }
@@ -54,7 +54,7 @@ void Camera::setScreen(Screen & p_Screen)
 
 /******************************************************
 ******************************************************/
-void Camera::setZoom(double p_Zoom)
+void Camera::setZoom(int p_Zoom)
 {
 	m_Zoom = p_Zoom;
 }

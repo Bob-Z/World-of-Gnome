@@ -28,6 +28,7 @@
 #include "network_client.h"
 #include "ui_play.h"
 #include "option_client.h"
+#include "Camera.h"
 #include <limits.h>
 
 #define ITEM_FONT "Ubuntu-C.ttf"
@@ -110,24 +111,20 @@ static void cb_redo_sprite(void *arg)
 
 /**********************************
 **********************************/
-static void cb_zoom(Uint32 y,Uint32 unused)
+static void cb_zoom(Uint32 l_Unused1, Uint32 l_Unused2)
 {
-	double zoom;
+	Camera *  l_pCamera = screen_get_camera();
 
-	zoom = sdl_get_virtual_z();
-
-	sdl_set_virtual_z(zoom*1.1);
+	l_pCamera->setZoom(l_pCamera->getZoom() +1);
 }
 
 /**********************************
 **********************************/
-static void cb_unzoom(Uint32 y,Uint32 unused)
+static void cb_unzoom(Uint32 l_Unused1, Uint32 l_Unused2)
 {
-	double zoom;
+	Camera *  l_pCamera = screen_get_camera();
 
-	zoom = sdl_get_virtual_z();
-
-	sdl_set_virtual_z(zoom/1.1);
+	l_pCamera->setZoom(l_pCamera->getZoom() -1);
 }
 
 /**********************************

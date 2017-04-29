@@ -250,3 +250,10 @@ Screen screen_get_current_screen()
 	return g_Camera.getScreen();
 }
 
+/************************************************
+************************************************/
+Camera * screen_get_camera()
+{
+	return &g_Camera;
+}
+
