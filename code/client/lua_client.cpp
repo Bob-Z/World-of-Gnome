@@ -342,6 +342,46 @@ static int l_camera_get_zoom(lua_State* p_pLuaState)
 }
 
 /***********************************
+ camera_get_X
+
+Get current camera X position
+
+Input:
+Output:
+ - X position in pixel
+***********************************/
+static int l_camera_get_X(lua_State* p_pLuaState)
+{
+        Camera * l_pCamera;
+        lua_getglobal(p_pLuaState,"current_camera");
+        l_pCamera = (Camera*)lua_touserdata(p_pLuaState, -1);
+        lua_pop(p_pLuaState,1);
+
+	lua_pushnumber(p_pLuaState, l_pCamera->getX());
+	return 1; // number of results
+}
+
+/***********************************
+ camera_get_Y
+
+Get current camera Y position
+
+Input:
+Output:
+ - Y position in pixel
+***********************************/
+static int l_camera_get_Y(lua_State* p_pLuaState)
+{
+        Camera * l_pCamera;
+        lua_getglobal(p_pLuaState,"current_camera");
+        l_pCamera = (Camera*)lua_touserdata(p_pLuaState, -1);
+        lua_pop(p_pLuaState,1);
+
+	lua_pushnumber(p_pLuaState, l_pCamera->getY());
+	return 1; // number of results
+}
+
+/***********************************
  camera_set_coord
 
 Set camera coordinate
@@ -457,6 +497,10 @@ static void register_lua_functions()
 	lua_setglobal(luaVM, "camera_get_screen");
 	lua_pushcfunction(luaVM, l_camera_get_zoom);
 	lua_setglobal(luaVM, "camera_get_zoom");
+	lua_pushcfunction(luaVM, l_camera_get_X);
+	lua_setglobal(luaVM, "camera_get_X");
+	lua_pushcfunction(luaVM, l_camera_get_Y);
+	lua_setglobal(luaVM, "camera_get_Y");
 	lua_pushcfunction(luaVM, l_camera_set_zoom);
 	lua_setglobal(luaVM, "camera_set_zoom");
 	lua_pushcfunction(luaVM, l_camera_set_coord);
