@@ -24,10 +24,11 @@
 #include "../sdl_item/item.h"
 #include "../sdl_item/sdl.h"
 #include "screen.h"
+#include "Camera.h"
 
-#define BORDER 20
-#define FONT "Ubuntu-C.ttf"
-#define FONT_SIZE 30
+static constexpr int const BORDER = 20;
+static constexpr int const FONT_SIZE = 30;
+static constexpr const char * const FONT = "Ubuntu-C.ttf";
 
 typedef struct {
 	char * id;
@@ -38,11 +39,11 @@ typedef struct {
 	int width;
 } character_t;
 
-static character_t * character_list = NULL;
+static character_t * character_list = nullptr;
 static int character_num = 0;
-static item_t * item_list = NULL;
+static item_t * item_list = nullptr;
 static long current_character = -1;
-static char * sfx_filename = NULL;
+static char * sfx_filename = nullptr;
 
 /****************************
 Keyboard callback
@@ -58,12 +59,13 @@ static void cb_show_item(void * arg)
 {
 	item_t * item = (item_t*)arg;
 
-	if( item == 0 ) {
+	if( item == nullptr ) {
 		return;
 	}
 
-	sdl_set_virtual_x(item->rect.x + item->rect.w/2);
-	sdl_set_virtual_y(item->rect.y + item->rect.h/2);
+	Camera * l_Camera = screen_get_camera();
+	l_Camera->setX(item->rect.x + item->rect.w/2);
+	l_Camera->setY(item->rect.y + item->rect.h/2);
 }
 
 /**********************************
@@ -139,14 +141,14 @@ static void cb_previous_character(void * arg)
 **********************************/
 static void cb_wheel_up(Uint32 y, Uint32 unused)
 {
-	cb_previous_character(NULL);
+	cb_previous_character(nullptr);
 }
 
 /**********************************
 **********************************/
 static void cb_wheel_down(Uint32 y, Uint32 unused)
 {
-	cb_next_character(NULL);
+	cb_next_character(nullptr);
 }
 
 /**********************************
@@ -164,20 +166,20 @@ item_t * scr_select_compose(context_t * context)
 	int x = 0;
 	char * marquee_name;
 	static int max_h = 0;
-	static int init = 1;
+	static bool init = true;
 	item_t * item;
 	item_t * item_image;
 	int w;
 	int h;
-	static TTF_Font * font_name = NULL;
-	static TTF_Font * font_type = NULL;
+	static TTF_Font * font_name = nullptr;
+	static TTF_Font * font_type = nullptr;
 
 	if(character_num==0) {
-		return NULL;
+		return nullptr;
 	}
 
-	if( sfx_filename == NULL ) {
-		entry_read_string(NULL,CLIENT_CONF_FILE,&sfx_filename,CLIENT_KEY_SFX_SELECT_CHARACTER,NULL);
+	if( sfx_filename == nullptr ) {
+		entry_read_string(nullptr,CLIENT_CONF_FILE,&sfx_filename,CLIENT_KEY_SFX_SELECT_CHARACTER,nullptr);
 	}
 
 	if( sfx_filename ) {
@@ -185,12 +187,12 @@ item_t * scr_select_compose(context_t * context)
 	}
 
 	int sfx_volume = 100; // 100%
-	entry_read_int(NULL,CLIENT_CONF_FILE,&sfx_volume,CLIENT_KEY_SFX_VOLUME_SELECT_CHARACTER,NULL);
+	entry_read_int(nullptr,CLIENT_CONF_FILE,&sfx_volume,CLIENT_KEY_SFX_VOLUME_SELECT_CHARACTER,nullptr);
         sfx_set_volume(sfx_volume);
 
 	if(item_list) {
 		item_list_free(item_list);
-		item_list = NULL;
+		item_list = nullptr;
 	}
 
 	font_name = font_get(context,FONT, FONT_SIZE);
@@ -205,7 +207,7 @@ item_t * scr_select_compose(context_t * context)
 	/* Load all anim compute max height and width of anim + string */
 	for(i=0; i<character_num; i++) {
 		/* Compute the marquee file name */
-		if(entry_read_string(CHARACTER_TABLE,character_list[i].id,&marquee_name,CHARACTER_KEY_MARQUEE,NULL) == RET_NOK ) {
+		if(entry_read_string(CHARACTER_TABLE,character_list[i].id,&marquee_name,CHARACTER_KEY_MARQUEE,nullptr) == RET_NOK ) {
 			continue;
 		}
 		character_list[i].anim  = imageDB_get_anim(context,marquee_name);
@@ -232,7 +234,7 @@ item_t * scr_select_compose(context_t * context)
 
 	/* Create item list */
 	for(i=0; i<character_num; i++) {
-		if( character_list[i].anim == NULL ) {
+		if( character_list[i].anim == nullptr ) {
 			continue;
 		}
 
@@ -244,10 +246,10 @@ item_t * scr_select_compose(context_t * context)
 		item_set_pos(item,x+character_list[i].width/2-character_list[i].anim->w/2,
 					 max_h/2-character_list[i].anim->h/2);
 		item_set_anim(item,character_list[i].anim,0);
-		item_set_click_left(item,cb_show_item,(void *)item,NULL);
-		item_set_click_right(item,cb_select,(void *)context,NULL);
-		item_set_double_click_left(item,cb_select,(void *)context,NULL);
-		item_set_over(item,cb_over,(void *)i,NULL);
+		item_set_click_left(item,cb_show_item,(void *)item,nullptr);
+		item_set_click_right(item,cb_select,(void *)context,nullptr);
+		item_set_double_click_left(item,cb_select,(void *)context,nullptr);
+		item_set_over(item,cb_over,(void *)i,nullptr);
 
 		x += character_list[i].width + BORDER;
 		/* character name */
@@ -275,8 +277,8 @@ item_t * scr_select_compose(context_t * context)
 		}
 	}
 
-	if(init) {
-		init = 0;
+	if(init == true) {
+		init = false;
 	}
 
 	if( current_character == -1 ) {
@@ -286,10 +288,10 @@ item_t * scr_select_compose(context_t * context)
 	SDL_UnlockMutex(character_select_mutex);
 
 	sdl_free_keycb();
-	sdl_add_keycb(SDL_SCANCODE_ESCAPE,cb_quit,NULL,NULL);
-	sdl_add_keycb(SDL_SCANCODE_RIGHT,cb_next_character,NULL,NULL);
-	sdl_add_keycb(SDL_SCANCODE_LEFT,cb_previous_character,NULL,NULL);
-	sdl_add_keycb(SDL_SCANCODE_RETURN,cb_select,NULL,(void *)context);
+	sdl_add_keycb(SDL_SCANCODE_ESCAPE,cb_quit,nullptr,nullptr);
+	sdl_add_keycb(SDL_SCANCODE_RIGHT,cb_next_character,nullptr,nullptr);
+	sdl_add_keycb(SDL_SCANCODE_LEFT,cb_previous_character,nullptr,nullptr);
+	sdl_add_keycb(SDL_SCANCODE_RETURN,cb_select,nullptr,(void *)context);
 
 	return item_list;
 }
@@ -317,8 +319,8 @@ void scr_select_add_user_character(context_t * context, char * data)
 		current_string += strlen(current_string)+1;
 		character_list[character_num-1].name = strdup(current_string);
 		current_string += strlen(current_string)+1;
-		character_list[character_num-1].anim = NULL;
-		character_list[character_num-1].item = NULL;
+		character_list[character_num-1].anim = nullptr;
+		character_list[character_num-1].item = nullptr;
 		character_list[character_num-1].width = 0;
 
 		wlog(LOGDEBUG,"Character %s / %s /%s added",character_list[character_num-1].id,character_list[character_num-1].type,character_list[character_num-1].name);
@@ -330,3 +332,4 @@ void scr_select_add_user_character(context_t * context, char * data)
 		wlog(LOGDEV,"Received character %s of type %s",character_list[character_num-1].name,character_list[character_num-1].type);
 	}
 }
+
