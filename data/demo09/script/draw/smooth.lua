@@ -151,6 +151,9 @@ else
 	item_set_anim_from_context(id,"sprite_" .. _G.orientation[id]);
 end
 
+--  text = string.format("_G.current_X[%s] = %d, _G.current_Y[%s] = %d",id, _G.current_X[id], id, _G.current_Y[id])
+--  print_text_debug(text)
+
 item_set_x(_G.current_X[id])
 item_set_y(_G.current_Y[id])
 
