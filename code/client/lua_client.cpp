@@ -174,6 +174,39 @@ static int l_item_get_y( lua_State* p_pLuaState)
 }
 
 /***********************************
+ item_get_w
+Input:
+Output: Width in pixel
+***********************************/
+static int l_item_get_w( lua_State* p_pLuaState)
+{
+        item_t * l_pItem;
+
+        lua_getglobal(p_pLuaState,"current_item");
+        l_pItem = (item_t*)lua_touserdata(p_pLuaState, -1);
+        lua_pop(p_pLuaState,1);
+
+	lua_pushnumber(p_pLuaState, l_pItem->rect.w);
+	return 1; // number of results
+}
+
+/***********************************
+ item_get_h
+Input:
+Output: Height in pixel
+***********************************/
+static int l_item_get_h( lua_State* p_pLuaState)
+{
+        item_t * l_pItem;
+
+        lua_getglobal(p_pLuaState,"current_item");
+        l_pItem = (item_t*)lua_touserdata(p_pLuaState, -1);
+        lua_pop(p_pLuaState,1);
+
+	lua_pushnumber(p_pLuaState, l_pItem->rect.h);
+	return 1; // number of results
+}
+/***********************************
  item_set_anim_start_tick
 Input: Tick from when animation will be calculated
 Output: 
@@ -409,6 +442,10 @@ static void register_lua_functions()
 	lua_setglobal(luaVM, "item_get_x");
 	lua_pushcfunction(luaVM, l_item_get_y);
 	lua_setglobal(luaVM, "item_get_y");
+	lua_pushcfunction(luaVM, l_item_get_w);
+	lua_setglobal(luaVM, "item_get_w");
+	lua_pushcfunction(luaVM, l_item_get_h);
+	lua_setglobal(luaVM, "item_get_h");
 	lua_pushcfunction(luaVM, l_item_set_anim_start_tick);
 	lua_setglobal(luaVM, "item_set_anim_start_tick");
 	lua_pushcfunction(luaVM, l_item_set_anim);
