@@ -294,9 +294,12 @@ static int l_item_set_anim_from_context( lua_State* p_pLuaState)
 		return 0;
 	}
 
+	// If we arrive here, the passed entry name was not found
+#if 0
 	char l_pErrorMessage[1024];
 	snprintf(l_pErrorMessage,sizeof(l_pErrorMessage),"LUA item_set_anim_from_context: Failed to get %s in %s", l_pEntryName, l_pId);
 	werr(LOGDEV,l_pErrorMessage);
+#endif
 
 	return 0; // number of results
 }
