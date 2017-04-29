@@ -45,6 +45,7 @@ add_executable(
 	textview.cpp
 	ui_play.cpp
 	lua_client.cpp
+	Camera.cpp
 )
 
 target_link_libraries (${PROJECT_NAME}

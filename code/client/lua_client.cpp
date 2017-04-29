@@ -22,6 +22,7 @@
 #include "../common/common.h"
 #include "../sdl_item/sdl.h"
 #include "../sdl_item/item.h"
+#include "Camera.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -268,6 +269,69 @@ static int l_item_set_anim_from_context( lua_State* p_pLuaState)
 }
 
 /***********************************
+ camera_get_screen
+
+Get current screen shown by camera
+
+Input:
+Output:
+ - screen number
+***********************************/
+static int l_camera_get_screen(lua_State* p_pLuaState)
+{
+        Camera * l_pCamera;
+        lua_getglobal(p_pLuaState,"current_camera");
+        l_pCamera = (Camera*)lua_touserdata(p_pLuaState, -1);
+        lua_pop(p_pLuaState,1);
+
+	lua_pushnumber(p_pLuaState, (int)l_pCamera->getScreen());
+	return 1; // number of results
+}
+
+/***********************************
+ camera_get_zoom
+
+Get current camera zoom
+
+Input:
+Output:
+ - zoom factor (1.0 = 100%)
+***********************************/
+static int l_camera_get_zoom(lua_State* p_pLuaState)
+{
+        Camera * l_pCamera;
+        lua_getglobal(p_pLuaState,"current_camera");
+        l_pCamera = (Camera*)lua_touserdata(p_pLuaState, -1);
+        lua_pop(p_pLuaState,1);
+
+	lua_pushnumber(p_pLuaState, l_pCamera->getZoom());
+	return 1; // number of results
+}
+
+/***********************************
+ camera_set_coord
+
+Set camera coordinate
+
+Input:
+ - X
+ - Y
+Output:
+***********************************/
+static int l_camera_set_coord(lua_State* p_pLuaState)
+{
+	int l_X;
+        l_X = luaL_checknumber(p_pLuaState, -2);
+	int l_Y;
+        l_Y = luaL_checknumber(p_pLuaState, -1);
+
+	sdl_force_virtual_x(l_X);
+	sdl_force_virtual_y(l_Y);
+
+	return 0; // number of results
+}
+
+/***********************************
  get_tick
 
 Get application tick in milliseconds
@@ -332,6 +396,13 @@ static void register_lua_functions()
 	lua_setglobal(luaVM, "item_set_anim");
 	lua_pushcfunction(luaVM, l_item_set_anim_from_context);
 	lua_setglobal(luaVM, "item_set_anim_from_context");
+	// camera func
+	lua_pushcfunction(luaVM, l_camera_get_screen);
+	lua_setglobal(luaVM, "camera_get_screen");
+	lua_pushcfunction(luaVM, l_camera_get_zoom);
+	lua_setglobal(luaVM, "camera_get_zoom");
+	lua_pushcfunction(luaVM, l_camera_set_coord);
+	lua_setglobal(luaVM, "camera_set_coord");
 	// utility  func
 	lua_pushcfunction(luaVM, l_get_tick);
 	lua_setglobal(luaVM, "get_tick");

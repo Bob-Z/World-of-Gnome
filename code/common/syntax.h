@@ -172,6 +172,7 @@
 /* client configuration */
 #define CLIENT_CONF_FILE			"client.conf"
 #define CLIENT_KEY_VERSION			"version"
+#define CLIENT_KEY_CAMERA_SCRIPT		"camera_script"
 #define CLIENT_KEY_CURSOR_OVER_TILE		"cursor_over_tile"
 #define CLIENT_KEY_CURSOR_CHARACTER_DRAW_SCRIPT	"cursor_character_draw_script"
 #define CLIENT_KEY_CURSOR_TILE	 		"cursor_tile"

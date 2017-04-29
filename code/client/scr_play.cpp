@@ -949,17 +949,6 @@ item_t * scr_play_compose(context_t * ctx)
 		compose_select();
 
 		ui_play_compose(ctx,item_list);
-
-		// force virtual coordinate on map change
-		if( change_map == true ) {
-			sdl_force_virtual_x(map_t2p_x(ctx->pos_tx,ctx->pos_ty,default_layer) + default_layer->col_width[ctx->pos_tx%default_layer->col_num]/2 + default_layer->row_width[ctx->pos_ty%default_layer->row_num]/2 );
-			sdl_force_virtual_y(map_t2p_y(ctx->pos_tx,ctx->pos_ty,default_layer) + default_layer->col_height[ctx->pos_tx%default_layer->col_num]/2 + default_layer->row_height[ctx->pos_ty%default_layer->row_num]/2 );
-		}
-		// set virtual coordinate on the same map
-		else {
-			sdl_set_virtual_x(map_t2p_x(ctx->pos_tx,ctx->pos_ty,default_layer) + default_layer->col_width[ctx->pos_tx%default_layer->col_num]/2 + default_layer->row_width[ctx->pos_ty%default_layer->row_num]/2 );
-			sdl_set_virtual_y(map_t2p_y(ctx->pos_tx,ctx->pos_ty,default_layer) + default_layer->col_height[ctx->pos_tx%default_layer->col_num]/2 + default_layer->row_height[ctx->pos_ty%default_layer->row_num]/2 );
-		}
 	}
 
 	entry_read_int(MAP_TABLE,ctx->map,&bg_red,MAP_KEY_BG_RED,nullptr);

@@ -17,32 +17,19 @@
    Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
-#include "../common/common.h"
+#include "screen.h"
 
-typedef struct {
-	int show_tile_type;
-	int show_fps;
-	char * cursor_over_tile;
+class Camera {
+public:
+	Camera();
+	~Camera();
 
-	char * cursor_character_draw_script;
-	char * action_select_character;
-	char * cursor_tile;
-	char * action_select_tile;
-	char * cursor_equipment;
-	char * action_select_equipment;
-	char * cursor_inventory;
-	char * action_select_inventory;
-
-	char * action_move_up;
-	char * action_move_down;
-	char * action_move_left;
-	char * action_move_right;
-	char * action_move_up_right;
-	char * action_move_up_left;
-	char * action_move_down_right;
-	char * action_move_down_left;
-} option_t;
-
-void option_init();
-option_t * option_get();
+	Screen getScreen();
+	double getZoom();
+	void setScreen(Screen & p_Screen);
+	void setZoom(double p_Zoom);
+private:
+        Screen m_Screen;
+        double m_Zoom;
+};
 

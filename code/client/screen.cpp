@@ -25,20 +25,18 @@
 #include "scr_play.h"
 #include "option_client.h"
 #include "lua_client.h"
+#include "Camera.h"
 
 static bool screen_running = true;
 static item_t * item_list = nullptr;
-static int current_screen=SCREEN_SELECT;
 static int compose = 0;
-static int virtual_x[SCREEN_LAST];
-static int virtual_y[SCREEN_LAST];
-static double virtual_z[SCREEN_LAST];
 
 #define ITEM_FONT "Ubuntu-C.ttf"
 #define ITEM_FONT_SIZE 15
 
 static item_t * frame_rate = nullptr;
 static constexpr int const& FPS_DISPLAY_PERIOD = 1000;
+static Camera g_Camera;
 
 /***********************************************
 Called by other thread to request compose update.
@@ -56,12 +54,14 @@ Called at start of each frame
 ******************************************************/
 static void frame_start(context_t * context)
 {
-	switch(current_screen) {
-	case SCREEN_SELECT:
+	switch(g_Camera.getScreen()) {
+	case Screen::SELECT:
 		scr_select_frame_start(context);
 		break;
-	case SCREEN_PLAY:
+	case Screen::PLAY:
 		scr_play_frame_start(context);
+		break;
+	default:
 		break;
 	}
 }
@@ -76,12 +76,14 @@ static void compose_scr(context_t * context)
 
 	SDL_SetRenderDrawColor(context->render, 0, 0, 0, 255);
 
-	switch(current_screen) {
-	case SCREEN_SELECT:
+	switch(g_Camera.getScreen()) {
+	case Screen::SELECT:
 		item_list = scr_select_compose(context);
 		break;
-	case SCREEN_PLAY:
+	case Screen::PLAY:
 		item_list = scr_play_compose(context);
+		break;
+	default:
 		break;
 	}
 
@@ -126,13 +128,6 @@ Render the currently selected item list to screen
 void screen_display(context_t * ctx)
 {
 	SDL_Event event;
-	int i;
-
-	for(i=0; i<SCREEN_LAST; i++) {
-		virtual_x[i] = INT_MAX;
-		virtual_y[i] = INT_MAX;
-		virtual_z[i] = -1.0;
-	}
 
 	while( screen_running == true) {
 		frame_start(ctx);
@@ -186,7 +181,7 @@ void screen_display(context_t * ctx)
 
 					if ( lua_execute_script(get_luaVM(), draw_script, nullptr) == -1 ){
 						char * l_pTablePath;
-						l_pTablePath = strconcat(SCRIPT_TABLE,"/",draw_script,NULL);
+						l_pTablePath = strconcat(SCRIPT_TABLE,"/",draw_script,nullptr);
 						file_lock(l_pTablePath);
 						file_update(ctx, l_pTablePath);
 						file_unlock(l_pTablePath);
@@ -200,6 +195,27 @@ void screen_display(context_t * ctx)
 			item = item->next;
 		}
 
+		char * l_pCameraScript = nullptr;
+		entry_read_string(nullptr,CLIENT_CONF_FILE,&l_pCameraScript,CLIENT_KEY_CAMERA_SCRIPT,nullptr);
+		if( l_pCameraScript == nullptr || l_pCameraScript[0] == '\0') {
+			werr(LOGDEV,"No camera script defined. Camera won't move");
+		}
+		else {
+			lua_pushlightuserdata(get_luaVM(),(void *)&g_Camera);
+			lua_setglobal (get_luaVM(), "current_camera");
+
+			if ( lua_execute_script(get_luaVM(), l_pCameraScript, nullptr) == -1 ){
+				// FIXME: factorize this code
+				char * l_pTablePath;
+				l_pTablePath = strconcat(SCRIPT_TABLE,"/",l_pCameraScript,nullptr);
+				file_lock(l_pTablePath);
+				file_update(ctx, l_pTablePath);
+				file_unlock(l_pTablePath);
+				free(l_pTablePath);
+			}
+			free(l_pCameraScript);
+		}
+
 		sdl_blit_to_screen(ctx->render);
 
 		sdl_loop_manager();
@@ -210,22 +226,10 @@ void screen_display(context_t * ctx)
 /************************************************
 Select the screen to be rendered
 ************************************************/
-void screen_set_screen(int screen)
+void screen_set_screen(Screen p_Screen)
 {
-	if(screen != current_screen) {
-		/* Save current virtual coordinates */
-		virtual_x[current_screen] = sdl_get_virtual_x();
-		virtual_y[current_screen] = sdl_get_virtual_y();
-		virtual_z[current_screen] = sdl_get_virtual_z();
-
-		/* Restore previous virtual coordinate */
-		if( virtual_x[screen] != INT_MAX ) {
-			sdl_force_virtual_x(virtual_x[screen]);
-			sdl_force_virtual_y(virtual_y[screen]);
-			sdl_force_virtual_z(virtual_z[screen]);
-		}
-
-		current_screen = screen;
+	if(p_Screen != g_Camera.getScreen()) {
+		g_Camera.setScreen(p_Screen);
 		context_reset_all_position();
 		screen_compose();
 	}
@@ -237,5 +241,12 @@ End the rendering
 void screen_quit()
 {
 	screen_running = false;
+}
+
+/************************************************
+************************************************/
+Screen screen_get_current_screen()
+{
+	return g_Camera.getScreen();
 }
 

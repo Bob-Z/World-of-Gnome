@@ -1,6 +1,6 @@
 /*
    World of Gnome is a 2D multiplayer role playing game.
-   Copyright (C) 2013-2016 carabobz@gmail.com
+   Copyright (C) 2013-2017 carabobz@gmail.com
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@
 #include "option_client.h"
 
 option_t option;
-int already_parsed = 0;
+bool already_parsed = false;
 
 /**************************************
 **************************************/
@@ -28,11 +28,11 @@ void option_init()
 {
 	option.show_tile_type = false;
 	option.show_fps = false;
-	option.cursor_over_tile = NULL;
-	option.cursor_character_draw_script = NULL;
-	option.cursor_tile = NULL;
-	option.cursor_equipment = NULL;
-	option.cursor_inventory = NULL;
+	option.cursor_over_tile = nullptr;
+	option.cursor_character_draw_script = nullptr;
+	option.cursor_tile = nullptr;
+	option.cursor_equipment = nullptr;
+	option.cursor_inventory = nullptr;
 }
 
 /**************************************
@@ -41,33 +41,33 @@ static void parse_client_conf()
 {
 	int version;
 
-	if( already_parsed ) {
+	if( already_parsed == true ) {
 		return;
 	}
 
-	if (entry_read_int(NULL,CLIENT_CONF_FILE,&version,CLIENT_KEY_VERSION,NULL) == RET_NOK ) {
+	if (entry_read_int(nullptr,CLIENT_CONF_FILE,&version,CLIENT_KEY_VERSION,nullptr) == RET_NOK ) {
 		return;
 	}
 
-	entry_read_string(NULL,CLIENT_CONF_FILE,&option.cursor_over_tile,CLIENT_KEY_CURSOR_OVER_TILE,NULL);
-	entry_read_string(NULL,CLIENT_CONF_FILE,&option.cursor_character_draw_script,CLIENT_KEY_CURSOR_CHARACTER_DRAW_SCRIPT,NULL);
-	entry_read_string(NULL,CLIENT_CONF_FILE,&option.cursor_tile,CLIENT_KEY_CURSOR_TILE,NULL);
-	entry_read_string(NULL,CLIENT_CONF_FILE,&option.cursor_equipment,CLIENT_KEY_CURSOR_EQUIPMENT,NULL);
-	entry_read_string(NULL,CLIENT_CONF_FILE,&option.cursor_inventory,CLIENT_KEY_CURSOR_INVENTORY,NULL);
-	entry_read_string(NULL,CLIENT_CONF_FILE,&option.action_move_up,CLIENT_KEY_ACTION_MOVE_UP,NULL);
-	entry_read_string(NULL,CLIENT_CONF_FILE,&option.action_move_down,CLIENT_KEY_ACTION_MOVE_DOWN,NULL);
-	entry_read_string(NULL,CLIENT_CONF_FILE,&option.action_move_left,CLIENT_KEY_ACTION_MOVE_LEFT,NULL);
-	entry_read_string(NULL,CLIENT_CONF_FILE,&option.action_move_right,CLIENT_KEY_ACTION_MOVE_RIGHT,NULL);
-	entry_read_string(NULL,CLIENT_CONF_FILE,&option.action_move_up_left,CLIENT_KEY_ACTION_MOVE_UP_LEFT,NULL);
-	entry_read_string(NULL,CLIENT_CONF_FILE,&option.action_move_up_right,CLIENT_KEY_ACTION_MOVE_UP_RIGHT,NULL);
-	entry_read_string(NULL,CLIENT_CONF_FILE,&option.action_move_down_left,CLIENT_KEY_ACTION_MOVE_DOWN_LEFT,NULL);
-	entry_read_string(NULL,CLIENT_CONF_FILE,&option.action_move_down_right,CLIENT_KEY_ACTION_MOVE_DOWN_RIGHT,NULL);
-	entry_read_string(NULL,CLIENT_CONF_FILE,&option.action_select_character,CLIENT_KEY_ACTION_SELECT_CHARACTER,NULL);
-	entry_read_string(NULL,CLIENT_CONF_FILE,&option.action_select_tile,CLIENT_KEY_ACTION_SELECT_TILE,NULL);
-	entry_read_string(NULL,CLIENT_CONF_FILE,&option.action_select_equipment,CLIENT_KEY_ACTION_SELECT_EQUIPMENT,NULL);
-	entry_read_string(NULL,CLIENT_CONF_FILE,&option.action_select_inventory,CLIENT_KEY_ACTION_SELECT_INVENTORY,NULL);
+	entry_read_string(nullptr,CLIENT_CONF_FILE,&option.cursor_over_tile,CLIENT_KEY_CURSOR_OVER_TILE,nullptr);
+	entry_read_string(nullptr,CLIENT_CONF_FILE,&option.cursor_character_draw_script,CLIENT_KEY_CURSOR_CHARACTER_DRAW_SCRIPT,nullptr);
+	entry_read_string(nullptr,CLIENT_CONF_FILE,&option.cursor_tile,CLIENT_KEY_CURSOR_TILE,nullptr);
+	entry_read_string(nullptr,CLIENT_CONF_FILE,&option.cursor_equipment,CLIENT_KEY_CURSOR_EQUIPMENT,nullptr);
+	entry_read_string(nullptr,CLIENT_CONF_FILE,&option.cursor_inventory,CLIENT_KEY_CURSOR_INVENTORY,nullptr);
+	entry_read_string(nullptr,CLIENT_CONF_FILE,&option.action_move_up,CLIENT_KEY_ACTION_MOVE_UP,nullptr);
+	entry_read_string(nullptr,CLIENT_CONF_FILE,&option.action_move_down,CLIENT_KEY_ACTION_MOVE_DOWN,nullptr);
+	entry_read_string(nullptr,CLIENT_CONF_FILE,&option.action_move_left,CLIENT_KEY_ACTION_MOVE_LEFT,nullptr);
+	entry_read_string(nullptr,CLIENT_CONF_FILE,&option.action_move_right,CLIENT_KEY_ACTION_MOVE_RIGHT,nullptr);
+	entry_read_string(nullptr,CLIENT_CONF_FILE,&option.action_move_up_left,CLIENT_KEY_ACTION_MOVE_UP_LEFT,nullptr);
+	entry_read_string(nullptr,CLIENT_CONF_FILE,&option.action_move_up_right,CLIENT_KEY_ACTION_MOVE_UP_RIGHT,nullptr);
+	entry_read_string(nullptr,CLIENT_CONF_FILE,&option.action_move_down_left,CLIENT_KEY_ACTION_MOVE_DOWN_LEFT,nullptr);
+	entry_read_string(nullptr,CLIENT_CONF_FILE,&option.action_move_down_right,CLIENT_KEY_ACTION_MOVE_DOWN_RIGHT,nullptr);
+	entry_read_string(nullptr,CLIENT_CONF_FILE,&option.action_select_character,CLIENT_KEY_ACTION_SELECT_CHARACTER,nullptr);
+	entry_read_string(nullptr,CLIENT_CONF_FILE,&option.action_select_tile,CLIENT_KEY_ACTION_SELECT_TILE,nullptr);
+	entry_read_string(nullptr,CLIENT_CONF_FILE,&option.action_select_equipment,CLIENT_KEY_ACTION_SELECT_EQUIPMENT,nullptr);
+	entry_read_string(nullptr,CLIENT_CONF_FILE,&option.action_select_inventory,CLIENT_KEY_ACTION_SELECT_INVENTORY,nullptr);
 
-	already_parsed = 1;
+	already_parsed = true;
 }
 
 /**************************************
