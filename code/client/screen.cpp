@@ -35,7 +35,7 @@ static int compose = 0;
 #define ITEM_FONT_SIZE 15
 
 static item_t * frame_rate = nullptr;
-static constexpr int const& FPS_DISPLAY_PERIOD = 1000;
+static constexpr int const FPS_DISPLAY_PERIOD = 1000;
 static Camera g_Camera;
 
 /***********************************************
