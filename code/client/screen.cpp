@@ -211,7 +211,6 @@ void screen_display(context_t * ctx)
 				}
 
 				if( draw_script != nullptr ) {
-printf("draw script\n");
 					execute_draw_script(ctx,draw_script,ctx_drawn,item);
 				
 					free(draw_script);
@@ -221,7 +220,6 @@ printf("draw script\n");
 				}
 			}
 
-printf("sdl_blit\n");
 			sdl_blit_item(ctx->render,item);
 			item = item->next;
 		}
