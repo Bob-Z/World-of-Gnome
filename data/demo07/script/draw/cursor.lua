@@ -3,7 +3,7 @@ function f ()
 -- id = player_get_id()
 id = context_get_id()
 
-item_set_anim("red_square.png");
+item_set_anim("cursor3.gif");
 
 -- center
 item_w = item_get_w()
