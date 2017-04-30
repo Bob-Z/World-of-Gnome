@@ -122,6 +122,7 @@ static void display_fps()
 		}
 	}
 }
+
 /************************************************
 Render the currently selected item list to screen
 ************************************************/
@@ -178,12 +179,7 @@ printf("draw script\n");
 					lua_setglobal (get_luaVM(), "current_context");
 
 					if ( lua_execute_script(get_luaVM(), draw_script, nullptr) == -1 ){
-						char * l_pTablePath;
-						l_pTablePath = strconcat(SCRIPT_TABLE,"/",draw_script,nullptr);
-						file_lock(l_pTablePath);
-						file_update(ctx, l_pTablePath);
-						file_unlock(l_pTablePath);
-						free(l_pTablePath);
+						file_request_from_network(ctx, SCRIPT_TABLE, draw_script);
 					}
 					free(draw_script);
 					sdl_blit_item(ctx->render,&temp_item);
@@ -207,14 +203,10 @@ printf("sdl_blit\n");
 			lua_setglobal (get_luaVM(), "current_camera");
 
 			if ( lua_execute_script(get_luaVM(), l_pCameraScript, nullptr) == -1 ){
-				// FIXME: factorize this code
-				char * l_pTablePath;
-				l_pTablePath = strconcat(SCRIPT_TABLE,"/",l_pCameraScript,nullptr);
-				file_lock(l_pTablePath);
-				file_update(ctx, l_pTablePath);
-				file_unlock(l_pTablePath);
-				free(l_pTablePath);
+				file_request_from_network(ctx, SCRIPT_TABLE, l_pCameraScript);
 			}
+		}
+		if( l_pCameraScript != nullptr ) {
 			free(l_pCameraScript);
 		}
 
