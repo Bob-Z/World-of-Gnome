@@ -31,6 +31,7 @@ action          = [
         ,"summon_dog"
         ,"summon_dog_white"
         ,"summon_dog_brown"
+        ,"summon_dog_golden"
         ,"summon_chicken"
         ,"summon_turkey"
         ,"summon_goat"
