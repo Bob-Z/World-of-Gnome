@@ -1,3 +1,4 @@
+draw_script     = "draw/smooth.lua"
 marquee         = "marquee/god.jpg";
 sprite          = "sprite/god.gif";
 type		= "god"
