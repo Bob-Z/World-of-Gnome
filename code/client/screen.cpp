@@ -164,16 +164,14 @@ void screen_display(context_t * ctx)
 					draw_script = strdup((const char *)item->user1_ptr);
 				}
 				else {
-					 entry_read_string(CHARACTER_TABLE,ctx_drawn->id,&draw_script,CHARACTER_KEY_DRAW_SCRIPT,nullptr);
+					entry_read_string(CHARACTER_TABLE,ctx_drawn->id,&draw_script,CHARACTER_KEY_DRAW_SCRIPT,nullptr);
 				}
 
 				if( draw_script != nullptr ) {
-					// FIXME: remove these 3 lines and all related move code here and sdl_item
-					item->move_start_tick = 0; // no smooth move
-					item->rect.x = item->to_px;
-					item->rect.y = item->to_py;
-
-					lua_pushlightuserdata(get_luaVM(),item);
+printf("draw script\n");
+					item_t temp_item;
+					memcpy(&temp_item, item, sizeof(item_t));
+					lua_pushlightuserdata(get_luaVM(),&temp_item);
 					lua_setglobal (get_luaVM(), "current_item");
 
 					lua_pushlightuserdata(get_luaVM(),ctx_drawn);
@@ -188,9 +186,13 @@ void screen_display(context_t * ctx)
 						free(l_pTablePath);
 					}
 					free(draw_script);
+					sdl_blit_item(ctx->render,&temp_item);
+					item = item->next;
+					continue;
 				}
 			}
 
+printf("sdl_blit\n");
 			sdl_blit_item(ctx->render,item);
 			item = item->next;
 		}
@@ -224,34 +226,33 @@ void screen_display(context_t * ctx)
 	return;
 }
 /************************************************
-Select the screen to be rendered
-************************************************/
+  Select the screen to be rendered
+ ************************************************/
 void screen_set_screen(Screen p_Screen)
 {
 	if(p_Screen != g_Camera.getScreen()) {
 		g_Camera.setScreen(p_Screen);
-		context_reset_all_position();
 		screen_compose();
 	}
 }
 
 /************************************************
-End the rendering
-************************************************/
+  End the rendering
+ ************************************************/
 void screen_quit()
 {
 	screen_running = false;
 }
 
 /************************************************
-************************************************/
+ ************************************************/
 Screen screen_get_current_screen()
 {
 	return g_Camera.getScreen();
 }
 
 /************************************************
-************************************************/
+ ************************************************/
 Camera * screen_get_camera()
 {
 	return &g_Camera;

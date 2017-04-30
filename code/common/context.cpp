@@ -68,10 +68,7 @@ void context_init(context_t * context)
 	context->pos_ty = 0;
 	context->prev_pos_tx = 0;
 	context->prev_pos_ty = 0;
-	context->cur_pos_px = INT_MAX;
-	context->cur_pos_py = INT_MAX;
 	context->pos_changed = false;
-	context->move_start_tick = 0;
 	context->animation_tick = 0;
 	context->type = nullptr;
 
@@ -1156,22 +1153,6 @@ int context_distance(context_t * ctx1, context_t * ctx2)
 	}
 
 	return (distx>disty?distx:disty);
-}
-
-/**************************************
-Reset all contexts position information used for smooth animation
-Called on screen switch
-**************************************/
-void context_reset_all_position()
-{
-	context_t * ctx = context_get_first();
-
-	context_lock_list();
-	while(ctx != nullptr ) {
-		ctx->move_start_tick = 0;
-		ctx = ctx->next;
-	}
-	context_unlock_list();
 }
 
 /**************************************

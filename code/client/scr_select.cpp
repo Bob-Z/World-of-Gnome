@@ -232,13 +232,13 @@ item_t * scr_select_compose(context_t * context)
 		}
 	}
 
-	/* Create item list */
+	// Create item list
 	for(i=0; i<character_num; i++) {
 		if( character_list[i].anim == nullptr ) {
 			continue;
 		}
 
-		/* Character picture */
+		// Character picture
 		item = item_list_add(&item_list);
 		item_image = item;
 		character_list[i].item = item;
@@ -252,24 +252,24 @@ item_t * scr_select_compose(context_t * context)
 		item_set_over(item,cb_over,(void *)i,nullptr);
 
 		x += character_list[i].width + BORDER;
-		/* character name */
+		// character name
 		if( font_name ) {
 			item = item_list_add(&item_list);
 			item_set_string(item,character_list[i].name);
 			item_set_font(item,font_name);
-			/* display string just above the picture */
+			// display string just above the picture
 			sdl_get_string_size(item->font,item->string,&w,&h);
 			item_set_anim_shape(item,item_image->rect.x + item_image->rect.w/2 - w/2, item_image->rect.y-h,w,h);
 		} else {
 			werr(LOGDEV,"Can't open TTF font %s",FONT);
 		}
 
-		/* character type */
+		// character type
 		if( font_type ) {
 			item = item_list_add(&item_list);
 			item_set_string(item,character_list[i].type);
 			item_set_font(item,font_type);
-			/* display string just below the picture */
+			// display string just below the picture
 			sdl_get_string_size(item->font,item->string,&w,&h);
 			item_set_anim_shape(item,item_image->rect.x + item_image->rect.w/2 - w/2, item_image->rect.y+item_image->rect.h,w,h);
 		} else {

@@ -271,8 +271,6 @@ static void set_up_sprite(context_t * ctx)
 	item_t * item;
 	int px;
 	int py;
-	int opx;
-	int opy;
 	Uint32 current_time;
 	int angle;
 	int flip;
@@ -302,13 +300,11 @@ static void set_up_sprite(context_t * ctx)
 
 	// Force position when the player has changed map
 	if( change_map == true ) {
-		ctx->move_start_tick = current_time;
 		ctx->animation_tick = current_time;
 		force_position = true;
 	}
 	// Force position when this context has changed map
 	if( ctx->change_map == true ) {
-		ctx->move_start_tick = current_time;
 		ctx->animation_tick = current_time;
 		ctx->change_map = false;
 		force_position = true;
@@ -318,16 +314,9 @@ static void set_up_sprite(context_t * ctx)
 		ctx->animation_tick = current_time;
 	}
 
-	if( ctx->cur_pos_px == INT_MAX || ctx->cur_pos_py == INT_MAX ) {
-		force_position = true;
-	}
-
 	// Detect sprite movement, initiate animation
 	if( ctx->pos_changed && force_position == false ) {
 		ctx->pos_changed = false;
-		ctx->move_start_tick = current_time;
-		ctx->start_pos_px = ctx->cur_pos_px;
-		ctx->start_pos_py = ctx->cur_pos_py;
 
 		/* flip need to remember previous direction to avoid resetting a
 		   east -> west flip when a sprite goes to north for instance.
@@ -396,20 +385,8 @@ static void set_up_sprite(context_t * ctx)
 	py += sprite_offset_y;
 
 	// Set sprite to item
+	item_set_pos(item,px,py);
 	item_set_anim_start_tick(item,ctx->animation_tick);
-
-	if( force_position == true ) {
-		ctx->start_pos_px = px;
-		ctx->cur_pos_px = px;
-		ctx->start_pos_py = py;
-		ctx->cur_pos_py = py;
-	}
-
-	opx = ctx->start_pos_px;
-	opy = ctx->start_pos_py;
-
-	item_set_move(item,opx,opy,px,py,ctx->move_start_tick,VIRTUAL_ANIM_DURATION);
-	item_set_save_coordinate(item,&ctx->cur_pos_px,&ctx->cur_pos_py);
 	item_set_anim_array(item,sprite_list);
 	free(sprite_list);
 	item_set_anim_move_array(item,sprite_move_list);

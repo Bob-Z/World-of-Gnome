@@ -61,11 +61,6 @@ typedef struct context {
 	int		prev_pos_ty;	// player previous position (in tile) for sprite direction
 	bool		pos_changed;
 
-	int		cur_pos_px;	// current player position (in pixel)
-	int		cur_pos_py;	// current player position (in pixel)
-	int		start_pos_px;	// player position (in pixel) at last postion change
-	int		start_pos_py;	// player position (in pixel) at last postion change
-	Uint32		move_start_tick;	// smooth move animation's starting tick
 	Uint32		animation_tick;	// Start tick for animation
 
 	char *		type;	// character's type
