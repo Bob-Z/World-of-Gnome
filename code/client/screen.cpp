@@ -146,6 +146,26 @@ void calculate_camera_position(context_t * p_pCtx)
 }
 
 /************************************************
+************************************************/
+static void execute_draw_script(context_t * p_pCtx, const char * p_pScriptName, context_t * p_pCtxToDraw, item_t * p_pItem)
+{
+	item_t l_TempItem;
+	memcpy(&l_TempItem, p_pItem, sizeof(item_t));
+
+	lua_pushlightuserdata(get_luaVM(),&l_TempItem);
+	lua_setglobal (get_luaVM(), "current_item");
+
+	lua_pushlightuserdata(get_luaVM(),p_pCtxToDraw);
+	lua_setglobal (get_luaVM(), "current_context");
+
+	if ( lua_execute_script(get_luaVM(), p_pScriptName, nullptr) == -1 ){
+		file_request_from_network(p_pCtx, SCRIPT_TABLE, p_pScriptName);
+	}
+
+	sdl_blit_item(p_pCtx->render,&l_TempItem);
+}
+
+/************************************************
 Render the currently selected item list to screen
 ************************************************/
 void screen_display(context_t * ctx)
@@ -192,19 +212,10 @@ void screen_display(context_t * ctx)
 
 				if( draw_script != nullptr ) {
 printf("draw script\n");
-					item_t temp_item;
-					memcpy(&temp_item, item, sizeof(item_t));
-					lua_pushlightuserdata(get_luaVM(),&temp_item);
-					lua_setglobal (get_luaVM(), "current_item");
-
-					lua_pushlightuserdata(get_luaVM(),ctx_drawn);
-					lua_setglobal (get_luaVM(), "current_context");
-
-					if ( lua_execute_script(get_luaVM(), draw_script, nullptr) == -1 ){
-						file_request_from_network(ctx, SCRIPT_TABLE, draw_script);
-					}
+					execute_draw_script(ctx,draw_script,ctx_drawn,item);
+				
 					free(draw_script);
-					sdl_blit_item(ctx->render,&temp_item);
+
 					item = item->next;
 					continue;
 				}
