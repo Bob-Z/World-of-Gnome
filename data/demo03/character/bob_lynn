@@ -1,3 +1,4 @@
+draw_script     = "draw/smooth.lua"
 marquee         = "marquee/warrior.jpg";
 sprite          = "sprite/warrior.png";
 name = "Lynn";
