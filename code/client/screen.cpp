@@ -124,6 +124,28 @@ static void display_fps()
 }
 
 /************************************************
+************************************************/
+void calculate_camera_position(context_t * p_pCtx)
+{
+	char * l_pCameraScript = nullptr;
+	entry_read_string(nullptr,CLIENT_CONF_FILE,&l_pCameraScript,CLIENT_KEY_CAMERA_SCRIPT,nullptr);
+	if( l_pCameraScript == nullptr || l_pCameraScript[0] == '\0') {
+		werr(LOGDEV,"No camera script defined. Camera won't move");
+	}
+	else {
+		lua_pushlightuserdata(get_luaVM(),(void *)&g_Camera);
+		lua_setglobal (get_luaVM(), "current_camera");
+
+		if ( lua_execute_script(get_luaVM(), l_pCameraScript, nullptr) == -1 ){
+			file_request_from_network(p_pCtx, SCRIPT_TABLE, l_pCameraScript);
+		}
+	}
+	if( l_pCameraScript != nullptr ) {
+		free(l_pCameraScript);
+	}
+}
+
+/************************************************
 Render the currently selected item list to screen
 ************************************************/
 void screen_display(context_t * ctx)
@@ -193,22 +215,7 @@ printf("sdl_blit\n");
 			item = item->next;
 		}
 
-		char * l_pCameraScript = nullptr;
-		entry_read_string(nullptr,CLIENT_CONF_FILE,&l_pCameraScript,CLIENT_KEY_CAMERA_SCRIPT,nullptr);
-		if( l_pCameraScript == nullptr || l_pCameraScript[0] == '\0') {
-			werr(LOGDEV,"No camera script defined. Camera won't move");
-		}
-		else {
-			lua_pushlightuserdata(get_luaVM(),(void *)&g_Camera);
-			lua_setglobal (get_luaVM(), "current_camera");
-
-			if ( lua_execute_script(get_luaVM(), l_pCameraScript, nullptr) == -1 ){
-				file_request_from_network(ctx, SCRIPT_TABLE, l_pCameraScript);
-			}
-		}
-		if( l_pCameraScript != nullptr ) {
-			free(l_pCameraScript);
-		}
+		calculate_camera_position(ctx);
 
 		sdl_blit_to_screen(ctx->render);
 
