@@ -5,6 +5,8 @@ id = context_get_id()
 
 item_X = item_get_x()
 item_Y = item_get_y()
+item_W = item_get_w()
+item_H = item_get_h()
 
 -- Init tables
 if( _G.start_tick == nil ) then
@@ -21,6 +23,12 @@ if( _G.current_X == nil ) then
 end
 if( _G.current_Y == nil ) then
 	_G.current_Y = {}
+end
+if( _G.current_W == nil ) then
+	_G.current_W = {}
+end
+if( _G.current_H == nil ) then
+	_G.current_H = {}
 end
 if( _G.from_X == nil ) then
 	_G.from_X = {}
@@ -45,9 +53,11 @@ if( _G.start_tick[id] == nil ) then
 end
 if( _G.dest_X[id] == nil ) then
 	_G.current_X[id] = item_X
+	_G.dest_X[id] = item_X
 end
 if( _G.dest_Y[id] == nil ) then
 	_G.current_Y[id] = item_Y
+	_G.dest_Y[id] = item_Y
 end
 if( _G.map[id] == nil ) then
 	_G.map[id] = context_get_map()
@@ -101,6 +111,10 @@ if( _G.map[id] ~= context_get_map() ) then
 	_G.reset[id] = true
 end
 
+-- save width for other scripts
+_G.current_W[id] = item_W
+_G.current_H[id] = item_H
+
 -- Calculate orientation
 if( dX ~= 0 or dY ~= 0) then
 	if( math.abs(dX) > math.abs(dY) ) then
@@ -136,6 +150,9 @@ else
 	_G.current_Y[id] = _G.dest_Y[id]
 	item_set_anim_from_context(id,"sprite_" .. _G.orientation[id]);
 end
+
+--  text = string.format("_G.current_X[%s] = %d, _G.current_Y[%s] = %d",id, _G.current_X[id], id, _G.current_Y[id])
+--  print_text_debug(text)
 
 item_set_x(_G.current_X[id])
 item_set_y(_G.current_Y[id])
