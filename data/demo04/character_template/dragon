@@ -1,3 +1,4 @@
+draw_script     = "draw/smooth.lua"
 marquee         = "marquee/dragon.gif";
 sprite          = "sprite/dragon.gif";
 map       = "village";
