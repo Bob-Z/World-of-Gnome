@@ -19,7 +19,8 @@
 
 #include "screen.h"
 
-class Camera {
+class Camera
+{
 public:
 	Camera();
 	~Camera();
@@ -33,9 +34,9 @@ public:
 	int getY();
 	void setY(int p_Y);
 private:
-        Screen m_Screen;
-        int m_Zoom;
-        int m_X;
-        int m_Y;
+	Screen m_Screen;
+	int m_Zoom;
+	int m_X;
+	int m_Y;
 };
 
