@@ -1,3 +1,4 @@
+draw_script     = "draw/smooth.lua"
 marquee		= "marquee/gryphon.gif";
 sprite		= "sprite/gryphon.gif";
 type		= "gryphon"
