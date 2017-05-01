@@ -1,6 +1,6 @@
 /*
    World of Gnome is a 2D multiplayer role playing game.
-   Copyright (C) 2013-2016 carabobz@gmail.com
+   Copyright (C) 2013-2017 carabobz@gmail.com
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -34,40 +34,40 @@ int file_add(context_t * context,char * data,Uint32 command_size)
 {
 	char * ptr = data;
 	Uint32 filename_size;
-	char * filename = NULL;
-	char * tmpfilename = NULL;
-	char * tmpfullname = NULL;
-	char * fullname = NULL;
+	char * filename = nullptr;
+	char * tmpfilename = nullptr;
+	char * tmpfullname = nullptr;
+	char * fullname = nullptr;
 	ret_code_t res;
 
-	/* Get the data from the network frame */
-	/* First 4 bytes are the size of the file name*/
+	// Get the data from the network frame
+	// First 4 bytes are the size of the file name
 	if( command_size < sizeof(Uint32) ) {
 		werr(LOGDEV,"Invalid file received");
 		return -1;
 	}
 	filename_size = *((Uint32 *)ptr);
 
-	/* Following bytes are the file name, relative to the application base directory ( $HOME/.config/wog/client/ ) */
+	// Following bytes are the file name, relative to the application base directory ( $HOME/.config/wog/client/ )
 	ptr += sizeof(Uint32);
 	filename = (char*)malloc(filename_size);
 	memcpy(filename,ptr,filename_size);
 	wlog(LOGDEBUG,"Received file %s",filename);
-	if( filename == NULL ) {
+	if( filename == nullptr ) {
 		werr(LOGDEV,"Unable to allocate %d bytes for file name",filename_size);
 		return -1;
 	}
 
-	/* Next is a Uint32 representing the size of the file's data */
+	// Next is a Uint32 representing the size of the file's data
 	ptr += filename_size;
 	Uint32 filedata_size = *((Uint32 *)ptr);
 
-	/* Finally are the data bytes */
+	// Finally are the data bytes
 	ptr += sizeof(Uint32);
 
-	/* Write the data to disk */
-	tmpfilename = strconcat(filename,APP_NAME,"tmp",NULL);
-	tmpfullname = strconcat(base_directory,"/",tmpfilename,NULL);
+	// Write the data to disk
+	tmpfilename = strconcat(filename,APP_NAME,"tmp",nullptr);
+	tmpfullname = strconcat(base_directory,"/",tmpfilename,nullptr);
 
 	file_create_directory(tmpfullname);
 
@@ -78,7 +78,7 @@ int file_add(context_t * context,char * data,Uint32 command_size)
 		return -1;
 	}
 
-	fullname = strconcat(base_directory,"/",filename,NULL);
+	fullname = strconcat(base_directory,"/",filename,nullptr);
 
 	rename(tmpfullname,fullname);
 
@@ -88,13 +88,13 @@ int file_add(context_t * context,char * data,Uint32 command_size)
 	wlog(LOGDEBUG,"write file %s",fullname);
 	free(fullname);
 
-	/* Update the entry DB */
+	// Update the entry DB
 	entry_remove(filename);
-	/* Update the image DB */
+	// Update the image DB
 	image_DB_remove(filename);
-	/* Update options if needed */
+	// Update options if needed
 	option_get();
-	/* Make sure the new file is drawn (if needed) */
+	// Make sure the new file is drawn (if needed)
 	screen_compose();
 
 	free(filename);
