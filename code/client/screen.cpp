@@ -26,6 +26,7 @@
 #include "option_client.h"
 #include "lua_client.h"
 #include "Camera.h"
+#include "file.h"
 
 static bool screen_running = true;
 static item_t * item_list = nullptr;

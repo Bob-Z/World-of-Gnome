@@ -108,3 +108,20 @@ void file_clean(context_t * context)
 {
 	file_delete(CHARACTER_TABLE,context->id);
 }
+
+/***************************************************
+ Request a file from network
+****************************************************/
+void file_request_from_network(context_t * p_pCtx, const char * p_pTable, const char * p_pFilename)
+{
+        char * l_pTablePath;
+
+        l_pTablePath = strconcat(p_pTable,"/",p_pFilename,nullptr);
+        file_lock(l_pTablePath);
+        file_update(p_pCtx, l_pTablePath);
+        file_unlock(l_pTablePath);
+        free(l_pTablePath);
+
+        return;
+}
+
