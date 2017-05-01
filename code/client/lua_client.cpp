@@ -264,9 +264,6 @@ static int l_item_set_anim_from_context( lua_State* p_pLuaState)
         l_pItem = (item_t*)lua_touserdata(p_pLuaState, -1);
         lua_pop(p_pLuaState,1);
 
-	l_pItem->anim.list = nullptr;
-	l_pItem->anim.num = 0;
-
 	const char * l_pId;
         l_pId = luaL_checkstring(p_pLuaState, -2);
 	const char * l_pEntryName;
@@ -277,6 +274,10 @@ static int l_item_set_anim_from_context( lua_State* p_pLuaState)
 	char * sprite_name = nullptr;
 	if( entry_read_string(CHARACTER_TABLE,l_pId,&sprite_name,l_pEntryName,nullptr) == RET_OK) {
 		if(sprite_name[0] != 0) {
+			// ignore previous anim
+			l_pItem->anim.list = nullptr;
+			l_pItem->anim.num = 0;
+
 			char * l_pSpriteNameArray[2] = { nullptr, nullptr };
 			l_pSpriteNameArray[0] = sprite_name;
 			l_pAnimArray = imageDB_get_anim_array(context_get_player(),(const char **)l_pSpriteNameArray);
@@ -290,6 +291,10 @@ static int l_item_set_anim_from_context( lua_State* p_pLuaState)
 
 	char ** sprite_list = nullptr;
 	if( entry_read_list(CHARACTER_TABLE,l_pId,&sprite_list,l_pEntryName,nullptr) == RET_OK ) {
+		// ignore previous anim
+		l_pItem->anim.list = nullptr;
+		l_pItem->anim.num = 0;
+
 		l_pAnimArray = imageDB_get_anim_array(context_get_player(),(const char **)sprite_list);
                 deep_free(sprite_list);
 
