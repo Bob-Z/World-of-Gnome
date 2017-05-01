@@ -264,6 +264,9 @@ static int l_item_set_anim_from_context( lua_State* p_pLuaState)
         l_pItem = (item_t*)lua_touserdata(p_pLuaState, -1);
         lua_pop(p_pLuaState,1);
 
+	l_pItem->anim.list = nullptr;
+	l_pItem->anim.num = 0;
+
 	const char * l_pId;
         l_pId = luaL_checkstring(p_pLuaState, -2);
 	const char * l_pEntryName;
