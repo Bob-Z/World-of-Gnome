@@ -1,6 +1,6 @@
 name		= "Ghost";
 
-draw_script     = "draw/smooth.lua"
+draw_script     = "draw/move_sinus.lua"
 marquee         = "sprite/ghost/ghost.png";
 sprite          = [ "sprite/ghost/ghost.gif" ];
 type            = "ghost"
