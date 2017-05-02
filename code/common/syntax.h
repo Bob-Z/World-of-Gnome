@@ -22,15 +22,15 @@
 
 #define DEFAULT_IMAGE_FILE	"default.jpg"
 
-/* users data */
+// users data
 #define USERS_TABLE		"user"
 #define USERS_CHARACTER_LIST    "character_list"
 
-/* password data */
+// password data
 #define PASSWD_TABLE		"passwd"
 #define PASSWD_KEY_PASSWORD	"password"
 
-/* attributes */
+// attributes
 #define ATTRIBUTE_GROUP		"attribute"
 #define ATTRIBUTE_CURRENT	"current"
 #define ATTRIBUTE_PREVIOUS	"previous"
@@ -41,13 +41,13 @@
 #define ATTRIBUTE_ON_UP		"on_up"
 #define ATTRIBUTE_ON_DOWN	"on_down"
 
-/* character data */
+// character data
 #define CHARACTER_TABLE		"character"
 #define CHARACTER_KEY_MARQUEE 	"marquee"
 #define CHARACTER_KEY_SPRITE	"sprite"
 #define CHARACTER_KEY_PORTRAIT	"portrait"
 #define CHARACTER_KEY_ZOOM	"zoom"
-/* sprite align : 0 = center 1 = lower */
+// sprite align : 0 = center 1 = lower
 #define CHARACTER_KEY_ALIGN	"align"
 #define CHARACTER_KEY_OFFSET_Y	"offset_y"
 #define CHARACTER_KEY_TYPE	"type"
@@ -64,7 +64,7 @@
 #define CHARACTER_KEY_AI	"ai"
 #define CHARACTER_KEY_AI_PARAMS	"ai_params"
 #define CHARACTER_KEY_AGGRO_DIST	"aggro_dist"
-#define CHARACTER_KEY_AGGRO_SCRIPT	"aggro_script" /* Called with param: target id, 1 if in aggro, 0 if out of aggro */
+#define CHARACTER_KEY_AGGRO_SCRIPT	"aggro_script" // Called with param: target id, 1 if in aggro, 0 if out of aggro
 #define CHARACTER_KEY_DIR_N_ROT		"rot_n"
 #define CHARACTER_KEY_DIR_NE_ROT	"rot_ne"
 #define CHARACTER_KEY_DIR_E_ROT		"rot_e"
@@ -73,7 +73,6 @@
 #define CHARACTER_KEY_DIR_SW_ROT	"rot_sw"
 #define CHARACTER_KEY_DIR_W_ROT		"rot_w"
 #define CHARACTER_KEY_DIR_NW_ROT	"rot_nw"
-/* flip : 1 = horizontal, 2 = vertical, 3 = both */
 #define CHARACTER_KEY_DIR_N_FLIP	"flip_n"
 #define CHARACTER_KEY_DIR_S_FLIP	"flip_s"
 #define CHARACTER_KEY_DIR_W_FLIP	"flip_w"
@@ -92,10 +91,10 @@
 
 #define CHARACTER_TEMPLATE_TABLE	"character_template"
 
-/* image DB */
+// image DB
 #define IMAGE_TABLE 		"image"
 
-/* map data */
+// map data
 #define MAP_TABLE		"map"
 #define MAP_DESCRIPTION		"description"
 #define MAP_KEY_BG_RED		"bg_red"
@@ -103,7 +102,7 @@
 #define MAP_KEY_BG_GREEN	"bg_green"
 #define MAP_KEY_WARP_X		"warp_x"
 #define MAP_KEY_WARP_Y		"warp_y"
-/* layer data*/
+// layer data*/
 #define MAP_KEY_LAYER		"layer"
 #define MAP_KEY_WIDTH		"width"
 #define MAP_KEY_HEIGHT		"height"
@@ -126,17 +125,17 @@
 #define MAP_SFX		 	"sfx"
 #define MAP_SFX_VOLUME	 	"sfx_volume"
 
-/* items on map */
+// items on map
 #define MAP_ITEM_POS_X		"pos_x"
 #define MAP_ITEM_POS_Y		"pos_y"
 
-/* events on map */
+// events on map
 #define MAP_EVENT_POS_X		"pos_x"
 #define MAP_EVENT_POS_Y		"pos_y"
 #define MAP_EVENT_SCRIPT	"script"
 #define MAP_EVENT_PARAM		"param"
 
-/* action data */
+// action data
 #define ACTION_TABLE		"action"
 #define ACTION_KEY_SCRIPT	"script"
 #define ACTION_KEY_TEXT		"text"
@@ -146,11 +145,11 @@
 #define ACTION_KEY_ICON_LAYOUT	"icon_layout"
 #define ACTION_KEY_PARAM	"param"
 
-/* item data */
+// item data
 #define ITEM_TABLE		"item"
 #define ITEM_NAME		"name"
 #define ITEM_SPRITE		"sprite"
-/* sprite align : 0 = center 1 = lower */
+// sprite align : 0 = center 1 = lower
 #define ITEM_ALIGN		"align"
 #define ITEM_OFFSET_Y		"offset_y"
 #define ITEM_ICON		"icon"
@@ -160,16 +159,16 @@
 
 #define ITEM_TEMPLATE_TABLE	"item_template"
 
-/* scripts */
+// scripts
 #define SCRIPT_TABLE		"script"
 
-/* character equipment */
+// character equipment
 #define EQUIPMENT_GROUP		"equipment"
 #define EQUIPMENT_ICON		"icon"
 #define EQUIPMENT_NAME		"name"
 #define EQUIPMENT_EQUIPPED	"equipped"
 
-/* client configuration */
+// client configuration
 #define CLIENT_CONF_FILE			"client.conf"
 #define CLIENT_KEY_VERSION			"version"
 #define CLIENT_KEY_CAMERA_SCRIPT		"camera_script"
@@ -195,3 +194,4 @@
 
 #define SFX_TABLE 				"sfx"
 #endif
+
