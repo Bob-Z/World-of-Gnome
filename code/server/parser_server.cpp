@@ -1,6 +1,6 @@
 /*
    World of Gnome is a 2D multiplayer role playing game.
-   Copyright (C) 2013-2016 carabobz@gmail.com
+   Copyright (C) 2013-2017 carabobz@gmail.com
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@ Return RET_NOK on error
 **************************************/
 ret_code_t parse_incoming_data(context_t * context, Uint32 command, Uint32 command_size, char * data)
 {
-	char * value = NULL;
+	char * value = nullptr;
 	char * fullname;
 	char * elements[512];
 	char * cksum;
@@ -46,14 +46,14 @@ ret_code_t parse_incoming_data(context_t * context, Uint32 command, Uint32 comma
 		user_name = _strsep(&data,NETWORK_DELIMITER);
 		password = _strsep(&data,NETWORK_DELIMITER);
 
-		if(entry_read_string(PASSWD_TABLE, user_name, &value, PASSWD_KEY_PASSWORD,NULL) == RET_NOK) {
+		if(entry_read_string(PASSWD_TABLE, user_name, &value, PASSWD_KEY_PASSWORD,nullptr) == RET_NOK) {
 			return RET_NOK;
 		}
 		if( strcmp(value, password) != 0) {
 			free(value);
 			werr(LOGUSER,"Wrong login for %s",user_name);
 			// send answer
-			network_send_command(context, CMD_SEND_LOGIN_NOK, 0, NULL, false);
+			network_send_command(context, CMD_SEND_LOGIN_NOK, 0, nullptr, false);
 			// force client disconnection
 			return RET_NOK;
 		} else {
@@ -65,13 +65,13 @@ ret_code_t parse_incoming_data(context_t * context, Uint32 command, Uint32 comma
 			context_set_connected(context, true);
 
 			// send answer
-			network_send_command(context, CMD_SEND_LOGIN_OK, 0, NULL, false);
+			network_send_command(context, CMD_SEND_LOGIN_OK, 0, nullptr, false);
 			wlog(LOGUSER,"Login successful for user %s",context->user_name);
 		}
 		break;
-	case CMD_REQ_CHARACTER_LIST :
-		wlog(LOGDEBUG,"Received CMD_REQ_CHARACTER_LIST");
-		character_send_list(context);
+	case CMD_REQ_PLAYABLE_CHARACTER_LIST :
+		wlog(LOGDEBUG,"Received CMD_REQ_PLAYABLE_CHARACTER_LIST");
+		character_playable_send_list(context);
 		wlog(LOGDEBUG,"character list sent");
 		break;
 	case CMD_REQ_FILE :
@@ -82,18 +82,18 @@ ret_code_t parse_incoming_data(context_t * context, Uint32 command, Uint32 comma
 			elements[i] = _strsep(&data,NETWORK_DELIMITER);
 		}
 
-		if(elements[0]==NULL || elements[1]==NULL) {
+		if(elements[0]==nullptr || elements[1]==nullptr) {
 			werr(LOGDEV,"Received erroneous CMD_REQ_FILE");
 			break;
 		}
 		wlog(LOGDEBUG,"Received CMD_REQ_FILE for %s",elements[0]);
 		/* compare checksum */
-		fullname = strconcat(base_directory,"/",elements[0],NULL);
+		fullname = strconcat(base_directory,"/",elements[0],nullptr);
 
 		cksum = checksum_file(fullname);
 		free(fullname);
 
-		if( cksum == NULL) {
+		if( cksum == nullptr) {
 			werr(LOGUSER,"Required file %s doesn't exists",elements[0]);
 			break;
 		}
@@ -130,27 +130,27 @@ ret_code_t parse_incoming_data(context_t * context, Uint32 command, Uint32 comma
 			if( context->map ) {
 				free(context->map);
 			}
-			context->map = NULL;
+			context->map = nullptr;
 			if( context->prev_map ) {
 				free(context->prev_map);
 			}
-			context->prev_map = NULL;
+			context->prev_map = nullptr;
 			if( context->id ) {
 				free(context->id);
 			}
-			context->id = NULL;
+			context->id = nullptr;
 			context_spread(context);
 		}
 		break;
 	case CMD_REQ_ACTION :
 		i = 0;
-		elements[i] = NULL;
+		elements[i] = nullptr;
 		elements[i] = _strsep(&data,NETWORK_DELIMITER);
 		while(elements[i]) {
 			i++;
 			elements[i] = _strsep(&data,NETWORK_DELIMITER);
 		}
-		elements[i+1] = NULL;
+		elements[i+1] = nullptr;
 
 		wlog(LOGDEBUG,"Received CMD_REQ_ACTION %s from %s /%s",elements[0],context->user_name,context->character_name);
 

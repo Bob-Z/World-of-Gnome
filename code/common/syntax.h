@@ -192,6 +192,8 @@
 #define CLIENT_KEY_SELECT_CHARACTER_SFX 	"select_character_sfx"
 #define CLIENT_KEY_SELECT_CHARACTER_SFX_VOLUME 	"select_character_sfx_volume"
 #define CLIENT_KEY_SELECT_CHARACTER_ADD_ICON	"select_character_add_icon"
+#define CLIENT_KEY_CREATE_CHARACTER_SFX 	"create_character_sfx"
+#define CLIENT_KEY_CREATE_CHARACTER_SFX_VOLUME 	"create_character_sfx_volume"
 
 #define SFX_TABLE 				"sfx"
 #endif

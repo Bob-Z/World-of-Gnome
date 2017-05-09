@@ -1,6 +1,6 @@
 /*
    World of Gnome is a 2D multiplayer role playing game.
-   Copyright (C) 2013-2017 carabobz@gmail.com
+   Copyright (C) 2017 carabobz@gmail.com
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -23,7 +23,6 @@
 #include "../sdl_item/anim.h"
 #include "../sdl_item/item.h"
 #include "../sdl_item/sdl.h"
-#include "network_client.h"
 #include "screen.h"
 #include "Camera.h"
 
@@ -154,29 +153,19 @@ static void cb_wheel_down(Uint32 y, Uint32 unused)
 
 /**********************************
 **********************************/
-static void cb_icon_add_clicked(void * arg)
-{
-	context_t * ctx = (context_t*)arg;
-	network_request_playable_character_list(ctx);
-	screen_set_screen(Screen::CREATE);
-}
-
-/**********************************
-**********************************/
-void scr_select_frame_start(context_t * context)
+void scr_create_frame_start(context_t * context)
 {
 }
 
 /**********************************
-Compose the character select screen
+Compose the character create screen
 **********************************/
-item_t * scr_select_compose(context_t * context)
+item_t * scr_create_compose(context_t * context)
 {
 	long i = 0;
 	int x = 0;
 	char * marquee_name;
 	static int max_h = 0;
-	static bool init = true;
 	item_t * item;
 	item_t * item_image;
 	int w;
@@ -189,15 +178,15 @@ item_t * scr_select_compose(context_t * context)
 	}
 
 	if( sfx_filename == nullptr ) {
-		entry_read_string(nullptr,CLIENT_CONF_FILE,&sfx_filename,CLIENT_KEY_SELECT_CHARACTER_SFX,nullptr);
+		entry_read_string(nullptr,CLIENT_CONF_FILE,&sfx_filename,CLIENT_KEY_CREATE_CHARACTER_SFX,nullptr);
 	}
 
-	if( sfx_filename ) {
+	if( sfx_filename != nullptr ) {
 		sfx_play(context,sfx_filename,NO_RESTART);
 	}
 
 	int sfx_volume = 100; // 100%
-	entry_read_int(nullptr,CLIENT_CONF_FILE,&sfx_volume,CLIENT_KEY_SELECT_CHARACTER_SFX_VOLUME,nullptr);
+	entry_read_int(nullptr,CLIENT_CONF_FILE,&sfx_volume,CLIENT_KEY_CREATE_CHARACTER_SFX_VOLUME,nullptr);
         sfx_set_volume(sfx_volume);
 
 	if(item_list) {
@@ -212,6 +201,7 @@ item_t * scr_select_compose(context_t * context)
 	sdl_add_mousecb(MOUSE_WHEEL_UP,cb_wheel_up);
 	sdl_add_mousecb(MOUSE_WHEEL_DOWN,cb_wheel_down);
 
+#if 0
 	char * icon_add_image_name = nullptr;
 	entry_read_string(nullptr,CLIENT_CONF_FILE,&icon_add_image_name,CLIENT_KEY_SELECT_CHARACTER_ADD_ICON,nullptr);
 	if( icon_add_image_name != nullptr ) {
@@ -234,15 +224,19 @@ item_t * scr_select_compose(context_t * context)
 		item_set_click_left(item,cb_icon_add_clicked,(void*)context,nullptr);
 		item_set_click_right(item,cb_icon_add_clicked,(void*)context,nullptr);
 	}
+#endif
 
-	SDL_LockMutex(character_select_mutex);
+	SDL_LockMutex(character_create_mutex);
 
 	// Load all anim compute max height and width of anim + string
 	for(i=0; i<character_num; i++) {
 		// Compute the marquee file name
-		if(entry_read_string(CHARACTER_TABLE,character_list[i].id,&marquee_name,CHARACTER_KEY_MARQUEE,nullptr) == RET_NOK ) {
+		if(entry_read_string(CHARACTER_TEMPLATE_TABLE,character_list[i].id,&marquee_name,CHARACTER_KEY_MARQUEE,nullptr) == RET_NOK ) {
 			continue;
 		}
+		entry_read_string(CHARACTER_TEMPLATE_TABLE,character_list[i].id,&character_list[i].name,CHARACTER_KEY_NAME,nullptr);
+		entry_read_string(CHARACTER_TEMPLATE_TABLE,character_list[i].id,&character_list[i].type,CHARACTER_KEY_TYPE,nullptr);
+
 		character_list[i].anim  = imageDB_get_anim(context,marquee_name);
 		free(marquee_name);
 
@@ -250,11 +244,11 @@ item_t * scr_select_compose(context_t * context)
 			max_h = character_list[i].anim->h;
 		}
 
-		if( font_name ) {
+		if( font_name != nullptr && character_list[i].name != nullptr) {
 			sdl_get_string_size(font_name,character_list[i].name,&w,&h);
 			character_list[i].width = w;
 		}
-		if( font_type ) {
+		if( font_type != nullptr && character_list[i].type != nullptr) {
 			sdl_get_string_size(font_type,character_list[i].type,&w,&h);
 			if( w > character_list[i].width ) {
 				character_list[i].width = w;
@@ -286,39 +280,43 @@ item_t * scr_select_compose(context_t * context)
 
 		x += character_list[i].width + BORDER;
 		// character name
-		if( font_name ) {
+		if( font_name == nullptr ) {
+			werr(LOGDEV,"Can't open TTF font %s",FONT);
+		} else if( character_list[i].name == nullptr ) {
+			wlog(LOGDEV,"No name provided for %s",character_list[i].id);
+		} else {
 			item = item_list_add(&item_list);
 			item_set_string(item,character_list[i].name);
 			item_set_font(item,font_name);
 			// display string just above the picture
 			sdl_get_string_size(item->font,item->string,&w,&h);
 			item_set_anim_shape(item,item_image->rect.x + item_image->rect.w/2 - w/2, item_image->rect.y-h,w,h);
-		} else {
-			werr(LOGDEV,"Can't open TTF font %s",FONT);
 		}
 
 		// character type
-		if( font_type ) {
+		if( font_type == nullptr ) {
+			werr(LOGDEV,"Can't open TTF font %s",FONT);
+		} else if( character_list[i].type == nullptr ) {
+			wlog(LOGDEV,"No type provided for %s",character_list[i].id);
+		} else {
 			item = item_list_add(&item_list);
 			item_set_string(item,character_list[i].type);
 			item_set_font(item,font_type);
 			// display string just below the picture
 			sdl_get_string_size(item->font,item->string,&w,&h);
 			item_set_anim_shape(item,item_image->rect.x + item_image->rect.w/2 - w/2, item_image->rect.y+item_image->rect.h,w,h);
-		} else {
-			werr(LOGDEV,"Can't open TTF font %s",FONT);
 		}
-	}
-
-	if(init == true) {
-		init = false;
 	}
 
 	if( current_character == -1 ) {
 		cb_show_item(character_list[0].item);
 	}
 
-	SDL_UnlockMutex(character_select_mutex);
+	SDL_UnlockMutex(character_create_mutex);
+
+	if( current_character == -1 ) {
+		cb_show_item(character_list[0].item);
+	}
 
 	sdl_free_keycb();
 	sdl_add_keycb(SDL_SCANCODE_ESCAPE,cb_quit,nullptr,nullptr);
@@ -331,14 +329,14 @@ item_t * scr_select_compose(context_t * context)
 
 /*************************
 Add a character to the list
-the data is a list a 3 strings, the first string is the id of the character (its file name) the second one is the type of the character, the third is the name of the character.
+the frame is a list of file names.
 the list ends with an empty string
 *************************/
-void scr_select_add_user_character(context_t * context, char * data)
+void scr_create_add_playable_character(context_t * context, char * frame)
 {
-	char * current_string = data;
+	char * current_string = frame;
 
-	SDL_LockMutex(character_select_mutex);
+	SDL_LockMutex(character_create_mutex);
 
 	while(current_string[0] != 0) {
 
@@ -348,21 +346,15 @@ void scr_select_add_user_character(context_t * context, char * data)
 
 		character_list[character_num-1].id = strdup(current_string);
 		current_string += strlen(current_string)+1;
-		character_list[character_num-1].type = strdup(current_string);
-		current_string += strlen(current_string)+1;
-		character_list[character_num-1].name = strdup(current_string);
-		current_string += strlen(current_string)+1;
+		character_list[character_num-1].name = nullptr;
+		character_list[character_num-1].type = nullptr;
 		character_list[character_num-1].anim = nullptr;
 		character_list[character_num-1].item = nullptr;
 		character_list[character_num-1].width = 0;
 
-		wlog(LOGDEBUG,"Character %s / %s /%s added",character_list[character_num-1].id,character_list[character_num-1].type,character_list[character_num-1].name);
+		wlog(LOGDEBUG,"Character %s added",character_list[character_num-1].id);
 	}
 
-	SDL_UnlockMutex(character_select_mutex);
-
-	if( character_num > 0 ) {
-		wlog(LOGDEV,"Received character %s of type %s",character_list[character_num-1].name,character_list[character_num-1].type);
-	}
+	SDL_UnlockMutex(character_create_mutex);
 }
 

@@ -1,6 +1,6 @@
 /*
    World of Gnome is a 2D multiplayer role playing game.
-   Copyright (C) 2013-2016 carabobz@gmail.com
+   Copyright (C) 2013-2017 carabobz@gmail.com
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -41,11 +41,11 @@
 #define CMD_REQ_LOGIN			0 // user name followed by password in plain text FIXME
 #define CMD_SEND_LOGIN_OK		1
 #define CMD_SEND_LOGIN_NOK		2
-#define CMD_REQ_START			3  // Request to start playing the sent ID
+#define CMD_REQ_START			3 // Request to start playing the sent ID
 #define CMD_REQ_STOP			4  // Request to stop playing the sent ID
-#define CMD_REQ_CHARACTER_LIST		5  // Request available characters on the server
-#define CMD_SEND_CHARACTER		6  // Add a character to the list of available characters
-#define CMD_REQ_FILE			7  // require a file's content
+#define CMD_REQ_PLAYABLE_CHARACTER_LIST	5 // Require playable characters list
+#define CMD_SEND_PLAYABLE_CHARACTER	6 // Send a playable character list
+#define CMD_REQ_FILE			7 // require a file's content
 #define CMD_SEND_FILE			8 // send a file's content
 #define CMD_REQ_USER_CHARACTER_LIST	9 // Require user's characters list
 #define CMD_SEND_USER_CHARACTER		10 // Send a user's character list
@@ -53,6 +53,7 @@
 #define CMD_SEND_TEXT			12 // Server sends a message to client
 #define CMD_REQ_ACTION			13 // Client sends the name of an action to be executed by the server.
 #define CMD_SEND_ENTRY			14 // Sends an entry to be updated on target
-#define CMD_SEND_POPUP			16 // Send a popup window
+#define CMD_SEND_POPUP			15 // Send a popup window
 
 #endif
+

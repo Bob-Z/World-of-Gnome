@@ -1,6 +1,6 @@
 /*
    World of Gnome is a 2D multiplayer role playing game.
-   Copyright (C) 2013-2016 carabobz@gmail.com
+   Copyright (C) 2013-2017 carabobz@gmail.com
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -29,31 +29,67 @@
 /*********************************************
 Send playable character templates
 *********************************************/
-void character_send_list(context_t * context)
+void character_playable_send_list(context_t * context)
 {
-//TODO
-#if 0
-	char ** character_list;
-	int i = 0;
+	char * frame = nullptr;
+	Uint32 frame_size = 0U;
+	Uint32 string_size = 0U;
+	char * marquee;
+	DIR * dir;
+	char * dirname;
+	struct dirent * ent;
 
-	if(entry_read_list(USERS_TABLE, context->user_name,&character_list,USERS_CHARACTER_LIST,NULL) == RET_NOK) {
+	// Read all files in character template directory
+	dirname = strconcat(base_directory,"/",CHARACTER_TEMPLATE_TABLE,nullptr);
+
+	dir = opendir(dirname);
+	if(dir == nullptr) {
 		return;
 	}
+	free(dirname);
 
-	while( character_list[i] != NULL ) {
-		network_send_command(context, CMD_SEND_CHARACTER, strlen(character_list[i])+1, character_list[i],false);
-		i++;
+	frame = strdup("");
+
+	while(( ent = readdir(dir)) != nullptr ) {
+		// skip hidden file
+                if(ent->d_name[0] == '.') {
+                        continue;
+                }
+
+		if(entry_read_string(CHARACTER_TEMPLATE_TABLE, ent->d_name, &marquee, CHARACTER_KEY_MARQUEE,nullptr) == RET_NOK ) {
+			continue;
+		}
+
+		if( marquee[0] == '\0' ) {
+			free(marquee);
+			continue;
+		}
+
+		free(marquee);
+
+		// add file name to network frame
+		string_size = strlen(ent->d_name)+1;
+		frame = (char*)realloc(frame, frame_size + string_size);
+		memcpy(frame+frame_size,ent->d_name, string_size);
+		frame_size += string_size;
 	}
 
-	deep_free(character_list);
-#endif
+	closedir(dir);
+
+	// Mark the end of the list
+	frame = (char*)realloc(frame, frame_size + 1);
+	frame[frame_size] = 0;
+	frame_size ++;
+
+	network_send_command(context, CMD_SEND_PLAYABLE_CHARACTER, frame_size, frame,false);
+	free(frame);
 }
 
 /*********************************************
-*********************************************/
+ *********************************************/
 void character_user_send_list(context_t * context)
 {
-	char * data = NULL;
+	char * data = nullptr;
 	Uint32 data_size = 0;
 	Uint32 string_size = 0;
 	char ** character_list;
@@ -61,20 +97,20 @@ void character_user_send_list(context_t * context)
 	char * name;
 	int i;
 
-	if(entry_read_list(USERS_TABLE, context->user_name,&character_list,USERS_CHARACTER_LIST,NULL) == RET_NOK ) {
+	if(entry_read_list(USERS_TABLE, context->user_name,&character_list,USERS_CHARACTER_LIST,nullptr) == RET_NOK ) {
 		return;
 	}
 
 	i = 0;
 
 	data = strdup("");
-	while( character_list[i] != NULL ) {
-		if(entry_read_string(CHARACTER_TABLE, character_list[i], &type, CHARACTER_KEY_TYPE,NULL) == RET_NOK ) {
+	while( character_list[i] != nullptr ) {
+		if(entry_read_string(CHARACTER_TABLE, character_list[i], &type, CHARACTER_KEY_TYPE,nullptr) == RET_NOK ) {
 			i++;
 			continue;
 		}
 
-		if(entry_read_string(CHARACTER_TABLE, character_list[i], &name, CHARACTER_KEY_NAME,NULL) == RET_NOK ) {
+		if(entry_read_string(CHARACTER_TABLE, character_list[i], &name, CHARACTER_KEY_NAME,nullptr) == RET_NOK ) {
 			free(type);
 			i++;
 			continue;
@@ -116,10 +152,10 @@ void character_user_send_list(context_t * context)
 }
 
 /*****************************
- Disconnect a character.
- This kill a NPC AI thread
-return -1 if fails
-*****************************/
+  Disconnect a character.
+  This kill a NPC AI thread
+  return -1 if fails
+ *****************************/
 int character_disconnect( const char * id)
 {
 	context_t * ctx;
@@ -142,12 +178,12 @@ int character_disconnect( const char * id)
 	return 0;
 }
 /*****************************
- Kick a character out of the game
- It does not disconnect it.
- An NPC could re pop from an out of game state.
- A player can go back in game after choosing a new character id
-return -1 if fails
-*****************************/
+  Kick a character out of the game
+  It does not disconnect it.
+  An NPC could re pop from an out of game state.
+  A player can go back in game after choosing a new character id
+  return -1 if fails
+ *****************************/
 int character_out_of_game( const char * id)
 {
 	context_t * ctx;
@@ -170,21 +206,21 @@ int character_out_of_game( const char * id)
 }
 
 /******************************************************
-Create a new character based on the specified template
-return the id of the newly created character
-the returned string MUST BE FREED by caller
-return NULL if fails
-*******************************************************/
+  Create a new character based on the specified template
+  return the id of the newly created character
+  the returned string MUST BE FREED by caller
+  return nullptr if fails
+ *******************************************************/
 char * character_create_from_template(context_t * ctx,const char * my_template,const char * map, int layer, int x, int y)
 {
 	char * new_id;
 	char * templatename;
 	char * fullname;
 
-	new_id = file_new(CHARACTER_TABLE,NULL);
+	new_id = file_new(CHARACTER_TABLE,nullptr);
 
-	templatename = strconcat(base_directory,"/",CHARACTER_TEMPLATE_TABLE,"/",my_template,NULL);
-	fullname = strconcat(base_directory,"/",CHARACTER_TABLE,"/",new_id,NULL);
+	templatename = strconcat(base_directory,"/",CHARACTER_TEMPLATE_TABLE,"/",my_template,nullptr);
+	fullname = strconcat(base_directory,"/",CHARACTER_TABLE,"/",new_id,nullptr);
 	file_copy(templatename,fullname);
 	free(templatename);
 	free(fullname);
@@ -194,40 +230,40 @@ char * character_create_from_template(context_t * ctx,const char * my_template,c
 		entry_destroy(CHARACTER_TABLE,new_id);
 		file_delete(CHARACTER_TABLE,new_id);
 		free(new_id);
-		return NULL;
+		return nullptr;
 	}
 
 	/* Write position */
-	if(entry_write_string(CHARACTER_TABLE,new_id,map,CHARACTER_KEY_MAP,NULL) == RET_NOK ) {
+	if(entry_write_string(CHARACTER_TABLE,new_id,map,CHARACTER_KEY_MAP,nullptr) == RET_NOK ) {
 		entry_destroy(CHARACTER_TABLE,new_id);
 		file_delete(CHARACTER_TABLE,new_id);
 		free(new_id);
-		return NULL;
+		return nullptr;
 	}
 
-	if(entry_write_int(CHARACTER_TABLE,new_id,x,CHARACTER_KEY_POS_X,NULL) == RET_NOK ) {
+	if(entry_write_int(CHARACTER_TABLE,new_id,x,CHARACTER_KEY_POS_X,nullptr) == RET_NOK ) {
 		entry_destroy(CHARACTER_TABLE,new_id);
 		file_delete(CHARACTER_TABLE,new_id);
 		free(new_id);
-		return NULL;
+		return nullptr;
 	}
 
-	if(entry_write_int(CHARACTER_TABLE,new_id,y,CHARACTER_KEY_POS_Y,NULL) == RET_NOK ) {
+	if(entry_write_int(CHARACTER_TABLE,new_id,y,CHARACTER_KEY_POS_Y,nullptr) == RET_NOK ) {
 		entry_destroy(CHARACTER_TABLE,new_id);
 		file_delete(CHARACTER_TABLE,new_id);
 		free(new_id);
-		return NULL;
+		return nullptr;
 	}
 
 	return new_id;
 }
 
 /***********************************************************************
-***********************************************************************/
+ ***********************************************************************/
 static void execute_aggro(context_t * agressor, context_t * target, char * script, int aggro_dist)
 {
 	int dist;
-	const char * param[] = { NULL,NULL,NULL };
+	const char * param[] = { nullptr,nullptr,nullptr };
 
 	dist = context_distance(agressor,target);
 
@@ -238,49 +274,49 @@ static void execute_aggro(context_t * agressor, context_t * target, char * scrip
 	}
 
 	param[0] = target->id;
-	param[2] = NULL;
+	param[2] = nullptr;
 	action_execute_script(agressor,script,param);
 
 }
 /***********************************************************************
-Call aggro script for each context in every npc context aggro dist
-***********************************************************************/
+  Call aggro script for each context in every npc context aggro dist
+ ***********************************************************************/
 void character_update_aggro(context_t * agressor)
 {
-	context_t * target = NULL;
-	context_t * npc = NULL;
+	context_t * target = nullptr;
+	context_t * npc = nullptr;
 	int aggro_dist;
 	char * aggro_script;
 
-	if( agressor == NULL ) {
+	if( agressor == nullptr ) {
 		return;
 	}
 
-	if( agressor->map == NULL ) {
+	if( agressor->map == nullptr ) {
 		return;
 	}
 
-	if( agressor->id == NULL ) {
+	if( agressor->id == nullptr ) {
 		return;
 	}
 
 	/* If the current context is an NPC it might be an aggressor: compute its aggro */
-	if( character_get_npc(agressor->id) && agressor->luaVM != NULL) {
-		if(entry_read_int(CHARACTER_TABLE,agressor->id,&aggro_dist, CHARACTER_KEY_AGGRO_DIST,NULL) == RET_OK ) {
-			if(entry_read_string(CHARACTER_TABLE,agressor->id,&aggro_script, CHARACTER_KEY_AGGRO_SCRIPT,NULL) == RET_OK ) {
+	if( character_get_npc(agressor->id) && agressor->luaVM != nullptr) {
+		if(entry_read_int(CHARACTER_TABLE,agressor->id,&aggro_dist, CHARACTER_KEY_AGGRO_DIST,nullptr) == RET_OK ) {
+			if(entry_read_string(CHARACTER_TABLE,agressor->id,&aggro_script, CHARACTER_KEY_AGGRO_SCRIPT,nullptr) == RET_OK ) {
 				target = context_get_first();
 
-				while( target != NULL ) {
+				while( target != nullptr ) {
 					/* Skip current context */
 					if( agressor == target) {
 						target = target->next;
 						continue;
 					}
-					if(target->id == NULL) {
+					if(target->id == nullptr) {
 						target = target->next;
 						continue;
 					}
-					if(target->map == NULL) {
+					if(target->map == nullptr) {
 						target = target->next;
 						continue;
 					}
@@ -301,21 +337,21 @@ void character_update_aggro(context_t * agressor)
 	target = agressor;
 	npc = context_get_first();
 
-	while( npc != NULL ) {
+	while( npc != nullptr ) {
 		/* Skip current context */
 		if( target == npc) {
 			npc = npc->next;
 			continue;
 		}
-		if(npc->id == NULL) {
+		if(npc->id == nullptr) {
 			npc = npc->next;
 			continue;
 		}
-		if(npc->map == NULL) {
+		if(npc->map == nullptr) {
 			npc = npc->next;
 			continue;
 		}
-		if( npc->luaVM == NULL ) {
+		if( npc->luaVM == nullptr ) {
 			npc = npc->next;
 			continue;
 		}
@@ -324,11 +360,11 @@ void character_update_aggro(context_t * agressor)
 			npc = npc->next;
 			continue;
 		}
-		if(entry_read_int(CHARACTER_TABLE,npc->id,&aggro_dist, CHARACTER_KEY_AGGRO_DIST,NULL) == RET_NOK ) {
+		if(entry_read_int(CHARACTER_TABLE,npc->id,&aggro_dist, CHARACTER_KEY_AGGRO_DIST,nullptr) == RET_NOK ) {
 			npc = npc->next;
 			continue;
 		}
-		if(entry_read_string(CHARACTER_TABLE,npc->id,&aggro_script, CHARACTER_KEY_AGGRO_SCRIPT,NULL) == RET_NOK ) {
+		if(entry_read_string(CHARACTER_TABLE,npc->id,&aggro_script, CHARACTER_KEY_AGGRO_SCRIPT,nullptr) == RET_NOK ) {
 			npc = npc->next;
 			continue;
 		}
@@ -341,16 +377,16 @@ void character_update_aggro(context_t * agressor)
 	}
 }
 /*************************************************************
-*************************************************************/
+ *************************************************************/
 static void do_set_pos(context_t * ctx,const char * map, int x, int y, bool change_map)
 {
 	context_set_map(ctx,map);
 	context_set_pos_tx(ctx,x);
 	context_set_pos_ty(ctx,y);
 
-	entry_write_string(CHARACTER_TABLE,ctx->id,map,CHARACTER_KEY_MAP,NULL);
-	entry_write_int(CHARACTER_TABLE,ctx->id,x,CHARACTER_KEY_POS_X,NULL);
-	entry_write_int(CHARACTER_TABLE,ctx->id,y,CHARACTER_KEY_POS_Y,NULL);
+	entry_write_string(CHARACTER_TABLE,ctx->id,map,CHARACTER_KEY_MAP,nullptr);
+	entry_write_int(CHARACTER_TABLE,ctx->id,x,CHARACTER_KEY_POS_X,nullptr);
+	entry_write_int(CHARACTER_TABLE,ctx->id,y,CHARACTER_KEY_POS_Y,nullptr);
 
 	context_spread(ctx);
 	if( change_map == true ) {
@@ -359,14 +395,14 @@ static void do_set_pos(context_t * ctx,const char * map, int x, int y, bool chan
 }
 
 /*************************************************************
-Move every context on the same coordinate as platform context
-*************************************************************/
+  Move every context on the same coordinate as platform context
+ *************************************************************/
 static void platform_move(context_t * platform,const char * map, int x, int y, bool change_map)
 {
 	context_t * current = context_get_first();
 	int is_platform;
 
-	if(entry_read_int(CHARACTER_TABLE,platform->id,&is_platform, CHARACTER_KEY_PLATFORM,NULL) == RET_NOK ) {
+	if(entry_read_int(CHARACTER_TABLE,platform->id,&is_platform, CHARACTER_KEY_PLATFORM,nullptr) == RET_NOK ) {
 		return;
 	}
 
@@ -387,14 +423,14 @@ static void platform_move(context_t * platform,const char * map, int x, int y, b
 }
 
 /******************************************************
-return 0 if new position OK or if position has not changed.
-return -1 if the position was not set (because tile not allowed or out of bound)
-******************************************************/
+  return 0 if new position OK or if position has not changed.
+  return -1 if the position was not set (because tile not allowed or out of bound)
+ ******************************************************/
 int character_set_pos(context_t * ctx, const char * map, int x, int y)
 {
 	char ** event_id;
 	char * script;
-	char ** param = NULL;
+	char ** param = nullptr;
 	int i;
 	bool change_map = false;
 	int width = x+1;
@@ -408,7 +444,7 @@ int character_set_pos(context_t * ctx, const char * map, int x, int y)
 	int ret_value;
 	int layer;
 
-	if(ctx == NULL) {
+	if(ctx == nullptr) {
 		return -1;
 	}
 
@@ -418,23 +454,23 @@ int character_set_pos(context_t * ctx, const char * map, int x, int y)
 	}
 
 	ctx_layer = 0;
-	entry_read_int(CHARACTER_TABLE,ctx->id,&ctx_layer,CHARACTER_LAYER,NULL);
+	entry_read_int(CHARACTER_TABLE,ctx->id,&ctx_layer,CHARACTER_LAYER,nullptr);
 	sprintf(layer_name,"%s%d",MAP_KEY_LAYER,ctx_layer);
 
-	entry_read_int(MAP_TABLE,map,&width,MAP_KEY_WIDTH,NULL);
-	entry_read_int(MAP_TABLE,map,&height,MAP_KEY_HEIGHT,NULL);
-	entry_read_int(MAP_TABLE,map,&warpx,MAP_KEY_WARP_X,NULL);
-	entry_read_int(MAP_TABLE,map,&warpy,MAP_KEY_WARP_Y,NULL);
+	entry_read_int(MAP_TABLE,map,&width,MAP_KEY_WIDTH,nullptr);
+	entry_read_int(MAP_TABLE,map,&height,MAP_KEY_HEIGHT,nullptr);
+	entry_read_int(MAP_TABLE,map,&warpx,MAP_KEY_WARP_X,nullptr);
+	entry_read_int(MAP_TABLE,map,&warpy,MAP_KEY_WARP_Y,nullptr);
 
 	// Offscreen script
-	entry_read_string(MAP_TABLE,map,&script,MAP_OFFSCREEN,NULL);
-	if(script != NULL &&
+	entry_read_string(MAP_TABLE,map,&script,MAP_OFFSCREEN,nullptr);
+	if(script != nullptr &&
 			( x < 0 || y < 0 || x >= width || y >= height ) ) {
 		snprintf(buf,SMALL_BUF,"%d",x);
 		coord[0] = strdup(buf);
 		snprintf(buf,SMALL_BUF,"%d",y);
 		coord[1] = strdup(buf);
-		coord[2] = NULL;
+		coord[2] = nullptr;
 
 		ret_value = action_execute_script(ctx,script,(const char **)coord);
 
@@ -507,14 +543,14 @@ int character_set_pos(context_t * ctx, const char * map, int x, int y)
 	if(event_id) {
 		i = 0;
 		while(event_id[i]) {
-			script = NULL;
-			if( entry_read_string(MAP_TABLE,map,&script,layer_name,MAP_ENTRY_EVENT_LIST,event_id[i],MAP_EVENT_SCRIPT,NULL) == RET_OK ) {
-				entry_read_list(MAP_TABLE,map,&param,layer_name,MAP_ENTRY_EVENT_LIST,event_id[i],MAP_EVENT_PARAM,NULL);
-			} else if( entry_read_string(MAP_TABLE,map,&script,MAP_ENTRY_EVENT_LIST,event_id[i],MAP_EVENT_SCRIPT,NULL) == RET_OK ) {
-				entry_read_list(MAP_TABLE,map,&param,MAP_ENTRY_EVENT_LIST,event_id[i],MAP_EVENT_PARAM,NULL);
+			script = nullptr;
+			if( entry_read_string(MAP_TABLE,map,&script,layer_name,MAP_ENTRY_EVENT_LIST,event_id[i],MAP_EVENT_SCRIPT,nullptr) == RET_OK ) {
+				entry_read_list(MAP_TABLE,map,&param,layer_name,MAP_ENTRY_EVENT_LIST,event_id[i],MAP_EVENT_PARAM,nullptr);
+			} else if( entry_read_string(MAP_TABLE,map,&script,MAP_ENTRY_EVENT_LIST,event_id[i],MAP_EVENT_SCRIPT,nullptr) == RET_OK ) {
+				entry_read_list(MAP_TABLE,map,&param,MAP_ENTRY_EVENT_LIST,event_id[i],MAP_EVENT_PARAM,nullptr);
 			}
 
-			if(script == NULL) {
+			if(script == nullptr) {
 				i++;
 				continue;
 			}
@@ -523,7 +559,7 @@ int character_set_pos(context_t * ctx, const char * map, int x, int y)
 
 			free(script);
 			deep_free(param);
-			param=NULL;
+			param=nullptr;
 
 			i++;
 		}
@@ -541,7 +577,7 @@ int character_set_pos(context_t * ctx, const char * map, int x, int y)
  *********************************************************/
 int character_set_npc(const char * id, int npc)
 {
-	if(entry_write_int(CHARACTER_TABLE,id,npc,CHARACTER_KEY_NPC,NULL) == RET_NOK ) {
+	if(entry_write_int(CHARACTER_TABLE,id,npc,CHARACTER_KEY_NPC,nullptr) == RET_NOK ) {
 		return -1;
 	}
 
@@ -561,7 +597,7 @@ int character_get_npc(const char * id)
 {
 	int npc;
 
-	if(entry_read_int(CHARACTER_TABLE,id,&npc,CHARACTER_KEY_NPC,NULL) == RET_NOK ) {
+	if(entry_read_int(CHARACTER_TABLE,id,&npc,CHARACTER_KEY_NPC,nullptr) == RET_NOK ) {
 		return 0;
 	}
 
@@ -569,13 +605,13 @@ int character_get_npc(const char * id)
 }
 
 /*********************************************************
-return -1 if error
-*********************************************************/
+  return -1 if error
+ *********************************************************/
 int character_set_portrait(const char * id,const char * portrait)
 {
 	context_t * ctx;
 
-	if(entry_write_string(CHARACTER_TABLE,id,portrait,CHARACTER_KEY_PORTRAIT,NULL) == RET_NOK ) {
+	if(entry_write_string(CHARACTER_TABLE,id,portrait,CHARACTER_KEY_PORTRAIT,nullptr) == RET_NOK ) {
 		return -1;
 	}
 
@@ -586,27 +622,27 @@ int character_set_portrait(const char * id,const char * portrait)
 }
 
 /*********************************************************
- Get character portrait.
-must be freed
-*********************************************************/
+  Get character portrait.
+  must be freed
+ *********************************************************/
 char * character_get_portrait(const char * id)
 {
 	char * portrait;
 
-	if(entry_read_string(CHARACTER_TABLE,id,&portrait,CHARACTER_KEY_PORTRAIT,NULL) == RET_NOK ) {
-		return NULL;
+	if(entry_read_string(CHARACTER_TABLE,id,&portrait,CHARACTER_KEY_PORTRAIT,nullptr) == RET_NOK ) {
+		return nullptr;
 	}
 
 	return portrait;
 }
 
 /*********************************************************
- Set AI script name
- return -1 on error
-*********************************************************/
+  Set AI script name
+  return -1 on error
+ *********************************************************/
 int character_set_ai_script(const char * id, const char * script_name)
 {
-	if(entry_write_string(CHARACTER_TABLE,id,script_name,CHARACTER_KEY_AI,NULL) == RET_NOK ) {
+	if(entry_write_string(CHARACTER_TABLE,id,script_name,CHARACTER_KEY_AI,nullptr) == RET_NOK ) {
 		return -1;
 	}
 
@@ -614,9 +650,9 @@ int character_set_ai_script(const char * id, const char * script_name)
 }
 
 /*********************************************************
- Wake-up NPC. Execute it's AI script immediatly
- return -1 on error
-*********************************************************/
+  Wake-up NPC. Execute it's AI script immediatly
+  return -1 on error
+ *********************************************************/
 int character_wake_up(const char * id)
 {
 	context_t * ctx;
@@ -634,16 +670,16 @@ int character_wake_up(const char * id)
 }
 
 /***********************************
-Write a new filename in a character's sprite list
-return RET_NOK on error
-***********************************/
+  Write a new filename in a character's sprite list
+  return RET_NOK on error
+ ***********************************/
 int character_set_sprite(const char * id, int index, const char * filename)
 {
-	if(id == NULL || filename == NULL) {
+	if(id == nullptr || filename == nullptr) {
 		return RET_NOK;
 	}
 
-	if( entry_write_list_index(CHARACTER_TABLE, id, filename, index,CHARACTER_KEY_SPRITE,NULL ) == RET_NOK ) {
+	if( entry_write_list_index(CHARACTER_TABLE, id, filename, index,CHARACTER_KEY_SPRITE,nullptr ) == RET_NOK ) {
 		return RET_NOK;
 	}
 
@@ -651,40 +687,40 @@ int character_set_sprite(const char * id, int index, const char * filename)
 }
 
 /***********************************
-Write a new filename in a character's sprite direction list
-return RET_NOK on error
-***********************************/
+  Write a new filename in a character's sprite direction list
+  return RET_NOK on error
+ ***********************************/
 int character_set_sprite_dir(const char * id, const char * dir, int index, const char * filename)
 {
 	const char * key;
 
-	if(id == NULL || filename == NULL || dir == NULL) {
+	if(id == nullptr || filename == nullptr || dir == nullptr) {
 		return RET_NOK;
 	}
 
 	switch(dir[0]) {
-	case 'N':
-	case 'n':
-		key = CHARACTER_KEY_DIR_N_SPRITE;
-		break;
-	case 'S':
-	case 's':
-		key = CHARACTER_KEY_DIR_S_SPRITE;
-		break;
-	case 'W':
-	case 'w':
-		key = CHARACTER_KEY_DIR_W_SPRITE;
-		break;
-	case 'E':
-	case 'e':
-		key = CHARACTER_KEY_DIR_E_SPRITE;
-		break;
-	default:
-		return RET_NOK;
-		break;
+		case 'N':
+		case 'n':
+			key = CHARACTER_KEY_DIR_N_SPRITE;
+			break;
+		case 'S':
+		case 's':
+			key = CHARACTER_KEY_DIR_S_SPRITE;
+			break;
+		case 'W':
+		case 'w':
+			key = CHARACTER_KEY_DIR_W_SPRITE;
+			break;
+		case 'E':
+		case 'e':
+			key = CHARACTER_KEY_DIR_E_SPRITE;
+			break;
+		default:
+			return RET_NOK;
+			break;
 	}
 
-	if( entry_write_list_index(CHARACTER_TABLE, id, filename, index,key,NULL ) == RET_NOK ) {
+	if( entry_write_list_index(CHARACTER_TABLE, id, filename, index,key,nullptr ) == RET_NOK ) {
 		return RET_NOK;
 	}
 
@@ -692,40 +728,40 @@ int character_set_sprite_dir(const char * id, const char * dir, int index, const
 }
 
 /***********************************
-Write a new filename in a character's moving sprite list
-return RET_NOK on error
-***********************************/
+  Write a new filename in a character's moving sprite list
+  return RET_NOK on error
+ ***********************************/
 int character_set_sprite_move(const char * id, const char * dir, int index, const char * filename)
 {
 	const char * key;
 
-	if(id == NULL || filename == NULL || dir == NULL) {
+	if(id == nullptr || filename == nullptr || dir == nullptr) {
 		return RET_NOK;
 	}
 
 	switch(dir[0]) {
-	case 'N':
-	case 'n':
-		key = CHARACTER_KEY_MOV_N_SPRITE;
-		break;
-	case 'S':
-	case 's':
-		key = CHARACTER_KEY_MOV_S_SPRITE;
-		break;
-	case 'W':
-	case 'w':
-		key = CHARACTER_KEY_MOV_W_SPRITE;
-		break;
-	case 'E':
-	case 'e':
-		key = CHARACTER_KEY_MOV_E_SPRITE;
-		break;
-	default:
-		return RET_NOK;
-		break;
+		case 'N':
+		case 'n':
+			key = CHARACTER_KEY_MOV_N_SPRITE;
+			break;
+		case 'S':
+		case 's':
+			key = CHARACTER_KEY_MOV_S_SPRITE;
+			break;
+		case 'W':
+		case 'w':
+			key = CHARACTER_KEY_MOV_W_SPRITE;
+			break;
+		case 'E':
+		case 'e':
+			key = CHARACTER_KEY_MOV_E_SPRITE;
+			break;
+		default:
+			return RET_NOK;
+			break;
 	}
 
-	if( entry_write_list_index(CHARACTER_TABLE, id, filename, index,key,NULL ) == RET_NOK ) {
+	if( entry_write_list_index(CHARACTER_TABLE, id, filename, index,key,nullptr ) == RET_NOK ) {
 		return RET_NOK;
 	}
 
@@ -733,8 +769,8 @@ int character_set_sprite_move(const char * id, const char * dir, int index, cons
 }
 
 /***********************************
-Broadcast character file to other context
-***********************************/
+  Broadcast character file to other context
+ ***********************************/
 void character_broadcast(const char * character)
 {
 	context_broadcast_character(character);

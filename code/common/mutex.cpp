@@ -1,6 +1,6 @@
 /*
    World of Gnome is a 2D multiplayer role playing game.
-   Copyright (C) 2013-2016 carabobz@gmail.com
+   Copyright (C) 2013-2017 carabobz@gmail.com
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -19,15 +19,16 @@
 
 #include <SDL2/SDL.h>
 
-SDL_mutex* context_list_mutex = NULL;
-SDL_mutex* npc_mutex = NULL;
-SDL_mutex* attribute_mutex = NULL;
-SDL_mutex* map_mutex = NULL;
-SDL_mutex* file_list_mutex = NULL;
-SDL_mutex* imageDB_mutex = NULL;
-SDL_mutex* entry_mutex = NULL;
-SDL_mutex* character_select_mutex = NULL;
-SDL_mutex* character_dir_mutex = NULL;
+SDL_mutex* context_list_mutex = nullptr;
+SDL_mutex* npc_mutex = nullptr;
+SDL_mutex* attribute_mutex = nullptr;
+SDL_mutex* map_mutex = nullptr;
+SDL_mutex* file_list_mutex = nullptr;
+SDL_mutex* imageDB_mutex = nullptr;
+SDL_mutex* entry_mutex = nullptr;
+SDL_mutex* character_select_mutex = nullptr;
+SDL_mutex* character_create_mutex = nullptr;
+SDL_mutex* character_dir_mutex = nullptr;
 
 void common_mutex_init()
 {
@@ -39,6 +40,7 @@ void common_mutex_init()
 	imageDB_mutex = SDL_CreateMutex();
 	entry_mutex = SDL_CreateMutex();
 	character_select_mutex = SDL_CreateMutex();
+	character_create_mutex = SDL_CreateMutex();
 	character_dir_mutex = SDL_CreateMutex();
 }
 

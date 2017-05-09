@@ -42,6 +42,7 @@ add_executable(
 	screen.cpp
 	scr_play.cpp
 	scr_select.cpp
+	scr_create.cpp
 	textview.cpp
 	ui_play.cpp
 	lua_client.cpp

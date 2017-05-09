@@ -1,6 +1,6 @@
 /*
    World of Gnome is a 2D multiplayer role playing game.
-   Copyright (C) 2013-2017 carabobz@gmail.com
+   Copyright (C) 2017 carabobz@gmail.com
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -17,24 +17,9 @@
    Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
-#ifndef MUTEX_C
-#define MUTEX_C
+#include "../sdl_item/item.h"
 
-#include <SDL2/SDL.h>
-
-extern SDL_mutex* context_list_mutex;
-extern SDL_mutex* npc_mutex;
-extern SDL_mutex* attribute_mutex;
-extern SDL_mutex* map_mutex;
-extern SDL_mutex* npc_start_mutex;
-extern SDL_mutex* file_list_mutex;
-extern SDL_mutex* imageDB_mutex;
-extern SDL_mutex* entry_mutex;
-extern SDL_mutex* character_select_mutex;
-extern SDL_mutex* character_create_mutex;
-extern SDL_mutex* character_dir_mutex;
-
-void common_mutex_init();
-
-#endif
+item_t * scr_create_compose(context_t * context);
+void scr_create_frame_start(context_t * context);
+void scr_create_add_playable_character(context_t * context, char * data);
 

@@ -1,6 +1,6 @@
 /*
    World of Gnome is a 2D multiplayer role playing game.
-   Copyright (C) 2013-2016 carabobz@gmail.com
+   Copyright (C) 2013-2017 carabobz@gmail.com
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@ void network_login(context_t * context, const char * user_name, const char * pas
 {
 	char * frame;
 
-	frame = strconcat(user_name,NETWORK_DELIMITER,password,NULL);
+	frame = strconcat(user_name,NETWORK_DELIMITER,password,nullptr);
 
 	wlog(LOGDEBUG,"Send CMD_REQ_LOGIN");
 	network_send_command(context, CMD_REQ_LOGIN, strlen(frame) + 1, frame,false);
@@ -47,15 +47,16 @@ void network_request_start(context_t * context, const char * id)
 void network_request_stop(context_t * context)
 {
 	wlog(LOGDEBUG,"Send CMD_REQ_STOP");
-	network_send_command(context, CMD_REQ_STOP, 0, NULL,false);
+	network_send_command(context, CMD_REQ_STOP, 0, nullptr,false);
 }
 
 /*********************************************************************
+request all playable characters list
 *********************************************************************/
-void network_request_character_list(context_t * context)
+void network_request_playable_character_list(context_t * context)
 {
-	wlog(LOGDEBUG,"Send CMD_REQ_CHARACTER_LIST");
-	network_send_command(context, CMD_REQ_CHARACTER_LIST, 0, NULL,false);
+	wlog(LOGDEBUG,"Send CMD_REQ_PLAYABLE_CHARACTER_LIST");
+	network_send_command(context, CMD_REQ_PLAYABLE_CHARACTER_LIST, 0, nullptr,false);
 }
 
 /*********************************************************************
@@ -77,14 +78,14 @@ void network_send_action(context_t * context, const char * script,...)
 	char * new_frame;
 	char * parameter;
 
-	if( script == NULL ) {
+	if( script == nullptr ) {
 		return;
 	}
 
 	frame = strdup(script);
 	va_start(ap, script);
-	while ( (parameter=va_arg(ap,char*)) != NULL ) {
-		new_frame = strconcat(frame,NETWORK_DELIMITER,parameter,NULL);
+	while ( (parameter=va_arg(ap,char*)) != nullptr ) {
+		new_frame = strconcat(frame,NETWORK_DELIMITER,parameter,nullptr);
 		free(frame);
 		frame = new_frame;
 	}
@@ -105,12 +106,12 @@ static int async_recv(void * data)
 
 	Uint32 command = 0;
 	Uint32 command_size = 0;
-	char *buf = NULL;
+	char *buf = nullptr;
 
 	while(1) {
 		command = 0;
 		command_size = 0;
-		buf = NULL;
+		buf = nullptr;
 
 		if( network_read_bytes(context->socket,(char *)&command, sizeof(Uint32)) == RET_NOK ) {
 			break;
@@ -131,14 +132,14 @@ static int async_recv(void * data)
 		if (parse_incoming_data(context, command, command_size, buf) == RET_NOK ) {
 			if( buf ) {
 				free(buf);
-				buf = NULL;
+				buf = nullptr;
 			}
 			break;
 		}
 
-		if( buf != NULL) {
+		if( buf != nullptr) {
 			free(buf);
-			buf = NULL;
+			buf = nullptr;
 		}
 	}
 
@@ -165,12 +166,12 @@ static int async_data_recv(void * data)
 
 	Uint32 command = 0;
 	Uint32 command_size = 0;
-	char *buf = NULL;
+	char *buf = nullptr;
 
 	while(1) {
 		command = 0;
 		command_size = 0;
-		buf = NULL;
+		buf = nullptr;
 
 		if( network_read_bytes(context->socket_data,(char *)&command, sizeof(Uint32)) == RET_NOK ) {
 			break;
@@ -191,14 +192,14 @@ static int async_data_recv(void * data)
 		if (parse_incoming_data(context, command, command_size, buf) == RET_NOK ) {
 			if( buf ) {
 				free(buf);
-				buf = NULL;
+				buf = nullptr;
 			}
 			break;
 		}
 
-		if( buf != NULL) {
+		if( buf != nullptr) {
 			free(buf);
-			buf = NULL;
+			buf = nullptr;
 		}
 	}
 

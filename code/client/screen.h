@@ -27,6 +27,7 @@ class Camera;
 
 enum class Screen {
 	SELECT
+	, CREATE
 	, PLAY
 	, LAST
 };

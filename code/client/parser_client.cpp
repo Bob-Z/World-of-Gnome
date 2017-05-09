@@ -20,6 +20,7 @@
 #include "../common/common.h"
 #include "network_client.h"
 #include "scr_select.h"
+#include "scr_create.h"
 #include "file.h"
 #include "imageDB.h"
 #include "textview.h"
@@ -48,9 +49,9 @@ ret_code_t parse_incoming_data(context_t * context, Uint32 command, Uint32 comma
 		werr(LOGUSER,"Check your login and password (they are case sensitive)\n");
 		exit(-1);
 		break;
-	case CMD_SEND_CHARACTER :
-		wlog(LOGDEBUG,"Received CMD_SEND_CHARACTER");
-		wlog(LOGUSER,"New character : %s", data);
+	case CMD_SEND_PLAYABLE_CHARACTER :
+		wlog(LOGDEBUG,"Received CMD_SEND_PLAYABLE_CHARACTER");
+		scr_create_add_playable_character(context,data);
 		break;
 	case CMD_SEND_FILE :
 		wlog(LOGDEBUG,"Received CMD_SEND_FILE");

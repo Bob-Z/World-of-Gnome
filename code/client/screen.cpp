@@ -22,6 +22,7 @@
 #include "../sdl_item/sdl.h"
 #include "screen.h"
 #include "scr_select.h"
+#include "scr_create.h"
 #include "scr_play.h"
 #include "option_client.h"
 #include "lua_client.h"
@@ -59,6 +60,9 @@ static void frame_start(context_t * context)
 	case Screen::SELECT:
 		scr_select_frame_start(context);
 		break;
+	case Screen::CREATE:
+		scr_create_frame_start(context);
+		break;
 	case Screen::PLAY:
 		scr_play_frame_start(context);
 		break;
@@ -80,6 +84,9 @@ static void compose_scr(context_t * context)
 	switch(g_Camera.getScreen()) {
 	case Screen::SELECT:
 		item_list = scr_select_compose(context);
+		break;
+	case Screen::CREATE:
+		item_list = scr_create_compose(context);
 		break;
 	case Screen::PLAY:
 		item_list = scr_play_compose(context);

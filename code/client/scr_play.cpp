@@ -67,7 +67,6 @@ void scr_play_init(int init_value)
 	}
 }
 
-
 /**********************************
 **********************************/
 int scr_play_get_current_x()
