@@ -153,6 +153,12 @@ static void cb_wheel_down(Uint32 y, Uint32 unused)
 
 /**********************************
 **********************************/
+static void cb_icon_add_clicked(void * arg)
+{
+}
+
+/**********************************
+**********************************/
 void scr_select_frame_start(context_t * context)
 {
 }
@@ -179,7 +185,7 @@ item_t * scr_select_compose(context_t * context)
 	}
 
 	if( sfx_filename == nullptr ) {
-		entry_read_string(nullptr,CLIENT_CONF_FILE,&sfx_filename,CLIENT_KEY_SFX_SELECT_CHARACTER,nullptr);
+		entry_read_string(nullptr,CLIENT_CONF_FILE,&sfx_filename,CLIENT_KEY_SELECT_CHARACTER_SFX,nullptr);
 	}
 
 	if( sfx_filename ) {
@@ -187,7 +193,7 @@ item_t * scr_select_compose(context_t * context)
 	}
 
 	int sfx_volume = 100; // 100%
-	entry_read_int(nullptr,CLIENT_CONF_FILE,&sfx_volume,CLIENT_KEY_SFX_VOLUME_SELECT_CHARACTER,nullptr);
+	entry_read_int(nullptr,CLIENT_CONF_FILE,&sfx_volume,CLIENT_KEY_SELECT_CHARACTER_SFX_VOLUME,nullptr);
         sfx_set_volume(sfx_volume);
 
 	if(item_list) {
@@ -202,11 +208,34 @@ item_t * scr_select_compose(context_t * context)
 	sdl_add_mousecb(MOUSE_WHEEL_UP,cb_wheel_up);
 	sdl_add_mousecb(MOUSE_WHEEL_DOWN,cb_wheel_down);
 
+	char * icon_add_image_name = nullptr;
+	entry_read_string(nullptr,CLIENT_CONF_FILE,&icon_add_image_name,CLIENT_KEY_SELECT_CHARACTER_ADD_ICON,nullptr);
+	if( icon_add_image_name != nullptr ) {
+		int sw;
+		int sh;
+
+		SDL_GetRendererOutputSize(context->render,&sw,&sh);
+
+		anim_t *anim = imageDB_get_anim(context, icon_add_image_name);
+		int x;
+		int y;
+		x = sw/2-(anim->w/2);
+		y = sh-anim->h;
+
+		item = item_list_add(&item_list);
+		item_set_overlay(item,1);
+		item_set_pos(item,x,y);
+		item_set_anim(item,anim,0);
+
+		item_set_click_left(item,cb_icon_add_clicked,nullptr,nullptr);
+		item_set_click_right(item,cb_icon_add_clicked,nullptr,nullptr);
+	}
+
 	SDL_LockMutex(character_select_mutex);
 
-	/* Load all anim compute max height and width of anim + string */
+	// Load all anim compute max height and width of anim + string
 	for(i=0; i<character_num; i++) {
-		/* Compute the marquee file name */
+		// Compute the marquee file name
 		if(entry_read_string(CHARACTER_TABLE,character_list[i].id,&marquee_name,CHARACTER_KEY_MARQUEE,nullptr) == RET_NOK ) {
 			continue;
 		}

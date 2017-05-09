@@ -189,8 +189,9 @@
 #define CLIENT_KEY_ACTION_SELECT_TILE	 	"action_select_tile"
 #define CLIENT_KEY_ACTION_SELECT_EQUIPMENT 	"action_select_equipment"
 #define CLIENT_KEY_ACTION_SELECT_INVENTORY 	"action_select_inventory"
-#define CLIENT_KEY_SFX_SELECT_CHARACTER 	"sfx_select_character"
-#define CLIENT_KEY_SFX_VOLUME_SELECT_CHARACTER 	"sfx_volume_select_character"
+#define CLIENT_KEY_SELECT_CHARACTER_SFX 	"select_character_sfx"
+#define CLIENT_KEY_SELECT_CHARACTER_SFX_VOLUME 	"select_character_sfx_volume"
+#define CLIENT_KEY_SELECT_CHARACTER_ADD_ICON	"select_character_add_icon"
 
 #define SFX_TABLE 				"sfx"
 #endif
