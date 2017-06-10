@@ -36,8 +36,8 @@ static int compose = 0;
 #define ITEM_FONT "Ubuntu-C.ttf"
 #define ITEM_FONT_SIZE 15
 
-static item_t * frame_rate = nullptr;
-static constexpr int const FPS_DISPLAY_PERIOD = 1000;
+static item_t * frame_rate_item = nullptr;
+static constexpr int FPS_DISPLAY_PERIOD = 1000;
 static Camera g_Camera;
 
 /***********************************************
@@ -97,10 +97,10 @@ static void compose_scr(context_t * context)
 
 	if( option->show_fps ) {
 		font = font_get(context,ITEM_FONT, ITEM_FONT_SIZE);
-		frame_rate = item_list_add(&item_list);
-		item_set_font(frame_rate,font);
-		item_set_anim_shape(frame_rate,50,50,20,20);
-		item_set_overlay(frame_rate,1);
+		frame_rate_item = item_list_add(&item_list);
+		item_set_font(frame_rate_item,font);
+		item_set_anim_shape(frame_rate_item,100,50,20,20);
+		item_set_overlay(frame_rate_item,1);
 	}
 }
 
@@ -110,12 +110,12 @@ static void display_fps()
 {
 	static Uint32 timer = 0;
 	Uint32 new_timer;
-	static char fps[64];
+	static char shown_fps[64];
 	double sample;
 	option_t * option;
 	static int num_frame = 0;
 
-	if( frame_rate ) {
+	if( frame_rate_item != nullptr ) {
 		option = option_get();
 		if( option->show_fps ) {
 			num_frame++;
@@ -124,9 +124,9 @@ static void display_fps()
 				sample = (double)num_frame / ((double)new_timer - (double)timer ) * (double)FPS_DISPLAY_PERIOD;
 				num_frame = 0;
 				timer = new_timer;
-				sprintf(fps,"%f",sample);
+				sprintf(shown_fps,"%f",sample);
 			}
-			item_set_string(frame_rate,fps);
+			item_set_string(frame_rate_item,shown_fps);
 		}
 	}
 }
