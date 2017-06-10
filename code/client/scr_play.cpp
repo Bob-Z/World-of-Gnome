@@ -49,7 +49,7 @@ static bool change_map = false;
 static int init = true;
 static int current_map_x = -1;
 static int current_map_y = -1;
-static option_t * option;
+static option_t * option = nullptr;
 static layer_t * default_layer = nullptr;
 static char * sfx = nullptr;
 
@@ -828,7 +828,7 @@ item_t * scr_play_compose(context_t * ctx)
 	}
 
 	if(init) {
-		/* Register this character to receive server notifications */
+		// Register this character to receive server notifications
 		network_request_start(ctx,ctx->id);
 		ui_play_init();
 		init = false;
