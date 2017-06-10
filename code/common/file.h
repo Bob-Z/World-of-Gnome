@@ -28,4 +28,5 @@ ret_code_t file_set_contents(const char *filename,const char *contents,int lengt
 void file_copy(char * src_name, char * dst_name);
 int file_create_directory(char * fullname);
 int file_delete(const char * table, const char * filename);
+Uint32 file_get_timestamp(const char * p_pTable, const char * p_pFilename);
 

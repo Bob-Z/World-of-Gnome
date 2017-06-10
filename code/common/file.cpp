@@ -425,3 +425,24 @@ int file_delete(const char * table, const char * filename)
 	return res;
 }
 
+/***************************************************
+ return timestamp of last update
+****************************************************/
+Uint32 file_get_timestamp(const char * p_pTable, const char * p_pFilename)
+{
+	file_t * l_pFileData;
+	char * l_pTablePath;
+	Uint32 l_TimeStamp = 0;
+
+	l_pTablePath = strconcat(p_pTable,"/",p_pFilename,nullptr);
+	SDL_LockMutex(file_list_mutex);
+	l_pFileData = (file_t *)list_find(file_list,l_pTablePath);
+	if( l_pFileData != nullptr ) {
+		l_TimeStamp = l_pFileData->timestamp;
+	}
+	SDL_UnlockMutex(file_list_mutex);
+	free(l_pTablePath);
+
+	return l_TimeStamp;
+}
+
