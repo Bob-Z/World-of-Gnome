@@ -619,7 +619,7 @@ static void compose_map_set(int layer_index)
 	layer_t * layer;
 	context_t * ctx = context_get_player();
 
-	sprintf(layer_name,"%s%d",MAP_KEY_LAYER,layer_index);
+	snprintf(layer_name,sizeof(layer_name),"%s%d",MAP_KEY_LAYER,layer_index);
 	if(entry_read_list(MAP_TABLE, ctx->map, &tile_set,layer_name,MAP_KEY_SET,nullptr) == RET_NOK ) {
 		return;
 	}
@@ -630,7 +630,7 @@ static void compose_map_set(int layer_index)
 	}
 
 	while(tile_set[i] != nullptr ) {
-		/* Skip empty tile */
+		// Skip empty tile
 		if( tile_set[i][0] != 0 ) {
 			item = item_list_add(&item_list);
 			anim = imageDB_get_anim(ctx,tile_set[i]);
@@ -845,7 +845,7 @@ item_t * scr_play_compose(context_t * ctx)
 		map_filename = strconcat( MAP_TABLE,"/",ctx->map,nullptr);
 		network_send_req_file(ctx,map_filename);
 		free(map_filename);
-		if(default_layer) {
+		if( default_layer != nullptr ) {
 			map_layer_delete(default_layer);
 		}
 		default_layer = map_layer_new(ctx->map,DEFAULT_LAYER,nullptr);
