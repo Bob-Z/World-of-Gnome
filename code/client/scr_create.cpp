@@ -29,6 +29,7 @@
 static constexpr int const BORDER = 20;
 static constexpr int const FONT_SIZE = 30;
 static constexpr const char * const FONT = "Ubuntu-C.ttf";
+static constexpr unsigned long BACKGROUND_COLOR = 0xFFFFFF40;
 
 typedef struct {
 	char * id;
@@ -44,6 +45,7 @@ static int character_num = 0;
 static item_t * item_list = nullptr;
 static long current_character = -1;
 static char * sfx_filename = nullptr;
+static char text_buffer[2048];
 
 /****************************
 Keyboard callback
@@ -151,6 +153,16 @@ static void cb_wheel_down(Uint32 y, Uint32 unused)
 	cb_next_character(nullptr);
 }
 
+/**************************************
+**************************************/
+static void cb_keyboard_text(void * arg)
+{
+        const char * text = (const char*)arg;
+
+        text_buffer[0]='\0';
+        wlog(LOGDEBUG,"Text: %s",text);
+}
+
 /**********************************
 **********************************/
 void scr_create_frame_start(context_t * context)
@@ -225,6 +237,30 @@ item_t * scr_create_compose(context_t * context)
 		item_set_click_right(item,cb_icon_add_clicked,(void*)context,nullptr);
 	}
 #endif
+
+	// Name box
+        static TTF_Font * font = nullptr;
+        font = font_get(context,FONT, FONT_SIZE);
+        if( font == nullptr ) {
+                werr(LOGDEV,"Can't open TTF font %s",FONT);
+        }
+
+        int sw = 0;
+        int sh = 0;
+
+        SDL_GetRendererOutputSize(context->render,&sw,&sh);
+
+        item = item_list_add(&item_list);
+
+        item_set_overlay(item,1);
+        text_buffer[0] = '\0';
+        item_set_string(item,text_buffer);
+        item_set_string_bg(item,BACKGROUND_COLOR);
+        item_set_font(item,font);
+        item_set_editable(item,1);
+        item_set_edit_cb(item,cb_keyboard_text);
+        sdl_get_string_size(item->font,"111111111122222222223333333333",&w,&h);
+        item_set_anim_shape(item,sw/2 - w/2,sh - FONT_SIZE - BORDER,w,h);
 
 	SDL_LockMutex(character_create_mutex);
 
