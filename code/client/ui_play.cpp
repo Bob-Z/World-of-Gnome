@@ -42,7 +42,7 @@
 #define SPEAK_FONT "Ubuntu-C.ttf"
 #define SPEAK_FONT_SIZE 32
 
-#define BACKGROUND_COLOR (0x000000C0)
+#define BACKGROUND_COLOR (0xFFFFFF40)
 
 #define POPUP_TAG_IMAGE		"image"
 #define POPUP_TAG_TEXT		"text"
