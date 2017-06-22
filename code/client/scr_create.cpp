@@ -52,6 +52,7 @@ Keyboard callback
 ****************************/
 static void cb_quit(void * arg)
 {
+	text_buffer[0] = '\0';
 	screen_quit();
 }
 
@@ -159,8 +160,8 @@ static void cb_keyboard_text(void * arg)
 {
         const char * text = (const char*)arg;
 
-        text_buffer[0]='\0';
         wlog(LOGDEBUG,"Text: %s",text);
+        text_buffer[0]='\0';
 }
 
 /**********************************
@@ -253,7 +254,6 @@ item_t * scr_create_compose(context_t * context)
         item = item_list_add(&item_list);
 
         item_set_overlay(item,1);
-        text_buffer[0] = '\0';
         item_set_string(item,text_buffer);
         item_set_string_bg(item,BACKGROUND_COLOR);
         item_set_font(item,font);
