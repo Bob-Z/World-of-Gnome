@@ -69,6 +69,20 @@ void network_request_user_character_list(context_t * context)
 }
 
 /*********************************************************************
+request a character's creation
+*********************************************************************/
+void network_request_character_creation(context_t * context, const char * id, const char * name)
+{
+	char * frame;
+
+        frame = strconcat(id,NETWORK_DELIMITER,name,nullptr);
+
+	wlog(LOGDEBUG,"Send CMD_REQ_CREATE");
+	network_send_command(context, CMD_REQ_CREATE, strlen(frame) + 1, frame,false);
+	free(frame);
+}
+
+/*********************************************************************
 Player sends an action to server
 *********************************************************************/
 void network_send_action(context_t * context, const char * script,...)

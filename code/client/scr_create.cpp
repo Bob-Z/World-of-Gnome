@@ -25,6 +25,7 @@
 #include "../sdl_item/sdl.h"
 #include "screen.h"
 #include "Camera.h"
+#include "network_client.h"
 
 static constexpr int const BORDER = 20;
 static constexpr int const FONT_SIZE = 30;
@@ -44,6 +45,7 @@ static character_t * character_list = nullptr;
 static int character_num = 0;
 static item_t * item_list = nullptr;
 static long current_character = -1;
+static long selected_character = -1;
 static char * sfx_filename = nullptr;
 static char text_buffer[2048];
 
@@ -53,7 +55,7 @@ Keyboard callback
 static void cb_quit(void * arg)
 {
 	text_buffer[0] = '\0';
-	screen_quit();
+	screen_set_screen(Screen::SELECT);
 }
 
 /**********************************
@@ -69,36 +71,8 @@ static void cb_show_item(void * arg)
 	Camera * l_Camera = screen_get_camera();
 	l_Camera->setX(item->rect.x + item->rect.w/2);
 	l_Camera->setY(item->rect.y + item->rect.h/2);
-}
 
-/**********************************
-**********************************/
-static void cb_select(void * arg)
-{
-	context_t * ctx = (context_t*)arg;
-	character_t  *character;
-
-	if (current_character == -1 ) {
-		return;
-	}
-
-	character = &(character_list[current_character]);
-
-	context_set_id(ctx,character->id);
-	context_set_character_name(ctx, character->name);
-	context_set_in_game(ctx,true);
-
-	file_clean(ctx);
-
-	sdl_free_mousecb();
-
-	if( sfx_filename ) {
-		sfx_stop(ctx,sfx_filename);
-	}
-
-	screen_set_screen(Screen::PLAY);
-
-	screen_compose();
+	selected_character = current_character;
 }
 
 /**********************************
@@ -160,8 +134,16 @@ static void cb_keyboard_text(void * arg)
 {
         const char * text = (const char*)arg;
 
-        wlog(LOGDEBUG,"Text: %s",text);
-        text_buffer[0]='\0';
+	if( text[0] == '\0') {
+		werr(LOGUSER,"Cannot create character woth no name");
+		return;
+	}
+
+	network_request_character_creation(context_get_player(), character_list[selected_character].id, text);
+
+	screen_set_screen(Screen::SELECT);
+
+	text_buffer[0]='\0';
 }
 
 /**********************************
@@ -310,8 +292,8 @@ item_t * scr_create_compose(context_t * context)
 					 max_h/2-character_list[i].anim->h/2);
 		item_set_anim(item,character_list[i].anim,0);
 		item_set_click_left(item,cb_show_item,(void *)item,nullptr);
-		item_set_click_right(item,cb_select,(void *)context,nullptr);
-		item_set_double_click_left(item,cb_select,(void *)context,nullptr);
+		//item_set_click_right(item,cb_select,(void *)context,nullptr);
+		//item_set_double_click_left(item,cb_select,(void *)context,nullptr);
 		item_set_over(item,cb_over,(void *)i,nullptr);
 
 		x += character_list[i].width + BORDER;
@@ -358,7 +340,7 @@ item_t * scr_create_compose(context_t * context)
 	sdl_add_keycb(SDL_SCANCODE_ESCAPE,cb_quit,nullptr,nullptr);
 	sdl_add_keycb(SDL_SCANCODE_RIGHT,cb_next_character,nullptr,nullptr);
 	sdl_add_keycb(SDL_SCANCODE_LEFT,cb_previous_character,nullptr,nullptr);
-	sdl_add_keycb(SDL_SCANCODE_RETURN,cb_select,nullptr,(void *)context);
+	//sdl_add_keycb(SDL_SCANCODE_RETURN,cb_select,nullptr,(void *)context);
 
 	return item_list;
 }

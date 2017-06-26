@@ -54,6 +54,7 @@
 #define CMD_REQ_ACTION			13 // Client sends the name of an action to be executed by the server.
 #define CMD_SEND_ENTRY			14 // Sends an entry to be updated on target
 #define CMD_SEND_POPUP			15 // Send a popup window
+#define CMD_REQ_CREATE			16 // Request a character creation
 
 #endif
 
