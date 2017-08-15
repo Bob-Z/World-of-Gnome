@@ -154,8 +154,7 @@ static void cb_wheel_down(Uint32 y, Uint32 unused)
 **********************************/
 static void cb_icon_add_clicked(void * arg)
 {
-	context_t * ctx = (context_t*)arg;
-	network_request_playable_character_list(ctx);
+	//context_t * ctx = (context_t*)arg;
 	screen_set_screen(Screen::CREATE);
 }
 

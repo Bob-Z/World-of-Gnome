@@ -157,6 +157,18 @@ void scr_create_frame_start(context_t * context)
 void scr_create_init()
 {
 	current_character = -1;
+
+	item_list_free(item_list);
+	item_list = nullptr;
+
+	if( character_list != nullptr ) {
+		free(character_list);
+		character_list = nullptr;
+	}
+
+	character_num = 0;
+
+	network_request_playable_character_list(context_get_player());
 }
 
 /**********************************
