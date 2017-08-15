@@ -1,9 +1,7 @@
-name		= "Dog";
-
 draw_script     = "draw/smooth.lua"
 marquee         = "sprite/dog/marquee.png";
 sprite          = [ "sprite/shadow/rat.png", "sprite/dog/marquee.png" ];
-type            = "dog"
+type            = "Dog"
 map             = "M0_0";
 pos_x           = 15;
 pos_y           = 15;

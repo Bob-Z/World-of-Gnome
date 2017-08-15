@@ -1,10 +1,8 @@
-name		= "Ghost";
-
 draw_script     = "draw/move_sinus.lua"
 flip_e		= 1
 marquee         = "sprite/ghost/ghost.png";
 sprite          = [ "sprite/ghost/ghost.gif" ];
-type            = "ghost"
+type            = "Ghost"
 map             = "M0_0";
 pos_x           = 15;
 pos_y           = 15;

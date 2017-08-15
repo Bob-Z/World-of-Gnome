@@ -3,7 +3,7 @@ name		= "Spider 4";
 
 marquee         = "sprite/spider04/marquee.png";
 sprite          = [ "sprite/shadow/spider.png", "sprite/spider04/S.png" ];
-type            = "spider"
+type            = "Spider"
 map             = "M0_0";
 pos_x           = 15;
 pos_y           = 15;

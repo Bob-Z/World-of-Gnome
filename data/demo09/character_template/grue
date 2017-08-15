@@ -1,9 +1,7 @@
 draw_script     = "draw/smooth.lua"
-name		= "Grue";
-
 marquee         = "sprite/grue/grue_E.png";
 sprite          = [ "sprite/shadow/grue.png", "sprite/grue/grue_E.png" ];
-type            = "grue"
+type            = "Grue"
 map             = "M0_0";
 pos_x           = 15;
 pos_y           = 15;

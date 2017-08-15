@@ -1,9 +1,7 @@
 draw_script     = "draw/smooth.lua"
-name		= "Pig";
-
 marquee         = "ui/pig.png";
 sprite          = [ "sprite/pig_shadow_down.png", "sprite/pig_down.zip" ];
-type            = "pig"
+type            = "Pig"
 map             = "M0_0";
 pos_x           = 15;
 pos_y           = 15;

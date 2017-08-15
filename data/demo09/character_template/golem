@@ -1,10 +1,8 @@
 draw_script     = "draw/smooth.lua"
-name		= "Golem";
-
 npc		= 1;
 marquee         = "marquee/golem.png";
 sprite          = [ "sprite/shadow/human.png","sprite/golem/S.png" ];
-type            = "golem"
+type            = "Golem"
 map             = "M0_0";
 pos_x           = 15;
 pos_y           = 15;

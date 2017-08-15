@@ -1,9 +1,7 @@
-name		= "Bee";
-
 draw_script     = "draw/smooth.lua"
 marquee         = "ui/bee.png";
 sprite          = [ "sprite/bee_shadow_down.zip", "sprite/bee_down.zip" ];
-type            = "bee"
+type            = "Bee"
 map             = "M0_0";
 pos_x           = 15;
 pos_y           = 15;

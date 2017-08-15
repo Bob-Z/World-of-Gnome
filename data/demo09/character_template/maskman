@@ -3,7 +3,7 @@ name		= "Maskman";
 
 marquee         = "marquee/maskman.png";
 sprite          = [ "sprite/shadow/human.png","sprite/maskman/S.png" ];
-type            = "human"
+type            = "Human"
 map             = "M0_0";
 pos_x           = 15;
 pos_y           = 15;

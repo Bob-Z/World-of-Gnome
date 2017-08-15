@@ -1,7 +1,7 @@
 draw_script     = "draw/smooth.lua"
 marquee		= "sprite/fish3.png";
 sprite		= "sprite/fish3.png";
-type		= "fish3"
+type		= "Fish3"
 map		= "M0_0";
 layer           = 5;
 pos_x		= 15;

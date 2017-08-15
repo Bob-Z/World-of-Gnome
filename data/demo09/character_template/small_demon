@@ -1,9 +1,8 @@
 draw_script     = "draw/smooth.lua"
-name		= "Small demon";
 
 marquee         = "sprite/small_demon/S.zip";
 sprite          = [ "sprite/shadow/small_demon.png", "sprite/small_demon/S.png" ];
-type            = "small_demon"
+type            = "Small demon"
 map             = "M0_0";
 pos_x           = 15;
 pos_y           = 15;

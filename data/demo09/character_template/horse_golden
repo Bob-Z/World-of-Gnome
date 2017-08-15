@@ -3,7 +3,7 @@ name		= "Horse (golden)";
 
 marquee         = "ui/horse_golden.png";
 sprite          = [ "sprite/lama_shadow_down.png", "sprite/horse_golden/W.zip" ];
-type            = "horse"
+type            = "Horse"
 map             = "M0_0";
 pos_x           = 15;
 pos_y           = 15;

@@ -1,7 +1,8 @@
 draw_script     = "draw/smooth.lua"
 marquee         = "marquee/princess.png";
 sprite          = [ "sprite/shadow/human.png","sprite/princess_left.gif" ];
-type            = "human"
+name            = "Princess"
+type            = "Human"
 map             = "M0_0";
 layer		= 15;
 pos_x           = 15;

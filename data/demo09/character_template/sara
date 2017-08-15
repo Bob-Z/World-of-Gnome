@@ -1,9 +1,8 @@
-draw_script     = "draw/smooth.lua"
-name		= "Sara";
-
 marquee         = "marquee/sara.png";
+type            = "Faerie"
+
+draw_script     = "draw/smooth.lua"
 sprite          = [ "sprite/shadow/human.png","sprite/sara_down.png"];
-type            = "faerie"
 map             = "M0_0";
 pos_x           = 15;
 pos_y           = 15;

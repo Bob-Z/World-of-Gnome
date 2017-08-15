@@ -1,7 +1,7 @@
 draw_script     = "draw/smooth.lua"
 marquee		= "sprite/dragon.gif";
 sprite		= "sprite/dragon.gif";
-type		= "dragon"
+type		= "Dragon"
 map		= "M0_0";
 layer           = 25;
 pos_x		= 15;
