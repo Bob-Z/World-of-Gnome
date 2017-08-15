@@ -18,6 +18,7 @@
 */
 
 void character_playable_send_list(context_t * context);
+void character_user_send(context_t * p_pCtx, const char * p_pCharacterId);
 void character_user_send_list(context_t * context);
 int character_out_of_game(const char * id);
 int character_disconnect(const char * id);

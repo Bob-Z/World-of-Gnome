@@ -187,6 +187,8 @@ ret_code_t parse_incoming_data(context_t * context, Uint32 command, Uint32 comma
 				break;
 			}
 
+			character_user_send(context, l_Name);
+
 			wlog(LOGDEBUG,"Successfully created: ID=%s, NAME=%s",l_Id, l_Name);
 		}
 		break;

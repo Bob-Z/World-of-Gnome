@@ -176,7 +176,6 @@ item_t * scr_select_compose(context_t * context)
 	int x = 0;
 	char * marquee_name;
 	static int max_h = 0;
-	static bool init = true;
 	item_t * item;
 	item_t * item_image;
 	int w;
@@ -310,10 +309,6 @@ item_t * scr_select_compose(context_t * context)
 		}
 	}
 
-	if(init == true) {
-		init = false;
-	}
-
 	if( current_character == -1 ) {
 		cb_show_item(character_list[0].item);
 	}
@@ -334,35 +329,28 @@ Add a character to the list
 the data is a list a 3 strings, the first string is the id of the character (its file name) the second one is the type of the character, the third is the name of the character.
 the list ends with an empty string
 *************************/
-void scr_select_add_user_character(context_t * context, char * data)
+void scr_select_add_user_character(context_t * p_pCtx, char * p_pFrame)
 {
-	char * current_string = data;
+	char * l_pId = _strsep(&p_pFrame,NETWORK_DELIMITER);
+	char * l_pType = _strsep(&p_pFrame,NETWORK_DELIMITER);
+	char * l_pName = _strsep(&p_pFrame,NETWORK_DELIMITER);
 
 	SDL_LockMutex(character_select_mutex);
 
-	while(current_string[0] != 0) {
+	character_num++;
 
-		character_num++;
+	character_list = (character_t*)realloc(character_list,sizeof(character_t)*character_num);
 
-		character_list = (character_t*)realloc(character_list,sizeof(character_t)*character_num);
+	character_t * new_character = &(character_list[character_num-1]);
+	new_character->id = strdup(l_pId);
+	new_character->type = strdup(l_pType);
+	new_character->name = strdup(l_pName);
+	new_character->anim = nullptr;
+	new_character->item = nullptr;
+	new_character->width = 0;
 
-		character_list[character_num-1].id = strdup(current_string);
-		current_string += strlen(current_string)+1;
-		character_list[character_num-1].type = strdup(current_string);
-		current_string += strlen(current_string)+1;
-		character_list[character_num-1].name = strdup(current_string);
-		current_string += strlen(current_string)+1;
-		character_list[character_num-1].anim = nullptr;
-		character_list[character_num-1].item = nullptr;
-		character_list[character_num-1].width = 0;
-
-		wlog(LOGDEBUG,"Character %s / %s /%s added",character_list[character_num-1].id,character_list[character_num-1].type,character_list[character_num-1].name);
-	}
+	wlog(LOGDEV,"Character %s / %s /%s added",new_character->id,new_character->type,new_character->name);
 
 	SDL_UnlockMutex(character_select_mutex);
-
-	if( character_num > 0 ) {
-		wlog(LOGDEV,"Received character %s of type %s",character_list[character_num-1].name,character_list[character_num-1].type);
-	}
 }
 

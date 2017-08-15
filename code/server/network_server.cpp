@@ -1,6 +1,6 @@
 /*
    World of Gnome is a 2D multiplayer role playing game.
-   Copyright (C) 2013-2016 carabobz@gmail.com
+   Copyright (C) 2013-2017 carabobz@gmail.com
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -24,13 +24,13 @@ Broadcast text to all in game players
 *********************************************************************/
 void network_broadcast_text(context_t * context, const char * text)
 {
-	context_t * ctx = NULL;
+	context_t * ctx = nullptr;
 
 	context_lock_list();
 
 	ctx = context_get_first();
 
-	if( ctx == NULL ) {
+	if( ctx == nullptr ) {
 		context_unlock_list();
 		return;
 	}
@@ -40,20 +40,20 @@ void network_broadcast_text(context_t * context, const char * text)
 			continue;
 		}
 
-		/* Skip if not in game */
+		// Skip if not in game
 		if( context_get_in_game(ctx) == false ) {
 			continue;
 		}
 
-		/* Skip data context */
-		if( ctx->user_name == NULL ) {
+		// Skip data context
+		if( ctx->user_name == nullptr ) {
 			continue;
 		}
 
-		/* Skip if not on the same map */
+		// Skip if not on the same map
 #if 0
 		if( same_map_only ) {
-			if( target == NULL ) {
+			if( target == nullptr ) {
 				continue;
 			}
 			if( strcmp(target->map,ctx->map) != 0 ) {
@@ -62,9 +62,20 @@ void network_broadcast_text(context_t * context, const char * text)
 		}
 #endif
 		network_send_text(ctx->id,text);
-	} while( (ctx=ctx->next)!= NULL );
+	} while( (ctx=ctx->next)!= nullptr );
 
 	context_unlock_list();
+}
+
+/*********************************************************************
+Server send a user's character
+*********************************************************************/
+void network_send_user_character(context_t * p_pCtx, const char * p_pCharacterId, const char * p_pType, const char * p_pName)
+{
+	char * l_pFrame = nullptr;
+	l_pFrame = strconcat(p_pCharacterId,NETWORK_DELIMITER,p_pType,NETWORK_DELIMITER,p_pName,nullptr);
+	network_send_command(p_pCtx, CMD_SEND_USER_CHARACTER, strlen(l_pFrame)+1, l_pFrame, false);
+	free(l_pFrame);
 }
 
 /*********************************************************************
@@ -74,7 +85,7 @@ void network_send_character_file(context_t * context)
 {
 	char * filename;
 
-	filename = strconcat(CHARACTER_TABLE,"/",context->id,NULL);
+	filename = strconcat(CHARACTER_TABLE,"/",context->id,nullptr);
 	network_send_file(context,filename);
 	free(filename);
 }
@@ -84,8 +95,8 @@ Asks to update an int entry on all in_game players
 *********************************************************************/
 void network_broadcast_entry_int(const char * table, const char * file, const char * path, int value, bool same_map_only)
 {
-	context_t * ctx = NULL;
-	context_t * target = NULL;
+	context_t * ctx = nullptr;
+	context_t * target = nullptr;
 
 	target = context_find(file);
 
@@ -93,7 +104,7 @@ void network_broadcast_entry_int(const char * table, const char * file, const ch
 
 	ctx = context_get_first();
 
-	if( ctx == NULL ) {
+	if( ctx == nullptr ) {
 		context_unlock_list();
 		return;
 	}
@@ -102,13 +113,13 @@ void network_broadcast_entry_int(const char * table, const char * file, const ch
 		if( context_is_npc(ctx) == true ) {
 			continue;
 		}
-		/* Skip if not in game */
+		// Skip if not in game
 		if( context_get_in_game(ctx) == false ) {
 			continue;
 		}
-		/* Skip if not on the same map */
+		// Skip if not on the same map
 		if( same_map_only == true ) {
-			if( target == NULL ) {
+			if( target == nullptr ) {
 				continue;
 			}
 			if( target->map && ctx->map ) {
@@ -120,7 +131,7 @@ void network_broadcast_entry_int(const char * table, const char * file, const ch
 
 		network_send_entry_int(ctx,table,file, path, value);
 
-	} while( (ctx=ctx->next)!= NULL );
+	} while( (ctx=ctx->next)!= nullptr );
 
 	context_unlock_list();
 }
@@ -133,10 +144,10 @@ static int new_connection(void * data)
 	TCPsocket socket = (TCPsocket)data;
 	Uint32 command = 0;
 	Uint32 command_size = 0;
-	char *buf = NULL;
+	char *buf = nullptr;
 
 	context = context_new();
-	if(context == NULL ) {
+	if(context == nullptr ) {
 		werr(LOGUSER,"Failed to create context");
 		return RET_NOK;
 	}
@@ -169,15 +180,15 @@ static int new_connection(void * data)
 		if (parse_incoming_data(context, command, command_size, buf) == RET_NOK ) {
 			if( buf ) {
 				free(buf);
-				buf = NULL;
+				buf = nullptr;
 			}
 			context_set_connected(context,false);
 			break;
 		}
 
-		if( buf != NULL) {
+		if( buf != nullptr) {
 			free(buf);
-			buf = NULL;
+			buf = nullptr;
 		}
 	}
 
@@ -204,13 +215,13 @@ void network_init(void)
 		return;
 	}
 
-	/* Resolving the host using NULL make network interface to listen */
-	if (SDLNet_ResolveHost(&IP, NULL, PORT) < 0) {
+	// Resolving the host using nullptr make network interface to listen
+	if (SDLNet_ResolveHost(&IP, nullptr, PORT) < 0) {
 		werr(LOGUSER, "Cannot listen on port %d: %s\n", PORT, SDLNet_GetError());
 		return;
 	}
 
-	/* Open a connection with the IP provided (listen on the host's port) */
+	// Open a connection with the IP provided (listen on the host's port)
 	if (!(socket = SDLNet_TCP_Open(&IP))) {
 		werr(LOGUSER, "Cannot open port %d: %s\n", PORT, SDLNet_GetError());
 		return;
@@ -219,13 +230,13 @@ void network_init(void)
 	server_set = SDLNet_AllocSocketSet(1);
 	SDLNet_TCP_AddSocket(server_set, socket);
 
-	/* Wait for a connection */
+	// Wait for a connection
 	while (true) {
 		SDLNet_CheckSockets(server_set, -1);
 		/* check for pending connection.
 		* If there is one, accept that, and open a new socket for communicating */
 		if ((client_socket = SDLNet_TCP_Accept(socket))) {
-			/* Get the remote address */
+			// Get the remote address
 			if (!(remote_IP = SDLNet_TCP_GetPeerAddress(client_socket))) {
 				werr(LOGUSER,"Can't get peer adress: %s", SDLNet_GetError());
 			}
@@ -245,7 +256,7 @@ void network_init(void)
 
 /*********************************************************************
 Sends popup screen data to context
-dialog is a NULL terminated array of string:
+dialog is a nullptr terminated array of string:
 "action" <action name> <param>  // if action_name is popup_end, this action close the popup
 "image" <image name>
 "text"  <text>
@@ -254,8 +265,8 @@ dialog is a NULL terminated array of string:
 *********************************************************************/
 void network_send_popup(const char * id,const char ** dialog)
 {
-	char * frame = NULL;
-	char * new_frame = NULL;
+	char * frame = nullptr;
+	char * new_frame = nullptr;
 	context_t * target;
 
 	target = context_find(id);
@@ -263,8 +274,8 @@ void network_send_popup(const char * id,const char ** dialog)
 	if(dialog) {
 		frame = strdup(*dialog);
 		dialog++;
-		while ( *dialog != NULL ) {
-			new_frame = strconcat(frame,NETWORK_DELIMITER,*dialog,NULL);
+		while ( *dialog != nullptr ) {
+			new_frame = strconcat(frame,NETWORK_DELIMITER,*dialog,nullptr);
 			free(frame);
 			frame = new_frame;
 			dialog++;
@@ -275,3 +286,4 @@ void network_send_popup(const char * id,const char ** dialog)
 	network_send_command(target, CMD_SEND_POPUP, strlen(frame)+1, frame,false);
 	free(frame);
 }
+

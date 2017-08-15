@@ -87,68 +87,44 @@ void character_playable_send_list(context_t * context)
 
 /*********************************************
  *********************************************/
-void character_user_send_list(context_t * context)
+void character_user_send(context_t * p_pCtx, const char * p_pCharacterId)
 {
-	char * data = nullptr;
-	Uint32 data_size = 0;
-	Uint32 string_size = 0;
-	char ** character_list;
-	char * type;
-	char * name;
-	int i;
+	char * l_pType = nullptr;
+	char * l_pName = nullptr;
 
-	if(entry_read_list(USERS_TABLE, context->user_name,&character_list,USERS_CHARACTER_LIST,nullptr) == RET_NOK ) {
+	if(entry_read_string(CHARACTER_TABLE, p_pCharacterId, &l_pType, CHARACTER_KEY_TYPE,nullptr) == RET_NOK ) {
 		return;
 	}
 
-	i = 0;
-
-	data = strdup("");
-	while( character_list[i] != nullptr ) {
-		if(entry_read_string(CHARACTER_TABLE, character_list[i], &type, CHARACTER_KEY_TYPE,nullptr) == RET_NOK ) {
-			i++;
-			continue;
-		}
-
-		if(entry_read_string(CHARACTER_TABLE, character_list[i], &name, CHARACTER_KEY_NAME,nullptr) == RET_NOK ) {
-			free(type);
-			i++;
-			continue;
-		}
-
-		// add the name of the character to the network frame
-		string_size = strlen(character_list[i])+1;
-		data = (char*)realloc(data, data_size + string_size);
-		memcpy(data+data_size,character_list[i], string_size);
-		data_size += string_size;
-
-		// add the type of the character to the network frame
-		string_size = strlen(type)+1;
-		data = (char*)realloc(data, data_size + string_size);
-		memcpy(data+data_size,type, string_size);
-		data_size += string_size;
-
-		// add the type of the character to the network frame
-		string_size = strlen(name)+1;
-		data = (char*)realloc(data, data_size + string_size);
-		memcpy(data+data_size,name, string_size);
-		data_size += string_size;
-
-		free(type);
-		free(name);
-
-		i++;
+	if(entry_read_string(CHARACTER_TABLE, p_pCharacterId, &l_pName, CHARACTER_KEY_NAME,nullptr) == RET_NOK ) {
+		free(l_pType);
+		return;
 	}
 
-	deep_free(character_list);
+	network_send_user_character(p_pCtx, p_pCharacterId, l_pType, l_pName);
 
-	// Mark the end of the list
-	data = (char*)realloc(data, data_size + 1);
-	data[data_size] = 0;
-	data_size ++;
+	free(l_pType);
+	free(l_pName);
+}
 
-	network_send_command(context, CMD_SEND_USER_CHARACTER, data_size, data,false);
-	free(data);
+/*********************************************
+ *********************************************/
+void character_user_send_list(context_t * context)
+{
+	char ** l_pCharacterList = nullptr;
+
+	if(entry_read_list(USERS_TABLE, context->user_name,&l_pCharacterList,USERS_CHARACTER_LIST,nullptr) == RET_NOK ) {
+		return;
+	}
+
+	int l_Index = 0;
+
+	while( l_pCharacterList[l_Index] != nullptr ) {
+		character_user_send(context, l_pCharacterList[l_Index]);
+		l_Index++;
+	}
+
+	deep_free(l_pCharacterList);
 }
 
 /*****************************
