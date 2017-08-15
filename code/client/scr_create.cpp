@@ -139,6 +139,11 @@ static void cb_keyboard_text(void * arg)
 		return;
 	}
 
+	if( selected_character == -1) {
+		werr(LOGUSER,"Character not selected");
+		return;
+	}
+
 	network_request_character_creation(context_get_player(), character_list[selected_character].id, text);
 
 	screen_set_screen(Screen::SELECT);
