@@ -326,10 +326,6 @@ item_t * scr_create_compose(context_t * context)
 		}
 	}
 
-	if( current_character == -1 ) {
-		cb_show_item(character_list[0].item);
-	}
-
 	SDL_UnlockMutex(character_create_mutex);
 
 	if( current_character == -1 ) {
