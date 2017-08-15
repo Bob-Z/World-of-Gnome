@@ -181,6 +181,12 @@ ret_code_t parse_incoming_data(context_t * context, Uint32 command, Uint32 comma
 				break;
 			}
 
+			if( entry_add_to_list(USERS_TABLE,context->user_name,l_Name, USERS_CHARACTER_LIST, nullptr) == RET_NOK ) {	
+				werr(LOGUSER,"Error adding character %s to user %s", l_Name, context->user_name);
+				file_delete(CHARACTER_TABLE, l_Name);
+				break;
+			}
+
 			wlog(LOGDEBUG,"Successfully created: ID=%s, NAME=%s",l_Id, l_Name);
 		}
 		break;
