@@ -54,7 +54,14 @@ Keyboard callback
 ****************************/
 static void cb_quit(void * arg)
 {
+	context_t * ctx = (context_t*)arg;
+
 	text_buffer[0] = '\0';
+
+        if( sfx_filename != nullptr ) {
+                sfx_stop(ctx,sfx_filename);
+        }
+
 	screen_set_screen(Screen::SELECT);
 }
 
@@ -146,6 +153,10 @@ static void cb_keyboard_text(void * arg)
 
 	network_request_character_creation(context_get_player(), character_list[selected_character].id, text);
 
+        if( sfx_filename != nullptr ) {
+                sfx_stop(context_get_player(),sfx_filename);
+        }
+
 	screen_set_screen(Screen::SELECT);
 
 	text_buffer[0]='\0';
@@ -202,11 +213,11 @@ item_t * scr_create_compose(context_t * context)
 
 	if( sfx_filename != nullptr ) {
 		sfx_play(context,sfx_filename,NO_RESTART);
-	}
 
-	int sfx_volume = 100; // 100%
-	entry_read_int(nullptr,CLIENT_CONF_FILE,&sfx_volume,CLIENT_KEY_CREATE_CHARACTER_SFX_VOLUME,nullptr);
-        sfx_set_volume(sfx_volume);
+		int sfx_volume = 100; // 100%
+		entry_read_int(nullptr,CLIENT_CONF_FILE,&sfx_volume,CLIENT_KEY_CREATE_CHARACTER_SFX_VOLUME,nullptr);
+		sfx_set_volume(sfx_volume);
+	}
 
 	if(item_list) {
 		item_list_free(item_list);

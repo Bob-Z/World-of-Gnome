@@ -90,7 +90,7 @@ static void cb_select(void * arg)
 
 	sdl_free_mousecb();
 
-	if( sfx_filename ) {
+	if( sfx_filename != nullptr ) {
 		sfx_stop(ctx,sfx_filename);
 	}
 
@@ -154,7 +154,12 @@ static void cb_wheel_down(Uint32 y, Uint32 unused)
 **********************************/
 static void cb_icon_add_clicked(void * arg)
 {
-	//context_t * ctx = (context_t*)arg;
+	context_t * ctx = (context_t*)arg;
+
+	if( sfx_filename != nullptr ) {
+		sfx_stop(ctx,sfx_filename);
+	}
+
 	screen_set_screen(Screen::CREATE);
 }
 
@@ -197,11 +202,11 @@ item_t * scr_select_compose(context_t * context)
 
 	if( sfx_filename ) {
 		sfx_play(context,sfx_filename,NO_RESTART);
-	}
 
-	int sfx_volume = 100; // 100%
-	entry_read_int(nullptr,CLIENT_CONF_FILE,&sfx_volume,CLIENT_KEY_SELECT_CHARACTER_SFX_VOLUME,nullptr);
-        sfx_set_volume(sfx_volume);
+		int sfx_volume = 100; // 100%
+		entry_read_int(nullptr,CLIENT_CONF_FILE,&sfx_volume,CLIENT_KEY_SELECT_CHARACTER_SFX_VOLUME,nullptr);
+		sfx_set_volume(sfx_volume);
+	}
 
 	if(item_list) {
 		item_list_free(item_list);
