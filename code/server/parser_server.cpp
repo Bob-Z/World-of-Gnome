@@ -175,6 +175,12 @@ ret_code_t parse_incoming_data(context_t * context, Uint32 command, Uint32 comma
 				break;
 			}
 
+			if(entry_write_string(CHARACTER_TABLE, l_Name, l_Name, CHARACTER_KEY_NAME,nullptr) == RET_NOK) {
+				werr(LOGUSER,"Error setting character name %s", l_Name);
+				file_delete(CHARACTER_TABLE, l_Name);
+				break;
+			}
+
 			wlog(LOGDEBUG,"Successfully created: ID=%s, NAME=%s",l_Id, l_Name);
 		}
 		break;
