@@ -56,16 +56,25 @@ void character_playable_send_list(context_t * context)
                         continue;
                 }
 
-		if(entry_read_string(CHARACTER_TEMPLATE_TABLE, ent->d_name, &marquee, CHARACTER_KEY_MARQUEE,nullptr) == RET_NOK ) {
-			continue;
-		}
-
-		if( marquee[0] == '\0' ) {
+		if(entry_read_string(CHARACTER_TEMPLATE_TABLE, ent->d_name, &marquee, CHARACTER_KEY_MARQUEE,nullptr) == RET_OK ) {
+			if( marquee[0] == '\0' ) {
+				free(marquee);
+				continue;
+			}
 			free(marquee);
-			continue;
 		}
-
-		free(marquee);
+		else {
+			char ** marquee_list = nullptr;
+                        if(entry_read_list(CHARACTER_TEMPLATE_TABLE,ent->d_name,&marquee_list, CHARACTER_KEY_MARQUEE,nullptr) == RET_NOK ) {
+                                wlog(LOGDEV,"%s has no marquee",ent->d_name);
+                                continue;
+                        }
+			if ( marquee_list[0][0] == '\0' ) {
+				deep_free(marquee_list);
+				continue;
+			}
+			deep_free(marquee_list);
+		}
 
 		// add file name to network frame
 		string_size = strlen(ent->d_name)+1;

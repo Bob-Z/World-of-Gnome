@@ -36,7 +36,7 @@ typedef struct {
 	char * id;
 	char * name;
 	char * type;
-	anim_t * anim;
+	anim_t ** anim;
 	item_t * item;
 	int width;
 } character_t;
@@ -194,7 +194,6 @@ item_t * scr_create_compose(context_t * context)
 {
 	long i = 0;
 	int x = 0;
-	char * marquee_name;
 	static int max_h = 0;
 	item_t * item;
 	item_t * item_image;
@@ -284,17 +283,30 @@ item_t * scr_create_compose(context_t * context)
 	// Load all anim compute max height and width of anim + string
 	for(i=0; i<character_num; i++) {
 		// Compute the marquee file name
-		if(entry_read_string(CHARACTER_TEMPLATE_TABLE,character_list[i].id,&marquee_name,CHARACTER_KEY_MARQUEE,nullptr) == RET_NOK ) {
-			continue;
+		char * marquee_name = nullptr;
+		if(entry_read_string(CHARACTER_TEMPLATE_TABLE,character_list[i].id,&marquee_name,CHARACTER_KEY_MARQUEE,nullptr) == RET_OK ) {
+			const char * name_array[2] = { nullptr, nullptr };
+			name_array[0] = marquee_name;
+			character_list[i].anim = imageDB_get_anim_array(context,name_array);
+			free(marquee_name);
 		}
+		else {
+			char ** marquee_list = nullptr;
+			if(entry_read_list(CHARACTER_TEMPLATE_TABLE,character_list[i].id,&marquee_list, CHARACTER_KEY_MARQUEE,nullptr) == RET_NOK ) {
+				wlog(LOGDEV,"%s has no marquee",character_list[i].id);
+				continue;
+			}
+
+			character_list[i].anim = imageDB_get_anim_array(context,(const char **)marquee_list);
+			deep_free(marquee_list);
+		}
+
 		entry_read_string(CHARACTER_TEMPLATE_TABLE,character_list[i].id,&character_list[i].name,CHARACTER_KEY_NAME,nullptr);
 		entry_read_string(CHARACTER_TEMPLATE_TABLE,character_list[i].id,&character_list[i].type,CHARACTER_KEY_TYPE,nullptr);
 
-		character_list[i].anim  = imageDB_get_anim(context,marquee_name);
-		free(marquee_name);
 
-		if(character_list[i].anim->h > max_h) {
-			max_h = character_list[i].anim->h;
+		if(character_list[i].anim[0]->h > max_h) {
+			max_h = character_list[i].anim[0]->h;
 		}
 
 		if( font_name != nullptr && character_list[i].name != nullptr) {
@@ -307,8 +319,8 @@ item_t * scr_create_compose(context_t * context)
 				character_list[i].width = w;
 			}
 		}
-		if(character_list[i].anim->w > character_list[i].width) {
-			character_list[i].width = character_list[i].anim->w;
+		if(character_list[i].anim[0]->w > character_list[i].width) {
+			character_list[i].width = character_list[i].anim[0]->w;
 		}
 	}
 
@@ -323,9 +335,9 @@ item_t * scr_create_compose(context_t * context)
 		item_image = item;
 		character_list[i].item = item;
 
-		item_set_pos(item,x+character_list[i].width/2-character_list[i].anim->w/2,
-					 max_h/2-character_list[i].anim->h/2);
-		item_set_anim(item,character_list[i].anim,0);
+		item_set_pos(item,x+character_list[i].width/2-character_list[i].anim[0]->w/2,
+					 max_h/2-character_list[i].anim[0]->h/2);
+		item_set_anim_array(item,character_list[i].anim);
 		item_set_click_left(item,cb_show_item,(void *)item,nullptr);
 		//item_set_click_right(item,cb_select,(void *)context,nullptr);
 		//item_set_double_click_left(item,cb_select,(void *)context,nullptr);
