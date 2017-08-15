@@ -335,8 +335,6 @@ item_t * scr_create_compose(context_t * context)
 		// character name
 		if( font_name == nullptr ) {
 			werr(LOGDEV,"Can't open TTF font %s",FONT);
-		} else if( character_list[i].name == nullptr ) {
-			wlog(LOGDEV,"No name provided for %s",character_list[i].id);
 		} else {
 			item = item_list_add(&item_list);
 			item_set_string(item,character_list[i].name);
@@ -349,8 +347,6 @@ item_t * scr_create_compose(context_t * context)
 		// character type
 		if( font_type == nullptr ) {
 			werr(LOGDEV,"Can't open TTF font %s",FONT);
-		} else if( character_list[i].type == nullptr ) {
-			wlog(LOGDEV,"No type provided for %s",character_list[i].id);
 		} else {
 			item = item_list_add(&item_list);
 			item_set_string(item,character_list[i].type);
