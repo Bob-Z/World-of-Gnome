@@ -87,7 +87,7 @@ ret_code_t parse_incoming_data(context_t * context, Uint32 command, Uint32 comma
 			break;
 		}
 		wlog(LOGDEBUG,"Received CMD_REQ_FILE for %s",elements[0]);
-		/* compare checksum */
+		// compare checksum
 		fullname = strconcat(base_directory,"/",elements[0],nullptr);
 
 		cksum = checksum_file(fullname);
@@ -155,6 +155,28 @@ ret_code_t parse_incoming_data(context_t * context, Uint32 command, Uint32 comma
 		wlog(LOGDEBUG,"Received CMD_REQ_ACTION %s from %s /%s",elements[0],context->user_name,context->character_name);
 
 		action_execute(context,elements[0],&elements[1]);
+		break;
+	case CMD_REQ_CREATE :
+		{
+			char * l_Id = _strsep(&data,NETWORK_DELIMITER);
+			char * l_Name = _strsep(&data,NETWORK_DELIMITER);
+			wlog(LOGDEBUG,"Received CMD_REQ_CREATE: ID=%s, NAME=%s",l_Id, l_Name);
+
+			char * l_FileName = nullptr;
+			l_FileName = file_new(CHARACTER_TABLE,l_Name);
+			if( l_FileName == nullptr ) {
+				werr(LOGUSER,"%s already exists",l_Name);
+				break;
+			}
+
+			if( file_copy(CHARACTER_TEMPLATE_TABLE,l_Id,CHARACTER_TABLE,l_Name) == false ) {
+				werr(LOGUSER,"Error copying character template %s to character %s (maybe template doesn't exists ?)",l_Id, l_Name);
+				file_delete(CHARACTER_TABLE, l_Name);
+				break;
+			}
+
+			wlog(LOGDEBUG,"Successfully created: ID=%s, NAME=%s",l_Id, l_Name);
+		}
 		break;
 	default:
 		werr(LOGDEV,"Unknown request %d from client",command);
