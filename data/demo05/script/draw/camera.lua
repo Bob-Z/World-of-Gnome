@@ -32,7 +32,7 @@ if( _G.current_camera_Z[screen] == nil ) then
 end
 
 -- set zoom
-if( screen == 1 ) then
+if( screen == 2 ) then -- PLAY screen
 	-- convert zoom unit to zoom percentage
 	zoom_unit = camera_get_zoom();
 	zoom_percent = 1.0
@@ -70,7 +70,7 @@ camera_set_zoom(_G.current_camera_Z[screen]);
 
 ----------------------
 -- set camera position
-if( screen == 0 ) then -- SELECT screen
+if( screen == 0 or screen == 1) then -- SELECT screen or CREATE screen
 	if( _G.dest_camera_X == nil ) then
 		_G.dest_camera_X = camera_get_X()
 		_G.from_camera_X = camera_get_X()
@@ -108,7 +108,7 @@ if( screen == 0 ) then -- SELECT screen
 	camera_set_coord(_G.current_camera_X,_G.current_camera_Y) 
 end
 
-if( screen == 1 ) then -- PLAY screen
+if( screen == 2 ) then -- PLAY screen
 	camera_set_coord(_G.current_X[id], (_G.current_Y[id]))
 end
 
