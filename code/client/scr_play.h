@@ -21,6 +21,6 @@
 
 item_t * scr_play_compose(context_t * context);
 void scr_play_frame_start(context_t * context);
-void scr_play_init(int init);
+void scr_play_init();
 int scr_play_get_current_x();
 int scr_play_get_current_y();

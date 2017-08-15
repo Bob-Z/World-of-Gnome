@@ -95,8 +95,6 @@ static void cb_select(void * arg)
 	}
 
 	screen_set_screen(Screen::PLAY);
-
-	screen_compose();
 }
 
 /**********************************
@@ -165,6 +163,13 @@ static void cb_icon_add_clicked(void * arg)
 **********************************/
 void scr_select_frame_start(context_t * context)
 {
+}
+
+/**********************************
+**********************************/
+void scr_select_init()
+{
+	current_character = -1;
 }
 
 /**********************************

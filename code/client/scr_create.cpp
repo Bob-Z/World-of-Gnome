@@ -135,7 +135,7 @@ static void cb_keyboard_text(void * arg)
         const char * text = (const char*)arg;
 
 	if( text[0] == '\0') {
-		werr(LOGUSER,"Cannot create character woth no name");
+		werr(LOGUSER,"Cannot create character with no name");
 		return;
 	}
 
@@ -150,6 +150,13 @@ static void cb_keyboard_text(void * arg)
 **********************************/
 void scr_create_frame_start(context_t * context)
 {
+}
+
+/**********************************
+**********************************/
+void scr_create_init()
+{
+	current_character = -1;
 }
 
 /**********************************

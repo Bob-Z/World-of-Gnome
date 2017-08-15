@@ -55,20 +55,6 @@ static char * sfx = nullptr;
 
 /**********************************
 **********************************/
-void scr_play_init(int init_value)
-{
-	context_t * ctx;
-
-	init = init_value;
-
-	if(init_value == true) {
-		ctx = context_get_player();
-		sfx_stop(ctx,sfx);
-	}
-}
-
-/**********************************
-**********************************/
 int scr_play_get_current_x()
 {
 	return current_map_x;
@@ -800,6 +786,13 @@ static void compose_select()
 **********************************/
 void scr_play_frame_start(context_t * context)
 {
+}
+
+/**********************************
+**********************************/
+void scr_play_init()
+{
+	sfx_stop(context_get_player(),sfx);
 }
 
 /**********************************

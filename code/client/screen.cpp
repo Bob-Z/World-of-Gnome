@@ -104,6 +104,26 @@ static void compose_scr(context_t * context)
 	}
 }
 
+/******************************************************
+Init screen for first display
+******************************************************/
+static void init_scr()
+{
+	switch(g_Camera.getScreen()) {
+	case Screen::SELECT:
+		scr_select_init();
+		break;
+	case Screen::CREATE:
+		scr_create_init();
+		break;
+	case Screen::PLAY:
+		scr_play_init();
+		break;
+	default:
+		break;
+	}
+}
+
 /************************************************
 ************************************************/
 static void display_fps()
@@ -248,8 +268,9 @@ void screen_set_screen(Screen p_Screen)
 {
 	if(p_Screen != g_Camera.getScreen()) {
 		g_Camera.setScreen(p_Screen);
-		screen_compose();
+		init_scr();
 	}
+	screen_compose();
 }
 
 /************************************************
