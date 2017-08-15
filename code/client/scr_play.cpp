@@ -46,7 +46,6 @@
 
 static item_t * item_list = nullptr;
 static bool change_map = false;
-static int init = true;
 static int current_map_x = -1;
 static int current_map_y = -1;
 static option_t * option = nullptr;
@@ -792,7 +791,10 @@ void scr_play_frame_start(context_t * context)
 **********************************/
 void scr_play_init()
 {
-	sfx_stop(context_get_player(),sfx);
+	// Register this character to receive server notifications
+	context_t * l_pCtx = context_get_player();
+	network_request_start(l_pCtx,l_pCtx->id);
+	ui_play_init();
 }
 
 /**********************************
@@ -818,13 +820,6 @@ item_t * scr_play_compose(context_t * ctx)
 		if(context_update_from_file(ctx) == RET_NOK) {
 			return nullptr;
 		}
-	}
-
-	if(init) {
-		// Register this character to receive server notifications
-		network_request_start(ctx,ctx->id);
-		ui_play_init();
-		init = false;
 	}
 
 	sdl_free_keycb();
