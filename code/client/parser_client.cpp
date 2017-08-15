@@ -52,6 +52,7 @@ ret_code_t parse_incoming_data(context_t * context, Uint32 command, Uint32 comma
 	case CMD_SEND_PLAYABLE_CHARACTER :
 		wlog(LOGDEBUG,"Received CMD_SEND_PLAYABLE_CHARACTER");
 		scr_create_add_playable_character(context,data);
+		screen_compose();
 		break;
 	case CMD_SEND_FILE :
 		wlog(LOGDEBUG,"Received CMD_SEND_FILE");
