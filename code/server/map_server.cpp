@@ -396,18 +396,18 @@ ret_code_t map_set_tile_type(const char * map, int layer, const char * type,int 
 
 	sprintf(layer_name,"%s%d",MAP_KEY_LAYER,layer);
 
-	/* Manage concurrent access to map files */
+	// Manage concurrent access to map files
 	SDL_LockMutex(map_mutex);
 
-	/* read size of map grid */
-	if(entry_read_int(MAP_TABLE,map,&width,MAP_KEY_WIDTH,nullptr) == RET_OK ) {
+	// read size of map grid
+	if(entry_read_int(MAP_TABLE,map,&width,MAP_KEY_WIDTH,nullptr) == RET_NOK ) {
 		SDL_UnlockMutex(map_mutex);
 		return RET_NOK;
 	}
 
 	index = width * y + x;
 
-	/* read previous map type */
+	// read previous map type
 	if( entry_read_list_index(MAP_TABLE,map,&previous_type, index,layer_name,MAP_KEY_TYPE,nullptr) == RET_OK ) {
 		/* Do not change the type if it already the requested type
 		   Avoid calling useless context_broadcast_file */
