@@ -25,7 +25,7 @@ void file_update(context_t * context, const char * filename);
 char * file_new(const char * table,const char * suggested_name);
 ret_code_t file_get_contents(const char *filename,char **contents,int *length);
 ret_code_t file_set_contents(const char *filename,const char *contents,int length);
-void file_copy(char * src_name, char * dst_name);
+bool file_copy(const char * src_table, const char * src_name, const char * dst_table, const char * dst_name);
 int file_create_directory(char * fullname);
 int file_delete(const char * table, const char * filename);
 Uint32 file_get_timestamp(const char * p_pTable, const char * p_pFilename);

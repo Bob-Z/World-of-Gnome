@@ -166,7 +166,7 @@ char * file_new(const char * table, const char * suggested_name)
 			SDL_UnlockMutex(character_dir_mutex);
 			free(dirname);
 			free(fullname);
-			/* File exists */
+			// File exists
 			return nullptr;
 		}
 		free(fullname);
@@ -355,31 +355,41 @@ ret_code_t file_set_contents(const char *filename,const char *contents,int lengt
 }
 
 /******************************************************
+return true on success
 ******************************************************/
-void file_copy(char * src_name, char * dst_name)
+bool file_copy(const char * src_table, const char * src_name, const char * dst_table, const char * dst_name)
 {
 	FILE *src;
 	FILE *dst;
-	int i;
 
-	src = fopen(src_name, "rb");
+	char * src_full_path = strconcat(base_directory,"/",src_table,"/",src_name,nullptr);
+	src = fopen(src_full_path, "rb");
 	if( src == nullptr ) {
-		werr(LOGDEV,"Failed to open source file %s\n",src_name);
-		return;
+		werr(LOGDEV,"Failed to open source file %s\n",src_full_path);
+		free(src_full_path);
+		return false;
 	}
 
-	dst = fopen(dst_name, "wb");
+	char * dst_full_path = strconcat(base_directory,"/",dst_table,"/",dst_name,nullptr);
+	dst = fopen(dst_full_path, "wb");
 	if( dst == nullptr ) {
-		werr(LOGDEV,"Failed to open destination file %s\n",dst_name);
-		return;
+		werr(LOGDEV,"Failed to open destination file %s\n",dst_full_path);
+		fclose(src);
+		free(dst_full_path);
+		free(src_full_path);
+		return false;
 	}
 
-	for (i = getc(src); i != EOF; i = getc(src)) {
+	for (int i = getc(src); i != EOF; i = getc(src)) {
 		putc(i, dst);
 	}
 
-	fclose(dst);
 	fclose(src);
+	fclose(dst);
+	free(dst_full_path);
+	free(src_full_path);
+
+	return true;
 }
 
 /***************************************************

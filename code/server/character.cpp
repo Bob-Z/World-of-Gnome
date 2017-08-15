@@ -214,18 +214,14 @@ int character_out_of_game( const char * id)
 char * character_create_from_template(context_t * ctx,const char * my_template,const char * map, int layer, int x, int y)
 {
 	char * new_id;
-	char * templatename;
-	char * fullname;
 
 	new_id = file_new(CHARACTER_TABLE,nullptr);
+	if( file_copy(CHARACTER_TEMPLATE_TABLE,my_template,CHARACTER_TABLE,new_id) == false) {
+		file_delete(CHARACTER_TABLE, new_id);
+		return nullptr;
+	}
 
-	templatename = strconcat(base_directory,"/",CHARACTER_TEMPLATE_TABLE,"/",my_template,nullptr);
-	fullname = strconcat(base_directory,"/",CHARACTER_TABLE,"/",new_id,nullptr);
-	file_copy(templatename,fullname);
-	free(templatename);
-	free(fullname);
-
-	/* Check if new character is allowed to be created here */
+	// Check if new character is allowed to be created here
 	if(map_check_tile(ctx,new_id,map,layer,x,y) == 0) {
 		entry_destroy(CHARACTER_TABLE,new_id);
 		file_delete(CHARACTER_TABLE,new_id);
@@ -233,7 +229,7 @@ char * character_create_from_template(context_t * ctx,const char * my_template,c
 		return nullptr;
 	}
 
-	/* Write position */
+	// Write position
 	if(entry_write_string(CHARACTER_TABLE,new_id,map,CHARACTER_KEY_MAP,nullptr) == RET_NOK ) {
 		entry_destroy(CHARACTER_TABLE,new_id);
 		file_delete(CHARACTER_TABLE,new_id);
