@@ -19,7 +19,7 @@
 
 #include <limits.h>
 #include <pthread.h>
-#include "../sdl_item/sdl.h"
+#include "sdl.h"
 #include "screen.h"
 #include "scr_select.h"
 #include "scr_create.h"

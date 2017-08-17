@@ -20,7 +20,7 @@
 #ifndef NETWORK_CLIENT
 #define NETWORK_CLIENT
 
-#include "../common/common.h"
+#include "common.h"
 
 void network_login(context_t * context, const char * name, const char * password);
 void network_request_start(context_t * context, const char * id);

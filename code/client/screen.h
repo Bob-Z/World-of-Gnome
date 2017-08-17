@@ -20,8 +20,8 @@
 #ifndef SCREEN_H
 #define SCREEN_H
 
-#include "../sdl_item/item.h"
-#include "../common/common.h"
+#include "item.h"
+#include "common.h"
 
 class Camera;
 

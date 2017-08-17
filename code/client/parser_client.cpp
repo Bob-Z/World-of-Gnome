@@ -17,7 +17,7 @@
    Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
-#include "../common/common.h"
+#include "common.h"
 #include "network_client.h"
 #include "scr_select.h"
 #include "scr_create.h"

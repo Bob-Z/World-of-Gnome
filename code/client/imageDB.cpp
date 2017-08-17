@@ -19,8 +19,8 @@
 
 /* This manage an image data base */
 
-#include "../common/common.h"
-#include "../sdl_item/anim.h"
+#include "common.h"
+#include "anim.h"
 
 static list_t * image_list = nullptr;
 

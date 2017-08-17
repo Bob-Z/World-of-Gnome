@@ -1,6 +1,6 @@
 /*
    World of Gnome is a 2D multiplayer role playing game.
-   Copyright (C) 2013-2016 carabobz@gmail.com
+   Copyright (C) 2013-2017 carabobz@gmail.com
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -17,9 +17,9 @@
    Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
-#include "../common/common.h"
+#include "common.h"
 
-char * base_directory = NULL;
+char * base_directory = nullptr;
 int client_server = 0;
-/* Only needed by server, so empty function for client */
+// Only needed by server, so empty function for client
 void register_lua_functions( context_t * context) {};

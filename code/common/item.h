@@ -1,6 +1,6 @@
 /*
    World of Gnome is a 2D multiplayer role playing game.
-   Copyright (C) 2013-2016 carabobz@gmail.com
+   Copyright (C) 2013-2017 carabobz@gmail.com
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -19,6 +19,9 @@
 
 #ifndef ITEM_H
 #define ITEM_H
+
+#include "types.h"
+#include "context.h"
 
 char * item_create_empty();
 char * item_create_from_template(const char * my_template);

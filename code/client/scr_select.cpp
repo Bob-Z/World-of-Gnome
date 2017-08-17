@@ -17,12 +17,12 @@
    Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
-#include "../common/common.h"
+#include "common.h"
 #include "imageDB.h"
 #include "file.h"
-#include "../sdl_item/anim.h"
-#include "../sdl_item/item.h"
-#include "../sdl_item/sdl.h"
+#include "anim.h"
+#include "item.h"
+#include "sdl.h"
 #include "network_client.h"
 #include "screen.h"
 #include "Camera.h"

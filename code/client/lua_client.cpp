@@ -19,9 +19,9 @@
 
 #include "context.h"
 #include "imageDB.h"
-#include "../common/common.h"
-#include "../sdl_item/sdl.h"
-#include "../sdl_item/item.h"
+#include "common.h"
+#include "sdl.h"
+#include "item.h"
 #include "Camera.h"
 
 #ifdef __cplusplus

@@ -17,14 +17,14 @@
    Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
-#include "../common/common.h"
+#include "common.h"
 #include "network_client.h"
 #include "imageDB.h"
 #include "file.h"
 #include <getopt.h>
 #include <string.h>
 #include <stdlib.h>
-#include "../sdl_item/sdl.h"
+#include "sdl.h"
 #include "screen.h"
 #include "lua_client.h"
 #include "option_client.h"
@@ -32,16 +32,16 @@
 
 const char optstring[] = "?i:u:p:l:f:F:tPm";
 const struct option longopts[] = {
-	{ "ip",required_argument,NULL,'i' },
-	{ "user",required_argument,NULL,'u' },
-	{ "pass",required_argument,NULL,'p' },
-	{ "log",required_argument,NULL,'l' },
-	{ "file",required_argument,NULL,'f' },
-	{ "func",required_argument,NULL,'F' },
-	{ "type",no_argument,NULL,'t' },
-	{ "fps",no_argument,NULL,'P' },
-	{ "maxfps",no_argument,NULL,'m' },
-	{NULL,0,NULL,0}
+	{ "ip",required_argument,nullptr,'i' },
+	{ "user",required_argument,nullptr,'u' },
+	{ "pass",required_argument,nullptr,'p' },
+	{ "log",required_argument,nullptr,'l' },
+	{ "file",required_argument,nullptr,'f' },
+	{ "func",required_argument,nullptr,'F' },
+	{ "type",no_argument,nullptr,'t' },
+	{ "fps",no_argument,nullptr,'P' },
+	{ "maxfps",no_argument,nullptr,'m' },
+	{nullptr,0,nullptr,0}
 };
 
 context_t * context;
@@ -52,20 +52,20 @@ context_t * context;
 int main (int argc, char **argv)
 {
 	int opt_ret;
-	char * ip = NULL;
-	char * user = NULL;
-	char * pass = NULL;
+	char * ip = nullptr;
+	char * user = nullptr;
+	char * pass = nullptr;
 	option_t * option;
 	int maxfps = false;
 
-	base_directory = strconcat(getenv("HOME"),"/.config/wog/client",NULL);
+	base_directory = strconcat(getenv("HOME"),"/.config/wog/client",nullptr);
 
 	lua_init();
 
 	option_init();
 	option = option_get();
 
-	while((opt_ret = getopt_long(argc, argv, optstring, longopts, NULL))!=-1) {
+	while((opt_ret = getopt_long(argc, argv, optstring, longopts, nullptr))!=-1) {
 		switch(opt_ret) {
 		case 'i':
 			ip = strdup(optarg);
