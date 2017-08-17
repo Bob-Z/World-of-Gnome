@@ -10,6 +10,11 @@ APRONS_BASE=Aprons
 REPTILE_BASE=Reptile
 CLOTHES01_BASE=Clothes01
 CROWNS_BASE=Crowns
+CLOTHES_VARIETY_BASE=lpc_male_clothes_variety_0
+LONG_KNIFE_BASE=Long_Knife
+PICKAXE_BASE=Pickaxe
+WARHAMMER_BASE=Warhammer
+AXE_BASE=Axe
 
 DEST_DIR=output
 mkdir $DEST_DIR > /dev/null 2>&1
@@ -104,6 +109,8 @@ $COMMAND $ULPC_BASE/legs/??_*teal_pants_* $DIR
 $COMMAND $ULPC_BASE/legs/??_*_skirt_* $DIR
 $COMMAND $ULPC_BASE/torso/??*_overskirt* $DIR
 $COMMAND $CLOTHES01_BASE/??_*Pants* $DIR
+$COMMAND $CLOTHES_VARIETY_BASE/*_pants_* $DIR
+$COMMAND $CLOTHES_VARIETY_BASE/*_robe_* $DIR
 
 let "NUM_DIR=$NUM_DIR+1"
 DIR=$DEST_DIR/$NUM_DIR
@@ -127,6 +134,7 @@ $COMMAND $ULPC_BASE/formal_male_no_th-sh/??*_vest* $DIR
 $COMMAND $ULPC_BASE/formal_male_no_th-sh/??*_shirt* $DIR
 $COMMAND $ULPC_BASE/torso/??_*tunics_* $DIR
 $COMMAND $CLOTHES01_BASE/??_*sleevless* $DIR
+$COMMAND $CLOTHES_VARIETY_BASE/*_shirt_* $DIR
 
 let "NUM_DIR=$NUM_DIR+1"
 DIR=$DEST_DIR/$NUM_DIR
@@ -180,6 +188,7 @@ DIR=$DEST_DIR/$NUM_DIR
 echo $NUM_DIR- Tabard >> $DIR_LIST
 mkdir $DIR
 $COMMAND $ULPC_BASE/torso/??_*tabard_* $DIR
+$COMMAND $CLOTHES_VARIETY_BASE/*_tabard_* $DIR
 
 let "NUM_DIR=$NUM_DIR+1"
 DIR=$DEST_DIR/$NUM_DIR
@@ -210,12 +219,17 @@ mkdir $DIR
 $COMMAND $ULPC_BASE/head/??_* $DIR
 $COMMAND $LEGION_BASE/Helmet/??_*helmet* $DIR
 $COMMAND $CROWNS_BASE/??_* $DIR
+$COMMAND $CLOTHES_VARIETY_BASE/*_hood_* $DIR
 
 let "NUM_DIR=$NUM_DIR+1"
 DIR=$DEST_DIR/$NUM_DIR
 echo $NUM_DIR- Weapon >> $DIR_LIST
 mkdir $DIR
 $COMMAND $ULPC_BASE/weapons/??_* $DIR
+$COMMAND $LONG_KNIFE_BASE/* $DIR
+$COMMAND $PICKAXE_BASE/* $DIR
+$COMMAND $WARHAMMER_BASE/* $DIR
+$COMMAND $AXE_BASE/* $DIR
 
 let "NUM_DIR=$NUM_DIR+1"
 DIR=$DEST_DIR/$NUM_DIR

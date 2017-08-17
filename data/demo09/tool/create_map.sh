@@ -37,11 +37,20 @@ function create_map {
 	MAP_NAME=C$NUM$SEX
 
 	FILE=`ls $NUM/WC_*_marquee.zip`
+	# Show slash rather than walk cycle for weapons
+	if [ $NUM == 24 ];then
+		FILE=`ls $NUM/SL_*_marquee.zip`
+	fi
 
 	# Count valid num of files
 	FILE_QTY=0
 	for f in $FILE;do
 		SHORT_NAME=`echo $f | sed 's/.*WC_//g' | sed 's/_marquee.zip//g'`
+		# use slash rather than walk cycle for weapons
+		if [ $NUM == 24 ];then
+			SHORT_NAME=`echo $f | sed 's/.*SL_//g' | sed 's/_marquee.zip//g'`
+		fi
+
 		check_sex $SHORT_NAME $SEX
 		if [ $IS_CHECK_OK == 0 ];then
 			continue
@@ -103,6 +112,11 @@ function create_map {
 	let "HALF_LINE=($LINE/2)+1"
 	for f in $FILE;do
 		SHORT_NAME=`echo $f | sed 's/.*WC_//g' | sed 's/_marquee.zip//g'`
+		# use slash rather than walk cycle for weapons
+		if [ $NUM == 24 ];then
+			SHORT_NAME=`echo $f | sed 's/.*SL_//g' | sed 's/_marquee.zip//g'`
+		fi
+
 		check_sex $SHORT_NAME $SEX
 		if [ $IS_CHECK_OK == 0 ];then
 			continue
@@ -163,6 +177,11 @@ function create_map {
 	CURRENT_EVENT=0
 	for f in $FILE;do
 		SHORT_NAME=`echo $f | sed 's/.*WC_//g' | sed 's/_marquee.zip//g'`
+		# use slash rather than walk cycle for weapons
+		if [ $NUM == 24 ];then
+			SHORT_NAME=`echo $f | sed 's/.*SL_//g' | sed 's/_marquee.zip//g'`
+		fi
+
 		check_sex $SHORT_NAME $SEX
 		if [ $IS_CHECK_OK == 0 ];then
 			continue

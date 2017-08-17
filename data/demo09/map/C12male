@@ -6,8 +6,8 @@ attribute = {
         current = 12
       }
 }
-width = 7
-height = 7
+width = 9
+height = 9
 tile_width = 64
 tile_height = 64
 warp_x = 0
@@ -20,6 +20,8 @@ layer0 = {
 "",
 "",
 "",
+"",
+"",
 "tile/fog.png",
 "",
 "",
@@ -29,19 +31,45 @@ layer0 = {
 "",
 "",
 "",
+"",
+"",
+"character/12/WC_male_shirt_black_marquee.zip",
+"",
+"character/12/WC_male_shirt_blue_marquee.zip",
+"",
+"character/12/WC_male_shirt_green_marquee.zip",
+"",
+"character/12/WC_male_shirt_purple_marquee.zip",
+"",
+"",
+"character/12/WC_male_shirt_red_marquee.zip",
+"",
+"character/12/WC_male_shirt_yellow_marquee.zip",
+"",
+"character/12/WC_male_sleevless_black_marquee.zip",
+"",
+"character/12/WC_male_sleevless_blue_marquee.zip",
+"",
+"tile/exit.gif",
+"character/12/WC_male_sleevless_brown_marquee.zip",
+"",
+"character/12/WC_male_sleevless_red_marquee.zip",
+"",
+"character/12/WC_male_sleevless_white_marquee.zip",
+"",
 "character/12/WC_shirt_marquee.zip",
+"tile/exit.gif",
 "",
 "character/12/WC_shirts_longsleeve_male_brown_longsleeve_marquee.zip",
 "",
 "character/12/WC_shirts_longsleeve_male_maroon_longsleeve_marquee.zip",
 "",
-"tile/exit.gif",
 "character/12/WC_shirts_longsleeve_male_teal_longsleeve_marquee.zip",
 "",
 "character/12/WC_shirts_longsleeve_male_white_longsleeve_marquee.zip",
 "",
+"",
 "character/12/WC_vest_marquee.zip",
-"tile/exit.gif",
 "",
 "character/12/WC_vest_w_shirt_cutout_marquee.zip",
 "",
@@ -56,7 +84,11 @@ layer0 = {
 "",
 "",
 "",
+"",
+"",
 "tile/fog.png",
+"",
+"",
 "",
 "",
 "",
@@ -70,77 +102,143 @@ E0 = {
    pos_x = 1
    pos_y = 2
    script = "set_sprite.lua"
-   param = ( "12", "shirt" )
+   param = ( "12", "male_shirt_black" )
 }
 E1 = {
    pos_x = 3
    pos_y = 2
    script = "set_sprite.lua"
-   param = ( "12", "shirts_longsleeve_male_brown_longsleeve" )
+   param = ( "12", "male_shirt_blue" )
 }
 E2 = {
    pos_x = 5
    pos_y = 2
    script = "set_sprite.lua"
-   param = ( "12", "shirts_longsleeve_male_maroon_longsleeve" )
+   param = ( "12", "male_shirt_green" )
 }
 E3 = {
+   pos_x = 7
+   pos_y = 2
+   script = "set_sprite.lua"
+   param = ( "12", "male_shirt_purple" )
+}
+E4 = {
    pos_x = 1
    pos_y = 3
    script = "set_sprite.lua"
-   param = ( "12", "shirts_longsleeve_male_teal_longsleeve" )
+   param = ( "12", "male_shirt_red" )
 }
-E4 = {
+E5 = {
    pos_x = 3
    pos_y = 3
    script = "set_sprite.lua"
-   param = ( "12", "shirts_longsleeve_male_white_longsleeve" )
+   param = ( "12", "male_shirt_yellow" )
 }
-E5 = {
+E6 = {
    pos_x = 5
    pos_y = 3
    script = "set_sprite.lua"
-   param = ( "12", "vest" )
+   param = ( "12", "male_sleevless_black" )
 }
-E6 = {
+E7 = {
+   pos_x = 7
+   pos_y = 3
+   script = "set_sprite.lua"
+   param = ( "12", "male_sleevless_blue" )
+}
+E8 = {
    pos_x = 1
    pos_y = 4
    script = "set_sprite.lua"
+   param = ( "12", "male_sleevless_brown" )
+}
+E9 = {
+   pos_x = 3
+   pos_y = 4
+   script = "set_sprite.lua"
+   param = ( "12", "male_sleevless_red" )
+}
+E10 = {
+   pos_x = 5
+   pos_y = 4
+   script = "set_sprite.lua"
+   param = ( "12", "male_sleevless_white" )
+}
+E11 = {
+   pos_x = 7
+   pos_y = 4
+   script = "set_sprite.lua"
+   param = ( "12", "shirt" )
+}
+E12 = {
+   pos_x = 1
+   pos_y = 5
+   script = "set_sprite.lua"
+   param = ( "12", "shirts_longsleeve_male_brown_longsleeve" )
+}
+E13 = {
+   pos_x = 3
+   pos_y = 5
+   script = "set_sprite.lua"
+   param = ( "12", "shirts_longsleeve_male_maroon_longsleeve" )
+}
+E14 = {
+   pos_x = 5
+   pos_y = 5
+   script = "set_sprite.lua"
+   param = ( "12", "shirts_longsleeve_male_teal_longsleeve" )
+}
+E15 = {
+   pos_x = 7
+   pos_y = 5
+   script = "set_sprite.lua"
+   param = ( "12", "shirts_longsleeve_male_white_longsleeve" )
+}
+E16 = {
+   pos_x = 1
+   pos_y = 6
+   script = "set_sprite.lua"
+   param = ( "12", "vest" )
+}
+E17 = {
+   pos_x = 3
+   pos_y = 6
+   script = "set_sprite.lua"
    param = ( "12", "vest_w_shirt_cutout" )
 }
-E7 = {
+E18 = {
    pos_x = 0
-   pos_y = 3
+   pos_y = 4
    script = "goto_character_map.lua"
    param = ( "11", "1", "1" )
 }
-E8 = {
-   pos_x = 6
-   pos_y = 3
+E19 = {
+   pos_x = 8
+   pos_y = 4
    script = "goto_character_map.lua"
    param = ( "13", "1", "1" )
 }
-E9 = {
+E20 = {
    pos_x = 0
    pos_y = 0
    script = "set_sprite.lua"
    param = ( "12", "" )
 }
-E10 = {
+E21 = {
    pos_x = 0
-   pos_y = 6
+   pos_y = 8
    script = "set_sprite.lua"
    param = ( "12", "" )
 }
-E11 = {
-   pos_x = 6
+E22 = {
+   pos_x = 8
    pos_y = 0
    script = "set_sprite.lua"
    param = ( "12", "" )
 }
-E12 = {
-   pos_x = 6
-   pos_y = 6
+E23 = {
+   pos_x = 8
+   pos_y = 8
    script = "set_sprite.lua"
    param = ( "12", "" )
 }

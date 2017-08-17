@@ -51,23 +51,23 @@ for d in $DIR;do
 		LIST=`find -iname "*.png" -type f`  # Recursive search
 	fi
 
-	for l in $LIST; do
-		IMG_W=`identify -format "%w" "$l"`
-		IMG_H=`identify -format "%h" "$l"`
+	for FILE in $LIST; do
+		IMG_W=`identify -format "%w" "$FILE"`
+		IMG_H=`identify -format "%h" "$FILE"`
 		let "CROP_W=$IMG_W/$NUM_IMAGE_W"
 		let "CROP_H=$IMG_H/$NUM_IMAGE_H"
 		if [ ! $CROP_W == 64 ];then
-			echo Skipping $l, wrong size: ${IMG_W}x${IMG_H}
+			echo Skipping $FILE, wrong size: ${IMG_W}x${IMG_H}
 			continue
 		fi
 		if [ ! $CROP_H == 64 ];then
-			echo Skipping $l, wrong size: ${IMG_W}x${IMG_H}
+			echo Skipping $FILE, wrong size: ${IMG_W}x${IMG_H}
 			continue
 		fi
-		FILENAME=`echo $l | cut -c 3- | sed 's/\//_/g' | sed 's/ /_/g'`
-		#echo l= $l
+		FILENAME=`echo $FILE | cut -c 3- | sed 's/\//_/g' | sed 's/ /_/g'`
+		#echo FILE= $FILE
 		#echo FILENAME= $FILENAME
-		cp "$l" "$FILENAME" > /dev/null 2>&1
+		cp "$FILE" "$FILENAME" > /dev/null 2>&1
 		rm tmp_tiles*.png > /dev/null 2>&1
 		convert -crop ${CROP_W}x${CROP_H} "$FILENAME"  tmp_tiles%d.png
 		BASENAME=`basename "$FILENAME" .png`
