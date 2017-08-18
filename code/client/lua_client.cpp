@@ -251,6 +251,86 @@ static int l_item_set_anim( lua_State* p_pLuaState)
 }
 
 /***********************************
+***********************************/
+static const char * getKey(int p_IsMoving, char p_Orientation)
+{
+	const char * l_pKey;
+
+	if( p_IsMoving == true ) {
+		switch( p_Orientation ) {
+			case 'N':
+				l_pKey = CHARACTER_KEY_MOV_N_SPRITE;
+				break;
+			case 'S':
+				l_pKey = CHARACTER_KEY_MOV_S_SPRITE;
+				break;
+			case 'W':
+				l_pKey = CHARACTER_KEY_MOV_W_SPRITE;
+				break;
+			case 'E':
+				l_pKey = CHARACTER_KEY_MOV_E_SPRITE;
+				break;
+			default:
+				werr(LOGDEV,"l_item_set_anim_from_context: wrong main orientation");
+				l_pKey = CHARACTER_KEY_MOV_S_SPRITE;
+				break;
+		}
+	}
+	else {
+		switch( p_Orientation ) {
+			case 'N':
+				l_pKey = CHARACTER_KEY_DIR_N_SPRITE;
+				break;
+			case 'S':
+				l_pKey = CHARACTER_KEY_DIR_S_SPRITE;
+				break;
+			case 'W':
+				l_pKey = CHARACTER_KEY_DIR_W_SPRITE;
+				break;
+			case 'E':
+				l_pKey = CHARACTER_KEY_DIR_E_SPRITE;
+				break;
+			default:
+				werr(LOGDEV,"l_item_set_anim_from_context: wrong main orientation");
+				l_pKey = CHARACTER_KEY_DIR_S_SPRITE;
+				break;
+		}
+	}
+
+	return l_pKey;
+}
+
+/***********************************
+***********************************/
+static anim_t ** getAnimArray(const char * p_pId, const char * p_pKey)
+{
+	anim_t ** l_pAnimArray;
+
+	// Try single image anim
+	char * sprite_name = nullptr;
+	if( entry_read_string(CHARACTER_TABLE,p_pId,&sprite_name,p_pKey,nullptr) == RET_OK) {
+		if(sprite_name[0] != 0) {
+			char * l_pSpriteNameArray[2] = { nullptr, nullptr };
+			l_pSpriteNameArray[0] = sprite_name;
+			l_pAnimArray = imageDB_get_anim_array(context_get_player(),(const char **)l_pSpriteNameArray);
+			free(sprite_name);
+			return l_pAnimArray;
+		}
+		free(sprite_name);
+	}
+
+	// Try list of image
+	char ** sprite_list = nullptr;
+	if( entry_read_list(CHARACTER_TABLE,p_pId,&sprite_list,p_pKey,nullptr) == RET_OK ) {
+		l_pAnimArray = imageDB_get_anim_array(context_get_player(),(const char **)sprite_list);
+                deep_free(sprite_list);
+		return l_pAnimArray;
+	}
+
+	return nullptr;
+}
+
+/***********************************
  item_set_anim_from_context
 Input:
  - ID of context
@@ -264,50 +344,33 @@ static int l_item_set_anim_from_context( lua_State* p_pLuaState)
         l_pItem = (item_t*)lua_touserdata(p_pLuaState, -1);
         lua_pop(p_pLuaState,1);
 
-	const char * l_pId;
-        l_pId = luaL_checkstring(p_pLuaState, -2);
-	const char * l_pEntryName;
-        l_pEntryName = luaL_checkstring(p_pLuaState, -1);
+	const char * l_pId = "";
+        l_pId = luaL_checkstring(p_pLuaState, -4);
+	int l_IsMoving = 0;
+	l_IsMoving = luaL_checkint(p_pLuaState, -3);
+	const char * l_pMainOrientation = "";
+        l_pMainOrientation = luaL_checkstring(p_pLuaState, -2);
+	const char * l_pSecondaryOrientation = "";
+        l_pSecondaryOrientation = luaL_checkstring(p_pLuaState, -1);
 
-	anim_t ** l_pAnimArray;
+	// reset previous anim
+	l_pItem->anim.list = nullptr;
+	l_pItem->anim.num = 0;
 
-	char * sprite_name = nullptr;
-	if( entry_read_string(CHARACTER_TABLE,l_pId,&sprite_name,l_pEntryName,nullptr) == RET_OK) {
-		if(sprite_name[0] != 0) {
-			// ignore previous anim
-			l_pItem->anim.list = nullptr;
-			l_pItem->anim.num = 0;
+	const char * l_pKey = getKey(l_IsMoving,l_pMainOrientation[0]);
+	anim_t ** l_pAnimArray = getAnimArray(l_pId, l_pKey);
 
-			char * l_pSpriteNameArray[2] = { nullptr, nullptr };
-			l_pSpriteNameArray[0] = sprite_name;
-			l_pAnimArray = imageDB_get_anim_array(context_get_player(),(const char **)l_pSpriteNameArray);
-			free(sprite_name);
-
-			item_set_anim_array(l_pItem,l_pAnimArray);
-			return 0;
-		}
-		free(sprite_name);
+	if( l_pAnimArray == nullptr ) {
+		l_pKey = getKey(l_IsMoving,l_pSecondaryOrientation[0]);
+		l_pAnimArray = getAnimArray(l_pId, l_pKey);
 	}
 
-	char ** sprite_list = nullptr;
-	if( entry_read_list(CHARACTER_TABLE,l_pId,&sprite_list,l_pEntryName,nullptr) == RET_OK ) {
-		// ignore previous anim
-		l_pItem->anim.list = nullptr;
-		l_pItem->anim.num = 0;
-
-		l_pAnimArray = imageDB_get_anim_array(context_get_player(),(const char **)sprite_list);
-                deep_free(sprite_list);
-
+	if( l_pAnimArray == nullptr ) {
+		werr(LOGDEV,"LUA item_set_anim_from_context: Failed to find anim for %s", l_pId);
+	}
+	else{
 		item_set_anim_array(l_pItem,l_pAnimArray);
-		return 0;
 	}
-
-	// If we arrive here, the passed entry name was not found
-#if 0
-	char l_pErrorMessage[1024];
-	snprintf(l_pErrorMessage,sizeof(l_pErrorMessage),"LUA item_set_anim_from_context: Failed to get %s in %s", l_pEntryName, l_pId);
-	werr(LOGDEV,l_pErrorMessage);
-#endif
 
 	return 0; // number of results
 }
