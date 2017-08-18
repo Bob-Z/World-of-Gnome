@@ -39,6 +39,9 @@ end
 if( _G.orientation == nil ) then
 	_G.orientation = {}
 end
+if( _G.second_orientation == nil ) then
+	_G.second_orientation = {}
+end
 if( _G.map == nil ) then
 	_G.map = {}
 end
@@ -63,7 +66,10 @@ if( _G.map[id] == nil ) then
 	_G.map[id] = context_get_map()
 end
 if( _G.orientation[id] == nil ) then
-	_G.orientation[id] = "s"
+	_G.orientation[id] = "S"
+end
+if( _G.second_orientation[id] == nil ) then
+	_G.second_orientation[id] = "W"
 end
 if( _G.reset[id] == nil ) then
 	_G.reset[id] = true
@@ -118,16 +124,24 @@ _G.current_H[id] = item_H
 -- Calculate orientation
 if( dX ~= 0 or dY ~= 0) then
 	if( math.abs(dX) > math.abs(dY) ) then
+		if( _G.orientation[id] == "S" or _G.orientation[id] == "N" ) then
+			_G.second_orientation[id] = _G.orientation[id]
+		end
+
 		if( dX > 0 ) then
-			_G.orientation[id] = "e"
+			_G.orientation[id] = "E"
 		else
-			_G.orientation[id] = "w"
+			_G.orientation[id] = "W"
 		end
 	else
+		if( _G.orientation[id] == "W" or _G.orientation[id] == "E" ) then
+			_G.second_orientation[id] = _G.orientation[id]
+		end
+
 		if( dY > 0 ) then
-			_G.orientation[id] = "s"
+			_G.orientation[id] = "S"
 		else
-			_G.orientation[id] = "n"
+			_G.orientation[id] = "N"
 		end
 	end
 end
@@ -144,11 +158,11 @@ delta_time = current_tick - _G.start_tick[id]
 if( delta_time < move_duration_ms) then
 	_G.current_X[id] = _G.from_X[id] + ((_G.dest_X[id] - _G.from_X[id]) * delta_time / move_duration_ms)
 	_G.current_Y[id] = _G.from_Y[id] + ((_G.dest_Y[id] - _G.from_Y[id]) * delta_time / move_duration_ms)
-	item_set_anim_from_context(id,"sprite_move_" .. _G.orientation[id]);
+	item_set_anim_from_context(id, 1,  _G.orientation[id], _G.second_orientation[id]);
 else
 	_G.current_X[id] = _G.dest_X[id]
 	_G.current_Y[id] = _G.dest_Y[id]
-	item_set_anim_from_context(id,"sprite_" .. _G.orientation[id]);
+	item_set_anim_from_context(id, 0, _G.orientation[id], _G.second_orientation[id]);
 end
 
 --  text = string.format("_G.current_X[%s] = %d, _G.current_Y[%s] = %d",id, _G.current_X[id], id, _G.current_Y[id])
