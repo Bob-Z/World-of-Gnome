@@ -331,6 +331,32 @@ static anim_t ** getAnimArray(const char * p_pId, const char * p_pKey)
 }
 
 /***********************************
+***********************************/
+char flip(char p_Orientation)
+{
+	char l_FlipOrientation = 'S';
+
+	switch( p_Orientation ) {
+		case 'N':
+			l_FlipOrientation = 'S';
+			break;
+		case 'S':
+			l_FlipOrientation = 'N';
+			break;
+		case 'W':
+			l_FlipOrientation = 'E';
+			break;
+		case 'E':
+			l_FlipOrientation = 'W';
+			break;
+		default:
+			break;
+	}
+
+	return l_FlipOrientation;
+}
+
+/***********************************
  item_set_anim_from_context
 Input:
  - ID of context
@@ -362,6 +388,19 @@ static int l_item_set_anim_from_context( lua_State* p_pLuaState)
 
 	if( l_pAnimArray == nullptr ) {
 		l_pKey = getKey(l_IsMoving,l_pSecondaryOrientation[0]);
+		l_pAnimArray = getAnimArray(l_pId, l_pKey);
+	}
+
+	// Auto-flip
+	if( l_pAnimArray == nullptr ) {
+		char l_FlipOrientation = flip(l_pMainOrientation[0]);
+		const char * l_pKey = getKey(l_IsMoving,l_FlipOrientation);
+		l_pAnimArray = getAnimArray(l_pId, l_pKey);
+	}
+
+	if( l_pAnimArray == nullptr ) {
+		char l_FlipOrientation = flip(l_pSecondaryOrientation[0]);
+		l_pKey = getKey(l_IsMoving,l_FlipOrientation);
 		l_pAnimArray = getAnimArray(l_pId, l_pKey);
 	}
 
