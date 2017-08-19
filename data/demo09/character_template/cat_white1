@@ -1,7 +1,7 @@
 name		= "White cat";
 
 draw_script     = "draw/smooth.lua"
-marquee         = "sprite/cat_white1/S.png";
+marquee         = "sprite/cat_white1/W.png";
 sprite          = [ "sprite/shadow/rat.png", "sprite/cat_white1/S.png" ];
 type            = "Cat"
 map             = "M0_0";

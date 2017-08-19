@@ -1,5 +1,5 @@
 draw_script     = "draw/smooth.lua"
-name		= "Horse (gray)";
+name		= "Gray horse";
 
 marquee         = "ui/horse_gray.png";
 sprite          = [ "sprite/lama_shadow_down.png", "sprite/horse_gray/W.zip" ];

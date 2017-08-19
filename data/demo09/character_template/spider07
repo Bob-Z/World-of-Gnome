@@ -1,5 +1,5 @@
 draw_script     = "draw/smooth.lua"
-name		= "Spider 7";
+name		= "Blue/Gray spider";
 
 marquee         = "sprite/spider07/marquee.png";
 sprite          = [ "sprite/shadow/spider.png", "sprite/spider07/S.png" ];
