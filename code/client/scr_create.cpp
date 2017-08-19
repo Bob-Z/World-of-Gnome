@@ -187,6 +187,27 @@ void scr_create_init()
 	network_request_playable_character_list(context_get_player());
 }
 
+/*************************
+*************************/
+int sort_character(const void * p_pArg1, const void * p_pArg2)
+{
+	const character_t * l_pChar1 = static_cast<const character_t*>(p_pArg1);
+	const character_t * l_pChar2 = static_cast<const character_t*>(p_pArg2);
+
+	if( l_pChar1->type == nullptr || l_pChar2->type == nullptr ){
+		return 0;
+	}
+
+	int l_Compare = strcmp(l_pChar1->type, l_pChar2->type);
+
+	if( l_Compare == 0 && l_pChar1->name != nullptr && l_pChar2->name != nullptr)
+	{
+		l_Compare = strcmp(l_pChar1->name, l_pChar2->name);
+	}
+
+	return l_Compare;
+}
+
 /**********************************
 Compose the character create screen
 **********************************/
@@ -229,31 +250,6 @@ item_t * scr_create_compose(context_t * context)
 	sdl_free_mousecb();
 	sdl_add_mousecb(MOUSE_WHEEL_UP,cb_wheel_up);
 	sdl_add_mousecb(MOUSE_WHEEL_DOWN,cb_wheel_down);
-
-#if 0
-	char * icon_add_image_name = nullptr;
-	entry_read_string(nullptr,CLIENT_CONF_FILE,&icon_add_image_name,CLIENT_KEY_SELECT_CHARACTER_ADD_ICON,nullptr);
-	if( icon_add_image_name != nullptr ) {
-		int sw;
-		int sh;
-
-		SDL_GetRendererOutputSize(context->render,&sw,&sh);
-
-		anim_t *anim = imageDB_get_anim(context, icon_add_image_name);
-		int x;
-		int y;
-		x = sw/2-(anim->w/2);
-		y = sh-anim->h;
-
-		item = item_list_add(&item_list);
-		item_set_overlay(item,1);
-		item_set_pos(item,x,y);
-		item_set_anim(item,anim,0);
-
-		item_set_click_left(item,cb_icon_add_clicked,(void*)context,nullptr);
-		item_set_click_right(item,cb_icon_add_clicked,(void*)context,nullptr);
-	}
-#endif
 
 	// Name box
         static TTF_Font * font = nullptr;
@@ -301,6 +297,14 @@ item_t * scr_create_compose(context_t * context)
 			deep_free(marquee_list);
 		}
 
+		entry_read_string(CHARACTER_TEMPLATE_TABLE,character_list[i].id,&character_list[i].name,CHARACTER_KEY_NAME,nullptr);
+		entry_read_string(CHARACTER_TEMPLATE_TABLE,character_list[i].id,&character_list[i].type,CHARACTER_KEY_TYPE,nullptr);
+
+
+		if( character_list[i].anim[0] == nullptr ) {
+			continue;
+		}
+
 		if(character_list[i].anim[0]->h > max_h) {
 			max_h = character_list[i].anim[0]->h;
 		}
@@ -319,6 +323,8 @@ item_t * scr_create_compose(context_t * context)
 			character_list[i].width = character_list[i].anim[0]->w;
 		}
 	}
+
+	qsort(character_list, character_num, sizeof(character_t), sort_character);
 
 	// Create item list
 	for(i=0; i<character_num; i++) {
@@ -349,7 +355,7 @@ item_t * scr_create_compose(context_t * context)
 			item_set_font(item,font_name);
 			// display string just above the picture
 			sdl_get_string_size(item->font,item->string,&w,&h);
-			item_set_anim_shape(item,item_image->rect.x + item_image->rect.w/2 - w/2, item_image->rect.y-h,w,h);
+			item_set_anim_shape(item,item_image->rect.x + item_image->rect.w/2 - w/2, item_image->rect.y-h+(item_image->rect.h/2)-(max_h/2),w,h);
 		}
 
 		// character type
@@ -378,23 +384,6 @@ item_t * scr_create_compose(context_t * context)
 	//sdl_add_keycb(SDL_SCANCODE_RETURN,cb_select,nullptr,(void *)context);
 
 	return item_list;
-}
-
-/*************************
-*************************/
-int sort_character(const void * p_pArg1, const void * p_pArg2)
-{
-	const character_t * l_pChar1 = static_cast<const character_t*>(p_pArg1);
-	const character_t * l_pChar2 = static_cast<const character_t*>(p_pArg2);
-
-	int l_Compare = strcmp(l_pChar1->type, l_pChar2->type);
-
-	if( l_Compare == 0 && l_pChar1->name != nullptr && l_pChar2->name != nullptr)
-	{
-		l_Compare = strcmp(l_pChar1->name, l_pChar2->name);
-	}
-
-	return l_Compare;
 }
 
 /*************************
