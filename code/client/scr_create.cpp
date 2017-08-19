@@ -367,7 +367,7 @@ item_t * scr_create_compose(context_t * context)
 			item_set_font(item,font_type);
 			// display string just below the picture
 			sdl_get_string_size(item->font,item->string,&w,&h);
-			item_set_anim_shape(item,item_image->rect.x + item_image->rect.w/2 - w/2, item_image->rect.y+item_image->rect.h,w,h);
+			item_set_anim_shape(item,item_image->rect.x + item_image->rect.w/2 - w/2, item_image->rect.y+(item_image->rect.h/2)+(max_h/2),w,h);
 		}
 	}
 
