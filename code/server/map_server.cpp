@@ -70,7 +70,7 @@ ret_code_t map_check_tile(context_t * ctx,char * id, const char * map, int layer
 		return 0;
 	}
 
-	/* If there is a allowed_tile_script, run it */
+	// If there is an allowed_tile_script, run it
 	if(entry_read_string(CHARACTER_TABLE,id,&script, CHARACTER_KEY_ALLOWED_TILE_SCRIPT, nullptr) == RET_OK ) {
 		param[0] = id;
 		param[1] = (char *)map;
@@ -84,22 +84,22 @@ ret_code_t map_check_tile(context_t * ctx,char * id, const char * map, int layer
 		return res;
 	}
 
-	/* Read tile at given index on this map */
+	// Read tile at given index on this map
 	entry_read_int(CHARACTER_TABLE,id,&layer,CHARACTER_LAYER,nullptr);
 	tile_type = get_tile_type_through_layer(map, layer, x, y);
 
-	/* Allow tile if no type defined */
+	// Allow tile if no type defined
 	if( tile_type == nullptr ) {
 		return 1;
 	}
 
-	/* Allow tile if its type is empty (i.e. "") */
+	// Allow tile if its type is empty (i.e. "")
 	if( tile_type[0] == 0 ) {
 		free(tile_type);
 		return 1;
 	}
 
-	/* If there is allowed_tile list, check it */
+	// If there is allowed_tile list, check it
 	if(entry_read_list(CHARACTER_TABLE,id,&allowed_tile,CHARACTER_KEY_ALLOWED_TILE,nullptr) == RET_OK ) {
 		i=0;
 		while( allowed_tile[i] != nullptr ) {
@@ -117,7 +117,7 @@ ret_code_t map_check_tile(context_t * ctx,char * id, const char * map, int layer
 	}
 
 	free(tile_type);
-	/* Allow all tiles by default */
+	// Allow all tiles by default
 	return 1;
 }
 
@@ -635,9 +635,9 @@ char ** map_get_event(const char * map, int layer, int x, int y)
 
 	sprintf(layer_name,"%s%d",MAP_KEY_LAYER,layer);
 
-	/* Manage concurrent acces to map files */
+	// Manage concurrent acces to map files
 	SDL_LockMutex(map_mutex);
-	/* Search the items on the specified tile for a specific layer*/
+	// Search the items on the specified tile for a specific layer
 	if(entry_get_group_list(MAP_TABLE,map,&eventlist,layer_name,MAP_ENTRY_EVENT_LIST,nullptr) == RET_OK ) {
 		while(eventlist[i] != nullptr) {
 			if( entry_read_int(MAP_TABLE,map,&mapx,layer_name,MAP_ENTRY_EVENT_LIST,eventlist[i],MAP_EVENT_POS_X,nullptr) == RET_NOK ) {
@@ -661,7 +661,7 @@ char ** map_get_event(const char * map, int layer, int x, int y)
 		}
 	}
 	deep_free(eventlist);
-	/* Search the items on the specified tile for all layers*/
+	// Search the items on the specified tile for all layers
 	if(entry_get_group_list(MAP_TABLE,map,&eventlist,MAP_ENTRY_EVENT_LIST,nullptr) == RET_OK ) {
 		while(eventlist[i] != nullptr) {
 			if( entry_read_int(MAP_TABLE,map,&mapx,MAP_ENTRY_EVENT_LIST,eventlist[i],MAP_EVENT_POS_X,nullptr) == RET_NOK ) {
