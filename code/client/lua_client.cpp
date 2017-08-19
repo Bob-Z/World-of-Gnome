@@ -383,9 +383,11 @@ static int l_item_set_anim_from_context( lua_State* p_pLuaState)
 	l_pItem->anim.list = nullptr;
 	l_pItem->anim.num = 0;
 
+	// Try regular moving flag with main orientation
 	const char * l_pKey = getKey(l_IsMoving,l_pMainOrientation[0]);
 	anim_t ** l_pAnimArray = getAnimArray(l_pId, l_pKey);
 
+	// Try secondary orientation
 	if( l_pAnimArray == nullptr ) {
 		l_pKey = getKey(l_IsMoving,l_pSecondaryOrientation[0]);
 		l_pAnimArray = getAnimArray(l_pId, l_pKey);
@@ -401,6 +403,19 @@ static int l_item_set_anim_from_context( lua_State* p_pLuaState)
 	if( l_pAnimArray == nullptr ) {
 		char l_FlipOrientation = flip(l_pSecondaryOrientation[0]);
 		l_pKey = getKey(l_IsMoving,l_FlipOrientation);
+		l_pAnimArray = getAnimArray(l_pId, l_pKey);
+	}
+
+	// Try opposite moving flag
+	// main orientation
+	if( l_pAnimArray == nullptr ) {
+		l_IsMoving = !l_IsMoving;
+		l_pKey = getKey(l_IsMoving,l_pMainOrientation[0]);
+		l_pAnimArray = getAnimArray(l_pId, l_pKey);
+	}
+	// secondary orientation
+	if( l_pAnimArray == nullptr ) {
+		l_pKey = getKey(l_IsMoving,l_pSecondaryOrientation[0]);
 		l_pAnimArray = getAnimArray(l_pId, l_pKey);
 	}
 
