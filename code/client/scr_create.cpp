@@ -301,10 +301,6 @@ item_t * scr_create_compose(context_t * context)
 			deep_free(marquee_list);
 		}
 
-		entry_read_string(CHARACTER_TEMPLATE_TABLE,character_list[i].id,&character_list[i].name,CHARACTER_KEY_NAME,nullptr);
-		entry_read_string(CHARACTER_TEMPLATE_TABLE,character_list[i].id,&character_list[i].type,CHARACTER_KEY_TYPE,nullptr);
-
-
 		if(character_list[i].anim[0]->h > max_h) {
 			max_h = character_list[i].anim[0]->h;
 		}
@@ -385,6 +381,23 @@ item_t * scr_create_compose(context_t * context)
 }
 
 /*************************
+*************************/
+int sort_character(const void * p_pArg1, const void * p_pArg2)
+{
+	const character_t * l_pChar1 = static_cast<const character_t*>(p_pArg1);
+	const character_t * l_pChar2 = static_cast<const character_t*>(p_pArg2);
+
+	int l_Compare = strcmp(l_pChar1->type, l_pChar2->type);
+
+	if( l_Compare == 0 && l_pChar1->name != nullptr && l_pChar2->name != nullptr)
+	{
+		l_Compare = strcmp(l_pChar1->name, l_pChar2->name);
+	}
+
+	return l_Compare;
+}
+
+/*************************
 Add a character to the list
 the frame is a list of file names.
 the list ends with an empty string
@@ -401,16 +414,22 @@ void scr_create_add_playable_character(context_t * context, char * frame)
 
 		character_list = (character_t*)realloc(character_list,sizeof(character_t)*character_num);
 
-		character_list[character_num-1].id = strdup(current_string);
+		int l_Index = character_num-1;
+		character_list[l_Index].id = strdup(current_string);
 		current_string += strlen(current_string)+1;
-		character_list[character_num-1].name = nullptr;
-		character_list[character_num-1].type = nullptr;
-		character_list[character_num-1].anim = nullptr;
-		character_list[character_num-1].item = nullptr;
-		character_list[character_num-1].width = 0;
+		character_list[l_Index].name = nullptr;
+		character_list[l_Index].type = nullptr;
+		character_list[l_Index].anim = nullptr;
+		character_list[l_Index].item = nullptr;
+		character_list[l_Index].width = 0;
 
-		wlog(LOGDEBUG,"Character %s added",character_list[character_num-1].id);
+		entry_read_string(CHARACTER_TEMPLATE_TABLE,character_list[l_Index].id,&character_list[l_Index].name,CHARACTER_KEY_NAME,nullptr);
+		entry_read_string(CHARACTER_TEMPLATE_TABLE,character_list[l_Index].id,&character_list[l_Index].type,CHARACTER_KEY_TYPE,nullptr);
+
+		wlog(LOGDEBUG,"Character %s added",character_list[l_Index].id);
 	}
+
+	qsort(character_list, character_num, sizeof(character_t), sort_character);
 
 	SDL_UnlockMutex(character_create_mutex);
 }
