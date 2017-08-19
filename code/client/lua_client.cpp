@@ -419,6 +419,11 @@ static int l_item_set_anim_from_context( lua_State* p_pLuaState)
 		l_pAnimArray = getAnimArray(l_pId, l_pKey);
 	}
 
+	// Try default sprite
+	if( l_pAnimArray == nullptr ) {
+		l_pAnimArray = getAnimArray(l_pId, CHARACTER_KEY_SPRITE);
+	}
+
 	if( l_pAnimArray == nullptr ) {
 		werr(LOGDEV,"LUA item_set_anim_from_context: Failed to find anim for %s", l_pId);
 	}
