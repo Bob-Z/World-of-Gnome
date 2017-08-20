@@ -1,3 +1,9 @@
+-- f floor (interior)
+-- d dirt
+-- g grass
+-- w wall
+-- h water (H2O)
+
 function f (id,map,x, y)
 
 player_layer = 15
