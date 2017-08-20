@@ -18,14 +18,14 @@ end
 
 -- dirt layer --
 -- determine max number of image
-tile_type = "dirt"
+tile_name_root = "dirt"
 layer = 0
-map_add_layer(map_name,layer,map_w,map_h,32,32,"",tile_type)
+map_add_layer(map_name,layer,map_w,map_h,32,32,"","d")
 max_img = 1
 ret = true
 while ret == true do
 	max_img = max_img + 1 
-	full_name = string.format("%s/image/tile/%s%d.gif",get_base_directory(),tile_type,max_img)
+	full_name = string.format("%s/image/tile/%s%d.gif",get_base_directory(),tile_name_root,max_img)
 	ret = file_exists(full_name)
 end
 max_img = max_img - 1
@@ -46,14 +46,14 @@ map_set_tile_array(map_name,layer,tile_array)
 
 -- water layer --
 -- determine max number of image
-tile_type = "water"
+tile_name_root = "water"
 layer = 9
-map_add_layer(map_name,layer,map_w,map_h,32,32,"",tile_type)
+map_add_layer(map_name,layer,map_w,map_h,32,32,"","h")
 max_img = 1
 ret = true
 while ret == true do
 	max_img = max_img + 1 
-	full_name = string.format("%s/image/tile/%s%d.png",get_base_directory(),tile_type,max_img)
+	full_name = string.format("%s/image/tile/%s%d.png",get_base_directory(),tile_name_root,max_img)
 	ret = file_exists(full_name)
 end
 max_img = max_img - 1
@@ -61,7 +61,7 @@ max_img = max_img - 1
 index=1
 for x=1,map_w do
 	for y=1,map_h do
-		tile_name = string.format("tile/%s%d.png",tile_type,math.random(1,max_img))
+		tile_name = string.format("tile/%s%d.png",tile_name_root,math.random(1,max_img))
 		tile_array[index] = tile_name
 		tile_array[index+1] = nil
 		index = index + 1
