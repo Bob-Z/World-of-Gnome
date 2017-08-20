@@ -996,7 +996,7 @@ char * map_add_scenery(const char * map, int layer, int x, int y, const char * i
 
 	SDL_UnlockMutex(map_mutex);
 
-	/* Send network notifications */
+	// Send network notifications
 	context_broadcast_map(map);
 
 	return id;
