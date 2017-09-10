@@ -349,7 +349,7 @@ static anim_t ** getAnimArray(const char * p_pId, const char * p_pKey)
 
 /***********************************
  ***********************************/
-char flip(char p_Orientation)
+static char flip(char p_Orientation)
 {
 	char l_FlipOrientation = 'S';
 
@@ -585,6 +585,26 @@ static int l_camera_set_zoom(lua_State* p_pLuaState)
 }
 
 /***********************************
+ sound_play
+ Input: sound filename
+ Output:
+ ***********************************/
+static int l_sound_play(lua_State* p_pLuaState)
+{
+	context_t * l_pContext;
+
+	lua_getglobal(p_pLuaState, "current_context");
+	l_pContext = (context_t*) lua_touserdata(p_pLuaState, -1);
+	lua_pop(p_pLuaState, 1);
+
+	const char * l_FileName;
+	l_FileName = luaL_checkstring(p_pLuaState, -1);
+	sfx_play(l_pContext, std::string(l_FileName), ANY_CHANNEL, NO_LOOP);
+
+	return 0; // number of results
+}
+
+/***********************************
  get_tick
 
  Get application tick in milliseconds
@@ -666,6 +686,9 @@ static void register_lua_functions()
 	lua_setglobal(luaVM, "camera_set_zoom");
 	lua_pushcfunction(luaVM, l_camera_set_coord);
 	lua_setglobal(luaVM, "camera_set_coord");
+	// sound  function
+	lua_pushcfunction(luaVM, l_sound_play);
+	lua_setglobal(luaVM, "sound_play");
 	// utility  function
 	lua_pushcfunction(luaVM, l_get_tick);
 	lua_setglobal(luaVM, "get_tick");
