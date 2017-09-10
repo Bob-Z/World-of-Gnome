@@ -807,13 +807,13 @@ static int l_character_broadcast(lua_State* L)
 	return 1;  // number of results
 }
 
-/* character_event
+/* character_effect
 
- Send character event to all context on the same map.
+ Send character effect to all context on the same map.
 
  Input:
  - ID of a character
- - Array of string describing the event
+ - Array of string describing the effect
  Output: -1 on error, 0 otherwise
  */
 static int l_character_effect(lua_State* L)
@@ -1141,11 +1141,11 @@ static int l_map_broadcast(lua_State* L)
 
 /* map_set_offscreen
 
- Set a map's layer offscreen
+ Set a map's layer off-screen
 
  Input:
  - ID of a map
- - offscreen script
+ - off-screen script
  Output:
  */
 static int l_map_set_offscreen(lua_State* L)
@@ -1491,6 +1491,33 @@ static int l_map_add_scenery(lua_State* L)
 	{
 		free(res);
 	}
+	return 1;  // number of results
+}
+
+/* map_effect
+
+ Send map effect to all context on the same map.
+
+ Input:
+ - ID of a map
+ - Array of string describing the effect
+ Output: -1 on error, 0 otherwise
+ */
+static int l_map_effect(lua_State* L)
+{
+	const int l_NumArg = lua_gettop(L);
+
+	std::string l_Target = luaL_checkstring(L, -l_NumArg);
+
+	std::vector < std::string > l_Param;
+	for (int l_Idx = 1; l_Idx < l_NumArg; l_Idx++) // 1 because 0 is the target
+	{
+		l_Param.push_back(luaL_checkstring(L, -l_NumArg + l_Idx));
+	}
+
+	network_broadcast_effect(EffectType::MAP, l_Target, l_Param);
+
+	lua_pushnumber(L, 0);
 	return 1;  // number of results
 }
 
@@ -2460,6 +2487,8 @@ void register_lua_functions(context_t * context)
 	lua_setglobal(L, "map_delete_event");
 	lua_pushcfunction(L, l_map_add_scenery);
 	lua_setglobal(L, "map_add_scenery");
+	lua_pushcfunction(L, l_map_effect);
+	lua_setglobal(L, "map_effect");
 	// tile functions
 	lua_pushcfunction(L, l_tile_get_x);
 	lua_setglobal(L, "tile_get_x");
