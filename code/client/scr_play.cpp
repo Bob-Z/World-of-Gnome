@@ -370,25 +370,25 @@ static void set_up_sprite(context_t * ctx)
 
 	// Get rotation configuration
 	angle = 0;
-	if (ctx->orientation & NORTH && ctx->orientation & EAST)
+	if ((ctx->orientation & NORTH) && (ctx->orientation & EAST))
 	{
 		entry_read_int(CHARACTER_TABLE, ctx->id, &angle,
 				CHARACTER_KEY_DIR_NE_ROT, nullptr);
 		item_set_angle(item, (double) angle);
 	}
-	else if (ctx->orientation & SOUTH && ctx->orientation & EAST)
+	else if ((ctx->orientation & SOUTH) && (ctx->orientation & EAST))
 	{
 		entry_read_int(CHARACTER_TABLE, ctx->id, &angle,
 				CHARACTER_KEY_DIR_SE_ROT, nullptr);
 		item_set_angle(item, (double) angle);
 	}
-	else if (ctx->orientation & SOUTH && ctx->orientation & WEST)
+	else if ((ctx->orientation & SOUTH) && (ctx->orientation & WEST))
 	{
 		entry_read_int(CHARACTER_TABLE, ctx->id, &angle,
 				CHARACTER_KEY_DIR_SW_ROT, nullptr);
 		item_set_angle(item, (double) angle);
 	}
-	else if (ctx->orientation & NORTH && ctx->orientation & WEST)
+	else if ((ctx->orientation & NORTH) && (ctx->orientation & WEST))
 	{
 		entry_read_int(CHARACTER_TABLE, ctx->id, &angle,
 				CHARACTER_KEY_DIR_NW_ROT, nullptr);
