@@ -19,6 +19,9 @@
 
 #include "../common/common.h"
 
+#include <string>
+#include <vector>
+
 /*********************************************************************
 Broadcast text to all in game players
 *********************************************************************/
@@ -284,6 +287,87 @@ void network_send_popup(const char * id,const char ** dialog)
 
 	wlog(LOGDEBUG,"Send CMD_SEND_POPUP : send popup to %s",id);
 	network_send_command(target, CMD_SEND_POPUP, strlen(frame)+1, frame,false);
-	free(frame);
+	if( frame != nullptr)
+	{
+		free(frame);
+	}
 }
 
+/*********************************************************************
+Broadcast effect
+p_Type is the effect's target (either a context or a map)
+p_TargetId is the name of the target (either a context ID or map ID)
+p_Parameters is an array of parameter string
+*********************************************************************/
+void network_broadcast_effect(EffectType p_Type, const std::string & p_TargetId, const std::vector<std::string> & p_Param)
+{
+	context_t * ctx = nullptr;
+
+	context_lock_list();
+
+	ctx = context_get_first();
+
+	if( ctx == nullptr ) {
+		context_unlock_list();
+		return;
+	}
+
+	std::string l_TargetMap = "";
+	switch (p_Type)
+	{
+		case EffectType::CONTEXT:
+			l_TargetMap = ctx->map;
+			break;
+		case EffectType::MAP:
+			l_TargetMap = p_TargetId;
+			break;
+		default:
+			werr(LOGDEV,"network_broadcast_effect: Unknown EffectType");
+			return;
+			break;
+	}
+
+	char * frame = nullptr;
+	char * new_frame = nullptr;
+	for (auto l_It = p_Param.begin() ; l_It != p_Param.end(); ++l_It)
+	{
+		new_frame = strconcat(frame,*l_It,NETWORK_DELIMITER,nullptr);
+		if(frame != nullptr) {
+			free(frame);
+		}
+		frame = new_frame;
+	}
+	//Remove last NETWORK_DELIMITER
+	frame[strlen(frame)-strlen(NETWORK_DELIMITER)] = '\0';
+
+	do {
+		if( ctx->map == nullptr ) {
+			continue;
+		}
+
+		if( context_is_npc(ctx) == true ) {
+			continue;
+		}
+
+		// Skip if not in game
+		if( context_get_in_game(ctx) == false ) {
+			continue;
+		}
+
+		std::string l_CurrentMap = ctx->map;
+		// Skip if not on the same map
+		if( l_TargetMap != l_CurrentMap ) {
+			continue;
+		}
+
+		wlog(LOGDEBUG,"Send CMD_SEND_EFFECT :  to %s",ctx->id);
+		network_send_command(ctx, CMD_SEND_EFFECT, strlen(frame)+1, frame,false);
+	} while( (ctx=ctx->next)!= nullptr );
+
+	context_unlock_list();
+
+	if( frame != nullptr)
+	{
+		free(frame);
+	}
+}

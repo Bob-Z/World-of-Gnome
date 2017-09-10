@@ -55,6 +55,13 @@
 #define CMD_SEND_ENTRY			14 // Sends an entry to be updated on target
 #define CMD_SEND_POPUP			15 // Send a popup window
 #define CMD_REQ_CREATE			16 // Request a character creation
+#define CMD_SEND_EFFECT			17 // Send an effect
+
+enum class EffectType
+{
+        CONTEXT,
+        MAP
+};
 
 #endif
 

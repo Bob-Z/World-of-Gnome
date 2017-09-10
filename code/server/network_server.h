@@ -22,12 +22,15 @@
 
 #include "../common/common.h"
 
+#include <string>
+#include <vector>
+
 void network_broadcast_text(context_t * context, const char * text);
 void network_send_user_character(context_t * context, const char * p_pCharacterId, const char * p_pType, const char * p_pName);
 void network_send_character_file(context_t * context);
 void network_broadcast_entry_int(const char * table, const char * file, const char * path, int value, bool same_map_only);
 void network_init(void);
 void network_send_popup(const char * id, const char ** dialog);
-
+void network_broadcast_effect(EffectType p_Type, const std::string & p_TargetId, const std::vector<std::string> & p_Param);
 
 #endif
