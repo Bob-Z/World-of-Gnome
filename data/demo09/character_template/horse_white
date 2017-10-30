@@ -20,6 +20,6 @@ sprite_e   = [ "sprite/lama_shadow_right.png", "sprite/horse_white/E.zip" ];
 sprite_w   = [ "sprite/lama_shadow_left.png", "sprite/horse_white/W.zip" ];
 ai              = "ai/ai_random.lua";
 ai_params       = [ "1000" ];
-#action          = [ "summon_fish1","summon_fish2","summon_fish3","summon_fish4","summon_fish5","summon_dragon", "summon_flappy", "set_campfire", "set_snowtree", "set_fireplace", "set_tree", "set_orangetree1", "set_orangetree2"];
+action          = [ "horse_noise"];
 #allowed_tile_script    = "allowed_tile/ground_stair.lua";
 #inventory      = [ ];
