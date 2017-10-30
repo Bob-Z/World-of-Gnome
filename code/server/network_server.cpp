@@ -1,30 +1,30 @@
 /*
-   World of Gnome is a 2D multiplayer role playing game.
-   Copyright (C) 2013-2017 carabobz@gmail.com
+ World of Gnome is a 2D multiplayer role playing game.
+ Copyright (C) 2013-2017 carabobz@gmail.com
 
-   This program is free software; you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 3 of the License, or
-   (at your option) any later version.
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 3 of the License, or
+ (at your option) any later version.
 
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-   You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software Foundation,
-   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
-*/
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software Foundation,
+ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
+ */
 
-#include "../common/common.h"
+#include "common.h"
 
 #include <string>
 #include <vector>
 
 /*********************************************************************
-Broadcast text to all in game players
-*********************************************************************/
+ Broadcast text to all in game players
+ *********************************************************************/
 void network_broadcast_text(context_t * context, const char * text)
 {
 	context_t * ctx = nullptr;
@@ -33,70 +33,82 @@ void network_broadcast_text(context_t * context, const char * text)
 
 	ctx = context_get_first();
 
-	if( ctx == nullptr ) {
+	if (ctx == nullptr)
+	{
 		context_unlock_list();
 		return;
 	}
 
-	do {
-		if( context_is_npc(ctx) == true ) {
+	do
+	{
+		if (context_is_npc(ctx) == true)
+		{
 			continue;
 		}
 
 		// Skip if not in game
-		if( context_get_in_game(ctx) == false ) {
+		if (context_get_in_game(ctx) == false)
+		{
 			continue;
 		}
 
 		// Skip data context
-		if( ctx->user_name == nullptr ) {
+		if (ctx->user_name == nullptr)
+		{
 			continue;
 		}
 
 		// Skip if not on the same map
 #if 0
-		if( same_map_only ) {
-			if( target == nullptr ) {
+		if( same_map_only )
+		{
+			if( target == nullptr )
+			{
 				continue;
 			}
-			if( strcmp(target->map,ctx->map) != 0 ) {
+			if( strcmp(target->map,ctx->map) != 0 )
+			{
 				continue;
 			}
 		}
 #endif
-		network_send_text(ctx->id,text);
-	} while( (ctx=ctx->next)!= nullptr );
+		network_send_text(ctx->id, text);
+	} while ((ctx = ctx->next) != nullptr);
 
 	context_unlock_list();
 }
 
 /*********************************************************************
-Server send a user's character
-*********************************************************************/
-void network_send_user_character(context_t * p_pCtx, const char * p_pCharacterId, const char * p_pType, const char * p_pName)
+ Server send a user's character
+ *********************************************************************/
+void network_send_user_character(context_t * p_pCtx,
+		const char * p_pCharacterId, const char * p_pType, const char * p_pName)
 {
 	char * l_pFrame = nullptr;
-	l_pFrame = strconcat(p_pCharacterId,NETWORK_DELIMITER,p_pType,NETWORK_DELIMITER,p_pName,nullptr);
-	network_send_command(p_pCtx, CMD_SEND_USER_CHARACTER, strlen(l_pFrame)+1, l_pFrame, false);
+	l_pFrame = strconcat(p_pCharacterId, NETWORK_DELIMITER, p_pType,
+			NETWORK_DELIMITER, p_pName, nullptr);
+	network_send_command(p_pCtx, CMD_SEND_USER_CHARACTER, strlen(l_pFrame) + 1,
+			l_pFrame, false);
 	free(l_pFrame);
 }
 
 /*********************************************************************
-Server send the full character's file to client
-*********************************************************************/
+ Server send the full character's file to client
+ *********************************************************************/
 void network_send_character_file(context_t * context)
 {
 	char * filename;
 
-	filename = strconcat(CHARACTER_TABLE,"/",context->id,nullptr);
-	network_send_file(context,filename);
+	filename = strconcat(CHARACTER_TABLE, "/", context->id, nullptr);
+	network_send_file(context, filename);
 	free(filename);
 }
 
 /*********************************************************************
-Asks to update an int entry on all in_game players
-*********************************************************************/
-void network_broadcast_entry_int(const char * table, const char * file, const char * path, int value, bool same_map_only)
+ Asks to update an int entry on all in_game players
+ *********************************************************************/
+void network_broadcast_entry_int(const char * table, const char * file,
+		const char * path, int value, bool same_map_only)
 {
 	context_t * ctx = nullptr;
 	context_t * target = nullptr;
@@ -107,95 +119,114 @@ void network_broadcast_entry_int(const char * table, const char * file, const ch
 
 	ctx = context_get_first();
 
-	if( ctx == nullptr ) {
+	if (ctx == nullptr)
+	{
 		context_unlock_list();
 		return;
 	}
 
-	do {
-		if( context_is_npc(ctx) == true ) {
+	do
+	{
+		if (context_is_npc(ctx) == true)
+		{
 			continue;
 		}
 		// Skip if not in game
-		if( context_get_in_game(ctx) == false ) {
+		if (context_get_in_game(ctx) == false)
+		{
 			continue;
 		}
 		// Skip if not on the same map
-		if( same_map_only == true ) {
-			if( target == nullptr ) {
+		if (same_map_only == true)
+		{
+			if (target == nullptr)
+			{
 				continue;
 			}
-			if( target->map && ctx->map ) {
-				if( strcmp(target->map,ctx->map) != 0 ) {
+			if (target->map && ctx->map)
+			{
+				if (strcmp(target->map, ctx->map) != 0)
+				{
 					continue;
 				}
 			}
 		}
 
-		network_send_entry_int(ctx,table,file, path, value);
+		network_send_entry_int(ctx, table, file, path, value);
 
-	} while( (ctx=ctx->next)!= nullptr );
+	} while ((ctx = ctx->next) != nullptr);
 
 	context_unlock_list();
 }
 
 /*********************************************************************
-*********************************************************************/
+ *********************************************************************/
 static int new_connection(void * data)
 {
 	context_t * context;
-	TCPsocket socket = (TCPsocket)data;
+	TCPsocket socket = (TCPsocket) data;
 	Uint32 command = 0;
 	Uint32 command_size = 0;
 	char *buf = nullptr;
 
 	context = context_new();
-	if(context == nullptr ) {
-		werr(LOGUSER,"Failed to create context");
+	if (context == nullptr)
+	{
+		werr(LOGUSER, "Failed to create context");
 		return RET_NOK;
 	}
 
-	context_set_socket(context,socket);
+	context_set_socket(context, socket);
 
 	context_new_VM(context);
 
-	while(context_get_socket(context)) {
+	while (context_get_socket(context))
+	{
 		// Read a command code
-		if( network_read_bytes(socket,(char *)&command, sizeof(Uint32)) == RET_NOK ) {
-			context_set_connected(context,false);
+		if (network_read_bytes(socket, (char *) &command,
+				sizeof(Uint32)) == RET_NOK)
+		{
+			context_set_connected(context, false);
 			break;
 		}
 		// Read a size
-		if( network_read_bytes(socket,(char *)&command_size, sizeof(Uint32)) == RET_NOK ) {
-			context_set_connected(context,false);
+		if (network_read_bytes(socket, (char *) &command_size,
+				sizeof(Uint32)) == RET_NOK)
+		{
+			context_set_connected(context, false);
 			break;
 		}
 
 		// Read additional data
-		if( command_size > 0) {
-			buf = (char*)malloc(command_size);
-			if( network_read_bytes(socket,buf, command_size) == RET_NOK ) {
-				context_set_connected(context,false);
+		if (command_size > 0)
+		{
+			buf = (char*) malloc(command_size);
+			if (network_read_bytes(socket, buf, command_size) == RET_NOK)
+			{
+				context_set_connected(context, false);
 				break;
 			}
 		}
 
-		if (parse_incoming_data(context, command, command_size, buf) == RET_NOK ) {
-			if( buf ) {
+		if (parse_incoming_data(context, command, command_size, buf) == RET_NOK)
+		{
+			if (buf)
+			{
 				free(buf);
 				buf = nullptr;
 			}
-			context_set_connected(context,false);
+			context_set_connected(context, false);
 			break;
 		}
 
-		if( buf != nullptr) {
+		if (buf != nullptr)
+		{
 			free(buf);
 			buf = nullptr;
 		}
 	}
 
-	wlog(LOGUSER,"Client disconnected");
+	wlog(LOGUSER, "Client disconnected");
 	context_spread(context);
 	context_write_to_file(context);
 	context_free(context);
@@ -204,7 +235,7 @@ static int new_connection(void * data)
 }
 
 /*********************************************************************
-*********************************************************************/
+ *********************************************************************/
 void network_init(void)
 {
 	IPaddress IP;
@@ -213,19 +244,23 @@ void network_init(void)
 	TCPsocket client_socket;
 	SDLNet_SocketSet server_set;
 
-	if (SDLNet_Init() < 0) {
+	if (SDLNet_Init() < 0)
+	{
 		werr(LOGUSER, "Can't init SDL: %s\n", SDLNet_GetError());
 		return;
 	}
 
 	// Resolving the host using nullptr make network interface to listen
-	if (SDLNet_ResolveHost(&IP, nullptr, PORT) < 0) {
-		werr(LOGUSER, "Cannot listen on port %d: %s\n", PORT, SDLNet_GetError());
+	if (SDLNet_ResolveHost(&IP, nullptr, PORT) < 0)
+	{
+		werr(LOGUSER, "Cannot listen on port %d: %s\n", PORT,
+				SDLNet_GetError());
 		return;
 	}
 
 	// Open a connection with the IP provided (listen on the host's port)
-	if (!(socket = SDLNet_TCP_Open(&IP))) {
+	if (!(socket = SDLNet_TCP_Open(&IP)))
+	{
 		werr(LOGUSER, "Cannot open port %d: %s\n", PORT, SDLNet_GetError());
 		return;
 	}
@@ -234,20 +269,26 @@ void network_init(void)
 	SDLNet_TCP_AddSocket(server_set, socket);
 
 	// Wait for a connection
-	while (true) {
+	while (true)
+	{
 		SDLNet_CheckSockets(server_set, -1);
 		/* check for pending connection.
-		* If there is one, accept that, and open a new socket for communicating */
-		if ((client_socket = SDLNet_TCP_Accept(socket))) {
+		 * If there is one, accept that, and open a new socket for communicating */
+		if ((client_socket = SDLNet_TCP_Accept(socket)))
+		{
 			// Get the remote address
-			if (!(remote_IP = SDLNet_TCP_GetPeerAddress(client_socket))) {
-				werr(LOGUSER,"Can't get peer adress: %s", SDLNet_GetError());
+			if (!(remote_IP = SDLNet_TCP_GetPeerAddress(client_socket)))
+			{
+				werr(LOGUSER, "Can't get peer address: %s", SDLNet_GetError());
 			}
 
 			//wlog(LOGUSER,"Host connected: %s %d\n", SDLNet_Read32(&remote_IP->host), SDLNet_Read16(&remote_IP->port));
-			wlog(LOGUSER,"Host connected: %x %d\n", SDLNet_Read32(&remote_IP->host), SDLNet_Read16(&remote_IP->port));
+			wlog(LOGUSER, "Host connected: %x %d\n",
+					SDLNet_Read32(&remote_IP->host),
+					SDLNet_Read16(&remote_IP->port));
 
-			SDL_CreateThread(new_connection,"new_connection",(void*)client_socket);
+			SDL_CreateThread(new_connection, "new_connection",
+					(void*) client_socket);
 		}
 	}
 
@@ -258,15 +299,15 @@ void network_init(void)
 }
 
 /*********************************************************************
-Sends popup screen data to context
-dialog is a nullptr terminated array of string:
-"action" <action name> <param>  // if action_name is popup_end, this action close the popup
-"image" <image name>
-"text"  <text>
-"eol" end of line
-"eop" end of paragraph
-*********************************************************************/
-void network_send_popup(const char * id,const char ** dialog)
+ Sends popup screen data to context
+ dialog is a nullptr terminated array of string:
+ "action" <action name> <param>  // if action_name is popup_end, this action close the popup
+ "image" <image name>
+ "text"  <text>
+ "eol" end of line
+ "eop" end of paragraph
+ *********************************************************************/
+void network_send_popup(const char * id, const char ** dialog)
 {
 	char * frame = nullptr;
 	char * new_frame = nullptr;
@@ -274,32 +315,36 @@ void network_send_popup(const char * id,const char ** dialog)
 
 	target = context_find(id);
 
-	if(dialog) {
+	if (dialog)
+	{
 		frame = strdup(*dialog);
 		dialog++;
-		while ( *dialog != nullptr ) {
-			new_frame = strconcat(frame,NETWORK_DELIMITER,*dialog,nullptr);
+		while (*dialog != nullptr)
+		{
+			new_frame = strconcat(frame, NETWORK_DELIMITER, *dialog, nullptr);
 			free(frame);
 			frame = new_frame;
 			dialog++;
 		}
 	}
 
-	wlog(LOGDEBUG,"Send CMD_SEND_POPUP : send popup to %s",id);
-	network_send_command(target, CMD_SEND_POPUP, strlen(frame)+1, frame,false);
-	if( frame != nullptr)
+	wlog(LOGDEBUG, "Send CMD_SEND_POPUP : send pop-up to %s", id);
+	network_send_command(target, CMD_SEND_POPUP, strlen(frame) + 1, frame,
+			false);
+	if (frame != nullptr)
 	{
 		free(frame);
 	}
 }
 
 /*********************************************************************
-Broadcast effect
-p_Type is the effect's target (either a context or a map)
-p_TargetId is the name of the target (either a context ID or map ID)
-p_Parameters is an array of parameter string
-*********************************************************************/
-void network_broadcast_effect(EffectType p_Type, const std::string & p_TargetId, const std::vector<std::string> & p_Param)
+ Broadcast effect
+ p_Type is the effect's target (either a context or a map)
+ p_TargetId is the name of the target (either a context ID or map ID)
+ p_Parameters is an array of parameter string
+ *********************************************************************/
+void network_broadcast_effect(EffectType p_Type, const std::string & p_TargetId,
+		const std::vector<std::string> & p_Param)
 {
 	context_t * ctx = nullptr;
 
@@ -307,7 +352,8 @@ void network_broadcast_effect(EffectType p_Type, const std::string & p_TargetId,
 
 	ctx = context_get_first();
 
-	if( ctx == nullptr ) {
+	if (ctx == nullptr)
+	{
 		context_unlock_list();
 		return;
 	}
@@ -315,58 +361,65 @@ void network_broadcast_effect(EffectType p_Type, const std::string & p_TargetId,
 	std::string l_TargetMap = "";
 	switch (p_Type)
 	{
-		case EffectType::CONTEXT:
-			l_TargetMap = ctx->map;
-			break;
-		case EffectType::MAP:
-			l_TargetMap = p_TargetId;
-			break;
-		default:
-			werr(LOGDEV,"network_broadcast_effect: Unknown EffectType");
-			return;
-			break;
+	case EffectType::CONTEXT:
+		l_TargetMap = ctx->map;
+		break;
+	case EffectType::MAP:
+		l_TargetMap = p_TargetId;
+		break;
+	default:
+		werr(LOGDEV, "network_broadcast_effect: Unknown EffectType");
+		return;
+		break;
 	}
 
 	char * frame = nullptr;
 	char * new_frame = nullptr;
-	for (auto l_It = p_Param.begin() ; l_It != p_Param.end(); ++l_It)
+	for (auto l_It = p_Param.begin(); l_It != p_Param.end(); ++l_It)
 	{
-		new_frame = strconcat(frame,*l_It,NETWORK_DELIMITER,nullptr);
-		if(frame != nullptr) {
+		new_frame = strconcat(frame, *l_It, NETWORK_DELIMITER, nullptr);
+		if (frame != nullptr)
+		{
 			free(frame);
 		}
 		frame = new_frame;
 	}
 	//Remove last NETWORK_DELIMITER
-	frame[strlen(frame)-strlen(NETWORK_DELIMITER)] = '\0';
+	frame[strlen(frame) - strlen(NETWORK_DELIMITER)] = '\0';
 
-	do {
-		if( ctx->map == nullptr ) {
+	do
+	{
+		if (ctx->map == nullptr)
+		{
 			continue;
 		}
 
-		if( context_is_npc(ctx) == true ) {
+		if (context_is_npc(ctx) == true)
+		{
 			continue;
 		}
 
 		// Skip if not in game
-		if( context_get_in_game(ctx) == false ) {
+		if (context_get_in_game(ctx) == false)
+		{
 			continue;
 		}
 
 		std::string l_CurrentMap = ctx->map;
 		// Skip if not on the same map
-		if( l_TargetMap != l_CurrentMap ) {
+		if (l_TargetMap != l_CurrentMap)
+		{
 			continue;
 		}
 
-		wlog(LOGDEBUG,"Send CMD_SEND_EFFECT :  to %s",ctx->id);
-		network_send_command(ctx, CMD_SEND_EFFECT, strlen(frame)+1, frame,false);
-	} while( (ctx=ctx->next)!= nullptr );
+		wlog(LOGDEBUG, "Send CMD_SEND_EFFECT :  to %s", ctx->id);
+		network_send_command(ctx, CMD_SEND_EFFECT, strlen(frame) + 1, frame,
+				false);
+	} while ((ctx = ctx->next) != nullptr);
 
 	context_unlock_list();
 
-	if( frame != nullptr)
+	if (frame != nullptr)
 	{
 		free(frame);
 	}
