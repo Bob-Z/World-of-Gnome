@@ -86,7 +86,7 @@ void network_send_user_character(context_t * p_pCtx,
 {
 	char * l_pFrame = nullptr;
 	l_pFrame = strconcat(p_pCharacterId, NETWORK_DELIMITER, p_pType,
-			NETWORK_DELIMITER, p_pName, nullptr);
+	NETWORK_DELIMITER, p_pName, nullptr);
 	network_send_command(p_pCtx, CMD_SEND_USER_CHARACTER, strlen(l_pFrame) + 1,
 			l_pFrame, false);
 	free(l_pFrame);

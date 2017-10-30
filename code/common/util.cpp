@@ -64,13 +64,11 @@ char * strconcat(const char * str, ...)
 	int size = 0;
 	char * entry = nullptr;
 
-	if (str == nullptr)
+	if (str != nullptr)
 	{
-		return nullptr;
+		res = strdup(str);
+		size = strlen(res);
 	}
-
-	res = strdup(str);
-	size = strlen(res);
 
 	va_start(ap, str);
 
