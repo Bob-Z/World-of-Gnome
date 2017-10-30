@@ -377,7 +377,7 @@ void network_broadcast_effect(EffectType p_Type, const std::string & p_TargetId,
 	char * new_frame = nullptr;
 	for (auto l_It = p_Param.begin(); l_It != p_Param.end(); ++l_It)
 	{
-		new_frame = strconcat(frame, *l_It, NETWORK_DELIMITER, nullptr);
+		new_frame = strconcat(frame, l_It->c_str(), NETWORK_DELIMITER, nullptr);
 		if (frame != nullptr)
 		{
 			free(frame);
@@ -412,7 +412,7 @@ void network_broadcast_effect(EffectType p_Type, const std::string & p_TargetId,
 			continue;
 		}
 
-		wlog(LOGDEBUG, "Send CMD_SEND_EFFECT :  to %s", ctx->id);
+		wlog(LOGDEBUG, "Send CMD_SEND_EFFECT to %s", ctx->id);
 		network_send_command(ctx, CMD_SEND_EFFECT, strlen(frame) + 1, frame,
 				false);
 	} while ((ctx = ctx->next) != nullptr);
