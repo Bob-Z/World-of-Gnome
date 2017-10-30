@@ -1,7 +1,7 @@
 function f (dest_x,dest_y)
 
-text = string.format("offscreen coord = %d,%d",dest_x,dest_y)
-print_text_debug(text)
+-- text = string.format("offscreen coord = %d,%d",dest_x,dest_y)
+-- print_text_debug(text)
 
 player_id = player_get_id()
 
