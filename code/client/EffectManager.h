@@ -17,10 +17,15 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#include "sdl_item.h"
+#ifndef CLIENT_EFFECTMANAGER_H_
+#define CLIENT_EFFECTMANAGER_H_
 
-item_t * scr_create_compose(context_t * context);
-void scr_create_frame_start(context_t * context);
-void scr_create_init();
-void scr_create_add_playable_character(context_t * context, char * data);
+#include "common.h"
 
+class EffectManager
+{
+public:
+	static void processEffectFrame(context_t * p_pCtx, char * p_pFrame);
+};
+
+#endif /* CLIENT_EFFECTMANAGER_H_ */

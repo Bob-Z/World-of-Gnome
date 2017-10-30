@@ -47,6 +47,7 @@ add_executable(
 	ui_play.cpp
 	lua_client.cpp
 	Camera.cpp
+	EffectManager.cpp
 )
 
 target_link_libraries (${PROJECT_NAME}

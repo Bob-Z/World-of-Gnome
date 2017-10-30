@@ -166,17 +166,17 @@ void calculate_camera_position(context_t * p_pCtx)
 {
 	char * l_pCameraScript = nullptr;
 	entry_read_string(nullptr, CLIENT_CONF_FILE, &l_pCameraScript,
-			CLIENT_KEY_CAMERA_SCRIPT, nullptr);
+	CLIENT_KEY_CAMERA_SCRIPT, nullptr);
 	if (l_pCameraScript == nullptr || l_pCameraScript[0] == '\0')
 	{
 		werr(LOGDEV, "No camera script defined. Camera won't move");
 	}
 	else
 	{
-		lua_pushlightuserdata(get_luaVM(), (void *) &g_Camera);
-		lua_setglobal(get_luaVM(), "current_camera");
+		lua_pushlightuserdata(getLuaVm(), (void *) &g_Camera);
+		lua_setglobal(getLuaVm(), "current_camera");
 
-		if (lua_execute_script(get_luaVM(), l_pCameraScript, nullptr) == -1)
+		if (lua_execute_script(getLuaVm(), l_pCameraScript, nullptr) == -1)
 		{
 			file_request_from_network(p_pCtx, SCRIPT_TABLE, l_pCameraScript);
 		}
@@ -195,13 +195,13 @@ static void execute_draw_script(context_t * p_pCtx, const char * p_pScriptName,
 	item_t l_TempItem;
 	memcpy(&l_TempItem, p_pItem, sizeof(item_t));
 
-	lua_pushlightuserdata(get_luaVM(), &l_TempItem);
-	lua_setglobal(get_luaVM(), "current_item");
+	lua_pushlightuserdata(getLuaVm(), &l_TempItem);
+	lua_setglobal(getLuaVm(), "current_item");
 
-	lua_pushlightuserdata(get_luaVM(), p_pCtxToDraw);
-	lua_setglobal(get_luaVM(), "current_context");
+	lua_pushlightuserdata(getLuaVm(), p_pCtxToDraw);
+	lua_setglobal(getLuaVm(), "current_context");
 
-	if (lua_execute_script(get_luaVM(), p_pScriptName, nullptr) == -1)
+	if (lua_execute_script(getLuaVm(), p_pScriptName, nullptr) == -1)
 	{
 		file_request_from_network(p_pCtx, SCRIPT_TABLE, p_pScriptName);
 	}
@@ -320,4 +320,3 @@ Camera * screen_get_camera()
 {
 	return &g_Camera;
 }
-

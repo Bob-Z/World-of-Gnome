@@ -96,7 +96,7 @@ static void cb_select(void * arg)
 
 	if (sfx_filename != nullptr)
 	{
-		sfx_stop (MUSIC_CHANNEL);
+		sfx_stop(MUSIC_CHANNEL);
 		g_IsMusicPlaying = false;
 	}
 
@@ -166,7 +166,7 @@ static void cb_icon_add_clicked(void * arg)
 {
 	if (sfx_filename != nullptr)
 	{
-		sfx_stop (MUSIC_CHANNEL);
+		sfx_stop(MUSIC_CHANNEL);
 		g_IsMusicPlaying = false;
 	}
 
@@ -209,19 +209,22 @@ item_t * scr_select_compose(context_t * context)
 	if (sfx_filename == nullptr)
 	{
 		entry_read_string(nullptr, CLIENT_CONF_FILE, &sfx_filename,
-				CLIENT_KEY_SELECT_CHARACTER_SFX, nullptr);
+		CLIENT_KEY_SELECT_CHARACTER_SFX, nullptr);
 	}
 
 	if (sfx_filename)
 	{
-		if( g_IsMusicPlaying == false )
+		if (g_IsMusicPlaying == false)
 		{
-			sfx_play(context, std::string(sfx_filename), MUSIC_CHANNEL, LOOP);
-			g_IsMusicPlaying = true;
+			if (sfx_play(context, std::string(sfx_filename), MUSIC_CHANNEL,
+					LOOP) != -1)
+			{
+				g_IsMusicPlaying = true;
+			}
 
 			int sfx_volume = 100; // 100%
 			entry_read_int(nullptr, CLIENT_CONF_FILE, &sfx_volume,
-					CLIENT_KEY_SELECT_CHARACTER_SFX_VOLUME, nullptr);
+			CLIENT_KEY_SELECT_CHARACTER_SFX_VOLUME, nullptr);
 			sfx_set_volume(MUSIC_CHANNEL, sfx_volume);
 		}
 	}
@@ -241,7 +244,7 @@ item_t * scr_select_compose(context_t * context)
 
 	char * icon_add_image_name = nullptr;
 	entry_read_string(nullptr, CLIENT_CONF_FILE, &icon_add_image_name,
-			CLIENT_KEY_SELECT_CHARACTER_ADD_ICON, nullptr);
+	CLIENT_KEY_SELECT_CHARACTER_ADD_ICON, nullptr);
 	if (icon_add_image_name != nullptr)
 	{
 		int sw;
@@ -266,7 +269,7 @@ item_t * scr_select_compose(context_t * context)
 				nullptr);
 	}
 
-	SDL_LockMutex (character_select_mutex);
+	SDL_LockMutex(character_select_mutex);
 
 	// Load all anim compute max height and width of anim + string
 	for (i = 0; i < character_num; i++)
@@ -408,7 +411,7 @@ void scr_select_add_user_character(context_t * p_pCtx, char * p_pFrame)
 	char * l_pType = _strsep(&p_pFrame, NETWORK_DELIMITER);
 	char * l_pName = _strsep(&p_pFrame, NETWORK_DELIMITER);
 
-	SDL_LockMutex (character_select_mutex);
+	SDL_LockMutex(character_select_mutex);
 
 	character_num++;
 

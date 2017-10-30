@@ -1,6 +1,6 @@
 /*
  World of Gnome is a 2D multiplayer role playing game.
- Copyright (C) 2016 carabobz@gmail.com
+ Copyright (C) 2016-2017 carabobz@gmail.com
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -23,8 +23,8 @@
 
 static std::map<std::string, Mix_Chunk*> g_SoundList;
 
-/****************************************
- *****************************************/
+/*******************************************************************************
+ ******************************************************************************/
 int sfx_play(context_t* p_Ctx, const std::string & p_FileName, int p_Channel,
 		int p_Loops)
 {
@@ -48,8 +48,8 @@ int sfx_play(context_t* p_Ctx, const std::string & p_FileName, int p_Channel,
 		std::string l_Err = std::string("sfx_play: cannot open ")
 				+ l_FullName.c_str();
 		werr(LOGDEV, l_Err.c_str());
-		file_update(p_Ctx, l_FullName.c_str());
-		file_unlock(l_FullName.c_str());
+		file_update(p_Ctx, l_TableFilename.c_str());
+		file_unlock(l_TableFilename.c_str());
 		return -1;
 	}
 
@@ -59,8 +59,8 @@ int sfx_play(context_t* p_Ctx, const std::string & p_FileName, int p_Channel,
 		std::string l_Err = std::string("sfx_play: cannot read ")
 				+ l_FullName.c_str();
 		werr(LOGDEV, l_Err.c_str());
-		file_update(p_Ctx, l_FullName.c_str());
-		file_unlock(l_FullName.c_str());
+		file_update(p_Ctx, l_TableFilename.c_str());
+		file_unlock(l_TableFilename.c_str());
 		return -1;
 	}
 
@@ -71,15 +71,15 @@ int sfx_play(context_t* p_Ctx, const std::string & p_FileName, int p_Channel,
 	return Mix_PlayChannel(p_Channel, l_pChunk, p_Loops);
 }
 
-/****************************************
- *****************************************/
+/*******************************************************************************
+ ******************************************************************************/
 void sfx_stop(int p_Channel)
 {
 	Mix_HaltChannel(p_Channel);
 }
 
-/****************************************
- *****************************************/
+/*******************************************************************************
+ ******************************************************************************/
 void sfx_set_volume(int p_Channel, int p_VolumePerCent)
 {
 	Mix_Volume(p_Channel, p_VolumePerCent * MIX_MAX_VOLUME / 100);

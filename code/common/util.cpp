@@ -1,6 +1,6 @@
 /*
  World of Gnome is a 2D multiplayer role playing game.
- Copyright (C) 2013-2016 carabobz@gmail.com
+ Copyright (C) 2013-2017 carabobz@gmail.com
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -75,6 +75,11 @@ char * strconcat(const char * str, ...)
 	entry = va_arg(ap, char*);
 	while (entry != nullptr)
 	{
+		if (res == nullptr)
+		{
+			res = static_cast<char*>(calloc(1, 1));
+		}
+
 		size += strlen(entry);
 		res = (char *) realloc(res, size + 1);
 		strcat(res, entry);
@@ -112,10 +117,10 @@ void deep_free(char ** to_delete)
 	}
 }
 
-/*********************
+/*******************************************************************************
  Extract token from string
  Works just like strsep but delim is a full string, not separate characters
- *********************/
+ ******************************************************************************/
 char * _strsep(char **stringp, const char *delim)
 {
 	char * next_delim;
@@ -137,6 +142,20 @@ char * _strsep(char **stringp, const char *delim)
 		*stringp = nullptr;
 	}
 	return start;
+}
+
+/*******************************************************************************
+ Un-serialize a network frame into a string vector
+ ******************************************************************************/
+void unserializeNetworkFrame(char * p_pNetworkFrame,
+		std::vector<std::string> & p_rExtractedData)
+{
+	char * l_pData = _strsep(&p_pNetworkFrame, NETWORK_DELIMITER);
+	while (l_pData != nullptr)
+	{
+		p_rExtractedData.push_back(std::string(l_pData));
+		l_pData = _strsep(&p_pNetworkFrame, NETWORK_DELIMITER);
+	}
 }
 
 /********************************

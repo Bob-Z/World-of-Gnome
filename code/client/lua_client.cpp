@@ -35,7 +35,8 @@ extern "C"
 }
 #endif
 
-static lua_State * luaVM = nullptr;
+static lua_State * g_pLuaVm = nullptr;
+static lua_State * g_pEffectLuaVm = nullptr;
 
 /***********************************
  player_get_id
@@ -317,8 +318,8 @@ static anim_t ** getAnimArray(const char * p_pId, const char * p_pKey)
 
 	// Try single image anim
 	char * sprite_name = nullptr;
-	if (entry_read_string(CHARACTER_TABLE, p_pId, &sprite_name, p_pKey, nullptr)
-			== RET_OK)
+	if (entry_read_string(CHARACTER_TABLE, p_pId, &sprite_name, p_pKey,
+			nullptr) == RET_OK)
 	{
 		if (sprite_name[0] != 0)
 		{
@@ -335,8 +336,8 @@ static anim_t ** getAnimArray(const char * p_pId, const char * p_pKey)
 
 	// Try list of image
 	char ** sprite_list = nullptr;
-	if (entry_read_list(CHARACTER_TABLE, p_pId, &sprite_list, p_pKey, nullptr)
-			== RET_OK)
+	if (entry_read_list(CHARACTER_TABLE, p_pId, &sprite_list, p_pKey,
+			nullptr) == RET_OK)
 	{
 		l_pAnimArray = imageDB_get_anim_array(context_get_player(),
 				(const char **) sprite_list);
@@ -591,15 +592,10 @@ static int l_camera_set_zoom(lua_State* p_pLuaState)
  ***********************************/
 static int l_sound_play(lua_State* p_pLuaState)
 {
-	context_t * l_pContext;
-
-	lua_getglobal(p_pLuaState, "current_context");
-	l_pContext = (context_t*) lua_touserdata(p_pLuaState, -1);
-	lua_pop(p_pLuaState, 1);
-
 	const char * l_FileName;
 	l_FileName = luaL_checkstring(p_pLuaState, -1);
-	sfx_play(l_pContext, std::string(l_FileName), ANY_CHANNEL, NO_LOOP);
+	sfx_play(context_get_player(), std::string(l_FileName), ANY_CHANNEL,
+			NO_LOOP);
 
 	return 0; // number of results
 }
@@ -636,84 +632,98 @@ static int l_print_text_debug(lua_State* p_pLuaState)
 	const char * l_pString;
 
 	l_pString = luaL_checkstring(p_pLuaState, -1);
-	wlog(LOGDEV, (char*) l_pString);
+	wlog(LOGDEV, (char* ) l_pString);
 	return 0;  // number of results
 }
 
 /***********************************
  ***********************************/
-static void register_lua_functions()
+static void register_lua_functions(lua_State * l_pLuaVm)
 {
 	// player function
-	lua_pushcfunction(luaVM, l_player_get_id);
-	lua_setglobal(luaVM, "player_get_id");
+	lua_pushcfunction(l_pLuaVm, l_player_get_id);
+	lua_setglobal(l_pLuaVm, "player_get_id");
 	// context function
-	lua_pushcfunction(luaVM, l_context_get_id);
-	lua_setglobal(luaVM, "context_get_id");
-	lua_pushcfunction(luaVM, l_context_get_npc);
-	lua_setglobal(luaVM, "context_get_npc");
-	lua_pushcfunction(luaVM, l_context_get_map);
-	lua_setglobal(luaVM, "context_get_map");
+	lua_pushcfunction(l_pLuaVm, l_context_get_id);
+	lua_setglobal(l_pLuaVm, "context_get_id");
+	lua_pushcfunction(l_pLuaVm, l_context_get_npc);
+	lua_setglobal(l_pLuaVm, "context_get_npc");
+	lua_pushcfunction(l_pLuaVm, l_context_get_map);
+	lua_setglobal(l_pLuaVm, "context_get_map");
 	// item function
-	lua_pushcfunction(luaVM, l_item_set_x);
-	lua_setglobal(luaVM, "item_set_x");
-	lua_pushcfunction(luaVM, l_item_set_y);
-	lua_setglobal(luaVM, "item_set_y");
-	lua_pushcfunction(luaVM, l_item_get_x);
-	lua_setglobal(luaVM, "item_get_x");
-	lua_pushcfunction(luaVM, l_item_get_y);
-	lua_setglobal(luaVM, "item_get_y");
-	lua_pushcfunction(luaVM, l_item_get_w);
-	lua_setglobal(luaVM, "item_get_w");
-	lua_pushcfunction(luaVM, l_item_get_h);
-	lua_setglobal(luaVM, "item_get_h");
-	lua_pushcfunction(luaVM, l_item_set_anim_start_tick);
-	lua_setglobal(luaVM, "item_set_anim_start_tick");
-	lua_pushcfunction(luaVM, l_item_set_anim);
-	lua_setglobal(luaVM, "item_set_anim");
-	lua_pushcfunction(luaVM, l_item_set_anim_from_context);
-	lua_setglobal(luaVM, "item_set_anim_from_context");
+	lua_pushcfunction(l_pLuaVm, l_item_set_x);
+	lua_setglobal(l_pLuaVm, "item_set_x");
+	lua_pushcfunction(l_pLuaVm, l_item_set_y);
+	lua_setglobal(l_pLuaVm, "item_set_y");
+	lua_pushcfunction(l_pLuaVm, l_item_get_x);
+	lua_setglobal(l_pLuaVm, "item_get_x");
+	lua_pushcfunction(l_pLuaVm, l_item_get_y);
+	lua_setglobal(l_pLuaVm, "item_get_y");
+	lua_pushcfunction(l_pLuaVm, l_item_get_w);
+	lua_setglobal(l_pLuaVm, "item_get_w");
+	lua_pushcfunction(l_pLuaVm, l_item_get_h);
+	lua_setglobal(l_pLuaVm, "item_get_h");
+	lua_pushcfunction(l_pLuaVm, l_item_set_anim_start_tick);
+	lua_setglobal(l_pLuaVm, "item_set_anim_start_tick");
+	lua_pushcfunction(l_pLuaVm, l_item_set_anim);
+	lua_setglobal(l_pLuaVm, "item_set_anim");
+	lua_pushcfunction(l_pLuaVm, l_item_set_anim_from_context);
+	lua_setglobal(l_pLuaVm, "item_set_anim_from_context");
 	// camera function
-	lua_pushcfunction(luaVM, l_camera_get_screen);
-	lua_setglobal(luaVM, "camera_get_screen");
-	lua_pushcfunction(luaVM, l_camera_get_zoom);
-	lua_setglobal(luaVM, "camera_get_zoom");
-	lua_pushcfunction(luaVM, l_camera_get_X);
-	lua_setglobal(luaVM, "camera_get_X");
-	lua_pushcfunction(luaVM, l_camera_get_Y);
-	lua_setglobal(luaVM, "camera_get_Y");
-	lua_pushcfunction(luaVM, l_camera_set_zoom);
-	lua_setglobal(luaVM, "camera_set_zoom");
-	lua_pushcfunction(luaVM, l_camera_set_coord);
-	lua_setglobal(luaVM, "camera_set_coord");
+	lua_pushcfunction(l_pLuaVm, l_camera_get_screen);
+	lua_setglobal(l_pLuaVm, "camera_get_screen");
+	lua_pushcfunction(l_pLuaVm, l_camera_get_zoom);
+	lua_setglobal(l_pLuaVm, "camera_get_zoom");
+	lua_pushcfunction(l_pLuaVm, l_camera_get_X);
+	lua_setglobal(l_pLuaVm, "camera_get_X");
+	lua_pushcfunction(l_pLuaVm, l_camera_get_Y);
+	lua_setglobal(l_pLuaVm, "camera_get_Y");
+	lua_pushcfunction(l_pLuaVm, l_camera_set_zoom);
+	lua_setglobal(l_pLuaVm, "camera_set_zoom");
+	lua_pushcfunction(l_pLuaVm, l_camera_set_coord);
+	lua_setglobal(l_pLuaVm, "camera_set_coord");
 	// sound  function
-	lua_pushcfunction(luaVM, l_sound_play);
-	lua_setglobal(luaVM, "sound_play");
+	lua_pushcfunction(l_pLuaVm, l_sound_play);
+	lua_setglobal(l_pLuaVm, "sound_play");
 	// utility  function
-	lua_pushcfunction(luaVM, l_get_tick);
-	lua_setglobal(luaVM, "get_tick");
+	lua_pushcfunction(l_pLuaVm, l_get_tick);
+	lua_setglobal(l_pLuaVm, "get_tick");
 	// debug function
-	lua_pushcfunction(luaVM, l_print_text_debug);
-	lua_setglobal(luaVM, "print_text_debug");
+	lua_pushcfunction(l_pLuaVm, l_print_text_debug);
+	lua_setglobal(l_pLuaVm, "print_text_debug");
 }
 
 /***********************************
  ***********************************/
 void lua_init()
 {
-	luaVM = lua_open();
-	lua_baselibopen(luaVM);
-	lua_tablibopen(luaVM);
-	lua_iolibopen(luaVM);
-	lua_strlibopen(luaVM);
-	lua_mathlibopen(luaVM);
+	g_pLuaVm = lua_open();
+	lua_baselibopen(g_pLuaVm);
+	lua_tablibopen(g_pLuaVm);
+	lua_iolibopen(g_pLuaVm);
+	lua_strlibopen(g_pLuaVm);
+	lua_mathlibopen(g_pLuaVm);
+	register_lua_functions(g_pLuaVm);
 
-	register_lua_functions();
+	g_pEffectLuaVm = lua_open();
+	lua_baselibopen(g_pEffectLuaVm);
+	lua_tablibopen(g_pEffectLuaVm);
+	lua_iolibopen(g_pEffectLuaVm);
+	lua_strlibopen(g_pEffectLuaVm);
+	lua_mathlibopen(g_pEffectLuaVm);
+	register_lua_functions(g_pEffectLuaVm);
 }
 
 /***********************************
  ***********************************/
-lua_State * get_luaVM()
+lua_State * getLuaVm()
 {
-	return luaVM;
+	return g_pLuaVm;
+}
+
+/***********************************
+ ***********************************/
+lua_State * getEffectLuaVm()
+{
+	return g_pEffectLuaVm;
 }

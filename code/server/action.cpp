@@ -822,7 +822,7 @@ static int l_character_effect(lua_State* L)
 
 	std::string l_Target = luaL_checkstring(L, -l_NumArg);
 
-	std::vector < std::string > l_Param;
+	std::vector<std::string> l_Param;
 	for (int l_Idx = 1; l_Idx < l_NumArg; l_Idx++) // 1 because 0 is the target
 	{
 		l_Param.push_back(luaL_checkstring(L, -l_NumArg + l_Idx));
@@ -1296,7 +1296,7 @@ static int l_print_text_debug(lua_State* L)
 	const char * string;
 
 	string = luaL_checkstring(L, -1);
-	wlog(LOGDEV, (char*) string);
+	wlog(LOGDEV, (char* ) string);
 	return 0;  // number of results
 }
 
@@ -1509,7 +1509,7 @@ static int l_map_effect(lua_State* L)
 
 	std::string l_Target = luaL_checkstring(L, -l_NumArg);
 
-	std::vector < std::string > l_Param;
+	std::vector<std::string> l_Param;
 	for (int l_Idx = 1; l_Idx < l_NumArg; l_Idx++) // 1 because 0 is the target
 	{
 		l_Param.push_back(luaL_checkstring(L, -l_NumArg + l_Idx));
@@ -2242,7 +2242,7 @@ int action_execute_script(context_t * context, const char * script,
 		return -1;
 	}
 
-	/* Special case for chat */
+	// Special case for chat
 	if (strcmp(script, WOG_CHAT) == 0)
 	{
 		action_chat(context, parameters[0]);

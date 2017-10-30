@@ -18,78 +18,80 @@
  */
 
 #include "common.h"
-#include "network_client.h"
-#include "scr_select.h"
-#include "scr_create.h"
+#include "EffectManager.h"
 #include "file.h"
 #include "imageDB.h"
-#include "textview.h"
+#include "network_client.h"
+#include "scr_create.h"
+#include "scr_select.h"
 #include "screen.h"
+#include "textview.h"
 #include "ui_play.h"
 
 /***********************************
  Return RET_NOK on error
  ***********************************/
-ret_code_t parse_incoming_data(context_t * context, Uint32 command,
-		Uint32 command_size, char * data)
+ret_code_t parse_incoming_data(context_t * p_pContext, Uint32 command,
+		Uint32 command_size, char * p_pData)
 {
 	switch (command)
 	{
 	case CMD_SEND_LOGIN_OK:
 		wlog(LOGDEBUG, "Received CMD_SEND_LOGIN_OK");
-		if (network_open_data_connection(context) == RET_NOK)
+		if (network_open_data_connection(p_pContext) == RET_NOK)
 		{
 			return RET_NOK;
 		}
-		context_set_connected(context, true);
+		context_set_connected(p_pContext, true);
 		wlog(LOGUSER, "Successfully connected");
-		network_request_user_character_list(context);
+		network_request_user_character_list(p_pContext);
 		wlog(LOGDEBUG, "Character list requested");
 		break;
 	case CMD_SEND_LOGIN_NOK:
 		wlog(LOGDEBUG, "Received CMD_SEND_LOGIN_NOK");
-		context_set_connected(context, false);
+		context_set_connected(p_pContext, false);
 		werr(LOGUSER,
 				"Check your login and password (they are case sensitive)\n");
 		exit(-1);
 		break;
 	case CMD_SEND_PLAYABLE_CHARACTER:
 		wlog(LOGDEBUG, "Received CMD_SEND_PLAYABLE_CHARACTER");
-		scr_create_add_playable_character(context, data);
+		scr_create_add_playable_character(p_pContext, p_pData);
 		screen_compose();
 		break;
 	case CMD_SEND_FILE:
 		wlog(LOGDEBUG, "Received CMD_SEND_FILE");
-		file_add(context, data, command_size);
+		file_add(p_pContext, p_pData, command_size);
 		screen_compose();
 		break;
 	case CMD_SEND_USER_CHARACTER:
 		wlog(LOGDEBUG, "Received CMD_SEND_USER_CHARACTER");
-		scr_select_add_user_character(context, data);
+		scr_select_add_user_character(p_pContext, p_pData);
 		screen_compose();
 		break;
 	case CMD_SEND_CONTEXT:
 		wlog(LOGDEBUG, "Received CMD_SEND_CONTEXT");
-		context_add_or_update_from_network_frame(context, data);
+		context_add_or_update_from_network_frame(p_pContext, p_pData);
 		screen_compose();
 		break;
 	case CMD_SEND_TEXT:
 		wlog(LOGDEBUG, "Received CMD_SEND_TEXT");
-		textview_add_line(data);
+		textview_add_line(p_pData);
 		break;
 	case CMD_SEND_ENTRY:
 		wlog(LOGDEBUG, "Received CMD_SEND_ENTRY");
-		if (entry_update(data) != -1)
+		if (entry_update(p_pData) != -1)
 		{
 			screen_compose();
 		}
 		break;
 	case CMD_SEND_POPUP:
 		wlog(LOGDEBUG, "Received CMD_SEND_POPUP");
-		ui_play_popup_add(data);
+		ui_play_popup_add(p_pData);
 		screen_compose();
 		break;
 	case CMD_SEND_EFFECT:
+		EffectManager::processEffectFrame(p_pContext, p_pData);
 		wlog(LOGDEBUG, "Received CMD_SEND_EFFECT");
 		break;
 	default:

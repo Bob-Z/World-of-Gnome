@@ -52,7 +52,7 @@ ret_code_t parse_incoming_data(context_t * context, Uint32 command,
 		password = _strsep(&data, NETWORK_DELIMITER);
 
 		if (entry_read_string(PASSWD_TABLE, user_name, &value,
-				PASSWD_KEY_PASSWORD, nullptr) == RET_NOK)
+		PASSWD_KEY_PASSWORD, nullptr) == RET_NOK)
 		{
 			return RET_NOK;
 		}
@@ -206,7 +206,7 @@ ret_code_t parse_incoming_data(context_t * context, Uint32 command,
 		}
 
 		if (entry_write_string(CHARACTER_TABLE, l_Name, l_Name,
-				CHARACTER_KEY_NAME, nullptr) == RET_NOK)
+		CHARACTER_KEY_NAME, nullptr) == RET_NOK)
 		{
 			werr(LOGUSER, "Error setting character name %s", l_Name);
 			file_delete(CHARACTER_TABLE, l_Name);
@@ -214,7 +214,7 @@ ret_code_t parse_incoming_data(context_t * context, Uint32 command,
 		}
 
 		if (entry_add_to_list(USERS_TABLE, context->user_name, l_Name,
-				USERS_CHARACTER_LIST, nullptr) == RET_NOK)
+		USERS_CHARACTER_LIST, nullptr) == RET_NOK)
 		{
 			werr(LOGUSER, "Error adding character %s to user %s", l_Name,
 					context->user_name);

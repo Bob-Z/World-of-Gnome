@@ -60,7 +60,7 @@ static void cb_quit(void * arg)
 
 	if (sfx_filename != nullptr)
 	{
-		sfx_stop (MUSIC_CHANNEL);
+		sfx_stop(MUSIC_CHANNEL);
 		g_IsMusicPlaying = false;
 	}
 
@@ -165,7 +165,7 @@ static void cb_keyboard_text(void * arg)
 
 	if (sfx_filename != nullptr)
 	{
-		sfx_stop (MUSIC_CHANNEL);
+		sfx_stop(MUSIC_CHANNEL);
 		g_IsMusicPlaying = false;
 	}
 
@@ -197,10 +197,11 @@ void scr_create_init()
 
 	character_num = 0;
 
-	network_request_playable_character_list (context_get_player());}
+	network_request_playable_character_list(context_get_player());
+}
 
-	/*************************
-	 *************************/
+/*************************
+ *************************/
 int sort_character(const void * p_pArg1, const void * p_pArg2)
 {
 	const character_t * l_pChar1 = static_cast<const character_t*>(p_pArg1);
@@ -245,19 +246,22 @@ item_t * scr_create_compose(context_t * context)
 	if (sfx_filename == nullptr)
 	{
 		entry_read_string(nullptr, CLIENT_CONF_FILE, &sfx_filename,
-				CLIENT_KEY_CREATE_CHARACTER_SFX, nullptr);
+		CLIENT_KEY_CREATE_CHARACTER_SFX, nullptr);
 	}
 
 	if (sfx_filename != nullptr)
 	{
-		if(g_IsMusicPlaying == false)
+		if (g_IsMusicPlaying == false)
 		{
-			sfx_play(context, std::string(sfx_filename), MUSIC_CHANNEL, LOOP);
-			g_IsMusicPlaying = true;
+			if (sfx_play(context, std::string(sfx_filename), MUSIC_CHANNEL,
+					LOOP) != -1)
+			{
+				g_IsMusicPlaying = true;
+			}
 
 			int sfx_volume = 100; // 100%
 			entry_read_int(nullptr, CLIENT_CONF_FILE, &sfx_volume,
-					CLIENT_KEY_CREATE_CHARACTER_SFX_VOLUME, nullptr);
+			CLIENT_KEY_CREATE_CHARACTER_SFX_VOLUME, nullptr);
 			sfx_set_volume(MUSIC_CHANNEL, sfx_volume);
 		}
 	}
@@ -299,7 +303,7 @@ item_t * scr_create_compose(context_t * context)
 	sdl_get_string_size(item->font, "111111111122222222223333333333", &w, &h);
 	item_set_anim_shape(item, sw / 2 - w / 2, sh - FONT_SIZE - BORDER, w, h);
 
-	SDL_LockMutex (character_create_mutex);
+	SDL_LockMutex(character_create_mutex);
 
 	// Load all anim compute max height and width of anim + string
 	for (i = 0; i < character_num; i++)
@@ -453,7 +457,7 @@ void scr_create_add_playable_character(context_t * context, char * frame)
 {
 	char * current_string = frame;
 
-	SDL_LockMutex (character_create_mutex);
+	SDL_LockMutex(character_create_mutex);
 
 	while (current_string[0] != 0)
 	{

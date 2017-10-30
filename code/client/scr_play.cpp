@@ -131,22 +131,22 @@ static anim_t ** select_sprite(context_t * ctx)
 	if (ctx->orientation & NORTH)
 	{
 		entry_read_string(CHARACTER_TABLE, ctx->id, &sprite_name,
-				CHARACTER_KEY_DIR_N_SPRITE, nullptr);
+		CHARACTER_KEY_DIR_N_SPRITE, nullptr);
 	}
 	if ((ctx->orientation & SOUTH) && sprite_name == nullptr)
 	{
 		entry_read_string(CHARACTER_TABLE, ctx->id, &sprite_name,
-				CHARACTER_KEY_DIR_S_SPRITE, nullptr);
+		CHARACTER_KEY_DIR_S_SPRITE, nullptr);
 	}
 	if ((ctx->orientation & EAST) && sprite_name == nullptr)
 	{
 		entry_read_string(CHARACTER_TABLE, ctx->id, &sprite_name,
-				CHARACTER_KEY_DIR_E_SPRITE, nullptr);
+		CHARACTER_KEY_DIR_E_SPRITE, nullptr);
 	}
 	if ((ctx->orientation & WEST) && sprite_name == nullptr)
 	{
 		entry_read_string(CHARACTER_TABLE, ctx->id, &sprite_name,
-				CHARACTER_KEY_DIR_W_SPRITE, nullptr);
+		CHARACTER_KEY_DIR_W_SPRITE, nullptr);
 	}
 
 	if (sprite_name)
@@ -165,22 +165,22 @@ static anim_t ** select_sprite(context_t * ctx)
 	if (ctx->orientation & NORTH)
 	{
 		entry_read_list(CHARACTER_TABLE, ctx->id, &sprite_list,
-				CHARACTER_KEY_DIR_N_SPRITE, nullptr);
+		CHARACTER_KEY_DIR_N_SPRITE, nullptr);
 	}
 	if ((ctx->orientation & SOUTH) && sprite_list == nullptr)
 	{
 		entry_read_list(CHARACTER_TABLE, ctx->id, &sprite_list,
-				CHARACTER_KEY_DIR_S_SPRITE, nullptr);
+		CHARACTER_KEY_DIR_S_SPRITE, nullptr);
 	}
 	if ((ctx->orientation & EAST) && sprite_list == nullptr)
 	{
 		entry_read_list(CHARACTER_TABLE, ctx->id, &sprite_list,
-				CHARACTER_KEY_DIR_E_SPRITE, nullptr);
+		CHARACTER_KEY_DIR_E_SPRITE, nullptr);
 	}
 	if ((ctx->orientation & WEST) && sprite_list == nullptr)
 	{
 		entry_read_list(CHARACTER_TABLE, ctx->id, &sprite_list,
-				CHARACTER_KEY_DIR_W_SPRITE, nullptr);
+		CHARACTER_KEY_DIR_W_SPRITE, nullptr);
 	}
 
 	if (sprite_list)
@@ -193,7 +193,7 @@ static anim_t ** select_sprite(context_t * ctx)
 
 	// try default sprite file
 	if (entry_read_string(CHARACTER_TABLE, ctx->id, &sprite_name,
-			CHARACTER_KEY_SPRITE, nullptr) == RET_OK)
+	CHARACTER_KEY_SPRITE, nullptr) == RET_OK)
 	{
 		if (sprite_name[0] != 0)
 		{
@@ -206,7 +206,7 @@ static anim_t ** select_sprite(context_t * ctx)
 	}
 	// try default sprite list
 	if (entry_read_list(CHARACTER_TABLE, ctx->id, &sprite_list,
-			CHARACTER_KEY_SPRITE, nullptr) == RET_OK)
+	CHARACTER_KEY_SPRITE, nullptr) == RET_OK)
 	{
 		sprite = imageDB_get_anim_array(player_context,
 				(const char **) sprite_list);
@@ -334,7 +334,7 @@ static void set_up_sprite(context_t * ctx)
 
 	// Get per sprite zoom
 	if (entry_read_string(CHARACTER_TABLE, ctx->id, &zoom_str,
-			CHARACTER_KEY_ZOOM, nullptr) == RET_OK)
+	CHARACTER_KEY_ZOOM, nullptr) == RET_OK)
 	{
 		zoom = atof(zoom_str);
 		free(zoom_str);
@@ -360,7 +360,7 @@ static void set_up_sprite(context_t * ctx)
 
 	// Add Y offset
 	entry_read_int(CHARACTER_TABLE, ctx->id, &sprite_offset_y,
-			CHARACTER_KEY_OFFSET_Y, nullptr);
+	CHARACTER_KEY_OFFSET_Y, nullptr);
 	py += sprite_offset_y;
 
 	// Set sprite to item
@@ -374,56 +374,56 @@ static void set_up_sprite(context_t * ctx)
 	if ((ctx->orientation & NORTH) && (ctx->orientation & EAST))
 	{
 		entry_read_int(CHARACTER_TABLE, ctx->id, &angle,
-				CHARACTER_KEY_DIR_NE_ROT, nullptr);
+		CHARACTER_KEY_DIR_NE_ROT, nullptr);
 		item_set_angle(item, (double) angle);
 	}
 	else if ((ctx->orientation & SOUTH) && (ctx->orientation & EAST))
 	{
 		entry_read_int(CHARACTER_TABLE, ctx->id, &angle,
-				CHARACTER_KEY_DIR_SE_ROT, nullptr);
+		CHARACTER_KEY_DIR_SE_ROT, nullptr);
 		item_set_angle(item, (double) angle);
 	}
 	else if ((ctx->orientation & SOUTH) && (ctx->orientation & WEST))
 	{
 		entry_read_int(CHARACTER_TABLE, ctx->id, &angle,
-				CHARACTER_KEY_DIR_SW_ROT, nullptr);
+		CHARACTER_KEY_DIR_SW_ROT, nullptr);
 		item_set_angle(item, (double) angle);
 	}
 	else if ((ctx->orientation & NORTH) && (ctx->orientation & WEST))
 	{
 		entry_read_int(CHARACTER_TABLE, ctx->id, &angle,
-				CHARACTER_KEY_DIR_NW_ROT, nullptr);
+		CHARACTER_KEY_DIR_NW_ROT, nullptr);
 		item_set_angle(item, (double) angle);
 	}
 	else if (ctx->orientation & NORTH)
 	{
 		entry_read_int(CHARACTER_TABLE, ctx->id, &angle,
-				CHARACTER_KEY_DIR_N_ROT, nullptr);
+		CHARACTER_KEY_DIR_N_ROT, nullptr);
 		item_set_angle(item, (double) angle);
 	}
 	else if (ctx->orientation & SOUTH)
 	{
 		entry_read_int(CHARACTER_TABLE, ctx->id, &angle,
-				CHARACTER_KEY_DIR_S_ROT, nullptr);
+		CHARACTER_KEY_DIR_S_ROT, nullptr);
 		item_set_angle(item, (double) angle);
 	}
 	else if (ctx->orientation & WEST)
 	{
 		entry_read_int(CHARACTER_TABLE, ctx->id, &angle,
-				CHARACTER_KEY_DIR_W_ROT, nullptr);
+		CHARACTER_KEY_DIR_W_ROT, nullptr);
 		item_set_angle(item, (double) angle);
 	}
 	else if (ctx->orientation & EAST)
 	{
 		entry_read_int(CHARACTER_TABLE, ctx->id, &angle,
-				CHARACTER_KEY_DIR_E_ROT, nullptr);
+		CHARACTER_KEY_DIR_E_ROT, nullptr);
 		item_set_angle(item, (double) angle);
 	}
 
 	// Get flip configuration
 	force_flip = 0;
 	entry_read_int(CHARACTER_TABLE, ctx->id, &force_flip,
-			CHARACTER_KEY_FORCE_FLIP, nullptr);
+	CHARACTER_KEY_FORCE_FLIP, nullptr);
 	move_status = ctx->direction;
 	if (force_flip == true)
 	{
@@ -436,22 +436,22 @@ static void set_up_sprite(context_t * ctx)
 		if (move_status & NORTH)
 		{
 			entry_read_int(CHARACTER_TABLE, ctx->id, &flip,
-					CHARACTER_KEY_DIR_N_FLIP, nullptr);
+			CHARACTER_KEY_DIR_N_FLIP, nullptr);
 		}
 		if (move_status & SOUTH)
 		{
 			entry_read_int(CHARACTER_TABLE, ctx->id, &flip,
-					CHARACTER_KEY_DIR_S_FLIP, nullptr);
+			CHARACTER_KEY_DIR_S_FLIP, nullptr);
 		}
 		if (move_status & WEST)
 		{
 			entry_read_int(CHARACTER_TABLE, ctx->id, &flip,
-					CHARACTER_KEY_DIR_W_FLIP, nullptr);
+			CHARACTER_KEY_DIR_W_FLIP, nullptr);
 		}
 		if (move_status & EAST)
 		{
 			entry_read_int(CHARACTER_TABLE, ctx->id, &flip,
-					CHARACTER_KEY_DIR_E_FLIP, nullptr);
+			CHARACTER_KEY_DIR_E_FLIP, nullptr);
 		}
 
 		switch (flip)
@@ -531,7 +531,7 @@ static void compose_item(int layer_index)
 	sprintf(layer_name, "%s%d", MAP_KEY_LAYER, layer_index);
 
 	if (entry_get_group_list(MAP_TABLE, ctx->map, &item_id, layer_name,
-			MAP_ENTRY_ITEM_LIST, nullptr) == RET_NOK)
+	MAP_ENTRY_ITEM_LIST, nullptr) == RET_NOK)
 	{
 		return;
 	}
@@ -544,16 +544,14 @@ static void compose_item(int layer_index)
 		sprite_align = ALIGN_CENTER;
 
 		if (entry_read_int(MAP_TABLE, ctx->map, &x, layer_name,
-				MAP_ENTRY_ITEM_LIST, item_id[i], MAP_ITEM_POS_X, nullptr)
-				== RET_NOK)
+		MAP_ENTRY_ITEM_LIST, item_id[i], MAP_ITEM_POS_X, nullptr) == RET_NOK)
 		{
 			i++;
 			continue;
 		}
 
 		if (entry_read_int(MAP_TABLE, ctx->map, &y, layer_name,
-				MAP_ENTRY_ITEM_LIST, item_id[i], MAP_ITEM_POS_Y, nullptr)
-				== RET_NOK)
+		MAP_ENTRY_ITEM_LIST, item_id[i], MAP_ITEM_POS_Y, nullptr) == RET_NOK)
 		{
 			i++;
 			continue;
@@ -564,7 +562,7 @@ static void compose_item(int layer_index)
 		if (mytemplate == nullptr)
 		{
 			if (entry_read_string(ITEM_TABLE, item_id[i], &sprite_name,
-					ITEM_SPRITE, nullptr) == RET_NOK)
+			ITEM_SPRITE, nullptr) == RET_NOK)
 			{
 				i++;
 				continue;
@@ -572,21 +570,21 @@ static void compose_item(int layer_index)
 			entry_read_int(ITEM_TABLE, item_id[i], &sprite_align, ITEM_ALIGN,
 					nullptr);
 			entry_read_int(ITEM_TABLE, item_id[i], &sprite_offset_y,
-					ITEM_OFFSET_Y, nullptr);
+			ITEM_OFFSET_Y, nullptr);
 		}
 		else
 		{
 			if (entry_read_string(ITEM_TEMPLATE_TABLE, mytemplate, &sprite_name,
-					ITEM_SPRITE, nullptr) == RET_NOK)
+			ITEM_SPRITE, nullptr) == RET_NOK)
 			{
 				free(mytemplate);
 				i++;
 				continue;
 			}
 			entry_read_int(ITEM_TEMPLATE_TABLE, mytemplate, &sprite_align,
-					ITEM_ALIGN, nullptr);
+			ITEM_ALIGN, nullptr);
 			entry_read_int(ITEM_TEMPLATE_TABLE, mytemplate, &sprite_offset_y,
-					ITEM_OFFSET_Y, nullptr);
+			ITEM_OFFSET_Y, nullptr);
 			free(mytemplate);
 		}
 
@@ -784,7 +782,7 @@ static void compose_map_scenery(int layer_index)
 
 	sprintf(layer_name, "%s%d", MAP_KEY_LAYER, layer_index);
 	if (entry_get_group_list(MAP_TABLE, ctx->map, &scenery_list, layer_name,
-			MAP_KEY_SCENERY, nullptr) == RET_NOK)
+	MAP_KEY_SCENERY, nullptr) == RET_NOK)
 	{
 		return;
 	}
@@ -804,7 +802,7 @@ static void compose_map_scenery(int layer_index)
 			continue;
 		}
 		if (entry_read_string(MAP_TABLE, ctx->map, &image_name, layer_name,
-				MAP_KEY_SCENERY, scenery_list[i], MAP_KEY_SCENERY_IMAGE,
+		MAP_KEY_SCENERY, scenery_list[i], MAP_KEY_SCENERY_IMAGE,
 				nullptr) == RET_NOK)
 		{
 			i++;
@@ -1034,13 +1032,13 @@ item_t * scr_play_compose(context_t * ctx)
 		{
 			if (strcmp(old_sfx, sfx))
 			{
-				sfx_stop (MUSIC_CHANNEL);
+				sfx_stop(MUSIC_CHANNEL);
 				g_IsMusicPlaying = false;
 			}
 		}
 		else
 		{ // sfx == nullptr
-			sfx_stop (MUSIC_CHANNEL);
+			sfx_stop(MUSIC_CHANNEL);
 			g_IsMusicPlaying = false;
 		}
 		free(old_sfx);
@@ -1048,10 +1046,12 @@ item_t * scr_play_compose(context_t * ctx)
 
 	if (sfx && sfx[0] != 0)
 	{
-		if(g_IsMusicPlaying == false)
+		if (g_IsMusicPlaying == false)
 		{
-			sfx_play(ctx, std::string(sfx), MUSIC_CHANNEL, LOOP);
-			g_IsMusicPlaying = true;
+			if (sfx_play(ctx, std::string(sfx), MUSIC_CHANNEL, LOOP) != -1)
+			{
+				g_IsMusicPlaying = true;
+			}
 			int sfx_volume = 100; // 100%
 			entry_read_int(MAP_TABLE, ctx->map, &sfx_volume, MAP_SFX_VOLUME,
 					nullptr);

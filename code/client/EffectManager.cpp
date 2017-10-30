@@ -17,10 +17,22 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#include "sdl_item.h"
+#include "EffectManager.h"
+#include "file.h"
+#include "lua_client.h"
 
-item_t * scr_create_compose(context_t * context);
-void scr_create_frame_start(context_t * context);
-void scr_create_init();
-void scr_create_add_playable_character(context_t * context, char * data);
+/******************************************************************************/
+void EffectManager::processEffectFrame(context_t * p_pCtx, char * p_pFrame)
+{
+	std::vector<std::string> l_Params;
 
+	unserializeNetworkFrame(p_pFrame, l_Params);
+
+	std::string l_Script = l_Params.front();
+	l_Params.erase(l_Params.begin());
+
+	if (lua_execute_script(getEffectLuaVm(), l_Script, l_Params) == -1)
+	{
+		file_request_from_network(p_pCtx, SCRIPT_TABLE, l_Script.c_str());
+	}
+}
