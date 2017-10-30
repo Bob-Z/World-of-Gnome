@@ -31,6 +31,7 @@ static constexpr int const BORDER = 20;
 static constexpr int const FONT_SIZE = 30;
 static constexpr const char * const FONT = "Ubuntu-C.ttf";
 static constexpr unsigned long BACKGROUND_COLOR = 0xFFFFFF40U;
+static bool g_IsMusicPlaying = false;
 
 typedef struct
 {
@@ -60,6 +61,7 @@ static void cb_quit(void * arg)
 	if (sfx_filename != nullptr)
 	{
 		sfx_stop (MUSIC_CHANNEL);
+		g_IsMusicPlaying = false;
 	}
 
 	screen_set_screen(Screen::SELECT);
@@ -164,6 +166,7 @@ static void cb_keyboard_text(void * arg)
 	if (sfx_filename != nullptr)
 	{
 		sfx_stop (MUSIC_CHANNEL);
+		g_IsMusicPlaying = false;
 	}
 
 	screen_set_screen(Screen::SELECT);
@@ -247,12 +250,16 @@ item_t * scr_create_compose(context_t * context)
 
 	if (sfx_filename != nullptr)
 	{
-		sfx_play(context, std::string(sfx_filename), MUSIC_CHANNEL, LOOP);
+		if(g_IsMusicPlaying == false)
+		{
+			sfx_play(context, std::string(sfx_filename), MUSIC_CHANNEL, LOOP);
+			g_IsMusicPlaying = true;
 
-		int sfx_volume = 100; // 100%
-		entry_read_int(nullptr, CLIENT_CONF_FILE, &sfx_volume,
-				CLIENT_KEY_CREATE_CHARACTER_SFX_VOLUME, nullptr);
-		sfx_set_volume(MUSIC_CHANNEL, sfx_volume);
+			int sfx_volume = 100; // 100%
+			entry_read_int(nullptr, CLIENT_CONF_FILE, &sfx_volume,
+					CLIENT_KEY_CREATE_CHARACTER_SFX_VOLUME, nullptr);
+			sfx_set_volume(MUSIC_CHANNEL, sfx_volume);
+		}
 	}
 
 	if (item_list)

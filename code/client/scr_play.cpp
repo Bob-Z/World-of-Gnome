@@ -51,6 +51,7 @@ static int current_map_y = -1;
 static option_t * option = nullptr;
 static layer_t * default_layer = nullptr;
 static char * sfx = nullptr;
+static bool g_IsMusicPlaying = false;
 
 /**********************************
  **********************************/
@@ -1034,22 +1035,28 @@ item_t * scr_play_compose(context_t * ctx)
 			if (strcmp(old_sfx, sfx))
 			{
 				sfx_stop (MUSIC_CHANNEL);
+				g_IsMusicPlaying = false;
 			}
 		}
 		else
 		{ // sfx == nullptr
 			sfx_stop (MUSIC_CHANNEL);
+			g_IsMusicPlaying = false;
 		}
 		free(old_sfx);
 	}
 
 	if (sfx && sfx[0] != 0)
 	{
-		sfx_play(ctx, std::string(sfx), MUSIC_CHANNEL, LOOP);
-		int sfx_volume = 100; // 100%
-		entry_read_int(MAP_TABLE, ctx->map, &sfx_volume, MAP_SFX_VOLUME,
-				nullptr);
-		sfx_set_volume(MUSIC_CHANNEL, sfx_volume);
+		if(g_IsMusicPlaying == false)
+		{
+			sfx_play(ctx, std::string(sfx), MUSIC_CHANNEL, LOOP);
+			g_IsMusicPlaying = true;
+			int sfx_volume = 100; // 100%
+			entry_read_int(MAP_TABLE, ctx->map, &sfx_volume, MAP_SFX_VOLUME,
+					nullptr);
+			sfx_set_volume(MUSIC_CHANNEL, sfx_volume);
+		}
 	}
 
 	return item_list;

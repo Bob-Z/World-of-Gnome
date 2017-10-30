@@ -46,6 +46,7 @@ static int character_num = 0;
 static item_t * item_list = nullptr;
 static long current_character = -1;
 static char * sfx_filename = nullptr;
+static bool g_IsMusicPlaying = false;
 
 /****************************
  Keyboard callback
@@ -96,6 +97,7 @@ static void cb_select(void * arg)
 	if (sfx_filename != nullptr)
 	{
 		sfx_stop (MUSIC_CHANNEL);
+		g_IsMusicPlaying = false;
 	}
 
 	screen_set_screen(Screen::PLAY);
@@ -165,6 +167,7 @@ static void cb_icon_add_clicked(void * arg)
 	if (sfx_filename != nullptr)
 	{
 		sfx_stop (MUSIC_CHANNEL);
+		g_IsMusicPlaying = false;
 	}
 
 	screen_set_screen(Screen::CREATE);
@@ -211,12 +214,16 @@ item_t * scr_select_compose(context_t * context)
 
 	if (sfx_filename)
 	{
-		sfx_play(context, std::string(sfx_filename), MUSIC_CHANNEL, LOOP);
+		if( g_IsMusicPlaying == false )
+		{
+			sfx_play(context, std::string(sfx_filename), MUSIC_CHANNEL, LOOP);
+			g_IsMusicPlaying = true;
 
-		int sfx_volume = 100; // 100%
-		entry_read_int(nullptr, CLIENT_CONF_FILE, &sfx_volume,
-				CLIENT_KEY_SELECT_CHARACTER_SFX_VOLUME, nullptr);
-		sfx_set_volume(MUSIC_CHANNEL, sfx_volume);
+			int sfx_volume = 100; // 100%
+			entry_read_int(nullptr, CLIENT_CONF_FILE, &sfx_volume,
+					CLIENT_KEY_SELECT_CHARACTER_SFX_VOLUME, nullptr);
+			sfx_set_volume(MUSIC_CHANNEL, sfx_volume);
+		}
 	}
 
 	if (item_list)
