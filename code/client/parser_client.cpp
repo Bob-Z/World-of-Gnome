@@ -89,6 +89,9 @@ ret_code_t parse_incoming_data(context_t * context, Uint32 command,
 		ui_play_popup_add(data);
 		screen_compose();
 		break;
+	case CMD_SEND_EFFECT:
+		wlog(LOGDEBUG, "Received CMD_SEND_EFFECT");
+		break;
 	default:
 		werr(LOGDEV, "Unknown request from server");
 		return RET_NOK;
