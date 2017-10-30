@@ -25,7 +25,7 @@ find_package(Lua50 REQUIRED)
 include_directories(${LUA_INCLUDE_DIR})
 
 
-set(COMMON_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../common/)
+set(COMMON_PATH ../common/)
 include_directories( ${COMMON_PATH} )
 
 add_executable(

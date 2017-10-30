@@ -25,8 +25,8 @@ find_package(Lua50 REQUIRED)
 include_directories(${LUA_INCLUDE_DIR})
 
 
-set(COMMON_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../common/)
-set(SDL_ITEM_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../sdl_item/)
+set(COMMON_PATH ../common/)
+set(SDL_ITEM_PATH ../sdl_item/)
 include_directories( ${COMMON_PATH} ${SDL_ITEM_PATH} )
 
 add_executable(
