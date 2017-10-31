@@ -17,21 +17,21 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#include <limits.h>
-#include <pthread.h>
-#include "sdl.h"
-#include "screen.h"
-#include "scr_select.h"
-#include "scr_create.h"
-#include "scr_play.h"
-#include "option_client.h"
-#include "lua_client.h"
 #include "Camera.h"
 #include "file.h"
+#include "lua_client.h"
+#include "option_client.h"
+#include "scr_create.h"
+#include "scr_play.h"
+#include "scr_select.h"
+#include "screen.h"
+#include "sdl.h"
+#include <limits.h>
+#include <pthread.h>
 
 static bool screen_running = true;
 static item_t * item_list = nullptr;
-static int compose = 0;
+static bool g_Compose = true;
 
 #define ITEM_FONT "Ubuntu-C.ttf"
 #define ITEM_FONT_SIZE 15
@@ -48,7 +48,7 @@ static Camera g_Camera;
  ***********************************************/
 void screen_compose()
 {
-	compose = 1;
+	g_Compose = true;
 }
 
 /******************************************************
@@ -220,9 +220,9 @@ void screen_display(context_t * ctx)
 	{
 		frame_start(ctx);
 
-		if (compose)
+		if (g_Compose == true)
 		{
-			compose = 0;
+			g_Compose = false;
 			compose_scr(ctx);
 		}
 
@@ -230,7 +230,7 @@ void screen_display(context_t * ctx)
 
 		while (SDL_PollEvent(&event))
 		{
-			compose |= sdl_screen_manager(ctx->window, ctx->render, &event);
+			g_Compose |= sdl_screen_manager(ctx->window, ctx->render, &event);
 			sdl_mouse_manager(ctx->render, &event, item_list);
 			sdl_keyboard_manager(&event);
 		}

@@ -201,18 +201,13 @@ item_t * scr_select_compose(context_t * context)
 	static TTF_Font * font_name = nullptr;
 	static TTF_Font * font_type = nullptr;
 
-	if (character_num == 0)
-	{
-		return nullptr;
-	}
-
 	if (sfx_filename == nullptr)
 	{
 		entry_read_string(nullptr, CLIENT_CONF_FILE, &sfx_filename,
 		CLIENT_KEY_SELECT_CHARACTER_SFX, nullptr);
 	}
 
-	if (sfx_filename)
+	if (sfx_filename != nullptr)
 	{
 		if (g_IsMusicPlaying == false)
 		{
@@ -384,7 +379,7 @@ item_t * scr_select_compose(context_t * context)
 		}
 	}
 
-	if (current_character == -1)
+	if (current_character == -1 && character_num > 0)
 	{
 		cb_show_item(character_list[0].item);
 	}
