@@ -17,7 +17,7 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#include "item.h"
+#include "sdl_item.h"
 
 item_t * scr_play_compose(context_t * context);
 void scr_play_frame_start(context_t * context);
