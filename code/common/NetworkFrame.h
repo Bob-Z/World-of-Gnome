@@ -1,6 +1,6 @@
 /*
  World of Gnome is a 2D multiplayer role playing game.
- Copyright (C) 2017 carabobz@gmail.com
+ Copyright (C) 2013-2016 carabobz@gmail.com
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -17,15 +17,23 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#ifndef LUA_H
-#define LUA_H
+#ifndef COMMON_NETWORKFRAME_H_
+#define COMMON_NETWORKFRAME_H_
 
-#include <string>
-#include <vector>
+class NetworkFrame
+{
+public:
+	NetworkFrame();
+	NetworkFrame(char * p_pFrame);
+	virtual ~NetworkFrame();
 
-int lua_execute_script(lua_State* p_pLuaVm, const char * script,
-		const char ** parameters);
-int lua_execute_script(lua_State* p_pLuaVm, const std::string & p_rScript,
-		const std::vector<std::string> & p_rParams);
+	const char * getFrame();
+	void add(int p_IntData);
+	void add(const std::string& p_rStringData);
+	void add(const std::vector<std::string> & p_rStringVectorData);
 
-#endif
+private:
+	char * m_pFrame;
+};
+
+#endif /* COMMON_NETWORKFRAME_H_ */

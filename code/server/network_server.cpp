@@ -18,7 +18,7 @@
  */
 
 #include "common.h"
-
+#include "NetworkFrame.h"
 #include <string>
 #include <vector>
 
@@ -373,19 +373,8 @@ void network_broadcast_effect(EffectType p_Type, const std::string & p_TargetId,
 		break;
 	}
 
-	char * frame = nullptr;
-	char * new_frame = nullptr;
-	for (auto l_It = p_Param.begin(); l_It != p_Param.end(); ++l_It)
-	{
-		new_frame = strconcat(frame, l_It->c_str(), NETWORK_DELIMITER, nullptr);
-		if (frame != nullptr)
-		{
-			free(frame);
-		}
-		frame = new_frame;
-	}
-	//Remove last NETWORK_DELIMITER
-	frame[strlen(frame) - strlen(NETWORK_DELIMITER)] = '\0';
+	NetworkFrame l_Frame;
+	l_Frame.add(p_Param);
 
 	do
 	{
@@ -413,14 +402,9 @@ void network_broadcast_effect(EffectType p_Type, const std::string & p_TargetId,
 		}
 
 		wlog(LOGDEBUG, "Send CMD_SEND_EFFECT to %s", ctx->id);
-		network_send_command(ctx, CMD_SEND_EFFECT, strlen(frame) + 1, frame,
-				false);
+		network_send_command(ctx, CMD_SEND_EFFECT,
+				strlen(l_Frame.getFrame()) + 1, l_Frame.getFrame(), false);
 	} while ((ctx = ctx->next) != nullptr);
 
 	context_unlock_list();
-
-	if (frame != nullptr)
-	{
-		free(frame);
-	}
 }
