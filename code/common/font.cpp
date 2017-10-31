@@ -1,56 +1,57 @@
 /*
-   World of Gnome is a 2D multiplayer role playing game.
-   Copyright (C) 2016-2017 carabobz@gmail.com
+ World of Gnome is a 2D multiplayer role playing game.
+ Copyright (C) 2016-2017 carabobz@gmail.com
 
-   This program is free software; you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 3 of the License, or
-   (at your option) any later version.
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 3 of the License, or
+ (at your option) any later version.
 
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-   You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software Foundation,
-   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
-*/
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software Foundation,
+ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
+ */
 
 #include "common.h"
 
 static list_t * font_list = nullptr;
 
 /****************************************
-*****************************************/
-TTF_Font * font_get(context_t* ctx,const char * filename, int size)
+ *****************************************/
+TTF_Font * font_get(context_t* ctx, const char * filename, int size)
 {
-	TTF_Font * font;
-	char * fullname;
+	TTF_Font * font = nullptr;
+	char * fullname = nullptr;
 
 	file_lock(filename);
 
-	font = (TTF_Font*)list_find(font_list,filename);
+	font = (TTF_Font*) list_find(font_list, filename);
 
-	if( font != nullptr ) {
+	if (font != nullptr)
+	{
 		file_unlock(filename);
 		return font;
 	}
 
-	fullname = strconcat(base_directory,"/",filename,nullptr);
+	fullname = strconcat(base_directory, "/", filename, nullptr);
 	font = TTF_OpenFont(fullname, size);
 	free(fullname);
 
-	if( font != nullptr ) {
-		list_update(&font_list,filename,font);
+	if (font != nullptr)
+	{
+		list_update(&font_list, filename, font);
 		file_unlock(filename);
 		return font;
 	}
 
-	file_update(ctx,filename);
+	file_update(ctx, filename);
 
 	file_unlock(filename);
 
 	return nullptr;
 }
-
