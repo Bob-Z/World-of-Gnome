@@ -26,14 +26,13 @@
 void network_login(context_t * context, const char * user_name,
 		const char * password)
 {
-	char * frame;
+	NetworkFrame l_Frame;
 
-	frame = strconcat(user_name, NETWORK_DELIMITER, password, nullptr);
+	l_Frame.add(user_name);
+	l_Frame.add(password);
 
 	wlog(LOGDEBUG, "Send CMD_REQ_LOGIN");
-	network_send_command(context, CMD_REQ_LOGIN, strlen(frame) + 1, frame,
-			false);
-	free(frame);
+	network_send_command(context, CMD_REQ_LOGIN, l_Frame, false);
 }
 
 /*********************************************************************

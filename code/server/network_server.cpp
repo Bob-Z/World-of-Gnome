@@ -402,8 +402,7 @@ void network_broadcast_effect(EffectType p_Type, const std::string & p_TargetId,
 		}
 
 		wlog(LOGDEBUG, "Send CMD_SEND_EFFECT to %s", ctx->id);
-		network_send_command(ctx, CMD_SEND_EFFECT,
-				strlen(l_Frame.getFrame()) + 1, l_Frame.getFrame(), false);
+		network_send_command(ctx, CMD_SEND_EFFECT, l_Frame, false);
 	} while ((ctx = ctx->next) != nullptr);
 
 	context_unlock_list();

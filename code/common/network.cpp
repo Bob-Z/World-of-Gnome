@@ -106,8 +106,8 @@ static int async_send(void * user_data)
 	return RET_OK;
 }
 
-/*******************************
- *******************************/
+/*******************************************************************************
+ ******************************************************************************/
 void network_send_command(context_t * context, Uint32 command, long int count,
 		const char *data, bool is_data)
 {
@@ -131,9 +131,18 @@ void network_send_command(context_t * context, Uint32 command, long int count,
 	}
 }
 
-/*********************************************************************
+/*******************************************************************************
+ ******************************************************************************/
+void network_send_command(context_t * context, Uint32 command,
+		NetworkFrame & p_rFrame, bool is_data)
+{
+	network_send_command(context, command, strlen(p_rFrame.getFrame()) + 1,
+			p_rFrame.getFrame(), is_data);
+}
+
+/*******************************************************************************
  Asks to update an int entry on  a context
- *********************************************************************/
+ ******************************************************************************/
 void network_send_entry_int(context_t * context, const char * table,
 		const char * file, const char *path, int value)
 {
