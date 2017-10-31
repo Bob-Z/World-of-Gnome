@@ -125,7 +125,10 @@ static void cb_next_character(void * arg)
 		current_character = character_num - 1;
 	}
 
-	cb_show_item(character_list[current_character].item);
+	if (character_list != nullptr)
+	{
+		cb_show_item(character_list[current_character].item);
+	}
 }
 
 /**********************************
@@ -143,7 +146,10 @@ static void cb_previous_character(void * arg)
 		current_character = 0;
 	}
 
-	cb_show_item(character_list[current_character].item);
+	if (character_list != nullptr)
+	{
+		cb_show_item(character_list[current_character].item);
+	}
 }
 
 /**********************************
