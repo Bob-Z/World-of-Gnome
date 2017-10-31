@@ -22,7 +22,7 @@
 
 // Current, POC level, *very naive*, protocol implementation
 // first 4 bytes containing a command code
-// second 4 bytes containg the size of additional data
+// second 4 bytes containing the size of additional data
 // following bytes of additional data
 
 #define NETWORK_DELIMITER "|||"
