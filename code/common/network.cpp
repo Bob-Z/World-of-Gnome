@@ -18,9 +18,9 @@
  */
 
 #include "common.h"
-#include <string.h>
-#include <dirent.h>
 #include "file.h"
+#include <dirent.h>
+#include <string.h>
 
 typedef struct send_data
 {

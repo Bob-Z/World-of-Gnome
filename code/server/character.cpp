@@ -17,14 +17,14 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#include "../common/common.h"
-#include <dirent.h>
-#include <string.h>
-#include "npc.h"
 #include "action.h"
 #include "character.h"
+#include "common.h"
 #include "map_server.h"
 #include "network_server.h"
+#include "npc.h"
+#include <dirent.h>
+#include <string.h>
 
 /*********************************************
  Send playable character templates
@@ -61,7 +61,7 @@ void character_playable_send_list(context_t * context)
 		}
 
 		if (entry_read_string(CHARACTER_TEMPLATE_TABLE, ent->d_name, &marquee,
-				CHARACTER_KEY_MARQUEE, nullptr) == RET_OK)
+		CHARACTER_KEY_MARQUEE, nullptr) == RET_OK)
 		{
 			if (marquee[0] == '\0')
 			{
@@ -114,13 +114,13 @@ void character_user_send(context_t * p_pCtx, const char * p_pCharacterId)
 	char * l_pName = nullptr;
 
 	if (entry_read_string(CHARACTER_TABLE, p_pCharacterId, &l_pType,
-			CHARACTER_KEY_TYPE, nullptr) == RET_NOK)
+	CHARACTER_KEY_TYPE, nullptr) == RET_NOK)
 	{
 		return;
 	}
 
 	if (entry_read_string(CHARACTER_TABLE, p_pCharacterId, &l_pName,
-			CHARACTER_KEY_NAME, nullptr) == RET_NOK)
+	CHARACTER_KEY_NAME, nullptr) == RET_NOK)
 	{
 		free(l_pType);
 		return;
@@ -139,7 +139,7 @@ void character_user_send_list(context_t * context)
 	char ** l_pCharacterList = nullptr;
 
 	if (entry_read_list(USERS_TABLE, context->user_name, &l_pCharacterList,
-			USERS_CHARACTER_LIST, nullptr) == RET_NOK)
+	USERS_CHARACTER_LIST, nullptr) == RET_NOK)
 	{
 		return;
 	}
@@ -326,10 +326,10 @@ void character_update_aggro(context_t * agressor)
 	if (character_get_npc(agressor->id) && agressor->luaVM != nullptr)
 	{
 		if (entry_read_int(CHARACTER_TABLE, agressor->id, &aggro_dist,
-				CHARACTER_KEY_AGGRO_DIST, nullptr) == RET_OK)
+		CHARACTER_KEY_AGGRO_DIST, nullptr) == RET_OK)
 		{
 			if (entry_read_string(CHARACTER_TABLE, agressor->id, &aggro_script,
-					CHARACTER_KEY_AGGRO_SCRIPT, nullptr) == RET_OK)
+			CHARACTER_KEY_AGGRO_SCRIPT, nullptr) == RET_OK)
 			{
 				target = context_get_first();
 
@@ -399,13 +399,13 @@ void character_update_aggro(context_t * agressor)
 			continue;
 		}
 		if (entry_read_int(CHARACTER_TABLE, npc->id, &aggro_dist,
-				CHARACTER_KEY_AGGRO_DIST, nullptr) == RET_NOK)
+		CHARACTER_KEY_AGGRO_DIST, nullptr) == RET_NOK)
 		{
 			npc = npc->next;
 			continue;
 		}
 		if (entry_read_string(CHARACTER_TABLE, npc->id, &aggro_script,
-				CHARACTER_KEY_AGGRO_SCRIPT, nullptr) == RET_NOK)
+		CHARACTER_KEY_AGGRO_SCRIPT, nullptr) == RET_NOK)
 		{
 			npc = npc->next;
 			continue;
@@ -449,7 +449,7 @@ static void platform_move(context_t * platform, const char * map, int x, int y,
 	int is_platform;
 
 	if (entry_read_int(CHARACTER_TABLE, platform->id, &is_platform,
-			CHARACTER_KEY_PLATFORM, nullptr) == RET_NOK)
+	CHARACTER_KEY_PLATFORM, nullptr) == RET_NOK)
 	{
 		return;
 	}
@@ -618,15 +618,14 @@ int character_set_pos(context_t * ctx, const char * map, int x, int y)
 		{
 			script = nullptr;
 			if (entry_read_string(MAP_TABLE, map, &script, layer_name,
-					MAP_ENTRY_EVENT_LIST, event_id[i], MAP_EVENT_SCRIPT,
+			MAP_ENTRY_EVENT_LIST, event_id[i], MAP_EVENT_SCRIPT,
 					nullptr) == RET_OK)
 			{
 				entry_read_list(MAP_TABLE, map, &param, layer_name,
-						MAP_ENTRY_EVENT_LIST, event_id[i], MAP_EVENT_PARAM,
-						nullptr);
+				MAP_ENTRY_EVENT_LIST, event_id[i], MAP_EVENT_PARAM, nullptr);
 			}
 			else if (entry_read_string(MAP_TABLE, map, &script,
-					MAP_ENTRY_EVENT_LIST, event_id[i], MAP_EVENT_SCRIPT,
+			MAP_ENTRY_EVENT_LIST, event_id[i], MAP_EVENT_SCRIPT,
 					nullptr) == RET_OK)
 			{
 				entry_read_list(MAP_TABLE, map, &param, MAP_ENTRY_EVENT_LIST,
@@ -701,7 +700,7 @@ int character_set_portrait(const char * id, const char * portrait)
 	context_t * ctx;
 
 	if (entry_write_string(CHARACTER_TABLE, id, portrait,
-			CHARACTER_KEY_PORTRAIT, nullptr) == RET_NOK)
+	CHARACTER_KEY_PORTRAIT, nullptr) == RET_NOK)
 	{
 		return -1;
 	}
@@ -721,7 +720,7 @@ char * character_get_portrait(const char * id)
 	char * portrait;
 
 	if (entry_read_string(CHARACTER_TABLE, id, &portrait,
-			CHARACTER_KEY_PORTRAIT, nullptr) == RET_NOK)
+	CHARACTER_KEY_PORTRAIT, nullptr) == RET_NOK)
 	{
 		return nullptr;
 	}
@@ -777,7 +776,7 @@ int character_set_sprite(const char * id, int index, const char * filename)
 	}
 
 	if (entry_write_list_index(CHARACTER_TABLE, id, filename, index,
-			CHARACTER_KEY_SPRITE, nullptr) == RET_NOK)
+	CHARACTER_KEY_SPRITE, nullptr) == RET_NOK)
 	{
 		return RET_NOK;
 	}
