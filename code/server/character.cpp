@@ -49,6 +49,7 @@ void character_playable_send_list(context_t * context)
 	}
 	free(dirname);
 
+	// TODO Use NetworkFrame
 	frame = strdup("");
 
 	while ((ent = readdir(dir)) != nullptr)

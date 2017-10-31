@@ -39,8 +39,11 @@ void network_login(context_t * context, const char * user_name,
  **********************************************************************/
 void network_request_start(context_t * context, const char * id)
 {
+	NetworkFrame l_Frame;
+	l_Frame.add(id);
+
 	wlog(LOGDEBUG, "Send CMD_REQ_START");
-	network_send_command(context, CMD_REQ_START, strlen(id) + 1, id, false);
+	network_send_command(context, CMD_REQ_START, l_Frame, false);
 }
 
 /*********************************************************************

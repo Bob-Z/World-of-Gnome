@@ -146,20 +146,16 @@ void network_send_command(context_t * context, Uint32 command,
 void network_send_entry_int(context_t * context, const char * table,
 		const char * file, const char *path, int value)
 {
-	char * frame;
-	char buf[SMALL_BUF];
+	NetworkFrame l_Frame;
+	l_Frame.add(ENTRY_TYPE_INT);
+	l_Frame.add(table);
+	l_Frame.add(file);
+	l_Frame.add(path);
+	l_Frame.add(value);
 
-	sprintf(buf, "%d", value);
-
-	frame = strconcat(ENTRY_TYPE_INT, NETWORK_DELIMITER, table,
-	NETWORK_DELIMITER, file, NETWORK_DELIMITER, path, NETWORK_DELIMITER, buf,
-			nullptr);
-
-	wlog(LOGDEBUG, "Send CMD_SEND_ENTRY to %s :%s", context->id, frame);
-	network_send_command(context, CMD_SEND_ENTRY, strlen(frame) + 1, frame,
-			false);
-
-	free(frame);
+	wlog(LOGDEBUG, "Send CMD_SEND_ENTRY to %s :%s", context->id,
+			l_Frame.getFrame());
+	network_send_command(context, CMD_SEND_ENTRY, l_Frame, false);
 }
 
 /*********************************************************************
@@ -169,10 +165,6 @@ void network_send_entry_int(context_t * context, const char * table,
  *********************************************************************/
 void network_send_req_file(context_t * context, const char * file)
 {
-	char * filename;
-	char * cksum;
-	char * frame;
-
 	// Sanity check
 	if (file == nullptr)
 	{
@@ -181,20 +173,21 @@ void network_send_req_file(context_t * context, const char * file)
 	}
 
 	// Compute checksum of local file
-	filename = strconcat(base_directory, "/", file, nullptr);
+	char * filename = strconcat(base_directory, "/", file, nullptr);
 
-	cksum = checksum_file(filename);
+	char * cksum = checksum_file(filename);
 	if (cksum == nullptr)
 	{
 		cksum = strdup("0");
 	}
 	free(filename);
 
-	frame = strconcat(file, NETWORK_DELIMITER, cksum, nullptr);
+	NetworkFrame l_Frame;
+	l_Frame.add(file);
+	l_Frame.add(cksum);
 
 	wlog(LOGDEBUG, "Send CMD_REQ_FILE :%s", file);
-	network_send_command(context, CMD_REQ_FILE, strlen(frame) + 1, frame, true);
-	free(frame);
+	network_send_command(context, CMD_REQ_FILE, l_Frame, true);
 
 	free(cksum);
 }
@@ -270,6 +263,7 @@ void network_send_context_to_context(context_t * dest_ctx, context_t * src_ctx)
 		return;
 	}
 
+	//TODO use NetworkFrame
 	add_str(data, &data_size, src_ctx->user_name);
 	add_str(data, &data_size, src_ctx->character_name);
 	add_int(data, &data_size, src_ctx->npc);
@@ -329,6 +323,7 @@ int network_send_file(context_t * context, char * filename)
 		return -1;
 	}
 
+	//TODO Use NetworkFrame
 	// Prepare the frame = file_name_size + file_name + file_data_size + file_data
 	count = sizeof(Uint32) + strlen(filename) + 1 + sizeof(Uint32)
 			+ file_length;
@@ -395,6 +390,7 @@ void network_send_text(const char * id, const char * string)
 		return;
 	}
 
+	//TODO use NetworkFrame
 	wlog(LOGDEBUG, "Send CMD_SEND_TEXT :\"%s\" to %s (%s)", string,
 			context->character_name, context->user_name);
 	network_send_command(context, CMD_SEND_TEXT, strlen(string) + 1, string,

@@ -84,12 +84,12 @@ void network_broadcast_text(context_t * context, const char * text)
 void network_send_user_character(context_t * p_pCtx,
 		const char * p_pCharacterId, const char * p_pType, const char * p_pName)
 {
-	char * l_pFrame = nullptr;
-	l_pFrame = strconcat(p_pCharacterId, NETWORK_DELIMITER, p_pType,
-	NETWORK_DELIMITER, p_pName, nullptr);
-	network_send_command(p_pCtx, CMD_SEND_USER_CHARACTER, strlen(l_pFrame) + 1,
-			l_pFrame, false);
-	free(l_pFrame);
+	NetworkFrame l_Frame;
+	l_Frame.add(p_pCharacterId);
+	l_Frame.add(p_pType);
+	l_Frame.add(p_pName);
+
+	network_send_command(p_pCtx, CMD_SEND_USER_CHARACTER, l_Frame, false);
 }
 
 /*********************************************************************
@@ -309,32 +309,21 @@ void network_init(void)
  *********************************************************************/
 void network_send_popup(const char * id, const char ** dialog)
 {
-	char * frame = nullptr;
-	char * new_frame = nullptr;
-	context_t * target;
+	NetworkFrame l_Frame;
 
-	target = context_find(id);
-
-	if (dialog)
+	if (dialog != nullptr)
 	{
-		frame = strdup(*dialog);
-		dialog++;
 		while (*dialog != nullptr)
 		{
-			new_frame = strconcat(frame, NETWORK_DELIMITER, *dialog, nullptr);
-			free(frame);
-			frame = new_frame;
+			l_Frame.add(*dialog);
 			dialog++;
 		}
 	}
 
+	context_t * target;
+	target = context_find(id);
 	wlog(LOGDEBUG, "Send CMD_SEND_POPUP : send pop-up to %s", id);
-	network_send_command(target, CMD_SEND_POPUP, strlen(frame) + 1, frame,
-			false);
-	if (frame != nullptr)
-	{
-		free(frame);
-	}
+	network_send_command(target, CMD_SEND_POPUP, l_Frame, false);
 }
 
 /*********************************************************************
