@@ -31,6 +31,7 @@ public:
 	void add(int p_IntData);
 	void add(const std::string& p_rStringData);
 	void add(const std::vector<std::string> & p_rStringVectorData);
+	void add(const char* p_rAsciiData);
 
 private:
 	char * m_pFrame;

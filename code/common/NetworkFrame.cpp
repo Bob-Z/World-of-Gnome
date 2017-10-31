@@ -114,3 +114,21 @@ void NetworkFrame::add(const std::vector<std::string> & p_rStringVectorData)
 		m_pFrame = l_pFrame;
 	}
 }
+
+/******************************************************************************/
+void NetworkFrame::add(const char* p_rAsciiData)
+{
+	char * l_pFrame = nullptr;
+	if (strlen(m_pFrame) == 0)
+	{
+		l_pFrame = strconcat(m_pFrame, p_rAsciiData, nullptr);
+	}
+	else
+	{
+		l_pFrame = strconcat(m_pFrame, NETWORK_DELIMITER, p_rAsciiData,
+				nullptr);
+	}
+
+	free(m_pFrame);
+	m_pFrame = l_pFrame;
+}
