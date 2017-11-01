@@ -31,6 +31,7 @@ void EffectManager::processEffectFrame(context_t * p_pCtx, char * p_pFrame)
 	std::string l_Script = l_Params.front();
 	l_Params.erase(l_Params.begin());
 
+	// TODO use the same LUA VM as the one in render screen
 	if (lua_execute_script(getEffectLuaVm(), l_Script, l_Params) == -1)
 	{
 		file_request_from_network(p_pCtx, SCRIPT_TABLE, l_Script.c_str());
