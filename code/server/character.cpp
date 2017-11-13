@@ -31,9 +31,6 @@
  *********************************************/
 void character_playable_send_list(context_t * context)
 {
-	char * frame = nullptr;
-	Uint32 frame_size = 0U;
-	Uint32 string_size = 0U;
 	char * marquee;
 	DIR * dir;
 	char * dirname;
@@ -49,8 +46,7 @@ void character_playable_send_list(context_t * context)
 	}
 	free(dirname);
 
-	// TODO Use NetworkFrame
-	frame = strdup("");
+	std::vector<std::string> l_Array;
 
 	while ((ent = readdir(dir)) != nullptr)
 	{
@@ -88,22 +84,15 @@ void character_playable_send_list(context_t * context)
 		}
 
 		// add file name to network frame
-		string_size = strlen(ent->d_name) + 1;
-		frame = (char*) realloc(frame, frame_size + string_size);
-		memcpy(frame + frame_size, ent->d_name, string_size);
-		frame_size += string_size;
+		l_Array.push_back(std::string(ent->d_name));
 	}
 
 	closedir(dir);
 
-	// Mark the end of the list
-	frame = (char*) realloc(frame, frame_size + 1);
-	frame[frame_size] = 0;
-	frame_size++;
+	NetworkFrame l_Frame;
+	l_Frame.push(l_Array);
 
-	network_send_command(context, CMD_SEND_PLAYABLE_CHARACTER, frame_size,
-			frame, false);
-	free(frame);
+	network_send_command(context, CMD_SEND_PLAYABLE_CHARACTER, l_Frame, false);
 }
 
 /*********************************************

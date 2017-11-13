@@ -20,21 +20,28 @@
 #ifndef COMMON_NETWORKFRAME_H_
 #define COMMON_NETWORKFRAME_H_
 
+#include <cstdint>
+
 class NetworkFrame
 {
 public:
 	NetworkFrame();
-	NetworkFrame(char * p_pFrame);
 	virtual ~NetworkFrame();
 
-	const char * getFrame();
-	void add(int p_IntData);
-	void add(const std::string& p_rStringData);
-	void add(const std::vector<std::string> & p_rStringVectorData);
-	void add(const char* p_rAsciiData);
+	const uint8_t * getFrame() const;
+	const size_t getSize() const;
+	void push(const uint_fast32_t p_IntData);
+	void push(const std::string& p_rStringData);
+	void push(const std::vector<std::string> & p_rStringVectorData);
+	void push(const char* p_rAsciiData);
+	void push(const NetworkFrame & p_rFrame);
 
 private:
-	char * m_pFrame;
+	void prepareFrame(const size_t p_AddedSizeData);
+	void addData(const void * p_pData, const size_t p_Size);
+
+	uint8_t * m_pFrame;
+	size_t m_Size;
 };
 
 #endif /* COMMON_NETWORKFRAME_H_ */

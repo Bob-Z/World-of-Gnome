@@ -19,125 +19,120 @@
 
 #include "common.h"
 #include "file.h"
+#include <arpa/inet.h>
 #include <dirent.h>
 #include <string.h>
 
-typedef struct send_data
+// FIXME create NetworkManager
+class DataSent
 {
-	Uint32 command;
-	Uint32 count;
-	char *data;
-	int is_data;
-	context_t * context;
-} send_data_t;
+public:
+	context_t * m_pContext;
+	NetworkFrame * m_pFrame;
+	bool m_IsData;
+};
 
 /*********************************************************************
  return -1 on error
  return 0 on success
  *********************************************************************/
-static int async_send(void * user_data)
+static int async_frame_send(void * p_pUserData)
 {
-	TCPsocket socket = 0;
-	int bytes_written = 0;
-	int length = 0;
-	send_data_t * data = (send_data_t *) user_data;
-	context_t * context = data->context;
+	DataSent * l_pData = static_cast<DataSent*>(p_pUserData);
 
-	if (context == nullptr)
+	context_t * l_pContext = l_pData->m_pContext;
+	if (l_pContext == nullptr)
 	{
-		werr(LOGDEBUG, "null context");
-		goto async_send_free;
+		werr(LOGDEBUG, "null l_pContext");
+		delete l_pData->m_pFrame;
+		delete l_pData;
+		return -1;
 	}
 
-	if (data->is_data)
+	TCPsocket l_Socket = 0;
+
+	if (l_pData->m_IsData)
 	{
-		socket = context_get_socket_data(context);
+		l_Socket = context_get_socket_data(l_pContext);
 	}
 	else
 	{
-		socket = context_get_socket(context);
+		l_Socket = context_get_socket(l_pContext);
 	}
 
-	if (socket == 0)
+	if (l_Socket == 0)
 	{
-		wlog(LOGDEBUG, "socket %d is disconnected", socket);
-		goto async_send_free;
+		wlog(LOGDEBUG, "socket %d is disconnected", l_Socket);
+		delete l_pData->m_pFrame;
+		delete l_pData;
+		return -1;
 	}
 
-	SDL_LockMutex(context->send_mutex);
+	SDL_LockMutex(l_pContext->send_mutex);
 
-	//send command
-	length = sizeof(Uint32);
-	bytes_written = SDLNet_TCP_Send(socket, &data->command, length);
-	if (bytes_written != length)
+	//send frame size
+	uint32_t l_Length = htonl(
+			static_cast<uint32_t>(l_pData->m_pFrame->getSize()));
+
+	int l_BytesWritten = SDLNet_TCP_Send(l_Socket, &l_Length, sizeof(l_Length));
+	if (l_BytesWritten != sizeof(l_Length))
 	{
-		werr(LOGUSER, "Could not send command to %s", context->id);
-		context_set_connected(context, false);
-		goto async_send_end;
+		werr(LOGUSER, "Could not send command to %s", l_pContext->id);
+		context_set_connected(l_pContext, false);
+		goto async_frame_send_end;
 	}
 
-	//send data size
-	length = sizeof(Uint32);
-	bytes_written = SDLNet_TCP_Send(socket, &data->count, length);
-	if (bytes_written != length)
+	//send frame
+	l_BytesWritten = SDLNet_TCP_Send(l_Socket, l_pData->m_pFrame->getFrame(),
+			l_pData->m_pFrame->getSize());
+	if (l_BytesWritten != static_cast<int>(l_pData->m_pFrame->getSize()))
 	{
-		werr(LOGUSER, "Could not send command to %s", context->id);
-		context_set_connected(context, false);
-		goto async_send_end;
+		werr(LOGUSER, "Could not send command to %s", l_pContext->id);
+		context_set_connected(l_pContext, false);
 	}
 
-	//send optional data
-	if (data->count > 0)
-	{
-		length = data->count;
-		bytes_written = SDLNet_TCP_Send(socket, data->data, length);
-		if (bytes_written != length)
-		{
-			werr(LOGUSER, "Could not send command to %s", context->id);
-			context_set_connected(context, false);
-			goto async_send_end;
-		}
-	}
-
-	async_send_end: SDL_UnlockMutex(context->send_mutex);
-	async_send_free: free(data->data);
-	free(data);
+	async_frame_send_end: SDL_UnlockMutex(l_pContext->send_mutex);
+	delete l_pData->m_pFrame;
+	delete l_pData;
 
 	return RET_OK;
 }
 
 /*******************************************************************************
  ******************************************************************************/
-void network_send_command(context_t * context, Uint32 command, long int count,
-		const char *data, bool is_data)
+void network_send_command(context_t * p_pContext, const uint_fast32_t p_Command,
+		const NetworkFrame & p_rFrame, const bool p_IsData)
 {
-	send_data_t * send_data;
-	SDL_Thread *thread;
+	// FIXME create a NetworkManager
+	DataSent *l_pData = new (DataSent);
+	NetworkFrame * l_pFrame = new (NetworkFrame);
 
-	send_data = (send_data_t*) malloc(sizeof(send_data_t));
-	send_data->command = command;
-	send_data->count = count;
-	send_data->data = (char *) malloc(count);
-	memcpy(send_data->data, data, count);
-	send_data->is_data = is_data;
-	send_data->context = context;
+	l_pFrame->push(p_Command);
+	l_pFrame->push(p_rFrame);
 
-	thread = SDL_CreateThread(async_send, "async_send", (void*) send_data);
+	l_pData->m_pContext = p_pContext;
+	l_pData->m_pFrame = l_pFrame;
+	l_pData->m_IsData = p_IsData;
 
-	if (thread == nullptr)
-	{
-		free(send_data->data);
-		free(send_data);
-	}
+	SDL_CreateThread(async_frame_send, "async_frame_send", (void*) l_pData);
 }
 
 /*******************************************************************************
  ******************************************************************************/
-void network_send_command(context_t * context, Uint32 command,
-		NetworkFrame & p_rFrame, bool is_data)
+void network_send_command_no_data(context_t * p_pContext, const uint_fast32_t p_Command,
+const bool p_IsData)
 {
-	network_send_command(context, command, strlen(p_rFrame.getFrame()) + 1,
-			p_rFrame.getFrame(), is_data);
+	// FIXME create a NetworkManager
+	DataSent *l_pData = new (DataSent);
+	NetworkFrame * l_pFrame = new (NetworkFrame);
+
+	l_pFrame->push(p_Command);
+
+	l_pData->m_pContext = p_pContext;
+	l_pData->m_pFrame = l_pFrame;
+	l_pData->m_IsData = p_IsData;
+
+	SDL_CreateThread(async_frame_send, "async_frame_send", (void*) l_pData);
 }
 
 /*******************************************************************************
@@ -147,11 +142,11 @@ void network_send_entry_int(context_t * context, const char * table,
 		const char * file, const char *path, int value)
 {
 	NetworkFrame l_Frame;
-	l_Frame.add(ENTRY_TYPE_INT);
-	l_Frame.add(table);
-	l_Frame.add(file);
-	l_Frame.add(path);
-	l_Frame.add(value);
+	l_Frame.push(ENTRY_TYPE_INT);
+	l_Frame.push(table);
+	l_Frame.push(file);
+	l_Frame.push(path);
+	l_Frame.push(value);
 
 	wlog(LOGDEBUG, "Send CMD_SEND_ENTRY to %s :%s", context->id,
 			l_Frame.getFrame());
@@ -183,8 +178,8 @@ void network_send_req_file(context_t * context, const char * file)
 	free(filename);
 
 	NetworkFrame l_Frame;
-	l_Frame.add(file);
-	l_Frame.add(cksum);
+	l_Frame.push(file);
+	l_Frame.push(cksum);
 
 	wlog(LOGDEBUG, "Send CMD_REQ_FILE :%s", file);
 	network_send_command(context, CMD_REQ_FILE, l_Frame, true);
@@ -220,34 +215,10 @@ ret_code_t network_read_bytes(TCPsocket socket, char * data, int size)
 }
 
 /*********************************************************************
- Helper to send context
- *********************************************************************/
-static void add_str(char * data, int * data_size, char * str)
-{
-	int size;
-
-	size = strlen(str) + 1; // Include terminal 0
-	memcpy(data + (*data_size), str, size);
-	*data_size += size;
-}
-static void add_int(char * data, int * data_size, int val)
-{
-	int size;
-	char itoa[SMALL_BUF];
-
-	snprintf(itoa, sizeof(itoa), "%d", val);
-	size = strlen(itoa) + 1; // Include terminal 0
-	memcpy(data + (*data_size), itoa, size);
-	*data_size += size;
-}
-/*********************************************************************
  send the data of a context to another context
  *********************************************************************/
 void network_send_context_to_context(context_t * dest_ctx, context_t * src_ctx)
 {
-	char data[BIG_BUF];
-	int data_size = 0;
-
 	// Skip if Dest context is an NPC
 	if (context_is_npc(dest_ctx))
 	{
@@ -263,27 +234,27 @@ void network_send_context_to_context(context_t * dest_ctx, context_t * src_ctx)
 		return;
 	}
 
-	//TODO use NetworkFrame
-	add_str(data, &data_size, src_ctx->user_name);
-	add_str(data, &data_size, src_ctx->character_name);
-	add_int(data, &data_size, src_ctx->npc);
-	add_str(data, &data_size, src_ctx->map);
-	add_int(data, &data_size, src_ctx->in_game);
-	add_int(data, &data_size, src_ctx->connected);
-	add_int(data, &data_size, src_ctx->pos_tx);
-	add_int(data, &data_size, src_ctx->pos_ty);
-	add_str(data, &data_size, src_ctx->type);
-	add_str(data, &data_size, src_ctx->id);
-	add_str(data, &data_size, src_ctx->selection.id);
-	add_str(data, &data_size, src_ctx->selection.map);
-	add_int(data, &data_size, src_ctx->selection.map_coord[0]);
-	add_int(data, &data_size, src_ctx->selection.map_coord[1]);
-	add_str(data, &data_size, src_ctx->selection.equipment);
-	add_str(data, &data_size, src_ctx->selection.inventory);
+	NetworkFrame l_Frame;
+	l_Frame.push(src_ctx->user_name);
+	l_Frame.push(src_ctx->character_name);
+	l_Frame.push(src_ctx->npc);
+	l_Frame.push(src_ctx->map);
+	l_Frame.push(src_ctx->in_game);
+	l_Frame.push(src_ctx->connected);
+	l_Frame.push(src_ctx->pos_tx);
+	l_Frame.push(src_ctx->pos_ty);
+	l_Frame.push(src_ctx->type);
+	l_Frame.push(src_ctx->id);
+	l_Frame.push(src_ctx->selection.id);
+	l_Frame.push(src_ctx->selection.map);
+	l_Frame.push(src_ctx->selection.map_coord[0]);
+	l_Frame.push(src_ctx->selection.map_coord[1]);
+	l_Frame.push(src_ctx->selection.equipment);
+	l_Frame.push(src_ctx->selection.inventory);
 
 	wlog(LOGDEBUG, "Send CMD_SEND_CONTEXT of %s to %s", src_ctx->id,
 			dest_ctx->id);
-	network_send_command(dest_ctx, CMD_SEND_CONTEXT, data_size, data, false);
+	network_send_command(dest_ctx, CMD_SEND_CONTEXT, l_Frame, false);
 }
 
 /*********************************************************************
@@ -297,9 +268,6 @@ int network_send_file(context_t * context, char * filename)
 	char * file_data = nullptr;
 	int file_length = 0;
 	int res = 0;
-	Uint32 count = 0;
-	char * frame = nullptr;
-	char * ptr = nullptr;
 
 	// Check if NPC
 	if (context_is_npc(context) == true)
@@ -324,40 +292,14 @@ int network_send_file(context_t * context, char * filename)
 	}
 
 	//TODO Use NetworkFrame
-	// Prepare the frame = file_name_size + file_name + file_data_size + file_data
-	count = sizeof(Uint32) + strlen(filename) + 1 + sizeof(Uint32)
-			+ file_length;
-	frame = (char*) malloc(count);
-	if (frame == nullptr)
-	{
-		free(file_data);
-		werr(LOGUSER, "send_file : Error allocating memory");
-		return -1;
-	}
+	NetworkFrame l_Frame;
 
-	// first the filename size
-	*((Uint32 *) frame) = strlen(filename) + 1;
-	ptr = frame;
-	ptr += sizeof(Uint32);
-
-	// then the name of the file itself
-	memcpy(ptr, filename, strlen(filename) + 1);
-	ptr += strlen(filename) + 1;
-
-	// then the size of the file data
-	*((Uint32 *) ptr) = file_length;
-	ptr += sizeof(Uint32);
-
-	// then the file data itself
-	memcpy(ptr, file_data, file_length);
-
-	free(file_data);
+	l_Frame.push(filename);
+	l_Frame.push(file_data);
 
 	// send the frame
 	wlog(LOGDEBUG, "Send CMD_SEND_FILE : %s", filename);
-	network_send_command(context, CMD_SEND_FILE, count, frame, false);
-
-	free(frame);
+	network_send_command(context, CMD_SEND_FILE, l_Frame, false);
 
 	return 0;
 }
@@ -391,9 +333,10 @@ void network_send_text(const char * id, const char * string)
 	}
 
 	//TODO use NetworkFrame
+	NetworkFrame l_Frame;
+	l_Frame.push(string);
+
 	wlog(LOGDEBUG, "Send CMD_SEND_TEXT :\"%s\" to %s (%s)", string,
 			context->character_name, context->user_name);
-	network_send_command(context, CMD_SEND_TEXT, strlen(string) + 1, string,
-			false);
+	network_send_command(context, CMD_SEND_TEXT, l_Frame, false);
 }
-

@@ -28,8 +28,8 @@ void network_login(context_t * context, const char * user_name,
 {
 	NetworkFrame l_Frame;
 
-	l_Frame.add(user_name);
-	l_Frame.add(password);
+	l_Frame.push(user_name);
+	l_Frame.push(password);
 
 	wlog(LOGDEBUG, "Send CMD_REQ_LOGIN");
 	network_send_command(context, CMD_REQ_LOGIN, l_Frame, false);
@@ -40,7 +40,7 @@ void network_login(context_t * context, const char * user_name,
 void network_request_start(context_t * context, const char * id)
 {
 	NetworkFrame l_Frame;
-	l_Frame.add(id);
+	l_Frame.push(id);
 
 	wlog(LOGDEBUG, "Send CMD_REQ_START");
 	network_send_command(context, CMD_REQ_START, l_Frame, false);
@@ -51,7 +51,7 @@ void network_request_start(context_t * context, const char * id)
 void network_request_stop(context_t * context)
 {
 	wlog(LOGDEBUG, "Send CMD_REQ_STOP");
-	network_send_command(context, CMD_REQ_STOP, 0, nullptr, false);
+	network_send_command_no_data(context, CMD_REQ_STOP, false);
 }
 
 /*********************************************************************
@@ -60,7 +60,7 @@ void network_request_stop(context_t * context)
 void network_request_playable_character_list(context_t * context)
 {
 	wlog(LOGDEBUG, "Send CMD_REQ_PLAYABLE_CHARACTER_LIST");
-	network_send_command(context, CMD_REQ_PLAYABLE_CHARACTER_LIST, 0, nullptr,
+	network_send_command_no_data(context, CMD_REQ_PLAYABLE_CHARACTER_LIST,
 			false);
 }
 
@@ -70,8 +70,11 @@ void network_request_playable_character_list(context_t * context)
 void network_request_user_character_list(context_t * context)
 {
 	wlog(LOGDEBUG, "Send CMD_REQ_USER_CHARACTER_LIST");
-	network_send_command(context, CMD_REQ_USER_CHARACTER_LIST,
-			strlen(context->user_name) + 1, context->user_name, false);
+
+	NetworkFrame l_Frame;
+	l_Frame.push(context->user_name);
+
+	network_send_command(context, CMD_REQ_USER_CHARACTER_LIST, l_Frame, false);
 }
 
 /*********************************************************************
@@ -81,8 +84,8 @@ void network_request_character_creation(context_t * context, const char * id,
 		const char * name)
 {
 	NetworkFrame l_Frame;
-	l_Frame.add(id);
-	l_Frame.add(name);
+	l_Frame.push(id);
+	l_Frame.push(name);
 
 	wlog(LOGDEBUG, "Send CMD_REQ_CREATE");
 	network_send_command(context, CMD_REQ_CREATE, l_Frame, false);
@@ -103,12 +106,12 @@ void network_send_action(context_t * context, const char * script, ...)
 
 	NetworkFrame l_Frame;
 
-	l_Frame.add(script);
+	l_Frame.push(script);
 
 	va_start(ap, script);
 	while ((parameter = va_arg(ap, char*)) != nullptr)
 	{
-		l_Frame.add(parameter);
+		l_Frame.push(parameter);
 	}
 	va_end(ap);
 

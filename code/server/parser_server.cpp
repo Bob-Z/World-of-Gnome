@@ -61,8 +61,7 @@ ret_code_t parse_incoming_data(context_t * context, Uint32 command,
 			free(value);
 			werr(LOGUSER, "Wrong login for %s", user_name);
 			// send answer
-			network_send_command(context, CMD_SEND_LOGIN_NOK, 0, nullptr,
-					false);
+			network_send_command_no_data(context, CMD_SEND_LOGIN_NOK, false);
 			// force client disconnection
 			return RET_NOK;
 		}
@@ -77,7 +76,7 @@ ret_code_t parse_incoming_data(context_t * context, Uint32 command,
 			context_set_connected(context, true);
 
 			// send answer
-			network_send_command(context, CMD_SEND_LOGIN_OK, 0, nullptr, false);
+			network_send_command_no_data(context, CMD_SEND_LOGIN_OK, false);
 			wlog(LOGUSER, "Login successful for user %s", context->user_name);
 		}
 		break;

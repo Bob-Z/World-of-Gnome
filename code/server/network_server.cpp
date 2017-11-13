@@ -85,9 +85,9 @@ void network_send_user_character(context_t * p_pCtx,
 		const char * p_pCharacterId, const char * p_pType, const char * p_pName)
 {
 	NetworkFrame l_Frame;
-	l_Frame.add(p_pCharacterId);
-	l_Frame.add(p_pType);
-	l_Frame.add(p_pName);
+	l_Frame.push(p_pCharacterId);
+	l_Frame.push(p_pType);
+	l_Frame.push(p_pName);
 
 	network_send_command(p_pCtx, CMD_SEND_USER_CHARACTER, l_Frame, false);
 }
@@ -315,7 +315,7 @@ void network_send_popup(const char * id, const char ** dialog)
 	{
 		while (*dialog != nullptr)
 		{
-			l_Frame.add(*dialog);
+			l_Frame.push(*dialog);
 			dialog++;
 		}
 	}
@@ -363,7 +363,7 @@ void network_broadcast_effect(EffectType p_Type, const std::string & p_TargetId,
 	}
 
 	NetworkFrame l_Frame;
-	l_Frame.add(p_Param);
+	l_Frame.push(p_Param);
 
 	do
 	{
