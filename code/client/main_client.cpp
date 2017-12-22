@@ -144,7 +144,7 @@ int main(int argc, char **argv)
 
 	while (context_get_socket_data(context) == 0)
 	{
-		sleep(1);
+		usleep(100000);
 	}
 
 	option_read_client_conf();

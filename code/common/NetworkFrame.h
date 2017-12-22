@@ -56,4 +56,4 @@ private:
 	uint_fast32_t m_Index;
 };
 
-#endif /* COMMON_NETWORKFRAME_H_ */
+#endif // COMMON_NETWORKFRAME_H_

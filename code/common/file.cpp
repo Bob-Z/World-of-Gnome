@@ -495,4 +495,3 @@ Uint32 file_get_timestamp(const char * p_pTable, const char * p_pFilename)
 
 	return l_TimeStamp;
 }
-

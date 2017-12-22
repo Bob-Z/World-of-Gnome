@@ -644,7 +644,8 @@ static void compose_equipment(context_t * ctx, item_t * item_list)
 			{
 				if (!strcmp(ctx->selection.equipment, slot_list[index]))
 				{
-					anim3 = imageDB_get_anim(ctx, option_get().cursor_equipment);
+					anim3 = imageDB_get_anim(ctx,
+							option_get().cursor_equipment);
 
 					item = item_list_add(&item_list);
 
@@ -893,7 +894,8 @@ void cb_inventory_select(void * arg)
 	char * item_id = (char *) arg;
 	context_t * ctx = context_get_player();
 
-	network_send_action(ctx, option_get().action_select_inventory, item_id, nullptr);
+	network_send_action(ctx, option_get().action_select_inventory, item_id,
+			nullptr);
 }
 
 /**********************************

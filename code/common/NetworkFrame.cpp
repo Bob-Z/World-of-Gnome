@@ -37,7 +37,7 @@ NetworkFrame::~NetworkFrame()
 {
 	if (m_pFrame != nullptr)
 	{
-		free(m_pFrame);
+		free (m_pFrame);
 	}
 }
 
@@ -198,7 +198,7 @@ void NetworkFrame::pop(void* & p_rBinaryData, int_fast32_t & p_rSize)
 	p_rSize = readSize();
 
 	p_rBinaryData = malloc(p_rSize);
-	memcpy(p_rBinaryData,&m_pFrame[m_Index],p_rSize);
+	memcpy(p_rBinaryData, &m_pFrame[m_Index], p_rSize);
 	m_Index += p_rSize;
 }
 
