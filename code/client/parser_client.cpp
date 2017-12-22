@@ -87,7 +87,7 @@ ret_code_t parse_incoming_data(context_t * p_pContext, NetworkFrame & p_rFrame)
 		break;
 	case CMD_SEND_ENTRY:
 		wlog(LOGDEBUG, "Received CMD_SEND_ENTRY");
-		//if (entry_update(p_pData) != -1)
+		if (entry_update(p_rFrame) != -1)
 		{
 			screen_compose();
 		}

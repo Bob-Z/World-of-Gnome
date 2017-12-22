@@ -1528,7 +1528,8 @@ ret_code_t entry_update(NetworkFrame & p_rFrame)
 	}
 	else if (strcmp(l_EntryType.c_str(), ENTRY_TYPE_STRING) == 0)
 	{
-		if (config_setting_set_string(l_pSetting, l_Value.c_str()) == CONFIG_FALSE)
+		if (config_setting_set_string(l_pSetting,
+				l_Value.c_str()) == CONFIG_FALSE)
 		{
 			werr(LOGUSER, "Error setting %s/%s/%s to %s", l_Table.c_str(),
 					l_File.c_str(), l_Path.c_str(), l_Value.c_str());

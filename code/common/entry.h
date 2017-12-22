@@ -57,7 +57,7 @@ ret_code_t entry_group_create(const char * table, const char * file, ...);
 char * entry_copy_group(const char * src_table, const char * src_file,
 		const char * dst_table, const char * dst_file, const char * group_name,
 		...);
-ret_code_t entry_update(char * data);
+ret_code_t entry_update(NetworkFrame & p_rFrame);
 ret_code_t entry_destroy(const char * table, const char * filename);
 bool entry_exist(const char * table, const char * file, ...);
 #endif
