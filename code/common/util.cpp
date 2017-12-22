@@ -194,7 +194,32 @@ char ** add_array(char ** array1, char ** array2)
 		}
 	}
 
-	/* Terminal nullptr */
+	// Terminal nullptr
+	array_index++;
+	ret_array = (char **) realloc(ret_array, array_index * sizeof(char*));
+	ret_array[array_index - 1] = nullptr;
+
+	return ret_array;
+}
+
+/********************************
+ // TODO use only std::vector
+ Convert a vector to an array
+ Return pointer must be deep free
+ ********************************/
+char ** to_array(const std::vector<std::string> & p_rParam)
+{
+	int array_index = 0;
+	char ** ret_array = nullptr;
+
+	for (auto l_Param : p_rParam)
+	{
+		array_index++;
+		ret_array = (char **) realloc(ret_array, array_index * sizeof(char*));
+		ret_array[array_index - 1] = strdup(l_Param.c_str());
+	}
+
+	// Terminal nullptr
 	array_index++;
 	ret_array = (char **) realloc(ret_array, array_index * sizeof(char*));
 	ret_array[array_index - 1] = nullptr;

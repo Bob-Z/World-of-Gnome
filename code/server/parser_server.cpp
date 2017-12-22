@@ -168,26 +168,22 @@ ret_code_t parse_incoming_data(context_t * p_pContext, NetworkFrame & p_rFrame)
 		}
 		break;
 	case CMD_REQ_ACTION:
-		/*
-		 i = 0;
-		 elements[i] = nullptr;
-		 //elements[i] = _strsep(&data, NETWORK_DELIMITER);
-		 while (elements[i])
-		 {
-		 i++;
-		 //elements[i] = _strsep(&data, NETWORK_DELIMITER);
-		 }
-		 elements[i + 1] = nullptr;
-
-		 wlog(LOGDEBUG, "Received CMD_REQ_ACTION %s from %s /%s", elements[0],
-		 p_pContext->user_name, p_pContext->character_name);
-
-		 action_execute(p_pContext, elements[0], &elements[1]);
-		 */
-		break;
-	case CMD_REQ_CREATE:
 	{
+		std::string l_ActionName;
+		p_rFrame.pop(l_ActionName);
+		std::vector<std::string> l_Param;
+		p_rFrame.pop(l_Param);
+
+		wlog(LOGDEBUG, "Received CMD_REQ_ACTION %s from %s /%s",
+				l_ActionName.c_str(), p_pContext->user_name,
+				p_pContext->character_name);
+
+		action_execute(p_pContext, l_ActionName, l_Param);
+	}
+		break;
 		/*
+		 case CMD_REQ_CREATE:
+		 {
 		 char * l_Id = _strsep(&data, NETWORK_DELIMITER);
 		 char * l_Name = _strsep(&data, NETWORK_DELIMITER);
 		 wlog(LOGDEBUG, "Received CMD_REQ_CREATE: ID=%s, NAME=%s", l_Id, l_Name);
@@ -230,9 +226,9 @@ ret_code_t parse_incoming_data(context_t * p_pContext, NetworkFrame & p_rFrame)
 		 character_user_send(context, l_Name);
 
 		 wlog(LOGDEBUG, "Successfully created: ID=%s, NAME=%s", l_Id, l_Name);
+		 }
+		 break;
 		 */
-	}
-		break;
 	default:
 		werr(LOGDEV, "Unknown request %d from client", l_Command);
 		return RET_NOK;

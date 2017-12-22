@@ -2258,16 +2258,17 @@ int action_execute_script(context_t * context, const char * script,
  **************************************/
 int action_execute(context_t * context, const char * action, char ** parameters)
 {
-	char * script;
-	char ** params;
-	char ** all_params;
-	int ret;
+	char * script = nullptr;
+	char ** params = nullptr;
+	char ** all_params = nullptr;
+	int ret = -1;
 
 	if (entry_read_string(ACTION_TABLE, action, &script, ACTION_KEY_SCRIPT,
 			nullptr) == RET_NOK)
 	{
 		return -1;
 	}
+
 	entry_read_list(ACTION_TABLE, action, &params, ACTION_KEY_PARAM, nullptr);
 
 	all_params = add_array(params, parameters);
@@ -2275,6 +2276,40 @@ int action_execute(context_t * context, const char * action, char ** parameters)
 	ret = action_execute_script(context, script, (const char**) all_params);
 
 	deep_free(params);
+	free(all_params);
+
+	return ret;
+}
+
+/**************************************
+ Execute an action configuration file
+ return -1 if the script do not return something
+ **************************************/
+int action_execute(context_t * context, const std::string & p_rScriptName,
+		const std::vector<std::string> & p_rParam)
+{
+	char * script = nullptr;
+	char ** params = nullptr;
+	char ** all_params = nullptr;
+	int ret = -1;
+
+	if (entry_read_string(ACTION_TABLE, p_rScriptName.c_str(), &script,
+	ACTION_KEY_SCRIPT, nullptr) == RET_NOK)
+	{
+		return -1;
+	}
+
+	entry_read_list(ACTION_TABLE, p_rScriptName.c_str(), &params,
+	ACTION_KEY_PARAM, nullptr);
+
+	char ** passed_param = to_array(p_rParam);
+
+	all_params = add_array(params, passed_param);
+
+	ret = action_execute_script(context, script, (const char**) all_params);
+
+	deep_free(params);
+	deep_free(passed_param);
 	free(all_params);
 
 	return ret;

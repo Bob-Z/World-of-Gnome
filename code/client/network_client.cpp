@@ -109,12 +109,16 @@ void network_send_action(context_t * context, const char * script, ...)
 
 	l_Frame.push(script);
 
+	std::vector<std::string> l_Param;
+
 	va_start(ap, script);
 	while ((parameter = va_arg(ap, char*)) != nullptr)
 	{
-		l_Frame.push(parameter);
+		l_Param.push_back(parameter);
 	}
 	va_end(ap);
+
+	l_Frame.push(l_Param);
 
 	wlog(LOGDEBUG, "Send CMD_REQ_ACTION :%s", l_Frame.getFrame());
 	network_send_command(context, CMD_REQ_ACTION, l_Frame, false);
