@@ -842,7 +842,7 @@ void context_spread(context_t * context)
 
 	do
 	{
-		/* Skip if not in game */
+		// Skip if not in game
 		if (ctx->in_game == false)
 		{
 			continue;
@@ -853,8 +853,14 @@ void context_spread(context_t * context)
 			continue;
 		}
 
-		/* Skip if not on the same map or previous map */
-		if (ctx->map && context->map && context->prev_map)
+		if(ctx->id == nullptr)
+		{
+			continue;
+		}
+
+		// Skip if not on the same map or previous map
+		if ((ctx->map != nullptr) && (context->map != nullptr)
+				&& (context->prev_map != nullptr))
 		{
 			if (strcmp(context->map, ctx->map) != 0
 					&& strcmp(context->prev_map, ctx->map) != 0)
@@ -907,20 +913,20 @@ void context_broadcast_text(const char * map, const char * text)
 			continue;
 		}
 
-		/* Skip if the player has not selected its character */
+		// Skip if the player has not selected its character
 		if (ctx->id == nullptr)
 		{
 			continue;
 		}
 
-		if (ctx->map == 0)
+		if (ctx->map == nullptr)
 		{
 			continue;
 		}
 
 		if (map)
 		{
-			/* Skip if not on the same map */
+			// Skip if not on the same map
 			if (strcmp(map, ctx->map) != 0)
 			{
 				continue;
@@ -979,169 +985,124 @@ void context_request_other_context(context_t * context)
 /**************************************
  Called from client
  **************************************/
-void context_add_or_update_from_network_frame(context_t * context, char * data)
+void context_add_or_update_from_network_frame(context_t * p_pContext,
+		NetworkFrame & p_rNetworkFrame)
 {
-	context_t * ctx = nullptr;
-	char * user_name = nullptr;
-	char * name = nullptr;
-	int npc;
-	char * map = nullptr;
-	int in_game;
-	bool connected;
-	int pos_tx;
-	int pos_ty;
-	char * type = nullptr;
-	char * id = nullptr;
-	char * selected_character = nullptr;
-	char * selected_map = nullptr;
-	int selected_map_x = 0;
-	int selected_map_y = 0;
-	char * selected_equipment = nullptr;
-	char * selected_item = nullptr;
+	context_t l_ReadContext;
+	context_init(&l_ReadContext);
 
-	/* First decode the data */
+	p_rNetworkFrame.pop(l_ReadContext.user_name);
+	p_rNetworkFrame.pop(l_ReadContext.character_name);
+	p_rNetworkFrame.pop(l_ReadContext.npc);
+	p_rNetworkFrame.pop(l_ReadContext.map);
+	p_rNetworkFrame.pop(l_ReadContext.in_game);
+	p_rNetworkFrame.pop(l_ReadContext.connected);
+	p_rNetworkFrame.pop(l_ReadContext.pos_tx);
+	p_rNetworkFrame.pop(l_ReadContext.pos_ty);
+	p_rNetworkFrame.pop(l_ReadContext.type);
+	p_rNetworkFrame.pop(l_ReadContext.id);
+	p_rNetworkFrame.pop(l_ReadContext.selection.id);
+	p_rNetworkFrame.pop(l_ReadContext.selection.map);
+	p_rNetworkFrame.pop(l_ReadContext.selection.map_coord[0]);
+	p_rNetworkFrame.pop(l_ReadContext.selection.map_coord[1]);
+	p_rNetworkFrame.pop(l_ReadContext.selection.equipment);
+	p_rNetworkFrame.pop(l_ReadContext.selection.inventory);
 
-	user_name = strdup(data);
-	data += (strlen(data) + 1);
-
-	name = strdup(data);
-	data += (strlen(data) + 1);
-
-	npc = atoi(data);
-	data += (strlen(data) + 1);
-
-	map = strdup(data);
-	data += (strlen(data) + 1);
-
-	in_game = atoi(data);
-	data += (strlen(data) + 1);
-
-	connected = atoi(data);
-	data += (strlen(data) + 1);
-
-	pos_tx = atoi(data);
-	data += (strlen(data) + 1);
-
-	pos_ty = atoi(data);
-	data += (strlen(data) + 1);
-
-	type = strdup(data);
-	data += (strlen(data) + 1);
-
-	id = strdup(data);
-	data += (strlen(data) + 1);
-
-	selected_character = strdup(data);
-	data += (strlen(data) + 1);
-
-	selected_map = strdup(data);
-	data += (strlen(data) + 1);
-
-	selected_map_x = atoi(data);
-	data += (strlen(data) + 1);
-
-	selected_map_y = atoi(data);
-	data += (strlen(data) + 1);
-
-	selected_equipment = strdup(data);
-	data += (strlen(data) + 1);
-
-	selected_item = strdup(data);
-	data += (strlen(data) + 1);
-
-	// search for this context
+	// search for this p_pContext
 	context_lock_list();
-	ctx = context_list_start;
+	context_t * ctx = context_list_start;
 
 	while (ctx != nullptr)
 	{
-		if (strcmp(id, ctx->id) == 0)
+		if (strcmp(l_ReadContext.id, ctx->id) == 0)
 		{
-			ctx->in_game = in_game;
-			ctx->connected = connected;
+			ctx->in_game = l_ReadContext.in_game;
+			ctx->connected = l_ReadContext.connected;
 
-			if (in_game == true)
+			if (l_ReadContext.in_game == true)
 			{
-				wlog(LOGDEBUG, "Updating context %s / %s", user_name, name);
+				wlog(LOGDEBUG, "Updating p_pContext %s / %s",
+						l_ReadContext.user_name, l_ReadContext.character_name);
 				// do not call context_set_* function since we already have the lock
-				_context_set_map(ctx, map);
+				_context_set_map(ctx, l_ReadContext.map);
 
-				_context_set_npc(ctx, npc);
+				_context_set_npc(ctx, l_ReadContext.npc);
 
-				_context_set_pos_tx(ctx, pos_tx);
-				_context_set_pos_ty(ctx, pos_ty);
+				_context_set_pos_tx(ctx, l_ReadContext.pos_tx);
+				_context_set_pos_ty(ctx, l_ReadContext.pos_ty);
 
 				free(ctx->type);
-				ctx->type = strdup(type);
+				ctx->type = strdup(l_ReadContext.type);
 
 				if (ctx->selection.map)
 				{
 					free(ctx->selection.map);
 				}
-				ctx->selection.map = strdup(selected_map);
-				ctx->selection.map_coord[0] = selected_map_x;
-				ctx->selection.map_coord[1] = selected_map_y;
+				ctx->selection.map = strdup(l_ReadContext.selection.map);
+				ctx->selection.map_coord[0] =
+						l_ReadContext.selection.map_coord[0];
+				ctx->selection.map_coord[1] =
+						l_ReadContext.selection.map_coord[1];
 
 				if (ctx->selection.id)
 				{
 					free(ctx->selection.id);
 				}
-				ctx->selection.id = strdup(selected_character);
+				ctx->selection.id = strdup(l_ReadContext.selection.id);
 
 				if (ctx->selection.equipment)
 				{
 					free(ctx->selection.equipment);
 				}
-				ctx->selection.equipment = strdup(selected_equipment);
+				ctx->selection.equipment = strdup(
+						l_ReadContext.selection.equipment);
 
 				if (ctx->selection.inventory)
 				{
 					free(ctx->selection.inventory);
 				}
-				ctx->selection.inventory = strdup(selected_item);
+				ctx->selection.inventory = strdup(
+						l_ReadContext.selection.inventory);
 			}
 
-			if (connected == false)
+			if (l_ReadContext.connected == false)
 			{
-				wlog(LOGDEBUG, "Deleting context %s / %s", user_name, name);
+				wlog(LOGDEBUG, "Deleting p_pContext %s / %s",
+						l_ReadContext.user_name, l_ReadContext.character_name);
 				context_free(ctx);
 			}
 			context_unlock_list();
 
-			goto context_add_or_update_from_network_frame_free;
+			context_free(&l_ReadContext);
+
+			return;
 		}
 		ctx = ctx->next;
 	}
 
 	context_unlock_list();
 
-	wlog(LOGDEBUG, "Creating context %s / %s", user_name, name);
+	wlog(LOGDEBUG, "Creating p_pContext %s / %s", l_ReadContext.user_name,
+			l_ReadContext.character_name);
 	ctx = context_new();
-	context_set_username(ctx, user_name);
-	context_set_character_name(ctx, name);
-	context_set_npc(ctx, npc);
-	context_set_map(ctx, map);
-	context_set_type(ctx, type);
-	context_set_pos_tx(ctx, pos_tx);
-	context_set_pos_ty(ctx, pos_ty);
-	context_set_id(ctx, id);
-	context_set_connected(ctx, connected);
-	context_set_in_game(ctx, in_game);
-	context_set_selected_character(ctx, selected_character);
-	context_set_selected_tile(ctx, selected_map, selected_map_x,
-			selected_map_y);
-	context_set_selected_equipment(ctx, selected_equipment);
-	context_set_selected_item(ctx, selected_item);
+	context_set_username(ctx, l_ReadContext.user_name);
+	context_set_character_name(ctx, l_ReadContext.character_name);
+	context_set_npc(ctx, l_ReadContext.npc);
+	context_set_map(ctx, l_ReadContext.map);
+	context_set_type(ctx, l_ReadContext.type);
+	context_set_pos_tx(ctx, l_ReadContext.pos_tx);
+	context_set_pos_ty(ctx, l_ReadContext.pos_ty);
+	context_set_id(ctx, l_ReadContext.id);
+	context_set_connected(ctx, l_ReadContext.connected);
+	context_set_in_game(ctx, l_ReadContext.in_game);
+	context_set_selected_character(ctx, l_ReadContext.selection.id);
+	context_set_selected_tile(ctx, l_ReadContext.selection.map,
+			l_ReadContext.selection.map_coord[0],
+			l_ReadContext.selection.map_coord[1]);
+	context_set_selected_equipment(ctx, l_ReadContext.selection.equipment);
+	context_set_selected_item(ctx, l_ReadContext.selection.inventory);
 
-	context_add_or_update_from_network_frame_free: free(user_name);
-	free(name);
-	free(map);
-	free(type);
-	free(id);
-	free(selected_character);
-	free(selected_map);
-	free(selected_equipment);
-	free(selected_item);
+	context_free(&l_ReadContext);
 }
 
 /**************************************

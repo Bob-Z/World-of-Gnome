@@ -31,6 +31,7 @@ extern "C"
 }
 #endif
 
+#include "NetworkFrame.h"
 #include "types.h"
 
 typedef struct selection
@@ -118,7 +119,8 @@ ret_code_t context_set_selected_item(context_t * context,
 		const char * selected_item);
 ret_code_t context_update_from_file(context_t * context);
 void context_spread(context_t * context);
-void context_add_or_update_from_network_frame(context_t * context, char * data);
+void context_add_or_update_from_network_frame(context_t * context,
+		NetworkFrame & p_rNetworkFrame);
 void context_lock_list();
 void context_unlock_list();
 context_t * context_get_first();
@@ -134,4 +136,3 @@ void context_reset_all_position();
 bool context_is_npc(context_t * ctx);
 
 #endif
-

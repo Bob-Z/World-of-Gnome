@@ -37,7 +37,7 @@ NetworkFrame::~NetworkFrame()
 {
 	if (m_pFrame != nullptr)
 	{
-		free (m_pFrame);
+		free(m_pFrame);
 	}
 }
 
@@ -76,11 +76,13 @@ void NetworkFrame::push(const int_fast32_t p_IntData)
 /******************************************************************************/
 void NetworkFrame::push(const int p_IntData)
 {
-	prepareFrame(sizeof(int32_t));
+	push(static_cast<int_fast32_t>(p_IntData));
+}
 
-	int32_t l_Data = htonl(static_cast<int32_t>(p_IntData));
-
-	addData(&l_Data, sizeof(l_Data));
+/******************************************************************************/
+void NetworkFrame::push(const bool p_BoolData)
+{
+	push(static_cast<int_fast32_t>(p_BoolData));
 }
 
 /******************************************************************************/
@@ -179,6 +181,22 @@ void NetworkFrame::pop(int_fast32_t & p_rData)
 }
 
 /******************************************************************************/
+void NetworkFrame::pop(int & p_rData)
+{
+	int_fast32_t l_Data;
+	pop(l_Data);
+	p_rData = static_cast<int>(l_Data);
+}
+
+/******************************************************************************/
+void NetworkFrame::pop(bool & p_rData)
+{
+	int_fast32_t l_Data;
+	pop(l_Data);
+	p_rData = static_cast<int>(l_Data);
+}
+
+/******************************************************************************/
 void NetworkFrame::pop(std::string & p_rData)
 {
 	size_t l_Size = readSize();
@@ -209,6 +227,17 @@ void NetworkFrame::pop(std::vector<std::string> & p_rStringVectorData)
 		pop(l_ReadString);
 		p_rStringVectorData.push_back(l_ReadString);
 	}
+}
+
+/******************************************************************************/
+void NetworkFrame::pop(char* & p_rAsciiData)
+{
+	size_t l_Size;
+	l_Size = readSize();
+
+	p_rAsciiData = static_cast<char*>(malloc(l_Size));
+	memcpy(static_cast<void*>(p_rAsciiData), &m_pFrame[m_Index], l_Size);
+	m_Index += l_Size;
 }
 
 /******************************************************************************/

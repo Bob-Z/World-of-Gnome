@@ -35,6 +35,7 @@ public:
 	void push(const uint_fast32_t p_IntData);
 	void push(const int_fast32_t p_IntData);
 	void push(const int p_IntData);
+	void push(const bool p_BoolData);
 	void push(const std::string& p_rStringData);
 	void push(const std::vector<std::string> & p_rStringVectorData);
 	void push(const char* p_rAsciiData);
@@ -43,8 +44,11 @@ public:
 
 	void pop(uint_fast32_t &p_rData);
 	void pop(int_fast32_t &p_rData);
+	void pop(int & p_rData);
+	void pop(bool & p_rData);
 	void pop(std::string &p_rData);
 	void pop(std::vector<std::string> & p_rStringVectorData);
+	void pop(char* & p_rAsciiData);
 	void pop(void* & p_rBinaryData, int_fast32_t & p_rSize);
 
 private:

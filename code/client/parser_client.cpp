@@ -73,7 +73,7 @@ ret_code_t parse_incoming_data(context_t * p_pContext, NetworkFrame & p_rFrame)
 		break;
 	case CMD_SEND_CONTEXT:
 		wlog(LOGDEBUG, "Received CMD_SEND_CONTEXT");
-		//context_add_or_update_from_network_frame(p_pContext, p_pData);
+		context_add_or_update_from_network_frame(p_pContext, p_rFrame);
 		screen_compose();
 		break;
 	case CMD_SEND_TEXT:
