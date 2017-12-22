@@ -849,7 +849,7 @@ static void cb_print_coord(void * arg)
 #endif
 	sprintf(buf, "x=%d y=%d", scr_play_get_current_x(),
 			scr_play_get_current_y());
-	textview_add_line(buf);
+	textview_add_line(std::string(buf));
 
 	screen_compose();
 }

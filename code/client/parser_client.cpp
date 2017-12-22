@@ -77,8 +77,13 @@ ret_code_t parse_incoming_data(context_t * p_pContext, NetworkFrame & p_rFrame)
 		screen_compose();
 		break;
 	case CMD_SEND_TEXT:
+	{
 		wlog(LOGDEBUG, "Received CMD_SEND_TEXT");
-		//textview_add_line(p_pData);
+		std::string l_Text;
+		p_rFrame.pop(l_Text);
+
+		textview_add_line(l_Text);
+	}
 		break;
 	case CMD_SEND_ENTRY:
 		wlog(LOGDEBUG, "Received CMD_SEND_ENTRY");
