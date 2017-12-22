@@ -68,7 +68,7 @@ ret_code_t parse_incoming_data(context_t * p_pContext, NetworkFrame & p_rFrame)
 		break;
 	case CMD_SEND_USER_CHARACTER:
 		wlog(LOGDEBUG, "Received CMD_SEND_USER_CHARACTER");
-		//scr_select_add_user_character(p_pContext, p_pData);
+		scr_select_add_user_character(p_pContext, p_rFrame);
 		screen_compose();
 		break;
 	case CMD_SEND_CONTEXT:

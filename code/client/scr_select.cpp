@@ -403,14 +403,16 @@ item_t * scr_select_compose(context_t * context)
 
 /*************************
  Add a character to the list
- the data is a list a 3 strings, the first string is the id of the character (its file name) the second one is the type of the character, the third is the name of the character.
- the list ends with an empty string
  *************************/
-void scr_select_add_user_character(context_t * p_pCtx, char * p_pFrame)
+void scr_select_add_user_character(context_t * p_pCtx,
+		NetworkFrame & p_rNetworkFrame)
 {
-	char * l_pId = _strsep(&p_pFrame, NETWORK_DELIMITER);
-	char * l_pType = _strsep(&p_pFrame, NETWORK_DELIMITER);
-	char * l_pName = _strsep(&p_pFrame, NETWORK_DELIMITER);
+	std::string l_Id;
+	p_rNetworkFrame.pop(l_Id);
+	std::string l_Type;
+	p_rNetworkFrame.pop(l_Type);
+	std::string l_Name;
+	p_rNetworkFrame.pop(l_Name);
 
 	SDL_LockMutex(character_select_mutex);
 
@@ -420,9 +422,9 @@ void scr_select_add_user_character(context_t * p_pCtx, char * p_pFrame)
 			sizeof(character_t) * character_num);
 
 	character_t * new_character = &(character_list[character_num - 1]);
-	new_character->id = strdup(l_pId);
-	new_character->type = strdup(l_pType);
-	new_character->name = strdup(l_pName);
+	new_character->id = strdup(l_Id.c_str());
+	new_character->type = strdup(l_Type.c_str());
+	new_character->name = strdup(l_Name.c_str());
 	new_character->anim = nullptr;
 	new_character->item = nullptr;
 	new_character->width = 0;
@@ -432,4 +434,3 @@ void scr_select_add_user_character(context_t * p_pCtx, char * p_pFrame)
 
 	SDL_UnlockMutex(character_select_mutex);
 }
-
