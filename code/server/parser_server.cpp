@@ -181,54 +181,57 @@ ret_code_t parse_incoming_data(context_t * p_pContext, NetworkFrame & p_rFrame)
 		action_execute(p_pContext, l_ActionName, l_Param);
 	}
 		break;
-		/*
-		 case CMD_REQ_CREATE:
-		 {
-		 char * l_Id = _strsep(&data, NETWORK_DELIMITER);
-		 char * l_Name = _strsep(&data, NETWORK_DELIMITER);
-		 wlog(LOGDEBUG, "Received CMD_REQ_CREATE: ID=%s, NAME=%s", l_Id, l_Name);
+	case CMD_REQ_CREATE:
+	{
+		std::string l_Id;
+		p_rFrame.pop(l_Id);
+		std::string l_Name;
+		p_rFrame.pop(l_Name);
 
-		 char * l_FileName = nullptr;
-		 l_FileName = file_new(CHARACTER_TABLE, l_Name);
-		 if (l_FileName == nullptr)
-		 {
-		 werr(LOGUSER, "%s already exists", l_Name);
-		 break;
-		 }
+		wlog(LOGDEBUG, "Received CMD_REQ_CREATE: ID=%s, NAME=%s", l_Id.c_str(),
+				l_Name.c_str());
 
-		 if (file_copy(CHARACTER_TEMPLATE_TABLE, l_Id, CHARACTER_TABLE, l_Name)
-		 == false)
-		 {
-		 werr(LOGUSER,
-		 "Error copying character template %s to character %s (maybe template doesn't exists ?)",
-		 l_Id, l_Name);
-		 file_delete(CHARACTER_TABLE, l_Name);
-		 break;
-		 }
+		char * l_FileName = nullptr;
+		l_FileName = file_new(CHARACTER_TABLE, l_Name.c_str());
+		if (l_FileName == nullptr)
+		{
+			werr(LOGUSER, "%s already exists", l_Name.c_str());
+			break;
+		}
 
-		 if (entry_write_string(CHARACTER_TABLE, l_Name, l_Name,
-		 CHARACTER_KEY_NAME, nullptr) == RET_NOK)
-		 {
-		 werr(LOGUSER, "Error setting character name %s", l_Name);
-		 file_delete(CHARACTER_TABLE, l_Name);
-		 break;
-		 }
+		if (file_copy(CHARACTER_TEMPLATE_TABLE, l_Id.c_str(), CHARACTER_TABLE,
+				l_Name.c_str()) == false)
+		{
+			werr(LOGUSER,
+					"Error copying character template %s to character %s (maybe template doesn't exists ?)",
+					l_Id, l_Name);
+			file_delete(CHARACTER_TABLE, l_Name.c_str());
+			break;
+		}
 
-		 if (entry_add_to_list(USERS_TABLE, context->user_name, l_Name,
-		 USERS_CHARACTER_LIST, nullptr) == RET_NOK)
-		 {
-		 werr(LOGUSER, "Error adding character %s to user %s", l_Name,
-		 context->user_name);
-		 file_delete(CHARACTER_TABLE, l_Name);
-		 break;
-		 }
+		if (entry_write_string(CHARACTER_TABLE, l_Name.c_str(), l_Name.c_str(),
+		CHARACTER_KEY_NAME, nullptr) == RET_NOK)
+		{
+			werr(LOGUSER, "Error setting character name %s", l_Name.c_str());
+			file_delete(CHARACTER_TABLE, l_Name.c_str());
+			break;
+		}
 
-		 character_user_send(context, l_Name);
+		if (entry_add_to_list(USERS_TABLE, p_pContext->user_name, l_Name.c_str(),
+		USERS_CHARACTER_LIST, nullptr) == RET_NOK)
+		{
+			werr(LOGUSER, "Error adding character %s to user %s",
+					l_Name.c_str(), p_pContext->user_name);
+			file_delete(CHARACTER_TABLE, l_Name.c_str());
+			break;
+		}
 
-		 wlog(LOGDEBUG, "Successfully created: ID=%s, NAME=%s", l_Id, l_Name);
-		 }
-		 break;
-		 */
+		character_user_send(p_pContext, l_Name.c_str());
+
+		wlog(LOGDEBUG, "Successfully created: ID=%s, NAME=%s", l_Id.c_str(),
+				l_Name.c_str());
+	}
+		break;
 	default:
 		werr(LOGDEV, "Unknown request %d from client", l_Command);
 		return RET_NOK;
