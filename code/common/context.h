@@ -86,6 +86,7 @@ typedef struct context
 
 void context_init(context_t * context);
 context_t * context_new(void);
+void context_free_data(context_t * context);
 void context_free(context_t * context);
 ret_code_t context_set_hostname(context_t * context, const char * name);
 ret_code_t context_set_username(context_t * context, const char * name);

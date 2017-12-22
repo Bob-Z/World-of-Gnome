@@ -30,8 +30,8 @@ ret_code_t parse_incoming_data(context_t * p_pContext, NetworkFrame & p_rFrame)
 	uint_fast32_t l_Command = 0U;
 	p_rFrame.pop(l_Command);
 
-	if (!context_get_connected(p_pContext)
-			&& (l_Command != CMD_REQ_LOGIN && l_Command != CMD_REQ_FILE))
+	if ((context_get_connected(p_pContext) == false)
+			&& ((l_Command != CMD_REQ_LOGIN) && (l_Command != CMD_REQ_FILE)))
 	{
 		werr(LOGUSER,
 				"Request from not authenticated client, close connection");
@@ -128,7 +128,12 @@ ret_code_t parse_incoming_data(context_t * p_pContext, NetworkFrame & p_rFrame)
 	case CMD_REQ_START:
 		if (p_pContext->in_game == false)
 		{
-			//p_pContext->id = strdup(data);
+			char * l_Id = nullptr;
+			p_rFrame.pop(l_Id);
+
+			p_pContext->id = strdup(l_Id);
+			free(l_Id);
+
 			p_pContext->in_game = true;
 			context_update_from_file(p_pContext);
 			context_spread(p_pContext);

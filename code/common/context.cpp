@@ -123,17 +123,12 @@ context_t * context_new(void)
 	context_unlock_list();
 	return ctx->next;
 }
-
 /*************************************
- context_free
- Deep free of a context_t struct
+ context_free_data
+ Deep free of all context_t data
  *************************************/
-void context_free(context_t * context)
+void context_free_data(context_t * context)
 {
-	context_t * ctx;
-
-	context_lock_list();
-
 	if (context->user_name)
 	{
 		free(context->user_name);
@@ -213,7 +208,24 @@ void context_free(context_t * context)
 		SDL_DestroyMutex(context->cond_mutex);
 	}
 
-	/* First context of the list */
+	if (context->id)
+	{
+		free(context->id);
+	}
+	context->id = nullptr;
+}
+
+/*************************************
+ context_free
+ Deep free of a context_t struct and remove it from context list
+ *************************************/
+void context_free(context_t * context)
+{
+	context_t * ctx;
+
+	context_lock_list();
+
+	// First context of the list
 	if (context->previous == nullptr)
 	{
 		context_list_start = context->next;
@@ -231,11 +243,11 @@ void context_free(context_t * context)
 		}
 	}
 
-	/* Remove this context from other context's selection */
+	// Remove this context from other context's selection
 	ctx = context_list_start;
 	while (ctx != nullptr)
 	{
-		if (context->id && ctx->selection.id)
+		if ((context->id != nullptr) && (ctx->selection.id != nullptr))
 		{
 			if (strcmp(context->id, ctx->selection.id) == 0)
 			{
@@ -245,13 +257,7 @@ void context_free(context_t * context)
 		ctx = ctx->next;
 	}
 
-	if (context->id)
-	{
-		free(context->id);
-	}
-	context->id = nullptr;
-
-	/* Remove this context from the list */
+	// Remove this context from the list
 	if (context == context_get_first())
 	{
 		context_list_start = context->next;
@@ -270,9 +276,11 @@ void context_free(context_t * context)
 		}
 	}
 
-	free(context);
-
 	context_unlock_list();
+
+	context_free_data(context);
+
+	free(context);
 }
 
 /***********************
@@ -853,7 +861,7 @@ void context_spread(context_t * context)
 			continue;
 		}
 
-		if(ctx->id == nullptr)
+		if (ctx->id == nullptr)
 		{
 			continue;
 		}
@@ -902,7 +910,7 @@ void context_broadcast_text(const char * map, const char * text)
 
 	do
 	{
-		/* Skip if not in game */
+		// Skip if not in game
 		if (ctx->in_game == false)
 		{
 			continue;
@@ -960,14 +968,14 @@ void context_request_other_context(context_t * context)
 
 	do
 	{
-		/* Skip the calling context */
+		// Skip the calling context
 		if (context == ctx)
 		{
 			continue;
 		}
 
-		/* Skip if not on the same map */
-		if (ctx->map)
+		// Skip if not on the same map
+		if (ctx->map != nullptr)
 		{
 			if (strcmp(context->map, ctx->map) != 0)
 			{
@@ -1073,7 +1081,7 @@ void context_add_or_update_from_network_frame(context_t * p_pContext,
 			}
 			context_unlock_list();
 
-			context_free(&l_ReadContext);
+			context_free_data(&l_ReadContext);
 
 			return;
 		}
@@ -1102,7 +1110,7 @@ void context_add_or_update_from_network_frame(context_t * p_pContext,
 	context_set_selected_equipment(ctx, l_ReadContext.selection.equipment);
 	context_set_selected_item(ctx, l_ReadContext.selection.inventory);
 
-	context_free(&l_ReadContext);
+	context_free_data(&l_ReadContext);
 }
 
 /**************************************
