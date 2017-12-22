@@ -402,15 +402,18 @@ item_t * scr_create_compose(context_t * context)
 		}
 		else
 		{
-			item = item_list_add(&item_list);
-			item_set_string(item, character_list[i].name);
-			item_set_font(item, font_name);
-			// display string just above the picture
-			sdl_get_string_size(item->font, item->string, &w, &h);
-			item_set_anim_shape(item,
-					item_image->rect.x + item_image->rect.w / 2 - w / 2,
-					item_image->rect.y - h + (item_image->rect.h / 2)
-							- (max_h / 2), w, h);
+			if (character_list[i].name != nullptr)
+			{
+				item = item_list_add(&item_list);
+				item_set_string(item, character_list[i].name);
+				item_set_font(item, font_name);
+				// display string just above the picture
+				sdl_get_string_size(item->font, item->string, &w, &h);
+				item_set_anim_shape(item,
+						item_image->rect.x + item_image->rect.w / 2 - w / 2,
+						item_image->rect.y - h + (item_image->rect.h / 2)
+								- (max_h / 2), w, h);
+			}
 		}
 
 		// character type
@@ -450,26 +453,24 @@ item_t * scr_create_compose(context_t * context)
 
 /*************************
  Add a character to the list
- the frame is a list of file names.
- the list ends with an empty string
  *************************/
-void scr_create_add_playable_character(context_t * context, char * frame)
+void scr_create_add_playable_character(context_t * context,
+		NetworkFrame & p_rNetworkFrame)
 {
-	char * current_string = frame;
+	std::vector<std::string> l_Data;
+	p_rNetworkFrame.pop(l_Data);
 
 	SDL_LockMutex(character_create_mutex);
 
-	while (current_string[0] != 0)
+	for (auto l_CharacterName : l_Data)
 	{
-
 		character_num++;
 
 		character_list = (character_t*) realloc(character_list,
 				sizeof(character_t) * character_num);
 
 		int l_Index = character_num - 1;
-		character_list[l_Index].id = strdup(current_string);
-		current_string += strlen(current_string) + 1;
+		character_list[l_Index].id = strdup(l_CharacterName.c_str());
 		character_list[l_Index].name = nullptr;
 		character_list[l_Index].type = nullptr;
 		character_list[l_Index].anim = nullptr;
@@ -488,4 +489,3 @@ void scr_create_add_playable_character(context_t * context, char * frame)
 
 	SDL_UnlockMutex(character_create_mutex);
 }
-

@@ -93,6 +93,8 @@ void NetworkFrame::push(const std::string& p_rStringData)
 /******************************************************************************/
 void NetworkFrame::push(const std::vector<std::string> & p_rStringVectorData)
 {
+	push(static_cast<uint_fast32_t>(p_rStringVectorData.size()));
+
 	for (auto l_It = p_rStringVectorData.begin();
 			l_It != p_rStringVectorData.end(); ++l_It)
 	{
@@ -192,6 +194,23 @@ void NetworkFrame::pop(std::string & p_rData)
 
 	p_rData = l_Data;
 }
+
+/******************************************************************************/
+void NetworkFrame::pop(std::vector<std::string> & p_rStringVectorData)
+{
+	uint_fast32_t l_VectorSize = 0U;
+
+	pop(l_VectorSize);
+
+	std::string l_ReadString;
+
+	for (uint_fast32_t l_Index = 0U; l_Index < l_VectorSize; l_Index++)
+	{
+		pop(l_ReadString);
+		p_rStringVectorData.push_back(l_ReadString);
+	}
+}
+
 /******************************************************************************/
 void NetworkFrame::pop(void* & p_rBinaryData, int_fast32_t & p_rSize)
 {

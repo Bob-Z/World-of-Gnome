@@ -44,6 +44,7 @@ public:
 	void pop(uint_fast32_t &p_rData);
 	void pop(int_fast32_t &p_rData);
 	void pop(std::string &p_rData);
+	void pop(std::vector<std::string> & p_rStringVectorData);
 	void pop(void* & p_rBinaryData, int_fast32_t & p_rSize);
 
 private:

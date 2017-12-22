@@ -58,7 +58,7 @@ ret_code_t parse_incoming_data(context_t * p_pContext, NetworkFrame & p_rFrame)
 		break;
 	case CMD_SEND_PLAYABLE_CHARACTER:
 		wlog(LOGDEBUG, "Received CMD_SEND_PLAYABLE_CHARACTER");
-		//scr_create_add_playable_character(p_pContext, p_pData);
+		scr_create_add_playable_character(p_pContext, p_rFrame);
 		screen_compose();
 		break;
 	case CMD_SEND_FILE:
