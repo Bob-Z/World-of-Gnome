@@ -1,6 +1,6 @@
 /*
  World of Gnome is a 2D multiplayer role playing game.
- Copyright (C) 2013-2016 carabobz@gmail.com
+ Copyright (C) 2013-2017 carabobz@gmail.com
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -23,9 +23,13 @@
 #include <stdio.h>
 
 /******************************************************************************/
-NetworkFrame::NetworkFrame() :
-		m_pFrame(nullptr), m_Size(0U)
+NetworkFrame::NetworkFrame(const size_t p_Size) :
+		m_pFrame(nullptr), m_Size(p_Size), m_Index(0U)
 {
+	if (m_Size != 0U)
+	{
+		m_pFrame = static_cast<char*>(malloc(m_Size));
+	}
 }
 
 /******************************************************************************/
@@ -38,7 +42,7 @@ NetworkFrame::~NetworkFrame()
 }
 
 /******************************************************************************/
-const uint8_t * NetworkFrame::getFrame() const
+const char * NetworkFrame::getFrame() const
 {
 	return m_pFrame;
 }
@@ -55,6 +59,26 @@ void NetworkFrame::push(const uint_fast32_t p_IntData)
 	prepareFrame(sizeof(uint32_t));
 
 	uint32_t l_Data = htonl(static_cast<uint32_t>(p_IntData));
+
+	addData(&l_Data, sizeof(l_Data));
+}
+
+/******************************************************************************/
+void NetworkFrame::push(const int_fast32_t p_IntData)
+{
+	prepareFrame(sizeof(int32_t));
+
+	int32_t l_Data = htonl(static_cast<int32_t>(p_IntData));
+
+	addData(&l_Data, sizeof(l_Data));
+}
+
+/******************************************************************************/
+void NetworkFrame::push(const int p_IntData)
+{
+	prepareFrame(sizeof(int32_t));
+
+	int32_t l_Data = htonl(static_cast<int32_t>(p_IntData));
 
 	addData(&l_Data, sizeof(l_Data));
 }
@@ -86,18 +110,104 @@ void NetworkFrame::push(const char* p_pAsciiData)
 }
 
 /******************************************************************************/
+void NetworkFrame::push(const void* p_pBinaryData, const uint_fast32_t p_Size)
+{
+	prepareFrame(p_Size);
+	addData(p_pBinaryData, p_Size);
+}
+
+/******************************************************************************/
 void NetworkFrame::push(const NetworkFrame & p_rFrame)
 {
 	size_t l_Size = p_rFrame.getSize();
-	prepareFrame(l_Size);
-	addData(p_rFrame.getFrame(), l_Size);
+
+	m_pFrame = static_cast<char*>(realloc(static_cast<void*>(m_pFrame),
+			m_Size + l_Size));
+
+	memcpy(&m_pFrame[m_Size], p_rFrame.m_pFrame, l_Size);
+	m_Size += l_Size;
 }
+
+/******************************************************************************/
+void NetworkFrame::pop(uint_fast32_t & p_rData)
+{
+	size_t l_Size = readSize();
+	if (l_Size != sizeof(uint32_t))
+	{
+		werr(LOGDEV, "Element size %d is wrong, should be %d", l_Size,
+				sizeof(uint32_t));
+		return;
+	}
+
+	if (m_Index >= m_Size)
+	{
+		werr(LOGDEV, "Frame is empty.");
+		return;
+	}
+
+	uint32_t l_Data = 0U;
+	memcpy(&l_Data, &m_pFrame[m_Index], l_Size);
+	m_Index += l_Size;
+
+	p_rData = ntohl(l_Data);
+}
+
+/******************************************************************************/
+void NetworkFrame::pop(int_fast32_t & p_rData)
+{
+	size_t l_Size = readSize();
+	if (l_Size != sizeof(int32_t))
+	{
+		werr(LOGDEV, "Element size %d is wrong, should be %d", l_Size,
+				sizeof(uint32_t));
+		return;
+	}
+
+	if (m_Index >= m_Size)
+	{
+		werr(LOGDEV, "Frame is empty.");
+		return;
+	}
+
+	int32_t l_Data = 0U;
+	memcpy(&l_Data, &m_pFrame[m_Index], l_Size);
+	m_Index += l_Size;
+
+	p_rData = ntohl(l_Data);
+}
+
+/******************************************************************************/
+void NetworkFrame::pop(std::string & p_rData)
+{
+	size_t l_Size = readSize();
+
+	if (m_Index >= m_Size)
+	{
+		werr(LOGDEV, "Frame is empty.");
+		return;
+	}
+
+	std::string l_Data(&m_pFrame[m_Index], l_Size);
+	m_Index += l_Size;
+
+	p_rData = l_Data;
+}
+/******************************************************************************/
+void NetworkFrame::pop(void* & p_rBinaryData, int_fast32_t & p_rSize)
+{
+	p_rSize = readSize();
+
+	p_rBinaryData = malloc(p_rSize);
+	memcpy(p_rBinaryData,&m_pFrame[m_Index],p_rSize);
+	m_Index += p_rSize;
+}
+
 /******************************************************************************/
 void NetworkFrame::prepareFrame(const size_t p_AddedSizeData)
 {
 	uint_fast32_t l_FrameSize = sizeof(uint32_t) + p_AddedSizeData;
 
-	m_pFrame = static_cast<uint8_t*>(realloc(static_cast<void*>(m_pFrame),
+	m_pFrame = static_cast<char*>(realloc(static_cast<void*>(m_pFrame),
 			m_Size + l_FrameSize));
 
 	uint32_t l_DataSize = htonl(static_cast<uint32_t>(p_AddedSizeData));
@@ -110,4 +220,23 @@ void NetworkFrame::addData(const void * p_pData, const size_t p_Size)
 {
 	memcpy(&m_pFrame[m_Size], p_pData, p_Size);
 	m_Size += p_Size;
+}
+
+/******************************************************************************/
+size_t NetworkFrame::readSize()
+{
+	if (m_Index >= m_Size)
+	{
+		werr(LOGDEV, "Frame is empty.");
+		return 0U;
+	}
+
+	uint32_t l_Size = 0U;
+	memcpy(&l_Size, &m_pFrame[m_Index], sizeof(uint32_t));
+
+	l_Size = ntohl(l_Size);
+
+	m_Index += sizeof(uint32_t);
+
+	return l_Size;
 }

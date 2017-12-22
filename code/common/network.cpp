@@ -82,6 +82,8 @@ static int async_frame_send(void * p_pUserData)
 		goto async_frame_send_end;
 	}
 
+	wlog(LOGDEBUG, "sent %u bytes on socket %d", l_BytesWritten, l_Socket);
+
 	//send frame
 	l_BytesWritten = SDLNet_TCP_Send(l_Socket, l_pData->m_pFrame->getFrame(),
 			l_pData->m_pFrame->getSize());
@@ -90,6 +92,8 @@ static int async_frame_send(void * p_pUserData)
 		werr(LOGUSER, "Could not send command to %s", l_pContext->id);
 		context_set_connected(l_pContext, false);
 	}
+
+	wlog(LOGDEBUG, "sent %u bytes on socket %d", l_BytesWritten, l_Socket);
 
 	async_frame_send_end: SDL_UnlockMutex(l_pContext->send_mutex);
 	delete l_pData->m_pFrame;
@@ -119,8 +123,8 @@ void network_send_command(context_t * p_pContext, const uint_fast32_t p_Command,
 
 /*******************************************************************************
  ******************************************************************************/
-void network_send_command_no_data(context_t * p_pContext, const uint_fast32_t p_Command,
-const bool p_IsData)
+void network_send_command_no_data(context_t * p_pContext,
+		const uint_fast32_t p_Command, const bool p_IsData)
 {
 	// FIXME create a NetworkManager
 	DataSent *l_pData = new (DataSent);
@@ -160,7 +164,6 @@ void network_send_entry_int(context_t * context, const char * table,
  *********************************************************************/
 void network_send_req_file(context_t * context, const char * file)
 {
-	// Sanity check
 	if (file == nullptr)
 	{
 		werr(LOGDEV, "network_send_req_file_checksum called with nullptr");
@@ -210,6 +213,8 @@ ret_code_t network_read_bytes(TCPsocket socket, char * data, int size)
 		}
 		total_bytes += bytes_read;
 	}
+
+	wlog(LOGDEBUG, "read %u bytes on socket %d", total_bytes, socket);
 
 	return RET_OK;
 }
@@ -263,12 +268,8 @@ void network_send_context_to_context(context_t * dest_ctx, context_t * src_ctx)
  send a file to a context
  return 0 on success
  *********************************************************************/
-int network_send_file(context_t * context, char * filename)
+int network_send_file(context_t * context, const char * filename)
 {
-	char * file_data = nullptr;
-	int file_length = 0;
-	int res = 0;
-
 	// Check if NPC
 	if (context_is_npc(context) == true)
 	{
@@ -284,6 +285,10 @@ int network_send_file(context_t * context, char * filename)
 	}
 
 	// Read the file
+	void * file_data = nullptr;
+	int_fast32_t file_length = 0;
+	int res = 0;
+
 	res = file_get_contents(filename, &file_data, &file_length);
 	if (res == RET_NOK)
 	{
@@ -295,7 +300,7 @@ int network_send_file(context_t * context, char * filename)
 	NetworkFrame l_Frame;
 
 	l_Frame.push(filename);
-	l_Frame.push(file_data);
+	l_Frame.push(file_data, file_length);
 
 	// send the frame
 	wlog(LOGDEBUG, "Send CMD_SEND_FILE : %s", filename);

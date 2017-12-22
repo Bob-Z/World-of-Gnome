@@ -78,7 +78,6 @@ static void frame_start(context_t * context)
 static void compose_scr(context_t * context)
 {
 	static TTF_Font * font = nullptr;
-	option_t * option = option_get();
 
 	SDL_SetRenderDrawColor(context->render, 0, 0, 0, 255);
 
@@ -97,7 +96,7 @@ static void compose_scr(context_t * context)
 		break;
 	}
 
-	if (option->show_fps)
+	if (option_get().show_fps)
 	{
 		font = font_get(context, ITEM_FONT, ITEM_FONT_SIZE);
 		frame_rate_item = item_list_add(&item_list);
@@ -136,13 +135,11 @@ static void display_fps()
 	Uint32 new_timer;
 	static char shown_fps[64];
 	double sample;
-	option_t * option;
 	static int num_frame = 0;
 
 	if (frame_rate_item != nullptr)
 	{
-		option = option_get();
-		if (option->show_fps)
+		if (option_get().show_fps)
 		{
 			num_frame++;
 			new_timer = SDL_GetTicks();

@@ -246,13 +246,13 @@ char * file_new(const char * table, const char * suggested_name)
  contents MUST BE FREED by caller
  return RET_NOK on error
  ****************************/
-ret_code_t file_get_contents(const char *filename, char **contents, int *length)
+ret_code_t file_get_contents(const char *filename, void **contents,
+		int_fast32_t *length)
 {
 	char * fullname;
 	struct stat sts;
 	int fd;
 	ssize_t size;
-	char * buf;
 	char error_buf[SMALL_BUF];
 	char * error_str;
 
@@ -291,7 +291,8 @@ ret_code_t file_get_contents(const char *filename, char **contents, int *length)
 		return RET_NOK;
 	}
 
-	buf = (char*) malloc(sts.st_size);
+	void * buf;
+	buf = malloc(sts.st_size);
 	if (buf == nullptr)
 	{
 		close(fd);
@@ -332,7 +333,7 @@ ret_code_t file_get_contents(const char *filename, char **contents, int *length)
  filename is "table/dir/file"
  return RET_NOK on error
  ****************************/
-ret_code_t file_set_contents(const char *filename, const char *contents,
+ret_code_t file_set_contents(const char *filename, const void *contents,
 		int length)
 {
 	char * fullname;
@@ -434,13 +435,13 @@ bool file_copy(const char * src_table, const char * src_name,
  created here, not the file itself.
  return 0 if directory was successfully created
  ****************************************************/
-int file_create_directory(char * fullname)
+int file_create_directory(const std::string & p_rFullName)
 {
-	char * directory = strdup(fullname);
+	char * directory = strdup(p_rFullName.c_str());
 	int i;
 	int ret;
 
-	/* Remove file name, just kee directory name */
+	// Remove file name, just kee directory name
 	for (i = strlen(directory); i > 0; i--)
 	{
 		if (directory[i] == '/')

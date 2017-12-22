@@ -18,9 +18,9 @@
 */
 
 #include "option_client.h"
+#include <unistd.h>
 
 option_t option;
-bool already_parsed = false;
 
 /**************************************
 **************************************/
@@ -37,16 +37,20 @@ void option_init()
 
 /**************************************
 **************************************/
+option_t & option_get()
+{
+	return option;
+}
+
+/**************************************
+**************************************/
 static void parse_client_conf()
 {
 	int version;
 
-	if( already_parsed == true ) {
-		return;
-	}
-
-	if (entry_read_int(nullptr,CLIENT_CONF_FILE,&version,CLIENT_KEY_VERSION,nullptr) == RET_NOK ) {
-		return;
+	while (entry_read_int(nullptr,CLIENT_CONF_FILE,&version,CLIENT_KEY_VERSION,nullptr) == RET_NOK ) {
+		wlog(LOGUSER, "Waiting for client configuration");
+		sleep(1);
 	}
 
 	entry_read_string(nullptr,CLIENT_CONF_FILE,&option.cursor_over_tile,CLIENT_KEY_CURSOR_OVER_TILE,nullptr);
@@ -66,15 +70,11 @@ static void parse_client_conf()
 	entry_read_string(nullptr,CLIENT_CONF_FILE,&option.action_select_tile,CLIENT_KEY_ACTION_SELECT_TILE,nullptr);
 	entry_read_string(nullptr,CLIENT_CONF_FILE,&option.action_select_equipment,CLIENT_KEY_ACTION_SELECT_EQUIPMENT,nullptr);
 	entry_read_string(nullptr,CLIENT_CONF_FILE,&option.action_select_inventory,CLIENT_KEY_ACTION_SELECT_INVENTORY,nullptr);
-
-	already_parsed = true;
 }
 
 /**************************************
 **************************************/
-option_t * option_get()
+void option_read_client_conf()
 {
 	parse_client_conf();
-
-	return &option;
 }

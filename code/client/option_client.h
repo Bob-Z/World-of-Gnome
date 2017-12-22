@@ -44,5 +44,6 @@ typedef struct {
 } option_t;
 
 void option_init();
-option_t * option_get();
+option_t & option_get();
+void option_read_client_conf();
 

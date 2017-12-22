@@ -19,12 +19,13 @@
 
 #include "common.h"
 #include "NetworkFrame.h"
+#include <arpa/inet.h>
 #include <string>
 #include <vector>
 
-/*********************************************************************
+/*******************************************************************************
  Broadcast text to all in game players
- *********************************************************************/
+ ******************************************************************************/
 void network_broadcast_text(context_t * context, const char * text)
 {
 	context_t * ctx = nullptr;
@@ -78,9 +79,9 @@ void network_broadcast_text(context_t * context, const char * text)
 	context_unlock_list();
 }
 
-/*********************************************************************
+/*******************************************************************************
  Server send a user's character
- *********************************************************************/
+ ******************************************************************************/
 void network_send_user_character(context_t * p_pCtx,
 		const char * p_pCharacterId, const char * p_pType, const char * p_pName)
 {
@@ -92,9 +93,9 @@ void network_send_user_character(context_t * p_pCtx,
 	network_send_command(p_pCtx, CMD_SEND_USER_CHARACTER, l_Frame, false);
 }
 
-/*********************************************************************
+/*******************************************************************************
  Server send the full character's file to client
- *********************************************************************/
+ ******************************************************************************/
 void network_send_character_file(context_t * context)
 {
 	char * filename;
@@ -104,9 +105,9 @@ void network_send_character_file(context_t * context)
 	free(filename);
 }
 
-/*********************************************************************
+/*******************************************************************************
  Asks to update an int entry on all in_game players
- *********************************************************************/
+ ******************************************************************************/
 void network_broadcast_entry_int(const char * table, const char * file,
 		const char * path, int value, bool same_map_only)
 {
@@ -159,83 +160,60 @@ void network_broadcast_entry_int(const char * table, const char * file,
 	context_unlock_list();
 }
 
-/*********************************************************************
- *********************************************************************/
-static int new_connection(void * data)
+/*******************************************************************************
+ ******************************************************************************/
+static int new_connection(void * p_pData)
 {
-	context_t * context;
-	TCPsocket socket = (TCPsocket) data;
-	Uint32 command = 0;
-	Uint32 command_size = 0;
-	char *buf = nullptr;
+	context_t * l_pContext = nullptr;
+	TCPsocket l_Socket = (TCPsocket) p_pData;
 
-	context = context_new();
-	if (context == nullptr)
+	l_pContext = context_new();
+	if (l_pContext == nullptr)
 	{
-		werr(LOGUSER, "Failed to create context");
+		werr(LOGUSER, "Failed to create l_pContext");
 		return RET_NOK;
 	}
 
-	context_set_socket(context, socket);
+	context_set_socket(l_pContext, l_Socket);
 
-	context_new_VM(context);
+	context_new_VM(l_pContext);
 
-	while (context_get_socket(context))
+	while (context_get_socket(l_pContext))
 	{
-		// Read a command code
-		if (network_read_bytes(socket, (char *) &command,
-				sizeof(Uint32)) == RET_NOK)
+		uint32_t l_FrameSize = 0U;
+
+		if (network_read_bytes(l_Socket, (char *) &l_FrameSize,
+				sizeof(uint32_t)) == RET_NOK)
 		{
-			context_set_connected(context, false);
-			break;
-		}
-		// Read a size
-		if (network_read_bytes(socket, (char *) &command_size,
-				sizeof(Uint32)) == RET_NOK)
-		{
-			context_set_connected(context, false);
 			break;
 		}
 
-		// Read additional data
-		if (command_size > 0)
 		{
-			buf = (char*) malloc(command_size);
-			if (network_read_bytes(socket, buf, command_size) == RET_NOK)
+			l_FrameSize = ntohl(l_FrameSize);
+			NetworkFrame l_Frame(l_FrameSize);
+
+			if (network_read_bytes(l_Socket, (char *) l_Frame.getFrame(),
+					l_FrameSize) == RET_NOK)
 			{
-				context_set_connected(context, false);
 				break;
 			}
-		}
-
-		if (parse_incoming_data(context, command, command_size, buf) == RET_NOK)
-		{
-			if (buf)
+			if (parse_incoming_data(l_pContext, l_Frame) == RET_NOK)
 			{
-				free(buf);
-				buf = nullptr;
+				break;
 			}
-			context_set_connected(context, false);
-			break;
-		}
-
-		if (buf != nullptr)
-		{
-			free(buf);
-			buf = nullptr;
 		}
 	}
 
 	wlog(LOGUSER, "Client disconnected");
-	context_spread(context);
-	context_write_to_file(context);
-	context_free(context);
+	context_spread(l_pContext);
+	context_write_to_file(l_pContext);
+	context_free(l_pContext);
 
 	return RET_OK;
 }
 
-/*********************************************************************
- *********************************************************************/
+/*******************************************************************************
+ ******************************************************************************/
 void network_init(void)
 {
 	IPaddress IP;
@@ -298,15 +276,15 @@ void network_init(void)
 	return;
 }
 
-/*********************************************************************
+/*******************************************************************************
  Sends popup screen data to context
  dialog is a nullptr terminated array of string:
- "action" <action name> <param>  // if action_name is popup_end, this action close the popup
+ "action" <action name> <param>  // if action_name is popup_end, this action close the pop-up
  "image" <image name>
  "text"  <text>
  "eol" end of line
  "eop" end of paragraph
- *********************************************************************/
+ ******************************************************************************/
 void network_send_popup(const char * id, const char ** dialog)
 {
 	NetworkFrame l_Frame;
@@ -326,12 +304,12 @@ void network_send_popup(const char * id, const char ** dialog)
 	network_send_command(target, CMD_SEND_POPUP, l_Frame, false);
 }
 
-/*********************************************************************
+/*******************************************************************************
  Broadcast effect
  p_Type is the effect's target (either a context or a map)
  p_TargetId is the name of the target (either a context ID or map ID)
  p_Parameters is an array of parameter string
- *********************************************************************/
+ ******************************************************************************/
 void network_broadcast_effect(EffectType p_Type, const std::string & p_TargetId,
 		const std::vector<std::string> & p_Param)
 {

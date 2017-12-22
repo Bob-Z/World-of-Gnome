@@ -17,5 +17,5 @@
    Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 */
 
-bool parse_incoming_data(context_t * context, Uint32 command, Uint32 command_size, char * data);
+ret_code_t parse_incoming_data(context_t * p_pContext, NetworkFrame & p_rFrame);
 

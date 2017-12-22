@@ -164,7 +164,7 @@ anim_t ** imageDB_get_anim_array(context_t * context, const char ** image_name)
 /****************************************************
  Remove an entry from the DB
  ******************************************************/
-void image_DB_remove(char * filename)
+void image_DB_remove(const char * filename)
 {
 	anim_t * old_anim = nullptr;
 

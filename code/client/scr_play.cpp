@@ -48,7 +48,6 @@ static item_t * item_list = nullptr;
 static bool change_map = false;
 static int current_map_x = -1;
 static int current_map_y = -1;
-static option_t * option = nullptr;
 static layer_t * default_layer = nullptr;
 static char * sfx = nullptr;
 static bool g_IsMusicPlaying = false;
@@ -74,7 +73,7 @@ static void cb_select_sprite(void *arg)
 	char * id = (char*) arg;
 	context_t * ctx = context_get_player();
 
-	network_send_action(ctx, option->action_select_character, id, nullptr);
+	network_send_action(ctx, option_get().action_select_character, id, nullptr);
 }
 
 /**********************************
@@ -645,7 +644,7 @@ static void cb_select_map(void *arg)
 	sprintf(x, "%d", item->user1);
 	sprintf(y, "%d", item->user2);
 
-	network_send_action(ctx, option->action_select_tile, ctx->map, x, y,
+	network_send_action(ctx, option_get().action_select_tile, ctx->map, x, y,
 			nullptr);
 }
 
@@ -689,9 +688,9 @@ static void compose_map_button()
 
 	context_t * ctx = context_get_player();
 
-	if (option && option->cursor_over_tile)
+	if (option_get().cursor_over_tile)
 	{
-		anim = imageDB_get_anim(ctx, option->cursor_over_tile);
+		anim = imageDB_get_anim(ctx, option_get().cursor_over_tile);
 	}
 
 	for (y = 0; y < default_layer->map_h; y++)
@@ -837,7 +836,7 @@ static void compose_type(int layer_index)
 	char layer_name[SMALL_BUF];
 	context_t * ctx = context_get_player();
 
-	if (option->show_tile_type == false)
+	if (option_get().show_tile_type == false)
 	{
 		return;
 	}
@@ -892,7 +891,7 @@ static void compose_select()
 	context_t * ctx = context_get_player();
 
 	// Tile selection
-	if (option && option->cursor_tile)
+	if (option_get().cursor_tile)
 	{
 		if (ctx->selection.map[0] != 0)
 		{
@@ -903,7 +902,7 @@ static void compose_select()
 
 				if (pos_tx != -1 && pos_ty != -1)
 				{
-					anim = imageDB_get_anim(ctx, option->cursor_tile);
+					anim = imageDB_get_anim(ctx, option_get().cursor_tile);
 
 					item = item_list_add(&item_list);
 
@@ -919,7 +918,7 @@ static void compose_select()
 	}
 
 	// Sprite selection
-	if (option && option->cursor_character_draw_script)
+	if (option_get().cursor_character_draw_script)
 	{
 		if (ctx->selection.id[0] != 0)
 		{
@@ -932,7 +931,7 @@ static void compose_select()
 
 			item = item_list_add(&item_list);
 			item->user_ptr = selected_context;
-			item->user1_ptr = option->cursor_character_draw_script;
+			item->user1_ptr = option_get().cursor_character_draw_script;
 		}
 	}
 }
@@ -964,8 +963,6 @@ item_t * scr_play_compose(context_t * ctx)
 	char * map_filename;
 	int layer_index = 0;
 	char * old_sfx = nullptr;
-
-	option = option_get();
 
 	if (item_list)
 	{

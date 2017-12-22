@@ -1,21 +1,21 @@
 /*
-   World of Gnome is a 2D multiplayer role playing game.
-   Copyright (C) 2013-2017 carabobz@gmail.com
+ World of Gnome is a 2D multiplayer role playing game.
+ Copyright (C) 2013-2017 carabobz@gmail.com
 
-   This program is free software; you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 3 of the License, or
-   (at your option) any later version.
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 3 of the License, or
+ (at your option) any later version.
 
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-   You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software Foundation,
-   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
-*/
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software Foundation,
+ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
+ */
 
 #include "common.h"
 #include <dirent.h>
@@ -29,99 +29,76 @@
 
 /*************************************
  return 0 on success
-**************************************/
-int file_add(context_t * context,char * data,Uint32 command_size)
+ **************************************/
+int file_add(context_t * context, NetworkFrame & p_rFrame)
 {
-	char * ptr = data;
-	Uint32 filename_size;
-	char * filename = nullptr;
-	char * tmpfilename = nullptr;
-	char * tmpfullname = nullptr;
-	char * fullname = nullptr;
-	ret_code_t res;
+	std::string l_FileName;
+	p_rFrame.pop(l_FileName);
 
-	// Get the data from the network frame
-	// First 4 bytes are the size of the file name
-	if( command_size < sizeof(Uint32) ) {
-		werr(LOGDEV,"Invalid file received");
-		return -1;
-	}
-	filename_size = *((Uint32 *)ptr);
+	void * l_FileData = nullptr;
+	int_fast32_t l_FileLength = 0;
 
-	// Following bytes are the file name, relative to the application base directory ( $HOME/.config/wog/client/ )
-	ptr += sizeof(Uint32);
-	filename = (char*)malloc(filename_size);
-	memcpy(filename,ptr,filename_size);
-	wlog(LOGDEBUG,"Received file %s",filename);
-	if( filename == nullptr ) {
-		werr(LOGDEV,"Unable to allocate %d bytes for file name",filename_size);
-		return -1;
-	}
+	p_rFrame.pop(l_FileData, l_FileLength);
 
-	// Next is a Uint32 representing the size of the file's data
-	ptr += filename_size;
-	Uint32 filedata_size = *((Uint32 *)ptr);
+	// Write data to disk
+	std::string l_TmpFileName = l_FileName + APP_NAME + "tmp";
+	std::string l_TmpFullName = std::string(base_directory) + std::string("/")
+			+ l_TmpFileName;
 
-	// Finally are the data bytes
-	ptr += sizeof(Uint32);
+	file_create_directory(l_TmpFullName);
 
-	// Write the data to disk
-	tmpfilename = strconcat(filename,APP_NAME,"tmp",nullptr);
-	tmpfullname = strconcat(base_directory,"/",tmpfilename,nullptr);
-
-	file_create_directory(tmpfullname);
-
-	res = file_set_contents(tmpfilename,ptr,filedata_size);
-	if( res == RET_NOK ) {
-		werr(LOGDEV,"Error writing file %s with size %d",tmpfullname, filedata_size);
-		free(tmpfullname);
+	if (file_set_contents(l_TmpFileName.c_str(), l_FileData,
+			l_FileLength) == RET_NOK)
+	{
+		werr(LOGDEV, "Error writing file %s with size %d",
+				l_TmpFullName.c_str(), l_FileLength);
+		free(l_FileData);
 		return -1;
 	}
 
-	fullname = strconcat(base_directory,"/",filename,nullptr);
+	free(l_FileData);
 
-	rename(tmpfullname,fullname);
+	std::string l_FullName = std::string(base_directory) + std::string("/")
+			+ l_FileName;
 
-	free(tmpfilename);
-	free(tmpfullname);
+	rename(l_TmpFullName.c_str(), l_FullName.c_str());
 
-	wlog(LOGDEBUG,"write file %s",fullname);
-	free(fullname);
+	wlog(LOGDEBUG, "write file %s", l_FullName.c_str());
 
 	// Update the entry DB
-	entry_remove(filename);
+	entry_remove(l_FileName.c_str());
 	// Update the image DB
-	image_DB_remove(filename);
+	image_DB_remove(l_FileName.c_str());
 	// Update options if needed
-	option_get();
+	option_read_client_conf();
 	// Make sure the new file is drawn (if needed)
 	screen_compose();
 
-	free(filename);
 	return 0;
 }
 
 /*********************************************************************************
  Remove character file to be sure they are always downloaded at start-up time
-**********************************************************************************/
+ **********************************************************************************/
 void file_clean(context_t * context)
 {
-	file_delete(CHARACTER_TABLE,context->id);
+	file_delete(CHARACTER_TABLE, context->id);
 }
 
 /***************************************************
  Request a file from network
-****************************************************/
-void file_request_from_network(context_t * p_pCtx, const char * p_pTable, const char * p_pFilename)
+ ****************************************************/
+void file_request_from_network(context_t * p_pCtx, const char * p_pTable,
+		const char * p_pFilename)
 {
-        char * l_pTablePath;
+	char * l_pTablePath;
 
-        l_pTablePath = strconcat(p_pTable,"/",p_pFilename,nullptr);
-        file_lock(l_pTablePath);
-        file_update(p_pCtx, l_pTablePath);
-        file_unlock(l_pTablePath);
-        free(l_pTablePath);
+	l_pTablePath = strconcat(p_pTable, "/", p_pFilename, nullptr);
+	file_lock(l_pTablePath);
+	file_update(p_pCtx, l_pTablePath);
+	file_unlock(l_pTablePath);
+	free(l_pTablePath);
 
-        return;
+	return;
 }
 

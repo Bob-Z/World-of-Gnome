@@ -29,7 +29,7 @@ void network_send_command(context_t * p_pContext, const uint_fast32_t p_Command,
 void network_send_command_no_data(context_t * p_pContext,
 		const uint_fast32_t p_Command, const bool p_IsData);
 void network_send_context_to_context(context_t * dest_ctx, context_t * src_ctx);
-int network_send_file(context_t * context, char * filename);
+int network_send_file(context_t * context, const char * filename);
 int network_send_table_file(context_t * context, const char * table,
 		const char * filename);
 void network_send_req_file(context_t * context, const char * file);
@@ -38,6 +38,5 @@ void network_send_entry_int(context_t * context, const char * table,
 void network_send_text(const char * id, const char * string);
 
 // The code of this function is in parser_client.c and parser_server.c
-int parse_incoming_data(context_t * context, Uint32 command,
-		Uint32 command_size, char * data);
+ret_code_t parse_incoming_data(context_t * p_pContext, NetworkFrame & p_rFrame);
 #endif

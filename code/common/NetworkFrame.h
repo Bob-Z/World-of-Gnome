@@ -1,6 +1,6 @@
 /*
  World of Gnome is a 2D multiplayer role playing game.
- Copyright (C) 2013-2016 carabobz@gmail.com
+ Copyright (C) 2013-2017 carabobz@gmail.com
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -21,27 +21,39 @@
 #define COMMON_NETWORKFRAME_H_
 
 #include <cstdint>
+#include <string>
+#include <vector>
 
 class NetworkFrame
 {
 public:
-	NetworkFrame();
+	NetworkFrame(const size_t p_Size = 0U);
 	virtual ~NetworkFrame();
 
-	const uint8_t * getFrame() const;
+	const char * getFrame() const;
 	const size_t getSize() const;
 	void push(const uint_fast32_t p_IntData);
+	void push(const int_fast32_t p_IntData);
+	void push(const int p_IntData);
 	void push(const std::string& p_rStringData);
 	void push(const std::vector<std::string> & p_rStringVectorData);
 	void push(const char* p_rAsciiData);
+	void push(const void* p_pBinaryData, const uint_fast32_t p_Size);
 	void push(const NetworkFrame & p_rFrame);
+
+	void pop(uint_fast32_t &p_rData);
+	void pop(int_fast32_t &p_rData);
+	void pop(std::string &p_rData);
+	void pop(void* & p_rBinaryData, int_fast32_t & p_rSize);
 
 private:
 	void prepareFrame(const size_t p_AddedSizeData);
 	void addData(const void * p_pData, const size_t p_Size);
+	size_t readSize();
 
-	uint8_t * m_pFrame;
+	char * m_pFrame;
 	size_t m_Size;
+	uint_fast32_t m_Index;
 };
 
 #endif /* COMMON_NETWORKFRAME_H_ */

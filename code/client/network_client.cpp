@@ -19,6 +19,7 @@
 
 #include "common.h"
 #include "screen.h"
+#include <arpa/inet.h>
 
 /*********************************************************************
  sends a login request, the answer is asynchronously read by async_recv
@@ -123,67 +124,46 @@ void network_send_action(context_t * context, const char * script, ...)
  Callback from client listening to server in its own thread
  only used for game information transfer
  *********************************************************************/
-static int async_recv(void * data)
+static int async_recv(void * p_pData)
 {
-	context_t * context = (context_t *) data;
+	context_t * l_pContext = (context_t *) p_pData;
 
-	Uint32 command = 0;
-	Uint32 command_size = 0;
-	char *buf = nullptr;
-
-	while (1)
+	while (true)
 	{
-		command = 0;
-		command_size = 0;
-		buf = nullptr;
+		uint32_t l_FrameSize = 0U;
 
-		if (network_read_bytes(context->socket, (char *) &command,
-				sizeof(Uint32)) == RET_NOK)
-		{
-			break;
-		}
-		// Read a size
-		if (network_read_bytes(context->socket, (char *) &command_size,
-				sizeof(Uint32)) == RET_NOK)
+		if (network_read_bytes(l_pContext->socket, (char *) &l_FrameSize,
+				sizeof(uint32_t)) == RET_NOK)
 		{
 			break;
 		}
 
-		// Read additional data
-		if (command_size > 0)
 		{
-			buf = (char*) malloc(command_size);
-			if (network_read_bytes(context->socket, buf,
-					command_size) == RET_NOK)
+			l_FrameSize = ntohl(l_FrameSize);
+			wlog(LOGDEBUG, "received %u bytes long frame on socket %u",
+					l_FrameSize, l_pContext->socket);
+
+			NetworkFrame l_Frame(l_FrameSize);
+
+			if (network_read_bytes(l_pContext->socket,
+					(char *) l_Frame.getFrame(), l_FrameSize) == RET_NOK)
 			{
 				break;
 			}
-		}
-
-		if (parse_incoming_data(context, command, command_size, buf) == RET_NOK)
-		{
-			if (buf)
+			if (parse_incoming_data(l_pContext, l_Frame) == RET_NOK)
 			{
-				free(buf);
-				buf = nullptr;
+				break;
 			}
-			break;
-		}
-
-		if (buf != nullptr)
-		{
-			free(buf);
-			buf = nullptr;
 		}
 	}
 
 	werr(LOGUSER, "Socket closed on server side.");
 
-	context_set_connected(context, false);
-	SDLNet_TCP_Close(context->socket);
-	SDLNet_TCP_Close(context->socket_data);
-	context_set_socket(context, 0);
-	context_set_socket_data(context, 0);
+	context_set_connected(l_pContext, false);
+	SDLNet_TCP_Close(l_pContext->socket);
+	SDLNet_TCP_Close(l_pContext->socket_data);
+	context_set_socket(l_pContext, 0);
+	context_set_socket_data(l_pContext, 0);
 
 	screen_quit();
 
@@ -194,67 +174,46 @@ static int async_recv(void * data)
  Callback from client listening to server in its own thread
  Only used for data transfers
  *********************************************************************/
-static int async_data_recv(void * data)
+static int async_data_recv(void * p_pData)
 {
-	context_t * context = (context_t *) data;
+	context_t * l_pContext = (context_t *) p_pData;
 
-	Uint32 command = 0;
-	Uint32 command_size = 0;
-	char *buf = nullptr;
-
-	while (1)
+	while (true)
 	{
-		command = 0;
-		command_size = 0;
-		buf = nullptr;
+		uint32_t l_FrameSize = 0U;
 
-		if (network_read_bytes(context->socket_data, (char *) &command,
-				sizeof(Uint32)) == RET_NOK)
-		{
-			break;
-		}
-		// Read a size
-		if (network_read_bytes(context->socket_data, (char *) &command_size,
-				sizeof(Uint32)) == RET_NOK)
+		if (network_read_bytes(l_pContext->socket_data, (char *) &l_FrameSize,
+				sizeof(uint32_t)) == RET_NOK)
 		{
 			break;
 		}
 
-		// Read additional data
-		if (command_size > 0)
 		{
-			buf = (char*) malloc(command_size);
-			if (network_read_bytes(context->socket_data, buf,
-					command_size) == RET_NOK)
+			l_FrameSize = ntohl(l_FrameSize);
+			wlog(LOGDEBUG, "received on data %u bytes long frame on socket %u",
+					l_FrameSize, l_pContext->socket_data);
+
+			NetworkFrame l_Frame(l_FrameSize);
+
+			if (network_read_bytes(l_pContext->socket_data,
+					(char *) l_Frame.getFrame(), l_FrameSize) == RET_NOK)
 			{
 				break;
 			}
-		}
-
-		if (parse_incoming_data(context, command, command_size, buf) == RET_NOK)
-		{
-			if (buf)
+			if (parse_incoming_data(l_pContext, l_Frame) == RET_NOK)
 			{
-				free(buf);
-				buf = nullptr;
+				break;
 			}
-			break;
-		}
-
-		if (buf != nullptr)
-		{
-			free(buf);
-			buf = nullptr;
 		}
 	}
 
 	werr(LOGUSER, "Socket closed on server side.");
 
-	context_set_connected(context, false);
-	SDLNet_TCP_Close(context->socket);
-	SDLNet_TCP_Close(context->socket_data);
-	context_set_socket(context, 0);
-	context_set_socket_data(context, 0);
+	context_set_connected(l_pContext, false);
+	SDLNet_TCP_Close(l_pContext->socket);
+	SDLNet_TCP_Close(l_pContext->socket_data);
+	context_set_socket(l_pContext, 0);
+	context_set_socket_data(l_pContext, 0);
 
 	screen_quit();
 

@@ -72,8 +72,6 @@ typedef struct action_param_tag
 } action_param_t;
 static int popup_offset = 0;
 
-static option_t * option;
-
 static int first_action = 0;
 static int num_action = 0;
 
@@ -153,7 +151,7 @@ static void key_up(void * arg)
 {
 	context_t * ctx = context_get_player();
 
-	network_send_action(ctx, option->action_move_up, nullptr);
+	network_send_action(ctx, option_get().action_move_up, nullptr);
 }
 
 /**************************************
@@ -162,7 +160,7 @@ static void key_down(void * arg)
 {
 	context_t * ctx = context_get_player();
 
-	network_send_action(ctx, option->action_move_down, nullptr);
+	network_send_action(ctx, option_get().action_move_down, nullptr);
 }
 
 /**************************************
@@ -171,7 +169,7 @@ static void key_left(void * arg)
 {
 	context_t * ctx = context_get_player();
 
-	network_send_action(ctx, option->action_move_left, nullptr);
+	network_send_action(ctx, option_get().action_move_left, nullptr);
 }
 
 /**************************************
@@ -180,7 +178,7 @@ static void key_right(void * arg)
 {
 	context_t * ctx = context_get_player();
 
-	network_send_action(ctx, option->action_move_right, nullptr);
+	network_send_action(ctx, option_get().action_move_right, nullptr);
 }
 
 /**************************************
@@ -189,7 +187,7 @@ static void key_up_left(void * arg)
 {
 	context_t * ctx = context_get_player();
 
-	network_send_action(ctx, option->action_move_up_left, nullptr);
+	network_send_action(ctx, option_get().action_move_up_left, nullptr);
 }
 
 /**************************************
@@ -198,7 +196,7 @@ static void key_up_right(void * arg)
 {
 	context_t * ctx = context_get_player();
 
-	network_send_action(ctx, option->action_move_up_right, nullptr);
+	network_send_action(ctx, option_get().action_move_up_right, nullptr);
 }
 
 /**************************************
@@ -207,7 +205,7 @@ static void key_down_left(void * arg)
 {
 	context_t * ctx = context_get_player();
 
-	network_send_action(ctx, option->action_move_down_left, nullptr);
+	network_send_action(ctx, option_get().action_move_down_left, nullptr);
 }
 
 /**************************************
@@ -216,7 +214,7 @@ static void key_down_right(void * arg)
 {
 	context_t * ctx = context_get_player();
 
-	network_send_action(ctx, option->action_move_down_right, nullptr);
+	network_send_action(ctx, option_get().action_move_down_right, nullptr);
 }
 
 /**********************************
@@ -485,7 +483,7 @@ static void cb_select_slot(void * arg)
 	char * id = (char*) arg;
 	context_t * ctx = context_get_player();
 
-	network_send_action(ctx, option->action_select_equipment, id, nullptr);
+	network_send_action(ctx, option_get().action_select_equipment, id, nullptr);
 }
 
 /**************************************
@@ -525,7 +523,6 @@ static void compose_equipment(context_t * ctx, item_t * item_list)
 	static anim_t * inventory_icon = nullptr;
 	int max_h;
 	int max_w;
-	option_t * option = option_get();
 
 	SDL_GetRendererOutputSize(ctx->render, &sw, &sh);
 
@@ -643,11 +640,11 @@ static void compose_equipment(context_t * ctx, item_t * item_list)
 		/* Draw selection cursor */
 		if (ctx->selection.equipment[0] != 0)
 		{
-			if (option && option->cursor_equipment)
+			if (option_get().cursor_equipment)
 			{
 				if (!strcmp(ctx->selection.equipment, slot_list[index]))
 				{
-					anim3 = imageDB_get_anim(ctx, option->cursor_equipment);
+					anim3 = imageDB_get_anim(ctx, option_get().cursor_equipment);
 
 					item = item_list_add(&item_list);
 
@@ -896,7 +893,7 @@ void cb_inventory_select(void * arg)
 	char * item_id = (char *) arg;
 	context_t * ctx = context_get_player();
 
-	network_send_action(ctx, option->action_select_inventory, item_id, nullptr);
+	network_send_action(ctx, option_get().action_select_inventory, item_id, nullptr);
 }
 
 /**********************************
@@ -1054,7 +1051,6 @@ static void compose_inventory_select(context_t * ctx, item_t * item_list)
 	anim_t * anim;
 	anim_t * icon_anim;
 	char * mytemplate;
-	option_t * option = option_get();
 
 	if (ctx->selection.inventory[0] == 0)
 	{
@@ -1066,12 +1062,12 @@ static void compose_inventory_select(context_t * ctx, item_t * item_list)
 		return;
 	}
 
-	if (option == nullptr || option->cursor_inventory == nullptr)
+	if (option_get().cursor_inventory == nullptr)
 	{
 		return;
 	}
 
-	anim = imageDB_get_anim(ctx, option->cursor_inventory);
+	anim = imageDB_get_anim(ctx, option_get().cursor_inventory);
 
 	deep_free(inventory_list);
 
@@ -1379,7 +1375,4 @@ void ui_play_init()
 {
 	// Empty text buffer
 	text_buffer[0] = 0;
-
-	option = option_get();
 }
-

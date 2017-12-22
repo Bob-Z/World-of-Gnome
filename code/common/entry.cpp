@@ -98,7 +98,7 @@ static const config_t * load_config(char * filename)
 /****************************************************
 Remove an entry from the DB
 ******************************************************/
-void entry_remove(char * filename)
+void entry_remove(const char * filename)
 {
 	config_t * old_config;
 

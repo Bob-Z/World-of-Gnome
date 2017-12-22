@@ -18,17 +18,18 @@
  */
 
 #include "common.h"
-#include "network_client.h"
-#include "imageDB.h"
 #include "file.h"
-#include <getopt.h>
-#include <string.h>
-#include <stdlib.h>
-#include "sdl.h"
-#include "screen.h"
+#include "imageDB.h"
 #include "lua_client.h"
+#include "network_client.h"
 #include "option_client.h"
+#include "screen.h"
+#include "sdl.h"
+#include <getopt.h>
 #include <SDL2/SDL_mixer.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 
 const char optstring[] = "?i:u:p:l:f:F:tPm";
 const struct option longopts[] =
@@ -55,7 +56,6 @@ int main(int argc, char **argv)
 	char * ip = nullptr;
 	char * user = nullptr;
 	char * pass = nullptr;
-	option_t * option;
 	int maxfps = false;
 
 	base_directory = strconcat(getenv("HOME"), "/.config/wog/client", nullptr);
@@ -63,7 +63,6 @@ int main(int argc, char **argv)
 	lua_init();
 
 	option_init();
-	option = option_get();
 
 	while ((opt_ret = getopt_long(argc, argv, optstring, longopts, nullptr))
 			!= -1)
@@ -89,10 +88,10 @@ int main(int argc, char **argv)
 			log_add_func_filter(optarg);
 			break;
 		case 't':
-			option->show_tile_type = true;
+			option_get().show_tile_type = true;
 			break;
 		case 'P':
-			option->show_fps = true;
+			option_get().show_fps = true;
 			break;
 		case 'm':
 			maxfps = true;
@@ -142,6 +141,13 @@ int main(int argc, char **argv)
 				"Can't connect to server. Check server IP address. This error may be due to a service outage on server side. Re-try in a few seconds.\n");
 		return 0;
 	}
+
+	while (context_get_socket_data(context) == 0)
+	{
+		sleep(1);
+	}
+
+	option_read_client_conf();
 
 	//Run the main loop
 	screen_display(context);

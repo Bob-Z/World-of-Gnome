@@ -31,10 +31,12 @@
 /***********************************
  Return RET_NOK on error
  ***********************************/
-ret_code_t parse_incoming_data(context_t * p_pContext, Uint32 command,
-		Uint32 command_size, char * p_pData)
+ret_code_t parse_incoming_data(context_t * p_pContext, NetworkFrame & p_rFrame)
 {
-	switch (command)
+	uint_fast32_t l_Command = 0U;
+	p_rFrame.pop(l_Command);
+
+	switch (l_Command)
 	{
 	case CMD_SEND_LOGIN_OK:
 		wlog(LOGDEBUG, "Received CMD_SEND_LOGIN_OK");
@@ -56,42 +58,42 @@ ret_code_t parse_incoming_data(context_t * p_pContext, Uint32 command,
 		break;
 	case CMD_SEND_PLAYABLE_CHARACTER:
 		wlog(LOGDEBUG, "Received CMD_SEND_PLAYABLE_CHARACTER");
-		scr_create_add_playable_character(p_pContext, p_pData);
+		//scr_create_add_playable_character(p_pContext, p_pData);
 		screen_compose();
 		break;
 	case CMD_SEND_FILE:
 		wlog(LOGDEBUG, "Received CMD_SEND_FILE");
-		file_add(p_pContext, p_pData, command_size);
+		file_add(p_pContext, p_rFrame);
 		screen_compose();
 		break;
 	case CMD_SEND_USER_CHARACTER:
 		wlog(LOGDEBUG, "Received CMD_SEND_USER_CHARACTER");
-		scr_select_add_user_character(p_pContext, p_pData);
+		//scr_select_add_user_character(p_pContext, p_pData);
 		screen_compose();
 		break;
 	case CMD_SEND_CONTEXT:
 		wlog(LOGDEBUG, "Received CMD_SEND_CONTEXT");
-		context_add_or_update_from_network_frame(p_pContext, p_pData);
+		//context_add_or_update_from_network_frame(p_pContext, p_pData);
 		screen_compose();
 		break;
 	case CMD_SEND_TEXT:
 		wlog(LOGDEBUG, "Received CMD_SEND_TEXT");
-		textview_add_line(p_pData);
+		//textview_add_line(p_pData);
 		break;
 	case CMD_SEND_ENTRY:
 		wlog(LOGDEBUG, "Received CMD_SEND_ENTRY");
-		if (entry_update(p_pData) != -1)
+		//if (entry_update(p_pData) != -1)
 		{
 			screen_compose();
 		}
 		break;
 	case CMD_SEND_POPUP:
 		wlog(LOGDEBUG, "Received CMD_SEND_POPUP");
-		ui_play_popup_add(p_pData);
+		//ui_play_popup_add(p_pData);
 		screen_compose();
 		break;
 	case CMD_SEND_EFFECT:
-		EffectManager::processEffectFrame(p_pContext, p_pData);
+		//EffectManager::processEffectFrame(p_pContext, p_pData);
 		wlog(LOGDEBUG, "Received CMD_SEND_EFFECT");
 		break;
 	default:
