@@ -35,6 +35,7 @@ action          = [
         ,"summon_imp_blue_pitchfork"
         ,"summon_imp_blue_pitchfork_shield"
         ,"summon_imp_green"
+        ,"summon_imp_green_sword"
         ,"summon_spider01"
         ,"summon_spider02"
         ,"summon_spider03"
