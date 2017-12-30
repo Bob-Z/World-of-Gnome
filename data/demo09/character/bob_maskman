@@ -31,6 +31,7 @@ action          = [
         ,"summon_beetle"
         ,"summon_imp_blue"
         ,"summon_imp_blue_sword"
+        ,"summon_imp_blue_sword_shield"
         ,"summon_spider01"
         ,"summon_spider02"
         ,"summon_spider03"
