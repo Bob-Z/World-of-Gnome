@@ -22,11 +22,11 @@
 #include "lua_client.h"
 
 /******************************************************************************/
-void EffectManager::processEffectFrame(context_t * p_pCtx, char * p_pFrame)
+void EffectManager::processEffectFrame(context_t * p_pCtx,
+		NetworkFrame & p_rFrame)
 {
 	std::vector<std::string> l_Params;
-
-	unserializeNetworkFrame(p_pFrame, l_Params);
+	p_rFrame.pop(l_Params);
 
 	std::string l_Script = l_Params.front();
 	l_Params.erase(l_Params.begin());

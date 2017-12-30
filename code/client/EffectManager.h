@@ -25,7 +25,7 @@
 class EffectManager
 {
 public:
-	static void processEffectFrame(context_t * p_pCtx, char * p_pFrame);
+	static void processEffectFrame(context_t * p_pCtx, NetworkFrame & p_rFrame);
 };
 
 #endif /* CLIENT_EFFECTMANAGER_H_ */

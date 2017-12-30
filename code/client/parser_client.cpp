@@ -98,7 +98,7 @@ ret_code_t parse_incoming_data(context_t * p_pContext, NetworkFrame & p_rFrame)
 		screen_compose();
 		break;
 	case CMD_SEND_EFFECT:
-		//EffectManager::processEffectFrame(p_pContext, p_pData);
+		EffectManager::processEffectFrame(p_pContext, p_rFrame);
 		wlog(LOGDEBUG, "Received CMD_SEND_EFFECT");
 		break;
 	default:

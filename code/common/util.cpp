@@ -144,20 +144,6 @@ char * _strsep(char **stringp, const char *delim)
 	return start;
 }
 
-/*******************************************************************************
- Un-serialize a network frame into a string vector
- ******************************************************************************/
-void unserializeNetworkFrame(char * p_pNetworkFrame,
-		std::vector<std::string> & p_rExtractedData)
-{
-	char * l_pData = _strsep(&p_pNetworkFrame, NETWORK_DELIMITER);
-	while (l_pData != nullptr)
-	{
-		p_rExtractedData.push_back(std::string(l_pData));
-		l_pData = _strsep(&p_pNetworkFrame, NETWORK_DELIMITER);
-	}
-}
-
 /********************************
  Add two arrays
  Return pointer must free (not deep_free)
