@@ -1138,7 +1138,7 @@ static void inventory_compose(context_t * ctx, item_t * item_list)
  ****************************/
 static void cb_popup_quit(void * arg)
 {
-	if (popup_frame)
+	if (popup_frame != nullptr)
 	{
 		free(popup_frame);
 		popup_frame = nullptr;
@@ -1327,7 +1327,7 @@ void ui_play_popup_add(char * frame)
 	}
 	else
 	{
-		if (popup_active)
+		if (popup_active == false)
 		{
 			fifo_push(&popup_fifo, strdup(frame));
 		}

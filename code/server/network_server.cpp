@@ -298,7 +298,7 @@ void network_send_popup(const char * id, const char ** dialog)
 		}
 	}
 
-	context_t * target;
+	context_t * target = nullptr;
 	target = context_find(id);
 	wlog(LOGDEBUG, "Send CMD_SEND_POPUP : send pop-up to %s", id);
 	network_send_command(target, CMD_SEND_POPUP, l_Frame, false);
