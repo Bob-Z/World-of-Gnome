@@ -40,8 +40,8 @@ static void config_print_error(char * file, const config_t * config)
 static void write_config(const config_t * config, const char * table,
 		const char * file)
 {
-	char * filename;
-	char * fullname;
+	char * filename = nullptr;
+	char * fullname = nullptr;
 
 	filename = strconcat(table, "/", file, nullptr);
 
@@ -123,8 +123,8 @@ void entry_remove(const char * filename)
  *********************/
 static const config_t * get_config(const char * table, const char * file)
 {
-	char * filename;
-	const config_t * config;
+	char * filename = nullptr;
+	const config_t * config = nullptr;
 
 	if (table == nullptr)
 	{
@@ -279,8 +279,8 @@ static ret_code_t __read_string(const char * table, const char * file,
 		char ** res, va_list ap)
 {
 	const config_t * config = nullptr;
-	char * path;
-	const char * result;
+	char * path = nullptr;
+	const char * result = nullptr;
 
 	*res = nullptr;
 

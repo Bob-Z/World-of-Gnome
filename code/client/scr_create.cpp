@@ -49,7 +49,8 @@ static item_t * item_list = nullptr;
 static long current_character = -1;
 static long selected_character = -1;
 static char * sfx_filename = nullptr;
-static char text_buffer[2048];
+static constexpr size_t TEXT_BUFFER_SIZE = 2048;
+static char text_buffer[TEXT_BUFFER_SIZE];
 
 /****************************
  Keyboard callback
@@ -266,7 +267,7 @@ item_t * scr_create_compose(context_t * context)
 		}
 	}
 
-	if (item_list)
+	if (item_list != nullptr)
 	{
 		item_list_free(item_list);
 		item_list = nullptr;
@@ -295,7 +296,7 @@ item_t * scr_create_compose(context_t * context)
 	item = item_list_add(&item_list);
 
 	item_set_overlay(item, 1);
-	item_set_string(item, text_buffer);
+	item_set_buffer(item, text_buffer,TEXT_BUFFER_SIZE);
 	item_set_string_bg(item, BACKGROUND_COLOR);
 	item_set_font(item, font);
 	item_set_editable(item, 1);

@@ -58,7 +58,8 @@ static char * last_action = nullptr;
 static char ** attribute_string = nullptr;
 static int action_bar_height;
 static int attribute_height;
-static char text_buffer[2048];
+static constexpr size_t TEXT_BUFFER_SIZE = 2048;
+static char text_buffer[TEXT_BUFFER_SIZE];
 // inventory ui
 static char ** inventory_list = nullptr;
 // popup ui
@@ -768,11 +769,11 @@ static void compose_text(context_t * ctx, item_t * item_list)
 	SDL_GetRendererOutputSize(ctx->render, &sw, &sh);
 	current_y = sh - action_bar_height;
 
-	/* Draw edit box */
+	// Draw edit box
 	item = item_list_add(&item_list);
 
 	item_set_overlay(item, 1);
-	item_set_string(item, text_buffer);
+	item_set_buffer(item, text_buffer, TEXT_BUFFER_SIZE);
 	item_set_string_bg(item, BACKGROUND_COLOR);
 	item_set_font(item, font);
 	item_set_editable(item, 1);

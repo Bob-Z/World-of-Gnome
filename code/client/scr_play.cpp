@@ -596,7 +596,7 @@ static void compose_item(int layer_index)
 		temp_y = map_t2p_y(x, y, default_layer);
 		x = temp_x;
 		y = temp_y;
-		/* Align on tile */
+		// Align on tile
 		if (sprite_align == ALIGN_CENTER)
 		{
 			x -= ((anim->w * default_layer->map_zoom)
