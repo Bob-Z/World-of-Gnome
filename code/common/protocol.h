@@ -25,8 +25,6 @@
 // second 4 bytes containing the size of additional data
 // following bytes of additional data
 
-#define NETWORK_DELIMITER "|||"
-
 #define ENTRY_TYPE_INT "int"
 #define ENTRY_TYPE_STRING "string"
 
