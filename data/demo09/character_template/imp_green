@@ -1,0 +1,23 @@
+draw_script     = "draw/smooth.lua"
+marquee         = "ui/imp_green.png";
+sprite          = [ "sprite/shadow/imp_W.png", "sprite/imp_green/W.png" ];
+type            = "Imp"
+map             = "M0_0";
+pos_x           = 15;
+pos_y           = 15;
+layer		= 15;
+#align on lower edge of tile
+align           = 1;
+sprite_move_n   = [ "sprite/shadow/imp_N.png", "sprite/imp_green/WC_N.zip" ];
+sprite_move_s   = [ "sprite/shadow/imp_S.png", "sprite/imp_green/WC_S.zip" ];
+sprite_move_w   = [ "sprite/shadow/imp_W.png", "sprite/imp_green/WC_W.zip" ];
+sprite_move_e   = [ "sprite/shadow/imp_E.png", "sprite/imp_green/WC_E.zip" ];
+sprite_n   = [ "sprite/shadow/imp_N.png", "sprite/imp_green/N.png" ];
+sprite_s   = [ "sprite/shadow/imp_S.png", "sprite/imp_green/S.png" ];
+sprite_e   = [ "sprite/shadow/imp_E.png", "sprite/imp_green/E.png" ];
+sprite_w   = [ "sprite/shadow/imp_W.png", "sprite/imp_green/W.png" ];
+ai              = "ai/ai_random.lua";
+ai_params       = [ "1000" ];
+#action          = [ "summon_fish1","summon_fish2","summon_fish3","summon_fish4","summon_fish5","summon_dragon", "summon_flappy", "set_campfire", "set_snowtree", "set_fireplace", "set_tree", "set_orangetree1", "set_orangetree2"];
+#allowed_tile_script    = "allowed_tile/ground_stair.lua";
+#inventory      = [ ];
