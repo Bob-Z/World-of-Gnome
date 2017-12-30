@@ -22,6 +22,7 @@ ai              = "ai/ai_random.lua";
 ai_params       = [ "1000" ];
 action          = [
         "summon_dragon"
+        ,"summon_red_dragon"
         ,"summon_casamonstro"
         ,"summon_grue"
         ,"summon_ghost"

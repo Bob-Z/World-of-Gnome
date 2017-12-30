@@ -1,0 +1,6 @@
+text            = "Summon red_dragon";
+icon            = [ "ui/button_up.png", "ui/red_dragon.png" ];
+#icon_over       = "icon/bat_over.png";
+icon_click      = [ "ui/button_down.png", "ui/red_dragon.png" ];
+script          = "action/summon.lua";
+param		= ( "red_dragon" );
