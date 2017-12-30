@@ -296,7 +296,7 @@ item_t * scr_create_compose(context_t * context)
 	item = item_list_add(&item_list);
 
 	item_set_overlay(item, 1);
-	item_set_buffer(item, text_buffer,TEXT_BUFFER_SIZE);
+	item_set_buffer(item, text_buffer, TEXT_BUFFER_SIZE);
 	item_set_string_bg(item, BACKGROUND_COLOR);
 	item_set_font(item, font);
 	item_set_editable(item, 1);
