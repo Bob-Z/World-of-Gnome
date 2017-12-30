@@ -94,7 +94,7 @@ ret_code_t parse_incoming_data(context_t * p_pContext, NetworkFrame & p_rFrame)
 		break;
 	case CMD_SEND_POPUP:
 		wlog(LOGDEBUG, "Received CMD_SEND_POPUP");
-		//ui_play_popup_add(p_pData);
+		ui_play_popup_add(p_rFrame);
 		screen_compose();
 		break;
 	case CMD_SEND_EFFECT:

@@ -13,7 +13,6 @@ add_library(
 	SHARED
 	context.cpp
 	entry.cpp
-	fifo.cpp
 	file.cpp
 	font.cpp
 	item.cpp

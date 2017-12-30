@@ -27,6 +27,7 @@
 #include "screen.h"
 #include "sdl.h"
 #include "textview.h"
+#include <stack>
 
 #define UI_MAIN		0
 #define UI_INVENTORY	1
@@ -62,9 +63,7 @@ static char text_buffer[2048];
 static char ** inventory_list = nullptr;
 // popup ui
 #define MOUSE_WHEEL_SCROLL (20)
-static fifo_t * popup_fifo;
-static char * popup_frame = nullptr;
-static int popup_active = false;
+static std::stack<std::vector<std::string>> g_PopupFifo;
 typedef struct action_param_tag
 {
 	char * action;
@@ -671,7 +670,7 @@ static void compose_equipment(context_t * ctx, item_t * item_list)
 	}
 	deep_free(slot_list);
 
-	/* Draw selected item */
+	// Draw selected item
 	if (ctx->selection.inventory[0] != 0)
 	{
 		mytemplate = item_is_resource(ctx->selection.inventory);
@@ -923,7 +922,7 @@ static void compose_inventory(context_t * ctx, item_t * item_list)
 
 	draw_background(ctx, item_list);
 
-	/* read data from file */
+	// read data from file
 	if (entry_read_list(CHARACTER_TABLE, ctx->id, &inventory_list,
 	CHARACTER_KEY_INVENTORY, nullptr) == RET_NOK)
 	{
@@ -936,14 +935,14 @@ static void compose_inventory(context_t * ctx, item_t * item_list)
 
 		if (mytemplate == nullptr)
 		{
-			/* Icon is mandatory for now */
+			// Icon is mandatory for now
 			if (entry_read_string(ITEM_TABLE, inventory_list[i], &value,
 			ITEM_ICON, nullptr) == RET_NOK)
 			{
 				i++;
 				continue;
 			}
-			/* load image */
+			// load image
 			anim = imageDB_get_anim(ctx, value);
 			free(value);
 
@@ -970,7 +969,7 @@ static void compose_inventory(context_t * ctx, item_t * item_list)
 		}
 		else
 		{
-			/* Icon is mandatory for now */
+			// Icon is mandatory for now
 			if (entry_read_string(ITEM_TEMPLATE_TABLE, mytemplate, &value,
 			ITEM_ICON, nullptr) == RET_NOK)
 			{
@@ -978,7 +977,7 @@ static void compose_inventory(context_t * ctx, item_t * item_list)
 				free(mytemplate);
 				continue;
 			}
-			/* load image */
+			// load image
 			anim = imageDB_get_anim(ctx, value);
 			free(value);
 
@@ -1073,7 +1072,7 @@ static void compose_inventory_select(context_t * ctx, item_t * item_list)
 
 	deep_free(inventory_list);
 
-	/* read data from file */
+	// read data from file
 	if (entry_read_list(CHARACTER_TABLE, ctx->id, &inventory_list,
 	CHARACTER_KEY_INVENTORY, nullptr) == RET_NOK)
 	{
@@ -1138,23 +1137,13 @@ static void inventory_compose(context_t * ctx, item_t * item_list)
  ****************************/
 static void cb_popup_quit(void * arg)
 {
-	if (popup_frame != nullptr)
-	{
-		free(popup_frame);
-		popup_frame = nullptr;
-	}
-
 	popup_offset = 0;
 
-	popup_frame = (char*) fifo_pop(&popup_fifo);
+	g_PopupFifo.pop();
 
-	if (popup_frame == nullptr)
+	if (g_PopupFifo.size() == 0)
 	{
 		ui_play_set(UI_MAIN);
-	}
-	else
-	{
-		popup_active = true;
 	}
 }
 
@@ -1165,16 +1154,10 @@ void cb_popup(void * arg)
 	context_t * player = context_get_player();
 	action_param_t * action_param = (action_param_t *) arg;
 
-	if (!strcmp(action_param->action, POPUP_TAG_END))
-	{
-		cb_popup_quit(nullptr);
-		return;
-	}
+	cb_popup_quit(nullptr);
 
 	network_send_action(player, action_param->action, action_param->param,
 			nullptr);
-
-	popup_active = false;
 
 	screen_compose();
 }
@@ -1215,129 +1198,112 @@ static void cb_wheel_down(Uint32 y, Uint32 unused)
  **********************************/
 static void compose_popup(context_t * ctx, item_t * item_list)
 {
-	item_t * item;
-	int x = 0;
-	int y = 0;
-	static TTF_Font * font = nullptr;
-	int w = 0;
-	int h = 0;
-	int max_h = 0;
-	anim_t * anim;
-	char * tag;
-	action_param_t * action_param = nullptr;
-	char * data;
-
-	if (popup_frame == nullptr)
+	if (g_PopupFifo.size() == 0)
 	{
 		return;
 	}
 
 	draw_background(ctx, item_list);
 
-	font = font_get(ctx, SPEAK_FONT, SPEAK_FONT_SIZE);
+	static TTF_Font *l_pFont = font_get(ctx, SPEAK_FONT, SPEAK_FONT_SIZE);
 
 	sdl_free_mousecb();
 	sdl_add_mousecb(MOUSE_WHEEL_UP, cb_wheel_up);
 	sdl_add_mousecb(MOUSE_WHEEL_DOWN, cb_wheel_down);
 
-	data = strdup(popup_frame);
+	std::vector<std::string> l_PopupData = g_PopupFifo.top();
 
-	while ((tag = _strsep(&data, NETWORK_DELIMITER)) != nullptr)
+	item_t * l_pItem = nullptr;
+	int l_X = 0;
+	int l_Y = 0;
+	int l_Width = 0;
+	int l_Height = 0;
+	int l_MaxHeight = 0;
+	action_param_t * l_pActionParam = nullptr;
+
+	for (auto l_It = l_PopupData.cbegin(); l_It != l_PopupData.cend(); ++l_It)
 	{
-		if (!strcmp(tag, POPUP_TAG_IMAGE))
+		if (*l_It == POPUP_TAG_IMAGE)
 		{
-			/* get image name */
-			tag = _strsep(&data, NETWORK_DELIMITER);
-			item = item_list_add(&item_list);
-			anim = imageDB_get_anim(ctx, tag);
-			item_set_pos(item, x, y - popup_offset);
-			item_set_anim(item, anim, 0);
-			item_set_overlay(item, 1);
-			if (action_param)
-			{
-				item_set_click_left(item, cb_popup, action_param,
-						cb_free_action_param);
-			}
-			x += anim->w;
-			if (max_h < anim->h)
-			{
-				max_h = anim->h;
-			}
+			++l_It;
+			anim_t * l_pAnim = imageDB_get_anim(ctx, l_It->c_str());
 
-			action_param = nullptr;
-			continue;
-		}
-		if (!strcmp(tag, POPUP_TAG_TEXT))
-		{
-			/* get text */
-			tag = _strsep(&data, NETWORK_DELIMITER);
-			item = item_list_add(&item_list);
-			item_set_string(item, tag);
-			item_set_font(item, font);
-			sdl_get_string_size(item->font, item->string, &w, &h);
-			item_set_anim_shape(item, x, y - popup_offset, w, h);
-			item_set_overlay(item, 1);
-			if (action_param)
+			l_pItem = item_list_add(&item_list);
+			item_set_pos(l_pItem, l_X, l_Y - popup_offset);
+			item_set_anim(l_pItem, l_pAnim, 0);
+			item_set_overlay(l_pItem, 1);
+			if (l_pActionParam != nullptr)
 			{
-				item_set_click_left(item, cb_popup, action_param,
+				item_set_click_left(l_pItem, cb_popup, l_pActionParam,
 						cb_free_action_param);
+				l_pActionParam = nullptr;
 			}
-			x += w;
-			if (max_h < h)
+			l_X += l_pAnim->w;
+			if (l_MaxHeight < l_pAnim->h)
 			{
-				max_h = h;
+				l_MaxHeight = l_pAnim->h;
 			}
-			action_param = nullptr;
 			continue;
 		}
-		if (!strcmp(tag, POPUP_TAG_ACTION))
+		if (*l_It == POPUP_TAG_TEXT)
 		{
-			action_param = (action_param_t*) malloc(sizeof(action_param_t));
-			/* get action */
-			tag = _strsep(&data, NETWORK_DELIMITER);
-			action_param->action = strdup(tag);
-			/* get param */
-			tag = _strsep(&data, NETWORK_DELIMITER);
-			action_param->param = strdup(tag);
+			++l_It;
+			l_pItem = item_list_add(&item_list);
+			item_set_string(l_pItem, l_It->c_str());
+			item_set_font(l_pItem, l_pFont);
+			sdl_get_string_size(l_pItem->font, l_pItem->string, &l_Width,
+					&l_Height);
+			item_set_anim_shape(l_pItem, l_X, l_Y - popup_offset, l_Width,
+					l_Height);
+			item_set_overlay(l_pItem, 1);
+			if (l_pActionParam != nullptr)
+			{
+				item_set_click_left(l_pItem, cb_popup, l_pActionParam,
+						cb_free_action_param);
+				l_pActionParam = nullptr;
+			}
+			l_X += l_Width;
+			if (l_MaxHeight < l_Height)
+			{
+				l_MaxHeight = l_Height;
+			}
 			continue;
 		}
-		if (!strcmp(tag, POPUP_TAG_EOL))
+		if (*l_It == POPUP_TAG_ACTION)
 		{
-			y += max_h;
-			max_h = 0;
-			x = 0;
+			l_pActionParam = (action_param_t*) malloc(sizeof(action_param_t));
+			// get action
+			++l_It;
+			l_pActionParam->action = strdup(l_It->c_str());
+			// get param
+			++l_It;
+			l_pActionParam->param = strdup(l_It->c_str());
+			continue;
 		}
-		if (!strcmp(tag, POPUP_TAG_EOP))
+		if (*l_It == POPUP_TAG_EOL)
 		{
-			y += max_h;
-			max_h = 0;
-			x = 0;
+			l_Y += l_MaxHeight;
+			l_MaxHeight = 0;
+			l_X = 0;
+		}
+		if (*l_It == POPUP_TAG_EOP)
+		{
+			l_Y += l_MaxHeight;
+			l_MaxHeight = 0;
+			l_X = 0;
 		}
 	}
-	free(data);
 }
 
 /**********************************
  **********************************/
-void ui_play_popup_add(char * frame)
+void ui_play_popup_add(NetworkFrame & p_NetworkFrame)
 {
-	if (popup_frame == nullptr)
-	{
-		popup_frame = strdup(frame);
-	}
-	else
-	{
-		if (popup_active == false)
-		{
-			fifo_push(&popup_fifo, strdup(frame));
-		}
-		else
-		{
-			free(popup_frame);
-			popup_frame = strdup(frame);
-			popup_active = true;
-		}
-	}
+	std::vector<std::string> l_PopupData;
+	p_NetworkFrame.pop(l_PopupData);
+
+	g_PopupFifo.push(l_PopupData);
+
 	ui_play_set(UI_POPUP);
 }
 

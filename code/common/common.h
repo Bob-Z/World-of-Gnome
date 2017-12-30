@@ -26,7 +26,6 @@
 #include "const.h"
 #include "context.h"
 #include "entry.h"
-#include "fifo.h"
 #include "file.h"
 #include "font.h"
 #include "item.h"

@@ -2197,22 +2197,19 @@ static int l_get_base_directory(lua_State* L)
  */
 static int l_popup_send(lua_State* L)
 {
-	int num_arg;
-	const char **arg = nullptr;
-	int i;
+	int l_NumArg = lua_gettop(L);
 
-	num_arg = lua_gettop(L);
+	std::vector<std::string> l_PopupData;
 
-	arg = (const char**) malloc(sizeof(char*) * num_arg + 1);
-	for (i = 0; i < num_arg; i++)
+	const char * l_Id = luaL_checkstring(L, -l_NumArg + 0);
+
+	for (int l_Index = 1; l_Index < l_NumArg; l_Index++)
 	{
-		arg[i] = luaL_checkstring(L, -num_arg + i);
+		l_PopupData.push_back(luaL_checkstring(L, -l_NumArg + l_Index));
 	}
-	arg[i] = nullptr;
 
-	network_send_popup(arg[0], &arg[1]);
+	network_send_popup(l_Id, l_PopupData);
 
-	free(arg);
 	lua_pushnumber(L, 0);
 	return 1;  // number of results
 }

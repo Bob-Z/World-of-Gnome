@@ -285,23 +285,17 @@ void network_init(void)
  "eol" end of line
  "eop" end of paragraph
  ******************************************************************************/
-void network_send_popup(const char * id, const char ** dialog)
+void network_send_popup(const std::string & p_rCtxId,
+		const std::vector<std::string> & p_rPopupData)
 {
 	NetworkFrame l_Frame;
+	l_Frame.push(p_rPopupData);
 
-	if (dialog != nullptr)
-	{
-		while (*dialog != nullptr)
-		{
-			l_Frame.push(*dialog);
-			dialog++;
-		}
-	}
+	wlog(LOGDEBUG, "Send CMD_SEND_POPUP : send pop-up to %s", p_rCtxId.c_str());
 
-	context_t * target = nullptr;
-	target = context_find(id);
-	wlog(LOGDEBUG, "Send CMD_SEND_POPUP : send pop-up to %s", id);
-	network_send_command(target, CMD_SEND_POPUP, l_Frame, false);
+	context_t * l_pTarget = nullptr;
+	l_pTarget = context_find(p_rCtxId.c_str());
+	network_send_command(l_pTarget, CMD_SEND_POPUP, l_Frame, false);
 }
 
 /*******************************************************************************
