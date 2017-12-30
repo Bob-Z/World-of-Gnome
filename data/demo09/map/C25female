@@ -21,7 +21,7 @@ layer0 = {
 "",
 "",
 "tile/exit.gif",
-"character/25/WC_equipment_quiver_marquee.zip",
+"character/25/WC_kite_shield_0_marquee.zip",
 "tile/exit.gif",
 "",
 "",
@@ -36,7 +36,7 @@ E0 = {
    pos_x = 1
    pos_y = 2
    script = "set_sprite.lua"
-   param = ( "25", "equipment_quiver" )
+   param = ( "25", "kite_shield_0" )
 }
 E1 = {
    pos_x = 0

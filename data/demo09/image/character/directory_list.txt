@@ -22,6 +22,7 @@
 22- Cape
 23- Head
 24- Weapon
-25- Quiver
-26- Tail
-27- Wing
+25- Shield
+26- Quiver
+27- Tail
+28- Wing

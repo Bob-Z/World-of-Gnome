@@ -15,6 +15,7 @@ LONG_KNIFE_BASE=Long_Knife
 PICKAXE_BASE=Pickaxe
 WARHAMMER_BASE=Warhammer
 AXE_BASE=Axe
+KITE_SHIELD_BASE=KiteShield
 
 DEST_DIR=output
 mkdir $DEST_DIR > /dev/null 2>&1
@@ -226,10 +227,18 @@ DIR=$DEST_DIR/$NUM_DIR
 echo $NUM_DIR- Weapon >> $DIR_LIST
 mkdir $DIR
 $COMMAND $ULPC_BASE/weapons/??_* $DIR
+find $ULPC_BASE/weapons ! -name "*shield*"  -name "??_*.png" -exec $COMMAND {} $DIR \;
 $COMMAND $LONG_KNIFE_BASE/* $DIR
 $COMMAND $PICKAXE_BASE/* $DIR
 $COMMAND $WARHAMMER_BASE/* $DIR
 $COMMAND $AXE_BASE/* $DIR
+
+let "NUM_DIR=$NUM_DIR+1"
+DIR=$DEST_DIR/$NUM_DIR
+echo $NUM_DIR- Shield >> $DIR_LIST
+mkdir $DIR
+$COMMAND $ULPC_BASE/weapons/??*_shield* $DIR
+$COMMAND $KITE_SHIELD_BASE/* $DIR
 
 let "NUM_DIR=$NUM_DIR+1"
 DIR=$DEST_DIR/$NUM_DIR

@@ -6,7 +6,7 @@ attribute = {
         current = 25
       }
 }
-width = 3
+width = 7
 height = 5
 tile_width = 64
 tile_height = 64
@@ -16,17 +16,37 @@ layer0 = {
         set = [
 "tile/fog.png",
 "",
-"tile/fog.png",
 "",
-"",
-"",
-"tile/exit.gif",
-"character/25/WC_equipment_quiver_marquee.zip",
-"tile/exit.gif",
 "",
 "",
 "",
 "tile/fog.png",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"tile/exit.gif",
+"character/25/WC_kite_shield_0_marquee.zip",
+"",
+"character/25/WC_left_hand_male_shield_male_cutoutforbody_marquee.zip",
+"",
+"character/25/WC_left_hand_male_shield_male_cutoutforhat_marquee.zip",
+"tile/exit.gif",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"tile/fog.png",
+"",
+"",
+"",
+"",
 "",
 "tile/fog.png"
         ]
@@ -36,40 +56,52 @@ E0 = {
    pos_x = 1
    pos_y = 2
    script = "set_sprite.lua"
-   param = ( "25", "equipment_quiver" )
+   param = ( "25", "kite_shield_0" )
 }
 E1 = {
+   pos_x = 3
+   pos_y = 2
+   script = "set_sprite.lua"
+   param = ( "25", "left_hand_male_shield_male_cutoutforbody" )
+}
+E2 = {
+   pos_x = 5
+   pos_y = 2
+   script = "set_sprite.lua"
+   param = ( "25", "left_hand_male_shield_male_cutoutforhat" )
+}
+E3 = {
    pos_x = 0
    pos_y = 2
    script = "goto_character_map.lua"
    param = ( "24", "1", "1" )
 }
-E2 = {
-   pos_x = 2
+E4 = {
+   pos_x = 6
    pos_y = 2
    script = "goto_character_map.lua"
    param = ( "26", "1", "1" )
 }
-E3 = {
-   pos_x = 0
-   pos_y = 0
-   script = "set_sprite.lua"
-   param = ( "25", "" )
-}
-E4 = {
-   pos_x = 0
-   pos_y = 4
-   script = "set_sprite.lua"
-   param = ( "25", "" )
-}
 E5 = {
-   pos_x = 2
+   pos_x = 0
    pos_y = 0
    script = "set_sprite.lua"
    param = ( "25", "" )
 }
 E6 = {
-   pos_x = 2
+   pos_x = 0
+   pos_y = 4
+   script = "set_sprite.lua"
+   param = ( "25", "" )
+}
+E7 = {
+   pos_x = 6
+   pos_y = 0
+   script = "set_sprite.lua"
+   param = ( "25", "" )
+}
+E8 = {
+   pos_x = 6
    pos_y = 4
    script = "set_sprite.lua"
    param = ( "25", "" )
