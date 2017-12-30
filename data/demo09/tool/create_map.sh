@@ -63,8 +63,8 @@ function create_map {
 		LINE=`echo "scale = 0; sqrt($FILE_QTY)" | bc`
 		COLUMN=`echo "scale = 0; $FILE_QTY/$LINE" | bc`
 	else
-		LINE=1
-		COLUMN=1
+		LINE=2
+		COLUMN=2
 	fi
 
 	let "TOTAL=$LINE*$COLUMN"
