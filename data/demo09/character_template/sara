@@ -21,7 +21,8 @@ sprite_e       = [ "sprite/shadow/human.png","sprite/sara_right.png" ];
 ai              = "ai/ai_random.lua";
 ai_params       = [ "1000" ];
 action          = [
-        "set_campfire"
+        "set_fountain"
+        ,"set_campfire"
         ,"set_campfire2"
         ,"set_boil"
         ,"set_fireplace"
