@@ -1,0 +1,7 @@
+text            = "Put a copper coin";
+icon            = [ "ui/button_up.png", "ui/coin_copper.png" ];
+#icon_over       = "icon/bat_over.png";
+icon_click      = [ "ui/button_down.png", "ui/coin_copper.png" ];
+icon_layout     = 1
+script          = "action/add_scenery.lua";
+param		= ( "scenery/coin_copper.zip" );

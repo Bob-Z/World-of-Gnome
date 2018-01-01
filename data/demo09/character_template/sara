@@ -21,7 +21,10 @@ sprite_e       = [ "sprite/shadow/human.png","sprite/sara_right.png" ];
 ai              = "ai/ai_random.lua";
 ai_params       = [ "1000" ];
 action          = [
-        "set_crystal_red"
+        "set_coin_gold"
+        ,"set_coin_silver"
+        ,"set_coin_copper"
+        ,"set_crystal_red"
         ,"set_fountain"
         ,"set_campfire"
         ,"set_campfire2"
