@@ -1,0 +1,4 @@
+text		= "";
+icon		= "none";
+script		= "set_map_ocean.lua";
+#param		= ( "0" , "-1" );
