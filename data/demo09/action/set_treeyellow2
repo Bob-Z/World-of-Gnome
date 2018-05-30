@@ -3,4 +3,4 @@ icon            = [ "ui/button_up.png", "ui/treeyellow2.png" ];
 #icon_over       = "icon/bat_over.png";
 icon_click      = [ "ui/button_down.png", "ui/treeyellow2.png" ];
 script          = "action/add_scenery.lua";
-param		= ( "scenery/treeyellow2.png" );
+param		= ( "11", "scenery/treeyellow2.png" );
