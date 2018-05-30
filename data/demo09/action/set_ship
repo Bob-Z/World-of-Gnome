@@ -1,0 +1,6 @@
+text            = "Build a ship";
+icon            = [ "ui/button_up.png", "ui/ship.png" ];
+#icon_over       = "icon/bat_over.png";
+icon_click      = [ "ui/button_down.png", "ui/ship.png" ];
+script          = "action/add_scenery_parallax.lua";
+param           = ( "10", "scenery/ship_lower.png", "20", "scenery/ship_higher.png" );

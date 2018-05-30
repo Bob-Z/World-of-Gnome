@@ -21,6 +21,6 @@ sprite_w       = [ "sprite/shadow/human.png","sprite/baldric_left.png" ];
 sprite_e       = [ "sprite/shadow/human.png","sprite/baldric_right.png" ];
 ai              = "ai/ai_random.lua";
 ai_params       = [ "1000" ];
-action          = [ "set_castle" , "set_castle1","set_castle2","set_castle3","set_castle4","set_castle7","set_castle8","set_castle9","set_castle10","set_castle11","set_castle12","set_castle13","set_castle14", "summon_royal_guard" ];
+action          = [ "set_ship", "summon_royal_guard", "set_castle" , "set_castle1","set_castle2","set_castle3","set_castle4","set_castle7","set_castle8","set_castle9","set_castle10","set_castle11","set_castle12","set_castle13","set_castle14" ];
 allowed_tile_script    = "allowed_tile/human.lua";
 #inventory      = [ ];
