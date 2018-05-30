@@ -133,6 +133,13 @@ if res == -1 then
 
 		"eol",
 
+                "action","set_map_sea",new_map,
+                "image","tile/sea.gif",
+                "action","set_map_sea",new_map,
+                "text","Sea",
+
+		"eol",
+
 --                "action","set_map","grass",
 --                "image","tile/grass1.png",
 --                "action","set_map","grass",
