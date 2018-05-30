@@ -45,6 +45,7 @@ action          = [
         ,"summon_horse_golden"
         ,"summon_horse_white"
         ,"summon_lama"
+        ,"summon_elephant"
         ,"summon_sheep"
         ,"summon_fish1"
         ,"summon_fish2"
