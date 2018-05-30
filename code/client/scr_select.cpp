@@ -58,7 +58,7 @@ static void cb_quit(void * arg)
 
 /**********************************
  **********************************/
-static void cb_show_item(void * arg)
+static void center_item(void * arg)
 {
 	item_t * item = (item_t*) arg;
 
@@ -127,7 +127,7 @@ static void cb_next_character(void * arg)
 
 	if (character_list != nullptr)
 	{
-		cb_show_item(character_list[current_character].item);
+		center_item(character_list[current_character].item);
 	}
 }
 
@@ -148,7 +148,7 @@ static void cb_previous_character(void * arg)
 
 	if (character_list != nullptr)
 	{
-		cb_show_item(character_list[current_character].item);
+		center_item(character_list[current_character].item);
 	}
 }
 
@@ -344,7 +344,6 @@ item_t * scr_select_compose(context_t * context)
 						- character_list[i].anim[0]->w / 2,
 				max_h / 2 - character_list[i].anim[0]->h / 2);
 		item_set_anim_array(item, character_list[i].anim);
-		item_set_click_left(item, cb_show_item, (void *) item, nullptr);
 		item_set_click_right(item, cb_select, (void *) context, nullptr);
 		item_set_double_click_left(item, cb_select, (void *) context, nullptr);
 		item_set_over(item, cb_over, (void *) i, nullptr);
@@ -387,7 +386,7 @@ item_t * scr_select_compose(context_t * context)
 
 	if (current_character == -1 && character_num > 0)
 	{
-		cb_show_item(character_list[0].item);
+		center_item(character_list[0].item);
 	}
 
 	SDL_UnlockMutex(character_select_mutex);
