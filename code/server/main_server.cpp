@@ -17,16 +17,16 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#include "../common/common.h"
+#include "common.h"
 #include "network_server.h"
 #include "npc.h"
+#include <dirent.h>
+#include <getopt.h>
 #include <signal.h>
 #include <stdlib.h>
-#include <getopt.h>
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
 #include <sys/types.h>
-#include <dirent.h>
 
 static int noNPC = 0;
 

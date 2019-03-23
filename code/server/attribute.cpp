@@ -1,36 +1,37 @@
 /*
-   World of Gnome is a 2D multiplayer role playing game.
-   Copyright (C) 2013-2016 carabobz@gmail.com
+ World of Gnome is a 2D multiplayer role playing game.
+ Copyright (C) 2013-2019 carabobz@gmail.com
 
-   This program is free software; you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 3 of the License, or
-   (at your option) any later version.
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 3 of the License, or
+ (at your option) any later version.
 
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-   You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software Foundation,
-   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
-*/
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software Foundation,
+ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
+ */
 
-#include "../common/common.h"
+#include "action.h"
+#include "common.h"
 #include "network_server.h"
 #include <dirent.h>
 #include <string.h>
-#include "action.h"
 
 /***************************************************************************
-Add the specified value to the specified attribute
-Check on max and min are done and call to on_* scripts are done if set
-ctx is the context of the source of the attribute change request
-id is the id of the target of the change
-return -1 if fails
-***************************************************************************/
-int attribute_change(context_t * context, const char * table, const char * id, const char * attribute, int value)
+ Add the specified value to the specified attribute
+ Check on max and min are done and call to on_* scripts are done if set
+ ctx is the context of the source of the attribute change request
+ id is the id of the target of the change
+ return -1 if fails
+ ***************************************************************************/
+int attribute_change(context_t * context, const char * table, const char * id,
+		const char * attribute, int value)
 {
 	int current;
 	int old;
@@ -49,70 +50,100 @@ int attribute_change(context_t * context, const char * table, const char * id, c
 
 	SDL_LockMutex(attribute_mutex);
 
-	if(entry_read_int(table,id,&current,ATTRIBUTE_GROUP,attribute, ATTRIBUTE_CURRENT, NULL) == RET_NOK) {
+	if (entry_read_int(table, id, &current, ATTRIBUTE_GROUP, attribute,
+	ATTRIBUTE_CURRENT, NULL) == RET_NOK)
+	{
 		SDL_UnlockMutex(attribute_mutex);
 		return -1;
 	}
 
-	if(entry_read_int(table,id,&min,ATTRIBUTE_GROUP,attribute, ATTRIBUTE_MIN, NULL) == RET_NOK) {
+	if (entry_read_int(table, id, &min, ATTRIBUTE_GROUP, attribute,
+	ATTRIBUTE_MIN, NULL) == RET_NOK)
+	{
 		min = -1;
 	}
 
-	if(entry_read_int(table,id,&max,ATTRIBUTE_GROUP,attribute, ATTRIBUTE_MAX, NULL) == RET_NOK) {
+	if (entry_read_int(table, id, &max, ATTRIBUTE_GROUP, attribute,
+	ATTRIBUTE_MAX, NULL) == RET_NOK)
+	{
 		max = -1;
 	}
 
 	old = current;
 	current = current + value;
-	if( min != -1 ) {
-		if(current <= min) {
+	if (min != -1)
+	{
+		if (current <= min)
+		{
 			do_min_action = true;
 			current = min;
 		}
 	}
 
-	if( max != -1 ) {
-		if(current >= max) {
+	if (max != -1)
+	{
+		if (current >= max)
+		{
 			do_max_action = true;
 			current = max;
 		}
 	}
 
-	if(entry_write_int(table,id,current,ATTRIBUTE_GROUP,attribute, ATTRIBUTE_CURRENT, NULL) == RET_NOK ) {
+	if (entry_write_int(table, id, current, ATTRIBUTE_GROUP, attribute,
+	ATTRIBUTE_CURRENT, NULL) == RET_NOK)
+	{
 		SDL_UnlockMutex(attribute_mutex);
 		return -1;
 	}
-	if(entry_write_int(table,id,old,ATTRIBUTE_GROUP,attribute, ATTRIBUTE_PREVIOUS, NULL) == RET_NOK ) {
+	if (entry_write_int(table, id, old, ATTRIBUTE_GROUP, attribute,
+	ATTRIBUTE_PREVIOUS, NULL) == RET_NOK)
+	{
 		SDL_UnlockMutex(attribute_mutex);
 		return -1;
 	}
 
 	// Check automatic actions
-	if( value < 0 ) {
-		if( do_min_action == true ) {
-			if(entry_read_string(table,id,&action,ATTRIBUTE_GROUP,attribute, ATTRIBUTE_ON_MIN, NULL) == RET_NOK ) {
+	if (value < 0)
+	{
+		if (do_min_action == true)
+		{
+			if (entry_read_string(table, id, &action, ATTRIBUTE_GROUP,
+					attribute, ATTRIBUTE_ON_MIN, NULL) == RET_NOK)
+			{
 				do_min_action = false;
-			} else {
+			}
+			else
+			{
 				min_action = action;
 			}
 		}
 
-		if(entry_read_string(table,id,&action,ATTRIBUTE_GROUP,attribute, ATTRIBUTE_ON_DOWN, NULL) == RET_OK ) {
+		if (entry_read_string(table, id, &action, ATTRIBUTE_GROUP, attribute,
+		ATTRIBUTE_ON_DOWN, NULL) == RET_OK)
+		{
 			do_down_action = true;
 			down_action = action;
 		}
 	}
 
-	if( value > 0 ) {
-		if( do_max_action == true ) {
-			if(entry_read_string(table,id,&action,ATTRIBUTE_GROUP,attribute, ATTRIBUTE_ON_MAX, NULL) == RET_NOK ) {
+	if (value > 0)
+	{
+		if (do_max_action == true)
+		{
+			if (entry_read_string(table, id, &action, ATTRIBUTE_GROUP,
+					attribute, ATTRIBUTE_ON_MAX, NULL) == RET_NOK)
+			{
 				do_max_action = false;
-			} else {
+			}
+			else
+			{
 				max_action = action;
 			}
 		}
 
-		if(entry_read_string(table,id,&action,ATTRIBUTE_GROUP,attribute, ATTRIBUTE_ON_UP, NULL) == RET_OK ) {
+		if (entry_read_string(table, id, &action, ATTRIBUTE_GROUP, attribute,
+		ATTRIBUTE_ON_UP, NULL) == RET_OK)
+		{
 			do_up_action = true;
 			up_action = action;
 		}
@@ -121,53 +152,62 @@ int attribute_change(context_t * context, const char * table, const char * id, c
 	SDL_UnlockMutex(attribute_mutex);
 
 	// do automatic actions
-	if( do_down_action == true && down_action != NULL ) {
-		action_execute_script(context,down_action,NULL);
+	if (do_down_action == true && down_action != NULL)
+	{
+		action_execute_script(context, down_action, NULL);
 	}
-	if( down_action ) {
+	if (down_action)
+	{
 		free(down_action);
 	}
 
-	if( do_min_action == true && min_action != NULL ) {
-		action_execute_script(context,min_action,NULL);
+	if (do_min_action == true && min_action != NULL)
+	{
+		action_execute_script(context, min_action, NULL);
 	}
-	if( min_action ) {
+	if (min_action)
+	{
 		free(min_action);
 	}
 
-	if( do_up_action == true && up_action != NULL ) {
-		action_execute_script(context,up_action,NULL);
+	if (do_up_action == true && up_action != NULL)
+	{
+		action_execute_script(context, up_action, NULL);
 	}
-	if( min_action ) {
+	if (min_action)
+	{
 		free(up_action);
 	}
 
-	if( do_max_action == true && max_action != NULL ) {
-		action_execute_script(context,max_action,NULL);
+	if (do_max_action == true && max_action != NULL)
+	{
+		action_execute_script(context, max_action, NULL);
 		free(max_action);
 	}
-	if( max_action ) {
+	if (max_action)
+	{
 		free(max_action);
 	}
 
-	sprintf(buf,"%s.%s.%s",ATTRIBUTE_GROUP,attribute,ATTRIBUTE_CURRENT);
-	network_broadcast_entry_int(table,id,buf,current,true);
-	sprintf(buf,"%s.%s.%s",ATTRIBUTE_GROUP,attribute,ATTRIBUTE_PREVIOUS);
-	network_broadcast_entry_int(table,id,buf,old,true);
+	sprintf(buf, "%s.%s.%s", ATTRIBUTE_GROUP, attribute, ATTRIBUTE_CURRENT);
+	network_broadcast_entry_int(table, id, buf, current, true);
+	sprintf(buf, "%s.%s.%s", ATTRIBUTE_GROUP, attribute, ATTRIBUTE_PREVIOUS);
+	network_broadcast_entry_int(table, id, buf, old, true);
 	return 0;
 }
 
 /****************************************
-get the specified attribute's value
-return -1 if fails
-****************************************/
+ get the specified attribute's value
+ return -1 if fails
+ ****************************************/
 int attribute_get(const char * table, const char *id, const char * attribute)
 {
 	int current = -1;
 
 	SDL_LockMutex(attribute_mutex);
 
-	entry_read_int(table,id,&current,ATTRIBUTE_GROUP,attribute, ATTRIBUTE_CURRENT, NULL);
+	entry_read_int(table, id, &current, ATTRIBUTE_GROUP, attribute,
+	ATTRIBUTE_CURRENT, NULL);
 
 	SDL_UnlockMutex(attribute_mutex);
 
@@ -175,14 +215,17 @@ int attribute_get(const char * table, const char *id, const char * attribute)
 }
 
 /*********************************************************************
-set the specified attribute's value without check of min and max
-return -1 if fails
-*********************************************************************/
-int attribute_set(const char * table, const char * id, const char * attribute, int value)
+ set the specified attribute's value without check of min and max
+ return -1 if fails
+ *********************************************************************/
+int attribute_set(const char * table, const char * id, const char * attribute,
+		int value)
 {
 	SDL_LockMutex(attribute_mutex);
 
-	if(entry_write_int(table,id,value,ATTRIBUTE_GROUP,attribute, ATTRIBUTE_CURRENT, NULL) == RET_NOK ) {
+	if (entry_write_int(table, id, value, ATTRIBUTE_GROUP, attribute,
+	ATTRIBUTE_CURRENT, NULL) == RET_NOK)
+	{
 		SDL_UnlockMutex(attribute_mutex);
 		return -1;
 	}
@@ -193,17 +236,19 @@ int attribute_set(const char * table, const char * id, const char * attribute, i
 }
 
 /****************************************
-get the specified attribute tag's value
-return NULL if fails
-returned value MUST be freed
-****************************************/
-char * attribute_tag_get(const char * table, const char *id, const char * attribute)
+ get the specified attribute tag's value
+ return NULL if fails
+ returned value MUST be freed
+ ****************************************/
+char * attribute_tag_get(const char * table, const char *id,
+		const char * attribute)
 {
 	char * tag = NULL;
 
 	SDL_LockMutex(attribute_mutex);
 
-	entry_read_string(table,id,&tag,ATTRIBUTE_GROUP,attribute, ATTRIBUTE_CURRENT, NULL);
+	entry_read_string(table, id, &tag, ATTRIBUTE_GROUP, attribute,
+	ATTRIBUTE_CURRENT, NULL);
 
 	SDL_UnlockMutex(attribute_mutex);
 
@@ -211,14 +256,17 @@ char * attribute_tag_get(const char * table, const char *id, const char * attrib
 }
 
 /*********************************************************************
-set the specified attribute tag's value
-return -1 if fails
-*********************************************************************/
-int attribute_tag_set(const char * table, const char * id, const char * attribute, const char * value)
+ set the specified attribute tag's value
+ return -1 if fails
+ *********************************************************************/
+int attribute_tag_set(const char * table, const char * id,
+		const char * attribute, const char * value)
 {
 	SDL_LockMutex(attribute_mutex);
 
-	if(entry_write_string(table,id,value,ATTRIBUTE_GROUP,attribute, ATTRIBUTE_CURRENT, NULL) == RET_NOK ) {
+	if (entry_write_string(table, id, value, ATTRIBUTE_GROUP, attribute,
+	ATTRIBUTE_CURRENT, NULL) == RET_NOK)
+	{
 		SDL_UnlockMutex(attribute_mutex);
 		return -1;
 	}
