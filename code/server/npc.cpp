@@ -42,7 +42,7 @@ static int npc_script(void * data)
 
 	context_new_VM(context);
 
-	wlog(LOGDEV,"Start AI script for %s(%s)",context->id, context->character_name);
+	wlog(LOGDESIGNER,"Start AI script for %s(%s)",context->id, context->character_name);
 
 	while(context_get_connected(context)) {
 		if( script ) {
@@ -74,7 +74,7 @@ static int npc_script(void * data)
 		}
 	}
 
-	wlog(LOGDEV,"End AI script for %s(%s)",context->id, context->character_name);
+	wlog(LOGDESIGNER,"End AI script for %s(%s)",context->id, context->character_name);
 
 	/* Send connected  = FALSE to other context */
 	context_spread(context);
@@ -130,7 +130,7 @@ void instantiate_npc(const char * id)
 		return;
 	}
 
-	wlog(LOGDEV,"Creating npc %s of type %s in map %s at %d,%d",name,type,map,x,y);
+	wlog(LOGDESIGNER,"Creating npc %s of type %s in map %s at %d,%d",name,type,map,x,y);
 	ctx = context_new();
 	context_set_username(ctx,"CPU");
 	context_set_character_name(ctx,name);

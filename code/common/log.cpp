@@ -1,6 +1,6 @@
 /*
  World of Gnome is a 2D multiplayer role playing game.
- Copyright (C) 2013-2016 carabobz@gmail.com
+ Copyright (C) 2013-2019 carabobz@gmail.com
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -26,6 +26,7 @@
 #include <stdarg.h>
 #include <time.h>
 #include <SDL2/SDL.h>
+#include <string>
 
 #ifdef __cplusplus
 extern "C"
@@ -34,14 +35,15 @@ extern "C"
 
 static int log_level = 0;
 
-const char *log_level_string[3] =
-{ "user", "dev", "debug" };
-
 char ** file_filter = nullptr;
 int file_filter_num = 0;
 
 char ** func_filter = nullptr;
 int func_filter_num = 0;
+
+static const std::string LEVEL_USER("user");
+static const std::string LEVEL_DESIGNER("designer");
+static const std::string LEVEL_DEVELOPER("developer");
 
 /**************************************************
  **************************************************/
@@ -141,12 +143,12 @@ void log_print(int type, const char * file, const char * func, int line,
 		fprintf(stream, "\e[31m");
 	}
 
-	if (log_level == LOGDEBUG)
+	if (log_level == LOGDEVELOPER)
 	{
 		fprintf(stream, "%09d|%ld|%s(%d):%s|%s", SDL_GetTicks(), SDL_ThreadID(),
 				file, line, func, buf);
 	}
-	else if (log_level == LOGDEV)
+	else if (log_level == LOGDESIGNER)
 	{
 		fprintf(stream, "%09d|%s", SDL_GetTicks(), buf);
 	}
@@ -172,19 +174,21 @@ void log_set_level(char * log)
 		return;
 	}
 
-	if (!strcmp(log, "0") || !strcasecmp(log, "user"))
+	std::string log_string = std::string(log);
+
+	if (log_string == LEVEL_USER)
 	{
 		log_level = LOGUSER;
 		return;
 	}
-	if (!strcmp(log, "1") || !strcasecmp(log, "dev"))
+	if (log_string == LEVEL_DESIGNER)
 	{
-		log_level = LOGDEV;
+		log_level = LOGDESIGNER;
 		return;
 	}
-	if (!strcmp(log, "2") || !strcasecmp(log, "debug"))
+	if (log_string == LEVEL_DEVELOPER)
 	{
-		log_level = LOGDEBUG;
+		log_level = LOGDEVELOPER;
 		return;
 	}
 }

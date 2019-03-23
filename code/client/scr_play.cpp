@@ -213,7 +213,7 @@ static anim_t ** select_sprite(context_t * ctx)
 		return sprite;
 	}
 
-	werr(LOGDEV, "Can't read sprite name for \"%s\"", ctx->id);
+	werr(LOGDESIGNER, "Can't read sprite name for \"%s\"", ctx->id);
 	return nullptr;
 }
 

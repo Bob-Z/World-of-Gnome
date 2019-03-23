@@ -271,7 +271,7 @@ ret_code_t file_get_contents(const char *filename, void **contents,
 		error_str = strerror_r(errno, error_buf, SMALL_BUF);
 #endif
 		file_unlock(filename);
-		werr(LOGDEV, "Error stat on file %s: %s\n", fullname, error_str);
+		werr(LOGDESIGNER, "Error stat on file %s: %s\n", fullname, error_str);
 		free(fullname);
 		return RET_NOK;
 	}
@@ -286,7 +286,7 @@ ret_code_t file_get_contents(const char *filename, void **contents,
 		error_str = strerror_r(errno, error_buf, SMALL_BUF);
 #endif
 		file_unlock(filename);
-		werr(LOGDEV, "Error open on file %s: %s\n", fullname, error_str);
+		werr(LOGDESIGNER, "Error open on file %s: %s\n", fullname, error_str);
 		free(fullname);
 		return RET_NOK;
 	}
@@ -313,7 +313,7 @@ ret_code_t file_get_contents(const char *filename, void **contents,
 		close(fd);
 		file_unlock(filename);
 		free(buf);
-		werr(LOGDEV, "Error read on file %s: %s\n", fullname, error_str);
+		werr(LOGDESIGNER, "Error read on file %s: %s\n", fullname, error_str);
 		free(fullname);
 		return RET_NOK;
 	}
@@ -356,7 +356,7 @@ ret_code_t file_set_contents(const char *filename, const void *contents,
 		error_str = strerror_r(errno, error_buf, SMALL_BUF);
 #endif
 		file_unlock(filename);
-		werr(LOGDEV, "Error open on file %s: %s\n", fullname, error_str);
+		werr(LOGDESIGNER, "Error open on file %s: %s\n", fullname, error_str);
 		free(fullname);
 		return RET_NOK;
 	}
@@ -372,7 +372,7 @@ ret_code_t file_set_contents(const char *filename, const void *contents,
 #endif
 		close(fd);
 		file_unlock(filename);
-		werr(LOGDEV, "Error write on file %s: %s\n", fullname, error_str);
+		werr(LOGDESIGNER, "Error write on file %s: %s\n", fullname, error_str);
 		free(fullname);
 		return RET_NOK;
 	}
@@ -399,7 +399,7 @@ bool file_copy(const char * src_table, const char * src_name,
 	src = fopen(src_full_path, "rb");
 	if (src == nullptr)
 	{
-		werr(LOGDEV, "Failed to open source file %s\n", src_full_path);
+		werr(LOGDESIGNER, "Failed to open source file %s\n", src_full_path);
 		free(src_full_path);
 		return false;
 	}
@@ -409,7 +409,7 @@ bool file_copy(const char * src_table, const char * src_name,
 	dst = fopen(dst_full_path, "wb");
 	if (dst == nullptr)
 	{
-		werr(LOGDEV, "Failed to open destination file %s\n", dst_full_path);
+		werr(LOGDESIGNER, "Failed to open destination file %s\n", dst_full_path);
 		fclose(src);
 		free(dst_full_path);
 		free(src_full_path);

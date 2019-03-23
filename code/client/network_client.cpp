@@ -32,7 +32,7 @@ void network_login(context_t * context, const char * user_name,
 	l_Frame.push(user_name);
 	l_Frame.push(password);
 
-	wlog(LOGDEBUG, "Send CMD_REQ_LOGIN");
+	wlog(LOGDEVELOPER, "Send CMD_REQ_LOGIN");
 	network_send_command(context, CMD_REQ_LOGIN, l_Frame, false);
 }
 
@@ -43,7 +43,7 @@ void network_request_start(context_t * p_pContext, const char * p_pId)
 	NetworkFrame l_Frame;
 	l_Frame.push(p_pId);
 
-	wlog(LOGDEBUG, "Send CMD_REQ_START");
+	wlog(LOGDEVELOPER, "Send CMD_REQ_START");
 	network_send_command(p_pContext, CMD_REQ_START, l_Frame, false);
 }
 
@@ -51,7 +51,7 @@ void network_request_start(context_t * p_pContext, const char * p_pId)
  **********************************************************************/
 void network_request_stop(context_t * context)
 {
-	wlog(LOGDEBUG, "Send CMD_REQ_STOP");
+	wlog(LOGDEVELOPER, "Send CMD_REQ_STOP");
 	network_send_command_no_data(context, CMD_REQ_STOP, false);
 }
 
@@ -60,7 +60,7 @@ void network_request_stop(context_t * context)
  *********************************************************************/
 void network_request_playable_character_list(context_t * context)
 {
-	wlog(LOGDEBUG, "Send CMD_REQ_PLAYABLE_CHARACTER_LIST");
+	wlog(LOGDEVELOPER, "Send CMD_REQ_PLAYABLE_CHARACTER_LIST");
 	network_send_command_no_data(context, CMD_REQ_PLAYABLE_CHARACTER_LIST,
 			false);
 }
@@ -70,7 +70,7 @@ void network_request_playable_character_list(context_t * context)
  *********************************************************************/
 void network_request_user_character_list(context_t * context)
 {
-	wlog(LOGDEBUG, "Send CMD_REQ_USER_CHARACTER_LIST");
+	wlog(LOGDEVELOPER, "Send CMD_REQ_USER_CHARACTER_LIST");
 
 	NetworkFrame l_Frame;
 	l_Frame.push(context->user_name);
@@ -88,7 +88,7 @@ void network_request_character_creation(context_t * context, const char * id,
 	l_Frame.push(id);
 	l_Frame.push(name);
 
-	wlog(LOGDEBUG, "Send CMD_REQ_CREATE");
+	wlog(LOGDEVELOPER, "Send CMD_REQ_CREATE");
 	network_send_command(context, CMD_REQ_CREATE, l_Frame, false);
 }
 
@@ -120,7 +120,7 @@ void network_send_action(context_t * context, const char * script, ...)
 
 	l_Frame.push(l_Param);
 
-	wlog(LOGDEBUG, "Send CMD_REQ_ACTION :%s", l_Frame.getFrame());
+	wlog(LOGDEVELOPER, "Send CMD_REQ_ACTION :%s", l_Frame.getFrame());
 	network_send_command(context, CMD_REQ_ACTION, l_Frame, false);
 }
 
@@ -144,7 +144,7 @@ static int async_recv(void * p_pData)
 
 		{
 			l_FrameSize = ntohl(l_FrameSize);
-			wlog(LOGDEBUG, "received %u bytes long frame on socket %u",
+			wlog(LOGDEVELOPER, "received %u bytes long frame on socket %u",
 					l_FrameSize, l_pContext->socket);
 
 			NetworkFrame l_Frame(l_FrameSize);
@@ -194,7 +194,7 @@ static int async_data_recv(void * p_pData)
 
 		{
 			l_FrameSize = ntohl(l_FrameSize);
-			wlog(LOGDEBUG, "received on data %u bytes long frame on socket %u",
+			wlog(LOGDEVELOPER, "received on data %u bytes long frame on socket %u",
 					l_FrameSize, l_pContext->socket_data);
 
 			NetworkFrame l_Frame(l_FrameSize);

@@ -49,7 +49,7 @@ char * checksum_file(const char * filename)
 
 	snprintf(text, 128, "%llu", checksum);
 
-	wlog(LOGDEBUG, "Checksum for %s is %s", filename, text);
+	wlog(LOGDEVELOPER, "Checksum for %s is %s", filename, text);
 
 	return strdup(text);
 }

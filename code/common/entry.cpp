@@ -104,7 +104,7 @@ void entry_remove(const char * filename)
 {
 	config_t * old_config;
 
-	wlog(LOGDEBUG, "Removing entry : %s", filename);
+	wlog(LOGDEVELOPER, "Removing entry : %s", filename);
 	/* Clean-up old anim if any */
 	SDL_LockMutex(entry_mutex);
 	old_config = (config_t*) list_find(entry_list, filename);

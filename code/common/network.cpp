@@ -1,6 +1,6 @@
 /*
  World of Gnome is a 2D multiplayer role playing game.
- Copyright (C) 2013-2017 carabobz@gmail.com
+ Copyright (C) 2013-2019 carabobz@gmail.com
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -43,7 +43,7 @@ static int async_frame_send(void * p_pUserData)
 	context_t * l_pContext = l_pData->m_pContext;
 	if (l_pContext == nullptr)
 	{
-		werr(LOGDEBUG, "null l_pContext");
+		werr(LOGDEVELOPER, "null l_pContext");
 		delete l_pData->m_pFrame;
 		delete l_pData;
 		return -1;
@@ -62,7 +62,7 @@ static int async_frame_send(void * p_pUserData)
 
 	if (l_Socket == 0)
 	{
-		wlog(LOGDEBUG, "socket %d is disconnected", l_Socket);
+		wlog(LOGDEVELOPER, "socket %d is disconnected", l_Socket);
 		delete l_pData->m_pFrame;
 		delete l_pData;
 		return -1;
@@ -82,7 +82,7 @@ static int async_frame_send(void * p_pUserData)
 		goto async_frame_send_end;
 	}
 
-	wlog(LOGDEBUG, "sent %u bytes on socket %d", l_BytesWritten, l_Socket);
+	wlog(LOGDEVELOPER, "sent %u bytes on socket %d", l_BytesWritten, l_Socket);
 
 	//send frame
 	l_BytesWritten = SDLNet_TCP_Send(l_Socket, l_pData->m_pFrame->getFrame(),
@@ -93,7 +93,7 @@ static int async_frame_send(void * p_pUserData)
 		context_set_connected(l_pContext, false);
 	}
 
-	wlog(LOGDEBUG, "sent %u bytes on socket %d", l_BytesWritten, l_Socket);
+	wlog(LOGDEVELOPER, "sent %u bytes on socket %d", l_BytesWritten, l_Socket);
 
 	async_frame_send_end: SDL_UnlockMutex(l_pContext->send_mutex);
 	delete l_pData->m_pFrame;
@@ -152,7 +152,7 @@ void network_send_entry_int(context_t * context, const char * table,
 	l_Frame.push(path);
 	l_Frame.push(value);
 
-	wlog(LOGDEBUG, "Send CMD_SEND_ENTRY to %s :%s", context->id,
+	wlog(LOGDEVELOPER, "Send CMD_SEND_ENTRY to %s :%s", context->id,
 			l_Frame.getFrame());
 	network_send_command(context, CMD_SEND_ENTRY, l_Frame, false);
 }
@@ -166,7 +166,7 @@ void network_send_req_file(context_t * context, const char * file)
 {
 	if (file == nullptr)
 	{
-		werr(LOGDEV, "network_send_req_file_checksum called with nullptr");
+		werr(LOGDESIGNER, "network_send_req_file_checksum called with nullptr");
 		return;
 	}
 
@@ -184,7 +184,7 @@ void network_send_req_file(context_t * context, const char * file)
 	l_Frame.push(file);
 	l_Frame.push(cksum);
 
-	wlog(LOGDEBUG, "Send CMD_REQ_FILE :%s", file);
+	wlog(LOGDEVELOPER, "Send CMD_REQ_FILE :%s", file);
 	network_send_command(context, CMD_REQ_FILE, l_Frame, true);
 
 	free(cksum);
@@ -208,13 +208,13 @@ ret_code_t network_read_bytes(TCPsocket socket, char * data, int size)
 		bytes_read = SDLNet_TCP_Recv(socket, data + total_bytes, 1);
 		if (bytes_read < 1)
 		{
-			werr(LOGDEBUG, "Read error on socket %d", socket);
+			werr(LOGDEVELOPER, "Read error on socket %d", socket);
 			return RET_NOK;
 		}
 		total_bytes += bytes_read;
 	}
 
-	wlog(LOGDEBUG, "read %u bytes on socket %d", total_bytes, socket);
+	wlog(LOGDEVELOPER, "read %u bytes on socket %d", total_bytes, socket);
 
 	return RET_OK;
 }
@@ -257,7 +257,7 @@ void network_send_context_to_context(context_t * dest_ctx, context_t * src_ctx)
 	l_Frame.push(src_ctx->selection.equipment);
 	l_Frame.push(src_ctx->selection.inventory);
 
-	wlog(LOGDEBUG, "Send CMD_SEND_CONTEXT of %s to %s", src_ctx->id,
+	wlog(LOGDEVELOPER, "Send CMD_SEND_CONTEXT of %s to %s", src_ctx->id,
 			dest_ctx->id);
 	network_send_command(dest_ctx, CMD_SEND_CONTEXT, l_Frame, false);
 }
@@ -303,7 +303,7 @@ int network_send_file(context_t * context, const char * filename)
 	l_Frame.push(file_data, file_length);
 
 	// send the frame
-	wlog(LOGDEBUG, "Send CMD_SEND_FILE : %s", filename);
+	wlog(LOGDEVELOPER, "Send CMD_SEND_FILE : %s", filename);
 	network_send_command(context, CMD_SEND_FILE, l_Frame, false);
 
 	return 0;
@@ -333,7 +333,7 @@ void network_send_text(const char * id, const char * string)
 	context_t * context = context_find(id);
 	if (context == nullptr)
 	{
-		werr(LOGDEV, "Could not find context %s", id);
+		werr(LOGDESIGNER, "Could not find context %s", id);
 		return;
 	}
 
@@ -341,7 +341,7 @@ void network_send_text(const char * id, const char * string)
 	NetworkFrame l_Frame;
 	l_Frame.push(string);
 
-	wlog(LOGDEBUG, "Send CMD_SEND_TEXT :\"%s\" to %s (%s)", string,
+	wlog(LOGDEVELOPER, "Send CMD_SEND_TEXT :\"%s\" to %s (%s)", string,
 			context->character_name, context->user_name);
 	network_send_command(context, CMD_SEND_TEXT, l_Frame, false);
 }

@@ -1,6 +1,6 @@
 /*
  World of Gnome is a 2D multiplayer role playing game.
- Copyright (C) 2013-2017 carabobz@gmail.com
+ Copyright (C) 2013-2019 carabobz@gmail.com
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -50,7 +50,7 @@ int file_add(context_t * context, NetworkFrame & p_rFrame)
 	if (file_set_contents(l_TmpFileName.c_str(), l_FileData,
 			l_FileLength) == RET_NOK)
 	{
-		werr(LOGDEV, "Error writing file %s with size %d",
+		werr(LOGDESIGNER, "Error writing file %s with size %d",
 				l_TmpFullName.c_str(), l_FileLength);
 		free(l_FileData);
 		return -1;
@@ -63,7 +63,7 @@ int file_add(context_t * context, NetworkFrame & p_rFrame)
 
 	rename(l_TmpFullName.c_str(), l_FullName.c_str());
 
-	wlog(LOGDEBUG, "write file %s", l_FullName.c_str());
+	wlog(LOGDEVELOPER, "write file %s", l_FullName.c_str());
 
 	// Update the entry DB
 	entry_remove(l_FileName.c_str());

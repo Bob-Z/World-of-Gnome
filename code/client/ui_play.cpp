@@ -589,7 +589,7 @@ static void compose_equipment(context_t * ctx, item_t * item_list)
 			// Get the equipped object name
 			if(entry_read_string(ITEM_TABLE,equipped_name,&equipped_text,ITEM_NAME,nullptr) == RET_NOK )
 			{
-				werr(LOGDEV,"Can't read object %s name in equipment slot %s",equipped_name,slot_list[index]);
+				werr(LOGDESIGNER,"Can't read object %s name in equipment slot %s",equipped_name,slot_list[index]);
 			}
 			free(equipped_text);
 #endif
@@ -601,7 +601,7 @@ static void compose_equipment(context_t * ctx, item_t * item_list)
 				if (entry_read_string(ITEM_TABLE, equipped_name,
 						&equipped_icon_name, ITEM_ICON, nullptr) == RET_NOK)
 				{
-					werr(LOGDEV,
+					werr(LOGDESIGNER,
 							"Can't read object %s icon in equipment slot %s",
 							equipped_name, slot_list[index]);
 				}
@@ -611,7 +611,7 @@ static void compose_equipment(context_t * ctx, item_t * item_list)
 				if (entry_read_string(ITEM_TEMPLATE_TABLE, mytemplate,
 						&equipped_icon_name, ITEM_ICON, nullptr) == RET_NOK)
 				{
-					werr(LOGDEV, "Can't read item %s icon name (template: %s)",
+					werr(LOGDESIGNER, "Can't read item %s icon name (template: %s)",
 							equipped_name, mytemplate);
 				}
 				free(mytemplate);
@@ -681,7 +681,7 @@ static void compose_equipment(context_t * ctx, item_t * item_list)
 			if (entry_read_string(ITEM_TABLE, ctx->selection.inventory,
 					&inventory_icon_name, ITEM_ICON, nullptr) == RET_NOK)
 			{
-				werr(LOGDEV, "Can't read item %s icon name",
+				werr(LOGDESIGNER, "Can't read item %s icon name",
 						ctx->selection.inventory);
 			}
 		}
@@ -690,7 +690,7 @@ static void compose_equipment(context_t * ctx, item_t * item_list)
 			if (entry_read_string(ITEM_TEMPLATE_TABLE, mytemplate,
 					&inventory_icon_name, ITEM_ICON, nullptr) == RET_NOK)
 			{
-				werr(LOGDEV, "Can't read item %s icon name (template: %s)",
+				werr(LOGDESIGNER, "Can't read item %s icon name (template: %s)",
 						ctx->selection.inventory, mytemplate);
 			}
 			free(mytemplate);
@@ -1092,7 +1092,7 @@ static void compose_inventory_select(context_t * ctx, item_t * item_list)
 			if (entry_read_string(ITEM_TABLE, inventory_list[i], &icon_name,
 			ITEM_ICON, nullptr) == RET_NOK)
 			{
-				werr(LOGDEV, "Can't read item %s icon name", inventory_list[i]);
+				werr(LOGDESIGNER, "Can't read item %s icon name", inventory_list[i]);
 			}
 		}
 		else
@@ -1100,7 +1100,7 @@ static void compose_inventory_select(context_t * ctx, item_t * item_list)
 			if (entry_read_string(ITEM_TEMPLATE_TABLE, mytemplate, &icon_name,
 			ITEM_ICON, nullptr) == RET_NOK)
 			{
-				werr(LOGDEV, "Can't read item %s icon name (template: %s)",
+				werr(LOGDESIGNER, "Can't read item %s icon name (template: %s)",
 						inventory_list[i], mytemplate);
 			}
 			free(mytemplate);

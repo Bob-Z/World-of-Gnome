@@ -277,7 +277,7 @@ static const char * getKey(int p_IsMoving, char p_Orientation)
 			l_pKey = CHARACTER_KEY_MOV_E_SPRITE;
 			break;
 		default:
-			werr(LOGDEV,
+			werr(LOGDESIGNER,
 					"l_item_set_anim_from_context: wrong main orientation");
 			l_pKey = CHARACTER_KEY_MOV_S_SPRITE;
 			break;
@@ -300,7 +300,7 @@ static const char * getKey(int p_IsMoving, char p_Orientation)
 			l_pKey = CHARACTER_KEY_DIR_E_SPRITE;
 			break;
 		default:
-			werr(LOGDEV,
+			werr(LOGDESIGNER,
 					"l_item_set_anim_from_context: wrong main orientation");
 			l_pKey = CHARACTER_KEY_DIR_S_SPRITE;
 			break;
@@ -451,7 +451,7 @@ static int l_item_set_anim_from_context(lua_State* p_pLuaState)
 
 	if (l_pAnimArray == nullptr)
 	{
-		werr(LOGDEV,
+		werr(LOGDESIGNER,
 				"LUA item_set_anim_from_context: Failed to find anim for %s",
 				l_pId);
 	}
@@ -632,7 +632,7 @@ static int l_print_text_debug(lua_State* p_pLuaState)
 	const char * l_pString;
 
 	l_pString = luaL_checkstring(p_pLuaState, -1);
-	wlog(LOGDEV, (char* ) l_pString);
+	wlog(LOGDESIGNER, (char* ) l_pString);
 	return 0;  // number of results
 }
 

@@ -1,6 +1,6 @@
 /*
  World of Gnome is a 2D multiplayer role playing game.
- Copyright (C) 2013-2017 carabobz@gmail.com
+ Copyright (C) 2013-2019 carabobz@gmail.com
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -291,7 +291,8 @@ void network_send_popup(const std::string & p_rCtxId,
 	NetworkFrame l_Frame;
 	l_Frame.push(p_rPopupData);
 
-	wlog(LOGDEBUG, "Send CMD_SEND_POPUP : send pop-up to %s", p_rCtxId.c_str());
+	wlog(LOGDEVELOPER, "Send CMD_SEND_POPUP : send pop-up to %s",
+			p_rCtxId.c_str());
 
 	context_t * l_pTarget = nullptr;
 	l_pTarget = context_find(p_rCtxId.c_str());
@@ -329,7 +330,7 @@ void network_broadcast_effect(EffectType p_Type, const std::string & p_TargetId,
 		l_TargetMap = p_TargetId;
 		break;
 	default:
-		werr(LOGDEV, "network_broadcast_effect: Unknown EffectType");
+		werr(LOGDESIGNER, "network_broadcast_effect: Unknown EffectType");
 		return;
 		break;
 	}
@@ -362,7 +363,7 @@ void network_broadcast_effect(EffectType p_Type, const std::string & p_TargetId,
 			continue;
 		}
 
-		wlog(LOGDEBUG, "Send CMD_SEND_EFFECT to %s", ctx->id);
+		wlog(LOGDEVELOPER, "Send CMD_SEND_EFFECT to %s", ctx->id);
 		network_send_command(ctx, CMD_SEND_EFFECT, l_Frame, false);
 	} while ((ctx = ctx->next) != nullptr);
 

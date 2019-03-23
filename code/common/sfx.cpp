@@ -47,7 +47,7 @@ int sfx_play(context_t* p_Ctx, const std::string & p_FileName, int p_Channel,
 	{
 		std::string l_Err = std::string("sfx_play: cannot open ")
 				+ l_FullName.c_str();
-		werr(LOGDEV, l_Err.c_str());
+		werr(LOGDESIGNER, l_Err.c_str());
 		file_update(p_Ctx, l_TableFilename.c_str());
 		file_unlock(l_TableFilename.c_str());
 		return -1;
@@ -58,7 +58,7 @@ int sfx_play(context_t* p_Ctx, const std::string & p_FileName, int p_Channel,
 	{
 		std::string l_Err = std::string("sfx_play: cannot read ")
 				+ l_FullName.c_str();
-		werr(LOGDEV, l_Err.c_str());
+		werr(LOGDESIGNER, l_Err.c_str());
 		file_update(p_Ctx, l_TableFilename.c_str());
 		file_unlock(l_TableFilename.c_str());
 		return -1;

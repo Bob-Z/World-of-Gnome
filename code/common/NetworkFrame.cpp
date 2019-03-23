@@ -138,14 +138,14 @@ void NetworkFrame::pop(uint_fast32_t & p_rData)
 	size_t l_Size = readSize();
 	if (l_Size != sizeof(uint32_t))
 	{
-		werr(LOGDEV, "Element size %d is wrong, should be %d", l_Size,
+		werr(LOGDESIGNER, "Element size %d is wrong, should be %d", l_Size,
 				sizeof(uint32_t));
 		return;
 	}
 
 	if (m_Index >= m_Size)
 	{
-		werr(LOGDEV, "Frame is empty.");
+		werr(LOGDESIGNER, "Frame is empty.");
 		return;
 	}
 
@@ -162,14 +162,14 @@ void NetworkFrame::pop(int_fast32_t & p_rData)
 	size_t l_Size = readSize();
 	if (l_Size != sizeof(int32_t))
 	{
-		werr(LOGDEV, "Element size %d is wrong, should be %d", l_Size,
+		werr(LOGDESIGNER, "Element size %d is wrong, should be %d", l_Size,
 				sizeof(uint32_t));
 		return;
 	}
 
 	if (m_Index >= m_Size)
 	{
-		werr(LOGDEV, "Frame is empty.");
+		werr(LOGDESIGNER, "Frame is empty.");
 		return;
 	}
 
@@ -203,7 +203,7 @@ void NetworkFrame::pop(std::string & p_rData)
 
 	if (m_Index >= m_Size)
 	{
-		werr(LOGDEV, "Frame is empty.");
+		werr(LOGDESIGNER, "Frame is empty.");
 		return;
 	}
 
@@ -275,7 +275,7 @@ size_t NetworkFrame::readSize()
 {
 	if (m_Index >= m_Size)
 	{
-		werr(LOGDEV, "Frame is empty.");
+		werr(LOGDESIGNER, "Frame is empty.");
 		return 0U;
 	}
 

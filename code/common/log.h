@@ -1,6 +1,6 @@
 /*
  World of Gnome is a 2D multiplayer role playing game.
- Copyright (C) 2013-2017 carabobz@gmail.com
+ Copyright (C) 2013-2019 carabobz@gmail.com
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -33,9 +33,9 @@ void log_add_func_filter(const char * func);
 void log_print(int type, const char * file, const char * func, int line,
 		FILE *stream, int level, const char * format, ...);
 
-#define LOGUSER		0
-#define LOGDEV		1
-#define LOGDEBUG	2
+#define LOGUSER			0
+#define LOGDESIGNER		1
+#define LOGDEVELOPER	2
 
 #define TYPELOG		0
 #define TYPEERR		1

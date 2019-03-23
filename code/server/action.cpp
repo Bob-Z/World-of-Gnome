@@ -112,7 +112,7 @@ static int l_character_get_selected_map_tile_x(lua_State* L)
 	target = context_find(id);
 	if (target == nullptr)
 	{
-		werr(LOGDEV, "Cannot find context with ID %s", id);
+		werr(LOGDESIGNER, "Cannot find context with ID %s", id);
 		return 0;  // number of results
 	}
 	lua_pushnumber(L, target->selection.map_coord[0]);
@@ -133,7 +133,7 @@ static int l_character_get_selected_map_tile_y(lua_State* L)
 	target = context_find(id);
 	if (target == nullptr)
 	{
-		werr(LOGDEV, "Cannot find context with ID %s", id);
+		werr(LOGDESIGNER, "Cannot find context with ID %s", id);
 		return 0;  // number of results
 	}
 	lua_pushnumber(L, target->selection.map_coord[1]);
@@ -154,7 +154,7 @@ static int l_character_get_selected_map(lua_State* L)
 	target = context_find(id);
 	if (target == nullptr)
 	{
-		werr(LOGDEV, "Cannot find context with ID %s", id);
+		werr(LOGDESIGNER, "Cannot find context with ID %s", id);
 		return 0;  // number of results
 	}
 	lua_pushstring(L, target->selection.map);
@@ -185,7 +185,7 @@ static int l_character_set_selected_tile(lua_State* L)
 	target = context_find(id);
 	if (target == nullptr)
 	{
-		werr(LOGDEV, "Cannot find context with ID %s", id);
+		werr(LOGDESIGNER, "Cannot find context with ID %s", id);
 		return 0;  // number of results
 	}
 
@@ -211,7 +211,7 @@ static int l_character_get_selected_inventory_id(lua_State* L)
 	target = context_find(id);
 	if (target == nullptr)
 	{
-		werr(LOGDEV, "Cannot find context with ID %s", id);
+		werr(LOGDESIGNER, "Cannot find context with ID %s", id);
 		return 0;  // number of results
 	}
 	lua_pushstring(L, target->selection.inventory);
@@ -236,7 +236,7 @@ static int l_character_set_selected_inventory_id(lua_State* L)
 	target = context_find(id);
 	if (target == nullptr)
 	{
-		werr(LOGDEV, "Cannot find context with ID %s", id);
+		werr(LOGDESIGNER, "Cannot find context with ID %s", id);
 		return 0;  // number of results
 	}
 
@@ -262,7 +262,7 @@ static int l_character_get_selected_equipment_slot(lua_State* L)
 	target = context_find(id);
 	if (target == nullptr)
 	{
-		werr(LOGDEV, "Cannot find context with ID %s", id);
+		werr(LOGDESIGNER, "Cannot find context with ID %s", id);
 		return 0;  // number of results
 	}
 	lua_pushstring(L, target->selection.equipment);
@@ -287,7 +287,7 @@ static int l_character_set_selected_equipment_slot(lua_State* L)
 	target = context_find(id);
 	if (target == nullptr)
 	{
-		werr(LOGDEV, "Cannot find context with ID %s", id);
+		werr(LOGDESIGNER, "Cannot find context with ID %s", id);
 		return 0;  // number of results
 	}
 
@@ -313,7 +313,7 @@ static int l_character_get_selected_character_id(lua_State* L)
 	target = context_find(id);
 	if (target == nullptr)
 	{
-		werr(LOGDEV, "Cannot find context with ID %s", id);
+		werr(LOGDESIGNER, "Cannot find context with ID %s", id);
 		return 0;  // number of results
 	}
 	lua_pushstring(L, target->selection.id);
@@ -338,7 +338,7 @@ static int l_character_set_selected_character_id(lua_State* L)
 	target = context_find(id);
 	if (target == nullptr)
 	{
-		werr(LOGDEV, "Cannot find context with ID %s", id);
+		werr(LOGDESIGNER, "Cannot find context with ID %s", id);
 		return 0;  // number of results
 	}
 
@@ -364,7 +364,7 @@ static int l_character_get_map(lua_State* L)
 	target = context_find(id);
 	if (target == nullptr)
 	{
-		werr(LOGDEV, "Cannot find context with ID %s", id);
+		werr(LOGDESIGNER, "Cannot find context with ID %s", id);
 		return 0;  // number of results
 	}
 	lua_pushstring(L, target->map);
@@ -421,7 +421,7 @@ static int l_character_get_x(lua_State* L)
 	target = context_find(id);
 	if (target == nullptr)
 	{
-		werr(LOGDEV, "Cannot find context with ID %s", id);
+		werr(LOGDESIGNER, "Cannot find context with ID %s", id);
 		return 0;  // number of results
 	}
 	lua_pushnumber(L, target->pos_tx);
@@ -442,7 +442,7 @@ static int l_character_get_y(lua_State* L)
 	target = context_find(id);
 	if (target == nullptr)
 	{
-		werr(LOGDEV, "Cannot find context with ID %s", id);
+		werr(LOGDESIGNER, "Cannot find context with ID %s", id);
 		return 0;  // number of results
 	}
 	lua_pushnumber(L, target->pos_ty);
@@ -463,7 +463,7 @@ static int l_character_get_name(lua_State* L)
 	target = context_find(id);
 	if (target == nullptr)
 	{
-		werr(LOGDEV, "Cannot find context with ID %s", id);
+		werr(LOGDESIGNER, "Cannot find context with ID %s", id);
 		return 0;  // number of results
 	}
 	lua_pushstring(L, target->character_name);
@@ -484,7 +484,7 @@ static int l_character_get_type(lua_State* L)
 	target = context_find(id);
 	if (target == nullptr)
 	{
-		werr(LOGDEV, "Cannot find context with ID %s", id);
+		werr(LOGDESIGNER, "Cannot find context with ID %s", id);
 		return 0;  // number of results
 	}
 	lua_pushstring(L, target->type);
@@ -1296,7 +1296,7 @@ static int l_print_text_debug(lua_State* L)
 	const char * string;
 
 	string = luaL_checkstring(L, -1);
-	wlog(LOGDEV, (char* ) string);
+	wlog(LOGDESIGNER, (char* ) string);
 	return 0;  // number of results
 }
 

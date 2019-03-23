@@ -168,7 +168,7 @@ void image_DB_remove(const char * filename)
 {
 	anim_t * old_anim = nullptr;
 
-	wlog(LOGDEBUG, "Image remove: %s", filename);
+	wlog(LOGDEVELOPER, "Image remove: %s", filename);
 	/* Clean-up old anim if any */
 	SDL_LockMutex(imageDB_mutex);
 	old_anim = (anim_t*) list_find(image_list, filename);

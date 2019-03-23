@@ -166,7 +166,7 @@ void calculate_camera_position(context_t * p_pCtx)
 	CLIENT_KEY_CAMERA_SCRIPT, nullptr);
 	if (l_pCameraScript == nullptr || l_pCameraScript[0] == '\0')
 	{
-		werr(LOGDEV, "No camera script defined. Camera won't move");
+		werr(LOGDESIGNER, "No camera script defined. Camera won't move");
 	}
 	else
 	{

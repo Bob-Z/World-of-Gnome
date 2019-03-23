@@ -1029,7 +1029,7 @@ void context_add_or_update_from_network_frame(context_t * p_pContext,
 
 			if (l_ReadContext.in_game == true)
 			{
-				wlog(LOGDEBUG, "Updating p_pContext %s / %s",
+				wlog(LOGDEVELOPER, "Updating p_pContext %s / %s",
 						l_ReadContext.user_name, l_ReadContext.character_name);
 				// do not call context_set_* function since we already have the lock
 				_context_set_map(ctx, l_ReadContext.map);
@@ -1075,7 +1075,7 @@ void context_add_or_update_from_network_frame(context_t * p_pContext,
 
 			if (l_ReadContext.connected == false)
 			{
-				wlog(LOGDEBUG, "Deleting p_pContext %s / %s",
+				wlog(LOGDEVELOPER, "Deleting p_pContext %s / %s",
 						l_ReadContext.user_name, l_ReadContext.character_name);
 				context_free(ctx);
 			}
@@ -1090,7 +1090,7 @@ void context_add_or_update_from_network_frame(context_t * p_pContext,
 
 	context_unlock_list();
 
-	wlog(LOGDEBUG, "Creating p_pContext %s / %s", l_ReadContext.user_name,
+	wlog(LOGDEVELOPER, "Creating p_pContext %s / %s", l_ReadContext.user_name,
 			l_ReadContext.character_name);
 	ctx = context_new();
 	context_set_username(ctx, l_ReadContext.user_name);

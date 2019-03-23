@@ -31,7 +31,7 @@ int equipment_set_item(const char *id, const char * slot, const char * item)
 {
 	context_t * context = context_find(id);
 	if( context == NULL ) {
-		werr(LOGDEV,"Could not find context %s",id);
+		werr(LOGDESIGNER,"Could not find context %s",id);
 		return -1;
 	}
 
@@ -54,7 +54,7 @@ char * equipment_get_item(const char *id, const char * slot)
 	char * item;
 	context_t * context = context_find(id);
 	if( context == NULL ) {
-		werr(LOGDEV,"Could not find context %s",id);
+		werr(LOGDESIGNER,"Could not find context %s",id);
 		return NULL;
 	}
 

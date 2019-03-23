@@ -31,7 +31,7 @@ int inventory_delete(const char * id, const char * item)
 {
 	context_t * context = context_find(id);
 	if( context == NULL ) {
-		werr(LOGDEV,"Could not find context %s",id);
+		werr(LOGDESIGNER,"Could not find context %s",id);
 		return -1;
 	}
 
@@ -60,7 +60,7 @@ int inventory_add(const char * ctx_id, const char * item_id)
 	int current_count;
 
 	if( context == NULL ) {
-		werr(LOGDEV,"Could not find context %s",ctx_id);
+		werr(LOGDESIGNER,"Could not find context %s",ctx_id);
 		return -1;
 	}
 
@@ -131,7 +131,7 @@ char * inventory_get_by_name(const char * id, const char * item_name)
 
 	context_t * context = context_find(id);
 	if( context == NULL ) {
-		werr(LOGDEV,"Could not find context %s",id);
+		werr(LOGDESIGNER,"Could not find context %s",id);
 		return NULL;
 	}
 

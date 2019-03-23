@@ -1,6 +1,6 @@
 /*
  World of Gnome is a 2D multiplayer role playing game.
- Copyright (C) 2017 carabobz@gmail.com
+ Copyright (C) 2017-2019 carabobz@gmail.com
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -27,9 +27,9 @@
 #include "screen.h"
 #include "sdl.h"
 
-static constexpr int const BORDER = 20;
-static constexpr int const FONT_SIZE = 30;
-static constexpr const char * const FONT = "Ubuntu-C.ttf";
+static const constexpr int BORDER = 20;
+static const constexpr int FONT_SIZE = 30;
+static const constexpr char * const FONT = "Ubuntu-C.ttf";
 static constexpr unsigned long BACKGROUND_COLOR = 0xFFFFFF40U;
 static bool g_IsMusicPlaying = false;
 
@@ -285,7 +285,7 @@ item_t * scr_create_compose(context_t * context)
 	font = font_get(context, FONT, FONT_SIZE);
 	if (font == nullptr)
 	{
-		werr(LOGDEV, "Can't open TTF font %s", FONT);
+		werr(LOGDESIGNER, "Can't open TTF font %s", FONT);
 	}
 
 	int sw = 0;
@@ -327,7 +327,7 @@ item_t * scr_create_compose(context_t * context)
 			if (entry_read_list(CHARACTER_TEMPLATE_TABLE, character_list[i].id,
 					&marquee_list, CHARACTER_KEY_MARQUEE, nullptr) == RET_NOK)
 			{
-				wlog(LOGDEV, "%s has no marquee", character_list[i].id);
+				wlog(LOGDESIGNER, "%s has no marquee", character_list[i].id);
 				continue;
 			}
 
@@ -399,7 +399,7 @@ item_t * scr_create_compose(context_t * context)
 		// character name
 		if (font_name == nullptr)
 		{
-			werr(LOGDEV, "Can't open TTF font %s", FONT);
+			werr(LOGDESIGNER, "Can't open TTF font %s", FONT);
 		}
 		else
 		{
@@ -420,7 +420,7 @@ item_t * scr_create_compose(context_t * context)
 		// character type
 		if (font_type == nullptr)
 		{
-			werr(LOGDEV, "Can't open TTF font %s", FONT);
+			werr(LOGDESIGNER, "Can't open TTF font %s", FONT);
 		}
 		else
 		{
@@ -483,7 +483,7 @@ void scr_create_add_playable_character(context_t * context,
 		entry_read_string(CHARACTER_TEMPLATE_TABLE, character_list[l_Index].id,
 				&character_list[l_Index].type, CHARACTER_KEY_TYPE, nullptr);
 
-		wlog(LOGDEBUG, "Character %s added", character_list[l_Index].id);
+		wlog(LOGDEVELOPER, "Character %s added", character_list[l_Index].id);
 	}
 
 	qsort(character_list, character_num, sizeof(character_t), sort_character);

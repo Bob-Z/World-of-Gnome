@@ -1,6 +1,6 @@
 /*
  World of Gnome is a 2D multiplayer role playing game.
- Copyright (C) 2013-2017 carabobz@gmail.com
+ Copyright (C) 2013-2019 carabobz@gmail.com
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -72,7 +72,7 @@ void character_playable_send_list(context_t * context)
 			if (entry_read_list(CHARACTER_TEMPLATE_TABLE, ent->d_name,
 					&marquee_list, CHARACTER_KEY_MARQUEE, nullptr) == RET_NOK)
 			{
-				wlog(LOGDEV, "%s has no marquee", ent->d_name);
+				wlog(LOGDESIGNER, "%s has no marquee", ent->d_name);
 				continue;
 			}
 			if (marquee_list[0][0] == '\0')
@@ -153,7 +153,7 @@ int character_disconnect(const char * id)
 {
 	context_t * ctx;
 
-	werr(LOGDEBUG, "Disconnecting %s", id);
+	werr(LOGDEVELOPER, "Disconnecting %s", id);
 
 	ctx = context_find(id);
 	context_set_in_game(ctx, false);
@@ -183,7 +183,7 @@ int character_out_of_game(const char * id)
 {
 	context_t * ctx;
 
-	werr(LOGDEBUG, "Kicking %s out of the game", id);
+	werr(LOGDEVELOPER, "Kicking %s out of the game", id);
 
 	ctx = context_find(id);
 	context_set_in_game(ctx, false);

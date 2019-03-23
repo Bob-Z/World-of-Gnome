@@ -1,6 +1,6 @@
 /*
  World of Gnome is a 2D multiplayer role playing game.
- Copyright (C) 2013-2017 carabobz@gmail.com
+ Copyright (C) 2013-2019 carabobz@gmail.com
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -42,7 +42,7 @@ ret_code_t parse_incoming_data(context_t * p_pContext, NetworkFrame & p_rFrame)
 	{
 	case CMD_REQ_LOGIN:
 	{
-		wlog(LOGDEBUG, "Received CMD_REQ_LOGIN");
+		wlog(LOGDEVELOPER, "Received CMD_REQ_LOGIN");
 
 		std::string l_UserName;
 		p_rFrame.pop(l_UserName);
@@ -81,9 +81,9 @@ ret_code_t parse_incoming_data(context_t * p_pContext, NetworkFrame & p_rFrame)
 		break;
 	}
 	case CMD_REQ_PLAYABLE_CHARACTER_LIST:
-		wlog(LOGDEBUG, "Received CMD_REQ_PLAYABLE_CHARACTER_LIST");
+		wlog(LOGDEVELOPER, "Received CMD_REQ_PLAYABLE_CHARACTER_LIST");
 		character_playable_send_list(p_pContext);
-		wlog(LOGDEBUG, "character list sent");
+		wlog(LOGDEVELOPER, "character list sent");
 		break;
 	case CMD_REQ_FILE:
 	{
@@ -92,7 +92,7 @@ ret_code_t parse_incoming_data(context_t * p_pContext, NetworkFrame & p_rFrame)
 		std::string l_CheckSum;
 		p_rFrame.pop(l_CheckSum);
 
-		wlog(LOGDEBUG, "Received CMD_REQ_FILE for %s", l_FileName.c_str());
+		wlog(LOGDEVELOPER, "Received CMD_REQ_FILE for %s", l_FileName.c_str());
 		// compare checksum
 		char * l_pFullName = strconcat(base_directory, "/", l_FileName.c_str(),
 				nullptr);
@@ -109,7 +109,7 @@ ret_code_t parse_incoming_data(context_t * p_pContext, NetworkFrame & p_rFrame)
 
 		if (strcmp(l_CheckSum.c_str(), l_LocalCheckSum) == 0)
 		{
-			wlog(LOGDEBUG, "Client has already newest %s file",
+			wlog(LOGDEVELOPER, "Client has already newest %s file",
 					l_FileName.c_str());
 			free(l_LocalCheckSum);
 			break;
@@ -117,13 +117,14 @@ ret_code_t parse_incoming_data(context_t * p_pContext, NetworkFrame & p_rFrame)
 		free(l_LocalCheckSum);
 
 		network_send_file(p_pContext, l_FileName.c_str());
-		wlog(LOGDEBUG, "File %s sent", l_FileName.c_str());
+		wlog(LOGDEVELOPER, "File %s sent", l_FileName.c_str());
 		break;
 	}
 	case CMD_REQ_USER_CHARACTER_LIST:
-		wlog(LOGDEBUG, "Received CMD_REQ_USER_CHARACTER_LIST");
+		wlog(LOGDEVELOPER, "Received CMD_REQ_USER_CHARACTER_LIST");
 		character_user_send_list(p_pContext);
-		wlog(LOGDEBUG, "user %s's character list sent", p_pContext->user_name);
+		wlog(LOGDEVELOPER, "user %s's character list sent",
+				p_pContext->user_name);
 		break;
 	case CMD_REQ_START:
 		if (p_pContext->in_game == false)
@@ -140,11 +141,11 @@ ret_code_t parse_incoming_data(context_t * p_pContext, NetworkFrame & p_rFrame)
 			context_request_other_context(p_pContext);
 
 		}
-		wlog(LOGDEBUG, "Received CMD_REQ_START for %s /%s",
+		wlog(LOGDEVELOPER, "Received CMD_REQ_START for %s /%s",
 				p_pContext->user_name, p_pContext->id);
 		break;
 	case CMD_REQ_STOP:
-		wlog(LOGDEBUG, "Received CMD_REQ_STOP for %s /%s",
+		wlog(LOGDEVELOPER, "Received CMD_REQ_STOP for %s /%s",
 				p_pContext->user_name, p_pContext->id);
 		if (p_pContext->in_game == true)
 		{
@@ -174,7 +175,7 @@ ret_code_t parse_incoming_data(context_t * p_pContext, NetworkFrame & p_rFrame)
 		std::vector<std::string> l_Param;
 		p_rFrame.pop(l_Param);
 
-		wlog(LOGDEBUG, "Received CMD_REQ_ACTION %s from %s /%s",
+		wlog(LOGDEVELOPER, "Received CMD_REQ_ACTION %s from %s /%s",
 				l_ActionName.c_str(), p_pContext->user_name,
 				p_pContext->character_name);
 
@@ -188,8 +189,8 @@ ret_code_t parse_incoming_data(context_t * p_pContext, NetworkFrame & p_rFrame)
 		std::string l_Name;
 		p_rFrame.pop(l_Name);
 
-		wlog(LOGDEBUG, "Received CMD_REQ_CREATE: ID=%s, NAME=%s", l_Id.c_str(),
-				l_Name.c_str());
+		wlog(LOGDEVELOPER, "Received CMD_REQ_CREATE: ID=%s, NAME=%s",
+				l_Id.c_str(), l_Name.c_str());
 
 		char * l_FileName = nullptr;
 		l_FileName = file_new(CHARACTER_TABLE, l_Name.c_str());
@@ -217,8 +218,9 @@ ret_code_t parse_incoming_data(context_t * p_pContext, NetworkFrame & p_rFrame)
 			break;
 		}
 
-		if (entry_add_to_list(USERS_TABLE, p_pContext->user_name, l_Name.c_str(),
-		USERS_CHARACTER_LIST, nullptr) == RET_NOK)
+		if (entry_add_to_list(USERS_TABLE, p_pContext->user_name,
+				l_Name.c_str(),
+				USERS_CHARACTER_LIST, nullptr) == RET_NOK)
 		{
 			werr(LOGUSER, "Error adding character %s to user %s",
 					l_Name.c_str(), p_pContext->user_name);
@@ -228,12 +230,12 @@ ret_code_t parse_incoming_data(context_t * p_pContext, NetworkFrame & p_rFrame)
 
 		character_user_send(p_pContext, l_Name.c_str());
 
-		wlog(LOGDEBUG, "Successfully created: ID=%s, NAME=%s", l_Id.c_str(),
+		wlog(LOGDEVELOPER, "Successfully created: ID=%s, NAME=%s", l_Id.c_str(),
 				l_Name.c_str());
 	}
 		break;
 	default:
-		werr(LOGDEV, "Unknown request %d from client", l_Command);
+		werr(LOGDESIGNER, "Unknown request %d from client", l_Command);
 		return RET_NOK;
 	}
 

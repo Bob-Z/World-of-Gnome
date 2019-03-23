@@ -293,7 +293,7 @@ item_t * scr_select_compose(context_t * context)
 			if (entry_read_list(CHARACTER_TABLE, character_list[i].id,
 					&marquee_list, CHARACTER_KEY_MARQUEE, nullptr) == RET_NOK)
 			{
-				wlog(LOGDEV, "%s has no marquee", character_list[i].id);
+				wlog(LOGDESIGNER, "%s has no marquee", character_list[i].id);
 				continue;
 			}
 
@@ -363,7 +363,7 @@ item_t * scr_select_compose(context_t * context)
 		}
 		else
 		{
-			werr(LOGDEV, "Can't open TTF font %s", FONT);
+			werr(LOGDESIGNER, "Can't open TTF font %s", FONT);
 		}
 
 		// character type
@@ -380,7 +380,7 @@ item_t * scr_select_compose(context_t * context)
 		}
 		else
 		{
-			werr(LOGDEV, "Can't open TTF font %s", FONT);
+			werr(LOGDESIGNER, "Can't open TTF font %s", FONT);
 		}
 	}
 
@@ -428,7 +428,7 @@ void scr_select_add_user_character(context_t * p_pCtx,
 	new_character->item = nullptr;
 	new_character->width = 0;
 
-	wlog(LOGDEV, "Character %s / %s /%s added", new_character->id,
+	wlog(LOGDESIGNER, "Character %s / %s /%s added", new_character->id,
 			new_character->type, new_character->name);
 
 	SDL_UnlockMutex(character_select_mutex);
