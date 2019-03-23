@@ -60,4 +60,3 @@ target_link_libraries (${PROJECT_NAME}
         ${CONFIG_LIBRARIES}
 	sdl_item
 )
-
