@@ -23,7 +23,7 @@
 
 Serializer::Serializer()
 {
-	pb::Test test;
+	pb::Action action;
 }
 
 Serializer::~Serializer()

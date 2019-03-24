@@ -2,7 +2,8 @@ syntax = "proto3";
 
 package pb;
 
-message Test
+message Action
 {
   string name = 1;
+  repeated string params = 2;
 }
