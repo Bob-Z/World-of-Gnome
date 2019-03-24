@@ -17,15 +17,15 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#include "Deserializer.h"
+#include "Serializer.h"
 
 #include "proto/base.pb.h"
 
-Deserializer::Deserializer()
+Serializer::Serializer()
 {
 	pb::Test test;
 }
 
-Deserializer::~Deserializer()
+Serializer::~Serializer()
 {
 }

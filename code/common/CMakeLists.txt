@@ -39,7 +39,7 @@ add_library(
 	util.cpp
 	lua.cpp
 	NetworkFrame.cpp
-	Deserializer.cpp
+	Serializer.cpp
 )
 
 target_link_libraries (${PROJECT_NAME}

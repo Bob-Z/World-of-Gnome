@@ -17,14 +17,14 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#ifndef COMMON_DESERIALIZER_H_
-#define COMMON_DESERIALIZER_H_
+#ifndef COMMON_SERIALIZER_H_
+#define COMMON_SERIALIZER_H_
 
-class Deserializer
+class Serializer
 {
 public:
-	Deserializer();
-	virtual ~Deserializer();
+	Serializer();
+	virtual ~Serializer();
 };
 
-#endif /* COMMON_DESERIALIZER_H_ */
+#endif /* COMMON_SERIALIZER_H_ */
