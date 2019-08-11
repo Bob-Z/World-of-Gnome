@@ -122,13 +122,13 @@ void instantiate_npc(const char * id)
 	}
 
 	// read data of this npc
-	if (entry_read_int(CHARACTER_TABLE, id, &x, CHARACTER_KEY_POS_X,
+	if (entry_read_int(CHARACTER_TABLE, id, &x, CHARACTER_KEY_TILE_X,
 			NULL) == RET_NOK)
 	{
 		return;
 	}
 
-	if (entry_read_int(CHARACTER_TABLE, id, &y, CHARACTER_KEY_POS_Y,
+	if (entry_read_int(CHARACTER_TABLE, id, &y, CHARACTER_KEY_TILE_Y,
 			NULL) == RET_NOK)
 	{
 		return;

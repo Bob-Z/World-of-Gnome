@@ -16,15 +16,15 @@ layer0: {
 	{
 		to_village : 
 		{
-			pos_x = 5;
-			pos_y = 13;
+			tile_x = 5;
+			tile_y = 13;
 			script = "goto.lua";
 			param = ( "village", "22", "11" );
 		};
 		to_level1 : 
 		{
-			pos_x = 15;
-			pos_y = 0;
+			tile_x = 15;
+			tile_y = 0;
 			script = "goto.lua";
 			param = ( "house0_level1", "11", "1" );
 		};

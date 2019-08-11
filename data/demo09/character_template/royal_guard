@@ -11,8 +11,8 @@ marquee = [ "character/0/WC_S_male_light.png", "", "", "", "", "", "", "", "", "
 sprite = [ "sprite/shadow/human.png", "character/0/WC_S_male_light.png", "", "", "", "", "", "", "", "", "character/9/WC_S_armor_male_metal_boots_male.png", "character/10/WC_S_pants_male_teal_pants_male.png", "character/11/WC_S_armor_male_metal_pants_male.png", "", "", "", "character/13/WC_S_plate_chest_male.png", "character/16/WC_S_gloves_male_metal_gloves_male.png", "character/17/WC_S_plate_arms_male.png", "", "", "", "", "", "character/23/WC_S_helms_male_metal_helm_male.png", "character/24/WC_S_left_hand_male_shield_male_cutoutforbody.png" ]
 
 map = "M0_0"
-pos_x = 11
-pos_y = 13
+tile_x = 11
+tile_y = 13
 layer = 15
 align = 1
 attribute = {

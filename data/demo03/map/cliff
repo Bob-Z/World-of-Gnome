@@ -27,15 +27,15 @@ layer0: {
 	{
 	        go_to_1 :
 	        {
-	                pos_x = 0;
-	                pos_y = 6;
+	                tile_x = 0;
+	                tile_y = 6;
 	                script = "goto.lua";
 	                param = ( "desert", "16", "7" );
 	        };
 	        go_to_2 :
 	        {
-	                pos_x = 0;
-	                pos_y = 7;
+	                tile_x = 0;
+	                tile_y = 7;
 	                script = "goto.lua";
 	                param = ( "desert", "16", "8" );
 	        };

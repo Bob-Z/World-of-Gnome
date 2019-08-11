@@ -5,6 +5,6 @@ name = "Fim";
 inventory : [ "A0004" ];
 type = "black_ball";
 map = "map2";
-pos_x = 2;
-pos_y = 2;
+tile_x = 2;
+tile_y = 2;
 action = [ "add_white", "add_black", "get", "drop_item", "get_apple", "eat_apple" ];

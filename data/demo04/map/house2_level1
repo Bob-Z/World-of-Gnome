@@ -17,8 +17,8 @@ layer0: {
 	event_list: {
 	        to_level0 :
 	        {
-	                pos_x = 11;
-	                pos_y = 0;
+	                tile_x = 11;
+	                tile_y = 0;
 	                script = "goto.lua";
 	                param = ( "house2_level0", "17", "1" );
 	        };

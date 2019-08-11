@@ -35,26 +35,26 @@ layer1 = {
 
 event_list = {
         to_dungeon0 = {
-                pos_x = 6
-                pos_y = 5
+                tile_x = 6
+                tile_y = 5
                 script = "goto.lua"
                 param = ( "dungeon", "3", "23" )
         }
         to_dungeon1 = {
-                pos_x = 7
-                pos_y = 5
+                tile_x = 7
+                tile_y = 5
                 script = "goto.lua"
                 param = ( "dungeon", "3", "24" )
         }
         to_mine0 = {
-                pos_x = 6
-                pos_y = 24
+                tile_x = 6
+                tile_y = 24
                 script = "goto.lua"
                 param = ( "mine04", "11", "5" )
         }
         to_mine1 = {
-                pos_x = 7
-                pos_y = 24
+                tile_x = 7
+                tile_y = 24
                 script = "goto.lua"
                 param = ( "mine04", "11", "5" )
         }

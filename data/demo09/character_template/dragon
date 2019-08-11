@@ -4,8 +4,8 @@ sprite		= "sprite/dragon.gif";
 type		= "Dragon"
 map		= "M0_0";
 layer           = 25;
-pos_x		= 15;
-pos_y		= 15;
+tile_x		= 15;
+tile_y		= 15;
 flip_w          = 1;
 #align on lower edge of tile
 align           = 1;

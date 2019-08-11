@@ -18,8 +18,8 @@ if index > num_move then
 end
 
 map = character_get_map(id)
-pos_x = character_get_x(id)
-pos_y = character_get_y(id)
+tile_x = character_get_x(id)
+tile_y = character_get_y(id)
 
 character_set_pos(id,map,x[index],y[index])
 

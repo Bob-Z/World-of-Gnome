@@ -6,8 +6,8 @@ marquee         = "marquee/mage.png";
 sprite          = [ "sprite/shadow/human.png","sprite/mage_down.png" ];
 type            = "Human"
 map             = "M0_0";
-pos_x           = 18;
-pos_y           = 17;
+tile_x           = 18;
+tile_y           = 17;
 layer		= 15;
 #align on lower edge of tile
 align           = 1;

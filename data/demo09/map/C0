@@ -148,410 +148,410 @@ layer0 = {
 }
 event_list: {
 E0 = {
-   pos_x = 1
-   pos_y = 2
+   tile_x = 1
+   tile_y = 2
    script = "set_body.lua"
    param = ( "female", "human" )
 }
 E1 = {
-   pos_x = 1
-   pos_y = 2
+   tile_x = 1
+   tile_y = 2
    script = "set_sprite.lua"
    param = ( "0", "Drake_female_blue" )
 }
 E2 = {
-   pos_x = 3
-   pos_y = 2
+   tile_x = 3
+   tile_y = 2
    script = "set_body.lua"
    param = ( "female", "human" )
 }
 E3 = {
-   pos_x = 3
-   pos_y = 2
+   tile_x = 3
+   tile_y = 2
    script = "set_sprite.lua"
    param = ( "0", "Drake_female_dark" )
 }
 E4 = {
-   pos_x = 5
-   pos_y = 2
+   tile_x = 5
+   tile_y = 2
    script = "set_body.lua"
    param = ( "female", "human" )
 }
 E5 = {
-   pos_x = 5
-   pos_y = 2
+   tile_x = 5
+   tile_y = 2
    script = "set_sprite.lua"
    param = ( "0", "Drake_female" )
 }
 E6 = {
-   pos_x = 7
-   pos_y = 2
+   tile_x = 7
+   tile_y = 2
    script = "set_body.lua"
    param = ( "male", "human" )
 }
 E7 = {
-   pos_x = 7
-   pos_y = 2
+   tile_x = 7
+   tile_y = 2
    script = "set_sprite.lua"
    param = ( "0", "Drake_male_blue" )
 }
 E8 = {
-   pos_x = 9
-   pos_y = 2
+   tile_x = 9
+   tile_y = 2
    script = "set_body.lua"
    param = ( "male", "human" )
 }
 E9 = {
-   pos_x = 9
-   pos_y = 2
+   tile_x = 9
+   tile_y = 2
    script = "set_sprite.lua"
    param = ( "0", "Drake_male_dark" )
 }
 E10 = {
-   pos_x = 11
-   pos_y = 2
+   tile_x = 11
+   tile_y = 2
    script = "set_body.lua"
    param = ( "male", "human" )
 }
 E11 = {
-   pos_x = 11
-   pos_y = 2
+   tile_x = 11
+   tile_y = 2
    script = "set_sprite.lua"
    param = ( "0", "Drake_male" )
 }
 E12 = {
-   pos_x = 1
-   pos_y = 3
+   tile_x = 1
+   tile_y = 3
    script = "set_body.lua"
    param = ( "female", "human" )
 }
 E13 = {
-   pos_x = 1
-   pos_y = 3
+   tile_x = 1
+   tile_y = 3
    script = "set_sprite.lua"
    param = ( "0", "female_dark2" )
 }
 E14 = {
-   pos_x = 3
-   pos_y = 3
+   tile_x = 3
+   tile_y = 3
    script = "set_body.lua"
    param = ( "female", "darkelf" )
 }
 E15 = {
-   pos_x = 3
-   pos_y = 3
+   tile_x = 3
+   tile_y = 3
    script = "set_sprite.lua"
    param = ( "0", "female_darkelf2" )
 }
 E16 = {
-   pos_x = 5
-   pos_y = 3
+   tile_x = 5
+   tile_y = 3
    script = "set_body.lua"
    param = ( "female", "darkelf" )
 }
 E17 = {
-   pos_x = 5
-   pos_y = 3
+   tile_x = 5
+   tile_y = 3
    script = "set_sprite.lua"
    param = ( "0", "female_darkelf" )
 }
 E18 = {
-   pos_x = 7
-   pos_y = 3
+   tile_x = 7
+   tile_y = 3
    script = "set_body.lua"
    param = ( "female", "human" )
 }
 E19 = {
-   pos_x = 7
-   pos_y = 3
+   tile_x = 7
+   tile_y = 3
    script = "set_sprite.lua"
    param = ( "0", "female_dark" )
 }
 E20 = {
-   pos_x = 9
-   pos_y = 3
+   tile_x = 9
+   tile_y = 3
    script = "set_body.lua"
    param = ( "female", "human" )
 }
 E21 = {
-   pos_x = 9
-   pos_y = 3
+   tile_x = 9
+   tile_y = 3
    script = "set_sprite.lua"
    param = ( "0", "female_light" )
 }
 E22 = {
-   pos_x = 11
-   pos_y = 3
+   tile_x = 11
+   tile_y = 3
    script = "set_body.lua"
    param = ( "female", "orc" )
 }
 E23 = {
-   pos_x = 11
-   pos_y = 3
+   tile_x = 11
+   tile_y = 3
    script = "set_sprite.lua"
    param = ( "0", "female_orc" )
 }
 E24 = {
-   pos_x = 1
-   pos_y = 4
+   tile_x = 1
+   tile_y = 4
    script = "set_body.lua"
    param = ( "female", "orc" )
 }
 E25 = {
-   pos_x = 1
-   pos_y = 4
+   tile_x = 1
+   tile_y = 4
    script = "set_sprite.lua"
    param = ( "0", "female_red_orc" )
 }
 E26 = {
-   pos_x = 3
-   pos_y = 4
+   tile_x = 3
+   tile_y = 4
    script = "set_body.lua"
    param = ( "female", "human" )
 }
 E27 = {
-   pos_x = 3
-   pos_y = 4
+   tile_x = 3
+   tile_y = 4
    script = "set_sprite.lua"
    param = ( "0", "female_tanned2" )
 }
 E28 = {
-   pos_x = 5
-   pos_y = 4
+   tile_x = 5
+   tile_y = 4
    script = "set_body.lua"
    param = ( "female", "human" )
 }
 E29 = {
-   pos_x = 5
-   pos_y = 4
+   tile_x = 5
+   tile_y = 4
    script = "set_sprite.lua"
    param = ( "0", "female_tanned" )
 }
 E30 = {
-   pos_x = 7
-   pos_y = 4
+   tile_x = 7
+   tile_y = 4
    script = "set_body.lua"
    param = ( "female", "human" )
 }
 E31 = {
-   pos_x = 7
-   pos_y = 4
+   tile_x = 7
+   tile_y = 4
    script = "set_sprite.lua"
    param = ( "0", "Lizard_female_blue" )
 }
 E32 = {
-   pos_x = 9
-   pos_y = 4
+   tile_x = 9
+   tile_y = 4
    script = "set_body.lua"
    param = ( "female", "human" )
 }
 E33 = {
-   pos_x = 9
-   pos_y = 4
+   tile_x = 9
+   tile_y = 4
    script = "set_sprite.lua"
    param = ( "0", "Lizard_female_dark" )
 }
 E34 = {
-   pos_x = 11
-   pos_y = 4
+   tile_x = 11
+   tile_y = 4
    script = "set_body.lua"
    param = ( "female", "human" )
 }
 E35 = {
-   pos_x = 11
-   pos_y = 4
+   tile_x = 11
+   tile_y = 4
    script = "set_sprite.lua"
    param = ( "0", "Lizard_female" )
 }
 E36 = {
-   pos_x = 1
-   pos_y = 5
+   tile_x = 1
+   tile_y = 5
    script = "set_body.lua"
    param = ( "male", "human" )
 }
 E37 = {
-   pos_x = 1
-   pos_y = 5
+   tile_x = 1
+   tile_y = 5
    script = "set_sprite.lua"
    param = ( "0", "Lizard_male_blue" )
 }
 E38 = {
-   pos_x = 3
-   pos_y = 5
+   tile_x = 3
+   tile_y = 5
    script = "set_body.lua"
    param = ( "male", "human" )
 }
 E39 = {
-   pos_x = 3
-   pos_y = 5
+   tile_x = 3
+   tile_y = 5
    script = "set_sprite.lua"
    param = ( "0", "Lizard_male_dark" )
 }
 E40 = {
-   pos_x = 5
-   pos_y = 5
+   tile_x = 5
+   tile_y = 5
    script = "set_body.lua"
    param = ( "male", "human" )
 }
 E41 = {
-   pos_x = 5
-   pos_y = 5
+   tile_x = 5
+   tile_y = 5
    script = "set_sprite.lua"
    param = ( "0", "Lizard_male" )
 }
 E42 = {
-   pos_x = 7
-   pos_y = 5
+   tile_x = 7
+   tile_y = 5
    script = "set_body.lua"
    param = ( "male", "human" )
 }
 E43 = {
-   pos_x = 7
-   pos_y = 5
+   tile_x = 7
+   tile_y = 5
    script = "set_sprite.lua"
    param = ( "0", "male_dark2" )
 }
 E44 = {
-   pos_x = 9
-   pos_y = 5
+   tile_x = 9
+   tile_y = 5
    script = "set_body.lua"
    param = ( "male", "darkelf" )
 }
 E45 = {
-   pos_x = 9
-   pos_y = 5
+   tile_x = 9
+   tile_y = 5
    script = "set_sprite.lua"
    param = ( "0", "male_darkelf2" )
 }
 E46 = {
-   pos_x = 11
-   pos_y = 5
+   tile_x = 11
+   tile_y = 5
    script = "set_body.lua"
    param = ( "male", "darkelf" )
 }
 E47 = {
-   pos_x = 11
-   pos_y = 5
+   tile_x = 11
+   tile_y = 5
    script = "set_sprite.lua"
    param = ( "0", "male_darkelf" )
 }
 E48 = {
-   pos_x = 1
-   pos_y = 6
+   tile_x = 1
+   tile_y = 6
    script = "set_body.lua"
    param = ( "male", "human" )
 }
 E49 = {
-   pos_x = 1
-   pos_y = 6
+   tile_x = 1
+   tile_y = 6
    script = "set_sprite.lua"
    param = ( "0", "male_dark" )
 }
 E50 = {
-   pos_x = 3
-   pos_y = 6
+   tile_x = 3
+   tile_y = 6
    script = "set_body.lua"
    param = ( "male", "human" )
 }
 E51 = {
-   pos_x = 3
-   pos_y = 6
+   tile_x = 3
+   tile_y = 6
    script = "set_sprite.lua"
    param = ( "0", "male_light" )
 }
 E52 = {
-   pos_x = 5
-   pos_y = 6
+   tile_x = 5
+   tile_y = 6
    script = "set_body.lua"
    param = ( "male", "orc" )
 }
 E53 = {
-   pos_x = 5
-   pos_y = 6
+   tile_x = 5
+   tile_y = 6
    script = "set_sprite.lua"
    param = ( "0", "male_orc" )
 }
 E54 = {
-   pos_x = 7
-   pos_y = 6
+   tile_x = 7
+   tile_y = 6
    script = "set_body.lua"
    param = ( "male", "orc" )
 }
 E55 = {
-   pos_x = 7
-   pos_y = 6
+   tile_x = 7
+   tile_y = 6
    script = "set_sprite.lua"
    param = ( "0", "male_red_orc" )
 }
 E56 = {
-   pos_x = 9
-   pos_y = 6
+   tile_x = 9
+   tile_y = 6
    script = "set_body.lua"
    param = ( "male", "skeleton" )
 }
 E57 = {
-   pos_x = 9
-   pos_y = 6
+   tile_x = 9
+   tile_y = 6
    script = "set_sprite.lua"
    param = ( "0", "male_skeleton" )
 }
 E58 = {
-   pos_x = 11
-   pos_y = 6
+   tile_x = 11
+   tile_y = 6
    script = "set_body.lua"
    param = ( "male", "human" )
 }
 E59 = {
-   pos_x = 11
-   pos_y = 6
+   tile_x = 11
+   tile_y = 6
    script = "set_sprite.lua"
    param = ( "0", "male_tanned2" )
 }
 E60 = {
-   pos_x = 1
-   pos_y = 7
+   tile_x = 1
+   tile_y = 7
    script = "set_body.lua"
    param = ( "male", "human" )
 }
 E61 = {
-   pos_x = 1
-   pos_y = 7
+   tile_x = 1
+   tile_y = 7
    script = "set_sprite.lua"
    param = ( "0", "male_tanned" )
 }
 E62 = {
-   pos_x = 0
-   pos_y = 5
+   tile_x = 0
+   tile_y = 5
    script = "goto_character_map.lua"
    param = ( "-1", "1", "1" )
 }
 E63 = {
-   pos_x = 12
-   pos_y = 5
+   tile_x = 12
+   tile_y = 5
    script = "goto_character_map.lua"
    param = ( "1", "1", "1" )
 }
 E64 = {
-   pos_x = 0
-   pos_y = 0
+   tile_x = 0
+   tile_y = 0
    script = "set_sprite.lua"
    param = ( "0", "" )
 }
 E65 = {
-   pos_x = 0
-   pos_y = 9
+   tile_x = 0
+   tile_y = 9
    script = "set_sprite.lua"
    param = ( "0", "" )
 }
 E66 = {
-   pos_x = 12
-   pos_y = 0
+   tile_x = 12
+   tile_y = 0
    script = "set_sprite.lua"
    param = ( "0", "" )
 }
 E67 = {
-   pos_x = 12
-   pos_y = 9
+   tile_x = 12
+   tile_y = 9
    script = "set_sprite.lua"
    param = ( "0", "" )
 }

@@ -6,8 +6,8 @@ marquee         = "marquee/goblin.png";
 sprite          = [ "sprite/shadow/human.png","sprite/goblin_down.png" ];
 type            = "goblin"
 map             = "M0_0";
-pos_x           = 25;
-pos_y           = 25;
+tile_x           = 25;
+tile_y           = 25;
 layer		= 15;
 #align on lower edge of tile
 align           = 1;

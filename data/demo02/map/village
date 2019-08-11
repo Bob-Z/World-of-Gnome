@@ -12,14 +12,14 @@ layer0: {
 	{
 	  A0000 : 
 	  {
-	    pos_x = 0;
-	    pos_y = 6;
+	    tile_x = 0;
+	    tile_y = 6;
 	    script = "goto_forest.lua";
 	  };
 	  A0001 : 
 	  {
-	    pos_x = 0;
-	    pos_y = 0;
+	    tile_x = 0;
+	    tile_y = 0;
 	    script = "trap.lua";
 	  };
 	};

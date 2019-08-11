@@ -21,36 +21,36 @@ layer0: {
 	{
 		to_house_0 : 
 		{
-			pos_x = 22;
-			pos_y = 10;
+			tile_x = 22;
+			tile_y = 10;
 			script = "goto.lua";
 			param = ( "house0_level0", "5", "12" );
 		};
 		to_house_1 : 
 		{
-			pos_x = 22;
-			pos_y = 34;
+			tile_x = 22;
+			tile_y = 34;
 			script = "goto.lua";
 			param = ( "house1", "7", "10" );
 		};
 		to_house_2 : 
 		{
-			pos_x = 34;
-			pos_y = 34;
+			tile_x = 34;
+			tile_y = 34;
 			script = "goto.lua";
 			param = ( "house2_level0", "14", "11" );
 		};
 		to_house_3 : 
 		{
-			pos_x = 18;
-			pos_y = 42;
+			tile_x = 18;
+			tile_y = 42;
 			script = "goto.lua";
 			param = ( "house3", "9", "15" );
 		};
 		to_house_4 : 
 		{
-			pos_x = 42;
-			pos_y = 50;
+			tile_x = 42;
+			tile_y = 50;
 			script = "goto.lua";
 			param = ( "house4", "10", "11" );
 		};

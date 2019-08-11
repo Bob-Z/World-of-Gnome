@@ -117,164 +117,164 @@ layer0 = {
 }
 event_list: {
 E0 = {
-   pos_x = 1
-   pos_y = 2
+   tile_x = 1
+   tile_y = 2
    script = "set_sprite.lua"
    param = ( "2", "female_nose_bignose_dark2" )
 }
 E1 = {
-   pos_x = 3
-   pos_y = 2
+   tile_x = 3
+   tile_y = 2
    script = "set_sprite.lua"
    param = ( "2", "female_nose_bignose_darkelf2" )
 }
 E2 = {
-   pos_x = 5
-   pos_y = 2
+   tile_x = 5
+   tile_y = 2
    script = "set_sprite.lua"
    param = ( "2", "female_nose_bignose_darkelf" )
 }
 E3 = {
-   pos_x = 7
-   pos_y = 2
+   tile_x = 7
+   tile_y = 2
    script = "set_sprite.lua"
    param = ( "2", "female_nose_bignose_dark" )
 }
 E4 = {
-   pos_x = 9
-   pos_y = 2
+   tile_x = 9
+   tile_y = 2
    script = "set_sprite.lua"
    param = ( "2", "female_nose_bignose_light" )
 }
 E5 = {
-   pos_x = 1
-   pos_y = 3
+   tile_x = 1
+   tile_y = 3
    script = "set_sprite.lua"
    param = ( "2", "female_nose_bignose_tanned2" )
 }
 E6 = {
-   pos_x = 3
-   pos_y = 3
+   tile_x = 3
+   tile_y = 3
    script = "set_sprite.lua"
    param = ( "2", "female_nose_bignose_tanned" )
 }
 E7 = {
-   pos_x = 5
-   pos_y = 3
+   tile_x = 5
+   tile_y = 3
    script = "set_sprite.lua"
    param = ( "2", "female_nose_buttonnose_dark2" )
 }
 E8 = {
-   pos_x = 7
-   pos_y = 3
+   tile_x = 7
+   tile_y = 3
    script = "set_sprite.lua"
    param = ( "2", "female_nose_buttonnose_darkelf2" )
 }
 E9 = {
-   pos_x = 9
-   pos_y = 3
+   tile_x = 9
+   tile_y = 3
    script = "set_sprite.lua"
    param = ( "2", "female_nose_buttonnose_darkelf" )
 }
 E10 = {
-   pos_x = 1
-   pos_y = 4
+   tile_x = 1
+   tile_y = 4
    script = "set_sprite.lua"
    param = ( "2", "female_nose_buttonnose_dark" )
 }
 E11 = {
-   pos_x = 3
-   pos_y = 4
+   tile_x = 3
+   tile_y = 4
    script = "set_sprite.lua"
    param = ( "2", "female_nose_buttonnose_light" )
 }
 E12 = {
-   pos_x = 5
-   pos_y = 4
+   tile_x = 5
+   tile_y = 4
    script = "set_sprite.lua"
    param = ( "2", "female_nose_buttonnose_tanned2" )
 }
 E13 = {
-   pos_x = 7
-   pos_y = 4
+   tile_x = 7
+   tile_y = 4
    script = "set_sprite.lua"
    param = ( "2", "female_nose_buttonnose_tanned" )
 }
 E14 = {
-   pos_x = 9
-   pos_y = 4
+   tile_x = 9
+   tile_y = 4
    script = "set_sprite.lua"
    param = ( "2", "female_nose_straightnose_dark2" )
 }
 E15 = {
-   pos_x = 1
-   pos_y = 5
+   tile_x = 1
+   tile_y = 5
    script = "set_sprite.lua"
    param = ( "2", "female_nose_straightnose_darkelf2" )
 }
 E16 = {
-   pos_x = 3
-   pos_y = 5
+   tile_x = 3
+   tile_y = 5
    script = "set_sprite.lua"
    param = ( "2", "female_nose_straightnose_darkelf" )
 }
 E17 = {
-   pos_x = 5
-   pos_y = 5
+   tile_x = 5
+   tile_y = 5
    script = "set_sprite.lua"
    param = ( "2", "female_nose_straightnose_dark" )
 }
 E18 = {
-   pos_x = 7
-   pos_y = 5
+   tile_x = 7
+   tile_y = 5
    script = "set_sprite.lua"
    param = ( "2", "female_nose_straightnose_light" )
 }
 E19 = {
-   pos_x = 9
-   pos_y = 5
+   tile_x = 9
+   tile_y = 5
    script = "set_sprite.lua"
    param = ( "2", "female_nose_straightnose_tanned2" )
 }
 E20 = {
-   pos_x = 1
-   pos_y = 6
+   tile_x = 1
+   tile_y = 6
    script = "set_sprite.lua"
    param = ( "2", "female_nose_straightnose_tanned" )
 }
 E21 = {
-   pos_x = 0
-   pos_y = 4
+   tile_x = 0
+   tile_y = 4
    script = "goto_character_map.lua"
    param = ( "1", "1", "1" )
 }
 E22 = {
-   pos_x = 10
-   pos_y = 4
+   tile_x = 10
+   tile_y = 4
    script = "goto_character_map.lua"
    param = ( "3", "1", "1" )
 }
 E23 = {
-   pos_x = 0
-   pos_y = 0
+   tile_x = 0
+   tile_y = 0
    script = "set_sprite.lua"
    param = ( "2", "" )
 }
 E24 = {
-   pos_x = 0
-   pos_y = 8
+   tile_x = 0
+   tile_y = 8
    script = "set_sprite.lua"
    param = ( "2", "" )
 }
 E25 = {
-   pos_x = 10
-   pos_y = 0
+   tile_x = 10
+   tile_y = 0
    script = "set_sprite.lua"
    param = ( "2", "" )
 }
 E26 = {
-   pos_x = 10
-   pos_y = 8
+   tile_x = 10
+   tile_y = 8
    script = "set_sprite.lua"
    param = ( "2", "" )
 }

@@ -5,6 +5,6 @@ name = "Riol";
 inventory : [ "A0005" ];
 type = "white_ball";
 map = "map2";
-pos_x = 1;
-pos_y = 2;
+tile_x = 1;
+tile_y = 2;
 action = [ "add_white", "add_black", "get", "drop_item" , "get_apple", "eat_apple"];

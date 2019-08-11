@@ -12,20 +12,20 @@ end
 
 -- random new position
 map = character_get_map(id)
-pos_x = character_get_x(id)
-pos_y = character_get_y(id)
+tile_x = character_get_x(id)
+tile_y = character_get_y(id)
 
-new_pos_x = pos_x
-new_pos_y = pos_y
+new_tile_x = tile_x
+new_tile_y = tile_y
 rand = math.random(-1,1)
 if math.random(0,1) == 0 then
-	new_pos_x = pos_x + rand
+	new_tile_x = tile_x + rand
 else
-	new_pos_y = pos_y + rand
+	new_tile_y = tile_y + rand
 end
 
 -- do not spawn if there is a flower already
-new_pos_character = {map_get_character(map,new_pos_x,new_pos_y)}
+new_pos_character = {map_get_character(map,new_tile_x,new_tile_y)}
 
 i=1
 while new_pos_character[i] ~= nil do
@@ -45,11 +45,11 @@ end
 --spawn
 r = math.random(1,3)
 if r == 1 then
-	new_id = character_create_from_template("flower1",map,0,new_pos_x,new_pos_y)
+	new_id = character_create_from_template("flower1",map,0,new_tile_x,new_tile_y)
 elseif r == 2 then
-	new_id = character_create_from_template("flower2",map,0,new_pos_x,new_pos_y)
+	new_id = character_create_from_template("flower2",map,0,new_tile_x,new_tile_y)
 else
-	new_id = character_create_from_template("flower3",map,0,new_pos_x,new_pos_y)
+	new_id = character_create_from_template("flower3",map,0,new_tile_x,new_tile_y)
 end
 
 if new_id == nil then
@@ -58,7 +58,7 @@ end
 
 character_set_npc(new_id,1)
 
-text = string.format("****** creating %s from %s at %d %d (%d %d)",new_id,id,new_pos_x,new_pos_y,pos_x,pos_y)
+text = string.format("****** creating %s from %s at %d %d (%d %d)",new_id,id,new_tile_x,new_tile_y,tile_x,tile_y)
 print_text_debug(text)
 -- return the time in ms before the next NPC AI action
 return 6666

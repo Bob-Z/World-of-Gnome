@@ -1,21 +1,21 @@
 /*
-   World of Gnome is a 2D multiplayer role playing game.
-   Copyright (C) 2013-2017 carabobz@gmail.com
+ World of Gnome is a 2D multiplayer role playing game.
+ Copyright (C) 2013-2017 carabobz@gmail.com
 
-   This program is free software; you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 3 of the License, or
-   (at your option) any later version.
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 3 of the License, or
+ (at your option) any later version.
 
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-   You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software Foundation,
-   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
-*/
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software Foundation,
+ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
+ */
 
 #ifndef FILE_H
 #define FILE_H
@@ -53,8 +53,8 @@
 #define CHARACTER_KEY_TYPE	"type"
 #define CHARACTER_KEY_MAP	"map"
 #define CHARACTER_LAYER		"layer"
-#define	CHARACTER_KEY_POS_X	"pos_x"
-#define CHARACTER_KEY_POS_Y	"pos_y"
+#define	CHARACTER_KEY_TILE_X	"tile_x"
+#define CHARACTER_KEY_TILE_Y	"tile_y"
 #define CHARACTER_KEY_NPC	"npc"
 #define CHARACTER_KEY_NAME	"name"
 #define CHARACTER_KEY_ACTION	"action"
@@ -126,12 +126,12 @@
 #define MAP_SFX_VOLUME	 	"sfx_volume"
 
 // items on map
-#define MAP_ITEM_POS_X		"pos_x"
-#define MAP_ITEM_POS_Y		"pos_y"
+#define MAP_ITEM_TILE_X		"tile_x"
+#define MAP_ITEM_TILE_Y		"tile_y"
 
 // events on map
-#define MAP_EVENT_POS_X		"pos_x"
-#define MAP_EVENT_POS_Y		"pos_y"
+#define MAP_EVENT_TILE_X	"tile_x"
+#define MAP_EVENT_TILE_Y	"tile_y"
 #define MAP_EVENT_SCRIPT	"script"
 #define MAP_EVENT_PARAM		"param"
 

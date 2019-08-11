@@ -4,8 +4,8 @@ type            = "Faerie"
 draw_script     = "draw/smooth.lua"
 sprite          = [ "sprite/shadow/human.png","sprite/sara_down.png"];
 map             = "M0_0";
-pos_x           = 15;
-pos_y           = 15;
+tile_x           = 15;
+tile_y           = 15;
 layer           = 15;
 #align on lower edge of tile
 align           = 1;

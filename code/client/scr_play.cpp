@@ -289,25 +289,25 @@ static void set_up_sprite(context_t * ctx)
 		 direction (memory). */
 		ctx->orientation = 0;
 		// Compute direction
-		if (ctx->pos_tx > ctx->prev_pos_tx)
+		if (ctx->tile_x > ctx->prev_pos_tile_x)
 		{
 			ctx->direction &= ~WEST;
 			ctx->direction |= EAST;
 			ctx->orientation |= EAST;
 		}
-		if (ctx->pos_tx < ctx->prev_pos_tx)
+		if (ctx->tile_x < ctx->prev_pos_tile_x)
 		{
 			ctx->direction &= ~EAST;
 			ctx->direction |= WEST;
 			ctx->orientation |= WEST;
 		}
-		if (ctx->pos_ty > ctx->prev_pos_ty)
+		if (ctx->tile_y > ctx->prev_pos_tile_y)
 		{
 			ctx->direction &= ~NORTH;
 			ctx->direction |= SOUTH;
 			ctx->orientation |= SOUTH;
 		}
-		if (ctx->pos_ty < ctx->prev_pos_ty)
+		if (ctx->tile_y < ctx->prev_pos_tile_y)
 		{
 			ctx->direction &= ~SOUTH;
 			ctx->direction |= NORTH;
@@ -328,8 +328,8 @@ static void set_up_sprite(context_t * ctx)
 	}
 
 	// Get position in pixel
-	px = map_t2p_x(ctx->pos_tx, ctx->pos_ty, default_layer);
-	py = map_t2p_y(ctx->pos_tx, ctx->pos_ty, default_layer);
+	px = map_t2p_x(ctx->tile_x, ctx->tile_y, default_layer);
+	py = map_t2p_y(ctx->tile_x, ctx->tile_y, default_layer);
 
 	// Get per sprite zoom
 	if (entry_read_string(CHARACTER_TABLE, ctx->id, &zoom_str,
@@ -543,14 +543,14 @@ static void compose_item(int layer_index)
 		sprite_align = ALIGN_CENTER;
 
 		if (entry_read_int(MAP_TABLE, ctx->map, &x, layer_name,
-		MAP_ENTRY_ITEM_LIST, item_id[i], MAP_ITEM_POS_X, nullptr) == RET_NOK)
+		MAP_ENTRY_ITEM_LIST, item_id[i], MAP_ITEM_TILE_X, nullptr) == RET_NOK)
 		{
 			i++;
 			continue;
 		}
 
 		if (entry_read_int(MAP_TABLE, ctx->map, &y, layer_name,
-		MAP_ENTRY_ITEM_LIST, item_id[i], MAP_ITEM_POS_Y, nullptr) == RET_NOK)
+		MAP_ENTRY_ITEM_LIST, item_id[i], MAP_ITEM_TILE_Y, nullptr) == RET_NOK)
 		{
 			i++;
 			continue;

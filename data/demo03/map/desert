@@ -29,58 +29,58 @@ layer0: {
 	{
 	        go_to_1 :
 	        {
-	                pos_x = 17;
-	                pos_y = 6;
+	                tile_x = 17;
+	                tile_y = 6;
 	                script = "goto.lua";
 	                param = ( "cliff", "1", "6" );
 	        };
 	        go_to_2 :
 	        {
-	                pos_x = 17;
-	                pos_y = 7;
+	                tile_x = 17;
+	                tile_y = 7;
 	                script = "goto.lua";
 	                param = ( "cliff", "1", "6" );
 	        };
 	        go_to_3 :
 	        {
-	                pos_x = 17;
-	                pos_y = 8;
+	                tile_x = 17;
+	                tile_y = 8;
 	                script = "goto.lua";
 	                param = ( "cliff", "1", "7" );
 	        };
 	        go_to_4 :
 	        {
-	                pos_x = 17;
-	                pos_y = 9;
+	                tile_x = 17;
+	                tile_y = 9;
 	                script = "goto.lua";
 	                param = ( "cliff", "1", "7" );
 	        };
 
 	        go_to_5 :
 	        {
-	                pos_x = 0;
-	                pos_y = 6;
+	                tile_x = 0;
+	                tile_y = 6;
 	                script = "goto.lua";
 	                param = ( "lake", "15", "0" );
 	        };
 	        go_to_6 :
 	        {
-	                pos_x = 0;
-	                pos_y = 7;
+	                tile_x = 0;
+	                tile_y = 7;
 	                script = "goto.lua";
 	                param = ( "lake", "15", "1" );
 	        };
 	        go_to_7 :
 	        {
-	                pos_x = 0;
-	                pos_y = 8;
+	                tile_x = 0;
+	                tile_y = 8;
 	                script = "goto.lua";
 	                param = ( "lake", "15", "2" );
 	        };
 	        go_to_8 :
 	        {
-	                pos_x = 0;
-	                pos_y = 9;
+	                tile_x = 0;
+	                tile_y = 9;
 	                script = "goto.lua";
 	                param = ( "lake", "15", "3" );
 	        };

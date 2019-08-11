@@ -211,8 +211,8 @@ function create_map {
 			fi
 			#Add corresponding event
 			echo "E$CURRENT_EVENT = {" >> $MAP_NAME
-			echo "   pos_x = $CUR_X" >> $MAP_NAME
-			echo "   pos_y = $CUR_Y" >> $MAP_NAME
+			echo "   tile_x = $CUR_X" >> $MAP_NAME
+			echo "   tile_y = $CUR_Y" >> $MAP_NAME
 			echo "   script = \"set_body.lua\"" >> $MAP_NAME
 			echo "   param = ( \"$SET_SEX\", \"$SET_RACE\" )" >> $MAP_NAME
 			echo "}" >> $MAP_NAME
@@ -220,8 +220,8 @@ function create_map {
 		fi
 
 		echo "E$CURRENT_EVENT = {" >> $MAP_NAME
-		echo "   pos_x = $CUR_X" >> $MAP_NAME
-		echo "   pos_y = $CUR_Y" >> $MAP_NAME
+		echo "   tile_x = $CUR_X" >> $MAP_NAME
+		echo "   tile_y = $CUR_Y" >> $MAP_NAME
 		echo "   script = \"set_sprite.lua\"" >> $MAP_NAME
 		echo "   param = ( \"$NUM\", \"$SHORT_NAME\" )" >> $MAP_NAME
 		echo "}" >> $MAP_NAME
@@ -238,8 +238,8 @@ function create_map {
 	let "PREV_NUM=$NUM-1"
 	let "HALF_LINE=$HALF_LINE+1"
 	echo "E$CURRENT_EVENT = {" >> $MAP_NAME
-	echo "   pos_x = 0" >> $MAP_NAME
-	echo "   pos_y = $HALF_LINE" >> $MAP_NAME
+	echo "   tile_x = 0" >> $MAP_NAME
+	echo "   tile_y = $HALF_LINE" >> $MAP_NAME
 	echo "   script = \"goto_character_map.lua\"" >> $MAP_NAME
 	echo "   param = ( \"$PREV_NUM\", \"1\", \"1\" )" >> $MAP_NAME
 	echo "}" >> $MAP_NAME
@@ -250,8 +250,8 @@ function create_map {
 	let "LAST_COLUMN=$MAP_COLUMN-1"
 	let "NEXT_MAP=$NUM+1"
 	echo "E$CURRENT_EVENT = {" >> $MAP_NAME
-	echo "   pos_x = $LAST_COLUMN" >> $MAP_NAME
-	echo "   pos_y = $HALF_LINE" >> $MAP_NAME
+	echo "   tile_x = $LAST_COLUMN" >> $MAP_NAME
+	echo "   tile_y = $HALF_LINE" >> $MAP_NAME
 	if [ "$NEXT_MAP" -ge "$MAP_QTY" ];then
 		echo "   script = \"goto.lua\"" >> $MAP_NAME
 		echo "   param = ( \"M0_0\", \"10\", \"10\" )" >> $MAP_NAME
@@ -266,8 +266,8 @@ function create_map {
 	#Left cancel events
 	let "LAST_LINE=MAP_LINE-1"
 	echo "E$CURRENT_EVENT = {" >> $MAP_NAME
-	echo "   pos_x = 0" >> $MAP_NAME
-	echo "   pos_y = 0" >> $MAP_NAME
+	echo "   tile_x = 0" >> $MAP_NAME
+	echo "   tile_y = 0" >> $MAP_NAME
 	echo "   script = \"set_sprite.lua\"" >> $MAP_NAME
 	echo "   param = ( \"$NUM\", \"\" )" >> $MAP_NAME
 	echo "}" >> $MAP_NAME
@@ -275,8 +275,8 @@ function create_map {
 	let "CURRENT_EVENT=$CURRENT_EVENT+1"
 
 	echo "E$CURRENT_EVENT = {" >> $MAP_NAME
-	echo "   pos_x = 0" >> $MAP_NAME
-	echo "   pos_y = $LAST_LINE" >> $MAP_NAME
+	echo "   tile_x = 0" >> $MAP_NAME
+	echo "   tile_y = $LAST_LINE" >> $MAP_NAME
 	echo "   script = \"set_sprite.lua\"" >> $MAP_NAME
 	echo "   param = ( \"$NUM\", \"\" )" >> $MAP_NAME
 	echo "}" >> $MAP_NAME
@@ -285,8 +285,8 @@ function create_map {
 
 	#Right cancel events
 	echo "E$CURRENT_EVENT = {" >> $MAP_NAME
-	echo "   pos_x = $LAST_COLUMN" >> $MAP_NAME
-	echo "   pos_y = 0" >> $MAP_NAME
+	echo "   tile_x = $LAST_COLUMN" >> $MAP_NAME
+	echo "   tile_y = 0" >> $MAP_NAME
 	echo "   script = \"set_sprite.lua\"" >> $MAP_NAME
 	echo "   param = ( \"$NUM\", \"\" )" >> $MAP_NAME
 	echo "}" >> $MAP_NAME
@@ -294,8 +294,8 @@ function create_map {
 	let "CURRENT_EVENT=$CURRENT_EVENT+1"
 
 	echo "E$CURRENT_EVENT = {" >> $MAP_NAME
-	echo "   pos_x = $LAST_COLUMN" >> $MAP_NAME
-	echo "   pos_y = $LAST_LINE" >> $MAP_NAME
+	echo "   tile_x = $LAST_COLUMN" >> $MAP_NAME
+	echo "   tile_y = $LAST_LINE" >> $MAP_NAME
 	echo "   script = \"set_sprite.lua\"" >> $MAP_NAME
 	echo "   param = ( \"$NUM\", \"\" )" >> $MAP_NAME
 	echo "}" >> $MAP_NAME

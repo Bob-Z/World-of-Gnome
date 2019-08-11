@@ -31,14 +31,14 @@ layer0: {
 
 event_list : {
         to_mine01_1 : {
-                pos_x = 6;
-                pos_y = 3;
+                tile_x = 6;
+                tile_y = 3;
                 script = "goto.lua";
                 param = ( "mine01", "1", "14" );
         };
         to_mine01_2 : {
-                pos_x = 7;
-                pos_y = 3;
+                tile_x = 7;
+                tile_y = 3;
                 script = "goto.lua";
                 param = ( "mine01", "1", "15" );
         };

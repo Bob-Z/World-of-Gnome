@@ -4,8 +4,8 @@ sprite          = "sprite/warrior.png";
 inventory = [ ];
 type = "warrior";
 map = "cliff";
-pos_x = 14;
-pos_y = 7;
+tile_x = 14;
+tile_y = 7;
 action = [  ];
 allowed_tile = [ ];
 attribute : 

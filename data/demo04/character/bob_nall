@@ -7,8 +7,8 @@ portrait	= "portrait/flying cat.gif";
 flip_e = 1;
 inventory = [ "nall_gold" ];
 map = "village";
-pos_x = 1;
-pos_y = 6;
+tile_x = 1;
+tile_y = 6;
 action = [ "set_type_empty", "set_type_water", "set_type_ground" , "set_type_door" , "speak/npc" ];
 allowed_tile = [ "g","w","d"];
 attribute : 

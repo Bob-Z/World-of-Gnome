@@ -5,8 +5,8 @@ npc = 1;
 name = "Korg";
 map = "map2";
 type = "gray_ball";
-pos_x = 2;
-pos_y = 2;
+tile_x = 2;
+tile_y = 2;
 ai = "ai_random.lua";
 
 attribute:

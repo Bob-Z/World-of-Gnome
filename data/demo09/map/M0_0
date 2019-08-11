@@ -37,116 +37,116 @@ layer1 = {
 
 event_list : {
         to_inn : {
-                pos_x = 11;
-                pos_y = 68;
+                tile_x = 11;
+                tile_y = 68;
                 script = "goto.lua";
                 param = ( "inn", "30", "17" );
         };
         to_throne1: {
-                pos_x = 23;
-                pos_y = 44;
+                tile_x = 23;
+                tile_y = 44;
                 script = "goto.lua";
                 param = ( "throne", "8", "10" );
         };
         to_throne2: {
-                pos_x = 24;
-                pos_y = 44;
+                tile_x = 24;
+                tile_y = 44;
                 script = "goto.lua";
                 param = ( "throne", "9", "10" );
         };
         to_throne3: {
-                pos_x = 25;
-                pos_y = 44;
+                tile_x = 25;
+                tile_y = 44;
                 script = "goto.lua";
                 param = ( "throne", "10", "10" );
         };
         to_throne_west1: {
-                pos_x = 14;
-                pos_y = 38;
+                tile_x = 14;
+                tile_y = 38;
                 script = "goto.lua";
                 param = ( "throne_west", "3", "8" );
         };
         to_throne_west2: {
-                pos_x = 15;
-                pos_y = 38;
+                tile_x = 15;
+                tile_y = 38;
                 script = "goto.lua";
                 param = ( "throne_west", "4", "8" );
         };
         to_throne_east1: {
-                pos_x = 33;
-                pos_y = 38;
+                tile_x = 33;
+                tile_y = 38;
                 script = "goto.lua";
                 param = ( "throne_east", "10", "8" );
         };
         to_throne_east2: {
-                pos_x = 34;
-                pos_y = 38;
+                tile_x = 34;
+                tile_y = 38;
                 script = "goto.lua";
                 param = ( "throne_east", "11", "8" );
         };
         to_guardroom1: {
-                pos_x = 23;
-                pos_y = 56;
+                tile_x = 23;
+                tile_y = 56;
                 script = "goto.lua";
                 param = ( "guardroom", "6", "15" );
         };
         to_guardroom2: {
-                pos_x = 24;
-                pos_y = 56;
+                tile_x = 24;
+                tile_y = 56;
                 script = "goto.lua";
                 param = ( "guardroom", "6", "15" );
         };
         to_guardroom3: {
-                pos_x = 25;
-                pos_y = 56;
+                tile_x = 25;
+                tile_y = 56;
                 script = "goto.lua";
                 param = ( "guardroom", "6", "15" );
         };
         to_tower_west1: {
-                pos_x = 0;
-                pos_y = 46;
+                tile_x = 0;
+                tile_y = 46;
                 script = "goto.lua";
                 param = ( "tower_west", "8", "9" );
         };
         to_tower_west2: {
-                pos_x = 1;
-                pos_y = 46;
+                tile_x = 1;
+                tile_y = 46;
                 script = "goto.lua";
                 param = ( "tower_west", "14", "9" );
         };
         to_tower_east1: {
-                pos_x = 47;
-                pos_y = 46;
+                tile_x = 47;
+                tile_y = 46;
                 script = "goto.lua";
                 param = ( "tower_east", "28", "13" );
         };
         to_tower_east2: {
-                pos_x = 48;
-                pos_y = 46;
+                tile_x = 48;
+                tile_y = 46;
                 script = "goto.lua";
                 param = ( "tower_east", "28", "13" );
         };
         to_stall1: {
-                pos_x = 37;
-                pos_y = 55;
+                tile_x = 37;
+                tile_y = 55;
                 script = "goto.lua";
                 param = ( "stall", "3", "8" );
         };
         to_stall2: {
-                pos_x = 38;
-                pos_y = 55;
+                tile_x = 38;
+                tile_y = 55;
                 script = "goto.lua";
                 param = ( "stall", "3", "8" );
         };
         to_prison1: {
-                pos_x = 10;
-                pos_y = 55;
+                tile_x = 10;
+                tile_y = 55;
                 script = "goto.lua";
                 param = ( "prison", "6", "7" );
         };
         to_prison2: {
-                pos_x = 11;
-                pos_y = 55;
+                tile_x = 11;
+                tile_y = 55;
                 script = "goto.lua";
                 param = ( "prison", "6", "7" );
         };

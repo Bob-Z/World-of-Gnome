@@ -4,8 +4,8 @@ marquee         = "sprite/ghost/ghost.png";
 sprite          = [ "sprite/ghost/ghost.gif" ];
 type            = "Ghost"
 map             = "M0_0";
-pos_x           = 15;
-pos_y           = 15;
+tile_x           = 15;
+tile_y           = 15;
 layer		= 15;
 #align on lower edge of tile
 align           = 1;

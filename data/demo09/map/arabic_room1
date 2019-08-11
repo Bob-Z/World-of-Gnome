@@ -15,104 +15,104 @@ layer0 = {
 }
 event_list = {
 	exit_0 = {
-		pos_x = 0
-		pos_y = 12
+		tile_x = 0
+		tile_y = 12
 		script = "goto.lua"
 		param = ( "M-1_1", "29", "23" )
 	}
 	exit_1 = {
-		pos_x = 1
-		pos_y = 12
+		tile_x = 1
+		tile_y = 12
 		script = "goto.lua"
 		param = ( "M-1_1", "29", "23" )
 	}
 	exit_2 = {
-		pos_x = 2
-		pos_y = 12
+		tile_x = 2
+		tile_y = 12
 		script = "goto.lua"
 		param = ( "M-1_1", "29", "23" )
 	}
 	exit_3 = {
-		pos_x = 3
-		pos_y = 12
+		tile_x = 3
+		tile_y = 12
 		script = "goto.lua"
 		param = ( "M-1_1", "29", "23" )
 	}
 	exit_4 = {
-		pos_x = 4
-		pos_y = 12
+		tile_x = 4
+		tile_y = 12
 		script = "goto.lua"
 		param = ( "M-1_1", "29", "23" )
 	}
 	exit_5 = {
-		pos_x = 5
-		pos_y = 12
+		tile_x = 5
+		tile_y = 12
 		script = "goto.lua"
 		param = ( "M-1_1", "29", "23" )
 	}
 	exit_6 = {
-		pos_x = 6
-		pos_y = 12
+		tile_x = 6
+		tile_y = 12
 		script = "goto.lua"
 		param = ( "M-1_1", "29", "23" )
 	}
 	exit_7 = {
-		pos_x = 7
-		pos_y = 12
+		tile_x = 7
+		tile_y = 12
 		script = "goto.lua"
 		param = ( "M-1_1", "29", "23" )
 	}
 	exit_8 = {
-		pos_x = 8
-		pos_y = 12
+		tile_x = 8
+		tile_y = 12
 		script = "goto.lua"
 		param = ( "M-1_1", "29", "23" )
 	}
 	exit_9 = {
-		pos_x = 9
-		pos_y = 12
+		tile_x = 9
+		tile_y = 12
 		script = "goto.lua"
 		param = ( "M-1_1", "29", "23" )
 	}
 	exit_10 = {
-		pos_x = 10
-		pos_y = 12
+		tile_x = 10
+		tile_y = 12
 		script = "goto.lua"
 		param = ( "M-1_1", "29", "23" )
 	}
 	exit_11 = {
-		pos_x = 11
-		pos_y = 12
+		tile_x = 11
+		tile_y = 12
 		script = "goto.lua"
 		param = ( "M-1_1", "29", "23" )
 	}
 	exit_12 = {
-		pos_x = 12
-		pos_y = 12
+		tile_x = 12
+		tile_y = 12
 		script = "goto.lua"
 		param = ( "M-1_1", "29", "23" )
 	}
 	exit_13 = {
-		pos_x = 13
-		pos_y = 12
+		tile_x = 13
+		tile_y = 12
 		script = "goto.lua"
 		param = ( "M-1_1", "29", "23" )
 	}
 	exit_14 = {
-		pos_x = 14
-		pos_y = 12
+		tile_x = 14
+		tile_y = 12
 		script = "goto.lua"
 		param = ( "M-1_1", "29", "23" )
 	}
 	exit_15 = {
-		pos_x = 15
-		pos_y = 12
+		tile_x = 15
+		tile_y = 12
 		script = "goto.lua"
 		param = ( "M-1_1", "29", "23" )
 	}
 	exit_16 = {
-		pos_x = 16
-		pos_y = 12
+		tile_x = 16
+		tile_y = 12
 		script = "goto.lua"
 		param = ( "M-1_1", "29", "23" )
 	}

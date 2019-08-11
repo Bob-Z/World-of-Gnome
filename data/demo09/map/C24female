@@ -95,128 +95,128 @@ layer0 = {
 }
 event_list: {
 E0 = {
-   pos_x = 1
-   pos_y = 2
+   tile_x = 1
+   tile_y = 2
    script = "set_sprite.lua"
    param = ( "24", "axe_8" )
 }
 E1 = {
-   pos_x = 3
-   pos_y = 2
+   tile_x = 3
+   tile_y = 2
    script = "set_sprite.lua"
    param = ( "24", "both_hand_spear" )
 }
 E2 = {
-   pos_x = 5
-   pos_y = 2
+   tile_x = 5
+   tile_y = 2
    script = "set_sprite.lua"
    param = ( "24", "left_hand_either_arrow" )
 }
 E3 = {
-   pos_x = 7
-   pos_y = 2
+   tile_x = 7
+   tile_y = 2
    script = "set_sprite.lua"
    param = ( "24", "left_hand_either_arrow_skeleton" )
 }
 E4 = {
-   pos_x = 9
-   pos_y = 2
+   tile_x = 9
+   tile_y = 2
    script = "set_sprite.lua"
    param = ( "24", "long_knife" )
 }
 E5 = {
-   pos_x = 1
-   pos_y = 3
+   tile_x = 1
+   tile_y = 3
    script = "set_sprite.lua"
    param = ( "24", "pickaxe_0" )
 }
 E6 = {
-   pos_x = 3
-   pos_y = 3
+   tile_x = 3
+   tile_y = 3
    script = "set_sprite.lua"
    param = ( "24", "right_hand_either_bow" )
 }
 E7 = {
-   pos_x = 5
-   pos_y = 3
+   tile_x = 5
+   tile_y = 3
    script = "set_sprite.lua"
    param = ( "24", "right_hand_either_bow_skeleton" )
 }
 E8 = {
-   pos_x = 7
-   pos_y = 3
+   tile_x = 7
+   tile_y = 3
    script = "set_sprite.lua"
    param = ( "24", "right_hand_either_greatbow" )
 }
 E9 = {
-   pos_x = 9
-   pos_y = 3
+   tile_x = 9
+   tile_y = 3
    script = "set_sprite.lua"
    param = ( "24", "right_hand_either_recurvebow" )
 }
 E10 = {
-   pos_x = 1
-   pos_y = 4
+   tile_x = 1
+   tile_y = 4
    script = "set_sprite.lua"
    param = ( "24", "right_hand_female_dagger_female" )
 }
 E11 = {
-   pos_x = 3
-   pos_y = 4
+   tile_x = 3
+   tile_y = 4
    script = "set_sprite.lua"
    param = ( "24", "right_hand_female_spear_female" )
 }
 E12 = {
-   pos_x = 5
-   pos_y = 4
+   tile_x = 5
+   tile_y = 4
    script = "set_sprite.lua"
    param = ( "24", "right_hand_female_steelwand_female" )
 }
 E13 = {
-   pos_x = 7
-   pos_y = 4
+   tile_x = 7
+   tile_y = 4
    script = "set_sprite.lua"
    param = ( "24", "right_hand_female_woodwand_female" )
 }
 E14 = {
-   pos_x = 9
-   pos_y = 4
+   tile_x = 9
+   tile_y = 4
    script = "set_sprite.lua"
    param = ( "24", "warhammer_1" )
 }
 E15 = {
-   pos_x = 0
-   pos_y = 3
+   tile_x = 0
+   tile_y = 3
    script = "goto_character_map.lua"
    param = ( "23", "1", "1" )
 }
 E16 = {
-   pos_x = 10
-   pos_y = 3
+   tile_x = 10
+   tile_y = 3
    script = "goto_character_map.lua"
    param = ( "25", "1", "1" )
 }
 E17 = {
-   pos_x = 0
-   pos_y = 0
+   tile_x = 0
+   tile_y = 0
    script = "set_sprite.lua"
    param = ( "24", "" )
 }
 E18 = {
-   pos_x = 0
-   pos_y = 6
+   tile_x = 0
+   tile_y = 6
    script = "set_sprite.lua"
    param = ( "24", "" )
 }
 E19 = {
-   pos_x = 10
-   pos_y = 0
+   tile_x = 10
+   tile_y = 0
    script = "set_sprite.lua"
    param = ( "24", "" )
 }
 E20 = {
-   pos_x = 10
-   pos_y = 6
+   tile_x = 10
+   tile_y = 6
    script = "set_sprite.lua"
    param = ( "24", "" )
 }

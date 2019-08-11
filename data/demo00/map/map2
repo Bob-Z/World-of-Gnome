@@ -13,21 +13,21 @@ layer0: {
 	item_list : {
 		A0002 : 
 		{
-			pos_x = 1;
-			pos_y = 0;
+			tile_x = 1;
+			tile_y = 0;
 		};
 		A0003 : 
 		{
-			pos_x = 0;
-			pos_y = 2;
+			tile_x = 0;
+			tile_y = 2;
 		};
 	};
 
 	event_list: {
 		A0000 :
 		{
-			pos_x = 2;
-			pos_y = 0;
+			tile_x = 2;
+			tile_y = 0;
 			script = "goto_map1.lua";
 		};
 	};

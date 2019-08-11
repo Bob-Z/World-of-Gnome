@@ -2,8 +2,8 @@ draw_script     = "draw/smooth.lua"
 marquee		= "marquee/white_ball.jpg";
 sprite		= "sprite/white_ball.png";
 map		= "map1";
-pos_x		= 0;
-pos_y		= 0;
+tile_x		= 0;
+tile_y		= 0;
 #default action for this kind of avatar
 action		= ["add_white"];
 allowed_tile	= ["ground"];

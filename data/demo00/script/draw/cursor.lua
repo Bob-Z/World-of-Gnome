@@ -24,11 +24,11 @@ item_h = item_get_h()
 -- text = string.format("_G.current_H[%s] = %d",id, _G.current_H[id])
 -- print_text_debug(text)
 
-cursor_pos_x = _G.current_X[id] + ((_G.current_W[id] - item_w) / 2)
-cursor_pos_y = _G.current_Y[id] + ((_G.current_H[id] - item_h) / 2)
+cursor_tile_x = _G.current_X[id] + ((_G.current_W[id] - item_w) / 2)
+cursor_tile_y = _G.current_Y[id] + ((_G.current_H[id] - item_h) / 2)
 
-item_set_x(cursor_pos_x)
-item_set_y(cursor_pos_y)
+item_set_x(cursor_tile_x)
+item_set_y(cursor_tile_y)
 
 
 return 0

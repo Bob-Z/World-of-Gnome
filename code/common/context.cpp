@@ -64,10 +64,10 @@ void context_init(context_t * context)
 	context->character_name = nullptr;
 	context->map = nullptr;
 
-	context->pos_tx = 0;
-	context->pos_ty = 0;
-	context->prev_pos_tx = 0;
-	context->prev_pos_ty = 0;
+	context->tile_x = 0;
+	context->tile_y = 0;
+	context->prev_pos_tile_x = 0;
+	context->prev_pos_tile_y = 0;
 	context->pos_changed = false;
 	context->animation_tick = 0;
 	context->type = nullptr;
@@ -528,11 +528,11 @@ void context_set_npc(context_t * context, int npc)
  **************************************/
 void _context_set_pos_tx(context_t * context, int pos_tx)
 {
-	context->prev_pos_tx = context->pos_tx;
-	if (context->pos_tx != pos_tx)
+	context->prev_pos_tile_x = context->tile_x;
+	if (context->tile_x != pos_tx)
 	{
 		context->pos_changed = true;
-		context->pos_tx = pos_tx;
+		context->tile_x = pos_tx;
 	}
 }
 
@@ -548,11 +548,11 @@ void context_set_pos_tx(context_t * context, int pos_tx)
  **************************************/
 void _context_set_pos_ty(context_t * context, int pos_ty)
 {
-	context->prev_pos_ty = context->pos_ty;
-	if (context->pos_ty != pos_ty)
+	context->prev_pos_tile_y = context->tile_y;
+	if (context->tile_y != pos_ty)
 	{
 		context->pos_changed = true;
-		context->pos_ty = pos_ty;
+		context->tile_y = pos_ty;
 	}
 }
 
@@ -759,7 +759,7 @@ ret_code_t context_update_from_file(context_t * context)
 
 	int pos_tx;
 	if (entry_read_int(CHARACTER_TABLE, context->id, &pos_tx,
-	CHARACTER_KEY_POS_X, nullptr) == RET_NOK)
+	CHARACTER_KEY_TILE_X, nullptr) == RET_NOK)
 	{
 		ret = RET_NOK;
 	}
@@ -767,7 +767,7 @@ ret_code_t context_update_from_file(context_t * context)
 
 	int pos_ty;
 	if (entry_read_int(CHARACTER_TABLE, context->id, &pos_ty,
-	CHARACTER_KEY_POS_Y, nullptr) == RET_NOK)
+	CHARACTER_KEY_TILE_Y, nullptr) == RET_NOK)
 	{
 		ret = RET_NOK;
 	}
@@ -796,11 +796,11 @@ ret_code_t context_write_to_file(context_t * context)
 	entry_write_string(CHARACTER_TABLE, context->id, context->map,
 	CHARACTER_KEY_MAP, nullptr);
 
-	entry_write_int(CHARACTER_TABLE, context->id, context->pos_tx,
-	CHARACTER_KEY_POS_X, nullptr);
+	entry_write_int(CHARACTER_TABLE, context->id, context->tile_x,
+	CHARACTER_KEY_TILE_X, nullptr);
 
-	entry_write_int(CHARACTER_TABLE, context->id, context->pos_ty,
-	CHARACTER_KEY_POS_Y, nullptr);
+	entry_write_int(CHARACTER_TABLE, context->id, context->tile_y,
+	CHARACTER_KEY_TILE_Y, nullptr);
 
 	context_unlock_list();
 	return RET_OK;
@@ -1005,8 +1005,8 @@ void context_add_or_update_from_network_frame(context_t * p_pContext,
 	p_rNetworkFrame.pop(l_ReadContext.map);
 	p_rNetworkFrame.pop(l_ReadContext.in_game);
 	p_rNetworkFrame.pop(l_ReadContext.connected);
-	p_rNetworkFrame.pop(l_ReadContext.pos_tx);
-	p_rNetworkFrame.pop(l_ReadContext.pos_ty);
+	p_rNetworkFrame.pop(l_ReadContext.tile_x);
+	p_rNetworkFrame.pop(l_ReadContext.tile_y);
 	p_rNetworkFrame.pop(l_ReadContext.type);
 	p_rNetworkFrame.pop(l_ReadContext.id);
 	p_rNetworkFrame.pop(l_ReadContext.selection.id);
@@ -1036,8 +1036,8 @@ void context_add_or_update_from_network_frame(context_t * p_pContext,
 
 				_context_set_npc(ctx, l_ReadContext.npc);
 
-				_context_set_pos_tx(ctx, l_ReadContext.pos_tx);
-				_context_set_pos_ty(ctx, l_ReadContext.pos_ty);
+				_context_set_pos_tx(ctx, l_ReadContext.tile_x);
+				_context_set_pos_ty(ctx, l_ReadContext.tile_y);
 
 				free(ctx->type);
 				ctx->type = strdup(l_ReadContext.type);
@@ -1098,8 +1098,8 @@ void context_add_or_update_from_network_frame(context_t * p_pContext,
 	context_set_npc(ctx, l_ReadContext.npc);
 	context_set_map(ctx, l_ReadContext.map);
 	context_set_type(ctx, l_ReadContext.type);
-	context_set_pos_tx(ctx, l_ReadContext.pos_tx);
-	context_set_pos_ty(ctx, l_ReadContext.pos_ty);
+	context_set_pos_tx(ctx, l_ReadContext.tile_x);
+	context_set_pos_ty(ctx, l_ReadContext.tile_y);
 	context_set_id(ctx, l_ReadContext.id);
 	context_set_connected(ctx, l_ReadContext.connected);
 	context_set_in_game(ctx, l_ReadContext.in_game);
@@ -1225,12 +1225,12 @@ int context_distance(context_t * ctx1, context_t * ctx2)
 	int distx;
 	int disty;
 
-	distx = ctx1->pos_tx - ctx2->pos_tx;
+	distx = ctx1->tile_x - ctx2->tile_x;
 	if (distx < 0)
 	{
 		distx = -distx;
 	}
-	disty = ctx1->pos_ty - ctx2->pos_ty;
+	disty = ctx1->tile_y - ctx2->tile_y;
 	if (disty < 0)
 	{
 		disty = -disty;

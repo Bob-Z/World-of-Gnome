@@ -240,7 +240,7 @@ char * character_create_from_template(context_t * ctx, const char * my_template,
 		return nullptr;
 	}
 
-	if (entry_write_int(CHARACTER_TABLE, new_id, x, CHARACTER_KEY_POS_X,
+	if (entry_write_int(CHARACTER_TABLE, new_id, x, CHARACTER_KEY_TILE_X,
 			nullptr) == RET_NOK)
 	{
 		entry_destroy(CHARACTER_TABLE, new_id);
@@ -249,7 +249,7 @@ char * character_create_from_template(context_t * ctx, const char * my_template,
 		return nullptr;
 	}
 
-	if (entry_write_int(CHARACTER_TABLE, new_id, y, CHARACTER_KEY_POS_Y,
+	if (entry_write_int(CHARACTER_TABLE, new_id, y, CHARACTER_KEY_TILE_Y,
 			nullptr) == RET_NOK)
 	{
 		entry_destroy(CHARACTER_TABLE, new_id);
@@ -418,8 +418,8 @@ static void do_set_pos(context_t * ctx, const char * map, int x, int y,
 
 	entry_write_string(CHARACTER_TABLE, ctx->id, map, CHARACTER_KEY_MAP,
 			nullptr);
-	entry_write_int(CHARACTER_TABLE, ctx->id, x, CHARACTER_KEY_POS_X, nullptr);
-	entry_write_int(CHARACTER_TABLE, ctx->id, y, CHARACTER_KEY_POS_Y, nullptr);
+	entry_write_int(CHARACTER_TABLE, ctx->id, x, CHARACTER_KEY_TILE_X, nullptr);
+	entry_write_int(CHARACTER_TABLE, ctx->id, y, CHARACTER_KEY_TILE_Y, nullptr);
 
 	context_spread(ctx);
 	if (change_map == true)
@@ -455,8 +455,8 @@ static void platform_move(context_t * platform, const char * map, int x, int y,
 			current = current->next;
 			continue;
 		}
-		if (platform->pos_tx == current->pos_tx
-				&& platform->pos_ty == current->pos_ty
+		if (platform->tile_x == current->tile_x
+				&& platform->tile_y == current->tile_y
 				&& !strcmp(platform->map, current->map))
 		{
 			do_set_pos(current, map, x, y, change_map);
@@ -493,7 +493,7 @@ int character_set_pos(context_t * ctx, const char * map, int x, int y)
 	}
 
 	// Do nothing if no move
-	if (!strcmp(ctx->map, map) && ctx->pos_tx == x && ctx->pos_ty == y)
+	if (!strcmp(ctx->map, map) && ctx->tile_x == x && ctx->tile_y == y)
 	{
 		return 0;
 	}

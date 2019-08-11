@@ -99,152 +99,152 @@ layer0 = {
 }
 event_list: {
 E0 = {
-   pos_x = 1
-   pos_y = 2
+   tile_x = 1
+   tile_y = 2
    script = "set_sprite.lua"
    param = ( "3", "LongEars_male_de1" )
 }
 E1 = {
-   pos_x = 3
-   pos_y = 2
+   tile_x = 3
+   tile_y = 2
    script = "set_sprite.lua"
    param = ( "3", "LongEars_male_de2" )
 }
 E2 = {
-   pos_x = 5
-   pos_y = 2
+   tile_x = 5
+   tile_y = 2
    script = "set_sprite.lua"
    param = ( "3", "LongEars_male_d" )
 }
 E3 = {
-   pos_x = 7
-   pos_y = 2
+   tile_x = 7
+   tile_y = 2
    script = "set_sprite.lua"
    param = ( "3", "LongEars_male_n" )
 }
 E4 = {
-   pos_x = 1
-   pos_y = 3
+   tile_x = 1
+   tile_y = 3
    script = "set_sprite.lua"
    param = ( "3", "LongEars_male_t" )
 }
 E5 = {
-   pos_x = 3
-   pos_y = 3
+   tile_x = 3
+   tile_y = 3
    script = "set_sprite.lua"
    param = ( "3", "male_ears_bigears_dark2" )
 }
 E6 = {
-   pos_x = 5
-   pos_y = 3
+   tile_x = 5
+   tile_y = 3
    script = "set_sprite.lua"
    param = ( "3", "male_ears_bigears_darkelf2" )
 }
 E7 = {
-   pos_x = 7
-   pos_y = 3
+   tile_x = 7
+   tile_y = 3
    script = "set_sprite.lua"
    param = ( "3", "male_ears_bigears_darkelf" )
 }
 E8 = {
-   pos_x = 1
-   pos_y = 4
+   tile_x = 1
+   tile_y = 4
    script = "set_sprite.lua"
    param = ( "3", "male_ears_bigears_dark" )
 }
 E9 = {
-   pos_x = 3
-   pos_y = 4
+   tile_x = 3
+   tile_y = 4
    script = "set_sprite.lua"
    param = ( "3", "male_ears_bigears_light" )
 }
 E10 = {
-   pos_x = 5
-   pos_y = 4
+   tile_x = 5
+   tile_y = 4
    script = "set_sprite.lua"
    param = ( "3", "male_ears_bigears_tanned2" )
 }
 E11 = {
-   pos_x = 7
-   pos_y = 4
+   tile_x = 7
+   tile_y = 4
    script = "set_sprite.lua"
    param = ( "3", "male_ears_bigears_tanned" )
 }
 E12 = {
-   pos_x = 1
-   pos_y = 5
+   tile_x = 1
+   tile_y = 5
    script = "set_sprite.lua"
    param = ( "3", "male_ears_elvenears_dark2" )
 }
 E13 = {
-   pos_x = 3
-   pos_y = 5
+   tile_x = 3
+   tile_y = 5
    script = "set_sprite.lua"
    param = ( "3", "male_ears_elvenears_darkelf2" )
 }
 E14 = {
-   pos_x = 5
-   pos_y = 5
+   tile_x = 5
+   tile_y = 5
    script = "set_sprite.lua"
    param = ( "3", "male_ears_elvenears_darkelf" )
 }
 E15 = {
-   pos_x = 7
-   pos_y = 5
+   tile_x = 7
+   tile_y = 5
    script = "set_sprite.lua"
    param = ( "3", "male_ears_elvenears_dark" )
 }
 E16 = {
-   pos_x = 1
-   pos_y = 6
+   tile_x = 1
+   tile_y = 6
    script = "set_sprite.lua"
    param = ( "3", "male_ears_elvenears_light" )
 }
 E17 = {
-   pos_x = 3
-   pos_y = 6
+   tile_x = 3
+   tile_y = 6
    script = "set_sprite.lua"
    param = ( "3", "male_ears_elvenears_tanned2" )
 }
 E18 = {
-   pos_x = 5
-   pos_y = 6
+   tile_x = 5
+   tile_y = 6
    script = "set_sprite.lua"
    param = ( "3", "male_ears_elvenears_tanned" )
 }
 E19 = {
-   pos_x = 0
-   pos_y = 4
+   tile_x = 0
+   tile_y = 4
    script = "goto_character_map.lua"
    param = ( "2", "1", "1" )
 }
 E20 = {
-   pos_x = 8
-   pos_y = 4
+   tile_x = 8
+   tile_y = 4
    script = "goto_character_map.lua"
    param = ( "4", "1", "1" )
 }
 E21 = {
-   pos_x = 0
-   pos_y = 0
+   tile_x = 0
+   tile_y = 0
    script = "set_sprite.lua"
    param = ( "3", "" )
 }
 E22 = {
-   pos_x = 0
-   pos_y = 8
+   tile_x = 0
+   tile_y = 8
    script = "set_sprite.lua"
    param = ( "3", "" )
 }
 E23 = {
-   pos_x = 8
-   pos_y = 0
+   tile_x = 8
+   tile_y = 0
    script = "set_sprite.lua"
    param = ( "3", "" )
 }
 E24 = {
-   pos_x = 8
-   pos_y = 8
+   tile_x = 8
+   tile_y = 8
    script = "set_sprite.lua"
    param = ( "3", "" )
 }

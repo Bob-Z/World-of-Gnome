@@ -25,14 +25,14 @@ attribute = {
 }
 event_list : {
         to_arabic_room1 : {
-                pos_x = 29;
-                pos_y = 22;
+                tile_x = 29;
+                tile_y = 22;
                 script = "goto.lua";
                 param = ( "arabic_room1", "9", "11" );
         };
         to_arabic_room2 : {
-                pos_x = 32;
-                pos_y = 27;
+                tile_x = 32;
+                tile_y = 27;
                 script = "goto.lua";
                 param = ( "arabic_room2", "9", "11" );
         };

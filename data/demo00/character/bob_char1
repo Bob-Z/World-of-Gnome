@@ -5,8 +5,8 @@ name = "Blop";
 inventory : [ "A0007", "A0008" ];
 type = "white_ball";
 map = "map1";
-pos_x = 0;
-pos_y = 1;
+tile_x = 0;
+tile_y = 1;
 action = [ "add_white", "add_black", "get", "drop_item" , "get_apple", "eat_apple", "remove_life" , "hit", "wear_equip", "remove_equip", "set_trap", "disarm_trap"];
 allowed_tile = "ground";
 

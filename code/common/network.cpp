@@ -246,8 +246,8 @@ void network_send_context_to_context(context_t * dest_ctx, context_t * src_ctx)
 	l_Frame.push(src_ctx->map);
 	l_Frame.push(src_ctx->in_game);
 	l_Frame.push(src_ctx->connected);
-	l_Frame.push(src_ctx->pos_tx);
-	l_Frame.push(src_ctx->pos_ty);
+	l_Frame.push(src_ctx->tile_x);
+	l_Frame.push(src_ctx->tile_y);
 	l_Frame.push(src_ctx->type);
 	l_Frame.push(src_ctx->id);
 	l_Frame.push(src_ctx->selection.id);

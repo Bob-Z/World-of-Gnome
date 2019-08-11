@@ -15,14 +15,14 @@ layer0 = {
 }
 event_list = {
 	exit_0 = {
-		pos_x = 11
-		pos_y = 4
+		tile_x = 11
+		tile_y = 4
 		script = "goto.lua"
 		param = ( "M-1_0", "7", "25" )
 	}
 	to_mine0 = {
-		pos_x = 22
-		pos_y = 12
+		tile_x = 22
+		tile_y = 12
 		script = "goto.lua"
 		param = ( "mine03", "3", "4" )
 	}

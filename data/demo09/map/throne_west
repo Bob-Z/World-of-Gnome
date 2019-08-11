@@ -15,26 +15,26 @@ layer0 = {
 }
 event_list = {
 	exit_0 = {
-		pos_x = 3
-		pos_y = 9
+		tile_x = 3
+		tile_y = 9
 		script = "goto.lua"
 		param = ( "M0_0", "14", "39" )
 	}
 	exit_1 = {
-		pos_x = 4
-		pos_y = 9
+		tile_x = 4
+		tile_y = 9
 		script = "goto.lua"
 		param = ( "M0_0", "15", "39" )
 	}
 	to_throne1 = {
-		pos_x = 14
-		pos_y = 5
+		tile_x = 14
+		tile_y = 5
 		script = "goto.lua"
 		param = ( "throne", "1", "10" )
 	}
 	to_throne2 = {
-		pos_x = 14
-		pos_y = 4
+		tile_x = 14
+		tile_y = 4
 		script = "goto.lua"
 		param = ( "throne", "1", "9" )
 	}

@@ -16,8 +16,8 @@ layer0: {
 	{
 		to_level0 : 
 		{
-			pos_x = 11;
-			pos_y = 0;
+			tile_x = 11;
+			tile_y = 0;
 			script = "goto.lua";
 			param = ( "house0_level0", "15", "1" );
 		};

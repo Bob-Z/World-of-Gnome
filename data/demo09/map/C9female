@@ -90,116 +90,116 @@ layer0 = {
 }
 event_list: {
 E0 = {
-   pos_x = 1
-   pos_y = 2
+   tile_x = 1
+   tile_y = 2
    script = "set_sprite.lua"
    param = ( "9", "armor_female_golden_boots_female" )
 }
 E1 = {
-   pos_x = 3
-   pos_y = 2
+   tile_x = 3
+   tile_y = 2
    script = "set_sprite.lua"
    param = ( "9", "armor_female_metal_boots_female" )
 }
 E2 = {
-   pos_x = 5
-   pos_y = 2
+   tile_x = 5
+   tile_y = 2
    script = "set_sprite.lua"
    param = ( "9", "boots_female_brown_longboots_female" )
 }
 E3 = {
-   pos_x = 7
-   pos_y = 2
+   tile_x = 7
+   tile_y = 2
    script = "set_sprite.lua"
    param = ( "9", "boots_female_maroon_longboots_female" )
 }
 E4 = {
-   pos_x = 1
-   pos_y = 3
+   tile_x = 1
+   tile_y = 3
    script = "set_sprite.lua"
    param = ( "9", "Female_sandals" )
 }
 E5 = {
-   pos_x = 3
-   pos_y = 3
+   tile_x = 3
+   tile_y = 3
    script = "set_sprite.lua"
    param = ( "9", "ghillies_female_no_th-sh" )
 }
 E6 = {
-   pos_x = 5
-   pos_y = 3
+   tile_x = 5
+   tile_y = 3
    script = "set_sprite.lua"
    param = ( "9", "shoes_female_black_shoes_female" )
 }
 E7 = {
-   pos_x = 7
-   pos_y = 3
+   tile_x = 7
+   tile_y = 3
    script = "set_sprite.lua"
    param = ( "9", "shoes_female_brown_shoes_female" )
 }
 E8 = {
-   pos_x = 1
-   pos_y = 4
+   tile_x = 1
+   tile_y = 4
    script = "set_sprite.lua"
    param = ( "9", "shoes_female_maroon_shoes_female" )
 }
 E9 = {
-   pos_x = 3
-   pos_y = 4
+   tile_x = 3
+   tile_y = 4
    script = "set_sprite.lua"
    param = ( "9", "slippers_female_black" )
 }
 E10 = {
-   pos_x = 5
-   pos_y = 4
+   tile_x = 5
+   tile_y = 4
    script = "set_sprite.lua"
    param = ( "9", "slippers_female_brown" )
 }
 E11 = {
-   pos_x = 7
-   pos_y = 4
+   tile_x = 7
+   tile_y = 4
    script = "set_sprite.lua"
    param = ( "9", "slippers_female_gray" )
 }
 E12 = {
-   pos_x = 1
-   pos_y = 5
+   tile_x = 1
+   tile_y = 5
    script = "set_sprite.lua"
    param = ( "9", "slippers_female_white" )
 }
 E13 = {
-   pos_x = 0
-   pos_y = 4
+   tile_x = 0
+   tile_y = 4
    script = "goto_character_map.lua"
    param = ( "8", "1", "1" )
 }
 E14 = {
-   pos_x = 8
-   pos_y = 4
+   tile_x = 8
+   tile_y = 4
    script = "goto_character_map.lua"
    param = ( "10", "1", "1" )
 }
 E15 = {
-   pos_x = 0
-   pos_y = 0
+   tile_x = 0
+   tile_y = 0
    script = "set_sprite.lua"
    param = ( "9", "" )
 }
 E16 = {
-   pos_x = 0
-   pos_y = 7
+   tile_x = 0
+   tile_y = 7
    script = "set_sprite.lua"
    param = ( "9", "" )
 }
 E17 = {
-   pos_x = 8
-   pos_y = 0
+   tile_x = 8
+   tile_y = 0
    script = "set_sprite.lua"
    param = ( "9", "" )
 }
 E18 = {
-   pos_x = 8
-   pos_y = 7
+   tile_x = 8
+   tile_y = 7
    script = "set_sprite.lua"
    param = ( "9", "" )
 }

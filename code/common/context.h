@@ -59,10 +59,10 @@ typedef struct context
 	int npc;	// 1 = NPC
 	char * character_name;
 	char * map;	// map name
-	int pos_tx;	// player position (in tile)
-	int pos_ty;	// player position (in tile)
-	int prev_pos_tx;// player previous position (in tile) for sprite direction
-	int prev_pos_ty;// player previous position (in tile) for sprite direction
+	int tile_x;	// player position (in tile)
+	int tile_y;	// player position (in tile)
+	int prev_pos_tile_x;// player previous position (in tile) for sprite direction
+	int prev_pos_tile_y;// player previous position (in tile) for sprite direction
 	bool pos_changed;
 
 	Uint32 animation_tick;	// Start tick for animation

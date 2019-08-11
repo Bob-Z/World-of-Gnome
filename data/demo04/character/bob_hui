@@ -6,8 +6,8 @@ name = "Hui";
 inventory = [ ];
 type = "knight";
 map = "village";
-pos_x = 1;
-pos_y = 6;
+tile_x = 1;
+tile_y = 6;
 action = [ "speak/npc" ];
 allowed_tile = ["g","d"];
 attribute : 

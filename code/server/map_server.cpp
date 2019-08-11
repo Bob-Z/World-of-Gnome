@@ -218,7 +218,7 @@ char * map_delete_item(const char * map, int layer, int x, int y)
 	while (itemlist[i] != nullptr)
 	{
 		if (entry_read_int(MAP_TABLE, map, &mapx, layer_name,
-				MAP_ENTRY_ITEM_LIST, itemlist[i], MAP_ITEM_POS_X,
+				MAP_ENTRY_ITEM_LIST, itemlist[i], MAP_ITEM_TILE_X,
 				nullptr) == RET_NOK)
 		{
 			SDL_UnlockMutex(map_mutex);
@@ -227,7 +227,7 @@ char * map_delete_item(const char * map, int layer, int x, int y)
 		}
 
 		if (entry_read_int(MAP_TABLE, map, &mapy, layer_name,
-				MAP_ENTRY_ITEM_LIST, itemlist[i], MAP_ITEM_POS_Y,
+				MAP_ENTRY_ITEM_LIST, itemlist[i], MAP_ITEM_TILE_Y,
 				nullptr) == RET_NOK)
 		{
 			SDL_UnlockMutex(map_mutex);
@@ -295,7 +295,7 @@ ret_code_t map_add_item(const char * map, int layer, const char * id, int x,
 	SDL_LockMutex(map_mutex);
 
 	if (entry_write_int(MAP_TABLE, map, x, layer_name, MAP_ENTRY_ITEM_LIST, id,
-			MAP_ITEM_POS_X, nullptr) == RET_NOK)
+			MAP_ITEM_TILE_X, nullptr) == RET_NOK)
 	{
 		entry_remove_group(MAP_TABLE, map, id, layer_name, MAP_ENTRY_ITEM_LIST,
 				nullptr);
@@ -303,7 +303,7 @@ ret_code_t map_add_item(const char * map, int layer, const char * id, int x,
 		return RET_NOK;
 	}
 	if (entry_write_int(MAP_TABLE, map, y, layer_name, MAP_ENTRY_ITEM_LIST, id,
-			MAP_ITEM_POS_Y, nullptr) == RET_NOK)
+			MAP_ITEM_TILE_Y, nullptr) == RET_NOK)
 	{
 		entry_remove_group(MAP_TABLE, map, id, layer_name, MAP_ENTRY_ITEM_LIST,
 				nullptr);
@@ -757,7 +757,7 @@ char ** map_get_event(const char * map, int layer, int x, int y)
 		while (eventlist[i] != nullptr)
 		{
 			if (entry_read_int(MAP_TABLE, map, &mapx, layer_name,
-					MAP_ENTRY_EVENT_LIST, eventlist[i], MAP_EVENT_POS_X,
+					MAP_ENTRY_EVENT_LIST, eventlist[i], MAP_EVENT_TILE_X,
 					nullptr) == RET_NOK)
 			{
 				i++;
@@ -765,7 +765,7 @@ char ** map_get_event(const char * map, int layer, int x, int y)
 			}
 
 			if (entry_read_int(MAP_TABLE, map, &mapy, layer_name,
-					MAP_ENTRY_EVENT_LIST, eventlist[i], MAP_EVENT_POS_Y,
+					MAP_ENTRY_EVENT_LIST, eventlist[i], MAP_EVENT_TILE_Y,
 					nullptr) == RET_NOK)
 			{
 				i++;
@@ -792,14 +792,14 @@ char ** map_get_event(const char * map, int layer, int x, int y)
 		while (eventlist[i] != nullptr)
 		{
 			if (entry_read_int(MAP_TABLE, map, &mapx, MAP_ENTRY_EVENT_LIST,
-					eventlist[i], MAP_EVENT_POS_X, nullptr) == RET_NOK)
+					eventlist[i], MAP_EVENT_TILE_X, nullptr) == RET_NOK)
 			{
 				i++;
 				continue;
 			}
 
 			if (entry_read_int(MAP_TABLE, map, &mapy, MAP_ENTRY_EVENT_LIST,
-					eventlist[i], MAP_EVENT_POS_Y, nullptr) == RET_NOK)
+					eventlist[i], MAP_EVENT_TILE_Y, nullptr) == RET_NOK)
 			{
 				i++;
 				continue;
@@ -857,7 +857,7 @@ char * map_add_event(const char * map, int layer, const char * script, int x,
 	SDL_LockMutex(map_mutex);
 
 	if (entry_write_int(MAP_TABLE, map, x, layer_name, MAP_ENTRY_EVENT_LIST, id,
-			MAP_EVENT_POS_X, nullptr) == RET_NOK)
+			MAP_EVENT_TILE_X, nullptr) == RET_NOK)
 	{
 		entry_remove_group(MAP_TABLE, map, id, layer_name, MAP_ENTRY_EVENT_LIST,
 				nullptr);
@@ -866,7 +866,7 @@ char * map_add_event(const char * map, int layer, const char * script, int x,
 		return nullptr;
 	}
 	if (entry_write_int(MAP_TABLE, map, y, layer_name, MAP_ENTRY_EVENT_LIST, id,
-			MAP_EVENT_POS_Y, nullptr) == RET_NOK)
+			MAP_EVENT_TILE_Y, nullptr) == RET_NOK)
 	{
 		entry_remove_group(MAP_TABLE, map, id, layer_name, MAP_ENTRY_EVENT_LIST,
 				nullptr);
@@ -947,14 +947,14 @@ ret_code_t map_delete_event(const char * map, int layer, const char * script,
 	while (eventlist[i] != nullptr)
 	{
 		if (entry_read_int(MAP_TABLE, map, &mapx, layer_name,
-				MAP_ENTRY_EVENT_LIST, eventlist[i], MAP_EVENT_POS_X,
+				MAP_ENTRY_EVENT_LIST, eventlist[i], MAP_EVENT_TILE_X,
 				nullptr) == RET_NOK)
 		{
 			i++;
 			continue;
 		}
 		if (entry_read_int(MAP_TABLE, map, &mapy, layer_name,
-				MAP_ENTRY_EVENT_LIST, eventlist[i], MAP_EVENT_POS_Y,
+				MAP_ENTRY_EVENT_LIST, eventlist[i], MAP_EVENT_TILE_Y,
 				nullptr) == RET_NOK)
 		{
 			i++;
@@ -1024,7 +1024,7 @@ char ** map_get_character(const char * map, int x, int y)
 			ctx = ctx->next;
 			continue;
 		}
-		if (ctx->pos_tx == x && ctx->pos_ty == y && !strcmp(ctx->map, map))
+		if (ctx->tile_x == x && ctx->tile_y == y && !strcmp(ctx->map, map))
 		{
 			character_num++;
 			character_list = (char**) realloc(character_list,
@@ -1071,14 +1071,14 @@ char ** map_get_item(const char * map, int layer, int map_x, int map_y)
 	while (item_id[i] != nullptr)
 	{
 		if (entry_read_int(MAP_TABLE, map, &x, layer_name, MAP_ENTRY_ITEM_LIST,
-				item_id[i], MAP_ITEM_POS_X, nullptr) == RET_NOK)
+				item_id[i], MAP_ITEM_TILE_X, nullptr) == RET_NOK)
 		{
 			i++;
 			continue;
 		}
 
 		if (entry_read_int(MAP_TABLE, map, &y, layer_name, MAP_ENTRY_ITEM_LIST,
-				item_id[i], MAP_ITEM_POS_Y, nullptr) == RET_NOK)
+				item_id[i], MAP_ITEM_TILE_Y, nullptr) == RET_NOK)
 		{
 			i++;
 			continue;

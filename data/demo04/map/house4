@@ -16,8 +16,8 @@ layer0: {
 	{
 		to_village : 
 		{
-			pos_x = 10;
-			pos_y = 12;
+			tile_x = 10;
+			tile_y = 12;
 			script = "goto.lua";
 			param = ( "village", "42", "51" );
 		};
