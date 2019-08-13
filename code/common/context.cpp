@@ -594,14 +594,17 @@ ret_code_t context_set_selected_character(context_t * context, const char * id)
 {
 	context_lock_list();
 
-	if (!strcmp(context->selection.id, id))
+	if ((context != nullptr) && (context->selection.id != nullptr))
 	{
-		context_unlock_list();
-		return RET_NOK;
-	}
-	free(context->selection.id);
+		if (strcmp(context->selection.id, id) == 0)
+		{
+			context_unlock_list();
+			return RET_NOK;
+		}
+		free(context->selection.id);
 
-	context->selection.id = strdup(id);
+		context->selection.id = strdup(id);
+	}
 
 	context_unlock_list();
 	return RET_OK;
