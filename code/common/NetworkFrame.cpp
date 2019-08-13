@@ -106,11 +106,19 @@ void NetworkFrame::push(const std::vector<std::string> & p_rStringVectorData)
 }
 
 /******************************************************************************/
-void NetworkFrame::push(const char* p_pAsciiData)
+void NetworkFrame::push(const char* AsciiData)
 {
-	size_t l_Size = strlen(p_pAsciiData) + 1;
-	prepareFrame(l_Size);
-	addData(p_pAsciiData, l_Size);
+	const char* NoData = "";
+	const char* DataToSend = AsciiData;
+
+	if (AsciiData == nullptr)
+	{
+		DataToSend = NoData;
+	}
+
+	size_t Size = strlen(DataToSend) + 1; //terminal null
+	prepareFrame(Size);
+	addData(AsciiData, Size);
 }
 
 /******************************************************************************/
