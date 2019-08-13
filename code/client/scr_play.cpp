@@ -17,19 +17,21 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#include "common.h"
-#include "imageDB.h"
-#include "file.h"
 #include "anim.h"
-#include "item.h"
-#include "sdl.h"
-#include "screen.h"
-#include "textview.h"
-#include "network_client.h"
-#include "ui_play.h"
-#include "option_client.h"
 #include "Camera.h"
+#include "common.h"
+#include "file.h"
+#include "imageDB.h"
+#include "item.h"
+#include "network_client.h"
+#include "option_client.h"
+#include "screen.h"
+#include "sdl.h"
+#include "textview.h"
+#include "ui_play.h"
 #include <limits.h>
+
+constexpr int SFX_VOLUME_MAX = 100;
 
 #define ITEM_FONT "Ubuntu-C.ttf"
 #define ITEM_FONT_SIZE (15)
@@ -964,7 +966,7 @@ item_t * scr_play_compose(context_t * ctx)
 	int layer_index = 0;
 	char * old_sfx = nullptr;
 
-	if (item_list)
+	if (item_list != nullptr)
 	{
 		item_list_free(item_list);
 		item_list = nullptr;
@@ -1023,11 +1025,11 @@ item_t * scr_play_compose(context_t * ctx)
 
 	entry_read_string(MAP_TABLE, ctx->map, &sfx, MAP_SFX, nullptr);
 
-	if (old_sfx)
+	if (old_sfx != nullptr)
 	{
-		if (sfx)
+		if (sfx != nullptr)
 		{
-			if (strcmp(old_sfx, sfx))
+			if (strcmp(old_sfx, sfx) != 0)
 			{
 				sfx_stop(MUSIC_CHANNEL);
 				g_IsMusicPlaying = false;
@@ -1041,7 +1043,7 @@ item_t * scr_play_compose(context_t * ctx)
 		free(old_sfx);
 	}
 
-	if (sfx && sfx[0] != 0)
+	if ((sfx != nullptr) && (sfx[0] != '\0'))
 	{
 		if (g_IsMusicPlaying == false)
 		{
@@ -1049,7 +1051,7 @@ item_t * scr_play_compose(context_t * ctx)
 			{
 				g_IsMusicPlaying = true;
 			}
-			int sfx_volume = 100; // 100%
+			int sfx_volume = SFX_VOLUME_MAX;
 			entry_read_int(MAP_TABLE, ctx->map, &sfx_volume, MAP_SFX_VOLUME,
 					nullptr);
 			sfx_set_volume(MUSIC_CHANNEL, sfx_volume);
@@ -1058,4 +1060,3 @@ item_t * scr_play_compose(context_t * ctx)
 
 	return item_list;
 }
-
