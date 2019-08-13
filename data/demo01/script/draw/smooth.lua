@@ -3,8 +3,8 @@ function f ()
 -- id = player_get_id()
 id = context_get_id()
 
-item_X = item_get_x()
-item_Y = item_get_y()
+item_X = item_get_px()
+item_Y = item_get_py()
 item_W = item_get_w()
 item_H = item_get_h()
 
@@ -168,8 +168,8 @@ end
 --  text = string.format("_G.current_X[%s] = %d, _G.current_Y[%s] = %d",id, _G.current_X[id], id, _G.current_Y[id])
 --  print_text_debug(text)
 
-item_set_x(_G.current_X[id])
-item_set_y(_G.current_Y[id])
+item_set_px(_G.current_X[id])
+item_set_py(_G.current_Y[id])
 
 return 0
 

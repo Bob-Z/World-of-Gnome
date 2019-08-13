@@ -24,13 +24,13 @@ print_text_debug(text)
 --print_text_debug(text)
 
 if(_G.current_X[id] == nil) then
-	current_px = item_get_x()
+	current_px = item_get_px()
 else
 	current_px = _G.current_X[id]
 end
 
 if(_G.current_Y[id] == nil) then
-	current_py = item_get_y()
+	current_py = item_get_py()
 else
 	current_py = _G.current_Y[id]
 end
@@ -58,8 +58,8 @@ cursor_py = current_py + ((current_ph - item_ph) / 2)
 text = string.format("cursor_py = %d", cursor_py )
 print_text_debug(text)
 
-item_set_x(cursor_px)
-item_set_y(cursor_py)
+item_set_px(cursor_px)
+item_set_py(cursor_py)
 
 return 0
 

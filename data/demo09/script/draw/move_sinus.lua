@@ -3,8 +3,8 @@ function f ()
 -- id = player_get_id()
 id = context_get_id()
 
-item_X = item_get_x()
-item_Y = item_get_y()
+item_X = item_get_px()
+item_Y = item_get_py()
 item_W = item_get_w()
 item_H = item_get_h()
 
@@ -174,8 +174,8 @@ delta_time = current_tick - _G.sinus_time[id]
 calculated_x = _G.current_X[id] + 5 *( math.sin(delta_time / 405))
 calculated_y = _G.current_Y[id] + 5 *( math.sin(delta_time / 333))
 
- item_set_x(calculated_x)
- item_set_y(calculated_y)
+ item_set_px(calculated_x)
+ item_set_py(calculated_y)
 
 return 0
 

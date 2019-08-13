@@ -27,8 +27,8 @@ item_h = item_get_h()
 cursor_tile_x = _G.current_X[id] + ((_G.current_W[id] - item_w) / 2)
 cursor_tile_y = _G.current_Y[id] + ((_G.current_H[id] - item_h) / 2)
 
-item_set_x(cursor_tile_x)
-item_set_y(cursor_tile_y)
+item_set_px(cursor_tile_x)
+item_set_py(cursor_tile_y)
 
 
 return 0

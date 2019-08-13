@@ -104,11 +104,11 @@ static int l_context_get_map(lua_State* p_pLuaState)
 }
 
 /***********************************
- item_set_x
+ item_set_px
  Input: X ccordinate in pixel
  Output:
  ***********************************/
-static int l_item_set_x(lua_State* p_pLuaState)
+static int l_item_set_px(lua_State* p_pLuaState)
 {
 	item_t * l_pItem;
 
@@ -123,11 +123,11 @@ static int l_item_set_x(lua_State* p_pLuaState)
 }
 
 /***********************************
- item_set_y
+ item_set_py
  Input: Y ccordinate in pixel
  Output:
  ***********************************/
-static int l_item_set_y(lua_State* p_pLuaState)
+static int l_item_set_py(lua_State* p_pLuaState)
 {
 	item_t * l_pItem;
 
@@ -142,11 +142,11 @@ static int l_item_set_y(lua_State* p_pLuaState)
 }
 
 /***********************************
- item_get_x
+ item_get_px
  Input:
  Output: X ccordinate in pixel
  ***********************************/
-static int l_item_get_x(lua_State* p_pLuaState)
+static int l_item_get_px(lua_State* p_pLuaState)
 {
 	item_t * l_pItem;
 
@@ -159,11 +159,11 @@ static int l_item_get_x(lua_State* p_pLuaState)
 }
 
 /***********************************
- item_get_y
+ item_get_py
  Input:
  Output: Y ccordinate in pixel
  ***********************************/
-static int l_item_get_y(lua_State* p_pLuaState)
+static int l_item_get_py(lua_State* p_pLuaState)
 {
 	item_t * l_pItem;
 
@@ -651,14 +651,14 @@ static void register_lua_functions(lua_State * l_pLuaVm)
 	lua_pushcfunction(l_pLuaVm, l_context_get_map);
 	lua_setglobal(l_pLuaVm, "context_get_map");
 	// item function
-	lua_pushcfunction(l_pLuaVm, l_item_set_x);
-	lua_setglobal(l_pLuaVm, "item_set_x");
-	lua_pushcfunction(l_pLuaVm, l_item_set_y);
-	lua_setglobal(l_pLuaVm, "item_set_y");
-	lua_pushcfunction(l_pLuaVm, l_item_get_x);
-	lua_setglobal(l_pLuaVm, "item_get_x");
-	lua_pushcfunction(l_pLuaVm, l_item_get_y);
-	lua_setglobal(l_pLuaVm, "item_get_y");
+	lua_pushcfunction(l_pLuaVm, l_item_set_px);
+	lua_setglobal(l_pLuaVm, "item_set_px");
+	lua_pushcfunction(l_pLuaVm, l_item_set_py);
+	lua_setglobal(l_pLuaVm, "item_set_py");
+	lua_pushcfunction(l_pLuaVm, l_item_get_px);
+	lua_setglobal(l_pLuaVm, "item_get_px");
+	lua_pushcfunction(l_pLuaVm, l_item_get_py);
+	lua_setglobal(l_pLuaVm, "item_get_py");
 	lua_pushcfunction(l_pLuaVm, l_item_get_w);
 	lua_setglobal(l_pLuaVm, "item_get_w");
 	lua_pushcfunction(l_pLuaVm, l_item_get_h);
