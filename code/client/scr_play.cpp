@@ -250,7 +250,7 @@ static void set_up_sprite(context_t * ctx)
 	{
 		return;
 	}
-	if (strcmp(ctx->map, player_context->map))
+	if (strcmp(ctx->map, player_context->map) != 0)
 	{
 		return;
 	}
@@ -955,7 +955,7 @@ void scr_play_init()
 }
 
 /**********************************
- Compose the character select screen
+ Compose main play screen
  **********************************/
 item_t * scr_play_compose(context_t * ctx)
 {
