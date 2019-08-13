@@ -230,7 +230,6 @@ char * character_create_from_template(context_t * ctx, const char * my_template,
 		return nullptr;
 	}
 
-	// Write position
 	if (entry_write_string(CHARACTER_TABLE, new_id, map, CHARACTER_KEY_MAP,
 			nullptr) == RET_NOK)
 	{
@@ -250,6 +249,15 @@ char * character_create_from_template(context_t * ctx, const char * my_template,
 	}
 
 	if (entry_write_int(CHARACTER_TABLE, new_id, y, CHARACTER_KEY_TILE_Y,
+			nullptr) == RET_NOK)
+	{
+		entry_destroy(CHARACTER_TABLE, new_id);
+		file_delete(CHARACTER_TABLE, new_id);
+		free(new_id);
+		return nullptr;
+	}
+
+	if (entry_write_int(CHARACTER_TABLE, new_id, layer, CHARACTER_LAYER,
 			nullptr) == RET_NOK)
 	{
 		entry_destroy(CHARACTER_TABLE, new_id);
