@@ -2,7 +2,8 @@ function f ()
 
 player = player_get_id()
 
-castle_layer = 17
+castle_layer = 11
+castle_up_layer = 17
 player_layer = 15
 floor_layer = 11
 
@@ -24,6 +25,12 @@ if id == nil then
         return
 end
 character_set_npc(id,1)
+
+-- -6 and -9 are hacks to superpose (more or less) correctly scenery and sprite
+selected_px = tile_get_x(map,player_layer,selected_tx-6,selected_ty-9)
+selected_py = tile_get_y(map,player_layer,selected_tx-6,selected_ty-9)
+
+map_add_scenery(map,castle_up_layer,selected_px,selected_py,"scenery/castle_up.png")
 
 -- Exterior tile type
 for map_tx = selected_tx-6, selected_tx+6 do
