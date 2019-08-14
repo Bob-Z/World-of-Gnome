@@ -92,12 +92,15 @@ void network_request_playable_character_list(context_t * context)
  *********************************************************************/
 void network_request_user_character_list(context_t * context)
 {
-	wlog(LOGDEVELOPER, "Send CMD_REQ_USER_CHARACTER_LIST");
+	pb::ClientMessage message;
+	message.mutable_user_character_list()->set_user(context->user_name);
+	std::string serialized_data = message.SerializeAsString();
 
-	NetworkFrame l_Frame;
-	l_Frame.push(context->user_name);
+	NetworkFrame frame;
+	frame.push(serialized_data);
 
-	network_send_command(context, CMD_REQ_USER_CHARACTER_LIST, l_Frame, false);
+	wlog(LOGDEVELOPER, "[network] Send USER_CHARACTER_LIST");
+	network_send_command(context, CMD_PB, frame, false);
 }
 
 /*********************************************************************

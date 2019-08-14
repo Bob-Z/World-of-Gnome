@@ -123,7 +123,23 @@ static ret_code_t manage_playable_character_list(context_t * context,
 		const pb::PlayableCharacterList & list)
 {
 	wlog(LOGDEVELOPER, "[network] Received playable character list request");
+
 	character_playable_send_list(context);
+
+	return RET_OK;
+}
+
+/**************************************
+ Return RET_NOK on error
+ **************************************/
+static ret_code_t manage_user_character_list(context_t * context,
+		const pb::UserCharacterList & list)
+{
+	wlog(LOGDEVELOPER,
+			"[network] Received user character list request for user %s",
+			list.user().c_str());
+
+	character_user_send_list(context);
 
 	return RET_OK;
 }
@@ -174,6 +190,11 @@ ret_code_t parse_incoming_data(context_t * context, NetworkFrame & frame)
 				manage_playable_character_list(context,
 						message.playable_character_list());
 			}
+			else if (message.has_user_character_list())
+			{
+				manage_user_character_list(context,
+						message.user_character_list());
+			}
 			else
 			{
 				werr(LOGUSER, "Unknown message received");
@@ -217,11 +238,6 @@ ret_code_t parse_incoming_data(context_t * context, NetworkFrame & frame)
 		wlog(LOGDEVELOPER, "File %s sent", l_FileName.c_str());
 		break;
 	}
-	case CMD_REQ_USER_CHARACTER_LIST:
-		wlog(LOGDEVELOPER, "Received CMD_REQ_USER_CHARACTER_LIST");
-		character_user_send_list(context);
-		wlog(LOGDEVELOPER, "user %s's character list sent", context->user_name);
-		break;
 	case CMD_REQ_ACTION:
 	{
 		std::string l_ActionName;

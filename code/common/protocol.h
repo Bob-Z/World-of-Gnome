@@ -41,7 +41,6 @@
 #define CMD_SEND_PLAYABLE_CHARACTER	6 // Send a playable character list
 #define CMD_REQ_FILE			7 // require a file's content
 #define CMD_SEND_FILE			8 // send a file's content
-#define CMD_REQ_USER_CHARACTER_LIST	9 // Require user's characters list
 #define CMD_SEND_USER_CHARACTER		10 // Send a user's character list
 #define CMD_SEND_CONTEXT		11 // Send a context
 #define CMD_SEND_TEXT			12 // Server sends a message to client

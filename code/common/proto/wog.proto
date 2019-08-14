@@ -9,6 +9,7 @@ message ClientMessage
      Start start = 2;
      Stop stop = 3;
      PlayableCharacterList playable_character_list = 4;
+     UserCharacterList user_character_list = 5;
      Action action = 99;
   }
 }
@@ -30,6 +31,11 @@ message Stop
 
 message PlayableCharacterList
 {
+}
+
+message UserCharacterList
+{
+  string user = 1;
 }
 
 message Action
