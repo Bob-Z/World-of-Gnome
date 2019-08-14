@@ -55,10 +55,32 @@ static ret_code_t manage_login(context_t * context, const pb::Login & login)
 		context_set_connected(context, true);
 
 		network_send_command_no_data(context, CMD_SEND_LOGIN_OK, false);
-		wlog(LOGUSER, "Login successful for user %s", context->user_name);
+		wlog(LOGUSER, "[network] Login successful for user %s",
+				context->user_name);
 
 		return RET_OK;
 	}
+}
+
+/**************************************
+ Return RET_NOK on error
+ **************************************/
+static ret_code_t manage_start(context_t * context, const pb::Start & start)
+{
+	wlog(LOGDEVELOPER, "[network] Received start");
+
+	if (context->in_game == false)
+	{
+		context->id = strdup(start.id().c_str());
+		context->in_game = true;
+		context_update_from_file(context);
+		context_spread(context);
+		context_request_other_context(context);
+	}
+	wlog(LOGDEVELOPER, "[network] Start ID %s for user %s", context->id,
+			context->user_name);
+
+	return RET_OK;
 }
 
 /**************************************
@@ -93,6 +115,10 @@ ret_code_t parse_incoming_data(context_t * context, NetworkFrame & frame)
 			if (message.has_login())
 			{
 				manage_login(context, message.login());
+			}
+			else if (message.has_start())
+			{
+				manage_start(context, message.start());
 			}
 			else
 			{
@@ -146,24 +172,6 @@ ret_code_t parse_incoming_data(context_t * context, NetworkFrame & frame)
 		wlog(LOGDEVELOPER, "Received CMD_REQ_USER_CHARACTER_LIST");
 		character_user_send_list(context);
 		wlog(LOGDEVELOPER, "user %s's character list sent", context->user_name);
-		break;
-	case CMD_REQ_START:
-		if (context->in_game == false)
-		{
-			char * l_Id = nullptr;
-			frame.pop(l_Id);
-
-			context->id = strdup(l_Id);
-			free(l_Id);
-
-			context->in_game = true;
-			context_update_from_file(context);
-			context_spread(context);
-			context_request_other_context(context);
-
-		}
-		wlog(LOGDEVELOPER, "Received CMD_REQ_START for %s /%s",
-				context->user_name, context->id);
 		break;
 	case CMD_REQ_STOP:
 		wlog(LOGDEVELOPER, "Received CMD_REQ_STOP for %s /%s",

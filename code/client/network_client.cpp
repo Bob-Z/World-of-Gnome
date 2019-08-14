@@ -39,19 +39,25 @@ void network_login(context_t * context, const char * user_name,
 
 	l_Frame.push(serialized_data);
 
-	wlog(LOGDEVELOPER, "Send network request LOGIN");
+	wlog(LOGDEVELOPER, "[network] Send LOGIN");
 	network_send_command(context, CMD_PB, l_Frame, false);
 }
 
 /*********************************************************************
  **********************************************************************/
-void network_request_start(context_t * p_pContext, const char * p_pId)
+void network_request_start(context_t * context, const char * id)
 {
-	NetworkFrame l_Frame;
-	l_Frame.push(p_pId);
+	pb::NetworkMessage message;
 
-	wlog(LOGDEVELOPER, "Send CMD_REQ_START");
-	network_send_command(p_pContext, CMD_REQ_START, l_Frame, false);
+	message.mutable_start()->set_id(id);
+
+	std::string serialized_data = message.SerializeAsString();
+
+	NetworkFrame frame;
+	frame.push(serialized_data);
+
+	wlog(LOGDEVELOPER, "[network[ Send START");
+	network_send_command(context, CMD_PB, frame, false);
 }
 
 /*********************************************************************
