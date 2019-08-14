@@ -10,7 +10,7 @@ if x == -1 or y == -1 then
 end
 map = character_get_map(player)
 
-id = character_create_from_template(creature_type,map,0,x,y)
+id = character_create_from_template(creature_type,map,-1,x,y)
 if id == nil then
 	text = string.format("Cannot create %s here",creature_type)
         print_text_id(player, text)

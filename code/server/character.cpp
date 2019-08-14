@@ -257,13 +257,16 @@ char * character_create_from_template(context_t * ctx, const char * my_template,
 		return nullptr;
 	}
 
-	if (entry_write_int(CHARACTER_TABLE, new_id, layer, CHARACTER_LAYER,
-			nullptr) == RET_NOK)
+	if (layer != -1) // FIXME
 	{
-		entry_destroy(CHARACTER_TABLE, new_id);
-		file_delete(CHARACTER_TABLE, new_id);
-		free(new_id);
-		return nullptr;
+		if (entry_write_int(CHARACTER_TABLE, new_id, layer, CHARACTER_LAYER,
+				nullptr) == RET_NOK)
+		{
+			entry_destroy(CHARACTER_TABLE, new_id);
+			file_delete(CHARACTER_TABLE, new_id);
+			free(new_id);
+			return nullptr;
+		}
 	}
 
 	return new_id;
