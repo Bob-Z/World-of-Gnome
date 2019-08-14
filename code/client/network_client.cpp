@@ -126,31 +126,34 @@ void network_request_character_creation(context_t * context, const char * id,
  *********************************************************************/
 void network_send_action(context_t * context, const char * script, ...)
 {
-	va_list ap;
-	char * parameter = nullptr;
-
 	if (script == nullptr)
 	{
+		werr(LOGDESIGNER, "Cannot ask for null script");
 		return;
 	}
 
-	NetworkFrame l_Frame;
+	pb::ClientMessage message;
+	message.mutable_action()->set_script(script);
 
-	l_Frame.push(script);
-
-	std::vector<std::string> l_Param;
+	va_list ap;
+	char * parameter = nullptr;
 
 	va_start(ap, script);
+
 	while ((parameter = va_arg(ap, char*)) != nullptr)
 	{
-		l_Param.push_back(parameter);
+		message.mutable_action()->add_params(parameter);
 	}
+
 	va_end(ap);
 
-	l_Frame.push(l_Param);
+	std::string serialized_data = message.SerializeAsString();
 
-	wlog(LOGDEVELOPER, "Send CMD_REQ_ACTION :%s", l_Frame.getFrame());
-	network_send_command(context, CMD_REQ_ACTION, l_Frame, false);
+	NetworkFrame frame;
+	frame.push(serialized_data);
+
+	wlog(LOGDEVELOPER, "[network] Send action script %s", script);
+	network_send_command(context, CMD_PB, frame, false);
 }
 
 /*********************************************************************

@@ -44,7 +44,6 @@
 #define CMD_SEND_USER_CHARACTER		10 // Send a user's character list
 #define CMD_SEND_CONTEXT		11 // Send a context
 #define CMD_SEND_TEXT			12 // Server sends a message to client
-#define CMD_REQ_ACTION			13 // Client sends the name of an action to be executed by the server.
 #define CMD_SEND_ENTRY			14 // Sends an entry to be updated on target
 #define CMD_SEND_POPUP			15 // Send a popup window
 #define CMD_SEND_EFFECT			17 // Send an effect

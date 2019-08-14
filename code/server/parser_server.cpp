@@ -200,6 +200,25 @@ static ret_code_t manage_create(context_t * context, const pb::Create& create)
 /**************************************
  Return RET_NOK on error
  **************************************/
+static ret_code_t manage_action(context_t * context, const pb::Action& action)
+{
+	wlog(LOGDEVELOPER, "[network] Received action script %s",
+			action.script().c_str());
+
+	std::vector<std::string> params;
+	for (int i = 0; i < action.params_size(); i++)
+	{
+		params.push_back(action.params(i));
+	}
+
+	action_execute(context, action.script().c_str(), params);
+
+	return RET_OK;
+}
+
+/**************************************
+ Return RET_NOK on error
+ **************************************/
 ret_code_t parse_incoming_data(context_t * context, NetworkFrame & frame)
 {
 	uint_fast32_t l_Command = 0U;
@@ -252,6 +271,10 @@ ret_code_t parse_incoming_data(context_t * context, NetworkFrame & frame)
 			{
 				manage_create(context, message.create());
 			}
+			else if (message.has_action())
+			{
+				manage_action(context, message.action());
+			}
 			else
 			{
 				werr(LOGUSER, "Unknown message received");
@@ -295,20 +318,6 @@ ret_code_t parse_incoming_data(context_t * context, NetworkFrame & frame)
 		wlog(LOGDEVELOPER, "File %s sent", l_FileName.c_str());
 		break;
 	}
-	case CMD_REQ_ACTION:
-	{
-		std::string l_ActionName;
-		frame.pop(l_ActionName);
-		std::vector<std::string> l_Param;
-		frame.pop(l_Param);
-
-		wlog(LOGDEVELOPER, "Received CMD_REQ_ACTION %s from %s /%s",
-				l_ActionName.c_str(), context->user_name,
-				context->character_name);
-
-		action_execute(context, l_ActionName, l_Param);
-	}
-		break;
 	default:
 		werr(LOGDESIGNER, "Unknown request %d from client", l_Command);
 		return RET_NOK;

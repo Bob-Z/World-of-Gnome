@@ -11,7 +11,7 @@ message ClientMessage
      PlayableCharacterList playable_character_list = 4;
      UserCharacterList user_character_list = 5;
      Create create = 6;
-     Action action = 99;
+     Action action = 7;
   }
 }
 
@@ -47,6 +47,6 @@ message Create
 
 message Action
 {
-  string name = 1;
+  string script = 1;
   repeated string params = 2;
 }
