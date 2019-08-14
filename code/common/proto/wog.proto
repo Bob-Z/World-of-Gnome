@@ -2,6 +2,12 @@ syntax = "proto3";
 
 package pb;
 
+message Login
+{
+  string user = 1;
+  string password = 2;
+}
+
 message Action
 {
   string name = 1;

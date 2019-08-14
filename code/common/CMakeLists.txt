@@ -16,14 +16,14 @@ include(FindProtobuf)
 find_package(Protobuf REQUIRED)
 
 # for generated protobuf
-include_directories(${CMAKE_CURRENT_BINARY_DIR})
+include_directories(${CMAKE_BINARY_DIR}/common/proto)
 
 add_library(
 	${PROJECT_NAME}
 	SHARED
 
 	${PROTO_HEADER}
-    ${PROTO_SRC}
+	${PROTO_SRC}
 
 	context.cpp
 	entry.cpp

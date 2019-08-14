@@ -24,6 +24,9 @@ include_directories(${CONFIG_INCLUDE_DIRS})
 find_package(Lua50 REQUIRED)
 include_directories(${LUA_INCLUDE_DIR})
 
+find_package(Protobuf REQUIRED)
+include_directories( ${Protobuf_INCLUDE_DIRS} )
+include_directories(${CMAKE_BINARY_DIR}/common/proto)
 
 set(COMMON_PATH ../common/)
 include_directories( ${COMMON_PATH} )
@@ -42,6 +45,7 @@ add_executable(
 	npc.cpp
 	parser_server.cpp
 	server.cpp
+	${PROTO_SRCS} ${PROTO_HDRS}
 )
 
 target_link_libraries (${PROJECT_NAME}
@@ -52,5 +56,6 @@ target_link_libraries (${PROJECT_NAME}
 	${SDL2MIXER_LIBRARIES}
 	${SDL2TTF_LIBRARIES}
 	${CONFIG_LIBRARIES}
+	${Protobuf_LIBRARIES}
 )
 

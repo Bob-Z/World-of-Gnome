@@ -19,7 +19,7 @@
 
 #include "Serializer.h"
 
-#include "proto/base.pb.h"
+#include "wog.pb.h"
 
 Serializer::Serializer()
 {

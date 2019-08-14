@@ -19,15 +19,19 @@ include_directories(
 )
 
 pkg_search_module(CONFIG REQUIRED libconfig)
-INCLUDE_DIRECTORIES(${CONFIG_INCLUDE_DIRS})
+include_directories(${CONFIG_INCLUDE_DIRS})
 
 find_package(Lua50 REQUIRED)
 include_directories(${LUA_INCLUDE_DIR})
 
+find_package(Protobuf REQUIRED)
+include_directories( ${Protobuf_INCLUDE_DIRS} )
+include_directories(${CMAKE_BINARY_DIR}/common/proto)
 
 set(COMMON_PATH ../common/)
 set(SDL_ITEM_PATH ../sdl_item/)
 include_directories( ${COMMON_PATH} ${SDL_ITEM_PATH} )
+
 
 add_executable(
 	${PROJECT_NAME}	
@@ -48,6 +52,7 @@ add_executable(
 	lua_client.cpp
 	Camera.cpp
 	EffectManager.cpp
+	${PROTO_SRCS} ${PROTO_HDRS}
 )
 
 target_link_libraries (${PROJECT_NAME}
@@ -59,4 +64,5 @@ target_link_libraries (${PROJECT_NAME}
         ${SDL2TTF_LIBRARIES}
         ${CONFIG_LIBRARIES}
 	sdl_item
+	${Protobuf_LIBRARIES}
 )
