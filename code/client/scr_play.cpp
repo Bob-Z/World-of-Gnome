@@ -990,7 +990,7 @@ item_t * scr_play_compose(context_t * ctx)
 	if (change_map == true)
 	{
 		map_filename = strconcat(MAP_TABLE, "/", ctx->map, nullptr);
-		network_send_req_file(ctx, map_filename);
+		network_send_req_file(ctx, std::string(map_filename));
 		free(map_filename);
 		if (default_layer != nullptr)
 		{

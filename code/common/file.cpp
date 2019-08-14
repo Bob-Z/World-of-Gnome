@@ -106,7 +106,7 @@ void file_update(context_t * context, const char * filename)
 		return;
 	}
 
-	network_send_req_file(context, filename);
+	network_send_req_file(context, std::string(filename));
 
 	file_data->timestamp = current_time;
 }

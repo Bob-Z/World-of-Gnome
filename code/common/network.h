@@ -32,7 +32,7 @@ void network_send_context_to_context(context_t * dest_ctx, context_t * src_ctx);
 int network_send_file(context_t * context, const char * filename);
 int network_send_table_file(context_t * context, const char * table,
 		const char * filename);
-void network_send_req_file(context_t * context, const char * file);
+void network_send_req_file(context_t * context, const std::string & file_name);
 void network_send_entry_int(context_t * context, const char * table,
 		const char * file, const char *path, int value);
 void network_send_text(const char * id, const char * string);

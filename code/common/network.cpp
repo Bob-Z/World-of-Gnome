@@ -163,19 +163,13 @@ void network_send_entry_int(context_t * context, const char * table,
  It adds the local file checksum so that the server only send the file if it is different
  It make sure there are a minimum time between to consecutive request on the same file
  *********************************************************************/
-void network_send_req_file(context_t * context, const char * file_name)
+void network_send_req_file(context_t * context, const std::string & file_name)
 {
-	wlog(LOGDEVELOPER, "[network] Send FILE request for file : %s", file_name);
-
-	if (file_name == nullptr)
-	{
-		werr(LOGDESIGNER, "No filename provided");
-		return;
-	}
+	wlog(LOGDEVELOPER, "[network] Send FILE request for file : %s",
+			file_name.c_str());
 
 	// Compute checksum of local file
-	const std::string file_path = std::string(base_directory) + "/"
-			+ std::string(file_name);
+	const std::string file_path = std::string(base_directory) + "/" + file_name;
 
 	std::pair<bool, std::string> crc = checksum_file(file_path);
 	if (crc.first == false)
@@ -191,7 +185,8 @@ void network_send_req_file(context_t * context, const char * file_name)
 	NetworkFrame frame;
 	frame.push(serialized_data);
 
-	wlog(LOGDEVELOPER, "[network] Send FILE request for file : %s", file_name);
+	wlog(LOGDEVELOPER, "[network] Send FILE request for file : %s",
+			file_name.c_str());
 	network_send_command(context, CMD_PB, frame, true);
 }
 
