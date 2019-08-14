@@ -176,19 +176,18 @@ void network_send_req_file(context_t * context, const char * file_name)
 	// Compute checksum of local file
 	char * file_path = strconcat(base_directory, "/", file_name, nullptr);
 
-	char * crc = checksum_file(file_path);
-	if (crc == nullptr)
+	std::pair<bool, std::string> crc = checksum_file(file_path);
+	if (crc.first == false)
 	{
-		crc = strdup("0");
+		crc.second = "0";
 	}
+
 	free(file_path);
 
 	pb::ClientMessage message;
 	message.mutable_file()->set_name(file_name);
-	message.mutable_file()->set_crc(crc);
+	message.mutable_file()->set_crc(crc.second);
 	std::string serialized_data = message.SerializeAsString();
-
-	free(crc);
 
 	NetworkFrame frame;
 	frame.push(serialized_data);
@@ -221,7 +220,7 @@ ret_code_t network_read_bytes(TCPsocket socket, char * data, int size)
 		total_bytes += bytes_read;
 	}
 
-	wlog(LOGDEVELOPER, "read %u bytes on socket %d", total_bytes, socket);
+	//wlog(LOGDEVELOPER, "read %u bytes on socket %d", total_bytes, socket);
 
 	return RET_OK;
 }

@@ -26,20 +26,23 @@
  filename is the directory + name
  The returned string MUST be FREED
  ***************************************************************************/
-char * checksum_file(const char * filename)
+std::pair<bool, std::string> checksum_file(const char * filename)
 {
 	FILE *fp = nullptr;
-	int ch = 0;
+
 	unsigned long long checksum = 5381;
-	char text[128];
+
+	std::pair<bool, std::string> result
+	{ false, "0" };
 
 	fp = fopen(filename, "r"); // read mode
 
 	if (fp == nullptr)
 	{
-		return nullptr;
+		return result;
 	}
 
+	int ch = 0;
 	while ((ch = fgetc(fp)) != EOF)
 	{
 		checksum = checksum * 33 ^ ch;
@@ -47,11 +50,16 @@ char * checksum_file(const char * filename)
 
 	fclose(fp);
 
-	snprintf(text, 128, "%llu", checksum);
+	char text[128];
+	snprintf(text, sizeof(text), "%llu", checksum);
 
-	wlog(LOGDEVELOPER, "Checksum for %s is %s", filename, text);
+	result.first = true;
+	result.second = text;
 
-	return strdup(text);
+	wlog(LOGDEVELOPER, "Checksum for %s is %s", filename,
+			result.second.c_str());
+
+	return result;
 }
 
 /***************************************************************************

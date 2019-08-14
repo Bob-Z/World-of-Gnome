@@ -227,25 +227,23 @@ static ret_code_t manage_file(context_t * context, const pb::File& file)
 	char * file_path = strconcat(base_directory, "/", file.name().c_str(),
 			nullptr);
 
-	char * crc = checksum_file(file_path);
+	std::pair<bool, std::string> crc = checksum_file(file_path);
 	free(file_path);
 
-	if (crc == nullptr)
+	if (crc.first == false)
 	{
 		werr(LOGUSER, "Required file %s doesn't exists", file_path);
 		return RET_NOK;
 	}
 
-	if (strcmp(file.crc().c_str(), crc) == 0)
+	if (file.crc() == crc.second)
 	{
 		wlog(LOGDEVELOPER, "Client has already newest %s file", file.name());
-		free(crc);
 		return RET_NOK;
 	}
-	free(crc);
 
 	network_send_file(context, file.name().c_str());
-	wlog(LOGDEVELOPER, "File %s sent", file.name());
+	wlog(LOGDEVELOPER, "File %s sent", file.name().c_str());
 
 	return RET_OK;
 }
