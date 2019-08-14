@@ -76,9 +76,15 @@ void network_request_stop(context_t * context)
  *********************************************************************/
 void network_request_playable_character_list(context_t * context)
 {
-	wlog(LOGDEVELOPER, "Send CMD_REQ_PLAYABLE_CHARACTER_LIST");
-	network_send_command_no_data(context, CMD_REQ_PLAYABLE_CHARACTER_LIST,
-			false);
+	pb::ClientMessage message;
+	message.mutable_playable_character_list()->Clear();
+	std::string serialized_data = message.SerializeAsString();
+
+	NetworkFrame frame;
+	frame.push(serialized_data);
+
+	wlog(LOGDEVELOPER, "[network] Send PLAYABLE_CHARACTER_LIST");
+	network_send_command(context, CMD_PB, frame, false);
 }
 
 /*********************************************************************

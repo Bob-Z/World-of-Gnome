@@ -28,7 +28,8 @@
  **************************************/
 static ret_code_t manage_login(context_t * context, const pb::Login & login)
 {
-	wlog(LOGDEVELOPER, "[network] Received login");
+	wlog(LOGDEVELOPER, "[network] Received login request for user %s",
+			login.user().c_str());
 
 	char * password = nullptr;
 	if (entry_read_string(PASSWD_TABLE, login.user().c_str(), &password,
@@ -77,8 +78,8 @@ static ret_code_t manage_start(context_t * context, const pb::Start & start)
 		context_spread(context);
 		context_request_other_context(context);
 	}
-	wlog(LOGDEVELOPER, "[network] Start ID %s for user %s", context->id,
-			context->user_name);
+	wlog(LOGDEVELOPER, "[network] received start request for ID %s and user %s",
+			context->id, context->user_name);
 
 	return RET_OK;
 }
@@ -88,7 +89,7 @@ static ret_code_t manage_start(context_t * context, const pb::Start & start)
  **************************************/
 static ret_code_t manage_stop(context_t * context, const pb::Stop & stop)
 {
-	wlog(LOGDEVELOPER, "[network] Received stop for ID %s of user %s",
+	wlog(LOGDEVELOPER, "[network] Received stop request for ID %s of user %s",
 			context->user_name, context->id);
 
 	if (context->in_game == true)
@@ -111,6 +112,18 @@ static ret_code_t manage_stop(context_t * context, const pb::Stop & stop)
 		context->id = nullptr;
 		context_spread(context);
 	}
+
+	return RET_OK;
+}
+
+/**************************************
+ Return RET_NOK on error
+ **************************************/
+static ret_code_t manage_playable_character_list(context_t * context,
+		const pb::PlayableCharacterList & list)
+{
+	wlog(LOGDEVELOPER, "[network] Received playable character list request");
+	character_playable_send_list(context);
 
 	return RET_OK;
 }
@@ -156,6 +169,11 @@ ret_code_t parse_incoming_data(context_t * context, NetworkFrame & frame)
 			{
 				manage_stop(context, message.stop());
 			}
+			else if (message.has_playable_character_list())
+			{
+				manage_playable_character_list(context,
+						message.playable_character_list());
+			}
 			else
 			{
 				werr(LOGUSER, "Unknown message received");
@@ -164,11 +182,6 @@ ret_code_t parse_incoming_data(context_t * context, NetworkFrame & frame)
 
 		break;
 	}
-	case CMD_REQ_PLAYABLE_CHARACTER_LIST:
-		wlog(LOGDEVELOPER, "Received CMD_REQ_PLAYABLE_CHARACTER_LIST");
-		character_playable_send_list(context);
-		wlog(LOGDEVELOPER, "character list sent");
-		break;
 	case CMD_REQ_FILE:
 	{
 		std::string l_FileName;
