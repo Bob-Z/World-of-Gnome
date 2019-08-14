@@ -29,10 +29,8 @@ void network_login(context_t * context, const char * user_name,
 		const char * password)
 {
 	pb::NetworkMessage message;
-
 	message.mutable_login()->set_user(user_name);
 	message.mutable_login()->set_password(password);
-
 	std::string serialized_data = message.SerializeAsString();
 
 	NetworkFrame l_Frame;
@@ -48,9 +46,7 @@ void network_login(context_t * context, const char * user_name,
 void network_request_start(context_t * context, const char * id)
 {
 	pb::NetworkMessage message;
-
 	message.mutable_start()->set_id(id);
-
 	std::string serialized_data = message.SerializeAsString();
 
 	NetworkFrame frame;
@@ -64,8 +60,15 @@ void network_request_start(context_t * context, const char * id)
  **********************************************************************/
 void network_request_stop(context_t * context)
 {
-	wlog(LOGDEVELOPER, "Send CMD_REQ_STOP");
-	network_send_command_no_data(context, CMD_REQ_STOP, false);
+	pb::NetworkMessage message;
+	message.mutable_stop()->Clear();
+	std::string serialized_data = message.SerializeAsString();
+
+	NetworkFrame frame;
+	frame.push(serialized_data);
+
+	wlog(LOGDEVELOPER, "[network] Send STOP");
+	network_send_command(context, CMD_PB, frame, false);
 }
 
 /*********************************************************************

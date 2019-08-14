@@ -86,6 +86,38 @@ static ret_code_t manage_start(context_t * context, const pb::Start & start)
 /**************************************
  Return RET_NOK on error
  **************************************/
+static ret_code_t manage_stop(context_t * context, const pb::Stop & stop)
+{
+	wlog(LOGDEVELOPER, "[network] Received stop for ID %s of user %s",
+			context->user_name, context->id);
+
+	if (context->in_game == true)
+	{
+		context->in_game = false;
+		if (context->map)
+		{
+			free(context->map);
+		}
+		context->map = nullptr;
+		if (context->prev_map)
+		{
+			free(context->prev_map);
+		}
+		context->prev_map = nullptr;
+		if (context->id)
+		{
+			free(context->id);
+		}
+		context->id = nullptr;
+		context_spread(context);
+	}
+
+	return RET_OK;
+}
+
+/**************************************
+ Return RET_NOK on error
+ **************************************/
 ret_code_t parse_incoming_data(context_t * context, NetworkFrame & frame)
 {
 	uint_fast32_t l_Command = 0U;
@@ -119,6 +151,10 @@ ret_code_t parse_incoming_data(context_t * context, NetworkFrame & frame)
 			else if (message.has_start())
 			{
 				manage_start(context, message.start());
+			}
+			else if (message.has_stop())
+			{
+				manage_stop(context, message.stop());
 			}
 			else
 			{
@@ -172,30 +208,6 @@ ret_code_t parse_incoming_data(context_t * context, NetworkFrame & frame)
 		wlog(LOGDEVELOPER, "Received CMD_REQ_USER_CHARACTER_LIST");
 		character_user_send_list(context);
 		wlog(LOGDEVELOPER, "user %s's character list sent", context->user_name);
-		break;
-	case CMD_REQ_STOP:
-		wlog(LOGDEVELOPER, "Received CMD_REQ_STOP for %s /%s",
-				context->user_name, context->id);
-		if (context->in_game == true)
-		{
-			context->in_game = false;
-			if (context->map)
-			{
-				free(context->map);
-			}
-			context->map = nullptr;
-			if (context->prev_map)
-			{
-				free(context->prev_map);
-			}
-			context->prev_map = nullptr;
-			if (context->id)
-			{
-				free(context->id);
-			}
-			context->id = nullptr;
-			context_spread(context);
-		}
 		break;
 	case CMD_REQ_ACTION:
 	{

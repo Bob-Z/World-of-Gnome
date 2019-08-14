@@ -7,7 +7,8 @@ message NetworkMessage
   oneof messages {
      Login login = 1;
      Start start = 2;
-     Action action = 3;
+     Stop stop = 3;
+     Action action = 99;
   }
 }
 
@@ -20,6 +21,10 @@ message Login
 message Start
 {
   string id = 1;
+}
+
+message Stop
+{
 }
 
 message Action
