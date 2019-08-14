@@ -174,15 +174,14 @@ void network_send_req_file(context_t * context, const char * file_name)
 	}
 
 	// Compute checksum of local file
-	char * file_path = strconcat(base_directory, "/", file_name, nullptr);
+	const std::string file_path = std::string(base_directory) + "/"
+			+ std::string(file_name);
 
 	std::pair<bool, std::string> crc = checksum_file(file_path);
 	if (crc.first == false)
 	{
 		crc.second = "0";
 	}
-
-	free(file_path);
 
 	pb::ClientMessage message;
 	message.mutable_file()->set_name(file_name);

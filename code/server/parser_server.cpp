@@ -224,15 +224,14 @@ static ret_code_t manage_file(context_t * context, const pb::File& file)
 	wlog(LOGDEVELOPER, "[network] Received file request for %s",
 			file.name().c_str());
 
-	char * file_path = strconcat(base_directory, "/", file.name().c_str(),
-			nullptr);
+	const std::string file_path = std::string(base_directory) + "/"
+			+ file.name();
 
 	std::pair<bool, std::string> crc = checksum_file(file_path);
-	free(file_path);
 
 	if (crc.first == false)
 	{
-		werr(LOGUSER, "Required file %s doesn't exists", file_path);
+		werr(LOGUSER, "Required file %s doesn't exists", file_path.c_str());
 		return RET_NOK;
 	}
 

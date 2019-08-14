@@ -22,11 +22,11 @@
 #include <stdlib.h>
 
 /***************************************************************************
- Return a string representing the checksum of the file or nullptr on error
+ Return a string representing the checksum of the file + a bool to true on success
  filename is the directory + name
  The returned string MUST be FREED
  ***************************************************************************/
-std::pair<bool, std::string> checksum_file(const char * filename)
+std::pair<bool, std::string> checksum_file(const std::string & file_name)
 {
 	FILE *fp = nullptr;
 
@@ -35,7 +35,7 @@ std::pair<bool, std::string> checksum_file(const char * filename)
 	std::pair<bool, std::string> result
 	{ false, "0" };
 
-	fp = fopen(filename, "r"); // read mode
+	fp = fopen(file_name.c_str(), "r"); // read mode
 
 	if (fp == nullptr)
 	{
@@ -56,7 +56,7 @@ std::pair<bool, std::string> checksum_file(const char * filename)
 	result.first = true;
 	result.second = text;
 
-	wlog(LOGDEVELOPER, "Checksum for %s is %s", filename,
+	wlog(LOGDEVELOPER, "Checksum for %s is %s", file_name.c_str(),
 			result.second.c_str());
 
 	return result;

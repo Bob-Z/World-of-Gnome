@@ -23,7 +23,7 @@
 #include <string>
 #include <vector>
 
-std::pair<bool, std::string> checksum_file(const char * filename);
+std::pair<bool, std::string> checksum_file(const std::string & file_name);
 char * strconcat(const char * str, ...);
 void deep_free(char ** to_delete);
 char * _strsep(char **stringp, const char *delim);
