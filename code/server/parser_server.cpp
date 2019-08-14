@@ -137,7 +137,7 @@ ret_code_t parse_incoming_data(context_t * context, NetworkFrame & frame)
 	{
 		std::string serialized_data;
 		frame.pop(serialized_data);
-		pb::NetworkMessage message;
+		pb::ClientMessage message;
 		if (message.ParseFromString(serialized_data) == false)
 		{
 			werr(LOGUSER, "Parsing failed");

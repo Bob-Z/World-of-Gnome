@@ -28,7 +28,7 @@
 void network_login(context_t * context, const char * user_name,
 		const char * password)
 {
-	pb::NetworkMessage message;
+	pb::ClientMessage message;
 	message.mutable_login()->set_user(user_name);
 	message.mutable_login()->set_password(password);
 	std::string serialized_data = message.SerializeAsString();
@@ -45,7 +45,7 @@ void network_login(context_t * context, const char * user_name,
  **********************************************************************/
 void network_request_start(context_t * context, const char * id)
 {
-	pb::NetworkMessage message;
+	pb::ClientMessage message;
 	message.mutable_start()->set_id(id);
 	std::string serialized_data = message.SerializeAsString();
 
@@ -60,7 +60,7 @@ void network_request_start(context_t * context, const char * id)
  **********************************************************************/
 void network_request_stop(context_t * context)
 {
-	pb::NetworkMessage message;
+	pb::ClientMessage message;
 	message.mutable_stop()->Clear();
 	std::string serialized_data = message.SerializeAsString();
 

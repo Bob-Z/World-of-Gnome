@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package pb;
 
-message NetworkMessage
+message ClientMessage
 {
   oneof messages {
      Login login = 1;
