@@ -2,6 +2,14 @@ syntax = "proto3";
 
 package pb;
 
+message NetworkMessage
+{
+  oneof messages {
+     Login login = 1;
+     Action action = 2;
+  }
+}
+
 message Login
 {
   string user = 1;

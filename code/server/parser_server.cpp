@@ -20,18 +20,57 @@
 #include "action.h"
 #include "character.h"
 #include "common.h"
+#include "wog.pb.h"
 #include <string.h>
 
 /**************************************
  Return RET_NOK on error
  **************************************/
-ret_code_t parse_incoming_data(context_t * p_pContext, NetworkFrame & p_rFrame)
+static ret_code_t manage_login(context_t * context, const pb::Login & login)
+{
+	wlog(LOGDEVELOPER, "[network] Received login");
+
+	char * password = nullptr;
+	if (entry_read_string(PASSWD_TABLE, login.user().c_str(), &password,
+	PASSWD_KEY_PASSWORD, nullptr) == RET_NOK)
+	{
+		return RET_NOK;
+	}
+
+	if (strcmp(password, login.password().c_str()) != 0)
+	{
+		free(password);
+		werr(LOGUSER, "[network] Wrong login for %s", login.user().c_str());
+		network_send_command_no_data(context, CMD_SEND_LOGIN_NOK, false);
+		// force client disconnection
+		return RET_NOK;
+	}
+	else
+	{
+		free(password);
+		if (context_set_username(context, login.user().c_str()) == RET_NOK)
+		{
+			return RET_NOK;
+		}
+		context_set_connected(context, true);
+
+		network_send_command_no_data(context, CMD_SEND_LOGIN_OK, false);
+		wlog(LOGUSER, "Login successful for user %s", context->user_name);
+
+		return RET_OK;
+	}
+}
+
+/**************************************
+ Return RET_NOK on error
+ **************************************/
+ret_code_t parse_incoming_data(context_t * context, NetworkFrame & frame)
 {
 	uint_fast32_t l_Command = 0U;
-	p_rFrame.pop(l_Command);
+	frame.pop(l_Command);
 
-	if ((context_get_connected(p_pContext) == false)
-			&& ((l_Command != CMD_REQ_LOGIN) && (l_Command != CMD_REQ_FILE)))
+	if ((context_get_connected(context) == false)
+			&& ((l_Command != CMD_REQ_FILE) && (l_Command != CMD_PB)))
 	{
 		werr(LOGUSER,
 				"Request from not authenticated client, close connection");
@@ -40,57 +79,40 @@ ret_code_t parse_incoming_data(context_t * p_pContext, NetworkFrame & p_rFrame)
 
 	switch (l_Command)
 	{
-	case CMD_REQ_LOGIN:
+	case CMD_PB:
 	{
-		wlog(LOGDEVELOPER, "Received CMD_REQ_LOGIN");
-
-		std::string l_UserName;
-		p_rFrame.pop(l_UserName);
-		std::string l_PassWord;
-		p_rFrame.pop(l_PassWord);
-
-		char * l_pValue = nullptr;
-		if (entry_read_string(PASSWD_TABLE, l_UserName.c_str(), &l_pValue,
-		PASSWD_KEY_PASSWORD, nullptr) == RET_NOK)
+		std::string serialized_data;
+		frame.pop(serialized_data);
+		pb::NetworkMessage message;
+		if (message.ParseFromString(serialized_data) == false)
 		{
-			return RET_NOK;
-		}
-
-		if (strcmp(l_pValue, l_PassWord.c_str()) != 0)
-		{
-			free(l_pValue);
-			werr(LOGUSER, "Wrong login for %s", l_UserName.c_str());
-			network_send_command_no_data(p_pContext, CMD_SEND_LOGIN_NOK, false);
-			// force client disconnection
-			return RET_NOK;
+			werr(LOGUSER, "Parsing failed");
 		}
 		else
 		{
-			free(l_pValue);
-			if (context_set_username(p_pContext, l_UserName.c_str()) == RET_NOK)
+			if (message.has_login())
 			{
-				return RET_NOK;
+				manage_login(context, message.login());
 			}
-			context_set_connected(p_pContext, true);
-
-			// send answer
-			network_send_command_no_data(p_pContext, CMD_SEND_LOGIN_OK, false);
-			wlog(LOGUSER, "Login successful for user %s",
-					p_pContext->user_name);
+			else
+			{
+				werr(LOGUSER, "Unknown message received");
+			}
 		}
+
 		break;
 	}
 	case CMD_REQ_PLAYABLE_CHARACTER_LIST:
 		wlog(LOGDEVELOPER, "Received CMD_REQ_PLAYABLE_CHARACTER_LIST");
-		character_playable_send_list(p_pContext);
+		character_playable_send_list(context);
 		wlog(LOGDEVELOPER, "character list sent");
 		break;
 	case CMD_REQ_FILE:
 	{
 		std::string l_FileName;
-		p_rFrame.pop(l_FileName);
+		frame.pop(l_FileName);
 		std::string l_CheckSum;
-		p_rFrame.pop(l_CheckSum);
+		frame.pop(l_CheckSum);
 
 		wlog(LOGDEVELOPER, "Received CMD_REQ_FILE for %s", l_FileName.c_str());
 		// compare checksum
@@ -116,78 +138,77 @@ ret_code_t parse_incoming_data(context_t * p_pContext, NetworkFrame & p_rFrame)
 		}
 		free(l_LocalCheckSum);
 
-		network_send_file(p_pContext, l_FileName.c_str());
+		network_send_file(context, l_FileName.c_str());
 		wlog(LOGDEVELOPER, "File %s sent", l_FileName.c_str());
 		break;
 	}
 	case CMD_REQ_USER_CHARACTER_LIST:
 		wlog(LOGDEVELOPER, "Received CMD_REQ_USER_CHARACTER_LIST");
-		character_user_send_list(p_pContext);
-		wlog(LOGDEVELOPER, "user %s's character list sent",
-				p_pContext->user_name);
+		character_user_send_list(context);
+		wlog(LOGDEVELOPER, "user %s's character list sent", context->user_name);
 		break;
 	case CMD_REQ_START:
-		if (p_pContext->in_game == false)
+		if (context->in_game == false)
 		{
 			char * l_Id = nullptr;
-			p_rFrame.pop(l_Id);
+			frame.pop(l_Id);
 
-			p_pContext->id = strdup(l_Id);
+			context->id = strdup(l_Id);
 			free(l_Id);
 
-			p_pContext->in_game = true;
-			context_update_from_file(p_pContext);
-			context_spread(p_pContext);
-			context_request_other_context(p_pContext);
+			context->in_game = true;
+			context_update_from_file(context);
+			context_spread(context);
+			context_request_other_context(context);
 
 		}
 		wlog(LOGDEVELOPER, "Received CMD_REQ_START for %s /%s",
-				p_pContext->user_name, p_pContext->id);
+				context->user_name, context->id);
 		break;
 	case CMD_REQ_STOP:
 		wlog(LOGDEVELOPER, "Received CMD_REQ_STOP for %s /%s",
-				p_pContext->user_name, p_pContext->id);
-		if (p_pContext->in_game == true)
+				context->user_name, context->id);
+		if (context->in_game == true)
 		{
-			p_pContext->in_game = false;
-			if (p_pContext->map)
+			context->in_game = false;
+			if (context->map)
 			{
-				free(p_pContext->map);
+				free(context->map);
 			}
-			p_pContext->map = nullptr;
-			if (p_pContext->prev_map)
+			context->map = nullptr;
+			if (context->prev_map)
 			{
-				free(p_pContext->prev_map);
+				free(context->prev_map);
 			}
-			p_pContext->prev_map = nullptr;
-			if (p_pContext->id)
+			context->prev_map = nullptr;
+			if (context->id)
 			{
-				free(p_pContext->id);
+				free(context->id);
 			}
-			p_pContext->id = nullptr;
-			context_spread(p_pContext);
+			context->id = nullptr;
+			context_spread(context);
 		}
 		break;
 	case CMD_REQ_ACTION:
 	{
 		std::string l_ActionName;
-		p_rFrame.pop(l_ActionName);
+		frame.pop(l_ActionName);
 		std::vector<std::string> l_Param;
-		p_rFrame.pop(l_Param);
+		frame.pop(l_Param);
 
 		wlog(LOGDEVELOPER, "Received CMD_REQ_ACTION %s from %s /%s",
-				l_ActionName.c_str(), p_pContext->user_name,
-				p_pContext->character_name);
+				l_ActionName.c_str(), context->user_name,
+				context->character_name);
 
-		action_execute(p_pContext, l_ActionName, l_Param);
+		action_execute(context, l_ActionName, l_Param);
 	}
 		break;
 	case CMD_REQ_CREATE:
 	{
 		std::string l_Id;
-		p_rFrame.pop(l_Id);
+		frame.pop(l_Id);
 		std::string l_Name;
-		p_rFrame.pop(l_Name);
+		frame.pop(l_Name);
 
 		wlog(LOGDEVELOPER, "Received CMD_REQ_CREATE: ID=%s, NAME=%s",
 				l_Id.c_str(), l_Name.c_str());
@@ -218,17 +239,16 @@ ret_code_t parse_incoming_data(context_t * p_pContext, NetworkFrame & p_rFrame)
 			break;
 		}
 
-		if (entry_add_to_list(USERS_TABLE, p_pContext->user_name,
-				l_Name.c_str(),
-				USERS_CHARACTER_LIST, nullptr) == RET_NOK)
+		if (entry_add_to_list(USERS_TABLE, context->user_name, l_Name.c_str(),
+		USERS_CHARACTER_LIST, nullptr) == RET_NOK)
 		{
 			werr(LOGUSER, "Error adding character %s to user %s",
-					l_Name.c_str(), p_pContext->user_name);
+					l_Name.c_str(), context->user_name);
 			file_delete(CHARACTER_TABLE, l_Name.c_str());
 			break;
 		}
 
-		character_user_send(p_pContext, l_Name.c_str());
+		character_user_send(context, l_Name.c_str());
 
 		wlog(LOGDEVELOPER, "Successfully created: ID=%s, NAME=%s", l_Id.c_str(),
 				l_Name.c_str());

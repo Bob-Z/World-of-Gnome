@@ -36,7 +36,6 @@
 // *_SEND_* are sent from server to client
 
 // login with user name , followed by the user name itself, return OK if user exists
-#define CMD_REQ_LOGIN			0 // user name followed by password in plain text FIXME
 #define CMD_SEND_LOGIN_OK		1
 #define CMD_SEND_LOGIN_NOK		2
 #define CMD_REQ_START			3 // Request to start playing the sent ID
@@ -54,6 +53,8 @@
 #define CMD_SEND_POPUP			15 // Send a popup window
 #define CMD_REQ_CREATE			16 // Request a character creation
 #define CMD_SEND_EFFECT			17 // Send an effect
+
+#define CMD_PB			99 //
 
 enum class EffectType
 {

@@ -19,6 +19,7 @@
 
 #include "common.h"
 #include "screen.h"
+#include "wog.pb.h"
 #include <arpa/inet.h>
 
 /*********************************************************************
@@ -27,13 +28,19 @@
 void network_login(context_t * context, const char * user_name,
 		const char * password)
 {
+	pb::NetworkMessage message;
+
+	message.mutable_login()->set_user(user_name);
+	message.mutable_login()->set_password(password);
+
+	std::string serialized_data = message.SerializeAsString();
+
 	NetworkFrame l_Frame;
 
-	l_Frame.push(user_name);
-	l_Frame.push(password);
+	l_Frame.push(serialized_data);
 
-	wlog(LOGDEVELOPER, "Send CMD_REQ_LOGIN");
-	network_send_command(context, CMD_REQ_LOGIN, l_Frame, false);
+	wlog(LOGDEVELOPER, "Send network request LOGIN");
+	network_send_command(context, CMD_PB, l_Frame, false);
 }
 
 /*********************************************************************
@@ -194,7 +201,8 @@ static int async_data_recv(void * p_pData)
 
 		{
 			l_FrameSize = ntohl(l_FrameSize);
-			wlog(LOGDEVELOPER, "received on data %u bytes long frame on socket %u",
+			wlog(LOGDEVELOPER,
+					"received on data %u bytes long frame on socket %u",
 					l_FrameSize, l_pContext->socket_data);
 
 			NetworkFrame l_Frame(l_FrameSize);
