@@ -147,6 +147,59 @@ static ret_code_t manage_user_character_list(context_t * context,
 /**************************************
  Return RET_NOK on error
  **************************************/
+static ret_code_t manage_create(context_t * context, const pb::Create& create)
+{
+	wlog(LOGDEVELOPER, "[network] Received create ID %s with name %s",
+			create.id().c_str(), create.name().c_str());
+
+	char * file_name = nullptr;
+	file_name = file_new(CHARACTER_TABLE, create.name().c_str());
+	if (file_name == nullptr)
+	{
+		werr(LOGUSER, "%s already exists", create.name().c_str());
+		return RET_NOK;
+	}
+
+	if (file_copy(CHARACTER_TEMPLATE_TABLE, create.id().c_str(),
+	CHARACTER_TABLE, create.name().c_str()) == false)
+	{
+		werr(LOGUSER,
+				"Error copying character template %s to character %s (maybe template doesn't exists ?)",
+				create.id(), create.name());
+		file_delete(CHARACTER_TABLE, create.name().c_str());
+		return RET_NOK;
+	}
+
+	if (entry_write_string(CHARACTER_TABLE, create.name().c_str(),
+			create.name().c_str(),
+			CHARACTER_KEY_NAME, nullptr) == RET_NOK)
+	{
+		werr(LOGUSER, "Error setting character name %s", create.name().c_str());
+		file_delete(CHARACTER_TABLE, create.name().c_str());
+		return RET_NOK;
+	}
+
+	if (entry_add_to_list(USERS_TABLE, context->user_name,
+			create.name().c_str(),
+			USERS_CHARACTER_LIST, nullptr) == RET_NOK)
+	{
+		werr(LOGUSER, "Error adding character %s to user %s",
+				create.name().c_str(), context->user_name);
+		file_delete(CHARACTER_TABLE, create.name().c_str());
+		return RET_NOK;
+	}
+
+	character_user_send(context, create.name().c_str());
+
+	wlog(LOGDEVELOPER, "Successfully created: ID=%s, NAME=%s",
+			create.id().c_str(), create.name().c_str());
+
+	return RET_OK;
+}
+
+/**************************************
+ Return RET_NOK on error
+ **************************************/
 ret_code_t parse_incoming_data(context_t * context, NetworkFrame & frame)
 {
 	uint_fast32_t l_Command = 0U;
@@ -194,6 +247,10 @@ ret_code_t parse_incoming_data(context_t * context, NetworkFrame & frame)
 			{
 				manage_user_character_list(context,
 						message.user_character_list());
+			}
+			else if (message.has_create())
+			{
+				manage_create(context, message.create());
 			}
 			else
 			{
@@ -250,57 +307,6 @@ ret_code_t parse_incoming_data(context_t * context, NetworkFrame & frame)
 				context->character_name);
 
 		action_execute(context, l_ActionName, l_Param);
-	}
-		break;
-	case CMD_REQ_CREATE:
-	{
-		std::string l_Id;
-		frame.pop(l_Id);
-		std::string l_Name;
-		frame.pop(l_Name);
-
-		wlog(LOGDEVELOPER, "Received CMD_REQ_CREATE: ID=%s, NAME=%s",
-				l_Id.c_str(), l_Name.c_str());
-
-		char * l_FileName = nullptr;
-		l_FileName = file_new(CHARACTER_TABLE, l_Name.c_str());
-		if (l_FileName == nullptr)
-		{
-			werr(LOGUSER, "%s already exists", l_Name.c_str());
-			break;
-		}
-
-		if (file_copy(CHARACTER_TEMPLATE_TABLE, l_Id.c_str(), CHARACTER_TABLE,
-				l_Name.c_str()) == false)
-		{
-			werr(LOGUSER,
-					"Error copying character template %s to character %s (maybe template doesn't exists ?)",
-					l_Id, l_Name);
-			file_delete(CHARACTER_TABLE, l_Name.c_str());
-			break;
-		}
-
-		if (entry_write_string(CHARACTER_TABLE, l_Name.c_str(), l_Name.c_str(),
-		CHARACTER_KEY_NAME, nullptr) == RET_NOK)
-		{
-			werr(LOGUSER, "Error setting character name %s", l_Name.c_str());
-			file_delete(CHARACTER_TABLE, l_Name.c_str());
-			break;
-		}
-
-		if (entry_add_to_list(USERS_TABLE, context->user_name, l_Name.c_str(),
-		USERS_CHARACTER_LIST, nullptr) == RET_NOK)
-		{
-			werr(LOGUSER, "Error adding character %s to user %s",
-					l_Name.c_str(), context->user_name);
-			file_delete(CHARACTER_TABLE, l_Name.c_str());
-			break;
-		}
-
-		character_user_send(context, l_Name.c_str());
-
-		wlog(LOGDEVELOPER, "Successfully created: ID=%s, NAME=%s", l_Id.c_str(),
-				l_Name.c_str());
 	}
 		break;
 	default:

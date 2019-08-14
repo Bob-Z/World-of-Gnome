@@ -109,12 +109,16 @@ void network_request_user_character_list(context_t * context)
 void network_request_character_creation(context_t * context, const char * id,
 		const char * name)
 {
-	NetworkFrame l_Frame;
-	l_Frame.push(id);
-	l_Frame.push(name);
+	pb::ClientMessage message;
+	message.mutable_create()->set_id(id);
+	message.mutable_create()->set_name(name);
+	std::string serialized_data = message.SerializeAsString();
 
-	wlog(LOGDEVELOPER, "Send CMD_REQ_CREATE");
-	network_send_command(context, CMD_REQ_CREATE, l_Frame, false);
+	NetworkFrame frame;
+	frame.push(serialized_data);
+
+	wlog(LOGDEVELOPER, "[network] Send CREATE ID = %s, NAME = %s", id, name);
+	network_send_command(context, CMD_PB, frame, false);
 }
 
 /*********************************************************************
