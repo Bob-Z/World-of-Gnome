@@ -219,13 +219,46 @@ static ret_code_t manage_action(context_t * context, const pb::Action& action)
 /**************************************
  Return RET_NOK on error
  **************************************/
+static ret_code_t manage_file(context_t * context, const pb::File& file)
+{
+	wlog(LOGDEVELOPER, "[network] Received file request for %s",
+			file.name().c_str());
+
+	char * file_path = strconcat(base_directory, "/", file.name().c_str(),
+			nullptr);
+
+	char * crc = checksum_file(file_path);
+	free(file_path);
+
+	if (crc == nullptr)
+	{
+		werr(LOGUSER, "Required file %s doesn't exists", file_path);
+		return RET_NOK;
+	}
+
+	if (strcmp(file.crc().c_str(), crc) == 0)
+	{
+		wlog(LOGDEVELOPER, "Client has already newest %s file", file.name());
+		free(crc);
+		return RET_NOK;
+	}
+	free(crc);
+
+	network_send_file(context, file.name().c_str());
+	wlog(LOGDEVELOPER, "File %s sent", file.name());
+
+	return RET_OK;
+}
+
+/**************************************
+ Return RET_NOK on error
+ **************************************/
 ret_code_t parse_incoming_data(context_t * context, NetworkFrame & frame)
 {
 	uint_fast32_t l_Command = 0U;
 	frame.pop(l_Command);
 
-	if ((context_get_connected(context) == false)
-			&& ((l_Command != CMD_REQ_FILE) && (l_Command != CMD_PB)))
+	if ((context_get_connected(context) == false) && (l_Command != CMD_PB))
 	{
 		werr(LOGUSER,
 				"Request from not authenticated client, close connection");
@@ -275,47 +308,16 @@ ret_code_t parse_incoming_data(context_t * context, NetworkFrame & frame)
 			{
 				manage_action(context, message.action());
 			}
+			else if (message.has_file())
+			{
+				manage_file(context, message.file());
+			}
 			else
 			{
 				werr(LOGUSER, "Unknown message received");
 			}
 		}
 
-		break;
-	}
-	case CMD_REQ_FILE:
-	{
-		std::string l_FileName;
-		frame.pop(l_FileName);
-		std::string l_CheckSum;
-		frame.pop(l_CheckSum);
-
-		wlog(LOGDEVELOPER, "Received CMD_REQ_FILE for %s", l_FileName.c_str());
-		// compare checksum
-		char * l_pFullName = strconcat(base_directory, "/", l_FileName.c_str(),
-				nullptr);
-
-		char * l_LocalCheckSum = checksum_file(l_pFullName);
-		free(l_pFullName);
-
-		if (l_LocalCheckSum == nullptr)
-		{
-			werr(LOGUSER, "Required file %s doesn't exists",
-					l_FileName.c_str());
-			break;
-		}
-
-		if (strcmp(l_CheckSum.c_str(), l_LocalCheckSum) == 0)
-		{
-			wlog(LOGDEVELOPER, "Client has already newest %s file",
-					l_FileName.c_str());
-			free(l_LocalCheckSum);
-			break;
-		}
-		free(l_LocalCheckSum);
-
-		network_send_file(context, l_FileName.c_str());
-		wlog(LOGDEVELOPER, "File %s sent", l_FileName.c_str());
 		break;
 	}
 	default:

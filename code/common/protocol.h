@@ -39,7 +39,6 @@
 #define CMD_SEND_LOGIN_OK		1
 #define CMD_SEND_LOGIN_NOK		2
 #define CMD_SEND_PLAYABLE_CHARACTER	6 // Send a playable character list
-#define CMD_REQ_FILE			7 // require a file's content
 #define CMD_SEND_FILE			8 // send a file's content
 #define CMD_SEND_USER_CHARACTER		10 // Send a user's character list
 #define CMD_SEND_CONTEXT		11 // Send a context

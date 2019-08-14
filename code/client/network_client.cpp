@@ -52,7 +52,7 @@ void network_request_start(context_t * context, const char * id)
 	NetworkFrame frame;
 	frame.push(serialized_data);
 
-	wlog(LOGDEVELOPER, "[network[ Send START");
+	wlog(LOGDEVELOPER, "[network] Send START");
 	network_send_command(context, CMD_PB, frame, false);
 }
 

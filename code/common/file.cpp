@@ -409,7 +409,8 @@ bool file_copy(const char * src_table, const char * src_name,
 	dst = fopen(dst_full_path, "wb");
 	if (dst == nullptr)
 	{
-		werr(LOGDESIGNER, "Failed to open destination file %s\n", dst_full_path);
+		werr(LOGDESIGNER, "Failed to open destination file %s\n",
+				dst_full_path);
 		fclose(src);
 		free(dst_full_path);
 		free(src_full_path);

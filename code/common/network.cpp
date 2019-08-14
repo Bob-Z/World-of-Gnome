@@ -19,6 +19,7 @@
 
 #include "common.h"
 #include "file.h"
+#include "wog.pb.h"
 #include <arpa/inet.h>
 #include <dirent.h>
 #include <string.h>
@@ -82,7 +83,7 @@ static int async_frame_send(void * p_pUserData)
 		goto async_frame_send_end;
 	}
 
-	wlog(LOGDEVELOPER, "sent %u bytes on socket %d", l_BytesWritten, l_Socket);
+	//wlog(LOGDEVELOPER, "sent %u bytes on socket %d", l_BytesWritten, l_Socket);
 
 	//send frame
 	l_BytesWritten = SDLNet_TCP_Send(l_Socket, l_pData->m_pFrame->getFrame(),
@@ -93,7 +94,7 @@ static int async_frame_send(void * p_pUserData)
 		context_set_connected(l_pContext, false);
 	}
 
-	wlog(LOGDEVELOPER, "sent %u bytes on socket %d", l_BytesWritten, l_Socket);
+	//wlog(LOGDEVELOPER, "sent %u bytes on socket %d", l_BytesWritten, l_Socket);
 
 	async_frame_send_end: SDL_UnlockMutex(l_pContext->send_mutex);
 	delete l_pData->m_pFrame;
@@ -160,34 +161,40 @@ void network_send_entry_int(context_t * context, const char * table,
 /*********************************************************************
  Client request a file
  It adds the local file checksum so that the server only send the file if it is different
- It make sure there are a minimun time between to consecutive request on the same file
+ It make sure there are a minimum time between to consecutive request on the same file
  *********************************************************************/
-void network_send_req_file(context_t * context, const char * file)
+void network_send_req_file(context_t * context, const char * file_name)
 {
-	if (file == nullptr)
+	wlog(LOGDEVELOPER, "[network] Send FILE request for file : %s", file_name);
+
+	if (file_name == nullptr)
 	{
-		werr(LOGDESIGNER, "network_send_req_file_checksum called with nullptr");
+		werr(LOGDESIGNER, "No filename provided");
 		return;
 	}
 
 	// Compute checksum of local file
-	char * filename = strconcat(base_directory, "/", file, nullptr);
+	char * file_path = strconcat(base_directory, "/", file_name, nullptr);
 
-	char * cksum = checksum_file(filename);
-	if (cksum == nullptr)
+	char * crc = checksum_file(file_path);
+	if (crc == nullptr)
 	{
-		cksum = strdup("0");
+		crc = strdup("0");
 	}
-	free(filename);
+	free(file_path);
 
-	NetworkFrame l_Frame;
-	l_Frame.push(file);
-	l_Frame.push(cksum);
+	pb::ClientMessage message;
+	message.mutable_file()->set_name(file_name);
+	message.mutable_file()->set_crc(crc);
+	std::string serialized_data = message.SerializeAsString();
 
-	wlog(LOGDEVELOPER, "Send CMD_REQ_FILE :%s", file);
-	network_send_command(context, CMD_REQ_FILE, l_Frame, true);
+	free(crc);
 
-	free(cksum);
+	NetworkFrame frame;
+	frame.push(serialized_data);
+
+	wlog(LOGDEVELOPER, "[network] Send FILE request for file : %s", file_name);
+	network_send_command(context, CMD_PB, frame, true);
 }
 
 /*********************************************************************

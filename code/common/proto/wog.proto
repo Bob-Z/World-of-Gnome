@@ -12,6 +12,7 @@ message ClientMessage
      UserCharacterList user_character_list = 5;
      Create create = 6;
      Action action = 7;
+     File file = 8;
   }
 }
 
@@ -49,4 +50,10 @@ message Action
 {
   string script = 1;
   repeated string params = 2;
+}
+
+message File
+{
+  string name = 1;
+  string crc = 2;
 }
