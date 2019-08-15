@@ -35,8 +35,6 @@
 // *_REQ_* are sent from client to server
 // *_SEND_* are sent from server to client
 
-#define CMD_SEND_CONTEXT		11 // Send a context
-#define CMD_SEND_TEXT			12 // Server sends a message to client
 #define CMD_SEND_ENTRY			14 // Sends an entry to be updated on target
 #define CMD_SEND_POPUP			15 // Send a popup window
 #define CMD_SEND_EFFECT			17 // Send an effect

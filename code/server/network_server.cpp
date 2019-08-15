@@ -24,6 +24,28 @@
 #include <string>
 #include <vector>
 
+/*********************************************************************
+ *********************************************************************/
+void network_send_text(const char * id, const char * string)
+{
+	context_t * context = context_find(id);
+	if (context == nullptr)
+	{
+		werr(LOGDESIGNER, "Could not find context %s", id);
+		return;
+	}
+
+	pb::ServerMessage message;
+	message.mutable_text()->set_text(string);
+	std::string serialized_data = message.SerializeAsString();
+
+	NetworkFrame frame;
+	frame.push(serialized_data);
+
+	wlog(LOGDEVELOPER, "[network] Send text to %s", id);
+	network_send_command(context, CMD_PB, frame, false);
+}
+
 /*******************************************************************************
  Broadcast text to all in game players
  ******************************************************************************/

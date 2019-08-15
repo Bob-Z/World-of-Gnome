@@ -275,23 +275,3 @@ int network_send_table_file(context_t * context, const char * table,
 
 	return ret;
 }
-
-/*********************************************************************
- *********************************************************************/
-void network_send_text(const char * id, const char * string)
-{
-	context_t * context = context_find(id);
-	if (context == nullptr)
-	{
-		werr(LOGDESIGNER, "Could not find context %s", id);
-		return;
-	}
-
-	//TODO use NetworkFrame
-	NetworkFrame l_Frame;
-	l_Frame.push(string);
-
-	wlog(LOGDEVELOPER, "Send CMD_SEND_TEXT :\"%s\" to %s (%s)", string,
-			context->character_name, context->user_name);
-	network_send_command(context, CMD_SEND_TEXT, l_Frame, false);
-}

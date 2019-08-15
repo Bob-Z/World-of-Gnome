@@ -34,7 +34,6 @@ int network_send_table_file(context_t * context, const char * table,
 void network_send_req_file(context_t * context, const std::string & file_name);
 void network_send_entry_int(context_t * context, const char * table,
 		const char * file, const char *path, int value);
-void network_send_text(const char * id, const char * string);
 
 // The code of this function is in parser_client.c and parser_server.c
 ret_code_t parse_incoming_data(context_t * p_pContext, NetworkFrame & p_rFrame);

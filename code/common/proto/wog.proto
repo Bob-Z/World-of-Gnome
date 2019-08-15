@@ -68,6 +68,7 @@ message ServerMessage
      File file = 4;
      UserCharacter user_character = 5;
      Context context = 6;
+     Text text = 7;
   }
 }
 
@@ -108,10 +109,15 @@ message Context
 
 message Selection
 {
-	string id = 11;
-	string map= 12;
-	int32 map_coord_tx = 13;
-	int32 map_coord_ty = 14;
-	string equipment = 15;
-	string inventory = 16;
+	string id = 1;
+	string map= 2;
+	int32 map_coord_tx = 3;
+	int32 map_coord_ty = 4;
+	string equipment = 5;
+	string inventory = 6;
+}
+
+message Text
+{
+	string text = 1;
 }

@@ -167,6 +167,18 @@ static ret_code_t manage_context(context_t * context,
 	return RET_OK;
 }
 
+/**************************************
+ Return RET_NOK on error
+ **************************************/
+static ret_code_t manage_text(context_t * context, const pb::Text& text)
+{
+	wlog(LOGDEVELOPER, "[network] Received text");
+
+	textview_add_line(text.text());
+
+	return RET_OK;
+}
+
 /***********************************
  Return RET_NOK on error
  ***********************************/
@@ -213,6 +225,10 @@ ret_code_t parse_incoming_data(context_t * context, NetworkFrame & frame)
 			{
 				manage_context(context, message.context());
 			}
+			else if (message.has_text())
+			{
+				manage_text(context, message.text());
+			}
 			else
 			{
 				werr(LOGUSER, "Unknown message received");
@@ -221,15 +237,6 @@ ret_code_t parse_incoming_data(context_t * context, NetworkFrame & frame)
 	}
 		break;
 
-	case CMD_SEND_TEXT:
-	{
-		wlog(LOGDEVELOPER, "Received CMD_SEND_TEXT");
-		std::string l_Text;
-		frame.pop(l_Text);
-
-		textview_add_line(l_Text);
-	}
-		break;
 	case CMD_SEND_ENTRY:
 		wlog(LOGDEVELOPER, "Received CMD_SEND_ENTRY");
 		if (entry_update(frame) != -1)
