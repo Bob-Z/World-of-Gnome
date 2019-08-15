@@ -17,4 +17,5 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-ret_code_t parse_incoming_data(context_t * p_pContext, NetworkFrame & p_rFrame);
+ret_code_t parse_incoming_data(context_t * context,
+		const std::string & serialized_data);

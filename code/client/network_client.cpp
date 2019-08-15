@@ -33,12 +33,8 @@ void network_login(context_t * context, const char * user_name,
 	message.mutable_login()->set_password(password);
 	std::string serialized_data = message.SerializeAsString();
 
-	NetworkFrame l_Frame;
-
-	l_Frame.push(serialized_data);
-
 	wlog(LOGDEVELOPER, "[network] Send LOGIN");
-	network_send_command(context, CMD_PB, l_Frame, false);
+	network_send_command(context, serialized_data, false);
 }
 
 /*********************************************************************
@@ -49,11 +45,8 @@ void network_request_start(context_t * context, const char * id)
 	message.mutable_start()->set_id(id);
 	std::string serialized_data = message.SerializeAsString();
 
-	NetworkFrame frame;
-	frame.push(serialized_data);
-
 	wlog(LOGDEVELOPER, "[network] Send START");
-	network_send_command(context, CMD_PB, frame, false);
+	network_send_command(context, serialized_data, false);
 }
 
 /*********************************************************************
@@ -64,11 +57,8 @@ void network_request_stop(context_t * context)
 	message.mutable_stop()->Clear();
 	std::string serialized_data = message.SerializeAsString();
 
-	NetworkFrame frame;
-	frame.push(serialized_data);
-
 	wlog(LOGDEVELOPER, "[network] Send STOP");
-	network_send_command(context, CMD_PB, frame, false);
+	network_send_command(context, serialized_data, false);
 }
 
 /*********************************************************************
@@ -80,11 +70,8 @@ void network_request_playable_character_list(context_t * context)
 	message.mutable_playable_character_list()->Clear();
 	std::string serialized_data = message.SerializeAsString();
 
-	NetworkFrame frame;
-	frame.push(serialized_data);
-
 	wlog(LOGDEVELOPER, "[network] Send PLAYABLE_CHARACTER_LIST");
-	network_send_command(context, CMD_PB, frame, false);
+	network_send_command(context, serialized_data, false);
 }
 
 /*********************************************************************
@@ -96,11 +83,8 @@ void network_request_user_character_list(context_t * context)
 	message.mutable_user_character_list()->set_user(context->user_name);
 	std::string serialized_data = message.SerializeAsString();
 
-	NetworkFrame frame;
-	frame.push(serialized_data);
-
 	wlog(LOGDEVELOPER, "[network] Send USER_CHARACTER_LIST");
-	network_send_command(context, CMD_PB, frame, false);
+	network_send_command(context, serialized_data, false);
 }
 
 /*********************************************************************
@@ -114,11 +98,8 @@ void network_request_character_creation(context_t * context, const char * id,
 	message.mutable_create()->set_name(name);
 	std::string serialized_data = message.SerializeAsString();
 
-	NetworkFrame frame;
-	frame.push(serialized_data);
-
 	wlog(LOGDEVELOPER, "[network] Send CREATE ID = %s, NAME = %s", id, name);
-	network_send_command(context, CMD_PB, frame, false);
+	network_send_command(context, serialized_data, false);
 }
 
 /*********************************************************************
@@ -149,44 +130,40 @@ void network_send_action(context_t * context, const char * script, ...)
 
 	std::string serialized_data = message.SerializeAsString();
 
-	NetworkFrame frame;
-	frame.push(serialized_data);
-
 	wlog(LOGDEVELOPER, "[network] Send action script %s", script);
-	network_send_command(context, CMD_PB, frame, false);
+	network_send_command(context, serialized_data, false);
 }
 
 /*********************************************************************
  Callback from client listening to server in its own thread
  only used for game information transfer
  *********************************************************************/
-static int async_recv(void * p_pData)
+static int async_recv(void * data)
 {
-	context_t * l_pContext = (context_t *) p_pData;
+	context_t * context = (context_t *) data;
 
 	while (true)
 	{
-		uint32_t l_FrameSize = 0U;
+		uint32_t frame_size = 0U;
 
-		if (network_read_bytes(l_pContext->socket, (char *) &l_FrameSize,
+		if (network_read_bytes(context->socket, (char *) &frame_size,
 				sizeof(uint32_t)) == RET_NOK)
 		{
 			break;
 		}
 
 		{
-			l_FrameSize = ntohl(l_FrameSize);
-			wlog(LOGDEVELOPER, "received %u bytes long frame on socket %u",
-					l_FrameSize, l_pContext->socket);
+			frame_size = ntohl(frame_size);
+			char frame[frame_size];
 
-			NetworkFrame l_Frame(l_FrameSize);
-
-			if (network_read_bytes(l_pContext->socket,
-					(char *) l_Frame.getFrame(), l_FrameSize) == RET_NOK)
+			if (network_read_bytes(context->socket, (char *) frame,
+					frame_size) == RET_NOK)
 			{
 				break;
 			}
-			if (parse_incoming_data(l_pContext, l_Frame) == RET_NOK)
+
+			std::string serialized_data(frame, frame_size);
+			if (parse_incoming_data(context, serialized_data) == RET_NOK)
 			{
 				break;
 			}
@@ -195,11 +172,11 @@ static int async_recv(void * p_pData)
 
 	werr(LOGUSER, "Socket closed on server side.");
 
-	context_set_connected(l_pContext, false);
-	SDLNet_TCP_Close(l_pContext->socket);
-	SDLNet_TCP_Close(l_pContext->socket_data);
-	context_set_socket(l_pContext, 0);
-	context_set_socket_data(l_pContext, 0);
+	context_set_connected(context, false);
+	SDLNet_TCP_Close(context->socket);
+	SDLNet_TCP_Close(context->socket_data);
+	context_set_socket(context, 0);
+	context_set_socket_data(context, 0);
 
 	screen_quit();
 
@@ -210,34 +187,32 @@ static int async_recv(void * p_pData)
  Callback from client listening to server in its own thread
  Only used for data transfers
  *********************************************************************/
-static int async_data_recv(void * p_pData)
+static int async_data_recv(void * data)
 {
-	context_t * l_pContext = (context_t *) p_pData;
+	context_t * context = (context_t *) data;
 
 	while (true)
 	{
-		uint32_t l_FrameSize = 0U;
+		uint32_t frame_size = 0U;
 
-		if (network_read_bytes(l_pContext->socket_data, (char *) &l_FrameSize,
+		if (network_read_bytes(context->socket_data, (char *) &frame_size,
 				sizeof(uint32_t)) == RET_NOK)
 		{
 			break;
 		}
 
 		{
-			l_FrameSize = ntohl(l_FrameSize);
-			wlog(LOGDEVELOPER,
-					"received on data %u bytes long frame on socket %u",
-					l_FrameSize, l_pContext->socket_data);
+			frame_size = ntohl(frame_size);
+			char frame[frame_size];
 
-			NetworkFrame l_Frame(l_FrameSize);
-
-			if (network_read_bytes(l_pContext->socket_data,
-					(char *) l_Frame.getFrame(), l_FrameSize) == RET_NOK)
+			if (network_read_bytes(context->socket_data, (char *) frame,
+					frame_size) == RET_NOK)
 			{
 				break;
 			}
-			if (parse_incoming_data(l_pContext, l_Frame) == RET_NOK)
+
+			std::string serialized_data(frame, frame_size);
+			if (parse_incoming_data(context, serialized_data) == RET_NOK)
 			{
 				break;
 			}
@@ -246,11 +221,11 @@ static int async_data_recv(void * p_pData)
 
 	werr(LOGUSER, "Socket closed on server side.");
 
-	context_set_connected(l_pContext, false);
-	SDLNet_TCP_Close(l_pContext->socket);
-	SDLNet_TCP_Close(l_pContext->socket_data);
-	context_set_socket(l_pContext, 0);
-	context_set_socket_data(l_pContext, 0);
+	context_set_connected(context, false);
+	SDLNet_TCP_Close(context->socket);
+	SDLNet_TCP_Close(context->socket_data);
+	context_set_socket(context, 0);
+	context_set_socket_data(context, 0);
 
 	screen_quit();
 

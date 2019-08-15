@@ -35,7 +35,6 @@
 #include "map.h"
 #include "mutex.h"
 #include "network.h"
-#include "NetworkFrame.h"
 #include "protocol.h"
 #include "sfx.h"
 #include "syntax.h"

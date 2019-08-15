@@ -20,27 +20,11 @@
 #ifndef PROTOCOL_H
 #define PROTOCOL_H
 
-// Current, POC level, *very naive*, protocol implementation
-// first 4 bytes containing a command code
-// second 4 bytes containing the size of additional data
-// following bytes of additional data
-
 const std::string ENTRY_TYPE_INT("int");
 const std::string ENTRY_TYPE_STRING("string");
 
 // Special action script name for chat
 #define WOG_CHAT	"__wog_chat__"
-
-//List of command :
-// *_REQ_* are sent from client to server
-// *_SEND_* are sent from server to client
-
-#define CMD_PB			99 //
-
-enum class EffectType
-{
-	CONTEXT, MAP
-};
 
 #endif
 

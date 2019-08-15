@@ -21,11 +21,13 @@
 #define NETWORK_H
 
 #include "context.h"
-#include "NetworkFrame.h"
+#include <SDL_net.h>
+#include "types.h"
+#include <string>
 
 ret_code_t network_read_bytes(TCPsocket socket, char * data, int size);
-void network_send_command(context_t * p_pContext, const uint_fast32_t p_Command,
-		const NetworkFrame & p_rFrame, const bool p_IsData);
+void network_send_command(context_t * p_pContext,
+		const std::string & serialized_data, const bool p_IsData);
 int network_send_file(context_t * context, const char * filename);
 void network_send_file_data(context_t * context, const std::string & name,
 		const std::string & data);
@@ -34,5 +36,6 @@ int network_send_table_file(context_t * context, const char * table,
 void network_send_req_file(context_t * context, const std::string & file_name);
 
 // The code of this function is in parser_client.c and parser_server.c
-ret_code_t parse_incoming_data(context_t * p_pContext, NetworkFrame & p_rFrame);
+ret_code_t parse_incoming_data(context_t * context,
+		const std::string & serialized_data);
 #endif

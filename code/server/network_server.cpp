@@ -17,12 +17,26 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#include "common.h"
-#include "NetworkFrame.h"
-#include "wog.pb.h"
-#include <arpa/inet.h>
+#include <bits/stdint-uintn.h>
+#include <common.h>
+#include <const.h>
+#include <context.h>
+#include <log.h>
+#include <netinet/in.h>
+#include <network.h>
+#include <protocol.h>
+#include <stdlib.h>
+#include <syntax.h>
+#include <SDL_net.h>
+#include <SDL_thread.h>
+#include <util.h>
+#include <wog.pb.h>
+#include <cstring>
 #include <string>
 #include <vector>
+
+#include "../client/EffectManager.h"
+#include "../client/parser.h"
 
 /*********************************************************************
  *********************************************************************/
@@ -39,11 +53,8 @@ void network_send_text(const char * id, const char * string)
 	message.mutable_text()->set_text(string);
 	std::string serialized_data = message.SerializeAsString();
 
-	NetworkFrame frame;
-	frame.push(serialized_data);
-
 	wlog(LOGDEVELOPER, "[network] Send text to %s", id);
-	network_send_command(context, CMD_PB, frame, false);
+	network_send_command(context, serialized_data, false);
 }
 
 /*******************************************************************************
@@ -114,12 +125,9 @@ void network_send_user_character(context_t * context, const char * id,
 	message.mutable_user_character()->set_name(name);
 	std::string serialized_data = message.SerializeAsString();
 
-	NetworkFrame frame;
-	frame.push(serialized_data);
-
 	wlog(LOGDEVELOPER, "[network] Send user %s character %s",
 			context->user_name, name);
-	network_send_command(context, CMD_PB, frame, false);
+	network_send_command(context, serialized_data, false);
 }
 
 /*******************************************************************************
@@ -149,12 +157,9 @@ void network_send_entry_int(context_t * context, const char * table,
 
 	std::string serialized_data = message.SerializeAsString();
 
-	NetworkFrame frame;
-	frame.push(serialized_data);
-
 	wlog(LOGDEVELOPER, "[network] Send entry %s/%s/%s = %d", table, file, path,
 			value);
-	network_send_command(context, CMD_PB, frame, false);
+	network_send_command(context, serialized_data, false);
 }
 
 /*******************************************************************************
@@ -216,40 +221,42 @@ void network_broadcast_entry_int(const char * table, const char * file,
  ******************************************************************************/
 static int new_connection(void * p_pData)
 {
-	context_t * l_pContext = nullptr;
-	TCPsocket l_Socket = (TCPsocket) p_pData;
+	context_t * context = nullptr;
+	TCPsocket socket = (TCPsocket) p_pData;
 
-	l_pContext = context_new();
-	if (l_pContext == nullptr)
+	context = context_new();
+	if (context == nullptr)
 	{
-		werr(LOGUSER, "Failed to create l_pContext");
+		werr(LOGUSER, "Failed to create context");
 		return RET_NOK;
 	}
 
-	context_set_socket(l_pContext, l_Socket);
+	context_set_socket(context, socket);
 
-	context_new_VM(l_pContext);
+	context_new_VM(context);
 
-	while (context_get_socket(l_pContext))
+	while (context_get_socket(context))
 	{
-		uint32_t l_FrameSize = 0U;
+		uint32_t frame_size = 0U;
 
-		if (network_read_bytes(l_Socket, (char *) &l_FrameSize,
+		if (network_read_bytes(socket, (char *) &frame_size,
 				sizeof(uint32_t)) == RET_NOK)
 		{
 			break;
 		}
 
 		{
-			l_FrameSize = ntohl(l_FrameSize);
-			NetworkFrame l_Frame(l_FrameSize);
+			frame_size = ntohl(frame_size);
+			char frame[frame_size];
 
-			if (network_read_bytes(l_Socket, (char *) l_Frame.getFrame(),
-					l_FrameSize) == RET_NOK)
+			if (network_read_bytes(socket, (char *) frame,
+					frame_size) == RET_NOK)
 			{
 				break;
 			}
-			if (parse_incoming_data(l_pContext, l_Frame) == RET_NOK)
+
+			std::string serialized_data(frame, frame_size);
+			if (parse_incoming_data(context, serialized_data) == RET_NOK)
 			{
 				break;
 			}
@@ -257,9 +264,9 @@ static int new_connection(void * p_pData)
 	}
 
 	wlog(LOGUSER, "Client disconnected");
-	context_spread(l_pContext);
-	context_write_to_file(l_pContext);
-	context_free(l_pContext);
+	context_spread(context);
+	context_write_to_file(context);
+	context_free(context);
 
 	return RET_OK;
 }
@@ -357,11 +364,8 @@ void network_send_popup(const std::string & context_id,
 
 	std::string serialized_data = message.SerializeAsString();
 
-	NetworkFrame frame;
-	frame.push(serialized_data);
-
 	wlog(LOGDEVELOPER, "[network] Send pop-up");
-	network_send_command(context, CMD_PB, frame, false);
+	network_send_command(context, serialized_data, false);
 }
 
 /*******************************************************************************
@@ -370,8 +374,8 @@ void network_send_popup(const std::string & context_id,
  p_TargetId is the name of the target (either a context ID or map ID)
  p_Parameters is an array of parameter string
  ******************************************************************************/
-void network_broadcast_effect(EffectType p_Type, const std::string & p_TargetId,
-		const std::vector<std::string> & params)
+void network_broadcast_effect(EffectManager::EffectType p_Type,
+		const std::string & p_TargetId, const std::vector<std::string> & params)
 {
 	context_t * ctx = nullptr;
 
@@ -385,14 +389,14 @@ void network_broadcast_effect(EffectType p_Type, const std::string & p_TargetId,
 		return;
 	}
 
-	std::string l_TargetMap = "";
+	std::string target_map;
 	switch (p_Type)
 	{
-	case EffectType::CONTEXT:
-		l_TargetMap = ctx->map;
+	case EffectManager::EffectType::CONTEXT:
+		target_map = ctx->map;
 		break;
-	case EffectType::MAP:
-		l_TargetMap = p_TargetId;
+	case EffectManager::EffectType::MAP:
+		target_map = p_TargetId;
 		break;
 	default:
 		werr(LOGDESIGNER, "network_broadcast_effect: Unknown EffectType");
@@ -408,9 +412,6 @@ void network_broadcast_effect(EffectType p_Type, const std::string & p_TargetId,
 	}
 
 	std::string serialized_data = message.SerializeAsString();
-
-	NetworkFrame frame;
-	frame.push(serialized_data);
 
 	do
 	{
@@ -430,13 +431,13 @@ void network_broadcast_effect(EffectType p_Type, const std::string & p_TargetId,
 		}
 
 		std::string l_CurrentMap = ctx->map;
-		if (l_TargetMap != l_CurrentMap)
+		if (target_map != l_CurrentMap)
 		{
 			continue;
 		}
 
 		wlog(LOGDEVELOPER, "[network] Send effect to %s", ctx->id);
-		network_send_command(ctx, CMD_PB, frame, false);
+		network_send_command(ctx, serialized_data, false);
 	} while ((ctx = ctx->next) != nullptr);
 
 	context_unlock_list();
@@ -450,11 +451,8 @@ void network_send_login_ok(context_t * context)
 	message.mutable_login_ok()->Clear();
 	std::string serialized_data = message.SerializeAsString();
 
-	NetworkFrame frame;
-	frame.push(serialized_data);
-
 	wlog(LOGDEVELOPER, "[network] Send LOGIN OK");
-	network_send_command(context, CMD_PB, frame, false);
+	network_send_command(context, serialized_data, false);
 }
 
 /*********************************************************************
@@ -465,11 +463,8 @@ void network_send_login_nok(context_t * context)
 	message.mutable_login_nok()->Clear();
 	std::string serialized_data = message.SerializeAsString();
 
-	NetworkFrame frame;
-	frame.push(serialized_data);
-
 	wlog(LOGDEVELOPER, "[network] Send LOGIN NOK");
-	network_send_command(context, CMD_PB, frame, false);
+	network_send_command(context, serialized_data, false);
 }
 
 /*********************************************************************
@@ -486,11 +481,8 @@ void network_send_playable_character(context_t * context,
 
 	std::string serialized_data = message.SerializeAsString();
 
-	NetworkFrame frame;
-	frame.push(serialized_data);
-
 	wlog(LOGDEVELOPER, "[network] Send playable character list");
-	network_send_command(context, CMD_PB, frame, false);
+	network_send_command(context, serialized_data, false);
 }
 
 /*********************************************************************
@@ -539,10 +531,7 @@ void network_send_context_to_context(context_t * dest_ctx, context_t * src_ctx)
 
 	std::string serialized_data = message.SerializeAsString();
 
-	NetworkFrame frame;
-	frame.push(serialized_data);
-
 	wlog(LOGDEVELOPER, "[network] Send context of %s to %s", src_ctx->id,
 			dest_ctx->id);
-	network_send_command(dest_ctx, CMD_PB, frame, false);
+	network_send_command(dest_ctx, serialized_data, false);
 }

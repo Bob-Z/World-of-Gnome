@@ -29,7 +29,7 @@ class DataSent
 {
 public:
 	context_t * m_pContext;
-	NetworkFrame * m_pFrame;
+	std::string m_serialized_data;
 	bool m_IsData;
 };
 
@@ -45,7 +45,6 @@ static int async_frame_send(void * p_pUserData)
 	if (l_pContext == nullptr)
 	{
 		werr(LOGDEVELOPER, "null l_pContext");
-		delete l_pData->m_pFrame;
 		delete l_pData;
 		return -1;
 	}
@@ -64,7 +63,6 @@ static int async_frame_send(void * p_pUserData)
 	if (l_Socket == 0)
 	{
 		wlog(LOGDEVELOPER, "socket %d is disconnected", l_Socket);
-		delete l_pData->m_pFrame;
 		delete l_pData;
 		return -1;
 	}
@@ -72,11 +70,11 @@ static int async_frame_send(void * p_pUserData)
 	SDL_LockMutex(l_pContext->send_mutex);
 
 	//send frame size
-	uint32_t l_Length = htonl(
-			static_cast<uint32_t>(l_pData->m_pFrame->getSize()));
+	uint32_t length = htonl(
+			static_cast<uint32_t>(l_pData->m_serialized_data.size()));
 
-	int l_BytesWritten = SDLNet_TCP_Send(l_Socket, &l_Length, sizeof(l_Length));
-	if (l_BytesWritten != sizeof(l_Length))
+	int l_BytesWritten = SDLNet_TCP_Send(l_Socket, &length, sizeof(length));
+	if (l_BytesWritten != sizeof(length))
 	{
 		werr(LOGUSER, "Could not send command to %s", l_pContext->id);
 		context_set_connected(l_pContext, false);
@@ -86,9 +84,10 @@ static int async_frame_send(void * p_pUserData)
 	//wlog(LOGDEVELOPER, "sent %u bytes on socket %d", l_BytesWritten, l_Socket);
 
 	//send frame
-	l_BytesWritten = SDLNet_TCP_Send(l_Socket, l_pData->m_pFrame->getFrame(),
-			l_pData->m_pFrame->getSize());
-	if (l_BytesWritten != static_cast<int>(l_pData->m_pFrame->getSize()))
+	l_BytesWritten = SDLNet_TCP_Send(l_Socket,
+			l_pData->m_serialized_data.c_str(),
+			l_pData->m_serialized_data.size());
+	if (l_BytesWritten != static_cast<int>(l_pData->m_serialized_data.size()))
 	{
 		werr(LOGUSER, "Could not send command to %s", l_pContext->id);
 		context_set_connected(l_pContext, false);
@@ -97,7 +96,6 @@ static int async_frame_send(void * p_pUserData)
 	//wlog(LOGDEVELOPER, "sent %u bytes on socket %d", l_BytesWritten, l_Socket);
 
 	async_frame_send_end: SDL_UnlockMutex(l_pContext->send_mutex);
-	delete l_pData->m_pFrame;
 	delete l_pData;
 
 	return RET_OK;
@@ -105,21 +103,17 @@ static int async_frame_send(void * p_pUserData)
 
 /*******************************************************************************
  ******************************************************************************/
-void network_send_command(context_t * p_pContext, const uint_fast32_t p_Command,
-		const NetworkFrame & p_rFrame, const bool p_IsData)
+void network_send_command(context_t * p_pContext,
+		const std::string & serialized_data, const bool p_IsData)
 {
 	// FIXME create a NetworkManager
-	DataSent *l_pData = new (DataSent);
-	NetworkFrame * l_pFrame = new (NetworkFrame);
+	DataSent *data = new (DataSent);
 
-	l_pFrame->push(p_Command);
-	l_pFrame->push(p_rFrame);
+	data->m_pContext = p_pContext;
+	data->m_serialized_data = serialized_data;
+	data->m_IsData = p_IsData;
 
-	l_pData->m_pContext = p_pContext;
-	l_pData->m_pFrame = l_pFrame;
-	l_pData->m_IsData = p_IsData;
-
-	SDL_CreateThread(async_frame_send, "async_frame_send", (void*) l_pData);
+	SDL_CreateThread(async_frame_send, "async_frame_send", (void*) data);
 }
 
 /*********************************************************************
@@ -146,12 +140,9 @@ void network_send_req_file(context_t * context, const std::string & file_name)
 	message.mutable_file()->set_crc(crc.second);
 	std::string serialized_data = message.SerializeAsString();
 
-	NetworkFrame frame;
-	frame.push(serialized_data);
-
 	wlog(LOGDEVELOPER, "[network] Send FILE request for file : %s",
 			file_name.c_str());
-	network_send_command(context, CMD_PB, frame, true);
+	network_send_command(context, serialized_data, true);
 }
 
 /*********************************************************************
@@ -234,11 +225,8 @@ void network_send_file_data(context_t * context, const std::string & name,
 	message.mutable_file()->set_data(data);
 	std::string serialized_data = message.SerializeAsString();
 
-	NetworkFrame frame;
-	frame.push(serialized_data);
-
 	wlog(LOGDEVELOPER, "[network] Send LOGIN NOK");
-	network_send_command(context, CMD_PB, frame, false);
+	network_send_command(context, serialized_data, false);
 }
 
 /*********************************************************************

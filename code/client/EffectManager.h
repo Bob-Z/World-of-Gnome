@@ -25,6 +25,11 @@
 class EffectManager
 {
 public:
+	enum class EffectType
+	{
+		CONTEXT, MAP
+	};
+
 	static void processEffectFrame(context_t * context,
 			const std::vector<std::string> & params);
 };

@@ -7,6 +7,15 @@ add_subdirectory(proto)
 project(common)
 set(VERSION 0.0.0)
 
+find_package(PkgConfig REQUIRED)
+
+pkg_search_module(SDL2 REQUIRED sdl2)
+pkg_search_module(SDL2NET REQUIRED SDL2_net>=2.0.0)
+include_directories(
+	${SDL2_INCLUDE_DIRS}
+        ${SDL2NET_INCLUDE_DIRS}
+)
+
 # for LUA
 find_package(Lua50 REQUIRED)
 include_directories(${LUA_INCLUDE_DIR})
@@ -39,7 +48,6 @@ add_library(
 	sfx.cpp
 	util.cpp
 	lua.cpp
-	NetworkFrame.cpp
 	Serializer.cpp
 	Selection.cpp
 )
@@ -48,4 +56,6 @@ target_link_libraries (${PROJECT_NAME}
         ${LUA_LIBRARIES}
         proto
         ${PROTOBUF_LIBRARY}
+	${SDL2_LIBRARIES}
+	${SDL2NET_LIBRARIES}
 )

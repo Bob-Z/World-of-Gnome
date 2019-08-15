@@ -24,7 +24,6 @@
 #include <file.h>
 #include <log.h>
 #include <network.h>
-#include <NetworkFrame.h>
 #include <protocol.h>
 #include <stdlib.h>
 #include <syntax.h>
@@ -270,76 +269,58 @@ static ret_code_t manage_file(context_t * context, const pb::File& file)
 /**************************************
  Return RET_NOK on error
  **************************************/
-ret_code_t parse_incoming_data(context_t * context, NetworkFrame & frame)
+ret_code_t parse_incoming_data(context_t * context,
+		const std::string & serialized_data)
 {
-	uint_fast32_t l_Command = 0U;
-	frame.pop(l_Command);
-
-	if ((context_get_connected(context) == false) && (l_Command != CMD_PB))
+	pb::ClientMessage message;
+	if (message.ParseFromString(serialized_data) == false)
 	{
-		werr(LOGUSER,
-				"Request from not authenticated client, close connection");
-		return RET_NOK;
+		werr(LOGUSER, "Parsing failed");
 	}
-
-	switch (l_Command)
+	else
 	{
-	case CMD_PB:
-	{
-		std::string serialized_data;
-		frame.pop(serialized_data);
-		pb::ClientMessage message;
-		if (message.ParseFromString(serialized_data) == false)
+		if (message.has_file())
 		{
-			werr(LOGUSER, "Parsing failed");
+			manage_file(context, message.file());
+		}
+		else if (message.has_login())
+		{
+			manage_login(context, message.login());
+		}
+		else if (context_get_connected(context) == false)
+		{
+			werr(LOGUSER,
+					"Request from not authenticated client, close connection");
+		}
+		else if (message.has_start())
+		{
+			manage_start(context, message.start());
+		}
+		else if (message.has_stop())
+		{
+			manage_stop(context, message.stop());
+		}
+		else if (message.has_playable_character_list())
+		{
+			manage_playable_character_list(context,
+					message.playable_character_list());
+		}
+		else if (message.has_user_character_list())
+		{
+			manage_user_character_list(context, message.user_character_list());
+		}
+		else if (message.has_create())
+		{
+			manage_create(context, message.create());
+		}
+		else if (message.has_action())
+		{
+			manage_action(context, message.action());
 		}
 		else
 		{
-			if (message.has_login())
-			{
-				manage_login(context, message.login());
-			}
-			else if (message.has_start())
-			{
-				manage_start(context, message.start());
-			}
-			else if (message.has_stop())
-			{
-				manage_stop(context, message.stop());
-			}
-			else if (message.has_playable_character_list())
-			{
-				manage_playable_character_list(context,
-						message.playable_character_list());
-			}
-			else if (message.has_user_character_list())
-			{
-				manage_user_character_list(context,
-						message.user_character_list());
-			}
-			else if (message.has_create())
-			{
-				manage_create(context, message.create());
-			}
-			else if (message.has_action())
-			{
-				manage_action(context, message.action());
-			}
-			else if (message.has_file())
-			{
-				manage_file(context, message.file());
-			}
-			else
-			{
-				werr(LOGUSER, "Unknown message received");
-			}
+			werr(LOGUSER, "Unknown message received");
 		}
-
-		break;
-	}
-	default:
-		werr(LOGDESIGNER, "Unknown request %d from client", l_Command);
-		return RET_NOK;
 	}
 
 	return RET_OK;

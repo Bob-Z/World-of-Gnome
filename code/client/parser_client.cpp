@@ -22,7 +22,6 @@
 #include <Context.h>
 #include <entry.h>
 #include <log.h>
-#include <NetworkFrame.h>
 #include <protocol.h>
 #include <Selection.h>
 #include <types.h>
@@ -235,77 +234,60 @@ static ret_code_t manage_effect(context_t * context, const pb::Effect& effect)
 /***********************************
  Return RET_NOK on error
  ***********************************/
-ret_code_t parse_incoming_data(context_t * context, NetworkFrame & frame)
+ret_code_t parse_incoming_data(context_t * context,
+		const std::string & serialized_data)
 {
-	uint_fast32_t l_Command = 0U;
-	frame.pop(l_Command);
-
-	switch (l_Command)
+	pb::ServerMessage message;
+	if (message.ParseFromString(serialized_data) == false)
 	{
-	case CMD_PB:
+		werr(LOGUSER, "Parsing failed");
+	}
+	else
 	{
-		std::string serialized_data;
-		frame.pop(serialized_data);
-		pb::ServerMessage message;
-		if (message.ParseFromString(serialized_data) == false)
+		if (message.has_login_ok())
 		{
-			werr(LOGUSER, "Parsing failed");
+			manage_login_ok(context, message.login_ok());
+		}
+		else if (message.has_login_nok())
+		{
+			manage_login_nok(context, message.login_nok());
+		}
+		else if (message.has_playable_character())
+		{
+			manage_playable_character(context, message.playable_character());
+		}
+		else if (message.has_file())
+		{
+			manage_file(context, message.file());
+		}
+		else if (message.has_user_character())
+		{
+			manage_user_character(context, message.user_character());
+		}
+		else if (message.has_context())
+		{
+			manage_context(context, message.context());
+		}
+		else if (message.has_text())
+		{
+			manage_text(context, message.text());
+		}
+		else if (message.has_entry())
+		{
+			manage_entry(context, message.entry());
+		}
+		else if (message.has_popup())
+		{
+			manage_popup(context, message.popup());
+		}
+		else if (message.has_effect())
+		{
+			manage_effect(context, message.effect());
 		}
 		else
 		{
-			if (message.has_login_ok())
-			{
-				manage_login_ok(context, message.login_ok());
-			}
-			else if (message.has_login_nok())
-			{
-				manage_login_nok(context, message.login_nok());
-			}
-			else if (message.has_playable_character())
-			{
-				manage_playable_character(context,
-						message.playable_character());
-			}
-			else if (message.has_file())
-			{
-				manage_file(context, message.file());
-			}
-			else if (message.has_user_character())
-			{
-				manage_user_character(context, message.user_character());
-			}
-			else if (message.has_context())
-			{
-				manage_context(context, message.context());
-			}
-			else if (message.has_text())
-			{
-				manage_text(context, message.text());
-			}
-			else if (message.has_entry())
-			{
-				manage_entry(context, message.entry());
-			}
-			else if (message.has_popup())
-			{
-				manage_popup(context, message.popup());
-			}
-			else if (message.has_effect())
-			{
-				manage_effect(context, message.effect());
-			}
-			else
-			{
-				werr(LOGUSER, "Unknown message received");
-			}
+			werr(LOGUSER, "Unknown message received");
 		}
-	}
-		break;
-
-	default:
-		werr(LOGDESIGNER, "Unknown request from server");
-		return RET_NOK;
-		break;
 	}
 
 	return RET_OK;

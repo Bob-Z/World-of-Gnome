@@ -20,6 +20,9 @@
 #ifndef ENTRY_H
 #define ENTRY_H
 
+#include "types.h"
+#include <string>
+
 void entry_remove(const char * filename);
 
 ret_code_t entry_read_int(const char * table, const char * file, int * res,

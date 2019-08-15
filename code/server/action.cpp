@@ -836,7 +836,7 @@ static int l_character_effect(lua_State* L)
 {
 	const int l_NumArg = lua_gettop(L);
 
-	std::string l_Target = luaL_checkstring(L, -l_NumArg);
+	std::string target_id = luaL_checkstring(L, -l_NumArg);
 
 	std::vector<std::string> l_Param;
 	for (int l_Idx = 1; l_Idx < l_NumArg; l_Idx++) // 1 because 0 is the target
@@ -844,7 +844,8 @@ static int l_character_effect(lua_State* L)
 		l_Param.push_back(luaL_checkstring(L, -l_NumArg + l_Idx));
 	}
 
-	network_broadcast_effect(EffectType::CONTEXT, l_Target, l_Param);
+	network_broadcast_effect(EffectManager::EffectType::CONTEXT, target_id,
+			l_Param);
 
 	lua_pushnumber(L, 0);
 	return 1;  // number of results
@@ -1531,7 +1532,7 @@ static int l_map_effect(lua_State* L)
 		l_Param.push_back(luaL_checkstring(L, -l_NumArg + l_Idx));
 	}
 
-	network_broadcast_effect(EffectType::MAP, l_Target, l_Param);
+	network_broadcast_effect(EffectManager::EffectType::MAP, l_Target, l_Param);
 
 	lua_pushnumber(L, 0);
 	return 1;  // number of results

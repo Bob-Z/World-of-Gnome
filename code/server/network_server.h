@@ -20,9 +20,11 @@
 #ifndef NETWORK_SERVER
 #define NETWORK_SERVER
 
-#include "common.h"
+#include <context.h>
 #include <string>
 #include <vector>
+
+#include "../client/EffectManager.h"
 
 void network_broadcast_text(context_t * context, const char * text);
 void network_send_user_character(context_t * context,
@@ -34,7 +36,8 @@ void network_broadcast_entry_int(const char * table, const char * file,
 void network_init(void);
 void network_send_popup(const std::string & p_rCtxId,
 		const std::vector<std::string> & p_rPopupData);
-void network_broadcast_effect(EffectType p_Type, const std::string & p_TargetId,
+void network_broadcast_effect(EffectManager::EffectType p_Type,
+		const std::string & p_TargetId,
 		const std::vector<std::string> & p_Param);
 void network_send_login_ok(context_t * context);
 void network_send_login_nok(context_t * context);

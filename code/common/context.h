@@ -34,7 +34,6 @@ extern "C"
 }
 #endif
 
-#include "NetworkFrame.h"
 #include "types.h"
 
 typedef struct selection
