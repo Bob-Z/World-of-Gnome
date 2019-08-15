@@ -337,18 +337,31 @@ void network_init(void)
  "eol" end of line
  "eop" end of paragraph
  ******************************************************************************/
-void network_send_popup(const std::string & p_rCtxId,
-		const std::vector<std::string> & p_rPopupData)
+void network_send_popup(const std::string & context_id,
+		const std::vector<std::string> & popup_data)
 {
-	NetworkFrame l_Frame;
-	l_Frame.push(p_rPopupData);
+	context_t * context = context_find(context_id.c_str());
+	if (context == nullptr)
+	{
+		werr(LOGDEVELOPER, "[network] No context with ID %s",
+				context_id.c_str());
+		return;
+	}
 
-	wlog(LOGDEVELOPER, "Send CMD_SEND_POPUP : send pop-up to %s",
-			p_rCtxId.c_str());
+	pb::ServerMessage message;
 
-	context_t * l_pTarget = nullptr;
-	l_pTarget = context_find(p_rCtxId.c_str());
-	network_send_command(l_pTarget, CMD_SEND_POPUP, l_Frame, false);
+	for (auto data : popup_data)
+	{
+		message.mutable_popup()->add_data(data);
+	}
+
+	std::string serialized_data = message.SerializeAsString();
+
+	NetworkFrame frame;
+	frame.push(serialized_data);
+
+	wlog(LOGDEVELOPER, "[network] Send pop-up");
+	network_send_command(context, CMD_PB, frame, false);
 }
 
 /*******************************************************************************
@@ -358,7 +371,7 @@ void network_send_popup(const std::string & p_rCtxId,
  p_Parameters is an array of parameter string
  ******************************************************************************/
 void network_broadcast_effect(EffectType p_Type, const std::string & p_TargetId,
-		const std::vector<std::string> & p_Param)
+		const std::vector<std::string> & params)
 {
 	context_t * ctx = nullptr;
 
@@ -387,8 +400,17 @@ void network_broadcast_effect(EffectType p_Type, const std::string & p_TargetId,
 		break;
 	}
 
-	NetworkFrame l_Frame;
-	l_Frame.push(p_Param);
+	pb::ServerMessage message;
+
+	for (auto param : params)
+	{
+		message.mutable_effect()->add_param(param);
+	}
+
+	std::string serialized_data = message.SerializeAsString();
+
+	NetworkFrame frame;
+	frame.push(serialized_data);
 
 	do
 	{
@@ -402,21 +424,19 @@ void network_broadcast_effect(EffectType p_Type, const std::string & p_TargetId,
 			continue;
 		}
 
-		// Skip if not in game
 		if (context_get_in_game(ctx) == false)
 		{
 			continue;
 		}
 
 		std::string l_CurrentMap = ctx->map;
-		// Skip if not on the same map
 		if (l_TargetMap != l_CurrentMap)
 		{
 			continue;
 		}
 
-		wlog(LOGDEVELOPER, "Send CMD_SEND_EFFECT to %s", ctx->id);
-		network_send_command(ctx, CMD_SEND_EFFECT, l_Frame, false);
+		wlog(LOGDEVELOPER, "[network] Send effect to %s", ctx->id);
+		network_send_command(ctx, CMD_PB, frame, false);
 	} while ((ctx = ctx->next) != nullptr);
 
 	context_unlock_list();

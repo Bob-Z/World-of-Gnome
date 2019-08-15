@@ -35,9 +35,6 @@ const std::string ENTRY_TYPE_STRING("string");
 // *_REQ_* are sent from client to server
 // *_SEND_* are sent from server to client
 
-#define CMD_SEND_POPUP			15 // Send a popup window
-#define CMD_SEND_EFFECT			17 // Send an effect
-
 #define CMD_PB			99 //
 
 enum class EffectType

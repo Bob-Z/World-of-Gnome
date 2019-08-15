@@ -22,18 +22,16 @@
 #include "lua_client.h"
 
 /******************************************************************************/
-void EffectManager::processEffectFrame(context_t * p_pCtx,
-		NetworkFrame & p_rFrame)
+void EffectManager::processEffectFrame(context_t * context,
+		const std::vector<std::string> & params)
 {
-	std::vector<std::string> l_Params;
-	p_rFrame.pop(l_Params);
-
-	std::string l_Script = l_Params.front();
-	l_Params.erase(l_Params.begin());
+	std::string script = params.front();
+	const std::vector<std::string> script_params(params.begin() + 1,
+			params.end());
 
 	// TODO use the same LUA VM as the one in render screen
-	if (lua_execute_script(getEffectLuaVm(), l_Script, l_Params) == -1)
+	if (lua_execute_script(getEffectLuaVm(), script, script_params) == -1)
 	{
-		file_request_from_network(p_pCtx, SCRIPT_TABLE, l_Script.c_str());
+		file_request_from_network(context, SCRIPT_TABLE, script.c_str());
 	}
 }

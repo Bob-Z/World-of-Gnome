@@ -25,7 +25,8 @@
 class EffectManager
 {
 public:
-	static void processEffectFrame(context_t * p_pCtx, NetworkFrame & p_rFrame);
+	static void processEffectFrame(context_t * context,
+			const std::vector<std::string> & params);
 };
 
-#endif /* CLIENT_EFFECTMANAGER_H_ */
+#endif // CLIENT_EFFECTMANAGER_H_

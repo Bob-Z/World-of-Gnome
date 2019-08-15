@@ -611,7 +611,8 @@ static void compose_equipment(context_t * ctx, item_t * item_list)
 				if (entry_read_string(ITEM_TEMPLATE_TABLE, mytemplate,
 						&equipped_icon_name, ITEM_ICON, nullptr) == RET_NOK)
 				{
-					werr(LOGDESIGNER, "Can't read item %s icon name (template: %s)",
+					werr(LOGDESIGNER,
+							"Can't read item %s icon name (template: %s)",
 							equipped_name, mytemplate);
 				}
 				free(mytemplate);
@@ -1092,7 +1093,8 @@ static void compose_inventory_select(context_t * ctx, item_t * item_list)
 			if (entry_read_string(ITEM_TABLE, inventory_list[i], &icon_name,
 			ITEM_ICON, nullptr) == RET_NOK)
 			{
-				werr(LOGDESIGNER, "Can't read item %s icon name", inventory_list[i]);
+				werr(LOGDESIGNER, "Can't read item %s icon name",
+						inventory_list[i]);
 			}
 		}
 		else
@@ -1298,12 +1300,9 @@ static void compose_popup(context_t * ctx, item_t * item_list)
 
 /**********************************
  **********************************/
-void ui_play_popup_add(NetworkFrame & p_NetworkFrame)
+void ui_play_popup_add(const std::vector<std::string> & data)
 {
-	std::vector<std::string> l_PopupData;
-	p_NetworkFrame.pop(l_PopupData);
-
-	g_PopupFifo.push(l_PopupData);
+	g_PopupFifo.push(data);
 
 	ui_play_set(UI_POPUP);
 }

@@ -70,6 +70,8 @@ message ServerMessage
      Context context = 6;
      Text text = 7;
      Entry entry = 8;
+     PopUp popup = 9;
+     Effect effect = 10;
   }
 }
 
@@ -130,4 +132,14 @@ message Entry
 	string file = 3;
 	string path = 4;
 	string value = 5;
+}
+
+message PopUp
+{
+	repeated string  data = 1;
+}
+
+message Effect
+{
+	repeated string  param = 1;
 }

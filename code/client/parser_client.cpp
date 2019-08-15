@@ -195,6 +195,43 @@ static ret_code_t manage_entry(context_t * context, const pb::Entry& entry)
 	return RET_OK;
 }
 
+/**************************************
+ Return RET_NOK on error
+ **************************************/
+static ret_code_t manage_popup(context_t * context, const pb::PopUp& popup)
+{
+	wlog(LOGDEVELOPER, "[network] Received pop-up");
+
+	std::vector<std::string> data;
+	for (int i = 0; i < popup.data().size(); i++)
+	{
+		data.push_back(popup.data(i));
+	}
+
+	ui_play_popup_add(data);
+	screen_compose();
+
+	return RET_OK;
+}
+
+/**************************************
+ Return RET_NOK on error
+ **************************************/
+static ret_code_t manage_effect(context_t * context, const pb::Effect& effect)
+{
+	wlog(LOGDEVELOPER, "[network] Received effect");
+
+	std::vector<std::string> params;
+	for (int i = 0; i < effect.param().size(); i++)
+	{
+		params.push_back(effect.param(i));
+	}
+
+	EffectManager::processEffectFrame(context, params);
+
+	return RET_OK;
+}
+
 /***********************************
  Return RET_NOK on error
  ***********************************/
@@ -249,6 +286,14 @@ ret_code_t parse_incoming_data(context_t * context, NetworkFrame & frame)
 			{
 				manage_entry(context, message.entry());
 			}
+			else if (message.has_popup())
+			{
+				manage_popup(context, message.popup());
+			}
+			else if (message.has_effect())
+			{
+				manage_effect(context, message.effect());
+			}
 			else
 			{
 				werr(LOGUSER, "Unknown message received");
@@ -257,15 +302,6 @@ ret_code_t parse_incoming_data(context_t * context, NetworkFrame & frame)
 	}
 		break;
 
-	case CMD_SEND_POPUP:
-		wlog(LOGDEVELOPER, "Received CMD_SEND_POPUP");
-		ui_play_popup_add(frame);
-		screen_compose();
-		break;
-	case CMD_SEND_EFFECT:
-		EffectManager::processEffectFrame(context, frame);
-		wlog(LOGDEVELOPER, "Received CMD_SEND_EFFECT");
-		break;
 	default:
 		werr(LOGDESIGNER, "Unknown request from server");
 		return RET_NOK;
