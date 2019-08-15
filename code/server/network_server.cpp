@@ -135,6 +135,29 @@ void network_send_character_file(context_t * context)
 }
 
 /*******************************************************************************
+ Asks to update an int entry on  a context
+ ******************************************************************************/
+void network_send_entry_int(context_t * context, const char * table,
+		const char * file, const char *path, int value)
+{
+	pb::ServerMessage message;
+	message.mutable_entry()->set_type(ENTRY_TYPE_INT);
+	message.mutable_entry()->set_table(table);
+	message.mutable_entry()->set_file(file);
+	message.mutable_entry()->set_path(path);
+	message.mutable_entry()->set_value(std::to_string(value));
+
+	std::string serialized_data = message.SerializeAsString();
+
+	NetworkFrame frame;
+	frame.push(serialized_data);
+
+	wlog(LOGDEVELOPER, "[network] Send entry %s/%s/%s = %d", table, file, path,
+			value);
+	network_send_command(context, CMD_PB, frame, false);
+}
+
+/*******************************************************************************
  Asks to update an int entry on all in_game players
  ******************************************************************************/
 void network_broadcast_entry_int(const char * table, const char * file,

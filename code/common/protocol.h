@@ -25,8 +25,8 @@
 // second 4 bytes containing the size of additional data
 // following bytes of additional data
 
-#define ENTRY_TYPE_INT "int"
-#define ENTRY_TYPE_STRING "string"
+const std::string ENTRY_TYPE_INT("int");
+const std::string ENTRY_TYPE_STRING("string");
 
 // Special action script name for chat
 #define WOG_CHAT	"__wog_chat__"
@@ -35,7 +35,6 @@
 // *_REQ_* are sent from client to server
 // *_SEND_* are sent from server to client
 
-#define CMD_SEND_ENTRY			14 // Sends an entry to be updated on target
 #define CMD_SEND_POPUP			15 // Send a popup window
 #define CMD_SEND_EFFECT			17 // Send an effect
 

@@ -42,5 +42,7 @@ void network_send_playable_character(context_t * context,
 		const std::vector<std::string> & id_list);
 void network_send_context_to_context(context_t * dest_ctx, context_t * src_ctx);
 void network_send_text(const char * id, const char * string);
+void network_send_entry_int(context_t * context, const char * table,
+		const char * file, const char *path, int value);
 
 #endif

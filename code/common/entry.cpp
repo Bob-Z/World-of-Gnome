@@ -1476,26 +1476,13 @@ char * entry_copy_group(const char * src_table, const char * src_file,
  Update an entry from a network frame
  return RET_NOK on error
  *********************************************/
-ret_code_t entry_update(NetworkFrame & p_rFrame)
+ret_code_t entry_update(const std::string & type, const std::string & table,
+		const std::string & file, const std::string & path,
+		const std::string & value)
 {
-	std::string l_EntryType;
-	p_rFrame.pop(l_EntryType);
-
-	std::string l_Table;
-	p_rFrame.pop(l_Table);
-
-	std::string l_File;
-	p_rFrame.pop(l_File);
-
-	std::string l_Path;
-	p_rFrame.pop(l_Path);
-
-	std::string l_Value;
-	p_rFrame.pop(l_Value);
-
 	SDL_LockMutex(entry_mutex);
 
-	const config_t * l_pConfig = get_config(l_Table.c_str(), l_File.c_str());
+	const config_t * l_pConfig = get_config(table.c_str(), file.c_str());
 	if (l_pConfig == nullptr)
 	{
 		SDL_UnlockMutex(entry_mutex);
@@ -1504,39 +1491,38 @@ ret_code_t entry_update(NetworkFrame & p_rFrame)
 
 	config_setting_t * l_pSetting = nullptr;
 
-	l_pSetting = config_lookup(l_pConfig, l_Path.c_str());
+	l_pSetting = config_lookup(l_pConfig, path.c_str());
 	if (l_pSetting == nullptr)
 	{
 		SDL_UnlockMutex(entry_mutex);
 		return RET_NOK;
 	}
 
-	if (strcmp(l_EntryType.c_str(), ENTRY_TYPE_INT) == 0)
+	if (type == ENTRY_TYPE_INT)
 	{
 		int l_IntValue;
 
-		l_IntValue = atoll(l_Value.c_str());
+		l_IntValue = atoll(value.c_str());
 		if (config_setting_set_int(l_pSetting, l_IntValue) == CONFIG_FALSE)
 		{
-			werr(LOGUSER, "Error setting %s/%s/%s to %d", l_Table.c_str(),
-					l_File.c_str(), l_Path.c_str(), l_IntValue);
+			werr(LOGUSER, "Error setting %s/%s/%s to %d", table.c_str(),
+					file.c_str(), path.c_str(), l_IntValue);
 		}
 		else
 		{
-			write_config(l_pConfig, l_Table.c_str(), l_File.c_str());
+			write_config(l_pConfig, table.c_str(), file.c_str());
 		}
 	}
-	else if (strcmp(l_EntryType.c_str(), ENTRY_TYPE_STRING) == 0)
+	else if (type == ENTRY_TYPE_STRING)
 	{
-		if (config_setting_set_string(l_pSetting,
-				l_Value.c_str()) == CONFIG_FALSE)
+		if (config_setting_set_string(l_pSetting, value.c_str()) == CONFIG_FALSE)
 		{
-			werr(LOGUSER, "Error setting %s/%s/%s to %s", l_Table.c_str(),
-					l_File.c_str(), l_Path.c_str(), l_Value.c_str());
+			werr(LOGUSER, "Error setting %s/%s/%s to %s", table.c_str(),
+					file.c_str(), path.c_str(), value.c_str());
 		}
 		else
 		{
-			write_config(l_pConfig, l_Table.c_str(), l_File.c_str());
+			write_config(l_pConfig, table.c_str(), file.c_str());
 		}
 	}
 

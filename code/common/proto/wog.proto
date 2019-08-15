@@ -69,6 +69,7 @@ message ServerMessage
      UserCharacter user_character = 5;
      Context context = 6;
      Text text = 7;
+     Entry entry = 8;
   }
 }
 
@@ -120,4 +121,13 @@ message Selection
 message Text
 {
 	string text = 1;
+}
+
+message Entry
+{
+	string type = 1;
+	string table = 2;
+	string file = 3;
+	string path = 4;
+	string value = 5;
 }

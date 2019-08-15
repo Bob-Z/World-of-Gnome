@@ -122,24 +122,6 @@ void network_send_command(context_t * p_pContext, const uint_fast32_t p_Command,
 	SDL_CreateThread(async_frame_send, "async_frame_send", (void*) l_pData);
 }
 
-/*******************************************************************************
- Asks to update an int entry on  a context
- ******************************************************************************/
-void network_send_entry_int(context_t * context, const char * table,
-		const char * file, const char *path, int value)
-{
-	NetworkFrame l_Frame;
-	l_Frame.push(ENTRY_TYPE_INT);
-	l_Frame.push(table);
-	l_Frame.push(file);
-	l_Frame.push(path);
-	l_Frame.push(value);
-
-	wlog(LOGDEVELOPER, "Send CMD_SEND_ENTRY to %s :%s", context->id,
-			l_Frame.getFrame());
-	network_send_command(context, CMD_SEND_ENTRY, l_Frame, false);
-}
-
 /*********************************************************************
  Client request a file
  It adds the local file checksum so that the server only send the file if it is different

@@ -179,6 +179,22 @@ static ret_code_t manage_text(context_t * context, const pb::Text& text)
 	return RET_OK;
 }
 
+/**************************************
+ Return RET_NOK on error
+ **************************************/
+static ret_code_t manage_entry(context_t * context, const pb::Entry& entry)
+{
+	wlog(LOGDEVELOPER, "[network] Received entry");
+
+	if (entry_update(entry.type(), entry.table(), entry.file(), entry.path(),
+			entry.value()) != -1)
+	{
+		screen_compose();
+	}
+
+	return RET_OK;
+}
+
 /***********************************
  Return RET_NOK on error
  ***********************************/
@@ -229,6 +245,10 @@ ret_code_t parse_incoming_data(context_t * context, NetworkFrame & frame)
 			{
 				manage_text(context, message.text());
 			}
+			else if (message.has_entry())
+			{
+				manage_entry(context, message.entry());
+			}
 			else
 			{
 				werr(LOGUSER, "Unknown message received");
@@ -237,13 +257,6 @@ ret_code_t parse_incoming_data(context_t * context, NetworkFrame & frame)
 	}
 		break;
 
-	case CMD_SEND_ENTRY:
-		wlog(LOGDEVELOPER, "Received CMD_SEND_ENTRY");
-		if (entry_update(frame) != -1)
-		{
-			screen_compose();
-		}
-		break;
 	case CMD_SEND_POPUP:
 		wlog(LOGDEVELOPER, "Received CMD_SEND_POPUP");
 		ui_play_popup_add(frame);
