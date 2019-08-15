@@ -27,9 +27,9 @@
 #include "screen.h"
 #include "Camera.h"
 
-static constexpr int const BORDER = 20;
-static constexpr int const FONT_SIZE = 30;
-static constexpr const char * const FONT = "Ubuntu-C.ttf";
+static const constexpr int BORDER = 20;
+static const constexpr int FONT_SIZE = 30;
+static const constexpr char * const FONT = "Ubuntu-C.ttf";
 
 typedef struct
 {
@@ -403,16 +403,9 @@ item_t * scr_select_compose(context_t * context)
 /*************************
  Add a character to the list
  *************************/
-void scr_select_add_user_character(context_t * p_pCtx,
-		NetworkFrame & p_rNetworkFrame)
+void scr_select_add_user_character(context_t * context, const std::string & id,
+		const std::string & type, const std::string & name)
 {
-	std::string l_Id;
-	p_rNetworkFrame.pop(l_Id);
-	std::string l_Type;
-	p_rNetworkFrame.pop(l_Type);
-	std::string l_Name;
-	p_rNetworkFrame.pop(l_Name);
-
 	SDL_LockMutex(character_select_mutex);
 
 	character_num++;
@@ -421,9 +414,9 @@ void scr_select_add_user_character(context_t * p_pCtx,
 			sizeof(character_t) * character_num);
 
 	character_t * new_character = &(character_list[character_num - 1]);
-	new_character->id = strdup(l_Id.c_str());
-	new_character->type = strdup(l_Type.c_str());
-	new_character->name = strdup(l_Name.c_str());
+	new_character->id = strdup(id.c_str());
+	new_character->type = strdup(type.c_str());
+	new_character->name = strdup(name.c_str());
 	new_character->anim = nullptr;
 	new_character->item = nullptr;
 	new_character->width = 0;

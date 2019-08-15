@@ -22,5 +22,5 @@
 item_t * scr_select_compose(context_t * context);
 void scr_select_frame_start(context_t * context);
 void scr_select_init();
-void scr_select_add_user_character(context_t * context,
-		NetworkFrame & p_rNetworkFrame);
+void scr_select_add_user_character(context_t * context, const std::string & id,
+		const std::string & type, const std::string & name);

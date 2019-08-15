@@ -100,6 +100,22 @@ static ret_code_t manage_file(context_t * context, const pb::File& file)
 	return RET_OK;
 }
 
+/**************************************
+ Return RET_NOK on error
+ **************************************/
+static ret_code_t manage_user_character(context_t * context,
+		const pb::UserCharacter& user_character)
+{
+	wlog(LOGDEVELOPER, "[network] Received user %s character",
+			context->user_name, user_character.name().c_str());
+
+	scr_select_add_user_character(context, user_character.id(),
+			user_character.type(), user_character.name());
+	screen_compose();
+
+	return RET_OK;
+}
+
 /***********************************
  Return RET_NOK on error
  ***********************************/
@@ -138,6 +154,10 @@ ret_code_t parse_incoming_data(context_t * context, NetworkFrame & frame)
 			{
 				manage_file(context, message.file());
 			}
+			else if (message.has_user_character())
+			{
+				manage_user_character(context, message.user_character());
+			}
 			else
 			{
 				werr(LOGUSER, "Unknown message received");
@@ -146,11 +166,6 @@ ret_code_t parse_incoming_data(context_t * context, NetworkFrame & frame)
 	}
 		break;
 
-	case CMD_SEND_USER_CHARACTER:
-		wlog(LOGDEVELOPER, "Received CMD_SEND_USER_CHARACTER");
-		scr_select_add_user_character(context, frame);
-		screen_compose();
-		break;
 	case CMD_SEND_CONTEXT:
 		wlog(LOGDEVELOPER, "Received CMD_SEND_CONTEXT");
 		context_add_or_update_from_network_frame(context, frame);

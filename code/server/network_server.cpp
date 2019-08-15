@@ -83,15 +83,21 @@ void network_broadcast_text(context_t * context, const char * text)
 /*******************************************************************************
  Server send a user's character
  ******************************************************************************/
-void network_send_user_character(context_t * p_pCtx,
-		const char * p_pCharacterId, const char * p_pType, const char * p_pName)
+void network_send_user_character(context_t * context, const char * id,
+		const char * type, const char * name)
 {
-	NetworkFrame l_Frame;
-	l_Frame.push(p_pCharacterId);
-	l_Frame.push(p_pType);
-	l_Frame.push(p_pName);
+	pb::ServerMessage message;
+	message.mutable_user_character()->set_id(id);
+	message.mutable_user_character()->set_type(type);
+	message.mutable_user_character()->set_name(name);
+	std::string serialized_data = message.SerializeAsString();
 
-	network_send_command(p_pCtx, CMD_SEND_USER_CHARACTER, l_Frame, false);
+	NetworkFrame frame;
+	frame.push(serialized_data);
+
+	wlog(LOGDEVELOPER, "[network] Send user %s character %s",
+			context->user_name, name);
+	network_send_command(context, CMD_PB, frame, false);
 }
 
 /*******************************************************************************
