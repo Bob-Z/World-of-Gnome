@@ -66,6 +66,27 @@ static ret_code_t manage_login_nok(context_t * context,
 	return RET_OK;
 }
 
+/**************************************
+ Return RET_NOK on error
+ **************************************/
+static ret_code_t manage_playable_character(context_t * context,
+		const pb::PlayableCharacter & playable_character)
+{
+	wlog(LOGDEVELOPER, "[network] Received playable character for user %s",
+			context->user_name);
+
+	std::vector<std::string> id_list;
+	for (int i = 0; i < playable_character.id().size(); i++)
+	{
+		id_list.push_back(playable_character.id(i));
+	}
+
+	scr_create_add_playable_character(context, id_list);
+	screen_compose();
+
+	return RET_OK;
+}
+
 /***********************************
  Return RET_NOK on error
  ***********************************/
@@ -95,6 +116,11 @@ ret_code_t parse_incoming_data(context_t * context, NetworkFrame & frame)
 			{
 				manage_login_nok(context, message.login_nok());
 			}
+			else if (message.has_playable_character())
+			{
+				manage_playable_character(context,
+						message.playable_character());
+			}
 			else
 			{
 				werr(LOGUSER, "Unknown message received");
@@ -103,11 +129,6 @@ ret_code_t parse_incoming_data(context_t * context, NetworkFrame & frame)
 	}
 		break;
 
-	case CMD_SEND_PLAYABLE_CHARACTER:
-		wlog(LOGDEVELOPER, "Received CMD_SEND_PLAYABLE_CHARACTER");
-		scr_create_add_playable_character(context, frame);
-		screen_compose();
-		break;
 	case CMD_SEND_FILE:
 		wlog(LOGDEVELOPER, "Received CMD_SEND_FILE");
 		file_add(context, frame);

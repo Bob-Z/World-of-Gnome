@@ -89,10 +89,7 @@ void character_playable_send_list(context_t * context)
 
 	closedir(dir);
 
-	NetworkFrame l_Frame;
-	l_Frame.push(l_Array);
-
-	network_send_command(context, CMD_SEND_PLAYABLE_CHARACTER, l_Frame, false);
+	network_send_playable_character(context, l_Array);
 }
 
 /*********************************************

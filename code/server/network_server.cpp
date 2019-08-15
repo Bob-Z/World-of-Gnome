@@ -400,3 +400,24 @@ void network_send_login_nok(context_t * context)
 	wlog(LOGDEVELOPER, "[network] Send LOGIN NOK");
 	network_send_command(context, CMD_PB, frame, false);
 }
+
+/*********************************************************************
+ **********************************************************************/
+void network_send_playable_character(context_t * context,
+		const std::vector<std::string> & id_list)
+{
+	pb::ServerMessage message;
+
+	for (auto id : id_list)
+	{
+		message.mutable_playable_character()->add_id(id);
+	}
+
+	std::string serialized_data = message.SerializeAsString();
+
+	NetworkFrame frame;
+	frame.push(serialized_data);
+
+	wlog(LOGDEVELOPER, "[network] Send LOGIN NOK");
+	network_send_command(context, CMD_PB, frame, false);
+}

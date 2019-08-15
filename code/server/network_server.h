@@ -38,5 +38,7 @@ void network_broadcast_effect(EffectType p_Type, const std::string & p_TargetId,
 		const std::vector<std::string> & p_Param);
 void network_send_login_ok(context_t * context);
 void network_send_login_nok(context_t * context);
+void network_send_playable_character(context_t * context,
+		const std::vector<std::string> & id_list);
 
 #endif

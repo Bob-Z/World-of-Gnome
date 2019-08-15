@@ -456,14 +456,11 @@ item_t * scr_create_compose(context_t * context)
  Add a character to the list
  *************************/
 void scr_create_add_playable_character(context_t * context,
-		NetworkFrame & p_rNetworkFrame)
+		const std::vector<std::string> & id_list)
 {
-	std::vector<std::string> l_Data;
-	p_rNetworkFrame.pop(l_Data);
-
 	SDL_LockMutex(character_create_mutex);
 
-	for (auto l_CharacterName : l_Data)
+	for (auto l_CharacterName : id_list)
 	{
 		character_num++;
 
