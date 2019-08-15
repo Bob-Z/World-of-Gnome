@@ -17,11 +17,25 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#include "action.h"
-#include "common.h"
 #include "map_server.h"
+
+#include <common.h>
+#include <const.h>
+#include <context.h>
+#include <entry.h>
+#include <file.h>
+#include <map.h>
+#include <mutex.h>
 #include <stdlib.h>
-#include <string.h>
+#include <syntax.h>
+#include <SDL_mutex.h>
+#include <types.h>
+#include <util.h>
+#include <cstdio>
+#include <cstring>
+
+#include "action.h"
+#include "context_server.h"
 
 /***********************************
  return string MUST BE FREED
@@ -81,7 +95,7 @@ ret_code_t map_check_tile(context_t * ctx, char * id, const char * map,
 
 	// If there is an allowed_tile_script, run it
 	if (entry_read_string(CHARACTER_TABLE, id, &script,
-			CHARACTER_KEY_ALLOWED_TILE_SCRIPT, nullptr) == RET_OK)
+	CHARACTER_KEY_ALLOWED_TILE_SCRIPT, nullptr) == RET_OK)
 	{
 		param[0] = id;
 		param[1] = (char *) map;
@@ -114,7 +128,7 @@ ret_code_t map_check_tile(context_t * ctx, char * id, const char * map,
 
 	// If there is allowed_tile list, check it
 	if (entry_read_list(CHARACTER_TABLE, id, &allowed_tile,
-			CHARACTER_KEY_ALLOWED_TILE, nullptr) == RET_OK)
+	CHARACTER_KEY_ALLOWED_TILE, nullptr) == RET_OK)
 	{
 		i = 0;
 		while (allowed_tile[i] != nullptr)
@@ -209,7 +223,7 @@ char * map_delete_item(const char * map, int layer, int x, int y)
 	SDL_LockMutex(map_mutex);
 	/* Search the items on the specified tile */
 	if (entry_get_group_list(MAP_TABLE, map, &itemlist, layer_name,
-			MAP_ENTRY_ITEM_LIST, nullptr) == RET_NOK)
+	MAP_ENTRY_ITEM_LIST, nullptr) == RET_NOK)
 	{
 		SDL_UnlockMutex(map_mutex);
 		return nullptr;
@@ -218,8 +232,7 @@ char * map_delete_item(const char * map, int layer, int x, int y)
 	while (itemlist[i] != nullptr)
 	{
 		if (entry_read_int(MAP_TABLE, map, &mapx, layer_name,
-				MAP_ENTRY_ITEM_LIST, itemlist[i], MAP_ITEM_TILE_X,
-				nullptr) == RET_NOK)
+		MAP_ENTRY_ITEM_LIST, itemlist[i], MAP_ITEM_TILE_X, nullptr) == RET_NOK)
 		{
 			SDL_UnlockMutex(map_mutex);
 			deep_free(itemlist);
@@ -227,8 +240,7 @@ char * map_delete_item(const char * map, int layer, int x, int y)
 		}
 
 		if (entry_read_int(MAP_TABLE, map, &mapy, layer_name,
-				MAP_ENTRY_ITEM_LIST, itemlist[i], MAP_ITEM_TILE_Y,
-				nullptr) == RET_NOK)
+		MAP_ENTRY_ITEM_LIST, itemlist[i], MAP_ITEM_TILE_Y, nullptr) == RET_NOK)
 		{
 			SDL_UnlockMutex(map_mutex);
 			deep_free(itemlist);
@@ -295,7 +307,7 @@ ret_code_t map_add_item(const char * map, int layer, const char * id, int x,
 	SDL_LockMutex(map_mutex);
 
 	if (entry_write_int(MAP_TABLE, map, x, layer_name, MAP_ENTRY_ITEM_LIST, id,
-			MAP_ITEM_TILE_X, nullptr) == RET_NOK)
+	MAP_ITEM_TILE_X, nullptr) == RET_NOK)
 	{
 		entry_remove_group(MAP_TABLE, map, id, layer_name, MAP_ENTRY_ITEM_LIST,
 				nullptr);
@@ -303,7 +315,7 @@ ret_code_t map_add_item(const char * map, int layer, const char * id, int x,
 		return RET_NOK;
 	}
 	if (entry_write_int(MAP_TABLE, map, y, layer_name, MAP_ENTRY_ITEM_LIST, id,
-			MAP_ITEM_TILE_Y, nullptr) == RET_NOK)
+	MAP_ITEM_TILE_Y, nullptr) == RET_NOK)
 	{
 		entry_remove_group(MAP_TABLE, map, id, layer_name, MAP_ENTRY_ITEM_LIST,
 				nullptr);
@@ -361,7 +373,7 @@ ret_code_t map_set_tile(const char * map, int layer, const char * tile, int x,
 
 	/* read previous map set */
 	if (entry_read_list_index(MAP_TABLE, map, &previous_tile, index, layer_name,
-			MAP_KEY_SET, nullptr) == RET_NOK)
+	MAP_KEY_SET, nullptr) == RET_NOK)
 	{
 		SDL_UnlockMutex(map_mutex);
 		return RET_NOK;
@@ -378,7 +390,7 @@ ret_code_t map_set_tile(const char * map, int layer, const char * tile, int x,
 	free(previous_tile);
 
 	if (entry_write_list_index(MAP_TABLE, map, tile, index, layer_name,
-			MAP_KEY_SET, nullptr) == RET_OK)
+	MAP_KEY_SET, nullptr) == RET_OK)
 	{
 		if (network_broadcast)
 		{
@@ -482,7 +494,7 @@ ret_code_t map_set_tile_type(const char * map, int layer, const char * type,
 
 	// read previous map type
 	if (entry_read_list_index(MAP_TABLE, map, &previous_type, index, layer_name,
-			MAP_KEY_TYPE, nullptr) == RET_OK)
+	MAP_KEY_TYPE, nullptr) == RET_OK)
 	{
 		/* Do not change the type if it already the requested type
 		 Avoid calling useless context_broadcast_file */
@@ -496,7 +508,7 @@ ret_code_t map_set_tile_type(const char * map, int layer, const char * type,
 	}
 
 	if (entry_write_list_index(MAP_TABLE, map, type, index, layer_name,
-			MAP_KEY_TYPE, nullptr) == RET_OK)
+	MAP_KEY_TYPE, nullptr) == RET_OK)
 	{
 		if (network_broadcast)
 		{
@@ -752,12 +764,12 @@ char ** map_get_event(const char * map, int layer, int x, int y)
 	SDL_LockMutex(map_mutex);
 	// Search the items on the specified tile for a specific layer
 	if (entry_get_group_list(MAP_TABLE, map, &eventlist, layer_name,
-			MAP_ENTRY_EVENT_LIST, nullptr) == RET_OK)
+	MAP_ENTRY_EVENT_LIST, nullptr) == RET_OK)
 	{
 		while (eventlist[i] != nullptr)
 		{
 			if (entry_read_int(MAP_TABLE, map, &mapx, layer_name,
-					MAP_ENTRY_EVENT_LIST, eventlist[i], MAP_EVENT_TILE_X,
+			MAP_ENTRY_EVENT_LIST, eventlist[i], MAP_EVENT_TILE_X,
 					nullptr) == RET_NOK)
 			{
 				i++;
@@ -765,7 +777,7 @@ char ** map_get_event(const char * map, int layer, int x, int y)
 			}
 
 			if (entry_read_int(MAP_TABLE, map, &mapy, layer_name,
-					MAP_ENTRY_EVENT_LIST, eventlist[i], MAP_EVENT_TILE_Y,
+			MAP_ENTRY_EVENT_LIST, eventlist[i], MAP_EVENT_TILE_Y,
 					nullptr) == RET_NOK)
 			{
 				i++;
@@ -848,7 +860,7 @@ char * map_add_event(const char * map, int layer, const char * script, int x,
 			nullptr);
 
 	id = entry_get_unused_group(MAP_TABLE, map, layer_name,
-			MAP_ENTRY_EVENT_LIST, nullptr);
+	MAP_ENTRY_EVENT_LIST, nullptr);
 	if (id == nullptr)
 	{
 		return nullptr;
@@ -857,7 +869,7 @@ char * map_add_event(const char * map, int layer, const char * script, int x,
 	SDL_LockMutex(map_mutex);
 
 	if (entry_write_int(MAP_TABLE, map, x, layer_name, MAP_ENTRY_EVENT_LIST, id,
-			MAP_EVENT_TILE_X, nullptr) == RET_NOK)
+	MAP_EVENT_TILE_X, nullptr) == RET_NOK)
 	{
 		entry_remove_group(MAP_TABLE, map, id, layer_name, MAP_ENTRY_EVENT_LIST,
 				nullptr);
@@ -866,7 +878,7 @@ char * map_add_event(const char * map, int layer, const char * script, int x,
 		return nullptr;
 	}
 	if (entry_write_int(MAP_TABLE, map, y, layer_name, MAP_ENTRY_EVENT_LIST, id,
-			MAP_EVENT_TILE_Y, nullptr) == RET_NOK)
+	MAP_EVENT_TILE_Y, nullptr) == RET_NOK)
 	{
 		entry_remove_group(MAP_TABLE, map, id, layer_name, MAP_ENTRY_EVENT_LIST,
 				nullptr);
@@ -876,7 +888,7 @@ char * map_add_event(const char * map, int layer, const char * script, int x,
 	}
 
 	if (entry_write_string(MAP_TABLE, map, script, layer_name,
-			MAP_ENTRY_EVENT_LIST, id, MAP_EVENT_SCRIPT, nullptr) == RET_NOK)
+	MAP_ENTRY_EVENT_LIST, id, MAP_EVENT_SCRIPT, nullptr) == RET_NOK)
 	{
 		entry_remove_group(MAP_TABLE, map, id, layer_name, MAP_ENTRY_EVENT_LIST,
 				nullptr);
@@ -909,7 +921,7 @@ ret_code_t map_add_event_param(const char * map, int layer,
 			event_id, MAP_EVENT_PARAM, nullptr);
 
 	return entry_add_to_list(MAP_TABLE, map, param, layer_name,
-			MAP_ENTRY_EVENT_LIST, event_id, MAP_EVENT_PARAM, nullptr);
+	MAP_ENTRY_EVENT_LIST, event_id, MAP_EVENT_PARAM, nullptr);
 }
 
 /**********************************************
@@ -938,7 +950,7 @@ ret_code_t map_delete_event(const char * map, int layer, const char * script,
 	SDL_LockMutex(map_mutex);
 	/* Search events on the specified tile */
 	if (entry_get_group_list(MAP_TABLE, map, &eventlist, layer_name,
-			MAP_ENTRY_EVENT_LIST, nullptr) == RET_NOK)
+	MAP_ENTRY_EVENT_LIST, nullptr) == RET_NOK)
 	{
 		SDL_UnlockMutex(map_mutex);
 		return RET_NOK;
@@ -947,21 +959,21 @@ ret_code_t map_delete_event(const char * map, int layer, const char * script,
 	while (eventlist[i] != nullptr)
 	{
 		if (entry_read_int(MAP_TABLE, map, &mapx, layer_name,
-				MAP_ENTRY_EVENT_LIST, eventlist[i], MAP_EVENT_TILE_X,
+		MAP_ENTRY_EVENT_LIST, eventlist[i], MAP_EVENT_TILE_X,
 				nullptr) == RET_NOK)
 		{
 			i++;
 			continue;
 		}
 		if (entry_read_int(MAP_TABLE, map, &mapy, layer_name,
-				MAP_ENTRY_EVENT_LIST, eventlist[i], MAP_EVENT_TILE_Y,
+		MAP_ENTRY_EVENT_LIST, eventlist[i], MAP_EVENT_TILE_Y,
 				nullptr) == RET_NOK)
 		{
 			i++;
 			continue;
 		}
 		if (entry_read_string(MAP_TABLE, map, &map_script, layer_name,
-				MAP_ENTRY_EVENT_LIST, eventlist[i], MAP_EVENT_SCRIPT,
+		MAP_ENTRY_EVENT_LIST, eventlist[i], MAP_EVENT_SCRIPT,
 				nullptr) == RET_NOK)
 		{
 			i++;
@@ -1062,7 +1074,7 @@ char ** map_get_item(const char * map, int layer, int map_x, int map_y)
 	sprintf(layer_name, "%s%d", MAP_KEY_LAYER, layer);
 
 	if (entry_get_group_list(MAP_TABLE, map, &item_id, layer_name,
-			MAP_ENTRY_ITEM_LIST, nullptr) == RET_NOK)
+	MAP_ENTRY_ITEM_LIST, nullptr) == RET_NOK)
 	{
 		return nullptr;
 	}
@@ -1167,7 +1179,7 @@ char * map_add_scenery(const char * map, int layer, int x, int y,
 	SDL_LockMutex(map_mutex);
 
 	if (entry_write_int(MAP_TABLE, map, x, layer_name, MAP_KEY_SCENERY, id,
-			MAP_KEY_SCENERY_X, nullptr) == RET_NOK)
+	MAP_KEY_SCENERY_X, nullptr) == RET_NOK)
 	{
 		entry_remove_group(MAP_TABLE, map, id, layer_name, MAP_KEY_SCENERY,
 				nullptr);
@@ -1176,7 +1188,7 @@ char * map_add_scenery(const char * map, int layer, int x, int y,
 		return nullptr;
 	}
 	if (entry_write_int(MAP_TABLE, map, y, layer_name, MAP_KEY_SCENERY, id,
-			MAP_KEY_SCENERY_Y, nullptr) == RET_NOK)
+	MAP_KEY_SCENERY_Y, nullptr) == RET_NOK)
 	{
 		entry_remove_group(MAP_TABLE, map, id, layer_name, MAP_KEY_SCENERY,
 				nullptr);
@@ -1185,7 +1197,7 @@ char * map_add_scenery(const char * map, int layer, int x, int y,
 		return nullptr;
 	}
 	if (entry_write_string(MAP_TABLE, map, image_name, layer_name,
-			MAP_KEY_SCENERY, id, MAP_KEY_SCENERY_IMAGE, nullptr) == RET_NOK)
+	MAP_KEY_SCENERY, id, MAP_KEY_SCENERY_IMAGE, nullptr) == RET_NOK)
 	{
 		entry_remove_group(MAP_TABLE, map, id, layer_name, MAP_KEY_SCENERY,
 				nullptr);
@@ -1251,7 +1263,7 @@ ret_code_t map_add_layer(const char * map_name, int layer, int w, int h,
 	if (tile_w > 0)
 	{
 		if (entry_write_int(MAP_TABLE, map_name, tile_w, layer_name,
-				MAP_KEY_TILE_WIDTH, nullptr) == RET_NOK)
+		MAP_KEY_TILE_WIDTH, nullptr) == RET_NOK)
 		{
 			return RET_NOK;
 		}
@@ -1259,7 +1271,7 @@ ret_code_t map_add_layer(const char * map_name, int layer, int w, int h,
 	if (tile_h > 0)
 	{
 		if (entry_write_int(MAP_TABLE, map_name, tile_h, layer_name,
-				MAP_KEY_TILE_HEIGHT, nullptr) == RET_NOK)
+		MAP_KEY_TILE_HEIGHT, nullptr) == RET_NOK)
 		{
 			return RET_NOK;
 		}
@@ -1276,7 +1288,7 @@ ret_code_t map_add_layer(const char * map_name, int layer, int w, int h,
 	tile_array[i] = nullptr; // End of list
 
 	if (entry_write_list(MAP_TABLE, map_name, tile_array, layer_name,
-			MAP_KEY_SET, nullptr) == RET_NOK)
+	MAP_KEY_SET, nullptr) == RET_NOK)
 	{
 		free(tile_array);
 		return RET_NOK;
@@ -1290,7 +1302,7 @@ ret_code_t map_add_layer(const char * map_name, int layer, int w, int h,
 	tile_array[i] = nullptr; // End of list
 
 	if (entry_write_list(MAP_TABLE, map_name, tile_array, layer_name,
-			MAP_KEY_TYPE, nullptr) == RET_NOK)
+	MAP_KEY_TYPE, nullptr) == RET_NOK)
 	{
 		free(tile_array);
 		return RET_NOK;

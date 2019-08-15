@@ -17,8 +17,18 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#include <string.h>
+#include "context.h"
+#include "Context.h"
+#include "entry.h"
+#include "log.h"
+#include "mutex.h"
+#include "syntax.h"
+#include <cstring>
 #include <stdlib.h>
+#include <string>
+
+class Context;
+
 extern "C"
 {
 #include "lualib.h"
@@ -29,6 +39,13 @@ extern "C"
 #include "common.h"
 
 context_t * context_list_start = nullptr;
+
+/***********************
+ ***********************/
+context_t * context_get_list_start()
+{
+	return context_list_start;
+}
 
 /***********************
  ***********************/
@@ -835,256 +852,78 @@ context_t * context_find(const char * id)
 }
 
 /**************************************
- Spread the data of a context to all in_game context
- **************************************/
-void context_spread(context_t * context)
-{
-	context_t * ctx = nullptr;
-
-	context_lock_list();
-
-	ctx = context_list_start;
-
-	if (ctx == nullptr)
-	{
-		context_unlock_list();
-		return;
-	}
-
-	do
-	{
-		// Skip if not in game
-		if (ctx->in_game == false)
-		{
-			continue;
-		}
-
-		if (context_is_npc(ctx) == true)
-		{
-			continue;
-		}
-
-		if (ctx->id == nullptr)
-		{
-			continue;
-		}
-
-		// Skip if not on the same map or previous map
-		if ((ctx->map != nullptr) && (context->map != nullptr)
-				&& (context->prev_map != nullptr))
-		{
-			if (strcmp(context->map, ctx->map) != 0
-					&& strcmp(context->prev_map, ctx->map) != 0)
-			{
-				continue;
-			}
-		}
-
-		network_send_context_to_context(ctx, context);
-
-	} while ((ctx = ctx->next) != nullptr);
-
-	/* The existing context on the previous map should have
-	 been deleted, we don't need this any more -> this will
-	 generate less network request */
-	free(context->prev_map);
-	context->prev_map = nullptr;
-
-	context_unlock_list();
-}
-
-/**************************************
- if "map" == nullptr : server sends a message to all connected client
- if "map" != nullptr : server sends a message to all connected clients on the map
- **************************************/
-void context_broadcast_text(const char * map, const char * text)
-{
-	context_t * ctx = nullptr;
-
-	context_lock_list();
-
-	ctx = context_list_start;
-
-	if (ctx == nullptr)
-	{
-		context_unlock_list();
-		return;
-	}
-
-	do
-	{
-		// Skip if not in game
-		if (ctx->in_game == false)
-		{
-			continue;
-		}
-
-		if (context_is_npc(ctx) == true)
-		{
-			continue;
-		}
-
-		// Skip if the player has not selected its character
-		if (ctx->id == nullptr)
-		{
-			continue;
-		}
-
-		if (ctx->map == nullptr)
-		{
-			continue;
-		}
-
-		if (map)
-		{
-			// Skip if not on the same map
-			if (strcmp(map, ctx->map) != 0)
-			{
-				continue;
-			}
-		}
-
-		network_send_text(ctx->id, text);
-
-	} while ((ctx = ctx->next) != nullptr);
-
-	context_unlock_list();
-}
-
-/**************************************
- Send the data of all existing context to the passed context
- Useful at start time
- **************************************/
-void context_request_other_context(context_t * context)
-{
-	context_t * ctx = nullptr;
-
-	context_lock_list();
-
-	ctx = context_list_start;
-
-	if (ctx == nullptr)
-	{
-		context_unlock_list();
-		return;
-	}
-
-	do
-	{
-		// Skip the calling context
-		if (context == ctx)
-		{
-			continue;
-		}
-
-		// Skip if not on the same map
-		if (ctx->map != nullptr)
-		{
-			if (strcmp(context->map, ctx->map) != 0)
-			{
-				continue;
-			}
-		}
-
-		network_send_context_to_context(context, ctx);
-
-	} while ((ctx = ctx->next) != nullptr);
-
-	context_unlock_list();
-}
-
-/**************************************
  Called from client
  **************************************/
-void context_add_or_update_from_network_frame(context_t * p_pContext,
-		NetworkFrame & p_rNetworkFrame)
+void context_add_or_update_from_network_frame(const Context & context)
 {
-	context_t l_ReadContext;
-	context_init(&l_ReadContext);
-
-	p_rNetworkFrame.pop(l_ReadContext.user_name);
-	p_rNetworkFrame.pop(l_ReadContext.character_name);
-	p_rNetworkFrame.pop(l_ReadContext.npc);
-	p_rNetworkFrame.pop(l_ReadContext.map);
-	p_rNetworkFrame.pop(l_ReadContext.in_game);
-	p_rNetworkFrame.pop(l_ReadContext.connected);
-	p_rNetworkFrame.pop(l_ReadContext.tile_x);
-	p_rNetworkFrame.pop(l_ReadContext.tile_y);
-	p_rNetworkFrame.pop(l_ReadContext.type);
-	p_rNetworkFrame.pop(l_ReadContext.id);
-	p_rNetworkFrame.pop(l_ReadContext.selection.id);
-	p_rNetworkFrame.pop(l_ReadContext.selection.map);
-	p_rNetworkFrame.pop(l_ReadContext.selection.map_coord[0]);
-	p_rNetworkFrame.pop(l_ReadContext.selection.map_coord[1]);
-	p_rNetworkFrame.pop(l_ReadContext.selection.equipment);
-	p_rNetworkFrame.pop(l_ReadContext.selection.inventory);
-
 	// search for this p_pContext
 	context_lock_list();
 	context_t * ctx = context_list_start;
 
 	while (ctx != nullptr)
 	{
-		if (strcmp(l_ReadContext.id, ctx->id) == 0)
+		if (strcmp(context.getId().c_str(), ctx->id) == 0)
 		{
-			ctx->in_game = l_ReadContext.in_game;
-			ctx->connected = l_ReadContext.connected;
+			ctx->in_game = context.isInGame();
+			ctx->connected = context.isConnected();
 
-			if (l_ReadContext.in_game == true)
+			if (context.isInGame() == true)
 			{
 				wlog(LOGDEVELOPER, "Updating p_pContext %s / %s",
-						l_ReadContext.user_name, l_ReadContext.character_name);
+						context.getUserName().c_str(),
+						context.getCharacterName().c_str());
 				// do not call context_set_* function since we already have the lock
-				_context_set_map(ctx, l_ReadContext.map);
+				_context_set_map(ctx, context.getMap().c_str());
 
-				_context_set_npc(ctx, l_ReadContext.npc);
+				_context_set_npc(ctx, context.isNpc());
 
-				_context_set_pos_tx(ctx, l_ReadContext.tile_x);
-				_context_set_pos_ty(ctx, l_ReadContext.tile_y);
+				_context_set_pos_tx(ctx, context.getTileX());
+				_context_set_pos_ty(ctx, context.getTileY());
 
 				free(ctx->type);
-				ctx->type = strdup(l_ReadContext.type);
+				ctx->type = strdup(context.getType().c_str());
 
 				if (ctx->selection.map)
 				{
 					free(ctx->selection.map);
 				}
-				ctx->selection.map = strdup(l_ReadContext.selection.map);
+				ctx->selection.map = strdup(
+						context.getSelection().getMap().c_str());
 				ctx->selection.map_coord[0] =
-						l_ReadContext.selection.map_coord[0];
+						context.getSelection().getMapCoordTx();
 				ctx->selection.map_coord[1] =
-						l_ReadContext.selection.map_coord[1];
+						context.getSelection().getMapCoordTy();
 
 				if (ctx->selection.id)
 				{
 					free(ctx->selection.id);
 				}
-				ctx->selection.id = strdup(l_ReadContext.selection.id);
+				ctx->selection.id = strdup(
+						context.getSelection().getId().c_str());
 
 				if (ctx->selection.equipment)
 				{
 					free(ctx->selection.equipment);
 				}
 				ctx->selection.equipment = strdup(
-						l_ReadContext.selection.equipment);
+						context.getSelection().getEquipment().c_str());
 
 				if (ctx->selection.inventory)
 				{
 					free(ctx->selection.inventory);
 				}
 				ctx->selection.inventory = strdup(
-						l_ReadContext.selection.inventory);
+						context.getSelection().getInventory().c_str());
 			}
 
-			if (l_ReadContext.connected == false)
+			if (context.isConnected() == false)
 			{
 				wlog(LOGDEVELOPER, "Deleting p_pContext %s / %s",
-						l_ReadContext.user_name, l_ReadContext.character_name);
+						context.getUserName().c_str(),
+						context.getCharacterName().c_str());
 				context_free(ctx);
 			}
 			context_unlock_list();
-
-			context_free_data(&l_ReadContext);
 
 			return;
 		}
@@ -1093,133 +932,29 @@ void context_add_or_update_from_network_frame(context_t * p_pContext,
 
 	context_unlock_list();
 
-	wlog(LOGDEVELOPER, "Creating p_pContext %s / %s", l_ReadContext.user_name,
-			l_ReadContext.character_name);
+	wlog(LOGDEVELOPER, "Creating p_pContext %s / %s",
+			context.getUserName().c_str(), context.getCharacterName().c_str());
 	ctx = context_new();
-	context_set_username(ctx, l_ReadContext.user_name);
-	context_set_character_name(ctx, l_ReadContext.character_name);
-	context_set_npc(ctx, l_ReadContext.npc);
-	context_set_map(ctx, l_ReadContext.map);
-	context_set_type(ctx, l_ReadContext.type);
-	context_set_pos_tx(ctx, l_ReadContext.tile_x);
-	context_set_pos_ty(ctx, l_ReadContext.tile_y);
-	context_set_id(ctx, l_ReadContext.id);
-	context_set_connected(ctx, l_ReadContext.connected);
-	context_set_in_game(ctx, l_ReadContext.in_game);
-	context_set_selected_character(ctx, l_ReadContext.selection.id);
-	context_set_selected_tile(ctx, l_ReadContext.selection.map,
-			l_ReadContext.selection.map_coord[0],
-			l_ReadContext.selection.map_coord[1]);
-	context_set_selected_equipment(ctx, l_ReadContext.selection.equipment);
-	context_set_selected_item(ctx, l_ReadContext.selection.inventory);
-
-	context_free_data(&l_ReadContext);
+	context_set_username(ctx, context.getUserName().c_str());
+	context_set_character_name(ctx, context.getCharacterName().c_str());
+	context_set_npc(ctx, context.isNpc());
+	context_set_map(ctx, context.getMap().c_str());
+	context_set_type(ctx, context.getType().c_str());
+	context_set_pos_tx(ctx, context.getTileX());
+	context_set_pos_ty(ctx, context.getTileY());
+	context_set_id(ctx, context.getId().c_str());
+	context_set_connected(ctx, context.isConnected());
+	context_set_in_game(ctx, context.isInGame());
+	context_set_selected_character(ctx, context.getSelection().getId().c_str());
+	context_set_selected_tile(ctx, context.getSelection().getMap().c_str(),
+			context.getSelection().getMapCoordTx(),
+			context.getSelection().getMapCoordTy());
+	context_set_selected_equipment(ctx,
+			context.getSelection().getEquipment().c_str());
+	context_set_selected_item(ctx,
+			context.getSelection().getInventory().c_str());
 }
 
-/**************************************
- Broadcast upload of a map file to all in_game context on that map
- **************************************/
-void context_broadcast_map(const char * map)
-{
-	context_t * ctx = nullptr;
-	char * filename;
-
-	context_lock_list();
-
-	ctx = context_list_start;
-
-	if (ctx == nullptr)
-	{
-		context_unlock_list();
-		return;
-	}
-
-	filename = strconcat(MAP_TABLE, "/", map, nullptr);
-
-	do
-	{
-		if (context_is_npc(ctx) == true)
-		{
-			continue;
-		}
-
-		/* Skip if not in game */
-		if (ctx->in_game == false)
-		{
-			continue;
-		}
-
-		/* Skip if not on the same map */
-		if (ctx->map)
-		{
-			if (strcmp(map, ctx->map) != 0)
-			{
-				continue;
-			}
-		}
-
-		network_send_file(ctx, filename);
-
-	} while ((ctx = ctx->next) != nullptr);
-
-	free(filename);
-
-	context_unlock_list();
-}
-
-/**************************************
- Broadcast upload of a character file to all in_game context on the same map
- **************************************/
-void context_broadcast_character(const char * character)
-{
-	context_t * ctx = nullptr;
-	context_t * character_ctx = nullptr;
-	char * filename;
-
-	context_lock_list();
-
-	character_ctx = context_find(character);
-
-	ctx = context_list_start;
-
-	if (ctx == nullptr)
-	{
-		context_unlock_list();
-		return;
-	}
-
-	filename = strconcat(CHARACTER_TABLE, "/", character, nullptr);
-
-	do
-	{
-		if (context_is_npc(ctx) == true)
-		{
-			continue;
-		}
-
-		/* Skip if not in game */
-		if (ctx->in_game == false)
-		{
-			continue;
-		}
-
-		/* Skip if not on the same map */
-		if (ctx->map)
-		{
-			if (strcmp(character_ctx->map, ctx->map) != 0)
-			{
-				continue;
-			}
-		}
-
-		network_send_file(ctx, filename);
-
-	} while ((ctx = ctx->next) != nullptr);
-
-	free(filename);
-
-	context_unlock_list();
-}
 /**************************************
  Return the distance between two contexts
  **************************************/

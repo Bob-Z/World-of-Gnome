@@ -20,6 +20,9 @@
 #ifndef CONTEXT_H
 #define CONTEXT_H
 
+class Context;
+struct lua_State;
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -84,6 +87,7 @@ typedef struct context
 	struct context* next;
 } context_t;
 
+context_t * context_get_list_start();
 void context_init(context_t * context);
 context_t * context_new(void);
 void context_free_data(context_t * context);
@@ -120,18 +124,13 @@ ret_code_t context_set_selected_item(context_t * context,
 		const char * selected_item);
 ret_code_t context_update_from_file(context_t * context);
 void context_spread(context_t * context);
-void context_add_or_update_from_network_frame(context_t * context,
-		NetworkFrame & p_rNetworkFrame);
+void context_add_or_update_from_network_frame(const Context & context);
 void context_lock_list();
 void context_unlock_list();
 context_t * context_get_first();
 context_t * context_get_player();
 ret_code_t context_write_to_file(context_t * context);
-void context_broadcast_map(const char * map);
-void context_broadcast_character(const char * character);
-void context_request_other_context(context_t * context);
 context_t * context_find(const char * id);
-void context_broadcast_text(const char * map, const char * text);
 int context_distance(context_t * ctx1, context_t * ctx2);
 void context_reset_all_position();
 bool context_is_npc(context_t * ctx);

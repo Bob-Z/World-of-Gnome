@@ -17,14 +17,30 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#include "action.h"
 #include "character.h"
-#include "common.h"
+
+#include <client_server.h>
+#include <common.h>
+#include <const.h>
+#include <context.h>
+#include <dirent.h>
+#include <entry.h>
+#include <file.h>
+#include <log.h>
+#include <stdlib.h>
+#include <syntax.h>
+#include <SDL_mutex.h>
+#include <util.h>
+#include <cstdio>
+#include <cstring>
+#include <string>
+#include <vector>
+
+#include "action.h"
+#include "context_server.h"
 #include "map_server.h"
 #include "network_server.h"
 #include "npc.h"
-#include <dirent.h>
-#include <string.h>
 
 /*********************************************
  Send playable character templates

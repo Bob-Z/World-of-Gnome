@@ -17,6 +17,22 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
+#include <client_server.h>
+#include <context.h>
+#include <entry.h>
+#include <file.h>
+#include <item.h>
+#include <log.h>
+#include <lua.h>
+#include <network.h>
+#include <protocol.h>
+#include <syntax.h>
+#include <types.h>
+#include <util.h>
+#include <cstring>
+
+#include "context_server.h"
+
 #ifdef __cplusplus
 extern "C"
 {

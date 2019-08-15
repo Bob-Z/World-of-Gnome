@@ -17,12 +17,30 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
+#include <client_server.h>
+#include <common.h>
+#include <context.h>
+#include <entry.h>
+#include <file.h>
+#include <log.h>
+#include <network.h>
+#include <NetworkFrame.h>
+#include <protocol.h>
+#include <stdlib.h>
+#include <syntax.h>
+#include <types.h>
+#include <util.h>
+#include <wog.pb.h>
+#include <cstdint>
+#include <cstring>
+#include <string>
+#include <utility>
+#include <vector>
+
 #include "action.h"
 #include "character.h"
-#include "common.h"
+#include "context_server.h"
 #include "network_server.h"
-#include "wog.pb.h"
-#include <string.h>
 
 /**************************************
  Return RET_NOK on error

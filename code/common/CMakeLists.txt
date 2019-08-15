@@ -25,6 +25,7 @@ add_library(
 	${PROTO_HEADER}
 	${PROTO_SRC}
 
+	Context.cpp
 	context.cpp
 	entry.cpp
 	file.cpp
@@ -40,6 +41,7 @@ add_library(
 	lua.cpp
 	NetworkFrame.cpp
 	Serializer.cpp
+	Selection.cpp
 )
 
 target_link_libraries (${PROJECT_NAME}

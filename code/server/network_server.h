@@ -40,5 +40,6 @@ void network_send_login_ok(context_t * context);
 void network_send_login_nok(context_t * context);
 void network_send_playable_character(context_t * context,
 		const std::vector<std::string> & id_list);
+void network_send_context_to_context(context_t * dest_ctx, context_t * src_ctx);
 
 #endif

@@ -17,17 +17,31 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#include "common.h"
+#include <common.h>
+#include <context.h>
+#include <Context.h>
+#include <entry.h>
+#include <log.h>
+#include <NetworkFrame.h>
+#include <protocol.h>
+#include <Selection.h>
+#include <types.h>
+#include <wog.pb.h>
+#include <cstdint>
+#include <cstdlib>
+#include <string>
+#include <vector>
+
 #include "EffectManager.h"
 #include "file.h"
-#include "imageDB.h"
 #include "network_client.h"
 #include "scr_create.h"
 #include "scr_select.h"
 #include "screen.h"
 #include "textview.h"
 #include "ui_play.h"
-#include "wog.pb.h"
+
+class Context;
 
 /**************************************
  Return RET_NOK on error
@@ -116,6 +130,43 @@ static ret_code_t manage_user_character(context_t * context,
 	return RET_OK;
 }
 
+/**************************************
+ Return RET_NOK on error
+ **************************************/
+static ret_code_t manage_context(context_t * context,
+		const pb::Context& incoming_context)
+{
+	wlog(LOGDEVELOPER, "[network] Received context %s",
+			incoming_context.id().c_str());
+
+	Context received_context;
+	received_context.setCharacterName(incoming_context.character_name());
+	received_context.setConnected(incoming_context.connected());
+	received_context.setId(incoming_context.id());
+	received_context.setInGame(incoming_context.in_game());
+	received_context.setMap(incoming_context.map());
+	received_context.setNpc(incoming_context.npc());
+	received_context.setTileX(incoming_context.tile_x());
+	received_context.setTileY(incoming_context.tile_y());
+	received_context.setType(incoming_context.type());
+	received_context.setUserName(incoming_context.user_name());
+
+	Selection selection;
+	selection.setEquipment(incoming_context.selection().equipment());
+	selection.setId(incoming_context.selection().id());
+	selection.setInventory(incoming_context.selection().inventory());
+	selection.setMap(incoming_context.selection().map());
+	selection.setMapCoordTx(incoming_context.selection().map_coord_tx());
+	selection.setMapCoordTy(incoming_context.selection().map_coord_ty());
+
+	received_context.setSelection(selection);
+
+	context_add_or_update_from_network_frame(received_context);
+	screen_compose();
+
+	return RET_OK;
+}
+
 /***********************************
  Return RET_NOK on error
  ***********************************/
@@ -158,6 +209,10 @@ ret_code_t parse_incoming_data(context_t * context, NetworkFrame & frame)
 			{
 				manage_user_character(context, message.user_character());
 			}
+			else if (message.has_context())
+			{
+				manage_context(context, message.context());
+			}
 			else
 			{
 				werr(LOGUSER, "Unknown message received");
@@ -166,11 +221,6 @@ ret_code_t parse_incoming_data(context_t * context, NetworkFrame & frame)
 	}
 		break;
 
-	case CMD_SEND_CONTEXT:
-		wlog(LOGDEVELOPER, "Received CMD_SEND_CONTEXT");
-		context_add_or_update_from_network_frame(context, frame);
-		screen_compose();
-		break;
 	case CMD_SEND_TEXT:
 	{
 		wlog(LOGDEVELOPER, "Received CMD_SEND_TEXT");

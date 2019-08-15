@@ -37,6 +37,7 @@ add_executable(
 	action.cpp
 	attribute.cpp
 	character.cpp
+	context_server.cpp
 	equipment.cpp
 	inventory.cpp
 	main_server.cpp

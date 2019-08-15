@@ -202,49 +202,6 @@ ret_code_t network_read_bytes(TCPsocket socket, char * data, int size)
 }
 
 /*********************************************************************
- send the data of a context to another context
- *********************************************************************/
-void network_send_context_to_context(context_t * dest_ctx, context_t * src_ctx)
-{
-	// Skip if Dest context is an NPC
-	if (context_is_npc(dest_ctx))
-	{
-		return;
-	}
-	// Source context is not ready yet
-	if (src_ctx->in_game == 0)
-	{
-		return;
-	}
-	if (src_ctx->user_name == nullptr)
-	{
-		return;
-	}
-
-	NetworkFrame l_Frame;
-	l_Frame.push(src_ctx->user_name);
-	l_Frame.push(src_ctx->character_name);
-	l_Frame.push(src_ctx->npc);
-	l_Frame.push(src_ctx->map);
-	l_Frame.push(src_ctx->in_game);
-	l_Frame.push(src_ctx->connected);
-	l_Frame.push(src_ctx->tile_x);
-	l_Frame.push(src_ctx->tile_y);
-	l_Frame.push(src_ctx->type);
-	l_Frame.push(src_ctx->id);
-	l_Frame.push(src_ctx->selection.id);
-	l_Frame.push(src_ctx->selection.map);
-	l_Frame.push(src_ctx->selection.map_coord[0]);
-	l_Frame.push(src_ctx->selection.map_coord[1]);
-	l_Frame.push(src_ctx->selection.equipment);
-	l_Frame.push(src_ctx->selection.inventory);
-
-	wlog(LOGDEVELOPER, "Send CMD_SEND_CONTEXT of %s to %s", src_ctx->id,
-			dest_ctx->id);
-	network_send_command(dest_ctx, CMD_SEND_CONTEXT, l_Frame, false);
-}
-
-/*********************************************************************
  filename is relative to the data dir
 
  send a file to a context

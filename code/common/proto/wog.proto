@@ -67,6 +67,7 @@ message ServerMessage
      PlayableCharacter playable_character = 3;
      File file = 4;
      UserCharacter user_character = 5;
+     Context context = 6;
   }
 }
 
@@ -88,4 +89,29 @@ message UserCharacter
 	string id = 1;
 	string type = 2;
 	string name = 3;
+}
+
+message Context
+{
+	string user_name = 1;
+	string character_name = 2;
+	bool npc = 3;
+	string map = 4;
+	bool in_game = 5;
+	bool connected = 6;
+	int32 tile_x = 7;
+	int32 tile_y = 8;
+	string type = 9;
+	string id = 10;
+	Selection selection = 11; 
+}
+
+message Selection
+{
+	string id = 11;
+	string map= 12;
+	int32 map_coord_tx = 13;
+	int32 map_coord_ty = 14;
+	string equipment = 15;
+	string inventory = 16;
 }

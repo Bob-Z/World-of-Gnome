@@ -427,3 +427,57 @@ void network_send_playable_character(context_t * context,
 	wlog(LOGDEVELOPER, "[network] Send playable character list");
 	network_send_command(context, CMD_PB, frame, false);
 }
+
+/*********************************************************************
+ send a source context's data to a destination context
+ *********************************************************************/
+void network_send_context_to_context(context_t * dest_ctx, context_t * src_ctx)
+{
+	// Skip if destination context is an NPC
+	if (context_is_npc(dest_ctx))
+	{
+		return;
+	}
+	// Source context is not ready yet
+	if (src_ctx->in_game == 0)
+	{
+		return;
+	}
+	if (src_ctx->user_name == nullptr)
+	{
+		return;
+	}
+
+	pb::ServerMessage message;
+	message.mutable_context()->set_user_name(src_ctx->user_name);
+	message.mutable_context()->set_character_name(src_ctx->character_name);
+	message.mutable_context()->set_npc(src_ctx->npc);
+	message.mutable_context()->set_map(src_ctx->map);
+	message.mutable_context()->set_in_game(src_ctx->in_game);
+	message.mutable_context()->set_connected(src_ctx->connected);
+	message.mutable_context()->set_tile_x(src_ctx->tile_x);
+	message.mutable_context()->set_tile_y(src_ctx->tile_y);
+	message.mutable_context()->set_type(src_ctx->type);
+	message.mutable_context()->set_id(src_ctx->id);
+	message.mutable_context()->mutable_selection()->set_id(
+			src_ctx->selection.id);
+	message.mutable_context()->mutable_selection()->set_map(
+			src_ctx->selection.map);
+	message.mutable_context()->mutable_selection()->set_map_coord_tx(
+			src_ctx->selection.map_coord[0]);
+	message.mutable_context()->mutable_selection()->set_map_coord_ty(
+			src_ctx->selection.map_coord[1]);
+	message.mutable_context()->mutable_selection()->set_equipment(
+			src_ctx->selection.equipment);
+	message.mutable_context()->mutable_selection()->set_inventory(
+			src_ctx->selection.inventory);
+
+	std::string serialized_data = message.SerializeAsString();
+
+	NetworkFrame frame;
+	frame.push(serialized_data);
+
+	wlog(LOGDEVELOPER, "[network] Send context of %s to %s", src_ctx->id,
+			dest_ctx->id);
+	network_send_command(dest_ctx, CMD_PB, frame, false);
+}
