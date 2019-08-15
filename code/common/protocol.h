@@ -36,7 +36,6 @@
 // *_SEND_* are sent from server to client
 
 // login with user name , followed by the user name itself, return OK if user exists
-#define CMD_SEND_LOGIN_OK		1
 #define CMD_SEND_LOGIN_NOK		2
 #define CMD_SEND_PLAYABLE_CHARACTER	6 // Send a playable character list
 #define CMD_SEND_FILE			8 // send a file's content

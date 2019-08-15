@@ -27,78 +27,125 @@
 #include "screen.h"
 #include "textview.h"
 #include "ui_play.h"
+#include "wog.pb.h"
+
+/**************************************
+ Return RET_NOK on error
+ **************************************/
+static ret_code_t manage_login_ok(context_t * context,
+		const pb::LoginOk & login_ok)
+{
+	wlog(LOGDEVELOPER, "[network] Received login OK for user %s",
+			context->user_name);
+
+	if (network_open_data_connection(context) == RET_NOK)
+	{
+		return RET_NOK;
+	}
+	context_set_connected(context, true);
+	wlog(LOGUSER, "Successfully connected");
+	network_request_user_character_list(context);
+	wlog(LOGDEVELOPER, "Character list requested");
+
+	return RET_OK;
+}
+
+/**************************************
+ Return RET_NOK on error
+ **************************************/
+static ret_code_t manage_login_nok(context_t * context,
+		const pb::LoginNok & login_nok)
+{
+	wlog(LOGDEVELOPER, "[network] Received login NOK for user %s",
+			context->user_name);
+
+	context_set_connected(context, false);
+	werr(LOGUSER, "Check your login and password (they are case sensitive)\n");
+	exit(-1);
+
+	return RET_OK;
+}
 
 /***********************************
  Return RET_NOK on error
  ***********************************/
-ret_code_t parse_incoming_data(context_t * p_pContext, NetworkFrame & p_rFrame)
+ret_code_t parse_incoming_data(context_t * context, NetworkFrame & frame)
 {
 	uint_fast32_t l_Command = 0U;
-	p_rFrame.pop(l_Command);
+	frame.pop(l_Command);
 
 	switch (l_Command)
 	{
-	case CMD_SEND_LOGIN_OK:
-		wlog(LOGDEVELOPER, "Received CMD_SEND_LOGIN_OK");
-		if (network_open_data_connection(p_pContext) == RET_NOK)
+	case CMD_PB:
+	{
+		std::string serialized_data;
+		frame.pop(serialized_data);
+		pb::ServerMessage message;
+		if (message.ParseFromString(serialized_data) == false)
 		{
-			return RET_NOK;
+			werr(LOGUSER, "Parsing failed");
 		}
-		context_set_connected(p_pContext, true);
-		wlog(LOGUSER, "Successfully connected");
-		network_request_user_character_list(p_pContext);
-		wlog(LOGDEVELOPER, "Character list requested");
+		else
+		{
+			if (message.has_login_ok())
+			{
+				manage_login_ok(context, message.login_ok());
+			}
+			else if (message.has_login_nok())
+			{
+				manage_login_nok(context, message.login_nok());
+			}
+			else
+			{
+				werr(LOGUSER, "Unknown message received");
+			}
+		}
+	}
 		break;
-	case CMD_SEND_LOGIN_NOK:
-		wlog(LOGDEVELOPER, "Received CMD_SEND_LOGIN_NOK");
-		context_set_connected(p_pContext, false);
-		werr(LOGUSER,
-				"Check your login and password (they are case sensitive)\n");
-		exit(-1);
-		break;
+
 	case CMD_SEND_PLAYABLE_CHARACTER:
 		wlog(LOGDEVELOPER, "Received CMD_SEND_PLAYABLE_CHARACTER");
-		scr_create_add_playable_character(p_pContext, p_rFrame);
+		scr_create_add_playable_character(context, frame);
 		screen_compose();
 		break;
 	case CMD_SEND_FILE:
 		wlog(LOGDEVELOPER, "Received CMD_SEND_FILE");
-		file_add(p_pContext, p_rFrame);
+		file_add(context, frame);
 		screen_compose();
 		break;
 	case CMD_SEND_USER_CHARACTER:
 		wlog(LOGDEVELOPER, "Received CMD_SEND_USER_CHARACTER");
-		scr_select_add_user_character(p_pContext, p_rFrame);
+		scr_select_add_user_character(context, frame);
 		screen_compose();
 		break;
 	case CMD_SEND_CONTEXT:
 		wlog(LOGDEVELOPER, "Received CMD_SEND_CONTEXT");
-		context_add_or_update_from_network_frame(p_pContext, p_rFrame);
+		context_add_or_update_from_network_frame(context, frame);
 		screen_compose();
 		break;
 	case CMD_SEND_TEXT:
 	{
 		wlog(LOGDEVELOPER, "Received CMD_SEND_TEXT");
 		std::string l_Text;
-		p_rFrame.pop(l_Text);
+		frame.pop(l_Text);
 
 		textview_add_line(l_Text);
 	}
 		break;
 	case CMD_SEND_ENTRY:
 		wlog(LOGDEVELOPER, "Received CMD_SEND_ENTRY");
-		if (entry_update(p_rFrame) != -1)
+		if (entry_update(frame) != -1)
 		{
 			screen_compose();
 		}
 		break;
 	case CMD_SEND_POPUP:
 		wlog(LOGDEVELOPER, "Received CMD_SEND_POPUP");
-		ui_play_popup_add(p_rFrame);
+		ui_play_popup_add(frame);
 		screen_compose();
 		break;
 	case CMD_SEND_EFFECT:
-		EffectManager::processEffectFrame(p_pContext, p_rFrame);
+		EffectManager::processEffectFrame(context, frame);
 		wlog(LOGDEVELOPER, "Received CMD_SEND_EFFECT");
 		break;
 	default:

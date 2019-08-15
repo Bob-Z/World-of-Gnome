@@ -57,3 +57,19 @@ message File
   string name = 1;
   string crc = 2;
 }
+
+message ServerMessage
+{
+  oneof messages {
+     LoginOk login_ok = 1;
+     LoginNok login_nok = 2;
+  }
+}
+
+message LoginOk
+{
+}
+
+message LoginNok
+{
+}

@@ -123,24 +123,6 @@ void network_send_command(context_t * p_pContext, const uint_fast32_t p_Command,
 }
 
 /*******************************************************************************
- ******************************************************************************/
-void network_send_command_no_data(context_t * p_pContext,
-		const uint_fast32_t p_Command, const bool p_IsData)
-{
-	// FIXME create a NetworkManager
-	DataSent *l_pData = new (DataSent);
-	NetworkFrame * l_pFrame = new (NetworkFrame);
-
-	l_pFrame->push(p_Command);
-
-	l_pData->m_pContext = p_pContext;
-	l_pData->m_pFrame = l_pFrame;
-	l_pData->m_IsData = p_IsData;
-
-	SDL_CreateThread(async_frame_send, "async_frame_send", (void*) l_pData);
-}
-
-/*******************************************************************************
  Asks to update an int entry on  a context
  ******************************************************************************/
 void network_send_entry_int(context_t * context, const char * table,

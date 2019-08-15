@@ -19,6 +19,7 @@
 
 #include "common.h"
 #include "NetworkFrame.h"
+#include "wog.pb.h"
 #include <arpa/inet.h>
 #include <string>
 #include <vector>
@@ -368,4 +369,34 @@ void network_broadcast_effect(EffectType p_Type, const std::string & p_TargetId,
 	} while ((ctx = ctx->next) != nullptr);
 
 	context_unlock_list();
+}
+
+/*********************************************************************
+ **********************************************************************/
+void network_send_login_ok(context_t * context)
+{
+	pb::ServerMessage message;
+	message.mutable_login_ok()->Clear();
+	std::string serialized_data = message.SerializeAsString();
+
+	NetworkFrame frame;
+	frame.push(serialized_data);
+
+	wlog(LOGDEVELOPER, "[network] Send LOGIN OK");
+	network_send_command(context, CMD_PB, frame, false);
+}
+
+/*********************************************************************
+ **********************************************************************/
+void network_send_login_nok(context_t * context)
+{
+	pb::ServerMessage message;
+	message.mutable_login_nok()->Clear();
+	std::string serialized_data = message.SerializeAsString();
+
+	NetworkFrame frame;
+	frame.push(serialized_data);
+
+	wlog(LOGDEVELOPER, "[network] Send LOGIN NOK");
+	network_send_command(context, CMD_PB, frame, false);
 }

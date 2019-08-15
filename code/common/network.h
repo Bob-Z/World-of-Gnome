@@ -26,8 +26,6 @@
 ret_code_t network_read_bytes(TCPsocket socket, char * data, int size);
 void network_send_command(context_t * p_pContext, const uint_fast32_t p_Command,
 		const NetworkFrame & p_rFrame, const bool p_IsData);
-void network_send_command_no_data(context_t * p_pContext,
-		const uint_fast32_t p_Command, const bool p_IsData);
 void network_send_context_to_context(context_t * dest_ctx, context_t * src_ctx);
 int network_send_file(context_t * context, const char * filename);
 int network_send_table_file(context_t * context, const char * table,

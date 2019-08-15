@@ -36,5 +36,7 @@ void network_send_popup(const std::string & p_rCtxId,
 		const std::vector<std::string> & p_rPopupData);
 void network_broadcast_effect(EffectType p_Type, const std::string & p_TargetId,
 		const std::vector<std::string> & p_Param);
+void network_send_login_ok(context_t * context);
+void network_send_login_nok(context_t * context);
 
 #endif

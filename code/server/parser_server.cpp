@@ -20,6 +20,7 @@
 #include "action.h"
 #include "character.h"
 #include "common.h"
+#include "network_server.h"
 #include "wog.pb.h"
 #include <string.h>
 
@@ -42,7 +43,7 @@ static ret_code_t manage_login(context_t * context, const pb::Login & login)
 	{
 		free(password);
 		werr(LOGUSER, "[network] Wrong login for %s", login.user().c_str());
-		network_send_command_no_data(context, CMD_SEND_LOGIN_NOK, false);
+		network_send_login_nok(context);
 		// force client disconnection
 		return RET_NOK;
 	}
@@ -55,7 +56,8 @@ static ret_code_t manage_login(context_t * context, const pb::Login & login)
 		}
 		context_set_connected(context, true);
 
-		network_send_command_no_data(context, CMD_SEND_LOGIN_OK, false);
+		network_send_login_ok(context);
+
 		wlog(LOGUSER, "[network] Login successful for user %s",
 				context->user_name);
 
