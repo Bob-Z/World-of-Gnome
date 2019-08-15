@@ -418,6 +418,6 @@ void network_send_playable_character(context_t * context,
 	NetworkFrame frame;
 	frame.push(serialized_data);
 
-	wlog(LOGDEVELOPER, "[network] Send LOGIN NOK");
+	wlog(LOGDEVELOPER, "[network] Send playable character list");
 	network_send_command(context, CMD_PB, frame, false);
 }

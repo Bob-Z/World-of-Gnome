@@ -56,6 +56,7 @@ message File
 {
   string name = 1;
   string crc = 2;
+  bytes data = 3;
 }
 
 message ServerMessage
@@ -64,6 +65,7 @@ message ServerMessage
      LoginOk login_ok = 1;
      LoginNok login_nok = 2;
      PlayableCharacter playable_character = 3;
+     File file = 4;
   }
 }
 

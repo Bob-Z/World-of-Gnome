@@ -250,7 +250,7 @@ void network_send_context_to_context(context_t * dest_ctx, context_t * src_ctx)
  send a file to a context
  return 0 on success
  *********************************************************************/
-int network_send_file(context_t * context, const char * filename)
+int network_send_file(context_t * context, const char * file_name)
 {
 	// Check if NPC
 	if (context_is_npc(context) == true)
@@ -259,10 +259,10 @@ int network_send_file(context_t * context, const char * filename)
 	}
 
 	// Never send files with password
-	if (strstr(filename, PASSWD_TABLE) != nullptr)
+	if (strstr(file_name, PASSWD_TABLE) != nullptr)
 	{
 		werr(LOGUSER, "send_file : Do not serve personal file  \"%s\"",
-				filename);
+				file_name);
 		return -1;
 	}
 
@@ -271,24 +271,35 @@ int network_send_file(context_t * context, const char * filename)
 	int_fast32_t file_length = 0;
 	int res = 0;
 
-	res = file_get_contents(filename, &file_data, &file_length);
+	res = file_get_contents(file_name, &file_data, &file_length);
 	if (res == RET_NOK)
 	{
-		werr(LOGUSER, "send_file : Error reading file \"%s\"", filename);
+		werr(LOGUSER, "send_file : Error reading file \"%s\"", file_name);
 		return -1;
 	}
 
-	//TODO Use NetworkFrame
-	NetworkFrame l_Frame;
+	std::string data(static_cast<const char*>(file_data), file_length);
 
-	l_Frame.push(filename);
-	l_Frame.push(file_data, file_length);
-
-	// send the frame
-	wlog(LOGDEVELOPER, "Send CMD_SEND_FILE : %s", filename);
-	network_send_command(context, CMD_SEND_FILE, l_Frame, false);
+	network_send_file_data(context, file_name, data);
 
 	return 0;
+}
+
+/*********************************************************************
+ **********************************************************************/
+void network_send_file_data(context_t * context, const std::string & name,
+		const std::string & data)
+{
+	pb::ServerMessage message;
+	message.mutable_file()->set_name(name);
+	message.mutable_file()->set_data(data);
+	std::string serialized_data = message.SerializeAsString();
+
+	NetworkFrame frame;
+	frame.push(serialized_data);
+
+	wlog(LOGDEVELOPER, "[network] Send LOGIN NOK");
+	network_send_command(context, CMD_PB, frame, false);
 }
 
 /*********************************************************************

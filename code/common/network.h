@@ -28,6 +28,8 @@ void network_send_command(context_t * p_pContext, const uint_fast32_t p_Command,
 		const NetworkFrame & p_rFrame, const bool p_IsData);
 void network_send_context_to_context(context_t * dest_ctx, context_t * src_ctx);
 int network_send_file(context_t * context, const char * filename);
+void network_send_file_data(context_t * context, const std::string & name,
+		const std::string & data);
 int network_send_table_file(context_t * context, const char * table,
 		const char * filename);
 void network_send_req_file(context_t * context, const std::string & file_name);

@@ -30,45 +30,39 @@
 /*************************************
  return 0 on success
  **************************************/
-int file_add(context_t * context, NetworkFrame & p_rFrame)
+int file_add(context_t * context, const std::string & name,
+		const std::string & data)
 {
-	std::string l_FileName;
-	p_rFrame.pop(l_FileName);
+	std::string temp_name = name + APP_NAME + "tmp";
+	std::string temp_path = std::string(base_directory) + std::string("/")
+			+ temp_name;
 
-	void * l_FileData = nullptr;
-	int_fast32_t l_FileLength = 0;
+	file_create_directory(temp_path);
 
-	p_rFrame.pop(l_FileData, l_FileLength);
-
-	// Write data to disk
-	std::string l_TmpFileName = l_FileName + APP_NAME + "tmp";
-	std::string l_TmpFullName = std::string(base_directory) + std::string("/")
-			+ l_TmpFileName;
-
-	file_create_directory(l_TmpFullName);
-
-	if (file_set_contents(l_TmpFileName.c_str(), l_FileData,
-			l_FileLength) == RET_NOK)
+	if (file_set_contents(temp_name.c_str(), data.c_str(),
+			data.size()) == RET_NOK)
 	{
 		werr(LOGDESIGNER, "Error writing file %s with size %d",
-				l_TmpFullName.c_str(), l_FileLength);
-		free(l_FileData);
+				temp_name.c_str(), data.size());
 		return -1;
 	}
 
-	free(l_FileData);
+	std::string file_path = std::string(base_directory) + std::string("/")
+			+ name;
 
-	std::string l_FullName = std::string(base_directory) + std::string("/")
-			+ l_FileName;
+	if (rename(temp_path.c_str(), file_path.c_str()) == -1)
+	{
+		wlog(LOGDEVELOPER, "Error renaming file %s to %s", temp_path.c_str(),
+				file_path.c_str());
+		return RET_NOK;
+	}
 
-	rename(l_TmpFullName.c_str(), l_FullName.c_str());
-
-	wlog(LOGDEVELOPER, "write file %s", l_FullName.c_str());
+	wlog(LOGDEVELOPER, "write file %s", file_path.c_str());
 
 	// Update the entry DB
-	entry_remove(l_FileName.c_str());
+	entry_remove(name.c_str());
 	// Update the image DB
-	image_DB_remove(l_FileName.c_str());
+	image_DB_remove(name.c_str());
 	// Update options if needed
 	option_read_client_conf();
 	// Make sure the new file is drawn (if needed)

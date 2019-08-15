@@ -87,6 +87,19 @@ static ret_code_t manage_playable_character(context_t * context,
 	return RET_OK;
 }
 
+/**************************************
+ Return RET_NOK on error
+ **************************************/
+static ret_code_t manage_file(context_t * context, const pb::File& file)
+{
+	wlog(LOGDEVELOPER, "[network] Received file %s", file.name().c_str());
+
+	file_add(context, file.name(), file.data());
+	screen_compose();
+
+	return RET_OK;
+}
+
 /***********************************
  Return RET_NOK on error
  ***********************************/
@@ -121,6 +134,10 @@ ret_code_t parse_incoming_data(context_t * context, NetworkFrame & frame)
 				manage_playable_character(context,
 						message.playable_character());
 			}
+			else if (message.has_file())
+			{
+				manage_file(context, message.file());
+			}
 			else
 			{
 				werr(LOGUSER, "Unknown message received");
@@ -129,11 +146,6 @@ ret_code_t parse_incoming_data(context_t * context, NetworkFrame & frame)
 	}
 		break;
 
-	case CMD_SEND_FILE:
-		wlog(LOGDEVELOPER, "Received CMD_SEND_FILE");
-		file_add(context, frame);
-		screen_compose();
-		break;
 	case CMD_SEND_USER_CHARACTER:
 		wlog(LOGDEVELOPER, "Received CMD_SEND_USER_CHARACTER");
 		scr_select_add_user_character(context, frame);

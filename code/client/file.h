@@ -17,7 +17,8 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-int file_add(context_t * context, NetworkFrame & p_rNetworkFrame);
+int file_add(context_t * context, const std::string & name,
+		const std::string & data);
 void file_clean(context_t *);
 void file_request_from_network(context_t * p_pCtx, const char * p_pTable,
 		const char * p_pFilename);
