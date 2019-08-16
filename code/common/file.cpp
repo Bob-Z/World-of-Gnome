@@ -114,30 +114,26 @@ void file_update(context_t * context, const char * filename)
 /***************************************************
  return 0 if directory was successfully created
  ****************************************************/
-static int mkdir_all(const char * pathname)
+static int mkdir_all(const std::string & path_name)
 {
-	char * token;
-	char * source;
+	char * token = nullptr;
+	char * source = nullptr;
 	int ret = -1;
 	char * directory = nullptr;
-	char * new_directory = nullptr;
-	char *saveptr;
+	char * saveptr = nullptr;
 
-	if (pathname == nullptr)
-	{
-		return -1;
-	}
-
-	source = strdup(pathname);
+	source = strdup(path_name.c_str());
 
 	token = strtok_r(source, "/", &saveptr);
 
 	directory = strdup("");
+
 	while (token != nullptr)
 	{
-		new_directory = strconcat(directory, "/", token, nullptr);
+		const std::string new_directory = std::string(directory) + "/"
+				+ std::string(token);
 		free(directory);
-		directory = new_directory;
+		directory = strdup(new_directory.c_str());
 		ret = mkdir(directory, 0775);
 		token = strtok_r(nullptr, "/", &saveptr);
 	}
@@ -189,7 +185,7 @@ char * file_new(const char * table, const char * suggested_name)
 
 		if (dir == nullptr)
 		{
-			mkdir_all(dir_path.c_str());
+			mkdir_all(dir_path);
 			dir = opendir(dir_path.c_str());
 			if (dir == nullptr)
 			{
@@ -227,7 +223,7 @@ char * file_new(const char * table, const char * suggested_name)
 			+ std::string(selected_name);
 
 	fd = creat(selected_file_path.c_str(),
-			S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH);
+	S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH);
 
 	close(fd);
 
@@ -339,7 +335,7 @@ ret_code_t file_set_contents(const char *filename, const void *contents,
 	file_lock(filename);
 
 	fd = creat(file_path.c_str(),
-			S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH);
+	S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH);
 	if (fd == -1)
 	{
 #if (_POSIX_C_SOURCE >= 200112L || _XOPEN_SOURCE >= 600) && ! _GNU_SOURCE
@@ -427,25 +423,11 @@ bool file_copy(const char * src_table, const char * src_name,
  ****************************************************/
 int file_create_directory(const std::string & file_path)
 {
-	char * directory = strdup(file_path.c_str());
-	int i;
-	int ret;
+	const std::string path_without_file = file_path.substr(0,
+			file_path.find_last_of("\\/"));
+	;
 
-	// Remove file name, just keep directory name
-	for (i = strlen(directory); i > 0; i--)
-	{
-		if (directory[i] == '/')
-		{
-			directory[i] = 0;
-			break;
-		}
-	}
-
-	ret = mkdir_all(directory);
-
-	free(directory);
-
-	return ret;
+	return mkdir_all(path_without_file);;
 }
 
 /***************************************************
