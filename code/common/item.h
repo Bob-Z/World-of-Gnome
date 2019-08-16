@@ -1,32 +1,34 @@
 /*
-   World of Gnome is a 2D multiplayer role playing game.
-   Copyright (C) 2013-2019 carabobz@gmail.com
+ World of Gnome is a 2D multiplayer role playing game.
+ Copyright (C) 2013-2019 carabobz@gmail.com
 
-   This program is free software; you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 3 of the License, or
-   (at your option) any later version.
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 3 of the License, or
+ (at your option) any later version.
 
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-   You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software Foundation,
-   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
-*/
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software Foundation,
+ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
+ */
 
 #ifndef ITEM_H
 #define ITEM_H
 
-#include "types.h"
 #include "context.h"
+#include "types.h"
+#include <string>
+#include <utility>
 
-char * item_create_empty();
-char * item_create_from_template(const char * my_template);
+std::pair<bool, std::string> item_create_empty();
+std::pair<bool, std::string> item_create_from_template(const std::string & my_template);
 ret_code_t item_destroy(const char * item_id);
-char * resource_new(const char * my_template, int quantity);
+std::pair<bool, std::string> resource_new(const std::string & my_template, int quantity);
 char * item_is_resource(const char * item_id);
 int resource_get_quantity(const char * item_id);
 int resource_set_quantity(context_t * context, const char * item_id, int quantity);

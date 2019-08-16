@@ -17,15 +17,30 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
+#include <bits/types/FILE.h>
+#include "client_server.h"
 #include "common.h"
-#include <string.h>
-#include <stdlib.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
+#include "const.h"
 #include <dirent.h>
+#include <fcntl.h>
+#include <features.h>
+#include "file.h"
+#include "list.h"
+#include "log.h"
+#include "mutex.h"
+#include "network.h"
+#include <stdlib.h>
+#include <sys/stat.h>
+#include <SDL_mutex.h>
+#include <SDL_stdinc.h>
+#include <SDL_timer.h>
+#include "types.h"
 #include <unistd.h>
-#include <errno.h>
+#include <cerrno>
+#include <cstdint>
+#include <cstdio>
+#include <cstring>
+#include <utility>
 
 list_t * file_list = nullptr;
 
@@ -99,8 +114,7 @@ void file_update(context_t * context, const char * filename)
 	}
 
 	// Avoid flooding the server
-	if (file_data->timestamp != 0
-			&& file_data->timestamp + FILE_REQUEST_TIMEOUT > current_time)
+	if (file_data->timestamp != 0 && file_data->timestamp + FILE_REQUEST_TIMEOUT > current_time)
 	{
 		//wlog(LOGDEBUG,"Previous request of file  %s has been %d ms ago",filename,current_time - file_data->timestamp );
 		return;
@@ -130,8 +144,7 @@ static int mkdir_all(const std::string & path_name)
 
 	while (token != nullptr)
 	{
-		const std::string new_directory = std::string(directory) + "/"
-				+ std::string(token);
+		const std::string new_directory = std::string(directory) + "/" + std::string(token);
 		free(directory);
 		directory = strdup(new_directory.c_str());
 		ret = mkdir(directory, 0775);
@@ -145,42 +158,42 @@ static int mkdir_all(const std::string & path_name)
 }
 
 /****************************
- Parameter 1: Name of the table to create the new file
- Parameter 2: Name of the file you want to create, if nullptr an available file is created.
- if the suggested name is not available the function return nullptr
- return the name of an available empty file
- if success the file is created on disk
- the return string must be freed by caller
+ Parameter table: Name of the table to create the new file
+ Parameter suggested_name: Name of the file you want to create. If empty, an available file is created.
+ If the suggested name is not available the function return false.
+ Return the name of an available empty file.
+ On success the file is created on disk
  ****************************/
-char * file_new(const char * table, const char * suggested_name)
+std::pair<bool, std::string> file_new(const std::string & table, const std::string & suggested_name)
 {
-	DIR * dir;
-	struct dirent * ent;
+	DIR * dir = nullptr;
+	struct dirent * ent = nullptr;
 	char tag[10];
 	int index = 0;
-	int fd;
+	int fd = -1;
 	struct stat sts;
-	const char * selected_name = nullptr;
 
-	const std::string dir_path = base_directory + "/" + std::string(table);
+	const std::string dir_path = base_directory + "/" + table;
+
+	std::string selected_name;
 
 	SDL_LockMutex(character_dir_mutex);
 
-	if (suggested_name && suggested_name[0] != 0)
+	if (suggested_name != NO_SUGGESTED_NAME)
 	{
-		const std::string file_path = dir_path + "/"
-				+ std::string(suggested_name);
+		const std::string file_path = dir_path + "/" + std::string(suggested_name);
 		if (stat(file_path.c_str(), &sts) != -1)
 		{
 			SDL_UnlockMutex(character_dir_mutex);
-			// File exists
-			return nullptr;
+
+			werr(LOGDEVELOPER, "Suggested file %s already exists", suggested_name.c_str());
+			return std::pair<bool, std::string>
+			{ false, NO_SUGGESTED_NAME };
 		}
 		selected_name = suggested_name;
 	}
 	else
 	{
-
 		dir = opendir(dir_path.c_str());
 
 		if (dir == nullptr)
@@ -189,7 +202,10 @@ char * file_new(const char * table, const char * suggested_name)
 			dir = opendir(dir_path.c_str());
 			if (dir == nullptr)
 			{
-				return nullptr;
+				werr(LOGDEVELOPER, "Cannot create path %s", dir_path.c_str());
+
+				return std::pair<bool, std::string>
+				{ false, NO_SUGGESTED_NAME };
 			}
 		}
 
@@ -216,11 +232,10 @@ char * file_new(const char * table, const char * suggested_name)
 
 		closedir(dir);
 
-		selected_name = tag;
+		selected_name = std::string(tag);
 	}
 
-	const std::string selected_file_path = dir_path + "/"
-			+ std::string(selected_name);
+	const std::string selected_file_path = dir_path + "/" + selected_name;
 
 	fd = creat(selected_file_path.c_str(),
 	S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH);
@@ -229,7 +244,8 @@ char * file_new(const char * table, const char * suggested_name)
 
 	SDL_UnlockMutex(character_dir_mutex);
 
-	return strdup(selected_name);
+	return std::pair<bool, std::string>
+	{ true, selected_name };
 }
 
 /****************************
@@ -238,8 +254,7 @@ char * file_new(const char * table, const char * suggested_name)
  contents MUST BE FREED by caller
  return RET_NOK on error
  ****************************/
-ret_code_t file_get_contents(const char *filename, void **contents,
-		int_fast32_t *length)
+ret_code_t file_get_contents(const char *filename, void **contents, int_fast32_t *length)
 {
 	struct stat sts;
 	int fd;
@@ -262,8 +277,7 @@ ret_code_t file_get_contents(const char *filename, void **contents,
 		error_str = strerror_r(errno, error_buf, SMALL_BUF);
 #endif
 		file_unlock(filename);
-		werr(LOGDESIGNER, "Error stat on file %s: %s\n", file_path.c_str(),
-				error_str);
+		werr(LOGDESIGNER, "Error stat on file %s: %s\n", file_path.c_str(), error_str);
 		return RET_NOK;
 	}
 
@@ -277,8 +291,7 @@ ret_code_t file_get_contents(const char *filename, void **contents,
 		error_str = strerror_r(errno, error_buf, SMALL_BUF);
 #endif
 		file_unlock(filename);
-		werr(LOGDESIGNER, "Error open on file %s: %s\n", file_path.c_str(),
-				error_str);
+		werr(LOGDESIGNER, "Error open on file %s: %s\n", file_path.c_str(), error_str);
 		return RET_NOK;
 	}
 
@@ -303,8 +316,7 @@ ret_code_t file_get_contents(const char *filename, void **contents,
 		close(fd);
 		file_unlock(filename);
 		free(buf);
-		werr(LOGDESIGNER, "Error read on file %s: %s\n", file_path.c_str(),
-				error_str);
+		werr(LOGDESIGNER, "Error read on file %s: %s\n", file_path.c_str(), error_str);
 		return RET_NOK;
 	}
 
@@ -322,8 +334,7 @@ ret_code_t file_get_contents(const char *filename, void **contents,
  filename is "table/dir/file"
  return RET_NOK on error
  ****************************/
-ret_code_t file_set_contents(const char *filename, const void *contents,
-		int length)
+ret_code_t file_set_contents(const char *filename, const void *contents, int length)
 {
 	int fd;
 	ssize_t size;
@@ -345,8 +356,7 @@ ret_code_t file_set_contents(const char *filename, const void *contents,
 		error_str = strerror_r(errno, error_buf, SMALL_BUF);
 #endif
 		file_unlock(filename);
-		werr(LOGDESIGNER, "Error open on file %s: %s\n", file_path.c_str(),
-				error_str);
+		werr(LOGDESIGNER, "Error open on file %s: %s\n", file_path.c_str(), error_str);
 		return RET_NOK;
 	}
 
@@ -361,8 +371,7 @@ ret_code_t file_set_contents(const char *filename, const void *contents,
 #endif
 		close(fd);
 		file_unlock(filename);
-		werr(LOGDESIGNER, "Error write on file %s: %s\n", file_path.c_str(),
-				error_str);
+		werr(LOGDESIGNER, "Error write on file %s: %s\n", file_path.c_str(), error_str);
 		return RET_NOK;
 	}
 
@@ -376,14 +385,12 @@ ret_code_t file_set_contents(const char *filename, const void *contents,
 /******************************************************
  return true on success
  ******************************************************/
-bool file_copy(const char * src_table, const char * src_name,
-		const char * dst_table, const char * dst_name)
+bool file_copy(const char * src_table, const char * src_name, const char * dst_table, const char * dst_name)
 {
 	FILE *src;
 	FILE *dst;
 
-	const std::string src_full_path = base_directory + "/"
-			+ std::string(src_table) + "/" + std::string(src_name);
+	const std::string src_full_path = base_directory + "/" + std::string(src_table) + "/" + std::string(src_name);
 
 	src = fopen(src_full_path.c_str(), "rb");
 	if (src == nullptr)
@@ -392,14 +399,12 @@ bool file_copy(const char * src_table, const char * src_name,
 		return false;
 	}
 
-	const std::string dst_full_path = base_directory + "/"
-			+ std::string(dst_table) + "/" + std::string(dst_name);
+	const std::string dst_full_path = base_directory + "/" + std::string(dst_table) + "/" + std::string(dst_name);
 
 	dst = fopen(dst_full_path.c_str(), "wb");
 	if (dst == nullptr)
 	{
-		werr(LOGDESIGNER, "Failed to open destination file %s\n",
-				dst_full_path);
+		werr(LOGDESIGNER, "Failed to open destination file %s\n", dst_full_path);
 		fclose(src);
 		return false;
 	}
@@ -423,8 +428,7 @@ bool file_copy(const char * src_table, const char * src_name,
  ****************************************************/
 int file_create_directory(const std::string & file_path)
 {
-	const std::string path_without_file = file_path.substr(0,
-			file_path.find_last_of("\\/"));
+	const std::string path_without_file = file_path.substr(0, file_path.find_last_of("\\/"));
 	;
 
 	return mkdir_all(path_without_file);;
@@ -436,8 +440,7 @@ int file_create_directory(const std::string & file_path)
  ****************************************************/
 int file_delete(const char * table, const char * filename)
 {
-	const std::string file_path = base_directory + "/" + std::string(table)
-			+ "/" + std::string(filename);
+	const std::string file_path = base_directory + "/" + std::string(table) + "/" + std::string(filename);
 	return unlink(file_path.c_str());
 }
 
@@ -449,8 +452,7 @@ Uint32 file_get_timestamp(const char * table, const char * file_name)
 	file_t * file_data;
 	Uint32 time_stamp = 0;
 
-	const std::string table_path = std::string(table) + "/"
-			+ std::string(file_name);
+	const std::string table_path = std::string(table) + "/" + std::string(file_name);
 	SDL_LockMutex(file_list_mutex);
 	file_data = (file_t *) list_find(file_list, table_path.c_str());
 	if (file_data != nullptr)

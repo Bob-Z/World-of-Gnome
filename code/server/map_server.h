@@ -20,46 +20,32 @@
 #ifndef MAP_SERVER_H
 #define MAP_SERVER_H
 
-#include <context.h>
-#include <types.h>
+#include "context.h"
+#include "types.h"
+#include <string>
+#include <utility>
 
-int map_check_tile(context_t * ctx, char * id, const char * map, int layer,
-		int x, int y);
-char * map_new(const char * name, int w, int h, int tile_w, int tile_h);
+std::pair<bool, std::string> map_new(const char *name, int w, int h, int tile_w, int tile_h);
 char * map_delete_item(const char * map, int layer, int x, int y);
-ret_code_t map_add_item(const char * map, int layer, const char * item, int x,
-		int y);
-ret_code_t map_check_tile(context_t * ctx, char * id, const char * map,
-		int layer, int x, int y);
-ret_code_t map_set_tile(const char * map, int layer, const char * tile, int x,
-		int y, int network_broadcast);
-ret_code_t map_set_tile_array(const char * map, int layer,
-		const char** tile_array);
-ret_code_t map_set_tile_type(const char * map, int layer, const char * type,
-		int x, int y, int network_broadcast);
+ret_code_t map_add_item(const char * map, int layer, const char * item, int x, int y);
+ret_code_t map_check_tile(context_t * ctx, const char * id, const char * map, int layer, int x, int y);
+ret_code_t map_set_tile(const char * map, int layer, const char * tile, int x, int y, int network_broadcast);
+ret_code_t map_set_tile_array(const char * map, int layer, const char** tile_array);
+ret_code_t map_set_tile_type(const char * map, int layer, const char * type, int x, int y, int network_broadcast);
 void map_broadcast(const char * map);
 ret_code_t map_set_offscreen(const char * map, const char * script);
-ret_code_t map_set_custom_column(const char * map, int layer, int num,
-		int width, int height);
-ret_code_t map_set_custom_row(const char * map, int layer, int num, int width,
-		int height);
+ret_code_t map_set_custom_column(const char * map, int layer, int num, int width, int height);
+ret_code_t map_set_custom_row(const char * map, int layer, int num, int width, int height);
 char * map_get_tile(const char * map, int layer, int x, int y);
 char * map_get_tile_type(const char * map, int layer, int x, int y);
 char ** map_get_event(const char * map, int layer, int x, int y);
 char ** map_get_character(const char * map, int x, int y);
 char ** map_get_item(const char * map, int layer, int x, int y);
-char * map_add_event(const char * map, int layer, const char * script, int x,
-		int y);
-ret_code_t map_add_event_param(const char * map, int layer,
-		const char * event_id, const char * param);
-ret_code_t map_delete_event(const char * map, int layer, const char * script,
-		int x, int y);
-ret_code_t map_get_tile_coord(const char * map, int layer, int x, int y,
-		int * tx, int * ty);
-char * map_add_scenery(const char * map, int layer, int x, int y,
-		const char * image_name);
-ret_code_t map_add_layer(const char * map_name, int layer, int w, int h,
-		int tile_w, int tile_h, const char * default_tile,
-		const char * default_type);
+char * map_add_event(const char * map, int layer, const char * script, int x, int y);
+ret_code_t map_add_event_param(const char * map, int layer, const char * event_id, const char * param);
+ret_code_t map_delete_event(const char * map, int layer, const char * script, int x, int y);
+ret_code_t map_get_tile_coord(const char * map, int layer, int x, int y, int * tx, int * ty);
+char * map_add_scenery(const char * map, int layer, int x, int y, const char * image_name);
+ret_code_t map_add_layer(const char * map_name, int layer, int w, int h, int tile_w, int tile_h, const char * default_tile, const char * default_type);
 ret_code_t map_delete_layer(const char * map_name, int layer);
 #endif

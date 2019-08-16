@@ -18,8 +18,15 @@
  */
 
 #include "common.h"
-#include <dirent.h>
-#include <string.h>
+#include "context.h"
+#include "entry.h"
+#include "file.h"
+#include "network.h"
+#include <stdlib.h>
+#include "syntax.h"
+#include "types.h"
+#include <string>
+#include <utility>
 
 /********************************************
  Create an empty new item
@@ -27,27 +34,28 @@
  the returned string must be freed by caller
  return nullptr if fails
  ********************************************/
-char * item_create_empty()
+std::pair<bool, std::string> item_create_empty()
 {
-	return file_new(ITEM_TABLE, nullptr);
+	return file_new(std::string(ITEM_TABLE));
 }
 
 /**************************************************
  Create a new item based on the specified template
  return the id of the newly created item
  the returned string must be freed by caller
- return nullptr if fails
  **************************************************/
-char * item_create_from_template(const char * my_template)
+std::pair<bool, std::string> item_create_from_template(const std::string & my_template)
 {
-	char * new_name;
+	const std::pair<bool, std::string> new_name = file_new(ITEM_TABLE);
 
-	new_name = file_new(ITEM_TABLE, nullptr);
-	if (file_copy(ITEM_TEMPLATE_TABLE, my_template, ITEM_TABLE, new_name)
-			== false)
+	if (new_name.first == true)
 	{
-		file_delete(ITEM_TABLE, new_name);
-		return nullptr;
+		if (file_copy(ITEM_TEMPLATE_TABLE, my_template.c_str(), ITEM_TABLE, new_name.second.c_str()) == false)
+		{
+			file_delete(ITEM_TABLE, new_name.second.c_str());
+			return std::pair<bool, std::string>
+			{ false, "" };
+		}
 	}
 
 	return new_name;
@@ -66,31 +74,28 @@ ret_code_t item_destroy(const char * item_id)
  Create a new resource
  with the specified quantity
  return the id of the newly created resource
- the returned string must be freed by caller
- return nullptr if fails
  ***********************************************************/
-char * resource_new(const char * my_template, int quantity)
+std::pair<bool, std::string> resource_new(const std::string & my_template, int quantity)
 {
-	char * new_id;
+	const std::pair<bool, std::string> new_id = item_create_empty();
 
-	new_id = item_create_empty();
-	if (new_id == nullptr)
+	if (new_id.first == false)
 	{
-		return nullptr;
+		return new_id;
 	}
 
-	if (entry_write_string(ITEM_TABLE, new_id, my_template, ITEM_TEMPLATE,
-			nullptr) == RET_NOK)
+	if (entry_write_string(ITEM_TABLE, new_id.second.c_str(), my_template.c_str(), ITEM_TEMPLATE, nullptr) == RET_NOK)
 	{
-		entry_destroy(ITEM_TABLE, new_id);
-		return nullptr;
+		entry_destroy(ITEM_TABLE, new_id.second.c_str());
+		return std::pair<bool, std::string>
+		{ false, "" };
 	}
 
-	if (entry_write_int(ITEM_TABLE, new_id, quantity, ITEM_QUANTITY,
-			nullptr) == RET_NOK)
+	if (entry_write_int(ITEM_TABLE, new_id.second.c_str(), quantity, ITEM_QUANTITY, nullptr) == RET_NOK)
 	{
-		entry_destroy(ITEM_TABLE, new_id);
-		return nullptr;
+		entry_destroy(ITEM_TABLE, new_id.second.c_str());
+		return std::pair<bool, std::string>
+		{ false, "" };
 	}
 
 	return new_id;
@@ -105,8 +110,7 @@ char * item_is_resource(const char * item_id)
 {
 	char * my_template = nullptr;
 
-	entry_read_string(ITEM_TABLE, item_id, &my_template, ITEM_TEMPLATE,
-			nullptr);
+	entry_read_string(ITEM_TABLE, item_id, &my_template, ITEM_TEMPLATE, nullptr);
 
 	return my_template;
 }
@@ -126,8 +130,7 @@ int resource_get_quantity(const char * item_id)
 	}
 	free(my_template);
 
-	if (entry_read_int(ITEM_TABLE, item_id, &quantity, ITEM_QUANTITY,
-			nullptr) == RET_NOK)
+	if (entry_read_int(ITEM_TABLE, item_id, &quantity, ITEM_QUANTITY, nullptr) == RET_NOK)
 	{
 		return -1;
 	}
@@ -139,8 +142,7 @@ int resource_get_quantity(const char * item_id)
  set the quantity of a resource
  return -1 on error
  *****************************/
-int resource_set_quantity(context_t * context, const char * item_id,
-		int quantity)
+int resource_set_quantity(context_t * context, const char * item_id, int quantity)
 {
 	char * my_template;
 
@@ -151,8 +153,7 @@ int resource_set_quantity(context_t * context, const char * item_id,
 	}
 	free(my_template);
 
-	if (entry_write_int(ITEM_TABLE, item_id, quantity, ITEM_QUANTITY,
-			nullptr) == RET_NOK)
+	if (entry_write_int(ITEM_TABLE, item_id, quantity, ITEM_QUANTITY, nullptr) == RET_NOK)
 	{
 		return -1;
 	}
@@ -183,8 +184,7 @@ char * item_get_name(const char * item_id)
 	}
 	else
 	{
-		if (entry_read_string(ITEM_TABLE, item_id, &name, ITEM_NAME,
-				nullptr) == RET_OK)
+		if (entry_read_string(ITEM_TABLE, item_id, &name, ITEM_NAME, nullptr) == RET_OK)
 		{
 			return name;
 		}

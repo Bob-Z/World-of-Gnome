@@ -17,7 +17,9 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#include <context.h>
+#include "context.h"
+#include <string>
+#include <utility>
 
 void character_playable_send_list(context_t * context);
 void character_user_send(context_t * p_pCtx, const char * p_pCharacterId);
@@ -25,8 +27,7 @@ void character_user_send_list(context_t * context);
 int character_out_of_game(const char * id);
 int character_disconnect(const char * id);
 int character_set_pos(context_t * ctx, const char * map, int x, int y);
-char * character_create_from_template(context_t * ctx, const char * my_template,
-		const char * map, int layer, int x, int y);
+std::pair<bool, std::string> character_create_from_template(context_t * ctx, const char * my_template, const char * map, int layer, int x, int y);
 void character_update_aggro(context_t * context);
 int character_set_npc(const char * ctx, int npc);
 int character_get_npc(const char * id);
@@ -35,9 +36,7 @@ int character_set_portrait(const char * id, const char * portrait);
 int character_set_ai_script(const char * id, const char * script_name);
 int character_wake_up(const char * id);
 int character_set_sprite(const char * id, int index, const char * filename);
-int character_set_sprite_dir(const char * id, const char * dir, int index,
-		const char * filename);
-int character_set_sprite_move(const char * id, const char * dir, int index,
-		const char * filename);
+int character_set_sprite_dir(const char * id, const char * dir, int index, const char * filename);
+int character_set_sprite_move(const char * id, const char * dir, int index, const char * filename);
 void character_broadcast(const char * character);
 

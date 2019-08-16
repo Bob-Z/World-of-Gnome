@@ -46,8 +46,7 @@
  **************************************/
 static ret_code_t manage_login(context_t * context, const pb::Login & login)
 {
-	wlog(LOGDEVELOPER, "[network] Received login request for user %s",
-			login.user().c_str());
+	wlog(LOGDEVELOPER, "[network] Received login request for user %s", login.user().c_str());
 
 	char * password = nullptr;
 	if (entry_read_string(PASSWD_TABLE, login.user().c_str(), &password,
@@ -75,8 +74,7 @@ static ret_code_t manage_login(context_t * context, const pb::Login & login)
 
 		network_send_login_ok(context);
 
-		wlog(LOGUSER, "[network] Login successful for user %s",
-				context->user_name);
+		wlog(LOGUSER, "[network] Login successful for user %s", context->user_name);
 
 		return RET_OK;
 	}
@@ -97,8 +95,7 @@ static ret_code_t manage_start(context_t * context, const pb::Start & start)
 		context_spread(context);
 		context_request_other_context(context);
 	}
-	wlog(LOGDEVELOPER, "[network] received start request for ID %s and user %s",
-			context->id, context->user_name);
+	wlog(LOGDEVELOPER, "[network] received start request for ID %s and user %s", context->id, context->user_name);
 
 	return RET_OK;
 }
@@ -108,8 +105,7 @@ static ret_code_t manage_start(context_t * context, const pb::Start & start)
  **************************************/
 static ret_code_t manage_stop(context_t * context, const pb::Stop & stop)
 {
-	wlog(LOGDEVELOPER, "[network] Received stop request for ID %s of user %s",
-			context->user_name, context->id);
+	wlog(LOGDEVELOPER, "[network] Received stop request for ID %s of user %s", context->user_name, context->id);
 
 	if (context->in_game == true)
 	{
@@ -138,8 +134,7 @@ static ret_code_t manage_stop(context_t * context, const pb::Stop & stop)
 /**************************************
  Return RET_NOK on error
  **************************************/
-static ret_code_t manage_playable_character_list(context_t * context,
-		const pb::PlayableCharacterList & list)
+static ret_code_t manage_playable_character_list(context_t * context, const pb::PlayableCharacterList & list)
 {
 	wlog(LOGDEVELOPER, "[network] Received playable character list request");
 
@@ -151,12 +146,9 @@ static ret_code_t manage_playable_character_list(context_t * context,
 /**************************************
  Return RET_NOK on error
  **************************************/
-static ret_code_t manage_user_character_list(context_t * context,
-		const pb::UserCharacterList & list)
+static ret_code_t manage_user_character_list(context_t * context, const pb::UserCharacterList & list)
 {
-	wlog(LOGDEVELOPER,
-			"[network] Received user character list request for user %s",
-			list.user().c_str());
+	wlog(LOGDEVELOPER, "[network] Received user character list request for user %s", list.user().c_str());
 
 	character_user_send_list(context);
 
@@ -168,12 +160,11 @@ static ret_code_t manage_user_character_list(context_t * context,
  **************************************/
 static ret_code_t manage_create(context_t * context, const pb::Create& create)
 {
-	wlog(LOGDEVELOPER, "[network] Received create ID %s with name %s",
-			create.id().c_str(), create.name().c_str());
+	wlog(LOGDEVELOPER, "[network] Received create ID %s with name %s", create.id().c_str(), create.name().c_str());
 
-	char * file_name = nullptr;
-	file_name = file_new(CHARACTER_TABLE, create.name().c_str());
-	if (file_name == nullptr)
+	const std::pair<bool, std::string> file_name = file_new(CHARACTER_TABLE, create.name());
+
+	if (file_name.first == false)
 	{
 		werr(LOGUSER, "%s already exists", create.name().c_str());
 		return RET_NOK;
@@ -182,36 +173,30 @@ static ret_code_t manage_create(context_t * context, const pb::Create& create)
 	if (file_copy(CHARACTER_TEMPLATE_TABLE, create.id().c_str(),
 	CHARACTER_TABLE, create.name().c_str()) == false)
 	{
-		werr(LOGUSER,
-				"Error copying character template %s to character %s (maybe template doesn't exists ?)",
-				create.id(), create.name());
+		werr(LOGUSER, "Error copying character template %s to character %s (maybe template doesn't exists ?)", create.id(), create.name());
 		file_delete(CHARACTER_TABLE, create.name().c_str());
 		return RET_NOK;
 	}
 
-	if (entry_write_string(CHARACTER_TABLE, create.name().c_str(),
-			create.name().c_str(),
-			CHARACTER_KEY_NAME, nullptr) == RET_NOK)
+	if (entry_write_string(CHARACTER_TABLE, create.name().c_str(), create.name().c_str(),
+	CHARACTER_KEY_NAME, nullptr) == RET_NOK)
 	{
 		werr(LOGUSER, "Error setting character name %s", create.name().c_str());
 		file_delete(CHARACTER_TABLE, create.name().c_str());
 		return RET_NOK;
 	}
 
-	if (entry_add_to_list(USERS_TABLE, context->user_name,
-			create.name().c_str(),
-			USERS_CHARACTER_LIST, nullptr) == RET_NOK)
+	if (entry_add_to_list(USERS_TABLE, context->user_name, create.name().c_str(),
+	USERS_CHARACTER_LIST, nullptr) == RET_NOK)
 	{
-		werr(LOGUSER, "Error adding character %s to user %s",
-				create.name().c_str(), context->user_name);
+		werr(LOGUSER, "Error adding character %s to user %s", create.name().c_str(), context->user_name);
 		file_delete(CHARACTER_TABLE, create.name().c_str());
 		return RET_NOK;
 	}
 
 	character_user_send(context, create.name().c_str());
 
-	wlog(LOGDEVELOPER, "Successfully created: ID=%s, NAME=%s",
-			create.id().c_str(), create.name().c_str());
+	wlog(LOGDEVELOPER, "Successfully created: ID=%s, NAME=%s", create.id().c_str(), create.name().c_str());
 
 	return RET_OK;
 }
@@ -221,8 +206,7 @@ static ret_code_t manage_create(context_t * context, const pb::Create& create)
  **************************************/
 static ret_code_t manage_action(context_t * context, const pb::Action& action)
 {
-	wlog(LOGDEVELOPER, "[network] Received action script %s",
-			action.script().c_str());
+	wlog(LOGDEVELOPER, "[network] Received action script %s", action.script().c_str());
 
 	std::vector<std::string> params;
 	for (int i = 0; i < action.params_size(); i++)
@@ -240,8 +224,7 @@ static ret_code_t manage_action(context_t * context, const pb::Action& action)
  **************************************/
 static ret_code_t manage_file(context_t * context, const pb::File& file)
 {
-	wlog(LOGDEVELOPER, "[network] Received file request for %s",
-			file.name().c_str());
+	wlog(LOGDEVELOPER, "[network] Received file request for %s", file.name().c_str());
 
 	const std::string file_path = base_directory + "/" + file.name();
 
@@ -255,8 +238,7 @@ static ret_code_t manage_file(context_t * context, const pb::File& file)
 
 	if (file.crc() == crc.second)
 	{
-		wlog(LOGDEVELOPER, "Client has already newest %s file",
-				file.name().c_str());
+		wlog(LOGDEVELOPER, "Client has already newest %s file", file.name().c_str());
 		return RET_NOK;
 	}
 
@@ -268,8 +250,7 @@ static ret_code_t manage_file(context_t * context, const pb::File& file)
 /**************************************
  Return RET_NOK on error
  **************************************/
-ret_code_t parse_incoming_data(context_t * context,
-		const std::string & serialized_data)
+ret_code_t parse_incoming_data(context_t * context, const std::string & serialized_data)
 {
 	pb::ClientMessage message;
 	if (message.ParseFromString(serialized_data) == false)
@@ -288,8 +269,7 @@ ret_code_t parse_incoming_data(context_t * context,
 		}
 		else if (context_get_connected(context) == false)
 		{
-			werr(LOGUSER,
-					"Request from not authenticated client, close connection");
+			werr(LOGUSER, "Request from not authenticated client, close connection");
 		}
 		else if (message.has_start())
 		{
@@ -301,8 +281,7 @@ ret_code_t parse_incoming_data(context_t * context,
 		}
 		else if (message.has_playable_character_list())
 		{
-			manage_playable_character_list(context,
-					message.playable_character_list());
+			manage_playable_character_list(context, message.playable_character_list());
 		}
 		else if (message.has_user_character_list())
 		{

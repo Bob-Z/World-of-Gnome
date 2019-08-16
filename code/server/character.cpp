@@ -52,8 +52,7 @@ void character_playable_send_list(context_t * context)
 	struct dirent * ent;
 
 	// Read all files in character template directory
-	const std::string file_path = base_directory + "/"
-			+ std::string(CHARACTER_TEMPLATE_TABLE);
+	const std::string file_path = base_directory + "/" + std::string(CHARACTER_TEMPLATE_TABLE);
 
 	dir = opendir(file_path.c_str());
 	if (dir == nullptr)
@@ -84,8 +83,7 @@ void character_playable_send_list(context_t * context)
 		else
 		{
 			char ** marquee_list = nullptr;
-			if (entry_read_list(CHARACTER_TEMPLATE_TABLE, ent->d_name,
-					&marquee_list, CHARACTER_KEY_MARQUEE, nullptr) == RET_NOK)
+			if (entry_read_list(CHARACTER_TEMPLATE_TABLE, ent->d_name, &marquee_list, CHARACTER_KEY_MARQUEE, nullptr) == RET_NOK)
 			{
 				wlog(LOGDESIGNER, "%s has no marquee", ent->d_name);
 				continue;
@@ -220,64 +218,59 @@ int character_out_of_game(const char * id)
  the returned string MUST BE FREED by caller
  return nullptr if fails
  *******************************************************/
-char * character_create_from_template(context_t * ctx, const char * my_template,
-		const char * map, int layer, int x, int y)
+std::pair<bool, std::string> character_create_from_template(context_t * ctx, const char * my_template, const char * map, int layer, int x, int y)
 {
-	char * new_id;
+	const std::pair<bool, std::string> new_id = file_new(std::string(CHARACTER_TABLE));
 
-	new_id = file_new(CHARACTER_TABLE, nullptr);
-	if (file_copy(CHARACTER_TEMPLATE_TABLE, my_template, CHARACTER_TABLE,
-			new_id) == false)
+	if (file_copy(CHARACTER_TEMPLATE_TABLE, my_template, CHARACTER_TABLE, new_id.second.c_str()) == false)
 	{
-		file_delete(CHARACTER_TABLE, new_id);
-		return nullptr;
+		file_delete(CHARACTER_TABLE, new_id.second.c_str());
+		return std::pair<bool, std::string>
+		{ false, "" };
 	}
 
 	// Check if new character is allowed to be created here
-	if (map_check_tile(ctx, new_id, map, layer, x, y) == 0)
+	if (map_check_tile(ctx, new_id.second.c_str(), map, layer, x, y) == 0)
 	{
-		entry_destroy(CHARACTER_TABLE, new_id);
-		file_delete(CHARACTER_TABLE, new_id);
-		free(new_id);
-		return nullptr;
+		entry_destroy(CHARACTER_TABLE, new_id.second.c_str());
+		file_delete(CHARACTER_TABLE, new_id.second.c_str());
+
+		return std::pair<bool, std::string>
+		{ false, "" };
 	}
 
-	if (entry_write_string(CHARACTER_TABLE, new_id, map, CHARACTER_KEY_MAP,
-			nullptr) == RET_NOK)
+	if (entry_write_string(CHARACTER_TABLE, new_id.second.c_str(), map, CHARACTER_KEY_MAP, nullptr) == RET_NOK)
 	{
-		entry_destroy(CHARACTER_TABLE, new_id);
-		file_delete(CHARACTER_TABLE, new_id);
-		free(new_id);
-		return nullptr;
+		entry_destroy(CHARACTER_TABLE, new_id.second.c_str());
+		file_delete(CHARACTER_TABLE, new_id.second.c_str());
+		return std::pair<bool, std::string>
+		{ false, "" };
 	}
 
-	if (entry_write_int(CHARACTER_TABLE, new_id, x, CHARACTER_KEY_TILE_X,
-			nullptr) == RET_NOK)
+	if (entry_write_int(CHARACTER_TABLE, new_id.second.c_str(), x, CHARACTER_KEY_TILE_X, nullptr) == RET_NOK)
 	{
-		entry_destroy(CHARACTER_TABLE, new_id);
-		file_delete(CHARACTER_TABLE, new_id);
-		free(new_id);
-		return nullptr;
+		entry_destroy(CHARACTER_TABLE, new_id.second.c_str());
+		file_delete(CHARACTER_TABLE, new_id.second.c_str());
+		return std::pair<bool, std::string>
+		{ false, "" };
 	}
 
-	if (entry_write_int(CHARACTER_TABLE, new_id, y, CHARACTER_KEY_TILE_Y,
-			nullptr) == RET_NOK)
+	if (entry_write_int(CHARACTER_TABLE, new_id.second.c_str(), y, CHARACTER_KEY_TILE_Y, nullptr) == RET_NOK)
 	{
-		entry_destroy(CHARACTER_TABLE, new_id);
-		file_delete(CHARACTER_TABLE, new_id);
-		free(new_id);
-		return nullptr;
+		entry_destroy(CHARACTER_TABLE, new_id.second.c_str());
+		file_delete(CHARACTER_TABLE, new_id.second.c_str());
+		return std::pair<bool, std::string>
+		{ false, "" };
 	}
 
 	if (layer != -1) // FIXME
 	{
-		if (entry_write_int(CHARACTER_TABLE, new_id, layer, CHARACTER_LAYER,
-				nullptr) == RET_NOK)
+		if (entry_write_int(CHARACTER_TABLE, new_id.second.c_str(), layer, CHARACTER_LAYER, nullptr) == RET_NOK)
 		{
-			entry_destroy(CHARACTER_TABLE, new_id);
-			file_delete(CHARACTER_TABLE, new_id);
-			free(new_id);
-			return nullptr;
+			entry_destroy(CHARACTER_TABLE, new_id.second.c_str());
+			file_delete(CHARACTER_TABLE, new_id.second.c_str());
+			return std::pair<bool, std::string>
+			{ false, "" };
 		}
 	}
 
@@ -286,8 +279,7 @@ char * character_create_from_template(context_t * ctx, const char * my_template,
 
 /***********************************************************************
  ***********************************************************************/
-static void execute_aggro(context_t * agressor, context_t * target,
-		char * script, int aggro_dist)
+static void execute_aggro(context_t * agressor, context_t * target, char * script, int aggro_dist)
 {
 	int dist;
 	const char * param[] =
@@ -432,15 +424,13 @@ void character_update_aggro(context_t * agressor)
 }
 /*************************************************************
  *************************************************************/
-static void do_set_pos(context_t * ctx, const char * map, int x, int y,
-		bool change_map)
+static void do_set_pos(context_t * ctx, const char * map, int x, int y, bool change_map)
 {
 	context_set_map(ctx, map);
 	context_set_pos_tx(ctx, x);
 	context_set_pos_ty(ctx, y);
 
-	entry_write_string(CHARACTER_TABLE, ctx->id, map, CHARACTER_KEY_MAP,
-			nullptr);
+	entry_write_string(CHARACTER_TABLE, ctx->id, map, CHARACTER_KEY_MAP, nullptr);
 	entry_write_int(CHARACTER_TABLE, ctx->id, x, CHARACTER_KEY_TILE_X, nullptr);
 	entry_write_int(CHARACTER_TABLE, ctx->id, y, CHARACTER_KEY_TILE_Y, nullptr);
 
@@ -454,8 +444,7 @@ static void do_set_pos(context_t * ctx, const char * map, int x, int y,
 /*************************************************************
  Move every context on the same coordinate as platform context
  *************************************************************/
-static void platform_move(context_t * platform, const char * map, int x, int y,
-		bool change_map)
+static void platform_move(context_t * platform, const char * map, int x, int y, bool change_map)
 {
 	context_t * current = context_get_first();
 	int is_platform;
@@ -478,9 +467,7 @@ static void platform_move(context_t * platform, const char * map, int x, int y,
 			current = current->next;
 			continue;
 		}
-		if (platform->tile_x == current->tile_x
-				&& platform->tile_y == current->tile_y
-				&& !strcmp(platform->map, current->map))
+		if (platform->tile_x == current->tile_x && platform->tile_y == current->tile_y && !strcmp(platform->map, current->map))
 		{
 			do_set_pos(current, map, x, y, change_map);
 		}
@@ -522,8 +509,7 @@ int character_set_pos(context_t * ctx, const char * map, int x, int y)
 	}
 
 	ctx_layer = 0;
-	entry_read_int(CHARACTER_TABLE, ctx->id, &ctx_layer, CHARACTER_LAYER,
-			nullptr);
+	entry_read_int(CHARACTER_TABLE, ctx->id, &ctx_layer, CHARACTER_LAYER, nullptr);
 	sprintf(layer_name, "%s%d", MAP_KEY_LAYER, ctx_layer);
 
 	entry_read_int(MAP_TABLE, map, &width, MAP_KEY_WIDTH, nullptr);
@@ -630,18 +616,15 @@ int character_set_pos(context_t * ctx, const char * map, int x, int y)
 		{
 			script = nullptr;
 			if (entry_read_string(MAP_TABLE, map, &script, layer_name,
-			MAP_ENTRY_EVENT_LIST, event_id[i], MAP_EVENT_SCRIPT,
-					nullptr) == RET_OK)
+			MAP_ENTRY_EVENT_LIST, event_id[i], MAP_EVENT_SCRIPT, nullptr) == RET_OK)
 			{
 				entry_read_list(MAP_TABLE, map, &param, layer_name,
 				MAP_ENTRY_EVENT_LIST, event_id[i], MAP_EVENT_PARAM, nullptr);
 			}
 			else if (entry_read_string(MAP_TABLE, map, &script,
-			MAP_ENTRY_EVENT_LIST, event_id[i], MAP_EVENT_SCRIPT,
-					nullptr) == RET_OK)
+			MAP_ENTRY_EVENT_LIST, event_id[i], MAP_EVENT_SCRIPT, nullptr) == RET_OK)
 			{
-				entry_read_list(MAP_TABLE, map, &param, MAP_ENTRY_EVENT_LIST,
-						event_id[i], MAP_EVENT_PARAM, nullptr);
+				entry_read_list(MAP_TABLE, map, &param, MAP_ENTRY_EVENT_LIST, event_id[i], MAP_EVENT_PARAM, nullptr);
 			}
 
 			if (script == nullptr)
@@ -672,8 +655,7 @@ int character_set_pos(context_t * ctx, const char * map, int x, int y)
  *********************************************************/
 int character_set_npc(const char * id, int npc)
 {
-	if (entry_write_int(CHARACTER_TABLE, id, npc, CHARACTER_KEY_NPC,
-			nullptr) == RET_NOK)
+	if (entry_write_int(CHARACTER_TABLE, id, npc, CHARACTER_KEY_NPC, nullptr) == RET_NOK)
 	{
 		return -1;
 	}
@@ -695,8 +677,7 @@ int character_get_npc(const char * id)
 {
 	int npc;
 
-	if (entry_read_int(CHARACTER_TABLE, id, &npc, CHARACTER_KEY_NPC,
-			nullptr) == RET_NOK)
+	if (entry_read_int(CHARACTER_TABLE, id, &npc, CHARACTER_KEY_NPC, nullptr) == RET_NOK)
 	{
 		return 0;
 	}
@@ -746,8 +727,7 @@ char * character_get_portrait(const char * id)
  *********************************************************/
 int character_set_ai_script(const char * id, const char * script_name)
 {
-	if (entry_write_string(CHARACTER_TABLE, id, script_name, CHARACTER_KEY_AI,
-			nullptr) == RET_NOK)
+	if (entry_write_string(CHARACTER_TABLE, id, script_name, CHARACTER_KEY_AI, nullptr) == RET_NOK)
 	{
 		return -1;
 	}
@@ -800,8 +780,7 @@ int character_set_sprite(const char * id, int index, const char * filename)
  Write a new filename in a character's sprite direction list
  return RET_NOK on error
  ***********************************/
-int character_set_sprite_dir(const char * id, const char * dir, int index,
-		const char * filename)
+int character_set_sprite_dir(const char * id, const char * dir, int index, const char * filename)
 {
 	const char * key;
 
@@ -833,8 +812,7 @@ int character_set_sprite_dir(const char * id, const char * dir, int index,
 		break;
 	}
 
-	if (entry_write_list_index(CHARACTER_TABLE, id, filename, index, key,
-			nullptr) == RET_NOK)
+	if (entry_write_list_index(CHARACTER_TABLE, id, filename, index, key, nullptr) == RET_NOK)
 	{
 		return RET_NOK;
 	}
@@ -846,8 +824,7 @@ int character_set_sprite_dir(const char * id, const char * dir, int index,
  Write a new filename in a character's moving sprite list
  return RET_NOK on error
  ***********************************/
-int character_set_sprite_move(const char * id, const char * dir, int index,
-		const char * filename)
+int character_set_sprite_move(const char * id, const char * dir, int index, const char * filename)
 {
 	const char * key;
 
@@ -879,8 +856,7 @@ int character_set_sprite_move(const char * id, const char * dir, int index,
 		break;
 	}
 
-	if (entry_write_list_index(CHARACTER_TABLE, id, filename, index, key,
-			nullptr) == RET_NOK)
+	if (entry_write_list_index(CHARACTER_TABLE, id, filename, index, key, nullptr) == RET_NOK)
 	{
 		return RET_NOK;
 	}

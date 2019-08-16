@@ -24,7 +24,6 @@
 /***************************************************************************
  Return a string representing the checksum of the file + a bool to true on success
  filename is the directory + name
- The returned string MUST be FREED
  ***************************************************************************/
 std::pair<bool, std::string> checksum_file(const std::string & file_name)
 {

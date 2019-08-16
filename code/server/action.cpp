@@ -87,13 +87,12 @@ static int l_player_get_id(lua_State* L)
  */
 static int l_character_create_from_template(lua_State* L)
 {
-	const char * mytemplate;
-	const char * map;
-	int layer;
-	int x;
-	int y;
+	const char * mytemplate = nullptr;
+	const char * map = nullptr;
+	int layer = -1;
+	int x = -1;
+	int y = -1;
 
-	char * res;
 	context_t * ctx;
 
 	lua_getglobal(L, LUAVM_CONTEXT);
@@ -105,12 +104,9 @@ static int l_character_create_from_template(lua_State* L)
 	layer = luaL_checkint(L, -3);
 	x = luaL_checkint(L, -2);
 	y = luaL_checkint(L, -1);
-	res = character_create_from_template(ctx, mytemplate, map, layer, x, y);
-	lua_pushstring(L, res);
-	if (res)
-	{
-		free(res);
-	}
+	const std::pair<bool, std::string> res = character_create_from_template(ctx, mytemplate, map, layer, x, y);
+	lua_pushstring(L, res.second.c_str());
+
 	return 1;  // number of results
 }
 
@@ -844,8 +840,7 @@ static int l_character_effect(lua_State* L)
 		l_Param.push_back(luaL_checkstring(L, -l_NumArg + l_Idx));
 	}
 
-	network_broadcast_effect(EffectManager::EffectType::CONTEXT, target_id,
-			l_Param);
+	network_broadcast_effect(EffectManager::EffectType::CONTEXT, target_id, l_Param);
 
 	lua_pushnumber(L, 0);
 	return 1;  // number of results
@@ -885,24 +880,20 @@ static int l_character_wake_up(lua_State* L)
  */
 static int l_map_new(lua_State* L)
 {
-	char * map_name;
-	const char * name;
-	int x;
-	int y;
-	int tile_x;
-	int tile_y;
+	const char * name = nullptr;
+	int x = -1;
+	int y = -1;
+	int tile_x = -1;
+	int tile_y = -1;
 
 	name = luaL_checkstring(L, -5);
 	x = luaL_checkint(L, -4);
 	y = luaL_checkint(L, -3);
 	tile_x = luaL_checkint(L, -2);
 	tile_y = luaL_checkint(L, -1);
-	map_name = map_new(name, x, y, tile_x, tile_y);
-	lua_pushstring(L, map_name);
-	if (map_name)
-	{
-		free(map_name);
-	}
+	const std::pair<bool, std::string> map_name = map_new(name, x, y, tile_x, tile_y);
+	lua_pushstring(L, map_name.second.c_str());
+
 	return 1;  // number of results
 }
 
@@ -941,8 +932,7 @@ static int l_map_add_layer(lua_State* L)
 	tile_y = luaL_checkint(L, -3);
 	default_tile = luaL_checkstring(L, -2);
 	default_type = luaL_checkstring(L, -1);
-	res = map_add_layer(map_name, layer, x, y, tile_x, tile_y, default_tile,
-			default_type);
+	res = map_add_layer(map_name, layer, x, y, tile_x, tile_y, default_tile, default_type);
 	lua_pushnumber(L, res);
 	return 1;  // number of results
 }
@@ -1662,14 +1652,10 @@ static int l_inventory_get_by_name(lua_State* L)
  */
 static int l_item_create_empty(lua_State* L)
 {
-	char * res;
+	const std::pair<bool, std::string> res = item_create_empty();
 
-	res = item_create_empty();
-	lua_pushstring(L, res);
-	if (res)
-	{
-		free(res);
-	}
+	lua_pushstring(L, res.second.c_str());
+
 	return 1;  // number of results
 }
 
@@ -1683,15 +1669,11 @@ static int l_item_create_empty(lua_State* L)
 static int l_item_create_from_template(lua_State* L)
 {
 	const char * item;
-	char * res;
 
 	item = luaL_checkstring(L, -1);
-	res = item_create_from_template(item);
-	lua_pushstring(L, res);
-	if (res)
-	{
-		free(res);
-	}
+	const std::pair<bool, std::string> res = item_create_from_template(std::string(item));
+	lua_pushstring(L, res.second.c_str());
+
 	return 1;  // number of results
 }
 
@@ -1706,19 +1688,12 @@ static int l_item_create_from_template(lua_State* L)
  */
 static int l_resource_new(lua_State* L)
 {
-	const char * mytemplate;
-	int quantity;
-	char * resource;
+	const std::string mytemplate(luaL_checkstring(L, -2));
+	int quantity = luaL_checkint(L, -1);
 
-	mytemplate = luaL_checkstring(L, -2);
-	quantity = luaL_checkint(L, -1);
+	const std::pair<bool, std::string> resource = resource_new(mytemplate, quantity);
+	lua_pushstring(L, resource.second.c_str());
 
-	resource = resource_new(mytemplate, quantity);
-	lua_pushstring(L, resource);
-	if (resource)
-	{
-		free(resource);
-	}
 	return 1;  // number of results
 }
 
@@ -2235,8 +2210,7 @@ static int l_popup_send(lua_State* L)
  **************************************/
 static void action_chat(context_t * context, const char * text)
 {
-	const std::string new_text = std::string(context->character_name) + ":"
-			+ std::string(text);
+	const std::string new_text = std::string(context->character_name) + ":" + std::string(text);
 
 	network_broadcast_text(context, new_text);
 }
@@ -2245,8 +2219,7 @@ static void action_chat(context_t * context, const char * text)
  Execute a LUA script file
  return -1 if the script do not return something
  **************************************/
-int action_execute_script(context_t * context, const char * script,
-		const char ** parameters)
+int action_execute_script(context_t * context, const char * script, const char ** parameters)
 {
 	if (script == nullptr)
 	{
@@ -2274,8 +2247,7 @@ int action_execute(context_t * context, const char * action, char ** parameters)
 	char ** all_params = nullptr;
 	int ret = -1;
 
-	if (entry_read_string(ACTION_TABLE, action, &script, ACTION_KEY_SCRIPT,
-			nullptr) == RET_NOK)
+	if (entry_read_string(ACTION_TABLE, action, &script, ACTION_KEY_SCRIPT, nullptr) == RET_NOK)
 	{
 		return -1;
 	}
@@ -2296,8 +2268,7 @@ int action_execute(context_t * context, const char * action, char ** parameters)
  Execute an action configuration file
  return -1 if the script do not return something
  **************************************/
-int action_execute(context_t * context, const std::string & p_rScriptName,
-		const std::vector<std::string> & p_rParam)
+int action_execute(context_t * context, const std::string & p_rScriptName, const std::vector<std::string> & p_rParam)
 {
 	char * script = nullptr;
 	char ** params = nullptr;

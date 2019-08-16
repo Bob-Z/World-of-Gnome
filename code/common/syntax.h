@@ -17,8 +17,8 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#ifndef FILE_H
-#define FILE_H
+#ifndef SYNTAX_H
+#define SYNTAX_H
 
 #define DEFAULT_IMAGE_FILE	"default.jpg"
 
@@ -197,4 +197,3 @@
 
 #define SFX_TABLE 				"sfx"
 #endif
-
