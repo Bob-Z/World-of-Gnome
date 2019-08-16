@@ -35,63 +35,59 @@ extern "C"
  Execute the given script with its parameters
  return -1 on error or return value from execution
  *******************************************************************************/
-int lua_execute_script(lua_State* p_pLuaVm, const char * p_pScript,
-		const char ** p_pParameters)
+int lua_execute_script(lua_State* lua_vm, const char * script,
+		const char ** parameters)
 {
 	// Load script
-	char * l_pFullPath = nullptr;
-	l_pFullPath = strconcat(base_directory, "/", SCRIPT_TABLE, "/", p_pScript,
-			nullptr);
+	const std::string file_path = base_directory + "/"
+			+ std::string(SCRIPT_TABLE) + "/" + std::string(script);
 
-	if (luaL_loadfile(p_pLuaVm, l_pFullPath) != 0)
+	if (luaL_loadfile(lua_vm, file_path.c_str()) != 0)
 	{
 		// If something went wrong, error message is at the top of the stack
-		werr(LOGUSER, "Couldn't load LUA script %s: %s\n", l_pFullPath,
-				lua_tostring(p_pLuaVm, -1));
-		free(l_pFullPath);
+		werr(LOGUSER, "Couldn't load LUA script %s: %s\n", file_path.c_str(),
+				lua_tostring(lua_vm, -1));
 		return -1;
 	}
 
 	// Fake call to read global variable from the script file (i.e. the f function
-	lua_pcall(p_pLuaVm, 0, 0, 0);
+	lua_pcall(lua_vm, 0, 0, 0);
 
 	// push f function on LUA VM stack
-	lua_getglobal(p_pLuaVm, "f");
+	lua_getglobal(lua_vm, "f");
 
 	// push parameters on LUA VM stack (only strings parameters are supported)
-	int l_ParamNum = 0;
-	if (p_pParameters != nullptr)
+	int param_qty = 0;
+	if (parameters != nullptr)
 	{
-		while (p_pParameters[l_ParamNum] != nullptr)
+		while (parameters[param_qty] != nullptr)
 		{
-			lua_pushstring(p_pLuaVm, p_pParameters[l_ParamNum]);
-			l_ParamNum++;
+			lua_pushstring(lua_vm, parameters[param_qty]);
+			param_qty++;
 		}
 	}
 
 	// Ask LUA to call the f function with the given parameters
 	// number of argument = l_ParamNum, number of result = 1
-	if (lua_pcall(p_pLuaVm, l_ParamNum, 1, 0) != 0)
+	if (lua_pcall(lua_vm, param_qty, 1, 0) != 0)
 	{
-		werr(LOGUSER, "Error running LUA script %s: %s\n", l_pFullPath,
-				lua_tostring(p_pLuaVm, -1));
-		free(l_pFullPath);
+		werr(LOGUSER, "Error running LUA script %s: %s\n", file_path.c_str(),
+				lua_tostring(lua_vm, -1));
 		return -1;
 	}
-	free(l_pFullPath);
 
 	// we expect a number as the result
-	if (!lua_isnumber(p_pLuaVm, -1))
+	if (!lua_isnumber(lua_vm, -1))
 	{
-		lua_pop(p_pLuaVm, 1);
+		lua_pop(lua_vm, 1);
 		return -1;
 	}
 
 	int l_ReturnValue;
-	l_ReturnValue = lua_tonumber(p_pLuaVm, -1);
+	l_ReturnValue = lua_tonumber(lua_vm, -1);
 
 	// Remove returned value from stack
-	lua_pop(p_pLuaVm, 1);
+	lua_pop(lua_vm, 1);
 
 	return l_ReturnValue;
 }
@@ -100,60 +96,56 @@ int lua_execute_script(lua_State* p_pLuaVm, const char * p_pScript,
  Execute the given script with its parameters
  return -1 on error or return value from execution
  *******************************************************************************/
-int lua_execute_script(lua_State* p_pLuaVm, const std::string & p_rScript,
+int lua_execute_script(lua_State* lua_vm, const std::string & script,
 		const std::vector<std::string> & p_rParams)
 {
 	// Load script
-	char * l_pFullPath = nullptr;
-	l_pFullPath = strconcat(base_directory, "/", SCRIPT_TABLE, "/",
-			p_rScript.c_str(), nullptr);
+	const std::string file_path = base_directory + "/"
+			+ std::string(SCRIPT_TABLE) + "/" + script;
 
-	if (luaL_loadfile(p_pLuaVm, l_pFullPath) != 0)
+	if (luaL_loadfile(lua_vm, file_path.c_str()) != 0)
 	{
 		// If something went wrong, error message is at the top of the stack
-		werr(LOGUSER, "Couldn't load LUA script %s: %s\n", l_pFullPath,
-				lua_tostring(p_pLuaVm, -1));
-		free(l_pFullPath);
+		werr(LOGUSER, "Couldn't load LUA script %s: %s\n", file_path.c_str(),
+				lua_tostring(lua_vm, -1));
 		return -1;
 	}
 
 	// Fake call to read global variable from the script file (i.e. the f function
-	lua_pcall(p_pLuaVm, 0, 0, 0);
+	lua_pcall(lua_vm, 0, 0, 0);
 
 	// push f function on LUA VM stack
-	lua_getglobal(p_pLuaVm, "f");
+	lua_getglobal(lua_vm, "f");
 
 	// push parameters on LUA VM stack (only strings parameters are supported)
 	int l_ParamNum = 0;
 	for (auto l_It = p_rParams.begin(); l_It != p_rParams.end(); ++l_It)
 	{
-		lua_pushstring(p_pLuaVm, l_It->c_str());
+		lua_pushstring(lua_vm, l_It->c_str());
 		l_ParamNum++;
 	}
 
 	// Ask LUA to call the f function with the given parameters
 	// number of argument = l_ParamNum, number of result = 1
-	if (lua_pcall(p_pLuaVm, l_ParamNum, 1, 0) != 0)
+	if (lua_pcall(lua_vm, l_ParamNum, 1, 0) != 0)
 	{
-		werr(LOGUSER, "Error running LUA script %s: %s\n", l_pFullPath,
-				lua_tostring(p_pLuaVm, -1));
-		free(l_pFullPath);
+		werr(LOGUSER, "Error running LUA script %s: %s\n", file_path.c_str(),
+				lua_tostring(lua_vm, -1));
 		return -1;
 	}
-	free(l_pFullPath);
 
 	// we expect a number as the result
-	if (!lua_isnumber(p_pLuaVm, -1))
+	if (!lua_isnumber(lua_vm, -1))
 	{
-		lua_pop(p_pLuaVm, 1);
+		lua_pop(lua_vm, 1);
 		return -1;
 	}
 
 	int l_ReturnValue;
-	l_ReturnValue = lua_tonumber(p_pLuaVm, -1);
+	l_ReturnValue = lua_tonumber(lua_vm, -1);
 
 	// Remove returned value from stack
-	lua_pop(p_pLuaVm, 1);
+	lua_pop(lua_vm, 1);
 
 	return l_ReturnValue;
 }

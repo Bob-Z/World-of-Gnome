@@ -51,16 +51,11 @@ static anim_t * default_anim(context_t * ctx)
 
 /**************************
  **************************/
-static anim_t * image_load(context_t * ctx, char * filename)
+static anim_t * image_load(context_t * ctx, const std::string & file_name)
 {
-	char * fullname;
-	anim_t * anim;
+	const std::string file_path = base_directory + "/" + file_name;
 
-	fullname = strconcat(base_directory, "/", filename, nullptr);
-
-	anim = anim_load(ctx->render, fullname);
-
-	free(fullname);
+	anim_t * anim = anim_load(ctx->render, file_path.c_str());
 
 	return anim;
 }
@@ -72,7 +67,6 @@ static anim_t * image_load(context_t * ctx, char * filename)
 anim_t * imageDB_get_anim(context_t * context, const char * image_name)
 {
 	anim_t * anim;
-	char * filename;
 
 	if (image_name == nullptr)
 	{
@@ -84,42 +78,40 @@ anim_t * imageDB_get_anim(context_t * context, const char * image_name)
 		return default_anim(context);
 	}
 
-	filename = strconcat(IMAGE_TABLE, "/", image_name, nullptr);
+	const std::string file_name = std::string(IMAGE_TABLE) + "/"
+			+ std::string(image_name);
 
 //	wlog(LOGDEBUG,"Image get: %s",filename);
 
 	SDL_LockMutex(imageDB_mutex);
-	/* Search for a previously loaded anim */
-	anim = (anim_t*) list_find(image_list, filename);
+	// Search for a previously loaded anim
+	anim = (anim_t*) list_find(image_list, file_name.c_str());
 	if (anim)
 	{
 //		wlog(LOGDEBUG,"Image find: %s",filename);
-		free(filename);
 		SDL_UnlockMutex(imageDB_mutex);
 		return anim;
 	}
 
 	// Try to load from a file
-	file_lock(filename);
+	file_lock(file_name.c_str());
 
-	anim = image_load(context, filename);
+	anim = image_load(context, file_name);
 
-	if (anim)
+	if (anim != nullptr)
 	{
 //		wlog(LOGDEBUG,"Image loaded: %s",filename);
-		list_update(&image_list, filename, anim);
-		file_unlock(filename);
-		free(filename);
+		list_update(&image_list, file_name.c_str(), anim);
+		file_unlock(file_name.c_str());
 		SDL_UnlockMutex(imageDB_mutex);
 		return anim;
 	}
 
 	// Request an update to the server
 //	wlog(LOGDEBUG,"Image asked: %s",filename);
-	file_update(context, filename);
+	file_update(context, file_name.c_str());
 
-	file_unlock(filename);
-	free(filename);
+	file_unlock(file_name.c_str());
 	SDL_UnlockMutex(imageDB_mutex);
 
 	return default_anim(context);

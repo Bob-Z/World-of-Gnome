@@ -2199,7 +2199,7 @@ static int l_equipment_slot_get_item(lua_State* L)
  */
 static int l_get_base_directory(lua_State* L)
 {
-	lua_pushstring(L, base_directory);
+	lua_pushstring(L, base_directory.c_str());
 	return 1;  // number of results
 }
 

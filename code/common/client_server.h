@@ -20,9 +20,11 @@
 #ifndef CLIENT_SERVER
 #define CLIENT_SERVER
 
+#include <string>
+
 #define CLIENT 0
 #define SERVER 1
 extern int client_server;
-extern char * base_directory;
+extern std::string base_directory;
 
 #endif

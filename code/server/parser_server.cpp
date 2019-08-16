@@ -243,8 +243,7 @@ static ret_code_t manage_file(context_t * context, const pb::File& file)
 	wlog(LOGDEVELOPER, "[network] Received file request for %s",
 			file.name().c_str());
 
-	const std::string file_path = std::string(base_directory) + "/"
-			+ file.name();
+	const std::string file_path = base_directory + "/" + file.name();
 
 	std::pair<bool, std::string> crc = checksum_file(file_path);
 
@@ -256,12 +255,12 @@ static ret_code_t manage_file(context_t * context, const pb::File& file)
 
 	if (file.crc() == crc.second)
 	{
-		wlog(LOGDEVELOPER, "Client has already newest %s file", file.name());
+		wlog(LOGDEVELOPER, "Client has already newest %s file",
+				file.name().c_str());
 		return RET_NOK;
 	}
 
 	network_send_file(context, file.name().c_str());
-	wlog(LOGDEVELOPER, "File %s sent", file.name().c_str());
 
 	return RET_OK;
 }

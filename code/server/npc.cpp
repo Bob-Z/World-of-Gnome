@@ -56,13 +56,13 @@ static int npc_script(void * data)
 			deep_free(parameters);
 		}
 		if (entry_read_string(CHARACTER_TABLE, context->id, &script,
-				CHARACTER_KEY_AI, NULL) == RET_NOK)
+		CHARACTER_KEY_AI, NULL) == RET_NOK)
 		{
 			werr(LOGUSER, "No AI script for %s", context->id);
 			break;
 		}
 		entry_read_list(CHARACTER_TABLE, context->id, &parameters,
-				CHARACTER_KEY_AI_PARAMS, NULL);
+		CHARACTER_KEY_AI_PARAMS, NULL);
 
 		if (context->next_execution_time < SDL_GetTicks())
 		{
@@ -111,7 +111,7 @@ void instantiate_npc(const char * id)
 
 	// check if it's a NPC
 	if (entry_read_int(CHARACTER_TABLE, id, &is_npc, CHARACTER_KEY_NPC,
-			NULL) == RET_NOK)
+	NULL) == RET_NOK)
 	{
 		return;
 	}
@@ -123,31 +123,31 @@ void instantiate_npc(const char * id)
 
 	// read data of this npc
 	if (entry_read_int(CHARACTER_TABLE, id, &x, CHARACTER_KEY_TILE_X,
-			NULL) == RET_NOK)
+	NULL) == RET_NOK)
 	{
 		return;
 	}
 
 	if (entry_read_int(CHARACTER_TABLE, id, &y, CHARACTER_KEY_TILE_Y,
-			NULL) == RET_NOK)
+	NULL) == RET_NOK)
 	{
 		return;
 	}
 
 	if (entry_read_string(CHARACTER_TABLE, id, &map, CHARACTER_KEY_MAP,
-			NULL) == RET_NOK)
+	NULL) == RET_NOK)
 	{
 		return;
 	}
 
 	if (entry_read_string(CHARACTER_TABLE, id, &name, CHARACTER_KEY_NAME,
-			NULL) == RET_NOK)
+	NULL) == RET_NOK)
 	{
 		name = strdup("");
 	}
 
 	if (entry_read_string(CHARACTER_TABLE, id, &type, CHARACTER_KEY_TYPE,
-			NULL) == RET_NOK)
+	NULL) == RET_NOK)
 	{
 		free(map);
 		free(name);
@@ -184,18 +184,18 @@ void instantiate_npc(const char * id)
 void init_npc(void)
 {
 	DIR * dir;
-	char * dirname;
 	struct dirent * ent;
 
-	// Read all files in npc directory
-	dirname = strconcat(base_directory, "/", CHARACTER_TABLE, NULL);
+	// Read all files in NPC directory
+	const std::string file_path = base_directory + "/"
+			+ std::string(CHARACTER_TABLE);
 
-	dir = opendir(dirname);
+	dir = opendir(file_path.c_str());
 	if (dir == NULL)
 	{
 		return;
 	}
-	free(dirname);
+
 	while ((ent = readdir(dir)) != NULL)
 	{
 		// skip hidden file
@@ -208,4 +208,3 @@ void init_npc(void)
 	}
 	closedir(dir);
 }
-

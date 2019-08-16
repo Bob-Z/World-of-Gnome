@@ -26,7 +26,6 @@ static list_t * font_list = nullptr;
 TTF_Font * font_get(context_t* ctx, const char * filename, int size)
 {
 	TTF_Font * font = nullptr;
-	char * fullname = nullptr;
 
 	file_lock(filename);
 
@@ -38,9 +37,8 @@ TTF_Font * font_get(context_t* ctx, const char * filename, int size)
 		return font;
 	}
 
-	fullname = strconcat(base_directory, "/", filename, nullptr);
-	font = TTF_OpenFont(fullname, size);
-	free(fullname);
+	const std::string file_path = base_directory + "/" + std::string(filename);
+	font = TTF_OpenFont(file_path.c_str(), size);
 
 	if (font != nullptr)
 	{

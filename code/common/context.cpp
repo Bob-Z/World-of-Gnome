@@ -856,7 +856,7 @@ context_t * context_find(const char * id)
  **************************************/
 void context_add_or_update_from_network_frame(const Context & context)
 {
-	// search for this p_pContext
+	// search for this context
 	context_lock_list();
 	context_t * ctx = context_list_start;
 
@@ -869,7 +869,7 @@ void context_add_or_update_from_network_frame(const Context & context)
 
 			if (context.isInGame() == true)
 			{
-				wlog(LOGDEVELOPER, "Updating p_pContext %s / %s",
+				wlog(LOGDEVELOPER, "Updating context %s / %s",
 						context.getUserName().c_str(),
 						context.getCharacterName().c_str());
 				// do not call context_set_* function since we already have the lock
@@ -918,7 +918,7 @@ void context_add_or_update_from_network_frame(const Context & context)
 
 			if (context.isConnected() == false)
 			{
-				wlog(LOGDEVELOPER, "Deleting p_pContext %s / %s",
+				wlog(LOGDEVELOPER, "Deleting context %s / %s",
 						context.getUserName().c_str(),
 						context.getCharacterName().c_str());
 				context_free(ctx);
@@ -932,7 +932,7 @@ void context_add_or_update_from_network_frame(const Context & context)
 
 	context_unlock_list();
 
-	wlog(LOGDEVELOPER, "Creating p_pContext %s / %s",
+	wlog(LOGDEVELOPER, "Creating context %s / %s",
 			context.getUserName().c_str(), context.getCharacterName().c_str());
 	ctx = context_new();
 	context_set_username(ctx, context.getUserName().c_str());

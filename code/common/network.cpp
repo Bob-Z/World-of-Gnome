@@ -103,15 +103,15 @@ static int async_frame_send(void * p_pUserData)
 
 /*******************************************************************************
  ******************************************************************************/
-void network_send_command(context_t * p_pContext,
-		const std::string & serialized_data, const bool p_IsData)
+void network_send_command(context_t * context,
+		const std::string & serialized_data, const bool is_data)
 {
 	// FIXME create a NetworkManager
 	DataSent *data = new (DataSent);
 
-	data->m_pContext = p_pContext;
+	data->m_pContext = context;
 	data->m_serialized_data = serialized_data;
-	data->m_IsData = p_IsData;
+	data->m_IsData = is_data;
 
 	SDL_CreateThread(async_frame_send, "async_frame_send", (void*) data);
 }
@@ -123,7 +123,7 @@ void network_send_command(context_t * p_pContext,
  *********************************************************************/
 void network_send_req_file(context_t * context, const std::string & file_name)
 {
-	wlog(LOGDEVELOPER, "[network] Send FILE request for file : %s",
+	wlog(LOGDEVELOPER, "[network] Send request for file : %s",
 			file_name.c_str());
 
 	// Compute checksum of local file
@@ -142,7 +142,8 @@ void network_send_req_file(context_t * context, const std::string & file_name)
 
 	wlog(LOGDEVELOPER, "[network] Send FILE request for file : %s",
 			file_name.c_str());
-	network_send_command(context, serialized_data, true);
+	// FIXME should last arg should be true
+	network_send_command(context, serialized_data, false);
 }
 
 /*********************************************************************
@@ -208,7 +209,7 @@ int network_send_file(context_t * context, const char * file_name)
 		return -1;
 	}
 
-	std::string data(static_cast<const char*>(file_data), file_length);
+	const std::string data(static_cast<char*>(file_data), file_length);
 
 	network_send_file_data(context, file_name, data);
 
@@ -225,7 +226,7 @@ void network_send_file_data(context_t * context, const std::string & name,
 	message.mutable_file()->set_data(data);
 	std::string serialized_data = message.SerializeAsString();
 
-	wlog(LOGDEVELOPER, "[network] Send LOGIN NOK");
+	wlog(LOGDEVELOPER, "[network] Send file data for %s", name.c_str());
 	network_send_command(context, serialized_data, false);
 }
 

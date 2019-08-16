@@ -29,9 +29,10 @@ list_t * entry_list = nullptr;
 
 /*********************
  *********************/
-static void config_print_error(char * file, const config_t * config)
+static void config_print_error(const std::string & file,
+		const config_t * config)
 {
-	werr(LOGUSER, "libconfig error %s@%d : %s\n", file,
+	werr(LOGUSER, "libconfig error %s@%d : %s\n", file.c_str(),
 			config_error_line(config), config_error_text(config));
 }
 
@@ -40,19 +41,13 @@ static void config_print_error(char * file, const config_t * config)
 static void write_config(const config_t * config, const char * table,
 		const char * file)
 {
-	char * filename = nullptr;
-	char * fullname = nullptr;
+	const std::string file_name = std::string(table) + "/" + std::string(file);
 
-	filename = strconcat(table, "/", file, nullptr);
+	const std::string file_path = base_directory + "/" + file_name;
 
-	fullname = strconcat(base_directory, "/", filename, nullptr);
-
-	file_lock(filename);
-	config_write_file((config_t*) config, fullname);
-	file_unlock(filename);
-
-	free(filename);
-	free(fullname);
+	file_lock(file_name.c_str());
+	config_write_file((config_t*) config, file_path.c_str());
+	file_unlock(file_name.c_str());
 }
 /*********************
  *********************/
@@ -68,32 +63,28 @@ static const config_t * load_config(char * filename)
 	int ret;
 	config_t * config = nullptr;
 	struct stat sts;
-	char * fullname;
 
-	fullname = strconcat(base_directory, "/", filename, nullptr);
+	const std::string file_path = base_directory + "/" + std::string(filename);
 
 	config = (config_t*) malloc(sizeof(config_t));
 	if (config == nullptr)
 	{
-		free(fullname);
 		return nullptr;
 	}
 	bzero(config, sizeof(config_t));
 
-	ret = config_read_file(config, fullname);
+	ret = config_read_file(config, file_path.c_str());
 	if (ret == CONFIG_FALSE)
 	{
 		// For client, only print errors when file is present
 		// If file is not present, let get_config ask for a network update
-		if (stat(fullname, &sts) != -1 || client_server == SERVER)
+		if (stat(file_path.c_str(), &sts) != -1 || client_server == SERVER)
 		{
-			config_print_error(fullname, config);
+			config_print_error(file_path, config);
 		}
-		free(fullname);
 		return nullptr;
 	}
 
-	free(fullname);
 	return config;
 }
 
@@ -123,6 +114,11 @@ void entry_remove(const char * filename)
  *********************/
 static const config_t * get_config(const char * table, const char * file)
 {
+	if (file == nullptr)
+	{
+		return nullptr;
+	}
+
 	char * filename = nullptr;
 	const config_t * config = nullptr;
 
@@ -139,7 +135,7 @@ static const config_t * get_config(const char * table, const char * file)
 
 	config = (config_t*) list_find(entry_list, filename);
 
-	if (config)
+	if (config != nullptr)
 	{
 //		wlog(LOGDEBUG,"Entry found : %s",filename);
 		free(filename);

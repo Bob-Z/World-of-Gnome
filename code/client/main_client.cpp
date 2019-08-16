@@ -58,7 +58,7 @@ int main(int argc, char **argv)
 	char * pass = nullptr;
 	int maxfps = false;
 
-	base_directory = strconcat(getenv("HOME"), "/.config/wog/client", nullptr);
+	base_directory = std::string(getenv("HOME")) + "/.config/wog/client";
 
 	lua_init();
 
@@ -153,8 +153,6 @@ int main(int argc, char **argv)
 	screen_display(context);
 
 	SDLNet_Quit();
-
-	free(base_directory);
 
 	return 0;
 }

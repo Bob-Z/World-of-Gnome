@@ -33,9 +33,8 @@
 int file_add(context_t * context, const std::string & name,
 		const std::string & data)
 {
-	std::string temp_name = name + APP_NAME + "tmp";
-	std::string temp_path = std::string(base_directory) + std::string("/")
-			+ temp_name;
+	const std::string temp_name = name + APP_NAME + "tmp";
+	const std::string temp_path = base_directory + "/" + temp_name;
 
 	file_create_directory(temp_path);
 
@@ -47,8 +46,7 @@ int file_add(context_t * context, const std::string & name,
 		return -1;
 	}
 
-	std::string file_path = std::string(base_directory) + std::string("/")
-			+ name;
+	const std::string file_path = base_directory + "/" + name;
 
 	if (rename(temp_path.c_str(), file_path.c_str()) == -1)
 	{
@@ -82,17 +80,15 @@ void file_clean(context_t * context)
 /***************************************************
  Request a file from network
  ****************************************************/
-void file_request_from_network(context_t * p_pCtx, const char * p_pTable,
-		const char * p_pFilename)
+void file_request_from_network(context_t * context, const char * table,
+		const char * file_name)
 {
-	char * l_pTablePath;
+	const std::string table_path = std::string(table) + "/"
+			+ std::string(file_name);
 
-	l_pTablePath = strconcat(p_pTable, "/", p_pFilename, nullptr);
-	file_lock(l_pTablePath);
-	file_update(p_pCtx, l_pTablePath);
-	file_unlock(l_pTablePath);
-	free(l_pTablePath);
+	file_lock(table_path.c_str());
+	file_update(context, table_path.c_str());
+	file_unlock(table_path.c_str());
 
 	return;
 }
-

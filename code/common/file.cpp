@@ -160,42 +160,37 @@ char * file_new(const char * table, const char * suggested_name)
 {
 	DIR * dir;
 	struct dirent * ent;
-	char * dirname;
-	char * filename;
-	char * fullname;
 	char tag[10];
 	int index = 0;
 	int fd;
 	struct stat sts;
 	const char * selected_name = nullptr;
 
-	dirname = strconcat(base_directory, "/", table, nullptr);
+	const std::string dir_path = base_directory + "/" + std::string(table);
 
 	SDL_LockMutex(character_dir_mutex);
 
 	if (suggested_name && suggested_name[0] != 0)
 	{
-		fullname = strconcat(dirname, "/", suggested_name, nullptr);
-		if (stat(fullname, &sts) != -1)
+		const std::string file_path = dir_path + "/"
+				+ std::string(suggested_name);
+		if (stat(file_path.c_str(), &sts) != -1)
 		{
 			SDL_UnlockMutex(character_dir_mutex);
-			free(dirname);
-			free(fullname);
 			// File exists
 			return nullptr;
 		}
-		free(fullname);
 		selected_name = suggested_name;
 	}
 	else
 	{
 
-		dir = opendir(dirname);
+		dir = opendir(dir_path.c_str());
 
 		if (dir == nullptr)
 		{
-			mkdir_all(dirname);
-			dir = opendir(dirname);
+			mkdir_all(dir_path.c_str());
+			dir = opendir(dir_path.c_str());
 			if (dir == nullptr)
 			{
 				return nullptr;
@@ -228,11 +223,12 @@ char * file_new(const char * table, const char * suggested_name)
 		selected_name = tag;
 	}
 
-	filename = strconcat(dirname, "/", selected_name, nullptr);
-	free(dirname);
+	const std::string selected_file_path = dir_path + "/"
+			+ std::string(selected_name);
 
-	fd = creat(filename, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH);
-	free(filename);
+	fd = creat(selected_file_path.c_str(),
+			S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH);
+
 	close(fd);
 
 	SDL_UnlockMutex(character_dir_mutex);
@@ -249,7 +245,6 @@ char * file_new(const char * table, const char * suggested_name)
 ret_code_t file_get_contents(const char *filename, void **contents,
 		int_fast32_t *length)
 {
-	char * fullname;
 	struct stat sts;
 	int fd;
 	ssize_t size;
@@ -258,11 +253,11 @@ ret_code_t file_get_contents(const char *filename, void **contents,
 
 	*contents = nullptr;
 
-	fullname = strconcat(base_directory, "/", filename, nullptr);
+	const std::string file_path = base_directory + "/" + std::string(filename);
 
-	file_lock(filename);
+	file_lock(file_path.c_str());
 
-	if (stat(fullname, &sts) == -1)
+	if (stat(file_path.c_str(), &sts) == -1)
 	{
 #if (_POSIX_C_SOURCE >= 200112L || _XOPEN_SOURCE >= 600) && ! _GNU_SOURCE
 		strerror_r(errno,error_buf,SMALL_BUF);
@@ -271,12 +266,12 @@ ret_code_t file_get_contents(const char *filename, void **contents,
 		error_str = strerror_r(errno, error_buf, SMALL_BUF);
 #endif
 		file_unlock(filename);
-		werr(LOGDESIGNER, "Error stat on file %s: %s\n", fullname, error_str);
-		free(fullname);
+		werr(LOGDESIGNER, "Error stat on file %s: %s\n", file_path.c_str(),
+				error_str);
 		return RET_NOK;
 	}
 
-	fd = open(fullname, O_RDONLY);
+	fd = open(file_path.c_str(), O_RDONLY);
 	if (fd == -1)
 	{
 #if (_POSIX_C_SOURCE >= 200112L || _XOPEN_SOURCE >= 600) && ! _GNU_SOURCE
@@ -286,8 +281,8 @@ ret_code_t file_get_contents(const char *filename, void **contents,
 		error_str = strerror_r(errno, error_buf, SMALL_BUF);
 #endif
 		file_unlock(filename);
-		werr(LOGDESIGNER, "Error open on file %s: %s\n", fullname, error_str);
-		free(fullname);
+		werr(LOGDESIGNER, "Error open on file %s: %s\n", file_path.c_str(),
+				error_str);
 		return RET_NOK;
 	}
 
@@ -297,7 +292,6 @@ ret_code_t file_get_contents(const char *filename, void **contents,
 	{
 		close(fd);
 		file_unlock(filename);
-		free(fullname);
 		return RET_NOK;
 	}
 
@@ -313,14 +307,13 @@ ret_code_t file_get_contents(const char *filename, void **contents,
 		close(fd);
 		file_unlock(filename);
 		free(buf);
-		werr(LOGDESIGNER, "Error read on file %s: %s\n", fullname, error_str);
-		free(fullname);
+		werr(LOGDESIGNER, "Error read on file %s: %s\n", file_path.c_str(),
+				error_str);
 		return RET_NOK;
 	}
 
 	close(fd);
 	file_unlock(filename);
-	free(fullname);
 
 	*contents = buf;
 	*length = size;
@@ -336,17 +329,17 @@ ret_code_t file_get_contents(const char *filename, void **contents,
 ret_code_t file_set_contents(const char *filename, const void *contents,
 		int length)
 {
-	char * fullname;
 	int fd;
 	ssize_t size;
 	char error_buf[SMALL_BUF];
 	char * error_str;
 
-	fullname = strconcat(base_directory, "/", filename, nullptr);
+	const std::string file_path = base_directory + "/" + std::string(filename);
 
 	file_lock(filename);
 
-	fd = creat(fullname, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH);
+	fd = creat(file_path.c_str(),
+			S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH);
 	if (fd == -1)
 	{
 #if (_POSIX_C_SOURCE >= 200112L || _XOPEN_SOURCE >= 600) && ! _GNU_SOURCE
@@ -356,8 +349,8 @@ ret_code_t file_set_contents(const char *filename, const void *contents,
 		error_str = strerror_r(errno, error_buf, SMALL_BUF);
 #endif
 		file_unlock(filename);
-		werr(LOGDESIGNER, "Error open on file %s: %s\n", fullname, error_str);
-		free(fullname);
+		werr(LOGDESIGNER, "Error open on file %s: %s\n", file_path.c_str(),
+				error_str);
 		return RET_NOK;
 	}
 
@@ -372,11 +365,10 @@ ret_code_t file_set_contents(const char *filename, const void *contents,
 #endif
 		close(fd);
 		file_unlock(filename);
-		werr(LOGDESIGNER, "Error write on file %s: %s\n", fullname, error_str);
-		free(fullname);
+		werr(LOGDESIGNER, "Error write on file %s: %s\n", file_path.c_str(),
+				error_str);
 		return RET_NOK;
 	}
-	free(fullname);
 
 	close(fd);
 
@@ -394,26 +386,25 @@ bool file_copy(const char * src_table, const char * src_name,
 	FILE *src;
 	FILE *dst;
 
-	char * src_full_path = strconcat(base_directory, "/", src_table, "/",
-			src_name, nullptr);
-	src = fopen(src_full_path, "rb");
+	const std::string src_full_path = base_directory + "/"
+			+ std::string(src_table) + "/" + std::string(src_name);
+
+	src = fopen(src_full_path.c_str(), "rb");
 	if (src == nullptr)
 	{
 		werr(LOGDESIGNER, "Failed to open source file %s\n", src_full_path);
-		free(src_full_path);
 		return false;
 	}
 
-	char * dst_full_path = strconcat(base_directory, "/", dst_table, "/",
-			dst_name, nullptr);
-	dst = fopen(dst_full_path, "wb");
+	const std::string dst_full_path = base_directory + "/"
+			+ std::string(dst_table) + "/" + std::string(dst_name);
+
+	dst = fopen(dst_full_path.c_str(), "wb");
 	if (dst == nullptr)
 	{
 		werr(LOGDESIGNER, "Failed to open destination file %s\n",
 				dst_full_path);
 		fclose(src);
-		free(dst_full_path);
-		free(src_full_path);
 		return false;
 	}
 
@@ -424,25 +415,23 @@ bool file_copy(const char * src_table, const char * src_name,
 
 	fclose(src);
 	fclose(dst);
-	free(dst_full_path);
-	free(src_full_path);
 
 	return true;
 }
 
 /***************************************************
- create the path of fullname.
- fullname is a path + a file name. Only the path is
+ create directory of file path
+ file_path is a path + a file name. Only the path is
  created here, not the file itself.
  return 0 if directory was successfully created
  ****************************************************/
-int file_create_directory(const std::string & p_rFullName)
+int file_create_directory(const std::string & file_path)
 {
-	char * directory = strdup(p_rFullName.c_str());
+	char * directory = strdup(file_path.c_str());
 	int i;
 	int ret;
 
-	// Remove file name, just kee directory name
+	// Remove file name, just keep directory name
 	for (i = strlen(directory); i > 0; i--)
 	{
 		if (directory[i] == '/')
@@ -460,39 +449,33 @@ int file_create_directory(const std::string & p_rFullName)
 }
 
 /***************************************************
- Delete a file from filesystem
+ Delete a file from file system
  return 0 if file was successfully deleted
  ****************************************************/
 int file_delete(const char * table, const char * filename)
 {
-	char * fullname;
-	int res;
-
-	fullname = strconcat(base_directory, "/", table, "/", filename, nullptr);
-	res = unlink(fullname);
-	free(fullname);
-
-	return res;
+	const std::string file_path = base_directory + "/" + std::string(table)
+			+ "/" + std::string(filename);
+	return unlink(file_path.c_str());
 }
 
 /***************************************************
  return timestamp of last update
  ****************************************************/
-Uint32 file_get_timestamp(const char * p_pTable, const char * p_pFilename)
+Uint32 file_get_timestamp(const char * table, const char * file_name)
 {
-	file_t * l_pFileData;
-	char * l_pTablePath;
-	Uint32 l_TimeStamp = 0;
+	file_t * file_data;
+	Uint32 time_stamp = 0;
 
-	l_pTablePath = strconcat(p_pTable, "/", p_pFilename, nullptr);
+	const std::string table_path = std::string(table) + "/"
+			+ std::string(file_name);
 	SDL_LockMutex(file_list_mutex);
-	l_pFileData = (file_t *) list_find(file_list, l_pTablePath);
-	if (l_pFileData != nullptr)
+	file_data = (file_t *) list_find(file_list, table_path.c_str());
+	if (file_data != nullptr)
 	{
-		l_TimeStamp = l_pFileData->timestamp;
+		time_stamp = file_data->timestamp;
 	}
 	SDL_UnlockMutex(file_list_mutex);
-	free(l_pTablePath);
 
-	return l_TimeStamp;
+	return time_stamp;
 }

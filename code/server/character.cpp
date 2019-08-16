@@ -49,18 +49,17 @@ void character_playable_send_list(context_t * context)
 {
 	char * marquee;
 	DIR * dir;
-	char * dirname;
 	struct dirent * ent;
 
 	// Read all files in character template directory
-	dirname = strconcat(base_directory, "/", CHARACTER_TEMPLATE_TABLE, nullptr);
+	const std::string file_path = base_directory + "/"
+			+ std::string(CHARACTER_TEMPLATE_TABLE);
 
-	dir = opendir(dirname);
+	dir = opendir(file_path.c_str());
 	if (dir == nullptr)
 	{
 		return;
 	}
-	free(dirname);
 
 	std::vector<std::string> l_Array;
 

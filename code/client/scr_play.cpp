@@ -962,7 +962,6 @@ item_t * scr_play_compose(context_t * ctx)
 	int bg_red = 0;
 	int bg_blue = 0;
 	int bg_green = 0;
-	char * map_filename;
 	int layer_index = 0;
 	char * old_sfx = nullptr;
 
@@ -989,9 +988,10 @@ item_t * scr_play_compose(context_t * ctx)
 
 	if (change_map == true)
 	{
-		map_filename = strconcat(MAP_TABLE, "/", ctx->map, nullptr);
-		network_send_req_file(ctx, std::string(map_filename));
-		free(map_filename);
+		const std::string map_file_path = std::string(MAP_TABLE) + "/"
+				+ std::string(ctx->map);
+		network_send_req_file(ctx, map_file_path);
+
 		if (default_layer != nullptr)
 		{
 			map_layer_delete(default_layer);

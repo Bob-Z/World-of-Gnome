@@ -28,8 +28,6 @@
 #include <string.h>
 #include <sys/types.h>
 
-static int noNPC = 0;
-
 const char optstring[] = "?l:f:F:ni:";
 const struct option longopts[] =
 {
@@ -54,6 +52,10 @@ int main(int argc, char **argv)
 	int opt_ret;
 	DIR * dir;
 
+	bool npc_allowed = true;
+
+	base_directory = std::string(getenv("HOME")) + "/.config/wog/server";
+
 	while ((opt_ret = getopt_long(argc, argv, optstring, longopts, NULL)) != -1)
 	{
 		switch (opt_ret)
@@ -68,10 +70,10 @@ int main(int argc, char **argv)
 			log_add_func_filter(optarg);
 			break;
 		case 'n':
-			noNPC = 1;
+			npc_allowed = false;
 			break;
 		case 'i':
-			base_directory = strdup(optarg);
+			base_directory = std::string(optarg);
 			break;
 		default:
 			printf("HELP:\n\n");
@@ -85,15 +87,10 @@ int main(int argc, char **argv)
 		}
 	}
 
-	if (base_directory == NULL)
-	{
-		base_directory = strconcat(getenv("HOME"), "/.config/wog/server", NULL);
-	}
-
-	dir = opendir(base_directory);
+	dir = opendir(base_directory.c_str());
 	if (dir == NULL)
 	{
-		werr(LOGUSER, "Cannot find %s directory", base_directory);
+		werr(LOGUSER, "Cannot find %s directory", base_directory.c_str());
 		return -1;
 	}
 	closedir(dir);
@@ -101,7 +98,7 @@ int main(int argc, char **argv)
 	common_mutex_init();
 
 	//init non playing character
-	if (!noNPC)
+	if (npc_allowed == true)
 	{
 		init_npc();
 	}
@@ -110,8 +107,6 @@ int main(int argc, char **argv)
 
 	//init network server
 	network_init();
-
-	free(base_directory);
 
 	return 0;
 }
