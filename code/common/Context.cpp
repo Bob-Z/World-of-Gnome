@@ -273,7 +273,7 @@ void context_free(Context * context)
 
 	context_free_data(context);
 
-	free(context);
+	delete (context);
 }
 
 /***********************
