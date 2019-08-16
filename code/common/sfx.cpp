@@ -17,16 +17,22 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#include "common.h"
-#include <SDL2/SDL_mixer.h>
+#include "client_server.h"
+#include "file.h"
+#include "log.h"
+#include "syntax.h"
+#include <SDL_mixer.h>
+#include <SDL_rwops.h>
 #include <map>
+#include <string>
+
+class Context;
 
 static std::map<std::string, Mix_Chunk*> g_SoundList;
 
 /*******************************************************************************
  ******************************************************************************/
-int sfx_play(Context* p_Ctx, const std::string & p_FileName, int p_Channel,
-		int p_Loops)
+int sfx_play(Context* p_Ctx, const std::string & p_FileName, int p_Channel, int p_Loops)
 {
 	auto l_It = g_SoundList.find(p_FileName);
 
@@ -35,18 +41,15 @@ int sfx_play(Context* p_Ctx, const std::string & p_FileName, int p_Channel,
 		return Mix_PlayChannel(p_Channel, l_It->second, p_Loops);
 	}
 
-	const std::string l_TableFilename = std::string(SFX_TABLE)
-			+ std::string("/") + p_FileName;
-	const std::string l_FullName = std::string(base_directory) + "/"
-			+ l_TableFilename;
+	const std::string l_TableFilename = std::string(SFX_TABLE) + std::string("/") + p_FileName;
+	const std::string l_FullName = std::string(base_directory) + "/" + l_TableFilename;
 
 	file_lock(l_TableFilename.c_str());
 
 	SDL_RWops * l_pFileDesc = SDL_RWFromFile(l_FullName.c_str(), "r");
 	if (l_pFileDesc == nullptr)
 	{
-		std::string l_Err = std::string("sfx_play: cannot open ")
-				+ l_FullName.c_str();
+		std::string l_Err = std::string("sfx_play: cannot open ") + l_FullName.c_str();
 		werr(LOGDESIGNER, l_Err.c_str());
 		file_update(p_Ctx, l_TableFilename.c_str());
 		file_unlock(l_TableFilename.c_str());
@@ -56,8 +59,7 @@ int sfx_play(Context* p_Ctx, const std::string & p_FileName, int p_Channel,
 	Mix_Chunk * l_pChunk = Mix_LoadWAV_RW(l_pFileDesc, 1);
 	if (l_pChunk == nullptr)
 	{
-		std::string l_Err = std::string("sfx_play: cannot read ")
-				+ l_FullName.c_str();
+		std::string l_Err = std::string("sfx_play: cannot read ") + l_FullName.c_str();
 		werr(LOGDESIGNER, l_Err.c_str());
 		file_update(p_Ctx, l_TableFilename.c_str());
 		file_unlock(l_TableFilename.c_str());

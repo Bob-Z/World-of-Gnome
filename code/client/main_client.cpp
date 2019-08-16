@@ -17,14 +17,18 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
+#include "client_server.h"
 #include "common.h"
+#include "const.h"
 #include "file.h"
+#include "log.h"
 #include "imageDB.h"
 #include "lua_client.h"
 #include "network_client.h"
 #include "option_client.h"
 #include "screen.h"
 #include "sdl.h"
+#include "mutex.h"
 #include <getopt.h>
 #include <SDL2/SDL_mixer.h>
 #include <stdlib.h>
@@ -64,8 +68,7 @@ int main(int argc, char **argv)
 
 	option_init();
 
-	while ((opt_ret = getopt_long(argc, argv, optstring, longopts, nullptr))
-			!= -1)
+	while ((opt_ret = getopt_long(argc, argv, optstring, longopts, nullptr)) != -1)
 	{
 		switch (opt_ret)
 		{
@@ -117,8 +120,7 @@ int main(int argc, char **argv)
 
 	context_set_username(context, user);
 
-	sdl_init(TITLE_NAME, &context->render, &context->window, screen_compose,
-			!maxfps);
+	sdl_init(TITLE_NAME, &context->render, &context->window, screen_compose, !maxfps);
 
 	int Mix_flags = MIX_INIT_FLAC | MIX_INIT_MP3 | MIX_INIT_OGG;
 	int result;
@@ -137,8 +139,7 @@ int main(int argc, char **argv)
 	}
 	else
 	{
-		werr(LOGUSER,
-				"Can't connect to server. Check server IP address. This error may be due to a service outage on server side. Re-try in a few seconds.\n");
+		werr(LOGUSER, "Can't connect to server. Check server IP address. This error may be due to a service outage on server side. Re-try in a few seconds.\n");
 		return 0;
 	}
 

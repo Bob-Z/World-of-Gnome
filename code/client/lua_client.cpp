@@ -23,6 +23,11 @@
 #include "imageDB.h"
 #include "item.h"
 #include "sdl.h"
+#include "syntax.h"
+#include "entry.h"
+#include "log.h"
+#include "util.h"
+#include "sfx.h"
 
 #ifdef __cplusplus
 extern "C"
@@ -248,8 +253,7 @@ static int l_item_set_anim(lua_State* p_pLuaState)
 
 	const char * l_pSpriteNameArray[2] =
 	{ l_pFileName, nullptr };
-	l_pAnimArray = imageDB_get_anim_array(context_get_player(),
-			(const char **) l_pSpriteNameArray);
+	l_pAnimArray = imageDB_get_anim_array(context_get_player(), (const char **) l_pSpriteNameArray);
 	item_set_anim_array(l_pItem, l_pAnimArray);
 	return 0; // number of results
 }
@@ -277,8 +281,7 @@ static const char * getKey(int p_IsMoving, char p_Orientation)
 			l_pKey = CHARACTER_KEY_MOV_E_SPRITE;
 			break;
 		default:
-			werr(LOGDESIGNER,
-					"l_item_set_anim_from_context: wrong main orientation");
+			werr(LOGDESIGNER, "l_item_set_anim_from_context: wrong main orientation");
 			l_pKey = CHARACTER_KEY_MOV_S_SPRITE;
 			break;
 		}
@@ -300,8 +303,7 @@ static const char * getKey(int p_IsMoving, char p_Orientation)
 			l_pKey = CHARACTER_KEY_DIR_E_SPRITE;
 			break;
 		default:
-			werr(LOGDESIGNER,
-					"l_item_set_anim_from_context: wrong main orientation");
+			werr(LOGDESIGNER, "l_item_set_anim_from_context: wrong main orientation");
 			l_pKey = CHARACTER_KEY_DIR_S_SPRITE;
 			break;
 		}
@@ -318,16 +320,14 @@ static anim_t ** getAnimArray(const char * p_pId, const char * p_pKey)
 
 	// Try single image anim
 	char * sprite_name = nullptr;
-	if (entry_read_string(CHARACTER_TABLE, p_pId, &sprite_name, p_pKey,
-			nullptr) == RET_OK)
+	if (entry_read_string(CHARACTER_TABLE, p_pId, &sprite_name, p_pKey, nullptr) == RET_OK)
 	{
 		if (sprite_name[0] != 0)
 		{
 			char * l_pSpriteNameArray[2] =
 			{ nullptr, nullptr };
 			l_pSpriteNameArray[0] = sprite_name;
-			l_pAnimArray = imageDB_get_anim_array(context_get_player(),
-					(const char **) l_pSpriteNameArray);
+			l_pAnimArray = imageDB_get_anim_array(context_get_player(), (const char **) l_pSpriteNameArray);
 			free(sprite_name);
 			return l_pAnimArray;
 		}
@@ -336,11 +336,9 @@ static anim_t ** getAnimArray(const char * p_pId, const char * p_pKey)
 
 	// Try list of image
 	char ** sprite_list = nullptr;
-	if (entry_read_list(CHARACTER_TABLE, p_pId, &sprite_list, p_pKey,
-			nullptr) == RET_OK)
+	if (entry_read_list(CHARACTER_TABLE, p_pId, &sprite_list, p_pKey, nullptr) == RET_OK)
 	{
-		l_pAnimArray = imageDB_get_anim_array(context_get_player(),
-				(const char **) sprite_list);
+		l_pAnimArray = imageDB_get_anim_array(context_get_player(), (const char **) sprite_list);
 		deep_free(sprite_list);
 		return l_pAnimArray;
 	}
@@ -451,9 +449,7 @@ static int l_item_set_anim_from_context(lua_State* p_pLuaState)
 
 	if (l_pAnimArray == nullptr)
 	{
-		werr(LOGDESIGNER,
-				"LUA item_set_anim_from_context: Failed to find anim for %s",
-				l_pId);
+		werr(LOGDESIGNER, "LUA item_set_anim_from_context: Failed to find anim for %s", l_pId);
 	}
 	else
 	{
@@ -594,8 +590,7 @@ static int l_sound_play(lua_State* p_pLuaState)
 {
 	const char * l_FileName;
 	l_FileName = luaL_checkstring(p_pLuaState, -1);
-	sfx_play(context_get_player(), std::string(l_FileName), ANY_CHANNEL,
-			NO_LOOP);
+	sfx_play(context_get_player(), std::string(l_FileName), ANY_CHANNEL, NO_LOOP);
 
 	return 0; // number of results
 }

@@ -18,9 +18,12 @@
  */
 
 #include "sdl_item.h"
+#include <string>
+#include <vector>
+
+class Context;
 
 item_t * scr_create_compose(Context * context);
 void scr_create_frame_start(Context * context);
 void scr_create_init();
-void scr_create_add_playable_character(Context * context,
-		const std::vector<std::string> & id_list);
+void scr_create_add_playable_character(Context * context, const std::vector<std::string> & id_list);

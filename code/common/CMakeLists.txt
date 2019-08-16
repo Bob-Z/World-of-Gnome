@@ -47,7 +47,7 @@ add_library(
 	network.cpp
 	sfx.cpp
 	util.cpp
-	lua.cpp
+	lua_script.cpp
 	Serializer.cpp
 	Selection.cpp
 )

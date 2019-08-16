@@ -19,6 +19,7 @@
 
 #include "Context.h"
 #include <network.h>
+#include <syntax.h>
 #include <stdlib.h>
 #include <util.h>
 #include <cstring>
@@ -61,11 +62,9 @@ void context_spread(Context * context)
 		}
 
 		// Skip if not on the same map or previous map
-		if ((ctx->map != nullptr) && (context->map != nullptr)
-				&& (context->prev_map != nullptr))
+		if ((ctx->map != nullptr) && (context->map != nullptr) && (context->prev_map != nullptr))
 		{
-			if (strcmp(context->map, ctx->map) != 0
-					&& strcmp(context->prev_map, ctx->map) != 0)
+			if (strcmp(context->map, ctx->map) != 0 && strcmp(context->prev_map, ctx->map) != 0)
 			{
 				continue;
 			}
@@ -159,8 +158,7 @@ void context_broadcast_map(const char * map)
 		return;
 	}
 
-	const std::string file_name = std::string(MAP_TABLE) + "/"
-			+ std::string(map);
+	const std::string file_name = std::string(MAP_TABLE) + "/" + std::string(map);
 
 	do
 	{
@@ -211,8 +209,7 @@ void context_broadcast_character(const char * character)
 		return;
 	}
 
-	const std::string file_name = std::string(CHARACTER_TABLE) + "/"
-			+ std::string(character);
+	const std::string file_name = std::string(CHARACTER_TABLE) + "/" + std::string(character);
 
 	do
 	{

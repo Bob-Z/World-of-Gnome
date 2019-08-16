@@ -17,7 +17,14 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#include "item.h"
+#ifndef UI_PLAY_H
+#define UI_PLAY_H
+
+#include "sdl_item.h"
+#include <string>
+#include <vector>
+
+class Context;
 
 #define UI_MAIN         0
 #define UI_INVENTORY    1
@@ -30,3 +37,5 @@ void ui_play_cb_action(void * arg);
 void ui_play_compose(Context * ctx, item_t * item_list);
 void ui_play_init();
 void ui_play_popup_add(const std::vector<std::string> & data);
+
+#endif

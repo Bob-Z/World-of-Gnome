@@ -17,7 +17,9 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#include "anim.h"
+#include <anim.h>
+
+class Context;
 
 anim_t * imageDB_get_anim(Context * context, const char * image_name);
 anim_t ** imageDB_get_anim_array(Context * context, const char ** image_name);

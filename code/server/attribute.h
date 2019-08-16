@@ -17,14 +17,10 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#include "common.h"
+class Context;
 
-int attribute_change(Context * context, const char * table, const char * id,
-		const char * attribute, int value);
+int attribute_change(Context * context, const char * table, const char * id, const char * attribute, int value);
 int attribute_get(const char * table, const char * id, const char * attribute);
-int attribute_set(const char * table, const char * id, const char * attribute,
-		int value);
-char * attribute_tag_get(const char * table, const char * id,
-		const char * attribute);
-int attribute_tag_set(const char * table, const char * id,
-		const char * attribute, const char * value);
+int attribute_set(const char * table, const char * id, const char * attribute, int value);
+char * attribute_tag_get(const char * table, const char * id, const char * attribute);
+int attribute_tag_set(const char * table, const char * id, const char * attribute, const char * value);

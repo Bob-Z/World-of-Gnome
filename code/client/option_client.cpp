@@ -18,6 +18,9 @@
  */
 
 #include "option_client.h"
+#include "entry.h"
+#include "log.h"
+#include "syntax.h"
 #include <unistd.h>
 
 option_t option;
@@ -57,9 +60,8 @@ static void parse_client_conf()
 
 	entry_read_string(nullptr, CLIENT_CONF_FILE, &option.cursor_over_tile,
 	CLIENT_KEY_CURSOR_OVER_TILE, nullptr);
-	entry_read_string(nullptr, CLIENT_CONF_FILE,
-			&option.cursor_character_draw_script,
-			CLIENT_KEY_CURSOR_CHARACTER_DRAW_SCRIPT, nullptr);
+	entry_read_string(nullptr, CLIENT_CONF_FILE, &option.cursor_character_draw_script,
+	CLIENT_KEY_CURSOR_CHARACTER_DRAW_SCRIPT, nullptr);
 	entry_read_string(nullptr, CLIENT_CONF_FILE, &option.cursor_tile,
 	CLIENT_KEY_CURSOR_TILE, nullptr);
 	entry_read_string(nullptr, CLIENT_CONF_FILE, &option.cursor_equipment,
@@ -82,17 +84,11 @@ static void parse_client_conf()
 	CLIENT_KEY_ACTION_MOVE_DOWN_LEFT, nullptr);
 	entry_read_string(nullptr, CLIENT_CONF_FILE, &option.action_move_down_right,
 	CLIENT_KEY_ACTION_MOVE_DOWN_RIGHT, nullptr);
-	entry_read_string(nullptr, CLIENT_CONF_FILE,
-			&option.action_select_character, CLIENT_KEY_ACTION_SELECT_CHARACTER,
-			nullptr);
+	entry_read_string(nullptr, CLIENT_CONF_FILE, &option.action_select_character, CLIENT_KEY_ACTION_SELECT_CHARACTER, nullptr);
 	entry_read_string(nullptr, CLIENT_CONF_FILE, &option.action_select_tile,
 	CLIENT_KEY_ACTION_SELECT_TILE, nullptr);
-	entry_read_string(nullptr, CLIENT_CONF_FILE,
-			&option.action_select_equipment, CLIENT_KEY_ACTION_SELECT_EQUIPMENT,
-			nullptr);
-	entry_read_string(nullptr, CLIENT_CONF_FILE,
-			&option.action_select_inventory, CLIENT_KEY_ACTION_SELECT_INVENTORY,
-			nullptr);
+	entry_read_string(nullptr, CLIENT_CONF_FILE, &option.action_select_equipment, CLIENT_KEY_ACTION_SELECT_EQUIPMENT, nullptr);
+	entry_read_string(nullptr, CLIENT_CONF_FILE, &option.action_select_inventory, CLIENT_KEY_ACTION_SELECT_INVENTORY, nullptr);
 }
 
 /**************************************

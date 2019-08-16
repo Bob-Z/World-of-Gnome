@@ -17,7 +17,13 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#include "common.h"
+#include "client_server.h"
+#include "file.h"
+#include "list.h"
+#include <SDL_ttf.h>
+#include <string>
+
+class Context;
 
 static list_t * font_list = nullptr;
 

@@ -22,25 +22,6 @@
 
 #include <SDL2/SDL_net.h>
 
-#include "client_server.h"
-#include "const.h"
-#include "Context.h"
-#include "entry.h"
-#include "file.h"
-#include "font.h"
-#include "item.h"
-#include "list.h"
-#include "log.h"
-#include "lua.h"
-#include "map.h"
-#include "mutex.h"
-#include "network.h"
-#include "protocol.h"
-#include "sfx.h"
-#include "syntax.h"
-#include "types.h"
-#include "util.h"
-
 #define RET_OK		(0)
 #define RET_NOK		(-1)
 

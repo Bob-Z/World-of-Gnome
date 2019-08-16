@@ -22,10 +22,13 @@
 #include "entry.h"
 #include "log.h"
 #include "mutex.h"
-#include "syntax.h"
-#include <cstring>
 #include <stdlib.h>
+#include "syntax.h"
+#include <SDL_mutex.h>
+#include <cstring>
 #include <string>
+
+#include "../server/action.h"
 
 class ContextBis;
 

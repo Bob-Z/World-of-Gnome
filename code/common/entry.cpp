@@ -17,29 +17,38 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
+#include "client_server.h"
 #include "common.h"
+#include "const.h"
+#include "Context.h"
 #include "file.h"
+#include "list.h"
+#include "log.h"
+#include "protocol.h"
+#include "mutex.h"
+#include "types.h"
+#include <cstdarg>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 #include <libconfig.h>
-#include <sys/types.h>
+#include <SDL_mutex.h>
+#include <string>
+#include <strings.h>
 #include <sys/stat.h>
-#include <unistd.h>
-#include <stdarg.h>
 
 list_t * entry_list = nullptr;
 
 /*********************
  *********************/
-static void config_print_error(const std::string & file,
-		const config_t * config)
+static void config_print_error(const std::string & file, const config_t * config)
 {
-	werr(LOGUSER, "libconfig error %s@%d : %s\n", file.c_str(),
-			config_error_line(config), config_error_text(config));
+	werr(LOGUSER, "libconfig error %s@%d : %s\n", file.c_str(), config_error_line(config), config_error_text(config));
 }
 
 /*********************
  *********************/
-static void write_config(const config_t * config, const char * table,
-		const char * file)
+static void write_config(const config_t * config, const char * table, const char * file)
 {
 	const std::string file_name = std::string(table) + "/" + std::string(file);
 
@@ -96,7 +105,7 @@ void entry_remove(const char * filename)
 	config_t * old_config;
 
 	wlog(LOGDEVELOPER, "Removing entry : %s", filename);
-	/* Clean-up old anim if any */
+	// Clean-up old anim if any
 	SDL_LockMutex(entry_mutex);
 	old_config = (config_t*) list_find(entry_list, filename);
 	if (old_config)
@@ -170,8 +179,7 @@ static std::string add_entry_to_path(char * path, char * entry)
 	}
 	else
 	{
-		const std::string new_path = std::string(path) + "."
-				+ std::string(entry);
+		const std::string new_path = std::string(path) + "." + std::string(entry);
 		return new_path;
 	}
 }
@@ -209,8 +217,7 @@ static char * get_path(va_list ap)
 /*********************
  return RET_NOK on error
  *********************/
-static ret_code_t __read_int(const char * table, const char * file, int * res,
-		va_list ap)
+static ret_code_t __read_int(const char * table, const char * file, int * res, va_list ap)
 {
 	const config_t * config = nullptr;
 	char * path = nullptr;
@@ -265,8 +272,7 @@ ret_code_t entry_read_int(const char * table, const char * file, int * res, ...)
  return RET_NOK on error
  res MUST BE FREED by caller
  *********************/
-static ret_code_t __read_string(const char * table, const char * file,
-		char ** res, va_list ap)
+static ret_code_t __read_string(const char * table, const char * file, char ** res, va_list ap)
 {
 	const config_t * config = nullptr;
 	char * path = nullptr;
@@ -309,8 +315,7 @@ static ret_code_t __read_string(const char * table, const char * file,
  This string MUST BE FREED by caller.
  return RET_NOK on error
  *********************/
-ret_code_t entry_read_string(const char * table, const char * file, char ** res,
-		...)
+ret_code_t entry_read_string(const char * table, const char * file, char ** res, ...)
 {
 	ret_code_t ret;
 	va_list ap;
@@ -326,8 +331,7 @@ ret_code_t entry_read_string(const char * table, const char * file, char ** res,
  return RET_NOK on error
  res MUST BE FREED by caller
  *********************/
-static ret_code_t __read_list_index(const char * table, const char * file,
-		char ** res, int index, va_list ap)
+static ret_code_t __read_list_index(const char * table, const char * file, char ** res, int index, va_list ap)
 {
 	const config_t * config = nullptr;
 	config_setting_t * setting = nullptr;
@@ -375,8 +379,7 @@ static ret_code_t __read_list_index(const char * table, const char * file,
 /*********************
  return RET_NOK on error
  *********************/
-ret_code_t entry_read_list_index(const char * table, const char * file,
-		char ** res, int index, ...)
+ret_code_t entry_read_list_index(const char * table, const char * file, char ** res, int index, ...)
 {
 	ret_code_t ret;
 	va_list ap;
@@ -392,8 +395,7 @@ ret_code_t entry_read_list_index(const char * table, const char * file,
  return RET_NOK on error
  res must be freed with deep_free
  *********************/
-static ret_code_t __read_list(const char * table, const char * file,
-		char *** res, va_list ap)
+static ret_code_t __read_list(const char * table, const char * file, char *** res, va_list ap)
 {
 	const config_t * config = nullptr;
 	config_setting_t * setting = nullptr;
@@ -450,8 +452,7 @@ static ret_code_t __read_list(const char * table, const char * file,
  return RET_NOK on error
  res must be freed with deep_free
  *********************/
-ret_code_t entry_read_list(const char * table, const char * file, char *** res,
-		...)
+ret_code_t entry_read_list(const char * table, const char * file, char *** res, ...)
 {
 	ret_code_t ret;
 	va_list ap;
@@ -465,9 +466,7 @@ ret_code_t entry_read_list(const char * table, const char * file, char *** res,
 
 /*********************
  *********************/
-static config_setting_t * create_tree(const config_t * config,
-		config_setting_t * prev_setting, char * prev_entry, const char * path,
-		int type, va_list ap)
+static config_setting_t * create_tree(const config_t * config, config_setting_t * prev_setting, char * prev_entry, const char * path, int type, va_list ap)
 {
 	char * entry = nullptr;
 	config_setting_t * setting = nullptr;
@@ -529,8 +528,7 @@ static config_setting_t * create_tree(const config_t * config,
 /*********************
  return RET_NOK on error
  *********************/
-static ret_code_t __write_int(const char * table, const char * file, int data,
-		va_list ap)
+static ret_code_t __write_int(const char * table, const char * file, int data, va_list ap)
 {
 	config_setting_t * setting;
 	const config_t * config;
@@ -543,8 +541,7 @@ static ret_code_t __write_int(const char * table, const char * file, int data,
 		return RET_NOK;
 	}
 
-	setting = create_tree(config, nullptr, nullptr, nullptr, CONFIG_TYPE_INT,
-			ap);
+	setting = create_tree(config, nullptr, nullptr, nullptr, CONFIG_TYPE_INT, ap);
 
 	/* update int */
 	if (config_setting_set_int(setting, data) == CONFIG_FALSE)
@@ -576,8 +573,7 @@ ret_code_t entry_write_int(const char * table, const char * file, int data, ...)
 /*********************
  return RET_NOK on error
  *********************/
-static ret_code_t __write_string(const char * table, const char * file,
-		const char * data, va_list ap)
+static ret_code_t __write_string(const char * table, const char * file, const char * data, va_list ap)
 {
 	config_setting_t * setting;
 	const config_t * config;
@@ -590,8 +586,7 @@ static ret_code_t __write_string(const char * table, const char * file,
 		return RET_NOK;
 	}
 
-	setting = create_tree(config, nullptr, nullptr, nullptr, CONFIG_TYPE_STRING,
-			ap);
+	setting = create_tree(config, nullptr, nullptr, nullptr, CONFIG_TYPE_STRING, ap);
 
 	/* update string */
 	if (config_setting_set_string(setting, data) == CONFIG_FALSE)
@@ -608,8 +603,7 @@ static ret_code_t __write_string(const char * table, const char * file,
 /*********************
  return RET_NOK on error
  *********************/
-ret_code_t entry_write_string(const char * table, const char * file,
-		const char * data, ...)
+ret_code_t entry_write_string(const char * table, const char * file, const char * data, ...)
 {
 	ret_code_t ret;
 	va_list ap;
@@ -624,8 +618,7 @@ ret_code_t entry_write_string(const char * table, const char * file,
 /*********************
  return RET_NOK on error
  *********************/
-static ret_code_t __write_list_index(const char * table, const char * file,
-		const char * data, int index, va_list ap)
+static ret_code_t __write_list_index(const char * table, const char * file, const char * data, int index, va_list ap)
 {
 	config_setting_t * setting = nullptr;
 	const config_t * config;
@@ -639,8 +632,7 @@ static ret_code_t __write_list_index(const char * table, const char * file,
 		return RET_NOK;
 	}
 
-	setting = create_tree(config, nullptr, nullptr, nullptr, CONFIG_TYPE_ARRAY,
-			ap);
+	setting = create_tree(config, nullptr, nullptr, nullptr, CONFIG_TYPE_ARRAY, ap);
 
 	// Create empty entry before index
 	list_size = config_setting_length(setting);
@@ -668,8 +660,7 @@ static ret_code_t __write_list_index(const char * table, const char * file,
 /*********************
  return RET_NOK on error
  *********************/
-ret_code_t entry_write_list_index(const char * table, const char * file,
-		const char * data, int index, ...)
+ret_code_t entry_write_list_index(const char * table, const char * file, const char * data, int index, ...)
 {
 	ret_code_t ret;
 	va_list ap;
@@ -684,8 +675,7 @@ ret_code_t entry_write_list_index(const char * table, const char * file,
 /*********************
  return RET_NOK on error
  *********************/
-static ret_code_t __write_list(const char * table, const char * file,
-		char ** data, va_list ap)
+static ret_code_t __write_list(const char * table, const char * file, char ** data, va_list ap)
 {
 	config_setting_t * setting;
 	const config_t * config;
@@ -699,8 +689,7 @@ static ret_code_t __write_list(const char * table, const char * file,
 		return RET_NOK;
 	}
 
-	setting = create_tree(config, nullptr, nullptr, nullptr, CONFIG_TYPE_ARRAY,
-			ap);
+	setting = create_tree(config, nullptr, nullptr, nullptr, CONFIG_TYPE_ARRAY, ap);
 
 	while (data[i] != nullptr)
 	{
@@ -726,8 +715,7 @@ static ret_code_t __write_list(const char * table, const char * file,
 /*********************
  return RET_NOK on error
  *********************/
-ret_code_t entry_write_list(const char * table, const char * file, char ** data,
-		...)
+ret_code_t entry_write_list(const char * table, const char * file, char ** data, ...)
 {
 	ret_code_t ret;
 	va_list ap;
@@ -742,8 +730,7 @@ ret_code_t entry_write_list(const char * table, const char * file, char ** data,
 /*********************
  return RET_NOK on error
  *********************/
-static ret_code_t __add_to_list(const char * table, const char * file,
-		const char * to_be_added, va_list ap)
+static ret_code_t __add_to_list(const char * table, const char * file, const char * to_be_added, va_list ap)
 {
 	const config_t * config = nullptr;
 	config_setting_t * setting = nullptr;
@@ -788,8 +775,7 @@ static ret_code_t __add_to_list(const char * table, const char * file,
 /*********************
  return RET_NOK on error
  *********************/
-ret_code_t entry_add_to_list(const char * table, const char * file,
-		const char * to_be_added, ...)
+ret_code_t entry_add_to_list(const char * table, const char * file, const char * to_be_added, ...)
 {
 	ret_code_t ret;
 	va_list ap;
@@ -804,8 +790,7 @@ ret_code_t entry_add_to_list(const char * table, const char * file,
 /*********************
  return RET_NOK on error
  *********************/
-static ret_code_t __remove_group(const char * table, const char * file,
-		const char * group, va_list ap)
+static ret_code_t __remove_group(const char * table, const char * file, const char * group, va_list ap)
 {
 
 	const config_t * config;
@@ -852,8 +837,7 @@ static ret_code_t __remove_group(const char * table, const char * file,
 /*********************
  return RET_NOK on error
  *********************/
-ret_code_t entry_remove_group(const char * table, const char * file,
-		const char * group, ...)
+ret_code_t entry_remove_group(const char * table, const char * file, const char * group, ...)
 {
 	ret_code_t ret;
 	va_list ap;
@@ -974,8 +958,7 @@ char * entry_get_unused_group(const char * table, const char * file, ...)
  returned string must be freed
  return nullptr on error
  **********************/
-char * __get_unused_group_on_path(const char * table, const char * file,
-		char * path)
+char * __get_unused_group_on_path(const char * table, const char * file, char * path)
 {
 	char tag[7];
 	int index = 0;
@@ -1019,8 +1002,7 @@ char * __get_unused_group_on_path(const char * table, const char * file,
  res must be freed  (deep_free)
  return RET_NOK on error
  **********************/
-ret_code_t entry_get_group_list(const char * table, const char * file,
-		char *** res, ...)
+ret_code_t entry_get_group_list(const char * table, const char * file, char *** res, ...)
 {
 	char * path;
 	const config_t * config;
@@ -1081,8 +1063,7 @@ ret_code_t entry_get_group_list(const char * table, const char * file,
 /*********************
  return RET_NOK on failure
  *********************/
-static ret_code_t __remove_from_list(const char * table, const char * file,
-		const char * to_be_removed, va_list ap)
+static ret_code_t __remove_from_list(const char * table, const char * file, const char * to_be_removed, va_list ap)
 {
 	const config_t * config = nullptr;
 	config_setting_t * setting = nullptr;
@@ -1138,8 +1119,7 @@ static ret_code_t __remove_from_list(const char * table, const char * file,
 /*********************
  return RET_NOK on error
  *********************/
-ret_code_t entry_remove_from_list(const char * table, const char * file,
-		const char * to_be_removed, ...)
+ret_code_t entry_remove_from_list(const char * table, const char * file, const char * to_be_removed, ...)
 {
 	ret_code_t ret;
 	va_list ap;
@@ -1153,10 +1133,8 @@ ret_code_t entry_remove_from_list(const char * table, const char * file,
 /*********************
  return RET_NOK on error
  *********************/
-ret_code_t entry_copy_config(config_setting_t * source,
-		config_setting_t * destination);
-ret_code_t entry_copy_aggregate(config_setting_t * source,
-		config_setting_t * dest, int type)
+ret_code_t entry_copy_config(config_setting_t * source, config_setting_t * destination);
+ret_code_t entry_copy_aggregate(config_setting_t * source, config_setting_t * dest, int type)
 {
 	const char * setting_name;
 	config_setting_t * new_dest;
@@ -1175,8 +1153,7 @@ ret_code_t entry_copy_aggregate(config_setting_t * source,
 		// Try to find an available name
 		sprintf(tag, "A%05x", index);
 
-		while ((new_dest = config_setting_add(dest, setting_name, type))
-				== nullptr)
+		while ((new_dest = config_setting_add(dest, setting_name, type)) == nullptr)
 		{
 			index++;
 			sprintf(tag, "A%05x", index);
@@ -1237,32 +1214,27 @@ ret_code_t entry_copy_config(config_setting_t * source, config_setting_t * dest)
 			{
 			case CONFIG_TYPE_INT:
 				int_value = config_setting_get_int(new_source);
-				new_dest = config_setting_add(dest,
-						config_setting_name(new_source), CONFIG_TYPE_INT);
+				new_dest = config_setting_add(dest, config_setting_name(new_source), CONFIG_TYPE_INT);
 				config_setting_set_int(new_dest, int_value);
 				continue;
 			case CONFIG_TYPE_INT64:
 				long_value = config_setting_get_int64(new_source);
-				new_dest = config_setting_add(dest,
-						config_setting_name(new_source), CONFIG_TYPE_INT64);
+				new_dest = config_setting_add(dest, config_setting_name(new_source), CONFIG_TYPE_INT64);
 				config_setting_set_int64(new_dest, long_value);
 				continue;
 			case CONFIG_TYPE_FLOAT:
 				double_value = config_setting_get_float(new_source);
-				new_dest = config_setting_add(dest,
-						config_setting_name(new_source), CONFIG_TYPE_FLOAT);
+				new_dest = config_setting_add(dest, config_setting_name(new_source), CONFIG_TYPE_FLOAT);
 				config_setting_set_float(new_dest, double_value);
 				continue;
 			case CONFIG_TYPE_BOOL:
 				int_value = config_setting_get_bool(new_source);
-				new_dest = config_setting_add(dest,
-						config_setting_name(new_source), CONFIG_TYPE_BOOL);
+				new_dest = config_setting_add(dest, config_setting_name(new_source), CONFIG_TYPE_BOOL);
 				config_setting_set_bool(new_dest, int_value);
 				continue;
 			case CONFIG_TYPE_STRING:
 				string = config_setting_get_string(new_source);
-				new_dest = config_setting_add(dest,
-						config_setting_name(new_source), CONFIG_TYPE_STRING);
+				new_dest = config_setting_add(dest, config_setting_name(new_source), CONFIG_TYPE_STRING);
 				config_setting_set_string(new_dest, string);
 				continue;
 			default:
@@ -1277,8 +1249,7 @@ ret_code_t entry_copy_config(config_setting_t * source, config_setting_t * dest)
 /*********************
  returnRET_NOK on error
  *********************/
-static ret_code_t __list_create(const char * table, const char * file,
-		va_list ap)
+static ret_code_t __list_create(const char * table, const char * file, va_list ap)
 {
 	const config_t * config;
 
@@ -1315,8 +1286,7 @@ ret_code_t entry_list_create(const char * table, const char * file, ...)
 /*********************
  return RET_NOK on error
  *********************/
-static ret_code_t __group_create(const char * table, const char * file,
-		va_list ap)
+static ret_code_t __group_create(const char * table, const char * file, va_list ap)
 {
 	const config_t * config = nullptr;
 
@@ -1353,9 +1323,7 @@ ret_code_t entry_group_create(const char * table, const char * file, ...)
 /*********************
  return nullptr on error
  *********************/
-static char * __copy_group(const char * src_table, const char * src_file,
-		const char * dst_table, const char * dst_file, const char * group_name,
-		va_list ap)
+static char * __copy_group(const char * src_table, const char * src_file, const char * dst_table, const char * dst_file, const char * group_name, va_list ap)
 {
 	const config_t * src_config = nullptr;
 	const config_t * dst_config = nullptr;
@@ -1439,16 +1407,13 @@ static char * __copy_group(const char * src_table, const char * src_file,
  return a copy of the name used for the destination
  MUST BE FREED !
  ***************************************/
-char * entry_copy_group(const char * src_table, const char * src_file,
-		const char * dst_table, const char * dst_file, const char * group_name,
-		...)
+char * entry_copy_group(const char * src_table, const char * src_file, const char * dst_table, const char * dst_file, const char * group_name, ...)
 {
 	char * ret;
 	va_list ap;
 
 	va_start(ap, group_name);
-	ret = __copy_group(src_table, src_file, dst_table, dst_file, group_name,
-			ap);
+	ret = __copy_group(src_table, src_file, dst_table, dst_file, group_name, ap);
 	va_end(ap);
 	return ret;
 }
@@ -1457,9 +1422,7 @@ char * entry_copy_group(const char * src_table, const char * src_file,
  Update an entry from a network frame
  return RET_NOK on error
  *********************************************/
-ret_code_t entry_update(const std::string & type, const std::string & table,
-		const std::string & file, const std::string & path,
-		const std::string & value)
+ret_code_t entry_update(const std::string & type, const std::string & table, const std::string & file, const std::string & path, const std::string & value)
 {
 	SDL_LockMutex(entry_mutex);
 
@@ -1486,8 +1449,7 @@ ret_code_t entry_update(const std::string & type, const std::string & table,
 		l_IntValue = atoll(value.c_str());
 		if (config_setting_set_int(l_pSetting, l_IntValue) == CONFIG_FALSE)
 		{
-			werr(LOGUSER, "Error setting %s/%s/%s to %d", table.c_str(),
-					file.c_str(), path.c_str(), l_IntValue);
+			werr(LOGUSER, "Error setting %s/%s/%s to %d", table.c_str(), file.c_str(), path.c_str(), l_IntValue);
 		}
 		else
 		{
@@ -1498,8 +1460,7 @@ ret_code_t entry_update(const std::string & type, const std::string & table,
 	{
 		if (config_setting_set_string(l_pSetting, value.c_str()) == CONFIG_FALSE)
 		{
-			werr(LOGUSER, "Error setting %s/%s/%s to %s", table.c_str(),
-					file.c_str(), path.c_str(), value.c_str());
+			werr(LOGUSER, "Error setting %s/%s/%s to %s", table.c_str(), file.c_str(), path.c_str(), value.c_str());
 		}
 		else
 		{

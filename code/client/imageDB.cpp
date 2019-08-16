@@ -19,8 +19,20 @@
 
 /* This manage an image data base */
 
-#include "common.h"
 #include "anim.h"
+#include "client_server.h"
+#include "Context.h"
+#include "file.h"
+#include "list.h"
+#include "log.h"
+#include "syntax.h"
+#include "mutex.h"
+#include <stdlib.h>
+#include <SDL_mutex.h>
+#include <SDL_pixels.h>
+#include <SDL_render.h>
+#include <SDL_stdinc.h>
+#include <string>
 
 static list_t * image_list = nullptr;
 
@@ -36,8 +48,7 @@ static anim_t * default_anim(Context * ctx)
 
 		def_anim->num_frame = 1;
 		def_anim->tex = (SDL_Texture**) malloc(sizeof(SDL_Texture*));
-		def_anim->tex[0] = SDL_CreateTexture(ctx->render,
-				SDL_PIXELFORMAT_ABGR8888, SDL_TEXTUREACCESS_STATIC, 1, 1);
+		def_anim->tex[0] = SDL_CreateTexture(ctx->render, SDL_PIXELFORMAT_ABGR8888, SDL_TEXTUREACCESS_STATIC, 1, 1);
 		def_anim->w = 1;
 		def_anim->h = 1;
 		def_anim->delay = (Uint32*) malloc(sizeof(Uint32));
@@ -78,8 +89,7 @@ anim_t * imageDB_get_anim(Context * context, const char * image_name)
 		return default_anim(context);
 	}
 
-	const std::string file_name = std::string(IMAGE_TABLE) + "/"
-			+ std::string(image_name);
+	const std::string file_name = std::string(IMAGE_TABLE) + "/" + std::string(image_name);
 
 //	wlog(LOGDEBUG,"Image get: %s",filename);
 
@@ -140,10 +150,8 @@ anim_t ** imageDB_get_anim_array(Context * context, const char ** image_name)
 	{
 		if (image_name[current_image][0] != 0)
 		{
-			anim_output = (anim_t**) realloc(anim_output,
-					(num_image + 2) * sizeof(anim_t*));
-			anim_output[num_image] = imageDB_get_anim(context,
-					image_name[current_image]);
+			anim_output = (anim_t**) realloc(anim_output, (num_image + 2) * sizeof(anim_t*));
+			anim_output[num_image] = imageDB_get_anim(context, image_name[current_image]);
 			anim_output[num_image + 1] = nullptr;
 			num_image++;
 		}

@@ -28,6 +28,15 @@
 #include "sdl.h"
 #include "textview.h"
 #include <stack>
+#include <vector>
+#include <string>
+#include "entry.h"
+#include "syntax.h"
+#include "font.h"
+#include "util.h"
+#include "log.h"
+#include "const.h"
+#include "protocol.h"
 
 #define UI_MAIN		0
 #define UI_INVENTORY	1

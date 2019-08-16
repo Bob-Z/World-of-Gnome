@@ -19,15 +19,16 @@
 
 #ifndef ACTION_SERVER_H
 #define ACTION_SERVER_H
-#include "common.h"
+
+#include <string>
+#include <vector>
+
+class Context;
 
 void action_parse_frame(Context * context, char * frame);
-int action_execute(Context * context, const char * action,
-		char ** parameters);
-int action_execute(Context * context, const std::string & p_rScriptName,
-		const std::vector<std::string> & p_rParam);
-int action_execute_script(Context * context, const char * script,
-		const char ** parameters);
+int action_execute(Context * context, const char * action, char ** parameters);
+int action_execute(Context * context, const std::string & p_rScriptName, const std::vector<std::string> & p_rParam);
+int action_execute_script(Context * context, const char * script, const char ** parameters);
 void register_lua_functions(Context * context);
 
 #endif

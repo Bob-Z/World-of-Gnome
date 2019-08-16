@@ -17,11 +17,14 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#include "action.h"
 #include "common.h"
-#include "network_server.h"
-#include <dirent.h>
+#include "Context.h"
+#include "entry.h"
+#include "syntax.h"
+#include "log.h"
 #include <string.h>
+
+#include "network_server.h"
 
 /**********************************************************************
  Set the passed item to the character's equipment slot
@@ -36,8 +39,7 @@ int equipment_set_item(const char *id, const char * slot, const char * item)
 		return -1;
 	}
 
-	if (entry_write_string(CHARACTER_TABLE, context->id, item, EQUIPMENT_GROUP,
-			slot, EQUIPMENT_EQUIPPED, NULL) == RET_OK)
+	if (entry_write_string(CHARACTER_TABLE, context->id, item, EQUIPMENT_GROUP, slot, EQUIPMENT_EQUIPPED, NULL) == RET_OK)
 	{
 		// update client
 		network_send_character_file(context);
@@ -62,8 +64,7 @@ char * equipment_get_item(const char *id, const char * slot)
 		return NULL;
 	}
 
-	if (entry_read_string(CHARACTER_TABLE, context->id, &item, EQUIPMENT_GROUP,
-			slot, EQUIPMENT_EQUIPPED, NULL) == RET_NOK)
+	if (entry_read_string(CHARACTER_TABLE, context->id, &item, EQUIPMENT_GROUP, slot, EQUIPMENT_EQUIPPED, NULL) == RET_NOK)
 	{
 		return NULL;
 	}

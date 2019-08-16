@@ -17,8 +17,11 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-int file_add(Context * context, const std::string & name,
-		const std::string & data);
+#include <string>
+
+class Context;
+
+int file_add(Context * context, const std::string & name, const std::string & data);
 void file_clean(Context *);
-void file_request_from_network(Context * p_pCtx, const char * p_pTable,
-		const char * p_pFilename);
+void file_request_from_network(Context * p_pCtx, const char * p_pTable, const char * p_pFilename);
+int file_create_directory(const std::string & file_path);

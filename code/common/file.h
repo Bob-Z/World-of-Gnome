@@ -17,11 +17,14 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#include "Context.h"
-#include <string>
+#ifndef WOG_FILE_H
+#define WOG_FILE_H
 
-#ifndef FILE_H
-#define FILE_H
+#include "types.h"
+#include <string>
+#include <SDL_stdinc.h>
+
+class Context;
 
 const std::string NO_SUGGESTED_NAME = "";
 

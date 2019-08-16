@@ -19,6 +19,10 @@
 
 #ifndef TEXTVIEW
 #define TEXTVIEW
+
+#include <SDL_stdinc.h>
+#include <string>
+
 typedef struct history_entry
 {
 	char * text;

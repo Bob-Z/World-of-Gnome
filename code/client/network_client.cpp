@@ -20,13 +20,15 @@
 #include "common.h"
 #include "screen.h"
 #include "wog.pb.h"
+#include "log.h"
+#include "const.h"
+#include "network.h"
 #include <arpa/inet.h>
 
 /*********************************************************************
  sends a login request, the answer is asynchronously read by async_recv
  **********************************************************************/
-void network_login(Context * context, const char * user_name,
-		const char * password)
+void network_login(Context * context, const char * user_name, const char * password)
 {
 	pb::ClientMessage message;
 	message.mutable_login()->set_user(user_name);
@@ -90,8 +92,7 @@ void network_request_user_character_list(Context * context)
 /*********************************************************************
  request a character's creation
  *********************************************************************/
-void network_request_character_creation(Context * context, const char * id,
-		const char * name)
+void network_request_character_creation(Context * context, const char * id, const char * name)
 {
 	pb::ClientMessage message;
 	message.mutable_create()->set_id(id);
@@ -146,8 +147,7 @@ static int async_recv(void * data)
 	{
 		uint32_t frame_size = 0U;
 
-		if (network_read_bytes(context->socket, (char *) &frame_size,
-				sizeof(uint32_t)) == RET_NOK)
+		if (network_read_bytes(context->socket, (char *) &frame_size, sizeof(uint32_t)) == RET_NOK)
 		{
 			break;
 		}
@@ -156,8 +156,7 @@ static int async_recv(void * data)
 			frame_size = ntohl(frame_size);
 			char frame[frame_size];
 
-			if (network_read_bytes(context->socket, (char *) frame,
-					frame_size) == RET_NOK)
+			if (network_read_bytes(context->socket, (char *) frame, frame_size) == RET_NOK)
 			{
 				break;
 			}
@@ -195,8 +194,7 @@ static int async_data_recv(void * data)
 	{
 		uint32_t frame_size = 0U;
 
-		if (network_read_bytes(context->socket_data, (char *) &frame_size,
-				sizeof(uint32_t)) == RET_NOK)
+		if (network_read_bytes(context->socket_data, (char *) &frame_size, sizeof(uint32_t)) == RET_NOK)
 		{
 			break;
 		}
@@ -205,8 +203,7 @@ static int async_data_recv(void * data)
 			frame_size = ntohl(frame_size);
 			char frame[frame_size];
 
-			if (network_read_bytes(context->socket_data, (char *) frame,
-					frame_size) == RET_NOK)
+			if (network_read_bytes(context->socket_data, (char *) frame, frame_size) == RET_NOK)
 			{
 				break;
 			}
@@ -250,15 +247,13 @@ ret_code_t network_connect(Context * context, const char * hostname)
 
 	if (SDLNet_ResolveHost(&ip, hostname, PORT) < 0)
 	{
-		werr(LOGUSER, "Can't resolve %s:%d : %s\n", hostname, PORT,
-				SDLNet_GetError());
+		werr(LOGUSER, "Can't resolve %s:%d : %s\n", hostname, PORT, SDLNet_GetError());
 		return RET_NOK;
 	}
 
 	if (!(socket = SDLNet_TCP_Open(&ip)))
 	{
-		werr(LOGUSER, "Can't connect to %s:%d : %s\n", hostname, PORT,
-				SDLNet_GetError());
+		werr(LOGUSER, "Can't connect to %s:%d : %s\n", hostname, PORT, SDLNet_GetError());
 		return RET_NOK;
 	}
 
@@ -281,15 +276,13 @@ ret_code_t network_open_data_connection(Context * context)
 
 	if (SDLNet_ResolveHost(&ip, context->hostname, PORT) < 0)
 	{
-		werr(LOGUSER, "Can't resolve %s:%d : %s\n", context->hostname, PORT,
-				SDLNet_GetError());
+		werr(LOGUSER, "Can't resolve %s:%d : %s\n", context->hostname, PORT, SDLNet_GetError());
 		return RET_NOK;
 	}
 
 	if (!(socket = SDLNet_TCP_Open(&ip)))
 	{
-		werr(LOGUSER, "Can't open data connection to %s:%d : %s\n",
-				context->hostname, PORT, SDLNet_GetError());
+		werr(LOGUSER, "Can't open data connection to %s:%d : %s\n", context->hostname, PORT, SDLNet_GetError());
 		return RET_NOK;
 	}
 

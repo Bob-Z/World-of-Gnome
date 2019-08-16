@@ -20,12 +20,20 @@
 #include "common.h"
 #include "imageDB.h"
 #include "file.h"
+#include "file_client.h"
 #include "anim.h"
 #include "item.h"
 #include "sdl.h"
 #include "network_client.h"
 #include "screen.h"
 #include "Camera.h"
+#include "sfx.h"
+#include "log.h"
+#include "entry.h"
+#include "mutex.h"
+#include "syntax.h"
+#include "font.h"
+#include "util.h"
 
 static const constexpr int BORDER = 20;
 static const constexpr int FONT_SIZE = 30;
@@ -209,23 +217,20 @@ item_t * scr_select_compose(Context * context)
 
 	if (sfx_filename == nullptr)
 	{
-		entry_read_string(nullptr, CLIENT_CONF_FILE, &sfx_filename,
-		CLIENT_KEY_SELECT_CHARACTER_SFX, nullptr);
+		entry_read_string(nullptr, CLIENT_CONF_FILE, &sfx_filename, CLIENT_KEY_SELECT_CHARACTER_SFX, nullptr);
 	}
 
 	if (sfx_filename != nullptr)
 	{
 		if (g_IsMusicPlaying == false)
 		{
-			if (sfx_play(context, std::string(sfx_filename), MUSIC_CHANNEL,
-					LOOP) != -1)
+			if (sfx_play(context, std::string(sfx_filename), MUSIC_CHANNEL, LOOP) != -1)
 			{
 				g_IsMusicPlaying = true;
 			}
 
 			int sfx_volume = 100; // 100%
-			entry_read_int(nullptr, CLIENT_CONF_FILE, &sfx_volume,
-			CLIENT_KEY_SELECT_CHARACTER_SFX_VOLUME, nullptr);
+			entry_read_int(nullptr, CLIENT_CONF_FILE, &sfx_volume, CLIENT_KEY_SELECT_CHARACTER_SFX_VOLUME, nullptr);
 			sfx_set_volume(MUSIC_CHANNEL, sfx_volume);
 		}
 	}
@@ -244,8 +249,7 @@ item_t * scr_select_compose(Context * context)
 	sdl_add_mousecb(MOUSE_WHEEL_DOWN, cb_wheel_down);
 
 	char * icon_add_image_name = nullptr;
-	entry_read_string(nullptr, CLIENT_CONF_FILE, &icon_add_image_name,
-	CLIENT_KEY_SELECT_CHARACTER_ADD_ICON, nullptr);
+	entry_read_string(nullptr, CLIENT_CONF_FILE, &icon_add_image_name, CLIENT_KEY_SELECT_CHARACTER_ADD_ICON, nullptr);
 	if (icon_add_image_name != nullptr)
 	{
 		int sw;
@@ -264,10 +268,8 @@ item_t * scr_select_compose(Context * context)
 		item_set_pos(item, x, y);
 		item_set_anim(item, anim, 0);
 
-		item_set_click_left(item, cb_icon_add_clicked, (void*) context,
-				nullptr);
-		item_set_click_right(item, cb_icon_add_clicked, (void*) context,
-				nullptr);
+		item_set_click_left(item, cb_icon_add_clicked, (void*) context, nullptr);
+		item_set_click_right(item, cb_icon_add_clicked, (void*) context, nullptr);
 	}
 
 	SDL_LockMutex(character_select_mutex);
@@ -277,28 +279,24 @@ item_t * scr_select_compose(Context * context)
 	{
 		// Compute the marquee file name
 		char * marquee_name = nullptr;
-		if (entry_read_string(CHARACTER_TABLE, character_list[i].id,
-				&marquee_name, CHARACTER_KEY_MARQUEE, nullptr) == RET_OK)
+		if (entry_read_string(CHARACTER_TABLE, character_list[i].id, &marquee_name, CHARACTER_KEY_MARQUEE, nullptr) == RET_OK)
 		{
 			const char * name_array[2] =
 			{ nullptr, nullptr };
 			name_array[0] = marquee_name;
-			character_list[i].anim = imageDB_get_anim_array(context,
-					name_array);
+			character_list[i].anim = imageDB_get_anim_array(context, name_array);
 			free(marquee_name);
 		}
 		else
 		{
 			char ** marquee_list = nullptr;
-			if (entry_read_list(CHARACTER_TABLE, character_list[i].id,
-					&marquee_list, CHARACTER_KEY_MARQUEE, nullptr) == RET_NOK)
+			if (entry_read_list(CHARACTER_TABLE, character_list[i].id, &marquee_list, CHARACTER_KEY_MARQUEE, nullptr) == RET_NOK)
 			{
 				wlog(LOGDESIGNER, "%s has no marquee", character_list[i].id);
 				continue;
 			}
 
-			character_list[i].anim = imageDB_get_anim_array(context,
-					(const char **) marquee_list);
+			character_list[i].anim = imageDB_get_anim_array(context, (const char **) marquee_list);
 			deep_free(marquee_list);
 		}
 
@@ -339,10 +337,7 @@ item_t * scr_select_compose(Context * context)
 		item_image = item;
 		character_list[i].item = item;
 
-		item_set_pos(item,
-				x + character_list[i].width / 2
-						- character_list[i].anim[0]->w / 2,
-				max_h / 2 - character_list[i].anim[0]->h / 2);
+		item_set_pos(item, x + character_list[i].width / 2 - character_list[i].anim[0]->w / 2, max_h / 2 - character_list[i].anim[0]->h / 2);
 		item_set_anim_array(item, character_list[i].anim);
 		item_set_click_right(item, cb_select, (void *) context, nullptr);
 		item_set_double_click_left(item, cb_select, (void *) context, nullptr);
@@ -357,9 +352,7 @@ item_t * scr_select_compose(Context * context)
 			item_set_font(item, font_name);
 			// display string just above the picture
 			sdl_get_string_size(item->font, item->string, &w, &h);
-			item_set_anim_shape(item,
-					item_image->rect.x + item_image->rect.w / 2 - w / 2,
-					item_image->rect.y - h, w, h);
+			item_set_anim_shape(item, item_image->rect.x + item_image->rect.w / 2 - w / 2, item_image->rect.y - h, w, h);
 		}
 		else
 		{
@@ -374,9 +367,7 @@ item_t * scr_select_compose(Context * context)
 			item_set_font(item, font_type);
 			// display string just below the picture
 			sdl_get_string_size(item->font, item->string, &w, &h);
-			item_set_anim_shape(item,
-					item_image->rect.x + item_image->rect.w / 2 - w / 2,
-					item_image->rect.y + item_image->rect.h, w, h);
+			item_set_anim_shape(item, item_image->rect.x + item_image->rect.w / 2 - w / 2, item_image->rect.y + item_image->rect.h, w, h);
 		}
 		else
 		{
@@ -403,15 +394,13 @@ item_t * scr_select_compose(Context * context)
 /*************************
  Add a character to the list
  *************************/
-void scr_select_add_user_character(Context * context, const std::string & id,
-		const std::string & type, const std::string & name)
+void scr_select_add_user_character(Context * context, const std::string & id, const std::string & type, const std::string & name)
 {
 	SDL_LockMutex(character_select_mutex);
 
 	character_num++;
 
-	character_list = (character_t*) realloc(character_list,
-			sizeof(character_t) * character_num);
+	character_list = (character_t*) realloc(character_list, sizeof(character_t) * character_num);
 
 	character_t * new_character = &(character_list[character_num - 1]);
 	new_character->id = strdup(id.c_str());
@@ -421,8 +410,7 @@ void scr_select_add_user_character(Context * context, const std::string & id,
 	new_character->item = nullptr;
 	new_character->width = 0;
 
-	wlog(LOGDESIGNER, "Character %s / %s /%s added", new_character->id,
-			new_character->type, new_character->name);
+	wlog(LOGDESIGNER, "Character %s / %s /%s added", new_character->id, new_character->type, new_character->name);
 
 	SDL_UnlockMutex(character_select_mutex);
 }

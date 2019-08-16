@@ -20,12 +20,22 @@
 #ifndef LUA_H
 #define LUA_H
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+#include <lua.h>
+#include <lualib.h>
+#include <lauxlib.h>
+
+#ifdef __cplusplus
+}
+#endif
+
 #include <string>
 #include <vector>
 
-int lua_execute_script(lua_State* p_pLuaVm, const char * script,
-		const char ** parameters);
-int lua_execute_script(lua_State* p_pLuaVm, const std::string & p_rScript,
-		const std::vector<std::string> & p_rParams);
+int lua_execute_script(lua_State* lua_vm, const char * script, const char ** parameters);
+int lua_execute_script(lua_State* lua_vm, const std::string & script, const std::vector<std::string> & params);
 
 #endif

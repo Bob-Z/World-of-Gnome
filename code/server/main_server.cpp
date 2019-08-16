@@ -17,9 +17,12 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
+#include "client_server.h"
 #include "common.h"
+#include "mutex.h"
 #include "network_server.h"
 #include "npc.h"
+#include "log.h"
 #include <dirent.h>
 #include <getopt.h>
 #include <signal.h>
@@ -81,8 +84,7 @@ int main(int argc, char **argv)
 			printf("-f --file: Only display logs from this source file\n");
 			printf("-F --func: Only display logs from this function\n");
 			printf("-n --nonpc: Do not instantiate NPCs\n");
-			printf(
-					"-i --input: Input data directory (default value: ~/.config/wog/server)\n");
+			printf("-i --input: Input data directory (default value: ~/.config/wog/server)\n");
 			exit(0);
 		}
 	}

@@ -17,21 +17,30 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#include <client_server.h>
-#include "Context.h"
-#include <entry.h>
-#include <file.h>
-#include <item.h>
-#include <log.h>
-#include <lua.h>
-#include <network.h>
-#include <protocol.h>
-#include <syntax.h>
-#include <types.h>
-#include <util.h>
-#include <cstring>
-
+#include "attribute.h"
+#include "character.h"
+#include "client_server.h"
+#include "common.h"
 #include "context_server.h"
+#include "Context.h"
+#include "entry.h"
+#include "equipment.h"
+#include "file.h"
+#include "inventory.h"
+#include "item.h"
+#include "log.h"
+#include "lua_script.h"
+#include "map_server.h"
+#include "network_server.h"
+#include "network.h"
+#include "protocol.h"
+#include "syntax.h"
+#include "types.h"
+#include "util.h"
+#include <cstring>
+#include <stdlib.h>
+#include <string>
+#include <vector>
 
 #ifdef __cplusplus
 extern "C"
@@ -44,17 +53,6 @@ extern "C"
 #ifdef __cplusplus
 }
 #endif
-
-#include "attribute.h"
-#include "character.h"
-#include "common.h"
-#include "equipment.h"
-#include "inventory.h"
-#include "map_server.h"
-#include "network_server.h"
-#include <stdlib.h>
-#include <string>
-#include <vector>
 
 #define LUAVM_CONTEXT "wog_context"
 

@@ -17,9 +17,14 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#include "common.h"
-#include <stdio.h>
+#include "log.h"
+#include <bits/types/FILE.h>
 #include <stdlib.h>
+#include <cstdio>
+#include <cstring>
+#include <string>
+#include <utility>
+#include <vector>
 
 /***************************************************************************
  Return a string representing the checksum of the file + a bool to true on success
@@ -55,8 +60,7 @@ std::pair<bool, std::string> checksum_file(const std::string & file_name)
 	result.first = true;
 	result.second = text;
 
-	wlog(LOGDEVELOPER, "Checksum for %s is %s", file_name.c_str(),
-			result.second.c_str());
+	wlog(LOGDEVELOPER, "Checksum for %s is %s", file_name.c_str(), result.second.c_str());
 
 	return result;
 }
@@ -129,8 +133,7 @@ char ** add_array(char ** array1, char ** array2)
 		while (*current_array != nullptr)
 		{
 			array_index++;
-			ret_array = (char **) realloc(ret_array,
-					array_index * sizeof(char*));
+			ret_array = (char **) realloc(ret_array, array_index * sizeof(char*));
 			ret_array[array_index - 1] = *current_array;
 			current_array++;
 		}
@@ -142,8 +145,7 @@ char ** add_array(char ** array1, char ** array2)
 		while (*current_array != nullptr)
 		{
 			array_index++;
-			ret_array = (char **) realloc(ret_array,
-					array_index * sizeof(char*));
+			ret_array = (char **) realloc(ret_array, array_index * sizeof(char*));
 			ret_array[array_index - 1] = *current_array;
 			current_array++;
 		}

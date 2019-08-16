@@ -18,8 +18,15 @@
  */
 
 #include "action.h"
+#include "client_server.h"
 #include "common.h"
+#include "Context.h"
 #include "npc.h"
+#include "log.h"
+#include "util.h"
+#include "entry.h"
+#include "syntax.h"
+#include "mutex.h"
 #include <dirent.h>
 #include <stdlib.h>
 #include <sys/types.h>
@@ -42,8 +49,7 @@ static int npc_script(void * data)
 
 	context_new_VM(context);
 
-	wlog(LOGDESIGNER, "Start AI script for %s(%s)", context->id,
-			context->character_name);
+	wlog(LOGDESIGNER, "Start AI script for %s(%s)", context->id, context->character_name);
 
 	while (context_get_connected(context))
 	{
@@ -55,20 +61,17 @@ static int npc_script(void * data)
 		{
 			deep_free(parameters);
 		}
-		if (entry_read_string(CHARACTER_TABLE, context->id, &script,
-		CHARACTER_KEY_AI, NULL) == RET_NOK)
+		if (entry_read_string(CHARACTER_TABLE, context->id, &script, CHARACTER_KEY_AI, NULL) == RET_NOK)
 		{
 			werr(LOGUSER, "No AI script for %s", context->id);
 			break;
 		}
-		entry_read_list(CHARACTER_TABLE, context->id, &parameters,
-		CHARACTER_KEY_AI_PARAMS, NULL);
+		entry_read_list(CHARACTER_TABLE, context->id, &parameters, CHARACTER_KEY_AI_PARAMS, NULL);
 
 		if (context->next_execution_time < SDL_GetTicks())
 		{
 			SDL_LockMutex(npc_mutex);
-			timeout_ms = action_execute_script(context, script,
-					(const char **) parameters);
+			timeout_ms = action_execute_script(context, script, (const char **) parameters);
 			SDL_UnlockMutex(npc_mutex);
 			context->next_execution_time = SDL_GetTicks() + timeout_ms;
 		}
@@ -84,8 +87,7 @@ static int npc_script(void * data)
 		}
 	}
 
-	wlog(LOGDESIGNER, "End AI script for %s(%s)", context->id,
-			context->character_name);
+	wlog(LOGDESIGNER, "End AI script for %s(%s)", context->id, context->character_name);
 
 	/* Send connected  = FALSE to other context */
 	context_spread(context);
@@ -154,8 +156,7 @@ void instantiate_npc(const char * id)
 		return;
 	}
 
-	wlog(LOGDESIGNER, "Creating npc %s of type %s in map %s at %d,%d", name,
-			type, map, x, y);
+	wlog(LOGDESIGNER, "Creating npc %s of type %s in map %s at %d,%d", name, type, map, x, y);
 	ctx = context_new();
 	context_set_username(ctx, "CPU");
 	context_set_character_name(ctx, name);
@@ -187,8 +188,7 @@ void init_npc(void)
 	struct dirent * ent;
 
 	// Read all files in NPC directory
-	const std::string file_path = base_directory + "/"
-			+ std::string(CHARACTER_TABLE);
+	const std::string file_path = base_directory + "/" + std::string(CHARACTER_TABLE);
 
 	dir = opendir(file_path.c_str());
 	if (dir == NULL)

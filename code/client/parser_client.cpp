@@ -19,13 +19,13 @@
 
 #include <common.h>
 #include "Context.h"
-#include <ContextBis.h>
-#include <entry.h>
-#include <log.h>
-#include <protocol.h>
-#include <Selection.h>
-#include <types.h>
-#include <wog.pb.h>
+#include "ContextBis.h"
+#include "entry.h"
+#include "log.h"
+#include "protocol.h"
+#include "Selection.h"
+#include "types.h"
+#include "wog.pb.h"
 #include <cstdint>
 #include <cstdlib>
 #include <string>
@@ -39,6 +39,7 @@
 #include "screen.h"
 #include "textview.h"
 #include "ui_play.h"
+#include "file_client.h"
 
 class ContextBis;
 

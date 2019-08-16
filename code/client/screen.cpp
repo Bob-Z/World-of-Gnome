@@ -18,7 +18,12 @@
  */
 
 #include "Camera.h"
+#include "entry.h"
 #include "file.h"
+#include "file_client.h"
+#include "font.h"
+#include "log.h"
+#include "lua_script.h"
 #include "lua_client.h"
 #include "option_client.h"
 #include "scr_create.h"
@@ -26,6 +31,7 @@
 #include "scr_select.h"
 #include "screen.h"
 #include "sdl.h"
+#include "syntax.h"
 #include <limits.h>
 #include <pthread.h>
 
@@ -145,9 +151,7 @@ static void display_fps()
 			new_timer = SDL_GetTicks();
 			if (timer + FPS_DISPLAY_PERIOD < new_timer)
 			{
-				sample = (double) num_frame
-						/ ((double) new_timer - (double) timer)
-						* (double) FPS_DISPLAY_PERIOD;
+				sample = (double) num_frame / ((double) new_timer - (double) timer) * (double) FPS_DISPLAY_PERIOD;
 				num_frame = 0;
 				timer = new_timer;
 				sprintf(shown_fps, "%f", sample);
@@ -162,8 +166,7 @@ static void display_fps()
 void calculate_camera_position(Context * p_pCtx)
 {
 	char * l_pCameraScript = nullptr;
-	entry_read_string(nullptr, CLIENT_CONF_FILE, &l_pCameraScript,
-	CLIENT_KEY_CAMERA_SCRIPT, nullptr);
+	entry_read_string(nullptr, CLIENT_CONF_FILE, &l_pCameraScript, CLIENT_KEY_CAMERA_SCRIPT, nullptr);
 	if (l_pCameraScript == nullptr || l_pCameraScript[0] == '\0')
 	{
 		werr(LOGDESIGNER, "No camera script defined. Camera won't move");
@@ -186,8 +189,7 @@ void calculate_camera_position(Context * p_pCtx)
 
 /************************************************
  ************************************************/
-static void execute_draw_script(Context * p_pCtx, const char * p_pScriptName,
-		Context * p_pCtxToDraw, item_t * p_pItem)
+static void execute_draw_script(Context * p_pCtx, const char * p_pScriptName, Context * p_pCtxToDraw, item_t * p_pItem)
 {
 	item_t l_TempItem;
 	memcpy(&l_TempItem, p_pItem, sizeof(item_t));
@@ -255,8 +257,7 @@ void screen_display(Context * ctx)
 				}
 				else
 				{
-					entry_read_string(CHARACTER_TABLE, ctx_drawn->id,
-							&draw_script, CHARACTER_KEY_DRAW_SCRIPT, nullptr);
+					entry_read_string(CHARACTER_TABLE, ctx_drawn->id, &draw_script, CHARACTER_KEY_DRAW_SCRIPT, nullptr);
 				}
 
 				if (draw_script != nullptr)

@@ -17,13 +17,19 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#include "common.h"
+#include "client_server.h"
+#include "lua_script.h"
+#include "log.h"
+#include "syntax.h"
+#include <iterator>
+#include <string>
+#include <vector>
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif
-
+#include <lua.h>
 #include <lualib.h>
 #include <lauxlib.h>
 
@@ -35,18 +41,15 @@ extern "C"
  Execute the given script with its parameters
  return -1 on error or return value from execution
  *******************************************************************************/
-int lua_execute_script(lua_State* lua_vm, const char * script,
-		const char ** parameters)
+int lua_execute_script(lua_State* lua_vm, const char * script, const char ** parameters)
 {
 	// Load script
-	const std::string file_path = base_directory + "/"
-			+ std::string(SCRIPT_TABLE) + "/" + std::string(script);
+	const std::string file_path = base_directory + "/" + std::string(SCRIPT_TABLE) + "/" + std::string(script);
 
 	if (luaL_loadfile(lua_vm, file_path.c_str()) != 0)
 	{
 		// If something went wrong, error message is at the top of the stack
-		werr(LOGUSER, "Couldn't load LUA script %s: %s\n", file_path.c_str(),
-				lua_tostring(lua_vm, -1));
+		werr(LOGUSER, "Couldn't load LUA script %s: %s\n", file_path.c_str(), lua_tostring(lua_vm, -1));
 		return -1;
 	}
 
@@ -71,8 +74,7 @@ int lua_execute_script(lua_State* lua_vm, const char * script,
 	// number of argument = l_ParamNum, number of result = 1
 	if (lua_pcall(lua_vm, param_qty, 1, 0) != 0)
 	{
-		werr(LOGUSER, "Error running LUA script %s: %s\n", file_path.c_str(),
-				lua_tostring(lua_vm, -1));
+		werr(LOGUSER, "Error running LUA script %s: %s\n", file_path.c_str(), lua_tostring(lua_vm, -1));
 		return -1;
 	}
 
@@ -96,18 +98,15 @@ int lua_execute_script(lua_State* lua_vm, const char * script,
  Execute the given script with its parameters
  return -1 on error or return value from execution
  *******************************************************************************/
-int lua_execute_script(lua_State* lua_vm, const std::string & script,
-		const std::vector<std::string> & p_rParams)
+int lua_execute_script(lua_State* lua_vm, const std::string & script, const std::vector<std::string> & p_rParams)
 {
 	// Load script
-	const std::string file_path = base_directory + "/"
-			+ std::string(SCRIPT_TABLE) + "/" + script;
+	const std::string file_path = base_directory + "/" + std::string(SCRIPT_TABLE) + "/" + script;
 
 	if (luaL_loadfile(lua_vm, file_path.c_str()) != 0)
 	{
 		// If something went wrong, error message is at the top of the stack
-		werr(LOGUSER, "Couldn't load LUA script %s: %s\n", file_path.c_str(),
-				lua_tostring(lua_vm, -1));
+		werr(LOGUSER, "Couldn't load LUA script %s: %s\n", file_path.c_str(), lua_tostring(lua_vm, -1));
 		return -1;
 	}
 
@@ -129,8 +128,7 @@ int lua_execute_script(lua_State* lua_vm, const std::string & script,
 	// number of argument = l_ParamNum, number of result = 1
 	if (lua_pcall(lua_vm, l_ParamNum, 1, 0) != 0)
 	{
-		werr(LOGUSER, "Error running LUA script %s: %s\n", file_path.c_str(),
-				lua_tostring(lua_vm, -1));
+		werr(LOGUSER, "Error running LUA script %s: %s\n", file_path.c_str(), lua_tostring(lua_vm, -1));
 		return -1;
 	}
 

@@ -26,6 +26,13 @@
 #include "network_client.h"
 #include "screen.h"
 #include "sdl.h"
+#include "sfx.h"
+#include "log.h"
+#include "entry.h"
+#include "syntax.h"
+#include "font.h"
+#include "util.h"
+#include "mutex.h"
 
 static const constexpr int BORDER = 20;
 static const constexpr int FONT_SIZE = 30;
@@ -244,8 +251,7 @@ item_t * scr_create_compose(Context * context)
 
 	if (sfx_filename == nullptr)
 	{
-		entry_read_string(nullptr, CLIENT_CONF_FILE, &sfx_filename,
-		CLIENT_KEY_CREATE_CHARACTER_SFX, nullptr);
+		entry_read_string(nullptr, CLIENT_CONF_FILE, &sfx_filename, CLIENT_KEY_CREATE_CHARACTER_SFX, nullptr);
 	}
 
 	if (sfx_filename != nullptr)
@@ -258,8 +264,7 @@ item_t * scr_create_compose(Context * context)
 			}
 
 			int sfx_volume = 100; // 100%
-			entry_read_int(nullptr, CLIENT_CONF_FILE, &sfx_volume,
-			CLIENT_KEY_CREATE_CHARACTER_SFX_VOLUME, nullptr);
+			entry_read_int(nullptr, CLIENT_CONF_FILE, &sfx_volume, CLIENT_KEY_CREATE_CHARACTER_SFX_VOLUME, nullptr);
 			sfx_set_volume(MUSIC_CHANNEL, sfx_volume);
 		}
 	}
