@@ -23,7 +23,7 @@
 #include <SDL_stdinc.h>
 #include "Selection.h"
 
-class Context;
+class ContextBis;
 struct lua_State;
 
 #ifdef __cplusplus
@@ -116,7 +116,7 @@ ret_code_t context_set_selected_equipment(context_t * context, const char * sele
 ret_code_t context_set_selected_item(context_t * context, const char * selected_item);
 ret_code_t context_update_from_file(context_t * context);
 void context_spread(context_t * context);
-void context_add_or_update_from_network_frame(const Context & context);
+void context_add_or_update_from_network_frame(const ContextBis & context);
 void context_lock_list();
 void context_unlock_list();
 context_t * context_get_first();

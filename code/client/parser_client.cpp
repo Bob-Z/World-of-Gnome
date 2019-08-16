@@ -19,7 +19,7 @@
 
 #include <common.h>
 #include <context.h>
-#include <Context.h>
+#include <ContextBis.h>
 #include <entry.h>
 #include <log.h>
 #include <protocol.h>
@@ -40,16 +40,14 @@
 #include "textview.h"
 #include "ui_play.h"
 
-class Context;
+class ContextBis;
 
 /**************************************
  Return RET_NOK on error
  **************************************/
-static ret_code_t manage_login_ok(context_t * context,
-		const pb::LoginOk & login_ok)
+static ret_code_t manage_login_ok(context_t * context, const pb::LoginOk & login_ok)
 {
-	wlog(LOGDEVELOPER, "[network] Received login OK for user %s",
-			context->user_name);
+	wlog(LOGDEVELOPER, "[network] Received login OK for user %s", context->user_name);
 
 	if (network_open_data_connection(context) == RET_NOK)
 	{
@@ -66,11 +64,9 @@ static ret_code_t manage_login_ok(context_t * context,
 /**************************************
  Return RET_NOK on error
  **************************************/
-static ret_code_t manage_login_nok(context_t * context,
-		const pb::LoginNok & login_nok)
+static ret_code_t manage_login_nok(context_t * context, const pb::LoginNok & login_nok)
 {
-	wlog(LOGDEVELOPER, "[network] Received login NOK for user %s",
-			context->user_name);
+	wlog(LOGDEVELOPER, "[network] Received login NOK for user %s", context->user_name);
 
 	context_set_connected(context, false);
 	werr(LOGUSER, "Check your login and password (they are case sensitive)\n");
@@ -82,11 +78,9 @@ static ret_code_t manage_login_nok(context_t * context,
 /**************************************
  Return RET_NOK on error
  **************************************/
-static ret_code_t manage_playable_character(context_t * context,
-		const pb::PlayableCharacter & playable_character)
+static ret_code_t manage_playable_character(context_t * context, const pb::PlayableCharacter & playable_character)
 {
-	wlog(LOGDEVELOPER, "[network] Received playable character for user %s",
-			context->user_name);
+	wlog(LOGDEVELOPER, "[network] Received playable character for user %s", context->user_name);
 
 	std::vector<std::string> id_list;
 	for (int i = 0; i < playable_character.id().size(); i++)
@@ -116,14 +110,11 @@ static ret_code_t manage_file(context_t * context, const pb::File& file)
 /**************************************
  Return RET_NOK on error
  **************************************/
-static ret_code_t manage_user_character(context_t * context,
-		const pb::UserCharacter& user_character)
+static ret_code_t manage_user_character(context_t * context, const pb::UserCharacter& user_character)
 {
-	wlog(LOGDEVELOPER, "[network] Received user %s character",
-			context->user_name, user_character.name().c_str());
+	wlog(LOGDEVELOPER, "[network] Received user %s character", context->user_name, user_character.name().c_str());
 
-	scr_select_add_user_character(context, user_character.id(),
-			user_character.type(), user_character.name());
+	scr_select_add_user_character(context, user_character.id(), user_character.type(), user_character.name());
 	screen_compose();
 
 	return RET_OK;
@@ -132,13 +123,11 @@ static ret_code_t manage_user_character(context_t * context,
 /**************************************
  Return RET_NOK on error
  **************************************/
-static ret_code_t manage_context(context_t * context,
-		const pb::Context& incoming_context)
+static ret_code_t manage_context(context_t * context, const pb::Context& incoming_context)
 {
-	wlog(LOGDEVELOPER, "[network] Received context %s",
-			incoming_context.id().c_str());
+	wlog(LOGDEVELOPER, "[network] Received context %s", incoming_context.id().c_str());
 
-	Context received_context;
+	ContextBis received_context;
 	received_context.setCharacterName(incoming_context.character_name());
 	received_context.setConnected(incoming_context.connected());
 	received_context.setId(incoming_context.id());
@@ -185,8 +174,7 @@ static ret_code_t manage_entry(context_t * context, const pb::Entry& entry)
 {
 	wlog(LOGDEVELOPER, "[network] Received entry");
 
-	if (entry_update(entry.type(), entry.table(), entry.file(), entry.path(),
-			entry.value()) != -1)
+	if (entry_update(entry.type(), entry.table(), entry.file(), entry.path(), entry.value()) != -1)
 	{
 		screen_compose();
 	}
@@ -234,8 +222,7 @@ static ret_code_t manage_effect(context_t * context, const pb::Effect& effect)
 /***********************************
  Return RET_NOK on error
  ***********************************/
-ret_code_t parse_incoming_data(context_t * context,
-		const std::string & serialized_data)
+ret_code_t parse_incoming_data(context_t * context, const std::string & serialized_data)
 {
 	pb::ServerMessage message;
 	if (message.ParseFromString(serialized_data) == false)

@@ -17,148 +17,147 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#include "Context.h"
+#include "ContextBis.h"
 
 /******************************************************************************/
-Context::Context() :
-		m_user_name(), m_connected(false), m_in_game(false), m_npc(false), m_character_name(), m_map(), m_tile_x(
-				0), m_tile_y(0), m_type(), m_selection(), m_id()
+ContextBis::ContextBis() :
+		m_user_name(), m_connected(false), m_in_game(false), m_npc(false), m_character_name(), m_map(), m_tile_x(0), m_tile_y(0), m_type(), m_selection(), m_id()
 {
 }
 
 /******************************************************************************/
-Context::~Context()
+ContextBis::~ContextBis()
 {
 }
 
 /******************************************************************************/
-const std::string& Context::getCharacterName() const
+const std::string& ContextBis::getCharacterName() const
 {
 	return m_character_name;
 }
 
 /******************************************************************************/
-void Context::setCharacterName(const std::string& characterName)
+void ContextBis::setCharacterName(const std::string& characterName)
 {
 	m_character_name = characterName;
 }
 
 /******************************************************************************/
-bool Context::isConnected() const
+bool ContextBis::isConnected() const
 {
 	return m_connected;
 }
 
 /******************************************************************************/
-void Context::setConnected(bool connected)
+void ContextBis::setConnected(bool connected)
 {
 	m_connected = connected;
 }
 
 /******************************************************************************/
-const std::string& Context::getId() const
+const std::string& ContextBis::getId() const
 {
 	return m_id;
 }
 
 /******************************************************************************/
-void Context::setId(const std::string& id)
+void ContextBis::setId(const std::string& id)
 {
 	m_id = id;
 }
 
 /******************************************************************************/
-bool Context::isInGame() const
+bool ContextBis::isInGame() const
 {
 	return m_in_game;
 }
 
 /******************************************************************************/
-void Context::setInGame(bool inGame)
+void ContextBis::setInGame(bool inGame)
 {
 	m_in_game = inGame;
 }
 
 /******************************************************************************/
-const std::string& Context::getMap() const
+const std::string& ContextBis::getMap() const
 {
 	return m_map;
 }
 
 /******************************************************************************/
-void Context::setMap(const std::string& map)
+void ContextBis::setMap(const std::string& map)
 {
 	m_map = map;
 }
 
 /******************************************************************************/
-bool Context::isNpc() const
+bool ContextBis::isNpc() const
 {
 	return m_npc;
 }
 
 /******************************************************************************/
-void Context::setNpc(bool npc)
+void ContextBis::setNpc(bool npc)
 {
 	m_npc = npc;
 }
 
 /******************************************************************************/
-const Selection& Context::getSelection() const
+const Selection& ContextBis::getSelection() const
 {
 	return m_selection;
 }
 
 /******************************************************************************/
-void Context::setSelection(const Selection& selection)
+void ContextBis::setSelection(const Selection& selection)
 {
 	m_selection = selection;
 }
 
 /******************************************************************************/
-int Context::getTileX() const
+int ContextBis::getTileX() const
 {
 	return m_tile_x;
 }
 
 /******************************************************************************/
-void Context::setTileX(int tileX)
+void ContextBis::setTileX(int tileX)
 {
 	m_tile_x = tileX;
 }
 
 /******************************************************************************/
-int Context::getTileY() const
+int ContextBis::getTileY() const
 {
 	return m_tile_y;
 }
 
 /******************************************************************************/
-void Context::setTileY(int tileY)
+void ContextBis::setTileY(int tileY)
 {
 	m_tile_y = tileY;
 }
 
 /******************************************************************************/
-const std::string& Context::getType() const
+const std::string& ContextBis::getType() const
 {
 	return m_type;
 }
 
 /******************************************************************************/
-void Context::setType(const std::string& type)
+void ContextBis::setType(const std::string& type)
 {
 	m_type = type;
 }
 
 /******************************************************************************/
-const std::string& Context::getUserName() const
+const std::string& ContextBis::getUserName() const
 {
 	return m_user_name;
 }
 
 /******************************************************************************/
-void Context::setUserName(const std::string& userName)
+void ContextBis::setUserName(const std::string& userName)
 {
 	m_user_name = userName;
 }

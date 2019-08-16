@@ -18,7 +18,7 @@
  */
 
 #include "context.h"
-#include "Context.h"
+#include "ContextBis.h"
 #include "entry.h"
 #include "log.h"
 #include "mutex.h"
@@ -27,7 +27,7 @@
 #include <stdlib.h>
 #include <string>
 
-class Context;
+class ContextBis;
 
 extern "C"
 {
@@ -823,7 +823,7 @@ context_t * context_find(const char * id)
 /**************************************
  Called from client
  **************************************/
-void context_add_or_update_from_network_frame(const Context & context)
+void context_add_or_update_from_network_frame(const ContextBis & context)
 {
 	// search for this context
 	context_lock_list();

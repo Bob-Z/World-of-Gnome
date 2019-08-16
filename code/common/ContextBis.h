@@ -17,17 +17,17 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#ifndef COMMON_CONTEXT_H_
-#define COMMON_CONTEXT_H_
+#ifndef COMMON_ContextBisBIS_H_
+#define COMMON_ContextBisBIS_H_
 
 #include "Selection.h"
 #include <string>
 
-class Context
+class ContextBis
 {
 public:
-	Context();
-	virtual ~Context();
+	ContextBis();
+	virtual ~ContextBis();
 
 	const std::string& getCharacterName() const;
 	void setCharacterName(const std::string& characterName);
@@ -66,4 +66,4 @@ private:
 	std::string m_id; // unique ID of a character (its filename)
 };
 
-#endif // COMMON_CONTEXT_H_
+#endif // COMMON_ContextBisBIS_H_
