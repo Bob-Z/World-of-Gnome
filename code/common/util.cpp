@@ -62,44 +62,6 @@ std::pair<bool, std::string> checksum_file(const std::string & file_name)
 	return result;
 }
 
-/***************************************************************************
- the returned string MUST BE FREED
- ***************************************************************************/
-char * strconcat(const char * str, ...)
-{
-	va_list ap;
-	char * res = nullptr;
-	int size = 0;
-	char * entry = nullptr;
-
-	if (str != nullptr)
-	{
-		res = strdup(str);
-		size = strlen(res);
-	}
-
-	va_start(ap, str);
-
-	entry = va_arg(ap, char*);
-	while (entry != nullptr)
-	{
-		if (res == nullptr)
-		{
-			res = static_cast<char*>(calloc(1, 1));
-		}
-
-		size += strlen(entry);
-		res = (char *) realloc(res, size + 1);
-		strcat(res, entry);
-
-		entry = va_arg(ap, char*);
-	}
-
-	va_end(ap);
-
-	return res;
-}
-
 /*********************
  Free an array of element ( returned by entry_read_list, get_group_list ...)
  The last element of the list must be nullptr

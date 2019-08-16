@@ -26,7 +26,7 @@
 
 #include "../client/EffectManager.h"
 
-void network_broadcast_text(context_t * context, const char * text);
+void network_broadcast_text(context_t * context, const std::string & text);
 void network_send_user_character(context_t * context,
 		const char * p_pCharacterId, const char * p_pType,
 		const char * p_pName);
@@ -44,7 +44,7 @@ void network_send_login_nok(context_t * context);
 void network_send_playable_character(context_t * context,
 		const std::vector<std::string> & id_list);
 void network_send_context_to_context(context_t * dest_ctx, context_t * src_ctx);
-void network_send_text(const char * id, const char * string);
+void network_send_text(const char * id, const std::string & string);
 void network_send_entry_int(context_t * context, const char * table,
 		const char * file, const char *path, int value);
 

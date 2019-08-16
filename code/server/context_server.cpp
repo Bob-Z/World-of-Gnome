@@ -135,7 +135,7 @@ void context_broadcast_text(const char * map, const char * text)
 			}
 		}
 
-		network_send_text(ctx->id, text);
+		network_send_text(ctx->id, std::string(text));
 
 	} while ((ctx = ctx->next) != nullptr);
 
@@ -148,7 +148,6 @@ void context_broadcast_text(const char * map, const char * text)
 void context_broadcast_map(const char * map)
 {
 	context_t * ctx = nullptr;
-	char * filename;
 
 	context_lock_list();
 
@@ -160,7 +159,8 @@ void context_broadcast_map(const char * map)
 		return;
 	}
 
-	filename = strconcat(MAP_TABLE, "/", map, nullptr);
+	const std::string file_name = std::string(MAP_TABLE) + "/"
+			+ std::string(map);
 
 	do
 	{
@@ -184,11 +184,9 @@ void context_broadcast_map(const char * map)
 			}
 		}
 
-		network_send_file(ctx, filename);
+		network_send_file(ctx, file_name.c_str());
 
 	} while ((ctx = ctx->next) != nullptr);
-
-	free(filename);
 
 	context_unlock_list();
 }
@@ -200,7 +198,6 @@ void context_broadcast_character(const char * character)
 {
 	context_t * ctx = nullptr;
 	context_t * character_ctx = nullptr;
-	char * filename;
 
 	context_lock_list();
 
@@ -214,7 +211,8 @@ void context_broadcast_character(const char * character)
 		return;
 	}
 
-	filename = strconcat(CHARACTER_TABLE, "/", character, nullptr);
+	const std::string file_name = std::string(CHARACTER_TABLE) + "/"
+			+ std::string(character);
 
 	do
 	{
@@ -238,11 +236,9 @@ void context_broadcast_character(const char * character)
 			}
 		}
 
-		network_send_file(ctx, filename);
+		network_send_file(ctx, file_name.c_str());
 
 	} while ((ctx = ctx->next) != nullptr);
-
-	free(filename);
 
 	context_unlock_list();
 }

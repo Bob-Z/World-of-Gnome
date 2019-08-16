@@ -1256,8 +1256,8 @@ static int l_print_text_id(lua_State* L)
 
 	id = luaL_checkstring(L, -2);
 	string = luaL_checkstring(L, -1);
-	/* add a trailing \n */
-	network_send_text(id, string);
+	// add a trailing \n
+	network_send_text(id, std::string(string));
 	return 0;  // number of results
 }
 
@@ -2235,13 +2235,10 @@ static int l_popup_send(lua_State* L)
  **************************************/
 static void action_chat(context_t * context, const char * text)
 {
-	char * new_text;
-
-	new_text = strconcat(context->character_name, ":", text, nullptr);
+	const std::string new_text = std::string(context->character_name) + ":"
+			+ std::string(text);
 
 	network_broadcast_text(context, new_text);
-
-	free(new_text);
 }
 
 /**************************************

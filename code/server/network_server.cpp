@@ -40,7 +40,7 @@
 
 /*********************************************************************
  *********************************************************************/
-void network_send_text(const char * id, const char * string)
+void network_send_text(const char * id, const std::string & string)
 {
 	context_t * context = context_find(id);
 	if (context == nullptr)
@@ -60,7 +60,7 @@ void network_send_text(const char * id, const char * string)
 /*******************************************************************************
  Broadcast text to all in game players
  ******************************************************************************/
-void network_broadcast_text(context_t * context, const char * text)
+void network_broadcast_text(context_t * context, const std::string & text)
 {
 	context_t * ctx = nullptr;
 
@@ -135,11 +135,10 @@ void network_send_user_character(context_t * context, const char * id,
  ******************************************************************************/
 void network_send_character_file(context_t * context)
 {
-	char * filename;
+	const std::string file_name = std::string(CHARACTER_TABLE) + "/"
+			+ std::string(context->id);
 
-	filename = strconcat(CHARACTER_TABLE, "/", context->id, nullptr);
-	network_send_file(context, filename);
-	free(filename);
+	network_send_file(context, file_name.c_str());
 }
 
 /*******************************************************************************

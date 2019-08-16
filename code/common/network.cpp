@@ -237,12 +237,7 @@ void network_send_file_data(context_t * context, const std::string & name,
 int network_send_table_file(context_t * context, const char * table,
 		const char * id)
 {
-	char * filename;
-	int ret;
+	const std::string file_name = std::string(table) + "/" + std::string(id);
 
-	filename = strconcat(table, "/", id, nullptr);
-	ret = network_send_file(context, filename);
-	free(filename);
-
-	return ret;
+	return network_send_file(context, file_name.c_str());
 }

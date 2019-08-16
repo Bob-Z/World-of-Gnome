@@ -24,7 +24,6 @@
 #include <vector>
 
 std::pair<bool, std::string> checksum_file(const std::string & file_name);
-char * strconcat(const char * str, ...);
 void deep_free(char ** to_delete);
 char * _strsep(char **stringp, const char *delim);
 char ** add_array(char ** array1, char ** array2);
