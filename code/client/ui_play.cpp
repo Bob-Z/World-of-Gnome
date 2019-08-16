@@ -256,16 +256,14 @@ static void compose_attribute(context_t * ctx, item_t * item_list)
 	index = 0;
 	while (name_list[index] != nullptr)
 	{
-		if (entry_read_int(CHARACTER_TABLE, ctx->id, &value, ATTRIBUTE_GROUP,
-				name_list[index], ATTRIBUTE_CURRENT, nullptr) == RET_NOK)
+		if (entry_read_int(CHARACTER_TABLE, ctx->id, &value, ATTRIBUTE_GROUP, name_list[index], ATTRIBUTE_CURRENT, nullptr) == RET_NOK)
 		{
 			index++;
 			continue;
 		}
 
 		num_attr++;
-		attribute_string = (char**) realloc(attribute_string,
-				(num_attr + 1) * sizeof(char*));
+		attribute_string = (char**) realloc(attribute_string, (num_attr + 1) * sizeof(char*));
 		sprintf(buf, "%s: %d", name_list[index], value);
 		attribute_string[num_attr - 1] = strdup(buf);
 		attribute_string[num_attr] = nullptr;
@@ -414,8 +412,7 @@ static void compose_action(context_t * ctx, item_t * item_list)
 		item = item_list_add(&item_list);
 		item_set_layout(item, layout);
 		item_set_overlay(item, 1);
-		item_set_click_left(item, ui_play_cb_action,
-				(void*) strdup(action_list[i]), free);
+		item_set_click_left(item, ui_play_cb_action, (void*) strdup(action_list[i]), free);
 		item_set_wheel_up(item, cb_wheel_up_action, nullptr, nullptr);
 		item_set_wheel_down(item, cb_wheel_down_action, nullptr, nullptr);
 
@@ -450,8 +447,7 @@ static void compose_action(context_t * ctx, item_t * item_list)
 		if (entry_read_list(ACTION_TABLE, action_list[i], &icon_click,
 		ACTION_KEY_ICON_CLICK, nullptr) == RET_OK)
 		{
-			anim_array = imageDB_get_anim_array(ctx,
-					(const char **) icon_click);
+			anim_array = imageDB_get_anim_array(ctx, (const char **) icon_click);
 			item_set_anim_click_array(item, anim_array);
 			free(anim_array);
 			deep_free(icon_click);
@@ -526,8 +522,7 @@ static void compose_equipment(context_t * ctx, item_t * item_list)
 
 	SDL_GetRendererOutputSize(ctx->render, &sw, &sh);
 
-	entry_get_group_list(CHARACTER_TABLE, ctx->id, &slot_list, EQUIPMENT_GROUP,
-			nullptr);
+	entry_get_group_list(CHARACTER_TABLE, ctx->id, &slot_list, EQUIPMENT_GROUP, nullptr);
 
 	max_w = 0;
 	max_h = 0;
@@ -567,8 +562,7 @@ static void compose_equipment(context_t * ctx, item_t * item_list)
 			item_set_pos(item, x, y);
 			item_set_anim(item, anim, 0);
 
-			item_set_click_left(item, cb_select_slot, strdup(slot_list[index]),
-					nullptr);
+			item_set_click_left(item, cb_select_slot, strdup(slot_list[index]), nullptr);
 
 			if (anim->w > max_w)
 			{
@@ -582,8 +576,7 @@ static void compose_equipment(context_t * ctx, item_t * item_list)
 
 		// Is there an equipped object ?
 		if (entry_read_string(CHARACTER_TABLE, ctx->id, &equipped_name,
-		EQUIPMENT_GROUP, slot_list[index], EQUIPMENT_EQUIPPED, nullptr)
-				== RET_OK && equipped_name[0] != 0)
+		EQUIPMENT_GROUP, slot_list[index], EQUIPMENT_EQUIPPED, nullptr) == RET_OK && equipped_name[0] != 0)
 		{
 #if 0
 			// Get the equipped object name
@@ -598,22 +591,16 @@ static void compose_equipment(context_t * ctx, item_t * item_list)
 
 			if (mytemplate == nullptr)
 			{
-				if (entry_read_string(ITEM_TABLE, equipped_name,
-						&equipped_icon_name, ITEM_ICON, nullptr) == RET_NOK)
+				if (entry_read_string(ITEM_TABLE, equipped_name, &equipped_icon_name, ITEM_ICON, nullptr) == RET_NOK)
 				{
-					werr(LOGDESIGNER,
-							"Can't read object %s icon in equipment slot %s",
-							equipped_name, slot_list[index]);
+					werr(LOGDESIGNER, "Can't read object %s icon in equipment slot %s", equipped_name, slot_list[index]);
 				}
 			}
 			else
 			{
-				if (entry_read_string(ITEM_TEMPLATE_TABLE, mytemplate,
-						&equipped_icon_name, ITEM_ICON, nullptr) == RET_NOK)
+				if (entry_read_string(ITEM_TEMPLATE_TABLE, mytemplate, &equipped_icon_name, ITEM_ICON, nullptr) == RET_NOK)
 				{
-					werr(LOGDESIGNER,
-							"Can't read item %s icon name (template: %s)",
-							equipped_name, mytemplate);
+					werr(LOGDESIGNER, "Can't read item %s icon name (template: %s)", equipped_name, mytemplate);
 				}
 				free(mytemplate);
 			}
@@ -628,8 +615,7 @@ static void compose_equipment(context_t * ctx, item_t * item_list)
 				item_set_overlay(item, 1);
 				item_set_pos(item, x - anim->w, y);
 				item_set_anim(item, anim2, 0);
-				item_set_click_left(item, cb_select_slot,
-						strdup(slot_list[index]), nullptr);
+				item_set_click_left(item, cb_select_slot, strdup(slot_list[index]), nullptr);
 				if (h1 < anim->h)
 				{
 					h1 = anim->h;
@@ -638,22 +624,20 @@ static void compose_equipment(context_t * ctx, item_t * item_list)
 			free(equipped_name);
 		}
 
-		/* Draw selection cursor */
-		if (ctx->selection.equipment[0] != 0)
+		// Draw selection cursor
+		if (ctx->selection.getEquipment() != "")
 		{
 			if (option_get().cursor_equipment)
 			{
-				if (!strcmp(ctx->selection.equipment, slot_list[index]))
+				if (strcmp(ctx->selection.getEquipment().c_str(), slot_list[index]) == 0)
 				{
-					anim3 = imageDB_get_anim(ctx,
-							option_get().cursor_equipment);
+					anim3 = imageDB_get_anim(ctx, option_get().cursor_equipment);
 
 					item = item_list_add(&item_list);
 
-					/* Center on icon */
+					// Center on icon
 					item_set_overlay(item, 1);
-					item_set_pos(item, x - (anim3->w - anim->w) / 2,
-							y - (anim3->h - anim->w) / 2);
+					item_set_pos(item, x - (anim3->w - anim->w) / 2, y - (anim3->h - anim->w) / 2);
 					item_set_anim(item, anim3, 0);
 				}
 			}
@@ -673,26 +657,22 @@ static void compose_equipment(context_t * ctx, item_t * item_list)
 	deep_free(slot_list);
 
 	// Draw selected item
-	if (ctx->selection.inventory[0] != 0)
+	if (ctx->selection.getInventory() != "")
 	{
-		mytemplate = item_is_resource(ctx->selection.inventory);
+		mytemplate = item_is_resource(ctx->selection.getInventory().c_str());
 
 		if (mytemplate == nullptr)
 		{
-			if (entry_read_string(ITEM_TABLE, ctx->selection.inventory,
-					&inventory_icon_name, ITEM_ICON, nullptr) == RET_NOK)
+			if (entry_read_string(ITEM_TABLE, ctx->selection.getInventory().c_str(), &inventory_icon_name, ITEM_ICON, nullptr) == RET_NOK)
 			{
-				werr(LOGDESIGNER, "Can't read item %s icon name",
-						ctx->selection.inventory);
+				werr(LOGDESIGNER, "Can't read item %s icon name", ctx->selection.getInventory().c_str());
 			}
 		}
 		else
 		{
-			if (entry_read_string(ITEM_TEMPLATE_TABLE, mytemplate,
-					&inventory_icon_name, ITEM_ICON, nullptr) == RET_NOK)
+			if (entry_read_string(ITEM_TEMPLATE_TABLE, mytemplate, &inventory_icon_name, ITEM_ICON, nullptr) == RET_NOK)
 			{
-				werr(LOGDESIGNER, "Can't read item %s icon name (template: %s)",
-						ctx->selection.inventory, mytemplate);
+				werr(LOGDESIGNER, "Can't read item %s icon name (template: %s)", ctx->selection.getInventory().c_str(), mytemplate);
 			}
 			free(mytemplate);
 		}
@@ -723,8 +703,7 @@ static void compose_equipment(context_t * ctx, item_t * item_list)
 
 		if (inventory_icon == nullptr)
 		{
-			inventory_icon = anim_create_color(ctx->render, max_w, max_h,
-					0x7f7f7f7f);
+			inventory_icon = anim_create_color(ctx->render, max_w, max_h, 0x7f7f7f7f);
 		}
 
 		item = item_list_add(&item_list);
@@ -848,8 +827,7 @@ static void cb_print_coord(void * arg)
 	sprintf(buf,"x=%d y=%d type=%s",scr_play_get_current_x(),scr_play_get_current_y(),type);
 	free(type);
 #endif
-	sprintf(buf, "x=%d y=%d", scr_play_get_current_x(),
-			scr_play_get_current_y());
+	sprintf(buf, "x=%d y=%d", scr_play_get_current_x(), scr_play_get_current_y());
 	textview_add_line(std::string(buf));
 
 	screen_compose();
@@ -895,8 +873,7 @@ void cb_inventory_select(void * arg)
 	char * item_id = (char *) arg;
 	context_t * ctx = context_get_player();
 
-	network_send_action(ctx, option_get().action_select_inventory, item_id,
-			nullptr);
+	network_send_action(ctx, option_get().action_select_inventory, item_id, nullptr);
 }
 
 /**********************************
@@ -1032,8 +1009,7 @@ static void compose_inventory(context_t * ctx, item_t * item_list)
 			{
 				x += anim->w;
 			}
-			item_set_click_left(item, cb_inventory_select,
-					(void*) strdup(inventory_list[i]), free);
+			item_set_click_left(item, cb_inventory_select, (void*) strdup(inventory_list[i]), free);
 		}
 
 		free(description);
@@ -1047,15 +1023,15 @@ static void compose_inventory(context_t * ctx, item_t * item_list)
  **********************************/
 static void compose_inventory_select(context_t * ctx, item_t * item_list)
 {
-	item_t * item;
-	int x;
-	int i;
-	char * icon_name;
-	anim_t * anim;
-	anim_t * icon_anim;
-	char * mytemplate;
+	item_t * item = nullptr;
+	int x = -1;
+	int i = 0;
+	char * icon_name = nullptr;
+	anim_t * anim = nullptr;
+	anim_t * icon_anim = nullptr;
+	char * mytemplate = nullptr;
 
-	if (ctx->selection.inventory[0] == 0)
+	if (ctx->selection.getInventory() == "")
 	{
 		return;
 	}
@@ -1083,8 +1059,7 @@ static void compose_inventory_select(context_t * ctx, item_t * item_list)
 
 	i = 0;
 	x = 0;
-	while (inventory_list[i]
-			&& strcmp(inventory_list[i], ctx->selection.inventory))
+	while (inventory_list[i] && strcmp(inventory_list[i], ctx->selection.getInventory().c_str()))
 	{
 		mytemplate = item_is_resource(inventory_list[i]);
 
@@ -1093,8 +1068,7 @@ static void compose_inventory_select(context_t * ctx, item_t * item_list)
 			if (entry_read_string(ITEM_TABLE, inventory_list[i], &icon_name,
 			ITEM_ICON, nullptr) == RET_NOK)
 			{
-				werr(LOGDESIGNER, "Can't read item %s icon name",
-						inventory_list[i]);
+				werr(LOGDESIGNER, "Can't read item %s icon name", inventory_list[i]);
 			}
 		}
 		else
@@ -1102,8 +1076,7 @@ static void compose_inventory_select(context_t * ctx, item_t * item_list)
 			if (entry_read_string(ITEM_TEMPLATE_TABLE, mytemplate, &icon_name,
 			ITEM_ICON, nullptr) == RET_NOK)
 			{
-				werr(LOGDESIGNER, "Can't read item %s icon name (template: %s)",
-						inventory_list[i], mytemplate);
+				werr(LOGDESIGNER, "Can't read item %s icon name (template: %s)", inventory_list[i], mytemplate);
 			}
 			free(mytemplate);
 		}
@@ -1159,8 +1132,7 @@ void cb_popup(void * arg)
 
 	cb_popup_quit(nullptr);
 
-	network_send_action(player, action_param->action, action_param->param,
-			nullptr);
+	network_send_action(player, action_param->action, action_param->param, nullptr);
 
 	screen_compose();
 }
@@ -1237,8 +1209,7 @@ static void compose_popup(context_t * ctx, item_t * item_list)
 			item_set_overlay(l_pItem, 1);
 			if (l_pActionParam != nullptr)
 			{
-				item_set_click_left(l_pItem, cb_popup, l_pActionParam,
-						cb_free_action_param);
+				item_set_click_left(l_pItem, cb_popup, l_pActionParam, cb_free_action_param);
 				l_pActionParam = nullptr;
 			}
 			l_X += l_pAnim->w;
@@ -1254,15 +1225,12 @@ static void compose_popup(context_t * ctx, item_t * item_list)
 			l_pItem = item_list_add(&item_list);
 			item_set_string(l_pItem, l_It->c_str());
 			item_set_font(l_pItem, l_pFont);
-			sdl_get_string_size(l_pItem->font, l_pItem->string, &l_Width,
-					&l_Height);
-			item_set_anim_shape(l_pItem, l_X, l_Y - popup_offset, l_Width,
-					l_Height);
+			sdl_get_string_size(l_pItem->font, l_pItem->string, &l_Width, &l_Height);
+			item_set_anim_shape(l_pItem, l_X, l_Y - popup_offset, l_Width, l_Height);
 			item_set_overlay(l_pItem, 1);
 			if (l_pActionParam != nullptr)
 			{
-				item_set_click_left(l_pItem, cb_popup, l_pActionParam,
-						cb_free_action_param);
+				item_set_click_left(l_pItem, cb_popup, l_pActionParam, cb_free_action_param);
 				l_pActionParam = nullptr;
 			}
 			l_X += l_Width;

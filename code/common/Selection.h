@@ -27,6 +27,7 @@ class Selection
 public:
 	Selection();
 	virtual ~Selection();
+
 	std::string getEquipment() const;
 	void setEquipment(std::string equipment);
 	std::string getId() const;

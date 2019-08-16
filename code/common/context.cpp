@@ -42,6 +42,16 @@ context_t * context_list_start = nullptr;
 
 /***********************
  ***********************/
+context_t::context_t() :
+		user_name(nullptr), connected(false), in_game(false), socket(), socket_data(), send_mutex(nullptr), hostname(nullptr), render(nullptr), window(nullptr), npc(
+				true), character_name(nullptr), map(nullptr), tile_x(-1), tile_y(-1), prev_pos_tile_x(-1), prev_pos_tile_y(-1), pos_changed(false), animation_tick(
+				0), type(nullptr), selection(), id(nullptr), prev_map(nullptr), change_map(false), luaVM(nullptr), cond(nullptr), cond_mutex(nullptr), orientation(
+				0), direction(0), next_execution_time(0), previous(nullptr), next(nullptr)
+{
+}
+
+/***********************
+ ***********************/
 context_t * context_get_list_start()
 {
 	return context_list_start;
@@ -89,13 +99,6 @@ void context_init(context_t * context)
 	context->animation_tick = 0;
 	context->type = nullptr;
 
-	context->selection.id = strdup("");
-	context->selection.map_coord[0] = -1;
-	context->selection.map_coord[1] = -1;
-	context->selection.map = strdup("");
-	context->selection.inventory = strdup("");
-	context->selection.equipment = strdup("");
-
 	context->id = nullptr;
 	context->prev_map = nullptr;
 	context->change_map = false;
@@ -120,8 +123,7 @@ context_t * context_new(void)
 	context_lock_list();
 	if (context_list_start == nullptr)
 	{
-		context_list_start = (context_t*) malloc(sizeof(context_t));
-		memset(context_list_start, 0, sizeof(context_t));
+		context_list_start = new context_t;
 		context_init(context_list_start);
 		context_unlock_list();
 		return context_list_start;
@@ -133,8 +135,7 @@ context_t * context_new(void)
 		ctx = ctx->next;
 	}
 
-	ctx->next = (context*) malloc(sizeof(context_t));
-	memset(ctx->next, 0, sizeof(context_t));
+	ctx->next = new context_t;
 	context_init(ctx->next);
 	ctx->next->previous = ctx;
 	context_unlock_list();
@@ -185,32 +186,7 @@ void context_free_data(context_t * context)
 		free(context->type);
 	}
 	context->type = nullptr;
-	if (context->selection.id)
-	{
-		free(context->selection.id);
-	}
-	context->selection.id = nullptr;
-	context->selection.map_coord[0] = -1;
-	context->selection.map_coord[1] = -1;
-	if (context->selection.map)
-	{
-		free(context->selection.map);
-	}
-	context->selection.map = nullptr;
-	if (context->selection.inventory)
-	{
-		free(context->selection.inventory);
-	}
-	context->selection.inventory = nullptr;
-	if (context->selection.equipment)
-	{
-		free(context->selection.equipment);
-	}
-	context->selection.equipment = nullptr;
-	if (context->prev_map)
-	{
-		free(context->prev_map);
-	}
+
 	context->prev_map = nullptr;
 	if (context->luaVM != nullptr)
 	{
@@ -264,11 +240,11 @@ void context_free(context_t * context)
 	ctx = context_list_start;
 	while (ctx != nullptr)
 	{
-		if ((context->id != nullptr) && (ctx->selection.id != nullptr))
+		if ((context->id != nullptr) && (context->selection.getId() != ""))
 		{
-			if (strcmp(context->id, ctx->selection.id) == 0)
+			if (strcmp(context->id, ctx->selection.getId().c_str()) == 0)
 			{
-				ctx->selection.id = nullptr;
+				ctx->selection.setId("");
 			}
 		}
 		ctx = ctx->next;
@@ -611,16 +587,14 @@ ret_code_t context_set_selected_character(context_t * context, const char * id)
 {
 	context_lock_list();
 
-	if ((context != nullptr) && (context->selection.id != nullptr))
+	if ((context != nullptr) && (context->selection.getId() != ""))
 	{
-		if (strcmp(context->selection.id, id) == 0)
+		if (strcmp(context->selection.getId().c_str(), id) == 0)
 		{
 			context_unlock_list();
 			return RET_NOK;
 		}
-		free(context->selection.id);
-
-		context->selection.id = strdup(id);
+		context->selection.setId(std::string(id));
 	}
 
 	context_unlock_list();
@@ -630,26 +604,22 @@ ret_code_t context_set_selected_character(context_t * context, const char * id)
 /**************************************
  * return RET_NOK if context has already the same values
  **************************************/
-ret_code_t context_set_selected_tile(context_t * context, const char * map,
-		int x, int y)
+ret_code_t context_set_selected_tile(context_t * context, const char * map, int x, int y)
 {
 	context_lock_list();
 
-	if (!strcmp(context->selection.map, map))
+	if (!strcmp(context->selection.getMap().c_str(), map))
 	{
-		if (x == context->selection.map_coord[0]
-				&& y == context->selection.map_coord[1])
+		if ((x == context->selection.getMapCoordTx()) && (y == context->selection.getMapCoordTy()))
 		{
 			context_unlock_list();
 			return RET_NOK;
 		}
 	}
-	free(context->selection.map);
 
-	context->selection.map = strdup(map);
-
-	context->selection.map_coord[0] = x;
-	context->selection.map_coord[1] = y;
+	context->selection.setMap(std::string(map));
+	context->selection.setMapCoordTx(x);
+	context->selection.setMapCoordTy(y);
 
 	context_unlock_list();
 	return RET_OK;
@@ -662,13 +632,13 @@ ret_code_t context_set_selected_equipment(context_t * context, const char * id)
 {
 	context_lock_list();
 
-	if (!strcmp(context->selection.equipment, id))
+	if (strcmp(context->selection.getEquipment().c_str(), id) == 0)
 	{
 		context_unlock_list();
 		return RET_NOK;
 	}
-	free(context->selection.equipment);
-	context->selection.equipment = strdup(id);
+
+	context->selection.setEquipment(id);
 
 	context_unlock_list();
 	return RET_OK;
@@ -681,13 +651,13 @@ ret_code_t context_set_selected_item(context_t * context, const char * id)
 {
 	context_lock_list();
 
-	if (!strcmp(context->selection.inventory, id))
+	if (strcmp(context->selection.getInventory().c_str(), id) == 0)
 	{
 		context_unlock_list();
 		return RET_NOK;
 	}
-	free(context->selection.inventory);
-	context->selection.inventory = strdup(id);
+
+	context->selection.setInventory(id);
 
 	context_unlock_list();
 	return RET_OK;
@@ -747,8 +717,7 @@ ret_code_t context_update_from_file(context_t * context)
 	}
 
 	int npc = 0;
-	if (entry_read_int(CHARACTER_TABLE, context->id, &npc, CHARACTER_KEY_NPC,
-			nullptr) == RET_NOK)
+	if (entry_read_int(CHARACTER_TABLE, context->id, &npc, CHARACTER_KEY_NPC, nullptr) == RET_NOK)
 	{
 		ret = RET_NOK;
 	}
@@ -869,9 +838,7 @@ void context_add_or_update_from_network_frame(const Context & context)
 
 			if (context.isInGame() == true)
 			{
-				wlog(LOGDEVELOPER, "Updating context %s / %s",
-						context.getUserName().c_str(),
-						context.getCharacterName().c_str());
+				wlog(LOGDEVELOPER, "Updating context %s / %s", context.getUserName().c_str(), context.getCharacterName().c_str());
 				// do not call context_set_* function since we already have the lock
 				_context_set_map(ctx, context.getMap().c_str());
 
@@ -883,44 +850,12 @@ void context_add_or_update_from_network_frame(const Context & context)
 				free(ctx->type);
 				ctx->type = strdup(context.getType().c_str());
 
-				if (ctx->selection.map)
-				{
-					free(ctx->selection.map);
-				}
-				ctx->selection.map = strdup(
-						context.getSelection().getMap().c_str());
-				ctx->selection.map_coord[0] =
-						context.getSelection().getMapCoordTx();
-				ctx->selection.map_coord[1] =
-						context.getSelection().getMapCoordTy();
-
-				if (ctx->selection.id)
-				{
-					free(ctx->selection.id);
-				}
-				ctx->selection.id = strdup(
-						context.getSelection().getId().c_str());
-
-				if (ctx->selection.equipment)
-				{
-					free(ctx->selection.equipment);
-				}
-				ctx->selection.equipment = strdup(
-						context.getSelection().getEquipment().c_str());
-
-				if (ctx->selection.inventory)
-				{
-					free(ctx->selection.inventory);
-				}
-				ctx->selection.inventory = strdup(
-						context.getSelection().getInventory().c_str());
+				ctx->selection = context.getSelection();
 			}
 
 			if (context.isConnected() == false)
 			{
-				wlog(LOGDEVELOPER, "Deleting context %s / %s",
-						context.getUserName().c_str(),
-						context.getCharacterName().c_str());
+				wlog(LOGDEVELOPER, "Deleting context %s / %s", context.getUserName().c_str(), context.getCharacterName().c_str());
 				context_free(ctx);
 			}
 			context_unlock_list();
@@ -932,8 +867,7 @@ void context_add_or_update_from_network_frame(const Context & context)
 
 	context_unlock_list();
 
-	wlog(LOGDEVELOPER, "Creating context %s / %s",
-			context.getUserName().c_str(), context.getCharacterName().c_str());
+	wlog(LOGDEVELOPER, "Creating context %s / %s", context.getUserName().c_str(), context.getCharacterName().c_str());
 	ctx = context_new();
 	context_set_username(ctx, context.getUserName().c_str());
 	context_set_character_name(ctx, context.getCharacterName().c_str());
@@ -946,13 +880,9 @@ void context_add_or_update_from_network_frame(const Context & context)
 	context_set_connected(ctx, context.isConnected());
 	context_set_in_game(ctx, context.isInGame());
 	context_set_selected_character(ctx, context.getSelection().getId().c_str());
-	context_set_selected_tile(ctx, context.getSelection().getMap().c_str(),
-			context.getSelection().getMapCoordTx(),
-			context.getSelection().getMapCoordTy());
-	context_set_selected_equipment(ctx,
-			context.getSelection().getEquipment().c_str());
-	context_set_selected_item(ctx,
-			context.getSelection().getInventory().c_str());
+	context_set_selected_tile(ctx, context.getSelection().getMap().c_str(), context.getSelection().getMapCoordTx(), context.getSelection().getMapCoordTy());
+	context_set_selected_equipment(ctx, context.getSelection().getEquipment().c_str());
+	context_set_selected_item(ctx, context.getSelection().getInventory().c_str());
 }
 
 /**************************************

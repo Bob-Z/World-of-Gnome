@@ -127,7 +127,7 @@ static int l_character_get_selected_map_tile_x(lua_State* L)
 		werr(LOGDESIGNER, "Cannot find context with ID %s", id);
 		return 0;  // number of results
 	}
-	lua_pushnumber(L, target->selection.map_coord[0]);
+	lua_pushnumber(L, target->selection.getMapCoordTx());
 	return 1;  // number of results
 }
 
@@ -148,7 +148,7 @@ static int l_character_get_selected_map_tile_y(lua_State* L)
 		werr(LOGDESIGNER, "Cannot find context with ID %s", id);
 		return 0;  // number of results
 	}
-	lua_pushnumber(L, target->selection.map_coord[1]);
+	lua_pushnumber(L, target->selection.getMapCoordTy());
 	return 1;  // number of results
 }
 
@@ -169,7 +169,7 @@ static int l_character_get_selected_map(lua_State* L)
 		werr(LOGDESIGNER, "Cannot find context with ID %s", id);
 		return 0;  // number of results
 	}
-	lua_pushstring(L, target->selection.map);
+	lua_pushstring(L, target->selection.getMap().c_str());
 	return 1;  // number of results
 }
 
@@ -226,7 +226,7 @@ static int l_character_get_selected_inventory_id(lua_State* L)
 		werr(LOGDESIGNER, "Cannot find context with ID %s", id);
 		return 0;  // number of results
 	}
-	lua_pushstring(L, target->selection.inventory);
+	lua_pushstring(L, target->selection.getInventory().c_str());
 	return 1;  // number of results
 }
 
@@ -277,7 +277,7 @@ static int l_character_get_selected_equipment_slot(lua_State* L)
 		werr(LOGDESIGNER, "Cannot find context with ID %s", id);
 		return 0;  // number of results
 	}
-	lua_pushstring(L, target->selection.equipment);
+	lua_pushstring(L, target->selection.getEquipment().c_str());
 	return 1;  // number of results
 }
 
@@ -328,7 +328,7 @@ static int l_character_get_selected_character_id(lua_State* L)
 		werr(LOGDESIGNER, "Cannot find context with ID %s", id);
 		return 0;  // number of results
 	}
-	lua_pushstring(L, target->selection.id);
+	lua_pushstring(L, target->selection.getId().c_str());
 	return 1;  // number of results
 }
 

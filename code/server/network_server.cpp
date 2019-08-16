@@ -116,8 +116,7 @@ void network_broadcast_text(context_t * context, const std::string & text)
 /*******************************************************************************
  Server send a user's character
  ******************************************************************************/
-void network_send_user_character(context_t * context, const char * id,
-		const char * type, const char * name)
+void network_send_user_character(context_t * context, const char * id, const char * type, const char * name)
 {
 	pb::ServerMessage message;
 	message.mutable_user_character()->set_id(id);
@@ -125,8 +124,7 @@ void network_send_user_character(context_t * context, const char * id,
 	message.mutable_user_character()->set_name(name);
 	std::string serialized_data = message.SerializeAsString();
 
-	wlog(LOGDEVELOPER, "[network] Send user %s character %s",
-			context->user_name, name);
+	wlog(LOGDEVELOPER, "[network] Send user %s character %s", context->user_name, name);
 	network_send_command(context, serialized_data, false);
 }
 
@@ -135,8 +133,7 @@ void network_send_user_character(context_t * context, const char * id,
  ******************************************************************************/
 void network_send_character_file(context_t * context)
 {
-	const std::string file_name = std::string(CHARACTER_TABLE) + "/"
-			+ std::string(context->id);
+	const std::string file_name = std::string(CHARACTER_TABLE) + "/" + std::string(context->id);
 
 	network_send_file(context, file_name.c_str());
 }
@@ -144,8 +141,7 @@ void network_send_character_file(context_t * context)
 /*******************************************************************************
  Asks to update an int entry on  a context
  ******************************************************************************/
-void network_send_entry_int(context_t * context, const char * table,
-		const char * file, const char *path, int value)
+void network_send_entry_int(context_t * context, const char * table, const char * file, const char *path, int value)
 {
 	pb::ServerMessage message;
 	message.mutable_entry()->set_type(ENTRY_TYPE_INT);
@@ -156,16 +152,14 @@ void network_send_entry_int(context_t * context, const char * table,
 
 	std::string serialized_data = message.SerializeAsString();
 
-	wlog(LOGDEVELOPER, "[network] Send entry %s/%s/%s = %d", table, file, path,
-			value);
+	wlog(LOGDEVELOPER, "[network] Send entry %s/%s/%s = %d", table, file, path, value);
 	network_send_command(context, serialized_data, false);
 }
 
 /*******************************************************************************
  Asks to update an int entry on all in_game players
  ******************************************************************************/
-void network_broadcast_entry_int(const char * table, const char * file,
-		const char * path, int value, bool same_map_only)
+void network_broadcast_entry_int(const char * table, const char * file, const char * path, int value, bool same_map_only)
 {
 	context_t * ctx = nullptr;
 	context_t * target = nullptr;
@@ -238,8 +232,7 @@ static int new_connection(void * p_pData)
 	{
 		uint32_t frame_size = 0U;
 
-		if (network_read_bytes(socket, (char *) &frame_size,
-				sizeof(uint32_t)) == RET_NOK)
+		if (network_read_bytes(socket, (char *) &frame_size, sizeof(uint32_t)) == RET_NOK)
 		{
 			break;
 		}
@@ -248,8 +241,7 @@ static int new_connection(void * p_pData)
 			frame_size = ntohl(frame_size);
 			char frame[frame_size];
 
-			if (network_read_bytes(socket, (char *) frame,
-					frame_size) == RET_NOK)
+			if (network_read_bytes(socket, (char *) frame, frame_size) == RET_NOK)
 			{
 				break;
 			}
@@ -289,8 +281,7 @@ void network_init(void)
 	// Resolving the host using nullptr make network interface to listen
 	if (SDLNet_ResolveHost(&IP, nullptr, PORT) < 0)
 	{
-		werr(LOGUSER, "Cannot listen on port %d: %s\n", PORT,
-				SDLNet_GetError());
+		werr(LOGUSER, "Cannot listen on port %d: %s\n", PORT, SDLNet_GetError());
 		return;
 	}
 
@@ -319,12 +310,9 @@ void network_init(void)
 			}
 
 			//wlog(LOGUSER,"Host connected: %s %d\n", SDLNet_Read32(&remote_IP->host), SDLNet_Read16(&remote_IP->port));
-			wlog(LOGUSER, "Host connected: %x %d\n",
-					SDLNet_Read32(&remote_IP->host),
-					SDLNet_Read16(&remote_IP->port));
+			wlog(LOGUSER, "Host connected: %x %d\n", SDLNet_Read32(&remote_IP->host), SDLNet_Read16(&remote_IP->port));
 
-			SDL_CreateThread(new_connection, "new_connection",
-					(void*) client_socket);
+			SDL_CreateThread(new_connection, "new_connection", (void*) client_socket);
 		}
 	}
 
@@ -343,14 +331,12 @@ void network_init(void)
  "eol" end of line
  "eop" end of paragraph
  ******************************************************************************/
-void network_send_popup(const std::string & context_id,
-		const std::vector<std::string> & popup_data)
+void network_send_popup(const std::string & context_id, const std::vector<std::string> & popup_data)
 {
 	context_t * context = context_find(context_id.c_str());
 	if (context == nullptr)
 	{
-		werr(LOGDEVELOPER, "[network] No context with ID %s",
-				context_id.c_str());
+		werr(LOGDEVELOPER, "[network] No context with ID %s", context_id.c_str());
 		return;
 	}
 
@@ -373,8 +359,7 @@ void network_send_popup(const std::string & context_id,
  p_TargetId is the name of the target (either a context ID or map ID)
  p_Parameters is an array of parameter string
  ******************************************************************************/
-void network_broadcast_effect(EffectManager::EffectType p_Type,
-		const std::string & p_TargetId, const std::vector<std::string> & params)
+void network_broadcast_effect(EffectManager::EffectType p_Type, const std::string & p_TargetId, const std::vector<std::string> & params)
 {
 	context_t * ctx = nullptr;
 
@@ -468,8 +453,7 @@ void network_send_login_nok(context_t * context)
 
 /*********************************************************************
  **********************************************************************/
-void network_send_playable_character(context_t * context,
-		const std::vector<std::string> & id_list)
+void network_send_playable_character(context_t * context, const std::vector<std::string> & id_list)
 {
 	pb::ServerMessage message;
 
@@ -515,22 +499,15 @@ void network_send_context_to_context(context_t * dest_ctx, context_t * src_ctx)
 	message.mutable_context()->set_tile_y(src_ctx->tile_y);
 	message.mutable_context()->set_type(src_ctx->type);
 	message.mutable_context()->set_id(src_ctx->id);
-	message.mutable_context()->mutable_selection()->set_id(
-			src_ctx->selection.id);
-	message.mutable_context()->mutable_selection()->set_map(
-			src_ctx->selection.map);
-	message.mutable_context()->mutable_selection()->set_map_coord_tx(
-			src_ctx->selection.map_coord[0]);
-	message.mutable_context()->mutable_selection()->set_map_coord_ty(
-			src_ctx->selection.map_coord[1]);
-	message.mutable_context()->mutable_selection()->set_equipment(
-			src_ctx->selection.equipment);
-	message.mutable_context()->mutable_selection()->set_inventory(
-			src_ctx->selection.inventory);
+	message.mutable_context()->mutable_selection()->set_id(src_ctx->selection.getId());
+	message.mutable_context()->mutable_selection()->set_map(src_ctx->selection.getMap());
+	message.mutable_context()->mutable_selection()->set_map_coord_tx(src_ctx->selection.getMapCoordTx());
+	message.mutable_context()->mutable_selection()->set_map_coord_ty(src_ctx->selection.getMapCoordTy());
+	message.mutable_context()->mutable_selection()->set_equipment(src_ctx->selection.getEquipment());
+	message.mutable_context()->mutable_selection()->set_inventory(src_ctx->selection.getInventory());
 
 	std::string serialized_data = message.SerializeAsString();
 
-	wlog(LOGDEVELOPER, "[network] Send context of %s to %s", src_ctx->id,
-			dest_ctx->id);
+	wlog(LOGDEVELOPER, "[network] Send context of %s to %s", src_ctx->id, dest_ctx->id);
 	network_send_command(dest_ctx, serialized_data, false);
 }

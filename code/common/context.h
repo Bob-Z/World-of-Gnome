@@ -20,6 +20,9 @@
 #ifndef CONTEXT_H
 #define CONTEXT_H
 
+#include <SDL_stdinc.h>
+#include "Selection.h"
+
 class Context;
 struct lua_State;
 
@@ -36,17 +39,11 @@ extern "C"
 
 #include "types.h"
 
-typedef struct selection
+class context_t
 {
-	char * id;	// a character id
-	int map_coord[2];	// a tile map
-	char * map;
-	char * inventory;	// name of the selected item in inventory
-	char * equipment;	// name of the selected slot in equipment
-} selection_t;
+public:
+	context_t();
 
-typedef struct context
-{
 	char * user_name;
 	bool connected; // User logged with the correct password, or NPC activated
 	bool in_game;
@@ -63,28 +60,28 @@ typedef struct context
 	char * map;	// map name
 	int tile_x;	// player position (in tile)
 	int tile_y;	// player position (in tile)
-	int prev_pos_tile_x;// player previous position (in tile) for sprite direction
-	int prev_pos_tile_y;// player previous position (in tile) for sprite direction
+	int prev_pos_tile_x;	// player previous position (in tile) for sprite direction
+	int prev_pos_tile_y;	// player previous position (in tile) for sprite direction
 	bool pos_changed;
 
 	Uint32 animation_tick;	// Start tick for animation
 
 	char * type;	// character's type
-	selection_t selection; // Selected tile or sprite
+	Selection selection; // Selected tile or sprite
 	char * id; // unique ID of a character (its filename)
 	char * prev_map; // the map from where this context comes
 	bool change_map; // Has this context map changed ?
 	lua_State* luaVM;	// LUA state
 	SDL_cond* cond;	// async condition for npc
 	SDL_mutex* cond_mutex;	// mutex for async condition for npc */
-	int orientation;// Bit field for sprite orientation (north east, south...)
+	int orientation;	// Bit field for sprite orientation (north east, south...)
 	int direction;	// Bit field for sprite direction (north, south...)
 
 	Uint32 next_execution_time; // Time when an NPC will execute its AI script
 
-	struct context* previous;
-	struct context* next;
-} context_t;
+	context_t * previous;
+	context_t * next;
+};
 
 context_t * context_get_list_start();
 void context_init(context_t * context);
@@ -113,14 +110,10 @@ void context_set_tile_x(context_t * context, unsigned int pos);
 void context_set_tile_y(context_t * context, unsigned int pos);
 void context_new_VM(context_t * context);
 ret_code_t context_set_id(context_t * context, const char * name);
-ret_code_t context_set_selected_character(context_t * context,
-		const char * selected_character);
-ret_code_t context_set_selected_tile(context_t * context,
-		const char * selected_map, int selected_map_x, int selected_map_y);
-ret_code_t context_set_selected_equipment(context_t * context,
-		const char * selected_equipment);
-ret_code_t context_set_selected_item(context_t * context,
-		const char * selected_item);
+ret_code_t context_set_selected_character(context_t * context, const char * selected_character);
+ret_code_t context_set_selected_tile(context_t * context, const char * selected_map, int selected_map_x, int selected_map_y);
+ret_code_t context_set_selected_equipment(context_t * context, const char * selected_equipment);
+ret_code_t context_set_selected_item(context_t * context, const char * selected_item);
 ret_code_t context_update_from_file(context_t * context);
 void context_spread(context_t * context);
 void context_add_or_update_from_network_frame(const Context & context);

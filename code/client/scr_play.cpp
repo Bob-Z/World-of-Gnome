@@ -186,8 +186,7 @@ static anim_t ** select_sprite(context_t * ctx)
 
 	if (sprite_list)
 	{
-		sprite = imageDB_get_anim_array(player_context,
-				(const char **) sprite_list);
+		sprite = imageDB_get_anim_array(player_context, (const char **) sprite_list);
 		deep_free(sprite_list);
 		return sprite;
 	}
@@ -209,8 +208,7 @@ static anim_t ** select_sprite(context_t * ctx)
 	if (entry_read_list(CHARACTER_TABLE, ctx->id, &sprite_list,
 	CHARACTER_KEY_SPRITE, nullptr) == RET_OK)
 	{
-		sprite = imageDB_get_anim_array(player_context,
-				(const char **) sprite_list);
+		sprite = imageDB_get_anim_array(player_context, (const char **) sprite_list);
 		deep_free(sprite_list);
 		return sprite;
 	}
@@ -342,21 +340,16 @@ static void set_up_sprite(context_t * ctx)
 	}
 
 	// Align sprite on tile
-	entry_read_int(CHARACTER_TABLE, ctx->id, &sprite_align, CHARACTER_KEY_ALIGN,
-			nullptr);
+	entry_read_int(CHARACTER_TABLE, ctx->id, &sprite_align, CHARACTER_KEY_ALIGN, nullptr);
 	if (sprite_align == ALIGN_CENTER)
 	{
-		px -= ((sprite_list[0]->w * default_layer->map_zoom * zoom)
-				- default_layer->tile_width) / 2;
-		py -= ((sprite_list[0]->h * default_layer->map_zoom * zoom)
-				- default_layer->tile_height) / 2;
+		px -= ((sprite_list[0]->w * default_layer->map_zoom * zoom) - default_layer->tile_width) / 2;
+		py -= ((sprite_list[0]->h * default_layer->map_zoom * zoom) - default_layer->tile_height) / 2;
 	}
 	if (sprite_align == ALIGN_LOWER)
 	{
-		px -= ((sprite_list[0]->w * default_layer->map_zoom * zoom)
-				- default_layer->tile_width) / 2;
-		py -= (sprite_list[0]->h * default_layer->map_zoom * zoom)
-				- default_layer->tile_height;
+		px -= ((sprite_list[0]->w * default_layer->map_zoom * zoom) - default_layer->tile_width) / 2;
+		py -= (sprite_list[0]->h * default_layer->map_zoom * zoom) - default_layer->tile_height;
 	}
 
 	// Add Y offset
@@ -493,8 +486,7 @@ static void compose_sprite(int layer_index)
 	while (ctx != nullptr)
 	{
 		layer = 0;
-		entry_read_int(CHARACTER_TABLE, ctx->id, &layer, CHARACTER_LAYER,
-				nullptr);
+		entry_read_int(CHARACTER_TABLE, ctx->id, &layer, CHARACTER_LAYER, nullptr);
 
 		if (layer == layer_index)
 		{
@@ -568,8 +560,7 @@ static void compose_item(int layer_index)
 				i++;
 				continue;
 			}
-			entry_read_int(ITEM_TABLE, item_id[i], &sprite_align, ITEM_ALIGN,
-					nullptr);
+			entry_read_int(ITEM_TABLE, item_id[i], &sprite_align, ITEM_ALIGN, nullptr);
 			entry_read_int(ITEM_TABLE, item_id[i], &sprite_offset_y,
 			ITEM_OFFSET_Y, nullptr);
 		}
@@ -601,17 +592,13 @@ static void compose_item(int layer_index)
 		// Align on tile
 		if (sprite_align == ALIGN_CENTER)
 		{
-			x -= ((anim->w * default_layer->map_zoom)
-					- default_layer->tile_width) / 2;
-			y -= ((anim->h * default_layer->map_zoom)
-					- default_layer->tile_height) / 2;
+			x -= ((anim->w * default_layer->map_zoom) - default_layer->tile_width) / 2;
+			y -= ((anim->h * default_layer->map_zoom) - default_layer->tile_height) / 2;
 		}
 		if (sprite_align == ALIGN_LOWER)
 		{
-			x -= ((anim->w * default_layer->map_zoom)
-					- default_layer->tile_width) / 2;
-			y -= (anim->h * default_layer->map_zoom)
-					- default_layer->tile_height;
+			x -= ((anim->w * default_layer->map_zoom) - default_layer->tile_width) / 2;
+			y -= (anim->h * default_layer->map_zoom) - default_layer->tile_height;
 		}
 
 		y += sprite_offset_y;
@@ -646,8 +633,7 @@ static void cb_select_map(void *arg)
 	sprintf(x, "%d", item->user1);
 	sprintf(y, "%d", item->user2);
 
-	network_send_action(ctx, option_get().action_select_tile, ctx->map, x, y,
-			nullptr);
+	network_send_action(ctx, option_get().action_select_tile, ctx->map, x, y, nullptr);
 }
 
 /**************************************
@@ -700,9 +686,7 @@ static void compose_map_button()
 		for (x = 0; x < default_layer->map_w; x++)
 		{
 			item = item_list_add(&item_list);
-			item_set_anim_shape(item, map_t2p_x(x, y, default_layer),
-					map_t2p_y(x, y, default_layer), default_layer->tile_width,
-					default_layer->tile_height);
+			item_set_anim_shape(item, map_t2p_x(x, y, default_layer), map_t2p_y(x, y, default_layer), default_layer->tile_width, default_layer->tile_height);
 			item_set_user(item, x, y);
 			item_set_click_left(item, cb_select_map, item, nullptr);
 			item_set_click_right(item, cb_redo_map, item, nullptr);
@@ -727,10 +711,8 @@ static void compose_map_set(int layer_index)
 	layer_t * layer;
 	context_t * ctx = context_get_player();
 
-	snprintf(layer_name, sizeof(layer_name), "%s%d", MAP_KEY_LAYER,
-			layer_index);
-	if (entry_read_list(MAP_TABLE, ctx->map, &tile_set, layer_name, MAP_KEY_SET,
-			nullptr) == RET_NOK)
+	snprintf(layer_name, sizeof(layer_name), "%s%d", MAP_KEY_LAYER, layer_index);
+	if (entry_read_list(MAP_TABLE, ctx->map, &tile_set, layer_name, MAP_KEY_SET, nullptr) == RET_NOK)
 	{
 		return;
 	}
@@ -790,21 +772,18 @@ static void compose_map_scenery(int layer_index)
 
 	while (scenery_list[i] != nullptr)
 	{
-		if (entry_read_int(MAP_TABLE, ctx->map, &x, layer_name, MAP_KEY_SCENERY,
-				scenery_list[i], MAP_KEY_SCENERY_X, nullptr) == RET_NOK)
+		if (entry_read_int(MAP_TABLE, ctx->map, &x, layer_name, MAP_KEY_SCENERY, scenery_list[i], MAP_KEY_SCENERY_X, nullptr) == RET_NOK)
 		{
 			i++;
 			continue;
 		}
-		if (entry_read_int(MAP_TABLE, ctx->map, &y, layer_name, MAP_KEY_SCENERY,
-				scenery_list[i], MAP_KEY_SCENERY_Y, nullptr) == RET_NOK)
+		if (entry_read_int(MAP_TABLE, ctx->map, &y, layer_name, MAP_KEY_SCENERY, scenery_list[i], MAP_KEY_SCENERY_Y, nullptr) == RET_NOK)
 		{
 			i++;
 			continue;
 		}
 		if (entry_read_string(MAP_TABLE, ctx->map, &image_name, layer_name,
-		MAP_KEY_SCENERY, scenery_list[i], MAP_KEY_SCENERY_IMAGE,
-				nullptr) == RET_NOK)
+		MAP_KEY_SCENERY, scenery_list[i], MAP_KEY_SCENERY_IMAGE, nullptr) == RET_NOK)
 		{
 			i++;
 			continue;
@@ -844,8 +823,7 @@ static void compose_type(int layer_index)
 	}
 
 	sprintf(layer_name, "%s%d", MAP_KEY_LAYER, layer_index);
-	if (entry_exist(MAP_TABLE, ctx->map, layer_name, MAP_KEY_TYPE, nullptr)
-			== false)
+	if (entry_exist(MAP_TABLE, ctx->map, layer_name, MAP_KEY_TYPE, nullptr) == false)
 	{
 		return;
 	}
@@ -856,9 +834,7 @@ static void compose_type(int layer_index)
 	{
 		for (y = 0; y < default_layer->map_h; y++)
 		{
-			if (entry_read_list_index(MAP_TABLE, ctx->map, &type,
-					x + y * default_layer->map_w, layer_name, MAP_KEY_TYPE,
-					nullptr) == RET_NOK)
+			if (entry_read_list_index(MAP_TABLE, ctx->map, &type, x + y * default_layer->map_w, layer_name, MAP_KEY_TYPE, nullptr) == RET_NOK)
 			{
 				continue;
 			}
@@ -873,8 +849,7 @@ static void compose_type(int layer_index)
 			item_set_string(item, type);
 			item_set_font(item, font);
 			sdl_get_string_size(item->font, item->string, &w, &h);
-			item_set_anim_shape(item, map_t2p_x(x, y, default_layer),
-					map_t2p_y(x, y, default_layer), w, h);
+			item_set_anim_shape(item, map_t2p_x(x, y, default_layer), map_t2p_y(x, y, default_layer), w, h);
 		}
 	}
 }
@@ -884,23 +859,23 @@ static void compose_type(int layer_index)
  **********************************/
 static void compose_select()
 {
-	item_t * item;
-	anim_t * anim;
-	int pos_tx;
-	int pos_ty;
-	int x;
-	int y;
+	item_t * item = nullptr;
+	anim_t * anim = nullptr;
+	int pos_tx = -1;
+	int pos_ty = -1;
+	int x = -1;
+	int y = -1;
 	context_t * ctx = context_get_player();
 
 	// Tile selection
 	if (option_get().cursor_tile)
 	{
-		if (ctx->selection.map[0] != 0)
+		if (ctx->selection.getMap() != "")
 		{
-			if (!strcmp(ctx->selection.map, ctx->map))
+			if (strcmp(ctx->selection.getMap().c_str(), ctx->map) == 0)
 			{
-				pos_tx = ctx->selection.map_coord[0];
-				pos_ty = ctx->selection.map_coord[1];
+				pos_tx = ctx->selection.getMapCoordTx();
+				pos_ty = ctx->selection.getMapCoordTy();
 
 				if (pos_tx != -1 && pos_ty != -1)
 				{
@@ -922,10 +897,10 @@ static void compose_select()
 	// Sprite selection
 	if (option_get().cursor_character_draw_script)
 	{
-		if (ctx->selection.id[0] != 0)
+		if (ctx->selection.getId() != "")
 		{
 			context_t * selected_context = nullptr;
-			selected_context = context_find(ctx->selection.id);
+			selected_context = context_find(ctx->selection.getId().c_str());
 			if (selected_context == nullptr)
 			{
 				return;
@@ -988,8 +963,7 @@ item_t * scr_play_compose(context_t * ctx)
 
 	if (change_map == true)
 	{
-		const std::string map_file_path = std::string(MAP_TABLE) + "/"
-				+ std::string(ctx->map);
+		const std::string map_file_path = std::string(MAP_TABLE) + "/" + std::string(ctx->map);
 		network_send_req_file(ctx, map_file_path);
 
 		if (default_layer != nullptr)
@@ -1052,8 +1026,7 @@ item_t * scr_play_compose(context_t * ctx)
 				g_IsMusicPlaying = true;
 			}
 			int sfx_volume = SFX_VOLUME_MAX;
-			entry_read_int(MAP_TABLE, ctx->map, &sfx_volume, MAP_SFX_VOLUME,
-					nullptr);
+			entry_read_int(MAP_TABLE, ctx->map, &sfx_volume, MAP_SFX_VOLUME, nullptr);
 			sfx_set_volume(MUSIC_CHANNEL, sfx_volume);
 		}
 	}

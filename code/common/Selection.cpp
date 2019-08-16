@@ -22,7 +22,7 @@
 
 /******************************************************************************/
 Selection::Selection() :
-		m_id(), m_map_coord_tx(0), m_map_coord_ty(0), m_map(), m_inventory(), m_equipment()
+		m_id(), m_map_coord_tx(-1), m_map_coord_ty(-1), m_map(), m_inventory(), m_equipment()
 {
 }
 
