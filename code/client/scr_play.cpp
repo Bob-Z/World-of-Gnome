@@ -949,8 +949,8 @@ void scr_play_frame_start(context_t * context)
 void scr_play_init()
 {
 	// Register this character to receive server notifications
-	context_t * l_pCtx = context_get_player();
-	network_request_start(l_pCtx, l_pCtx->id);
+	context_t * context = context_get_player();
+	network_request_start(context, context->id);
 	ui_play_init();
 }
 

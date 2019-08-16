@@ -58,7 +58,7 @@ static void free_config(config_t * config)
 }
 /*********************
  *********************/
-static const config_t * load_config(char * filename)
+static const config_t * load_config(const char * filename)
 {
 	int ret;
 	config_t * config = nullptr;
@@ -119,45 +119,42 @@ static const config_t * get_config(const char * table, const char * file)
 		return nullptr;
 	}
 
-	char * filename = nullptr;
 	const config_t * config = nullptr;
+	std::string file_name;
 
 	if (table == nullptr)
 	{
-		filename = strdup(file);
+		file_name = std::string(file);
 	}
 	else
 	{
-		filename = strconcat(table, "/", file, nullptr);
+		file_name = std::string(table) + "/" + std::string(file);
 	}
 
 //	wlog(LOGDEBUG,"Entry get : %s",filename);
 
-	config = (config_t*) list_find(entry_list, filename);
+	config = (config_t*) list_find(entry_list, file_name.c_str());
 
 	if (config != nullptr)
 	{
 //		wlog(LOGDEBUG,"Entry found : %s",filename);
-		free(filename);
 		return config;
 	}
 
-	file_lock(filename);
+	file_lock(file_name.c_str());
 
 //	wlog(LOGDEBUG,"Entry asked : %s",filename);
-	file_update(context_get_player(), filename);
+	file_update(context_get_player(), file_name.c_str());
 
-	if ((config = load_config(filename)) == nullptr)
+	if ((config = load_config(file_name.c_str())) == nullptr)
 	{
-		file_unlock(filename);
-		free(filename);
+		file_unlock(file_name.c_str());
 		return nullptr;
 	}
-	file_unlock(filename);
+	file_unlock(file_name.c_str());
 
 //	wlog(LOGDEBUG,"Entry loaded : %s",filename);
-	list_update(&entry_list, filename, (config_t*) config);
-	free(filename);
+	list_update(&entry_list, file_name.c_str(), (config_t*) config);
 
 	return config;
 }
@@ -165,20 +162,18 @@ static const config_t * get_config(const char * table, const char * file)
 /*********************
  returned string MUST BE FREED
  *********************/
-static char * add_entry_to_path(char * path, char * entry)
+static std::string add_entry_to_path(char * path, char * entry)
 {
-	char * new_path;
-
 	if (path == nullptr)
 	{
-		return strdup(entry);
+		return std::string(entry);
 	}
 	else
 	{
-		new_path = strconcat(path, ".", entry, nullptr);
+		const std::string new_path = std::string(path) + "."
+				+ std::string(entry);
+		return new_path;
 	}
-
-	return new_path;
 }
 
 /*********************
@@ -188,7 +183,6 @@ static char * add_entry_to_path(char * path, char * entry)
 static char * get_path(va_list ap)
 {
 	char * path = nullptr;
-	char * new_path = nullptr;
 	char * entry = nullptr;
 
 	entry = va_arg(ap, char*);
@@ -199,9 +193,9 @@ static char * get_path(va_list ap)
 
 	while (entry != nullptr)
 	{
-		new_path = add_entry_to_path(path, entry);
+		const std::string new_path = add_entry_to_path(path, entry);
 		free(path);
-		path = new_path;
+		path = strdup(new_path.c_str());
 		if (path == nullptr)
 		{
 			return nullptr;
@@ -472,11 +466,10 @@ ret_code_t entry_read_list(const char * table, const char * file, char *** res,
 /*********************
  *********************/
 static config_setting_t * create_tree(const config_t * config,
-		config_setting_t * prev_setting, char * prev_entry, char * path,
+		config_setting_t * prev_setting, char * prev_entry, const char * path,
 		int type, va_list ap)
 {
 	char * entry = nullptr;
-	char * new_path;
 	config_setting_t * setting = nullptr;
 	config_setting_t * ret = nullptr;
 
@@ -487,27 +480,27 @@ static config_setting_t * create_tree(const config_t * config,
 
 	entry = va_arg(ap, char*);
 
-	/* no more leaf */
+	// no more leaf
 	if (entry == nullptr)
 	{
-		/* check if leaf exists */
+		// check if leaf exists
 		setting = config_lookup(config, path);
 		if (setting == nullptr)
 		{
-			/* create the leaf */
+			// create the leaf
 			setting = config_setting_add(prev_setting, prev_entry, type);
 		}
 		return setting;
 	}
 
-	/* still not finished */
-	/* check if we need to create a group */
+	// still not finished
+	// check if we need to create a group
 	if (path)
 	{
 		setting = config_lookup(config, path);
 		if (setting == nullptr)
 		{
-			/* create a group with previous path */
+			// create a group with previous path
 			setting = config_setting_add(prev_setting, prev_entry,
 			CONFIG_TYPE_GROUP);
 			if (setting == nullptr)
@@ -517,18 +510,18 @@ static config_setting_t * create_tree(const config_t * config,
 		}
 	}
 
-	/* update path */
-	if (path)
+	// update path
+	std::string new_path;
+	if (path != nullptr)
 	{
-		new_path = strconcat(path, ".", entry, nullptr);
+		new_path = std::string(path) + "." + std::string(entry);
 	}
 	else
 	{
-		new_path = strdup(entry);
+		new_path = std::string(entry);
 	}
 
-	ret = create_tree(config, setting, entry, new_path, type, ap);
-	free(new_path);
+	ret = create_tree(config, setting, entry, new_path.c_str(), type, ap);
 
 	return ret;
 }
@@ -1369,16 +1362,11 @@ static char * __copy_group(const char * src_table, const char * src_file,
 	config_setting_t * src_setting = nullptr;
 	config_setting_t * dst_setting = nullptr;
 	char * path = nullptr;
-	char * full_path = nullptr;
 	char * new_group_name = nullptr;
 	const char * group_name_used = nullptr;
 
 	path = get_path(ap);
-	full_path = add_entry_to_path(path, (char *) group_name);
-	if (full_path == nullptr)
-	{
-		return nullptr;
-	}
+	std::string full_path = add_entry_to_path(path, (char *) group_name);
 
 	SDL_LockMutex(entry_mutex);
 	src_config = get_config(src_table, src_file);
@@ -1386,16 +1374,14 @@ static char * __copy_group(const char * src_table, const char * src_file,
 	{
 		SDL_UnlockMutex(entry_mutex);
 		free(path);
-		free(full_path);
 		return nullptr;
 	}
 
-	src_setting = config_lookup(src_config, full_path);
+	src_setting = config_lookup(src_config, full_path.c_str());
 	if (src_setting == nullptr)
 	{
 		SDL_UnlockMutex(entry_mutex);
 		free(path);
-		free(full_path);
 		return nullptr;
 	}
 
@@ -1404,18 +1390,17 @@ static char * __copy_group(const char * src_table, const char * src_file,
 	{
 		SDL_UnlockMutex(entry_mutex);
 		free(path);
-		free(full_path);
 		return nullptr;
 	}
 
-	dst_setting = config_lookup(dst_config, full_path);
-	free(full_path);
-	/* if the setting does not exist, create it */
+	dst_setting = config_lookup(dst_config, full_path.c_str());
+
+	// if the setting does not exist, create it
 	if (dst_setting == nullptr)
 	{
 		group_name_used = group_name;
 	}
-	/* else find a new name for it */
+	// else find a new name for it
 	else
 	{
 		new_group_name = __get_unused_group_on_path(dst_table, dst_file, path);
@@ -1533,13 +1518,9 @@ ret_code_t entry_update(const std::string & type, const std::string & table,
  ***********************************************/
 ret_code_t entry_destroy(const char * table, const char * file)
 {
-	char * filename;
+	const std::string file_path = std::string(table) + "/" + std::string(file);
 
-	filename = strconcat(table, "/", file, nullptr);
-
-	entry_remove(filename);
-
-	free(filename);
+	entry_remove(file_path.c_str());
 
 	return RET_OK;
 }
