@@ -22,7 +22,7 @@
 #include "lua_client.h"
 
 /******************************************************************************/
-void EffectManager::processEffectFrame(context_t * context,
+void EffectManager::processEffectFrame(Context * context,
 		const std::vector<std::string> & params)
 {
 	std::string script = params.front();

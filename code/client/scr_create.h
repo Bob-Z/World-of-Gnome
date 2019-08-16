@@ -19,8 +19,8 @@
 
 #include "sdl_item.h"
 
-item_t * scr_create_compose(context_t * context);
-void scr_create_frame_start(context_t * context);
+item_t * scr_create_compose(Context * context);
+void scr_create_frame_start(Context * context);
 void scr_create_init();
-void scr_create_add_playable_character(context_t * context,
+void scr_create_add_playable_character(Context * context,
 		const std::vector<std::string> & id_list);

@@ -54,7 +54,7 @@ void screen_compose()
 /******************************************************
  Called at start of each frame
  ******************************************************/
-static void frame_start(context_t * context)
+static void frame_start(Context * context)
 {
 	switch (g_Camera.getScreen())
 	{
@@ -75,7 +75,7 @@ static void frame_start(context_t * context)
 /******************************************************
  create a list of item for the currently selected screen
  ******************************************************/
-static void compose_scr(context_t * context)
+static void compose_scr(Context * context)
 {
 	static TTF_Font * font = nullptr;
 
@@ -159,7 +159,7 @@ static void display_fps()
 
 /************************************************
  ************************************************/
-void calculate_camera_position(context_t * p_pCtx)
+void calculate_camera_position(Context * p_pCtx)
 {
 	char * l_pCameraScript = nullptr;
 	entry_read_string(nullptr, CLIENT_CONF_FILE, &l_pCameraScript,
@@ -186,8 +186,8 @@ void calculate_camera_position(context_t * p_pCtx)
 
 /************************************************
  ************************************************/
-static void execute_draw_script(context_t * p_pCtx, const char * p_pScriptName,
-		context_t * p_pCtxToDraw, item_t * p_pItem)
+static void execute_draw_script(Context * p_pCtx, const char * p_pScriptName,
+		Context * p_pCtxToDraw, item_t * p_pItem)
 {
 	item_t l_TempItem;
 	memcpy(&l_TempItem, p_pItem, sizeof(item_t));
@@ -209,7 +209,7 @@ static void execute_draw_script(context_t * p_pCtx, const char * p_pScriptName,
 /************************************************
  Render the currently selected item list to screen
  ************************************************/
-void screen_display(context_t * ctx)
+void screen_display(Context * ctx)
 {
 	SDL_Event event;
 
@@ -244,7 +244,7 @@ void screen_display(context_t * ctx)
 		{
 			if (item->user_ptr != nullptr)
 			{
-				context_t * ctx_drawn = (context_t *) item->user_ptr;
+				Context * ctx_drawn = (Context *) item->user_ptr;
 
 				char * draw_script = nullptr;
 

@@ -32,7 +32,7 @@
  *********************************/
 static int npc_script(void * data)
 {
-	context_t * context = (context_t *) data;
+	Context * context = (Context *) data;
 	Uint32 timeout_ms;
 	char * script = NULL;
 	char ** parameters = NULL;
@@ -106,7 +106,7 @@ void instantiate_npc(const char * id)
 	int is_npc;
 	int x;
 	int y;
-	context_t * ctx;
+	Context * ctx;
 	char buf[512];
 
 	// check if it's a NPC

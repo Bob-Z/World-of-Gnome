@@ -76,7 +76,7 @@ static void center_item(void * arg)
  **********************************/
 static void cb_select(void * arg)
 {
-	context_t * ctx = (context_t*) arg;
+	Context * ctx = (Context*) arg;
 	character_t *character;
 
 	if (current_character == -1)
@@ -181,7 +181,7 @@ static void cb_icon_add_clicked(void * arg)
 
 /**********************************
  **********************************/
-void scr_select_frame_start(context_t * context)
+void scr_select_frame_start(Context * context)
 {
 }
 
@@ -195,7 +195,7 @@ void scr_select_init()
 /**********************************
  Compose the character select screen
  **********************************/
-item_t * scr_select_compose(context_t * context)
+item_t * scr_select_compose(Context * context)
 {
 	long i = 0;
 	int x = 0;
@@ -403,7 +403,7 @@ item_t * scr_select_compose(context_t * context)
 /*************************
  Add a character to the list
  *************************/
-void scr_select_add_user_character(context_t * context, const std::string & id,
+void scr_select_add_user_character(Context * context, const std::string & id,
 		const std::string & type, const std::string & name)
 {
 	SDL_LockMutex(character_select_mutex);

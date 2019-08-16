@@ -23,6 +23,6 @@
 #include "common.h"
 #include <SDL2/SDL_ttf.h>
 
-TTF_Font * font_get(context_t* ctx, const char * filename, int size);
+TTF_Font * font_get(Context* ctx, const char * filename, int size);
 
 #endif

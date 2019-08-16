@@ -21,13 +21,13 @@
 #define ACTION_SERVER_H
 #include "common.h"
 
-void action_parse_frame(context_t * context, char * frame);
-int action_execute(context_t * context, const char * action,
+void action_parse_frame(Context * context, char * frame);
+int action_execute(Context * context, const char * action,
 		char ** parameters);
-int action_execute(context_t * context, const std::string & p_rScriptName,
+int action_execute(Context * context, const std::string & p_rScriptName,
 		const std::vector<std::string> & p_rParam);
-int action_execute_script(context_t * context, const char * script,
+int action_execute_script(Context * context, const char * script,
 		const char ** parameters);
-void register_lua_functions(context_t * context);
+void register_lua_functions(Context * context);
 
 #endif

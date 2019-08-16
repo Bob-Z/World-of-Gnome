@@ -73,7 +73,7 @@ int scr_play_get_current_y()
 static void cb_select_sprite(void *arg)
 {
 	char * id = (char*) arg;
-	context_t * ctx = context_get_player();
+	Context * ctx = context_get_player();
 
 	network_send_action(ctx, option_get().action_select_character, id, nullptr);
 }
@@ -119,14 +119,14 @@ static void cb_unzoom(Uint32 l_Unused1, Uint32 l_Unused2)
  Return nullptr if no sprite can be found
  Returned anim_t ** must be FREED
  **********************************/
-static anim_t ** select_sprite(context_t * ctx)
+static anim_t ** select_sprite(Context * ctx)
 {
 	anim_t ** sprite;
 	char * sprite_name = nullptr;
 	char ** sprite_list = nullptr;
 	const char * sprite_name_array[2] =
 	{ nullptr, nullptr };
-	context_t * player_context = context_get_player();
+	Context * player_context = context_get_player();
 
 	// Try to find a sprite depending on the orientation
 	if (ctx->orientation & NORTH)
@@ -221,7 +221,7 @@ static anim_t ** select_sprite(context_t * ctx)
  Draw a single sprite
  if image_file_name is not nullptr, this file is used as an image rather than the normal sprite image
  **********************************/
-static void set_up_sprite(context_t * ctx)
+static void set_up_sprite(Context * ctx)
 {
 	anim_t ** sprite_list;
 	item_t * item;
@@ -238,7 +238,7 @@ static void set_up_sprite(context_t * ctx)
 	int sprite_offset_y = 0;
 	bool force_position = false;
 
-	context_t * player_context = context_get_player();
+	Context * player_context = context_get_player();
 
 	if (ctx->map == nullptr)
 	{
@@ -479,7 +479,7 @@ static void set_up_sprite(context_t * ctx)
 static void compose_sprite(int layer_index)
 {
 	int layer;
-	context_t * ctx = context_get_player();
+	Context * ctx = context_get_player();
 
 	context_lock_list();
 
@@ -519,7 +519,7 @@ static void compose_item(int layer_index)
 	int quantity;
 	char buf[SMALL_BUF];
 	char layer_name[SMALL_BUF];
-	context_t * ctx = context_get_player();
+	Context * ctx = context_get_player();
 
 	sprintf(layer_name, "%s%d", MAP_KEY_LAYER, layer_index);
 
@@ -626,7 +626,7 @@ static void compose_item(int layer_index)
 static void cb_select_map(void *arg)
 {
 	item_t * item = (item_t*) arg;
-	context_t * ctx = context_get_player();
+	Context * ctx = context_get_player();
 	char x[SMALL_BUF];
 	char y[SMALL_BUF];
 
@@ -674,7 +674,7 @@ static void compose_map_button()
 	item_t * item;
 	anim_t * anim = nullptr;
 
-	context_t * ctx = context_get_player();
+	Context * ctx = context_get_player();
 
 	if (option_get().cursor_over_tile)
 	{
@@ -709,7 +709,7 @@ static void compose_map_set(int layer_index)
 	char ** tile_set = nullptr;
 	char layer_name[SMALL_BUF];
 	layer_t * layer;
-	context_t * ctx = context_get_player();
+	Context * ctx = context_get_player();
 
 	snprintf(layer_name, sizeof(layer_name), "%s%d", MAP_KEY_LAYER, layer_index);
 	if (entry_read_list(MAP_TABLE, ctx->map, &tile_set, layer_name, MAP_KEY_SET, nullptr) == RET_NOK)
@@ -761,7 +761,7 @@ static void compose_map_scenery(int layer_index)
 	item_t * item;
 	char ** scenery_list = nullptr;
 	char layer_name[SMALL_BUF];
-	context_t * ctx = context_get_player();
+	Context * ctx = context_get_player();
 
 	sprintf(layer_name, "%s%d", MAP_KEY_LAYER, layer_index);
 	if (entry_get_group_list(MAP_TABLE, ctx->map, &scenery_list, layer_name,
@@ -815,7 +815,7 @@ static void compose_type(int layer_index)
 	int w;
 	int h;
 	char layer_name[SMALL_BUF];
-	context_t * ctx = context_get_player();
+	Context * ctx = context_get_player();
 
 	if (option_get().show_tile_type == false)
 	{
@@ -865,7 +865,7 @@ static void compose_select()
 	int pos_ty = -1;
 	int x = -1;
 	int y = -1;
-	context_t * ctx = context_get_player();
+	Context * ctx = context_get_player();
 
 	// Tile selection
 	if (option_get().cursor_tile)
@@ -899,7 +899,7 @@ static void compose_select()
 	{
 		if (ctx->selection.getId() != "")
 		{
-			context_t * selected_context = nullptr;
+			Context * selected_context = nullptr;
 			selected_context = context_find(ctx->selection.getId().c_str());
 			if (selected_context == nullptr)
 			{
@@ -915,7 +915,7 @@ static void compose_select()
 
 /**********************************
  **********************************/
-void scr_play_frame_start(context_t * context)
+void scr_play_frame_start(Context * context)
 {
 }
 
@@ -924,7 +924,7 @@ void scr_play_frame_start(context_t * context)
 void scr_play_init()
 {
 	// Register this character to receive server notifications
-	context_t * context = context_get_player();
+	Context * context = context_get_player();
 	network_request_start(context, context->id);
 	ui_play_init();
 }
@@ -932,7 +932,7 @@ void scr_play_init()
 /**********************************
  Compose main play screen
  **********************************/
-item_t * scr_play_compose(context_t * ctx)
+item_t * scr_play_compose(Context * ctx)
 {
 	int bg_red = 0;
 	int bg_blue = 0;

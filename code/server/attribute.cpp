@@ -30,7 +30,7 @@
  id is the id of the target of the change
  return -1 if fails
  ***************************************************************************/
-int attribute_change(context_t * context, const char * table, const char * id,
+int attribute_change(Context * context, const char * table, const char * id,
 		const char * attribute, int value)
 {
 	int current;

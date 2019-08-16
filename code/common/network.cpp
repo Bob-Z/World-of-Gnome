@@ -28,7 +28,7 @@
 class DataSent
 {
 public:
-	context_t * m_pContext;
+	Context * m_pContext;
 	std::string m_serialized_data;
 	bool m_IsData;
 };
@@ -41,7 +41,7 @@ static int async_frame_send(void * p_pUserData)
 {
 	DataSent * l_pData = static_cast<DataSent*>(p_pUserData);
 
-	context_t * l_pContext = l_pData->m_pContext;
+	Context * l_pContext = l_pData->m_pContext;
 	if (l_pContext == nullptr)
 	{
 		werr(LOGDEVELOPER, "null l_pContext");
@@ -103,7 +103,7 @@ static int async_frame_send(void * p_pUserData)
 
 /*******************************************************************************
  ******************************************************************************/
-void network_send_command(context_t * context,
+void network_send_command(Context * context,
 		const std::string & serialized_data, const bool is_data)
 {
 	// FIXME create a NetworkManager
@@ -121,7 +121,7 @@ void network_send_command(context_t * context,
  It adds the local file checksum so that the server only send the file if it is different
  It make sure there are a minimum time between to consecutive request on the same file
  *********************************************************************/
-void network_send_req_file(context_t * context, const std::string & file_name)
+void network_send_req_file(Context * context, const std::string & file_name)
 {
 	wlog(LOGDEVELOPER, "[network] Send request for file : %s",
 			file_name.c_str());
@@ -181,7 +181,7 @@ ret_code_t network_read_bytes(TCPsocket socket, char * data, int size)
  send a file to a context
  return 0 on success
  *********************************************************************/
-int network_send_file(context_t * context, const char * file_name)
+int network_send_file(Context * context, const char * file_name)
 {
 	// Check if NPC
 	if (context_is_npc(context) == true)
@@ -218,7 +218,7 @@ int network_send_file(context_t * context, const char * file_name)
 
 /*********************************************************************
  **********************************************************************/
-void network_send_file_data(context_t * context, const std::string & name,
+void network_send_file_data(Context * context, const std::string & name,
 		const std::string & data)
 {
 	pb::ServerMessage message;
@@ -234,7 +234,7 @@ void network_send_file_data(context_t * context, const std::string & name,
  send table/file to a context
  return FALSE on success
  *********************************************************************/
-int network_send_table_file(context_t * context, const char * table,
+int network_send_table_file(Context * context, const char * table,
 		const char * id)
 {
 	const std::string file_name = std::string(table) + "/" + std::string(id);

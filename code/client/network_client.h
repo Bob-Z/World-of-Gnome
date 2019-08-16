@@ -22,18 +22,18 @@
 
 #include "common.h"
 
-void network_login(context_t * context, const char * name,
+void network_login(Context * context, const char * name,
 		const char * password);
-void network_request_start(context_t * context, const char * id);
-void network_request_stop(context_t * context);
-void network_request_character_creation(context_t * context, const char * id,
+void network_request_start(Context * context, const char * id);
+void network_request_stop(Context * context);
+void network_request_character_creation(Context * context, const char * id,
 		const char * name);
-void network_login(context_t * context, const char * name,
+void network_login(Context * context, const char * name,
 		const char * password);
-void network_request_playable_character_list(context_t * context);
-void network_request_user_character_list(context_t * context);
-void network_send_action(context_t * context, const char * frame, ...);
-ret_code_t network_connect(context_t * context, const char * hostname);
-ret_code_t network_open_data_connection(context_t * context);
+void network_request_playable_character_list(Context * context);
+void network_request_user_character_list(Context * context);
+void network_send_action(Context * context, const char * frame, ...);
+ret_code_t network_connect(Context * context, const char * hostname);
+ret_code_t network_open_data_connection(Context * context);
 
 #endif

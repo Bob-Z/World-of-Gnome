@@ -18,7 +18,7 @@
  */
 
 #include <client_server.h>
-#include <context.h>
+#include "Context.h"
 #include <entry.h>
 #include <file.h>
 #include <item.h>
@@ -66,10 +66,10 @@ extern "C"
  */
 static int l_player_get_id(lua_State* L)
 {
-	context_t * context;
+	Context * context;
 
 	lua_getglobal(L, LUAVM_CONTEXT);
-	context = (context_t*) lua_touserdata(L, -1);
+	context = (Context*) lua_touserdata(L, -1);
 	lua_pop(L, 1);
 	lua_pushstring(L, context->id);
 	return 1;  // number of results
@@ -93,10 +93,10 @@ static int l_character_create_from_template(lua_State* L)
 	int x = -1;
 	int y = -1;
 
-	context_t * ctx;
+	Context * ctx;
 
 	lua_getglobal(L, LUAVM_CONTEXT);
-	ctx = (context_t*) lua_touserdata(L, -1);
+	ctx = (Context*) lua_touserdata(L, -1);
 	lua_pop(L, 1);
 
 	mytemplate = luaL_checkstring(L, -5);
@@ -117,7 +117,7 @@ static int l_character_create_from_template(lua_State* L)
  */
 static int l_character_get_selected_map_tile_x(lua_State* L)
 {
-	context_t * target;
+	Context * target;
 	const char * id;
 
 	id = luaL_checkstring(L, -1);
@@ -138,7 +138,7 @@ static int l_character_get_selected_map_tile_x(lua_State* L)
  */
 static int l_character_get_selected_map_tile_y(lua_State* L)
 {
-	context_t * target;
+	Context * target;
 	const char * id;
 
 	id = luaL_checkstring(L, -1);
@@ -159,7 +159,7 @@ static int l_character_get_selected_map_tile_y(lua_State* L)
  */
 static int l_character_get_selected_map(lua_State* L)
 {
-	context_t * target;
+	Context * target;
 	const char * id;
 
 	id = luaL_checkstring(L, -1);
@@ -183,7 +183,7 @@ static int l_character_get_selected_map(lua_State* L)
  */
 static int l_character_set_selected_tile(lua_State* L)
 {
-	context_t * target;
+	Context * target;
 	const char * id;
 	const char * selected_map;
 	int x;
@@ -216,7 +216,7 @@ static int l_character_set_selected_tile(lua_State* L)
  */
 static int l_character_get_selected_inventory_id(lua_State* L)
 {
-	context_t * target;
+	Context * target;
 	const char * id;
 
 	id = luaL_checkstring(L, -1);
@@ -238,7 +238,7 @@ static int l_character_get_selected_inventory_id(lua_State* L)
  */
 static int l_character_set_selected_inventory_id(lua_State* L)
 {
-	context_t * target;
+	Context * target;
 	const char * id;
 	const char * selected_item;
 
@@ -267,7 +267,7 @@ static int l_character_set_selected_inventory_id(lua_State* L)
  */
 static int l_character_get_selected_equipment_slot(lua_State* L)
 {
-	context_t * target;
+	Context * target;
 	const char * id;
 
 	id = luaL_checkstring(L, -1);
@@ -289,7 +289,7 @@ static int l_character_get_selected_equipment_slot(lua_State* L)
  */
 static int l_character_set_selected_equipment_slot(lua_State* L)
 {
-	context_t * target;
+	Context * target;
 	const char * id;
 	const char * selected_equipment;
 
@@ -318,7 +318,7 @@ static int l_character_set_selected_equipment_slot(lua_State* L)
  */
 static int l_character_get_selected_character_id(lua_State* L)
 {
-	context_t * target;
+	Context * target;
 	const char * id;
 
 	id = luaL_checkstring(L, -1);
@@ -340,7 +340,7 @@ static int l_character_get_selected_character_id(lua_State* L)
  */
 static int l_character_set_selected_character_id(lua_State* L)
 {
-	context_t * target;
+	Context * target;
 	const char * id;
 	const char * selected_id;
 
@@ -369,7 +369,7 @@ static int l_character_set_selected_character_id(lua_State* L)
  */
 static int l_character_get_map(lua_State* L)
 {
-	context_t * target;
+	Context * target;
 	const char * id;
 
 	id = luaL_checkstring(L, -1);
@@ -426,7 +426,7 @@ static int l_character_get_map_h(lua_State* L)
  */
 static int l_character_get_x(lua_State* L)
 {
-	context_t * target;
+	Context * target;
 	const char * id;
 
 	id = luaL_checkstring(L, -1);
@@ -447,7 +447,7 @@ static int l_character_get_x(lua_State* L)
  */
 static int l_character_get_y(lua_State* L)
 {
-	context_t * target;
+	Context * target;
 	const char * id;
 
 	id = luaL_checkstring(L, -1);
@@ -468,7 +468,7 @@ static int l_character_get_y(lua_State* L)
  */
 static int l_character_get_name(lua_State* L)
 {
-	context_t * target;
+	Context * target;
 	const char * id;
 
 	id = luaL_checkstring(L, -1);
@@ -489,7 +489,7 @@ static int l_character_get_name(lua_State* L)
  */
 static int l_character_get_type(lua_State* L)
 {
-	context_t * target;
+	Context * target;
 	const char * id;
 
 	id = luaL_checkstring(L, -1);
@@ -587,7 +587,7 @@ static int l_character_set_pos(lua_State* L)
 	int x;
 	int y;
 	int res;
-	context_t * ctx;
+	Context * ctx;
 
 	id = luaL_checkstring(L, -4);
 	map = luaL_checkstring(L, -3);
@@ -1730,10 +1730,10 @@ static int l_resource_set_quantity(lua_State* L)
 	const char * resource;
 	int quantity;
 	int res;
-	context_t * context;
+	Context * context;
 
 	lua_getglobal(L, LUAVM_CONTEXT);
-	context = (context_t*) lua_touserdata(L, -1);
+	context = (Context*) lua_touserdata(L, -1);
 	lua_pop(L, 1);
 
 	resource = luaL_checkstring(L, -2);
@@ -1925,14 +1925,14 @@ static int l_character_attribute_change(lua_State* L)
 	const char * attribute;
 	int value;
 	int res;
-	context_t * context;
+	Context * context;
 
 	id = luaL_checkstring(L, -3);
 	attribute = luaL_checkstring(L, -2);
 	value = luaL_checkint(L, -1);
 
 	lua_getglobal(L, LUAVM_CONTEXT);
-	context = (context_t*) lua_touserdata(L, -1);
+	context = (Context*) lua_touserdata(L, -1);
 	lua_pop(L, 1);
 
 	res = attribute_change(context, CHARACTER_TABLE, id, attribute, value);
@@ -2054,14 +2054,14 @@ static int l_map_attribute_change(lua_State* L)
 	const char * attribute;
 	int value;
 	int res;
-	context_t * context;
+	Context * context;
 
 	id = luaL_checkstring(L, -3);
 	attribute = luaL_checkstring(L, -2);
 	value = luaL_checkint(L, -1);
 
 	lua_getglobal(L, LUAVM_CONTEXT);
-	context = (context_t*) lua_touserdata(L, -1);
+	context = (Context*) lua_touserdata(L, -1);
 	lua_pop(L, 1);
 
 	res = attribute_change(context, MAP_TABLE, id, attribute, value);
@@ -2208,7 +2208,7 @@ static int l_popup_send(lua_State* L)
 
 /**************************************
  **************************************/
-static void action_chat(context_t * context, const char * text)
+static void action_chat(Context * context, const char * text)
 {
 	const std::string new_text = std::string(context->character_name) + ":" + std::string(text);
 
@@ -2219,7 +2219,7 @@ static void action_chat(context_t * context, const char * text)
  Execute a LUA script file
  return -1 if the script do not return something
  **************************************/
-int action_execute_script(context_t * context, const char * script, const char ** parameters)
+int action_execute_script(Context * context, const char * script, const char ** parameters)
 {
 	if (script == nullptr)
 	{
@@ -2240,7 +2240,7 @@ int action_execute_script(context_t * context, const char * script, const char *
  Execute an action configuration file
  return -1 if the script do not return something
  **************************************/
-int action_execute(context_t * context, const char * action, char ** parameters)
+int action_execute(Context * context, const char * action, char ** parameters)
 {
 	char * script = nullptr;
 	char ** params = nullptr;
@@ -2268,7 +2268,7 @@ int action_execute(context_t * context, const char * action, char ** parameters)
  Execute an action configuration file
  return -1 if the script do not return something
  **************************************/
-int action_execute(context_t * context, const std::string & p_rScriptName, const std::vector<std::string> & p_rParam)
+int action_execute(Context * context, const std::string & p_rScriptName, const std::vector<std::string> & p_rParam)
 {
 	char * script = nullptr;
 	char ** params = nullptr;
@@ -2312,10 +2312,10 @@ static int l_call_script(lua_State* L)
 	char **arg = nullptr;
 	int i;
 	int res;
-	context_t * context;
+	Context * context;
 
 	lua_getglobal(L, LUAVM_CONTEXT);
-	context = (context_t*) lua_touserdata(L, -1);
+	context = (Context*) lua_touserdata(L, -1);
 	lua_pop(L, 1);
 
 	num_arg = lua_gettop(L);
@@ -2355,10 +2355,10 @@ static int l_call_action(lua_State* L)
 	char **arg = nullptr;
 	int i;
 	int res;
-	context_t * context;
+	Context * context;
 
 	lua_getglobal(L, LUAVM_CONTEXT);
-	context = (context_t*) lua_touserdata(L, -1);
+	context = (Context*) lua_touserdata(L, -1);
 	lua_pop(L, 1);
 
 	num_arg = lua_gettop(L);
@@ -2385,7 +2385,7 @@ static int l_call_action(lua_State* L)
 
 /***************************************************
  ***************************************************/
-void register_lua_functions(context_t * context)
+void register_lua_functions(Context * context)
 {
 	lua_State* L = context->luaVM;
 

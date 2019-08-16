@@ -18,7 +18,7 @@
  */
 
 #include "common.h"
-#include "context.h"
+#include "Context.h"
 #include "entry.h"
 #include "file.h"
 #include "network.h"
@@ -142,7 +142,7 @@ int resource_get_quantity(const char * item_id)
  set the quantity of a resource
  return -1 on error
  *****************************/
-int resource_set_quantity(context_t * context, const char * item_id, int quantity)
+int resource_set_quantity(Context * context, const char * item_id, int quantity)
 {
 	char * my_template;
 

@@ -25,7 +25,7 @@ static std::map<std::string, Mix_Chunk*> g_SoundList;
 
 /*******************************************************************************
  ******************************************************************************/
-int sfx_play(context_t* p_Ctx, const std::string & p_FileName, int p_Channel,
+int sfx_play(Context* p_Ctx, const std::string & p_FileName, int p_Channel,
 		int p_Loops)
 {
 	auto l_It = g_SoundList.find(p_FileName);

@@ -27,6 +27,6 @@ void ui_play_set(int ui_type);
 int ui_play_get();
 char * ui_play_get_last_action();
 void ui_play_cb_action(void * arg);
-void ui_play_compose(context_t * ctx, item_t * item_list);
+void ui_play_compose(Context * ctx, item_t * item_list);
 void ui_play_init();
 void ui_play_popup_add(const std::vector<std::string> & data);

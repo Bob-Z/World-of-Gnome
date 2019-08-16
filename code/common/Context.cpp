@@ -17,7 +17,7 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#include "context.h"
+#include "Context.h"
 #include "ContextBis.h"
 #include "entry.h"
 #include "log.h"
@@ -38,11 +38,11 @@ extern "C"
 #include <limits.h>
 #include "common.h"
 
-context_t * context_list_start = nullptr;
+Context * context_list_start = nullptr;
 
 /***********************
  ***********************/
-context_t::context_t() :
+Context::Context() :
 		user_name(nullptr), connected(false), in_game(false), socket(), socket_data(), send_mutex(nullptr), hostname(nullptr), render(nullptr), window(nullptr), npc(
 				true), character_name(nullptr), map(nullptr), tile_x(-1), tile_y(-1), prev_pos_tile_x(-1), prev_pos_tile_y(-1), pos_changed(false), animation_tick(
 				0), type(nullptr), selection(), id(nullptr), prev_map(nullptr), change_map(false), luaVM(nullptr), cond(nullptr), cond_mutex(nullptr), orientation(
@@ -52,7 +52,7 @@ context_t::context_t() :
 
 /***********************
  ***********************/
-context_t * context_get_list_start()
+Context * context_get_list_start()
 {
 	return context_list_start;
 }
@@ -66,7 +66,7 @@ void context_unlock_list()
 
 /***********************
  ***********************/
-context_t * context_get_first()
+Context * context_get_first()
 {
 	return context_list_start;
 }
@@ -74,7 +74,7 @@ context_t * context_get_first()
  context_init
  Initialize a context_t struct
  *************************************/
-void context_init(context_t * context)
+void context_init(Context * context)
 {
 	context->user_name = nullptr;
 	context->connected = false;
@@ -116,14 +116,14 @@ void context_init(context_t * context)
 /**************************************
  Add a new context to the list
  **************************************/
-context_t * context_new(void)
+Context * context_new(void)
 {
-	context_t * ctx;
+	Context * ctx;
 
 	context_lock_list();
 	if (context_list_start == nullptr)
 	{
-		context_list_start = new context_t;
+		context_list_start = new Context;
 		context_init(context_list_start);
 		context_unlock_list();
 		return context_list_start;
@@ -135,7 +135,7 @@ context_t * context_new(void)
 		ctx = ctx->next;
 	}
 
-	ctx->next = new context_t;
+	ctx->next = new Context;
 	context_init(ctx->next);
 	ctx->next->previous = ctx;
 	context_unlock_list();
@@ -145,7 +145,7 @@ context_t * context_new(void)
  context_free_data
  Deep free of all context_t data
  *************************************/
-void context_free_data(context_t * context)
+void context_free_data(Context * context)
 {
 	if (context->user_name)
 	{
@@ -212,9 +212,9 @@ void context_free_data(context_t * context)
  context_free
  Deep free of a context_t struct and remove it from context list
  *************************************/
-void context_free(context_t * context)
+void context_free(Context * context)
 {
-	context_t * ctx;
+	Context * ctx;
 
 	context_lock_list();
 
@@ -285,14 +285,14 @@ void context_lock_list()
 
 /***********************
  ***********************/
-context_t * context_get_player()
+Context * context_get_player()
 {
 	return context_list_start;
 }
 /**************************
  Returns RET_NOK if error
  **************************/
-ret_code_t context_set_hostname(context_t * context, const char * name)
+ret_code_t context_set_hostname(Context * context, const char * name)
 {
 	context_lock_list();
 
@@ -315,7 +315,7 @@ ret_code_t context_set_hostname(context_t * context, const char * name)
 /**************************
  Returns RET_NOK if error
  **************************/
-ret_code_t context_set_username(context_t * context, const char * name)
+ret_code_t context_set_username(Context * context, const char * name)
 {
 	context_lock_list();
 
@@ -333,7 +333,7 @@ ret_code_t context_set_username(context_t * context, const char * name)
 
 /**************************************
  **************************************/
-void context_set_in_game(context_t * context, int in_game)
+void context_set_in_game(Context * context, int in_game)
 {
 	context_lock_list();
 	context->in_game = in_game;
@@ -342,7 +342,7 @@ void context_set_in_game(context_t * context, int in_game)
 
 /**************************************
  **************************************/
-int context_get_in_game(context_t * context)
+int context_get_in_game(Context * context)
 {
 	int in_game = 0;
 
@@ -355,7 +355,7 @@ int context_get_in_game(context_t * context)
 
 /**************************************
  **************************************/
-void context_set_connected(context_t * context, bool connected)
+void context_set_connected(Context * context, bool connected)
 {
 	context_lock_list();
 	context->connected = connected;
@@ -364,7 +364,7 @@ void context_set_connected(context_t * context, bool connected)
 
 /**************************************
  **************************************/
-int context_get_connected(context_t * context)
+int context_get_connected(Context * context)
 {
 	int conn = 0;
 
@@ -377,7 +377,7 @@ int context_get_connected(context_t * context)
 
 /**************************************
  **************************************/
-void context_set_socket(context_t * context, TCPsocket socket)
+void context_set_socket(Context * context, TCPsocket socket)
 {
 	context_lock_list();
 	context->socket = socket;
@@ -386,7 +386,7 @@ void context_set_socket(context_t * context, TCPsocket socket)
 
 /**************************************
  **************************************/
-TCPsocket context_get_socket(context_t * context)
+TCPsocket context_get_socket(Context * context)
 {
 	TCPsocket socket = 0;
 
@@ -399,7 +399,7 @@ TCPsocket context_get_socket(context_t * context)
 
 /**************************************
  **************************************/
-void context_set_socket_data(context_t * context, TCPsocket socket)
+void context_set_socket_data(Context * context, TCPsocket socket)
 {
 	context_lock_list();
 	context->socket_data = socket;
@@ -408,7 +408,7 @@ void context_set_socket_data(context_t * context, TCPsocket socket)
 
 /**************************************
  **************************************/
-TCPsocket context_get_socket_data(context_t * context)
+TCPsocket context_get_socket_data(Context * context)
 {
 	TCPsocket socket = 0;
 
@@ -422,7 +422,7 @@ TCPsocket context_get_socket_data(context_t * context)
 /**************************************
  Returns RET_NOK if error
  **************************************/
-ret_code_t context_set_character_name(context_t * context, const char * name)
+ret_code_t context_set_character_name(Context * context, const char * name)
 {
 	ret_code_t ret = RET_OK;
 
@@ -441,7 +441,7 @@ ret_code_t context_set_character_name(context_t * context, const char * name)
 /**************************************
  Returns RET_NOK if error
  **************************************/
-static ret_code_t _context_set_map(context_t * context, const char * map)
+static ret_code_t _context_set_map(Context * context, const char * map)
 {
 	if (context->prev_map != nullptr)
 	{
@@ -471,7 +471,7 @@ static ret_code_t _context_set_map(context_t * context, const char * map)
 
 /**************************************
  **************************************/
-ret_code_t context_set_map(context_t * context, const char * map)
+ret_code_t context_set_map(Context * context, const char * map)
 {
 	ret_code_t ret;
 
@@ -485,7 +485,7 @@ ret_code_t context_set_map(context_t * context, const char * map)
 /**************************************
  Returns RET_NOK if error
  **************************************/
-ret_code_t context_set_type(context_t * context, const char * type)
+ret_code_t context_set_type(Context * context, const char * type)
 {
 	ret_code_t ret = RET_OK;
 
@@ -503,14 +503,14 @@ ret_code_t context_set_type(context_t * context, const char * type)
 
 /**************************************
  **************************************/
-void _context_set_npc(context_t * context, int npc)
+void _context_set_npc(Context * context, int npc)
 {
 	context->npc = npc;
 }
 
 /**************************************
  **************************************/
-void context_set_npc(context_t * context, int npc)
+void context_set_npc(Context * context, int npc)
 {
 	context_lock_list();
 	_context_set_npc(context, npc);
@@ -519,7 +519,7 @@ void context_set_npc(context_t * context, int npc)
 
 /**************************************
  **************************************/
-void _context_set_pos_tx(context_t * context, int pos_tx)
+void _context_set_pos_tx(Context * context, int pos_tx)
 {
 	context->prev_pos_tile_x = context->tile_x;
 	if (context->tile_x != pos_tx)
@@ -531,7 +531,7 @@ void _context_set_pos_tx(context_t * context, int pos_tx)
 
 /**************************************
  **************************************/
-void context_set_pos_tx(context_t * context, int pos_tx)
+void context_set_pos_tx(Context * context, int pos_tx)
 {
 	context_lock_list();
 	_context_set_pos_tx(context, pos_tx);
@@ -539,7 +539,7 @@ void context_set_pos_tx(context_t * context, int pos_tx)
 }
 /**************************************
  **************************************/
-void _context_set_pos_ty(context_t * context, int pos_ty)
+void _context_set_pos_ty(Context * context, int pos_ty)
 {
 	context->prev_pos_tile_y = context->tile_y;
 	if (context->tile_y != pos_ty)
@@ -551,7 +551,7 @@ void _context_set_pos_ty(context_t * context, int pos_ty)
 
 /**************************************
  **************************************/
-void context_set_pos_ty(context_t * context, int pos_ty)
+void context_set_pos_ty(Context * context, int pos_ty)
 {
 	context_lock_list();
 	_context_set_pos_ty(context, pos_ty);
@@ -561,7 +561,7 @@ void context_set_pos_ty(context_t * context, int pos_ty)
 /**************************************
  return RET_NOK on error
  **************************************/
-ret_code_t context_set_id(context_t * context, const char * name)
+ret_code_t context_set_id(Context * context, const char * name)
 {
 	context_lock_list();
 
@@ -583,7 +583,7 @@ ret_code_t context_set_id(context_t * context, const char * name)
 /**************************************
  * return RET_NOK if context has already the same values
  **************************************/
-ret_code_t context_set_selected_character(context_t * context, const char * id)
+ret_code_t context_set_selected_character(Context * context, const char * id)
 {
 	context_lock_list();
 
@@ -604,7 +604,7 @@ ret_code_t context_set_selected_character(context_t * context, const char * id)
 /**************************************
  * return RET_NOK if context has already the same values
  **************************************/
-ret_code_t context_set_selected_tile(context_t * context, const char * map, int x, int y)
+ret_code_t context_set_selected_tile(Context * context, const char * map, int x, int y)
 {
 	context_lock_list();
 
@@ -628,7 +628,7 @@ ret_code_t context_set_selected_tile(context_t * context, const char * map, int 
 /**************************************
  * return RET_NOK if context has already the same values
  **************************************/
-ret_code_t context_set_selected_equipment(context_t * context, const char * id)
+ret_code_t context_set_selected_equipment(Context * context, const char * id)
 {
 	context_lock_list();
 
@@ -647,7 +647,7 @@ ret_code_t context_set_selected_equipment(context_t * context, const char * id)
 /**************************************
  * return RET_NOK if context has already the same values
  **************************************/
-ret_code_t context_set_selected_item(context_t * context, const char * id)
+ret_code_t context_set_selected_item(Context * context, const char * id)
 {
 	context_lock_list();
 
@@ -667,12 +667,12 @@ ret_code_t context_set_selected_item(context_t * context, const char * id)
  **************************************/
 // Client use only one LUA VM, not one LUA VM by context
 #ifdef SERVER
-void register_lua_functions(context_t * context);
+void register_lua_functions(Context * context);
 #endif
 
 /**************************************
  **************************************/
-void context_new_VM(context_t * context)
+void context_new_VM(Context * context)
 {
 	context_lock_list();
 	context->luaVM = lua_open();
@@ -690,7 +690,7 @@ void context_new_VM(context_t * context)
  Update the memory context by reading the character's data file on disk
  Return RET_NOK if there is an error
  *******************************/
-ret_code_t context_update_from_file(context_t * context)
+ret_code_t context_update_from_file(Context * context)
 {
 	// Don't call context_set_* functions here to avoid inter-blocking
 
@@ -770,7 +770,7 @@ ret_code_t context_update_from_file(context_t * context)
  Write a context to server's disk
  return RET_NOK on error
  *******************************/
-ret_code_t context_write_to_file(context_t * context)
+ret_code_t context_write_to_file(Context * context)
 {
 	context_lock_list();
 
@@ -798,9 +798,9 @@ ret_code_t context_write_to_file(context_t * context)
 /*******************************
  Find a context in memory from its id
  *******************************/
-context_t * context_find(const char * id)
+Context * context_find(const char * id)
 {
-	context_t * ctx;
+	Context * ctx;
 
 	ctx = context_list_start;
 
@@ -827,7 +827,7 @@ void context_add_or_update_from_network_frame(const ContextBis & context)
 {
 	// search for this context
 	context_lock_list();
-	context_t * ctx = context_list_start;
+	Context * ctx = context_list_start;
 
 	while (ctx != nullptr)
 	{
@@ -888,7 +888,7 @@ void context_add_or_update_from_network_frame(const ContextBis & context)
 /**************************************
  Return the distance between two contexts
  **************************************/
-int context_distance(context_t * ctx1, context_t * ctx2)
+int context_distance(Context * ctx1, Context * ctx2)
 {
 	int distx;
 	int disty;
@@ -910,7 +910,7 @@ int context_distance(context_t * ctx1, context_t * ctx2)
 /**************************************
  Return true is context is an NPC
  **************************************/
-bool context_is_npc(context_t * ctx)
+bool context_is_npc(Context * ctx)
 {
 	if (ctx->socket == nullptr && ctx->connected == true)
 	{

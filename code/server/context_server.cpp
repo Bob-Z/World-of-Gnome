@@ -17,7 +17,7 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#include <context.h>
+#include "Context.h"
 #include <network.h>
 #include <stdlib.h>
 #include <util.h>
@@ -28,9 +28,9 @@
 /**************************************
  Spread the data of a context to all in_game context
  **************************************/
-void context_spread(context_t * context)
+void context_spread(Context * context)
 {
-	context_t * ctx = nullptr;
+	Context * ctx = nullptr;
 
 	context_lock_list();
 
@@ -90,7 +90,7 @@ void context_spread(context_t * context)
  **************************************/
 void context_broadcast_text(const char * map, const char * text)
 {
-	context_t * ctx = nullptr;
+	Context * ctx = nullptr;
 
 	context_lock_list();
 
@@ -147,7 +147,7 @@ void context_broadcast_text(const char * map, const char * text)
  **************************************/
 void context_broadcast_map(const char * map)
 {
-	context_t * ctx = nullptr;
+	Context * ctx = nullptr;
 
 	context_lock_list();
 
@@ -196,8 +196,8 @@ void context_broadcast_map(const char * map)
  **************************************/
 void context_broadcast_character(const char * character)
 {
-	context_t * ctx = nullptr;
-	context_t * character_ctx = nullptr;
+	Context * ctx = nullptr;
+	Context * character_ctx = nullptr;
 
 	context_lock_list();
 
@@ -247,9 +247,9 @@ void context_broadcast_character(const char * character)
  Send the data of all existing context to the passed context
  Useful at start time
  **************************************/
-void context_request_other_context(context_t * context)
+void context_request_other_context(Context * context)
 {
-	context_t * ctx = nullptr;
+	Context * ctx = nullptr;
 
 	context_lock_list();
 

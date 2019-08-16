@@ -23,7 +23,7 @@ static list_t * font_list = nullptr;
 
 /****************************************
  *****************************************/
-TTF_Font * font_get(context_t* ctx, const char * filename, int size)
+TTF_Font * font_get(Context* ctx, const char * filename, int size)
 {
 	TTF_Font * font = nullptr;
 

@@ -19,7 +19,7 @@
 
 #include "common.h"
 
-int attribute_change(context_t * context, const char * table, const char * id,
+int attribute_change(Context * context, const char * table, const char * id,
 		const char * attribute, int value);
 int attribute_get(const char * table, const char * id, const char * attribute);
 int attribute_set(const char * table, const char * id, const char * attribute,

@@ -45,7 +45,7 @@ const struct option longopts[] =
 { "maxfps", no_argument, nullptr, 'm' },
 { nullptr, 0, nullptr, 0 } };
 
-context_t * context;
+Context * context;
 
 /**************************
  main

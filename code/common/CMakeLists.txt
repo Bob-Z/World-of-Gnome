@@ -35,7 +35,7 @@ add_library(
 	${PROTO_SRC}
 
 	ContextBis.cpp
-	context.cpp
+	Context.cpp
 	entry.cpp
 	file.cpp
 	font.cpp

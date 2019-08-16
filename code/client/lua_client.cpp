@@ -19,7 +19,7 @@
 
 #include "Camera.h"
 #include "common.h"
-#include "context.h"
+#include "Context.h"
 #include "imageDB.h"
 #include "item.h"
 #include "sdl.h"
@@ -45,7 +45,7 @@ static lua_State * g_pEffectLuaVm = nullptr;
  ***********************************/
 static int l_player_get_id(lua_State* p_pLuaState)
 {
-	context_t * l_pContext;
+	Context * l_pContext;
 
 	l_pContext = context_get_player();
 	lua_pushstring(p_pLuaState, l_pContext->id);
@@ -59,10 +59,10 @@ static int l_player_get_id(lua_State* p_pLuaState)
  ***********************************/
 static int l_context_get_id(lua_State* p_pLuaState)
 {
-	context_t * l_pContext;
+	Context * l_pContext;
 
 	lua_getglobal(p_pLuaState, "current_context");
-	l_pContext = (context_t*) lua_touserdata(p_pLuaState, -1);
+	l_pContext = (Context*) lua_touserdata(p_pLuaState, -1);
 	lua_pop(p_pLuaState, 1);
 
 	lua_pushstring(p_pLuaState, l_pContext->id);
@@ -76,10 +76,10 @@ static int l_context_get_id(lua_State* p_pLuaState)
  ***********************************/
 static int l_context_get_npc(lua_State* p_pLuaState)
 {
-	context_t * l_pContext;
+	Context * l_pContext;
 
 	lua_getglobal(p_pLuaState, "current_context");
-	l_pContext = (context_t*) lua_touserdata(p_pLuaState, -1);
+	l_pContext = (Context*) lua_touserdata(p_pLuaState, -1);
 	lua_pop(p_pLuaState, 1);
 
 	lua_pushnumber(p_pLuaState, l_pContext->npc);
@@ -93,10 +93,10 @@ static int l_context_get_npc(lua_State* p_pLuaState)
  ***********************************/
 static int l_context_get_map(lua_State* p_pLuaState)
 {
-	context_t * l_pContext;
+	Context * l_pContext;
 
 	lua_getglobal(p_pLuaState, "current_context");
-	l_pContext = (context_t*) lua_touserdata(p_pLuaState, -1);
+	l_pContext = (Context*) lua_touserdata(p_pLuaState, -1);
 	lua_pop(p_pLuaState, 1);
 
 	lua_pushstring(p_pLuaState, l_pContext->map);

@@ -20,7 +20,7 @@
 #ifndef MAP_SERVER_H
 #define MAP_SERVER_H
 
-#include "context.h"
+#include "Context.h"
 #include "types.h"
 #include <string>
 #include <utility>
@@ -28,7 +28,7 @@
 std::pair<bool, std::string> map_new(const char *name, int w, int h, int tile_w, int tile_h);
 char * map_delete_item(const char * map, int layer, int x, int y);
 ret_code_t map_add_item(const char * map, int layer, const char * item, int x, int y);
-ret_code_t map_check_tile(context_t * ctx, const char * id, const char * map, int layer, int x, int y);
+ret_code_t map_check_tile(Context * ctx, const char * id, const char * map, int layer, int x, int y);
 ret_code_t map_set_tile(const char * map, int layer, const char * tile, int x, int y, int network_broadcast);
 ret_code_t map_set_tile_array(const char * map, int layer, const char** tile_array);
 ret_code_t map_set_tile_type(const char * map, int layer, const char * type, int x, int y, int network_broadcast);

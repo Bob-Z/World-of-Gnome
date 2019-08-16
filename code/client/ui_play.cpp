@@ -77,7 +77,7 @@ static int num_action = 0;
 
 /**********************************
  **********************************/
-static void draw_background(context_t * ctx, item_t * item_list)
+static void draw_background(Context * ctx, item_t * item_list)
 {
 	static anim_t * bg_anim = nullptr;
 	int sw;
@@ -122,8 +122,8 @@ char * ui_play_get_last_action()
  ****************************/
 static void cb_main_quit(void * arg)
 {
-	context_t * current_ctx;
-	context_t * next_ctx;
+	Context * current_ctx;
+	Context * next_ctx;
 
 	if (ui_play_get() == UI_MAIN)
 	{
@@ -149,7 +149,7 @@ static void cb_main_quit(void * arg)
  ****************************/
 static void key_up(void * arg)
 {
-	context_t * ctx = context_get_player();
+	Context * ctx = context_get_player();
 
 	network_send_action(ctx, option_get().action_move_up, nullptr);
 }
@@ -158,7 +158,7 @@ static void key_up(void * arg)
  **************************************/
 static void key_down(void * arg)
 {
-	context_t * ctx = context_get_player();
+	Context * ctx = context_get_player();
 
 	network_send_action(ctx, option_get().action_move_down, nullptr);
 }
@@ -167,7 +167,7 @@ static void key_down(void * arg)
  **************************************/
 static void key_left(void * arg)
 {
-	context_t * ctx = context_get_player();
+	Context * ctx = context_get_player();
 
 	network_send_action(ctx, option_get().action_move_left, nullptr);
 }
@@ -176,7 +176,7 @@ static void key_left(void * arg)
  **************************************/
 static void key_right(void * arg)
 {
-	context_t * ctx = context_get_player();
+	Context * ctx = context_get_player();
 
 	network_send_action(ctx, option_get().action_move_right, nullptr);
 }
@@ -185,7 +185,7 @@ static void key_right(void * arg)
  **************************************/
 static void key_up_left(void * arg)
 {
-	context_t * ctx = context_get_player();
+	Context * ctx = context_get_player();
 
 	network_send_action(ctx, option_get().action_move_up_left, nullptr);
 }
@@ -194,7 +194,7 @@ static void key_up_left(void * arg)
  **************************************/
 static void key_up_right(void * arg)
 {
-	context_t * ctx = context_get_player();
+	Context * ctx = context_get_player();
 
 	network_send_action(ctx, option_get().action_move_up_right, nullptr);
 }
@@ -203,7 +203,7 @@ static void key_up_right(void * arg)
  **************************************/
 static void key_down_left(void * arg)
 {
-	context_t * ctx = context_get_player();
+	Context * ctx = context_get_player();
 
 	network_send_action(ctx, option_get().action_move_down_left, nullptr);
 }
@@ -212,7 +212,7 @@ static void key_down_left(void * arg)
  **************************************/
 static void key_down_right(void * arg)
 {
-	context_t * ctx = context_get_player();
+	Context * ctx = context_get_player();
 
 	network_send_action(ctx, option_get().action_move_down_right, nullptr);
 }
@@ -220,7 +220,7 @@ static void key_down_right(void * arg)
 /**********************************
  Compose attribute
  **********************************/
-static void compose_attribute(context_t * ctx, item_t * item_list)
+static void compose_attribute(Context * ctx, item_t * item_list)
 {
 	item_t * item;
 	char ** name_list;
@@ -335,7 +335,7 @@ static void cb_wheel_down_action(void* not_used)
 /**********************************
  Compose action icon
  **********************************/
-static void compose_action(context_t * ctx, item_t * item_list)
+static void compose_action(Context * ctx, item_t * item_list)
 {
 	char ** action_list = nullptr;
 	char * text = nullptr;
@@ -477,7 +477,7 @@ static void compose_action(context_t * ctx, item_t * item_list)
 static void cb_select_slot(void * arg)
 {
 	char * id = (char*) arg;
-	context_t * ctx = context_get_player();
+	Context * ctx = context_get_player();
 
 	network_send_action(ctx, option_get().action_select_equipment, id, nullptr);
 }
@@ -492,7 +492,7 @@ static void show_inventory(void * arg)
 /**********************************
  Compose equipment icon
  **********************************/
-static void compose_equipment(context_t * ctx, item_t * item_list)
+static void compose_equipment(Context * ctx, item_t * item_list)
 {
 	char ** slot_list = nullptr;
 	anim_t * anim;
@@ -729,7 +729,7 @@ static void keyboard_text(void * arg)
 /**********************************
  Compose text
  **********************************/
-static void compose_text(context_t * ctx, item_t * item_list)
+static void compose_text(Context * ctx, item_t * item_list)
 {
 	const history_entry_t * history;
 	history_entry_t * hist;
@@ -817,7 +817,7 @@ static void cb_print_coord(void * arg)
 {
 	char buf[SMALL_BUF];
 	int map_w;
-	context_t * ctx = context_get_player();
+	Context * ctx = context_get_player();
 
 	entry_read_int(MAP_TABLE, ctx->map, &map_w, MAP_KEY_WIDTH, nullptr);
 
@@ -835,7 +835,7 @@ static void cb_print_coord(void * arg)
 
 /**********************************
  **********************************/
-static void main_compose(context_t * ctx, item_t * item_list)
+static void main_compose(Context * ctx, item_t * item_list)
 {
 	compose_attribute(ctx, item_list);
 	compose_action(ctx, item_list);
@@ -871,7 +871,7 @@ static void cb_inventory_quit(void * arg)
 void cb_inventory_select(void * arg)
 {
 	char * item_id = (char *) arg;
-	context_t * ctx = context_get_player();
+	Context * ctx = context_get_player();
 
 	network_send_action(ctx, option_get().action_select_inventory, item_id, nullptr);
 }
@@ -879,7 +879,7 @@ void cb_inventory_select(void * arg)
 /**********************************
  Compose inventory
  **********************************/
-static void compose_inventory(context_t * ctx, item_t * item_list)
+static void compose_inventory(Context * ctx, item_t * item_list)
 {
 	char * value = nullptr;
 	char * label;
@@ -1021,7 +1021,7 @@ static void compose_inventory(context_t * ctx, item_t * item_list)
 /**********************************
  Compose select cursor
  **********************************/
-static void compose_inventory_select(context_t * ctx, item_t * item_list)
+static void compose_inventory_select(Context * ctx, item_t * item_list)
 {
 	item_t * item = nullptr;
 	int x = -1;
@@ -1099,7 +1099,7 @@ static void compose_inventory_select(context_t * ctx, item_t * item_list)
 
 /**********************************
  **********************************/
-static void inventory_compose(context_t * ctx, item_t * item_list)
+static void inventory_compose(Context * ctx, item_t * item_list)
 {
 	compose_inventory(ctx, item_list);
 	compose_inventory_select(ctx, item_list);
@@ -1127,7 +1127,7 @@ static void cb_popup_quit(void * arg)
  ****************************/
 void cb_popup(void * arg)
 {
-	context_t * player = context_get_player();
+	Context * player = context_get_player();
 	action_param_t * action_param = (action_param_t *) arg;
 
 	cb_popup_quit(nullptr);
@@ -1171,7 +1171,7 @@ static void cb_wheel_down(Uint32 y, Uint32 unused)
 /**********************************
  Compose screen
  **********************************/
-static void compose_popup(context_t * ctx, item_t * item_list)
+static void compose_popup(Context * ctx, item_t * item_list)
 {
 	if (g_PopupFifo.size() == 0)
 	{
@@ -1277,7 +1277,7 @@ void ui_play_popup_add(const std::vector<std::string> & data)
 
 /**********************************
  **********************************/
-static void popup_compose(context_t * ctx, item_t * item_list)
+static void popup_compose(Context * ctx, item_t * item_list)
 {
 	compose_popup(ctx, item_list);
 
@@ -1286,7 +1286,7 @@ static void popup_compose(context_t * ctx, item_t * item_list)
 }
 /**********************************
  **********************************/
-void ui_play_compose(context_t * ctx, item_t * item_list)
+void ui_play_compose(Context * ctx, item_t * item_list)
 {
 	switch (current_ui)
 	{

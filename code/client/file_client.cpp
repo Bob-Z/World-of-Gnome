@@ -30,7 +30,7 @@
 /*************************************
  return 0 on success
  **************************************/
-int file_add(context_t * context, const std::string & name,
+int file_add(Context * context, const std::string & name,
 		const std::string & data)
 {
 	const std::string temp_name = name + APP_NAME + "tmp";
@@ -72,7 +72,7 @@ int file_add(context_t * context, const std::string & name,
 /*********************************************************************************
  Remove character file to be sure they are always downloaded at start-up time
  **********************************************************************************/
-void file_clean(context_t * context)
+void file_clean(Context * context)
 {
 	file_delete(CHARACTER_TABLE, context->id);
 }
@@ -80,7 +80,7 @@ void file_clean(context_t * context)
 /***************************************************
  Request a file from network
  ****************************************************/
-void file_request_from_network(context_t * context, const char * table,
+void file_request_from_network(Context * context, const char * table,
 		const char * file_name)
 {
 	const std::string table_path = std::string(table) + "/"

@@ -32,7 +32,7 @@ enum class Screen
 
 static constexpr int MUSIC_CHANNEL = 0;
 
-void screen_display(context_t * ctx);
+void screen_display(Context * ctx);
 void screen_compose();
 void screen_set_screen(Screen p_Screen);
 void screen_quit();

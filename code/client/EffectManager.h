@@ -30,7 +30,7 @@ public:
 		CONTEXT, MAP
 	};
 
-	static void processEffectFrame(context_t * context,
+	static void processEffectFrame(Context * context,
 			const std::vector<std::string> & params);
 };
 

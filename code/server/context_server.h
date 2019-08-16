@@ -22,10 +22,10 @@
 
 #include "common.h"
 
-void context_spread(context_t * context);
+void context_spread(Context * context);
 void context_broadcast_map(const char * map);
 void context_broadcast_character(const char * character);
 void context_broadcast_text(const char * map, const char * text);
-void context_request_other_context(context_t * context);
+void context_request_other_context(Context * context);
 
 #endif

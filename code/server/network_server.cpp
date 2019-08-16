@@ -20,7 +20,7 @@
 #include <bits/stdint-uintn.h>
 #include <common.h>
 #include <const.h>
-#include <context.h>
+#include "Context.h"
 #include <log.h>
 #include <netinet/in.h>
 #include <network.h>
@@ -42,7 +42,7 @@
  *********************************************************************/
 void network_send_text(const char * id, const std::string & string)
 {
-	context_t * context = context_find(id);
+	Context * context = context_find(id);
 	if (context == nullptr)
 	{
 		werr(LOGDESIGNER, "Could not find context %s", id);
@@ -60,9 +60,9 @@ void network_send_text(const char * id, const std::string & string)
 /*******************************************************************************
  Broadcast text to all in game players
  ******************************************************************************/
-void network_broadcast_text(context_t * context, const std::string & text)
+void network_broadcast_text(Context * context, const std::string & text)
 {
-	context_t * ctx = nullptr;
+	Context * ctx = nullptr;
 
 	context_lock_list();
 
@@ -116,7 +116,7 @@ void network_broadcast_text(context_t * context, const std::string & text)
 /*******************************************************************************
  Server send a user's character
  ******************************************************************************/
-void network_send_user_character(context_t * context, const char * id, const char * type, const char * name)
+void network_send_user_character(Context * context, const char * id, const char * type, const char * name)
 {
 	pb::ServerMessage message;
 	message.mutable_user_character()->set_id(id);
@@ -131,7 +131,7 @@ void network_send_user_character(context_t * context, const char * id, const cha
 /*******************************************************************************
  Server send the full character's file to client
  ******************************************************************************/
-void network_send_character_file(context_t * context)
+void network_send_character_file(Context * context)
 {
 	const std::string file_name = std::string(CHARACTER_TABLE) + "/" + std::string(context->id);
 
@@ -141,7 +141,7 @@ void network_send_character_file(context_t * context)
 /*******************************************************************************
  Asks to update an int entry on  a context
  ******************************************************************************/
-void network_send_entry_int(context_t * context, const char * table, const char * file, const char *path, int value)
+void network_send_entry_int(Context * context, const char * table, const char * file, const char *path, int value)
 {
 	pb::ServerMessage message;
 	message.mutable_entry()->set_type(ENTRY_TYPE_INT);
@@ -161,8 +161,8 @@ void network_send_entry_int(context_t * context, const char * table, const char 
  ******************************************************************************/
 void network_broadcast_entry_int(const char * table, const char * file, const char * path, int value, bool same_map_only)
 {
-	context_t * ctx = nullptr;
-	context_t * target = nullptr;
+	Context * ctx = nullptr;
+	Context * target = nullptr;
 
 	target = context_find(file);
 
@@ -214,7 +214,7 @@ void network_broadcast_entry_int(const char * table, const char * file, const ch
  ******************************************************************************/
 static int new_connection(void * p_pData)
 {
-	context_t * context = nullptr;
+	Context * context = nullptr;
 	TCPsocket socket = (TCPsocket) p_pData;
 
 	context = context_new();
@@ -333,7 +333,7 @@ void network_init(void)
  ******************************************************************************/
 void network_send_popup(const std::string & context_id, const std::vector<std::string> & popup_data)
 {
-	context_t * context = context_find(context_id.c_str());
+	Context * context = context_find(context_id.c_str());
 	if (context == nullptr)
 	{
 		werr(LOGDEVELOPER, "[network] No context with ID %s", context_id.c_str());
@@ -361,7 +361,7 @@ void network_send_popup(const std::string & context_id, const std::vector<std::s
  ******************************************************************************/
 void network_broadcast_effect(EffectManager::EffectType p_Type, const std::string & p_TargetId, const std::vector<std::string> & params)
 {
-	context_t * ctx = nullptr;
+	Context * ctx = nullptr;
 
 	context_lock_list();
 
@@ -429,7 +429,7 @@ void network_broadcast_effect(EffectManager::EffectType p_Type, const std::strin
 
 /*********************************************************************
  **********************************************************************/
-void network_send_login_ok(context_t * context)
+void network_send_login_ok(Context * context)
 {
 	pb::ServerMessage message;
 	message.mutable_login_ok()->Clear();
@@ -441,7 +441,7 @@ void network_send_login_ok(context_t * context)
 
 /*********************************************************************
  **********************************************************************/
-void network_send_login_nok(context_t * context)
+void network_send_login_nok(Context * context)
 {
 	pb::ServerMessage message;
 	message.mutable_login_nok()->Clear();
@@ -453,7 +453,7 @@ void network_send_login_nok(context_t * context)
 
 /*********************************************************************
  **********************************************************************/
-void network_send_playable_character(context_t * context, const std::vector<std::string> & id_list)
+void network_send_playable_character(Context * context, const std::vector<std::string> & id_list)
 {
 	pb::ServerMessage message;
 
@@ -471,7 +471,7 @@ void network_send_playable_character(context_t * context, const std::vector<std:
 /*********************************************************************
  send a source context's data to a destination context
  *********************************************************************/
-void network_send_context_to_context(context_t * dest_ctx, context_t * src_ctx)
+void network_send_context_to_context(Context * dest_ctx, Context * src_ctx)
 {
 	// Skip if destination context is an NPC
 	if (context_is_npc(dest_ctx))

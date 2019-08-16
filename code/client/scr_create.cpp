@@ -161,8 +161,7 @@ static void cb_keyboard_text(void * arg)
 		return;
 	}
 
-	network_request_character_creation(context_get_player(),
-			character_list[selected_character].id, text);
+	network_request_character_creation(context_get_player(), character_list[selected_character].id, text);
 
 	if (sfx_filename != nullptr)
 	{
@@ -177,7 +176,7 @@ static void cb_keyboard_text(void * arg)
 
 /**********************************
  **********************************/
-void scr_create_frame_start(context_t * context)
+void scr_create_frame_start(Context * context)
 {
 }
 
@@ -215,8 +214,7 @@ int sort_character(const void * p_pArg1, const void * p_pArg2)
 
 	int l_Compare = strcmp(l_pChar1->type, l_pChar2->type);
 
-	if (l_Compare == 0 && l_pChar1->name != nullptr
-			&& l_pChar2->name != nullptr)
+	if (l_Compare == 0 && l_pChar1->name != nullptr && l_pChar2->name != nullptr)
 	{
 		l_Compare = strcmp(l_pChar1->name, l_pChar2->name);
 	}
@@ -227,7 +225,7 @@ int sort_character(const void * p_pArg1, const void * p_pArg2)
 /**********************************
  Compose the character create screen
  **********************************/
-item_t * scr_create_compose(context_t * context)
+item_t * scr_create_compose(Context * context)
 {
 	long i = 0;
 	int x = 0;
@@ -254,8 +252,7 @@ item_t * scr_create_compose(context_t * context)
 	{
 		if (g_IsMusicPlaying == false)
 		{
-			if (sfx_play(context, std::string(sfx_filename), MUSIC_CHANNEL,
-					LOOP) != -1)
+			if (sfx_play(context, std::string(sfx_filename), MUSIC_CHANNEL, LOOP) != -1)
 			{
 				g_IsMusicPlaying = true;
 			}
@@ -311,35 +308,29 @@ item_t * scr_create_compose(context_t * context)
 	{
 		// Compute the marquee file name
 		char * marquee_name = nullptr;
-		if (entry_read_string(CHARACTER_TEMPLATE_TABLE, character_list[i].id,
-				&marquee_name, CHARACTER_KEY_MARQUEE, nullptr) == RET_OK)
+		if (entry_read_string(CHARACTER_TEMPLATE_TABLE, character_list[i].id, &marquee_name, CHARACTER_KEY_MARQUEE, nullptr) == RET_OK)
 		{
 			const char * name_array[2] =
 			{ nullptr, nullptr };
 			name_array[0] = marquee_name;
-			character_list[i].anim = imageDB_get_anim_array(context,
-					name_array);
+			character_list[i].anim = imageDB_get_anim_array(context, name_array);
 			free(marquee_name);
 		}
 		else
 		{
 			char ** marquee_list = nullptr;
-			if (entry_read_list(CHARACTER_TEMPLATE_TABLE, character_list[i].id,
-					&marquee_list, CHARACTER_KEY_MARQUEE, nullptr) == RET_NOK)
+			if (entry_read_list(CHARACTER_TEMPLATE_TABLE, character_list[i].id, &marquee_list, CHARACTER_KEY_MARQUEE, nullptr) == RET_NOK)
 			{
 				wlog(LOGDESIGNER, "%s has no marquee", character_list[i].id);
 				continue;
 			}
 
-			character_list[i].anim = imageDB_get_anim_array(context,
-					(const char **) marquee_list);
+			character_list[i].anim = imageDB_get_anim_array(context, (const char **) marquee_list);
 			deep_free(marquee_list);
 		}
 
-		entry_read_string(CHARACTER_TEMPLATE_TABLE, character_list[i].id,
-				&character_list[i].name, CHARACTER_KEY_NAME, nullptr);
-		entry_read_string(CHARACTER_TEMPLATE_TABLE, character_list[i].id,
-				&character_list[i].type, CHARACTER_KEY_TYPE, nullptr);
+		entry_read_string(CHARACTER_TEMPLATE_TABLE, character_list[i].id, &character_list[i].name, CHARACTER_KEY_NAME, nullptr);
+		entry_read_string(CHARACTER_TEMPLATE_TABLE, character_list[i].id, &character_list[i].type, CHARACTER_KEY_TYPE, nullptr);
 
 		if (character_list[i].anim[0] == nullptr)
 		{
@@ -385,10 +376,7 @@ item_t * scr_create_compose(context_t * context)
 		item_image = item;
 		character_list[i].item = item;
 
-		item_set_pos(item,
-				x + character_list[i].width / 2
-						- character_list[i].anim[0]->w / 2,
-				max_h / 2 - character_list[i].anim[0]->h / 2);
+		item_set_pos(item, x + character_list[i].width / 2 - character_list[i].anim[0]->w / 2, max_h / 2 - character_list[i].anim[0]->h / 2);
 		item_set_anim_array(item, character_list[i].anim);
 		item_set_click_left(item, cb_show_item, (void *) item, nullptr);
 		//item_set_click_right(item,cb_select,(void *)context,nullptr);
@@ -410,10 +398,8 @@ item_t * scr_create_compose(context_t * context)
 				item_set_font(item, font_name);
 				// display string just above the picture
 				sdl_get_string_size(item->font, item->string, &w, &h);
-				item_set_anim_shape(item,
-						item_image->rect.x + item_image->rect.w / 2 - w / 2,
-						item_image->rect.y - h + (item_image->rect.h / 2)
-								- (max_h / 2), w, h);
+				item_set_anim_shape(item, item_image->rect.x + item_image->rect.w / 2 - w / 2, item_image->rect.y - h + (item_image->rect.h / 2) - (max_h / 2),
+						w, h);
 			}
 		}
 
@@ -429,10 +415,7 @@ item_t * scr_create_compose(context_t * context)
 			item_set_font(item, font_type);
 			// display string just below the picture
 			sdl_get_string_size(item->font, item->string, &w, &h);
-			item_set_anim_shape(item,
-					item_image->rect.x + item_image->rect.w / 2 - w / 2,
-					item_image->rect.y + (item_image->rect.h / 2) + (max_h / 2),
-					w, h);
+			item_set_anim_shape(item, item_image->rect.x + item_image->rect.w / 2 - w / 2, item_image->rect.y + (item_image->rect.h / 2) + (max_h / 2), w, h);
 		}
 	}
 
@@ -455,8 +438,7 @@ item_t * scr_create_compose(context_t * context)
 /*************************
  Add a character to the list
  *************************/
-void scr_create_add_playable_character(context_t * context,
-		const std::vector<std::string> & id_list)
+void scr_create_add_playable_character(Context * context, const std::vector<std::string> & id_list)
 {
 	SDL_LockMutex(character_create_mutex);
 
@@ -464,8 +446,7 @@ void scr_create_add_playable_character(context_t * context,
 	{
 		character_num++;
 
-		character_list = (character_t*) realloc(character_list,
-				sizeof(character_t) * character_num);
+		character_list = (character_t*) realloc(character_list, sizeof(character_t) * character_num);
 
 		int l_Index = character_num - 1;
 		character_list[l_Index].id = strdup(l_CharacterName.c_str());
@@ -475,10 +456,8 @@ void scr_create_add_playable_character(context_t * context,
 		character_list[l_Index].item = nullptr;
 		character_list[l_Index].width = 0;
 
-		entry_read_string(CHARACTER_TEMPLATE_TABLE, character_list[l_Index].id,
-				&character_list[l_Index].name, CHARACTER_KEY_NAME, nullptr);
-		entry_read_string(CHARACTER_TEMPLATE_TABLE, character_list[l_Index].id,
-				&character_list[l_Index].type, CHARACTER_KEY_TYPE, nullptr);
+		entry_read_string(CHARACTER_TEMPLATE_TABLE, character_list[l_Index].id, &character_list[l_Index].name, CHARACTER_KEY_NAME, nullptr);
+		entry_read_string(CHARACTER_TEMPLATE_TABLE, character_list[l_Index].id, &character_list[l_Index].type, CHARACTER_KEY_TYPE, nullptr);
 
 		wlog(LOGDEVELOPER, "Character %s added", character_list[l_Index].id);
 	}

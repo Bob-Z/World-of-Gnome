@@ -21,7 +21,7 @@
 
 #include <common.h>
 #include <const.h>
-#include <context.h>
+#include "Context.h"
 #include <entry.h>
 #include <file.h>
 #include <map.h>
@@ -62,7 +62,7 @@ static char * get_tile_type_through_layer(const char * map, int layer, int x, in
  return 0 if the context is NOT allowed to go to the tile at coord x,y
  return RET_NOK on error or no data found
  *************************************/
-ret_code_t map_check_tile(context_t * ctx, const char * id, const char * map, int layer, int x, int y)
+ret_code_t map_check_tile(Context * ctx, const char * id, const char * map, int layer, int x, int y)
 {
 	char * script;
 	char sx[64];
@@ -970,7 +970,7 @@ char ** map_get_character(const char * map, int x, int y)
 {
 	char ** character_list = nullptr;
 	int character_num = 0;
-	context_t * ctx = context_get_first();
+	Context * ctx = context_get_first();
 
 	if (x < 0 || y < 0)
 	{

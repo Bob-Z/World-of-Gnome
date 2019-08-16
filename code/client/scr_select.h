@@ -19,8 +19,8 @@
 
 #include <sdl_item.h>
 
-item_t * scr_select_compose(context_t * context);
-void scr_select_frame_start(context_t * context);
+item_t * scr_select_compose(Context * context);
+void scr_select_frame_start(Context * context);
 void scr_select_init();
-void scr_select_add_user_character(context_t * context, const std::string & id,
+void scr_select_add_user_character(Context * context, const std::string & id,
 		const std::string & type, const std::string & name);

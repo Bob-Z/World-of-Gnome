@@ -17,13 +17,13 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#include <context.h>
+#include "Context.h"
 #include <string>
 
 std::string base_directory;
 int client_server = 0;
 // Only needed by server, so empty function for client
-void register_lua_functions(context_t * context)
+void register_lua_functions(Context * context)
 {
 }
 ;

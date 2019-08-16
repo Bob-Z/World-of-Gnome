@@ -17,7 +17,7 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#include "context.h"
+#include "Context.h"
 #include <string>
 
 #ifndef FILE_H
@@ -27,7 +27,7 @@ const std::string NO_SUGGESTED_NAME = "";
 
 void file_lock(const char * filename);
 void file_unlock(const char * filename);
-void file_update(context_t * context, const char * filename);
+void file_update(Context * context, const char * filename);
 std::pair<bool, std::string> file_new(const std::string & table, const std::string & suggested_name = NO_SUGGESTED_NAME);
 ret_code_t file_get_contents(const char *filename, void **contents, int_fast32_t *length);
 ret_code_t file_set_contents(const char *filename, const void * contents, int length);

@@ -22,7 +22,7 @@
 #include <client_server.h>
 #include <common.h>
 #include <const.h>
-#include <context.h>
+#include "Context.h"
 #include <dirent.h>
 #include <entry.h>
 #include <file.h>
@@ -45,7 +45,7 @@
 /*********************************************
  Send playable character templates
  *********************************************/
-void character_playable_send_list(context_t * context)
+void character_playable_send_list(Context * context)
 {
 	char * marquee;
 	DIR * dir;
@@ -107,7 +107,7 @@ void character_playable_send_list(context_t * context)
 
 /*********************************************
  *********************************************/
-void character_user_send(context_t * p_pCtx, const char * p_pCharacterId)
+void character_user_send(Context * p_pCtx, const char * p_pCharacterId)
 {
 	char * l_pType = nullptr;
 	char * l_pName = nullptr;
@@ -133,7 +133,7 @@ void character_user_send(context_t * p_pCtx, const char * p_pCharacterId)
 
 /*********************************************
  *********************************************/
-void character_user_send_list(context_t * context)
+void character_user_send_list(Context * context)
 {
 	char ** l_pCharacterList = nullptr;
 
@@ -161,7 +161,7 @@ void character_user_send_list(context_t * context)
  *****************************/
 int character_disconnect(const char * id)
 {
-	context_t * ctx;
+	Context * ctx;
 
 	werr(LOGDEVELOPER, "Disconnecting %s", id);
 
@@ -191,7 +191,7 @@ int character_disconnect(const char * id)
  *****************************/
 int character_out_of_game(const char * id)
 {
-	context_t * ctx;
+	Context * ctx;
 
 	werr(LOGDEVELOPER, "Kicking %s out of the game", id);
 
@@ -218,7 +218,7 @@ int character_out_of_game(const char * id)
  the returned string MUST BE FREED by caller
  return nullptr if fails
  *******************************************************/
-std::pair<bool, std::string> character_create_from_template(context_t * ctx, const char * my_template, const char * map, int layer, int x, int y)
+std::pair<bool, std::string> character_create_from_template(Context * ctx, const char * my_template, const char * map, int layer, int x, int y)
 {
 	const std::pair<bool, std::string> new_id = file_new(std::string(CHARACTER_TABLE));
 
@@ -279,7 +279,7 @@ std::pair<bool, std::string> character_create_from_template(context_t * ctx, con
 
 /***********************************************************************
  ***********************************************************************/
-static void execute_aggro(context_t * agressor, context_t * target, char * script, int aggro_dist)
+static void execute_aggro(Context * agressor, Context * target, char * script, int aggro_dist)
 {
 	int dist;
 	const char * param[] =
@@ -304,10 +304,10 @@ static void execute_aggro(context_t * agressor, context_t * target, char * scrip
 /***********************************************************************
  Call aggro script for each context in every npc context aggro dist
  ***********************************************************************/
-void character_update_aggro(context_t * agressor)
+void character_update_aggro(Context * agressor)
 {
-	context_t * target = nullptr;
-	context_t * npc = nullptr;
+	Context * target = nullptr;
+	Context * npc = nullptr;
 	int aggro_dist;
 	char * aggro_script;
 
@@ -424,7 +424,7 @@ void character_update_aggro(context_t * agressor)
 }
 /*************************************************************
  *************************************************************/
-static void do_set_pos(context_t * ctx, const char * map, int x, int y, bool change_map)
+static void do_set_pos(Context * ctx, const char * map, int x, int y, bool change_map)
 {
 	context_set_map(ctx, map);
 	context_set_pos_tx(ctx, x);
@@ -444,9 +444,9 @@ static void do_set_pos(context_t * ctx, const char * map, int x, int y, bool cha
 /*************************************************************
  Move every context on the same coordinate as platform context
  *************************************************************/
-static void platform_move(context_t * platform, const char * map, int x, int y, bool change_map)
+static void platform_move(Context * platform, const char * map, int x, int y, bool change_map)
 {
-	context_t * current = context_get_first();
+	Context * current = context_get_first();
 	int is_platform;
 
 	if (entry_read_int(CHARACTER_TABLE, platform->id, &is_platform,
@@ -479,7 +479,7 @@ static void platform_move(context_t * platform, const char * map, int x, int y, 
  return 0 if new position OK or if position has not changed.
  return -1 if the position was not set (because tile not allowed or out of bound)
  ******************************************************/
-int character_set_pos(context_t * ctx, const char * map, int x, int y)
+int character_set_pos(Context * ctx, const char * map, int x, int y)
 {
 	char ** event_id;
 	char * script;
@@ -690,7 +690,7 @@ int character_get_npc(const char * id)
  *********************************************************/
 int character_set_portrait(const char * id, const char * portrait)
 {
-	context_t * ctx;
+	Context * ctx;
 
 	if (entry_write_string(CHARACTER_TABLE, id, portrait,
 	CHARACTER_KEY_PORTRAIT, nullptr) == RET_NOK)
@@ -741,7 +741,7 @@ int character_set_ai_script(const char * id, const char * script_name)
  *********************************************************/
 int character_wake_up(const char * id)
 {
-	context_t * ctx;
+	Context * ctx;
 
 	ctx = context_find(id);
 

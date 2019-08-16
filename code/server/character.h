@@ -17,18 +17,18 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#include "context.h"
+#include "Context.h"
 #include <string>
 #include <utility>
 
-void character_playable_send_list(context_t * context);
-void character_user_send(context_t * p_pCtx, const char * p_pCharacterId);
-void character_user_send_list(context_t * context);
+void character_playable_send_list(Context * context);
+void character_user_send(Context * p_pCtx, const char * p_pCharacterId);
+void character_user_send_list(Context * context);
 int character_out_of_game(const char * id);
 int character_disconnect(const char * id);
-int character_set_pos(context_t * ctx, const char * map, int x, int y);
-std::pair<bool, std::string> character_create_from_template(context_t * ctx, const char * my_template, const char * map, int layer, int x, int y);
-void character_update_aggro(context_t * context);
+int character_set_pos(Context * ctx, const char * map, int x, int y);
+std::pair<bool, std::string> character_create_from_template(Context * ctx, const char * my_template, const char * map, int layer, int x, int y);
+void character_update_aggro(Context * context);
 int character_set_npc(const char * ctx, int npc);
 int character_get_npc(const char * id);
 char * character_get_portrait(const char * id);

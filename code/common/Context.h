@@ -39,10 +39,10 @@ extern "C"
 
 #include "types.h"
 
-class context_t
+class Context
 {
 public:
-	context_t();
+	Context();
 
 	char * user_name;
 	bool connected; // User logged with the correct password, or NPC activated
@@ -79,52 +79,52 @@ public:
 
 	Uint32 next_execution_time; // Time when an NPC will execute its AI script
 
-	context_t * previous;
-	context_t * next;
+	Context * previous;
+	Context * next;
 };
 
-context_t * context_get_list_start();
-void context_init(context_t * context);
-context_t * context_new(void);
-void context_free_data(context_t * context);
-void context_free(context_t * context);
-ret_code_t context_set_hostname(context_t * context, const char * name);
-ret_code_t context_set_username(context_t * context, const char * name);
-void context_set_in_game(context_t * context, int in_game);
-int context_get_in_game(context_t * context);
-void context_set_connected(context_t * context, bool connected);
-int context_get_connected(context_t * context);
-void context_set_socket(context_t * context, TCPsocket socket);
-TCPsocket context_get_socket(context_t * context);
-void context_set_socket_data(context_t * context, TCPsocket socket);
-TCPsocket context_get_socket_data(context_t * context);
-ret_code_t context_set_character_name(context_t * context, const char * name);
-ret_code_t context_set_map(context_t * context, const char * name);
-int context_set_map_w(context_t * context, int width);
-int context_set_map_h(context_t * context, int height);
-ret_code_t context_set_type(context_t * context, const char * name);
-void context_set_npc(context_t * context, int npc);
-void context_set_pos_tx(context_t * context, int pos);
-void context_set_pos_ty(context_t * context, int pos);
-void context_set_tile_x(context_t * context, unsigned int pos);
-void context_set_tile_y(context_t * context, unsigned int pos);
-void context_new_VM(context_t * context);
-ret_code_t context_set_id(context_t * context, const char * name);
-ret_code_t context_set_selected_character(context_t * context, const char * selected_character);
-ret_code_t context_set_selected_tile(context_t * context, const char * selected_map, int selected_map_x, int selected_map_y);
-ret_code_t context_set_selected_equipment(context_t * context, const char * selected_equipment);
-ret_code_t context_set_selected_item(context_t * context, const char * selected_item);
-ret_code_t context_update_from_file(context_t * context);
-void context_spread(context_t * context);
+Context * context_get_list_start();
+void context_init(Context * context);
+Context * context_new(void);
+void context_free_data(Context * context);
+void context_free(Context * context);
+ret_code_t context_set_hostname(Context * context, const char * name);
+ret_code_t context_set_username(Context * context, const char * name);
+void context_set_in_game(Context * context, int in_game);
+int context_get_in_game(Context * context);
+void context_set_connected(Context * context, bool connected);
+int context_get_connected(Context * context);
+void context_set_socket(Context * context, TCPsocket socket);
+TCPsocket context_get_socket(Context * context);
+void context_set_socket_data(Context * context, TCPsocket socket);
+TCPsocket context_get_socket_data(Context * context);
+ret_code_t context_set_character_name(Context * context, const char * name);
+ret_code_t context_set_map(Context * context, const char * name);
+int context_set_map_w(Context * context, int width);
+int context_set_map_h(Context * context, int height);
+ret_code_t context_set_type(Context * context, const char * name);
+void context_set_npc(Context * context, int npc);
+void context_set_pos_tx(Context * context, int pos);
+void context_set_pos_ty(Context * context, int pos);
+void context_set_tile_x(Context * context, unsigned int pos);
+void context_set_tile_y(Context * context, unsigned int pos);
+void context_new_VM(Context * context);
+ret_code_t context_set_id(Context * context, const char * name);
+ret_code_t context_set_selected_character(Context * context, const char * selected_character);
+ret_code_t context_set_selected_tile(Context * context, const char * selected_map, int selected_map_x, int selected_map_y);
+ret_code_t context_set_selected_equipment(Context * context, const char * selected_equipment);
+ret_code_t context_set_selected_item(Context * context, const char * selected_item);
+ret_code_t context_update_from_file(Context * context);
+void context_spread(Context * context);
 void context_add_or_update_from_network_frame(const ContextBis & context);
 void context_lock_list();
 void context_unlock_list();
-context_t * context_get_first();
-context_t * context_get_player();
-ret_code_t context_write_to_file(context_t * context);
-context_t * context_find(const char * id);
-int context_distance(context_t * ctx1, context_t * ctx2);
+Context * context_get_first();
+Context * context_get_player();
+ret_code_t context_write_to_file(Context * context);
+Context * context_find(const char * id);
+int context_distance(Context * ctx1, Context * ctx2);
 void context_reset_all_position();
-bool context_is_npc(context_t * ctx);
+bool context_is_npc(Context * ctx);
 
 #endif

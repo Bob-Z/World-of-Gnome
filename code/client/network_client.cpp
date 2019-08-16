@@ -25,7 +25,7 @@
 /*********************************************************************
  sends a login request, the answer is asynchronously read by async_recv
  **********************************************************************/
-void network_login(context_t * context, const char * user_name,
+void network_login(Context * context, const char * user_name,
 		const char * password)
 {
 	pb::ClientMessage message;
@@ -39,7 +39,7 @@ void network_login(context_t * context, const char * user_name,
 
 /*********************************************************************
  **********************************************************************/
-void network_request_start(context_t * context, const char * id)
+void network_request_start(Context * context, const char * id)
 {
 	pb::ClientMessage message;
 	message.mutable_start()->set_id(id);
@@ -51,7 +51,7 @@ void network_request_start(context_t * context, const char * id)
 
 /*********************************************************************
  **********************************************************************/
-void network_request_stop(context_t * context)
+void network_request_stop(Context * context)
 {
 	pb::ClientMessage message;
 	message.mutable_stop()->Clear();
@@ -64,7 +64,7 @@ void network_request_stop(context_t * context)
 /*********************************************************************
  request all playable characters list
  *********************************************************************/
-void network_request_playable_character_list(context_t * context)
+void network_request_playable_character_list(Context * context)
 {
 	pb::ClientMessage message;
 	message.mutable_playable_character_list()->Clear();
@@ -77,7 +77,7 @@ void network_request_playable_character_list(context_t * context)
 /*********************************************************************
  request a specific user's characters list
  *********************************************************************/
-void network_request_user_character_list(context_t * context)
+void network_request_user_character_list(Context * context)
 {
 	pb::ClientMessage message;
 	message.mutable_user_character_list()->set_user(context->user_name);
@@ -90,7 +90,7 @@ void network_request_user_character_list(context_t * context)
 /*********************************************************************
  request a character's creation
  *********************************************************************/
-void network_request_character_creation(context_t * context, const char * id,
+void network_request_character_creation(Context * context, const char * id,
 		const char * name)
 {
 	pb::ClientMessage message;
@@ -105,7 +105,7 @@ void network_request_character_creation(context_t * context, const char * id,
 /*********************************************************************
  Player sends an action to server
  *********************************************************************/
-void network_send_action(context_t * context, const char * script, ...)
+void network_send_action(Context * context, const char * script, ...)
 {
 	if (script == nullptr)
 	{
@@ -140,7 +140,7 @@ void network_send_action(context_t * context, const char * script, ...)
  *********************************************************************/
 static int async_recv(void * data)
 {
-	context_t * context = (context_t *) data;
+	Context * context = (Context *) data;
 
 	while (true)
 	{
@@ -189,7 +189,7 @@ static int async_recv(void * data)
  *********************************************************************/
 static int async_data_recv(void * data)
 {
-	context_t * context = (context_t *) data;
+	Context * context = (Context *) data;
 
 	while (true)
 	{
@@ -235,7 +235,7 @@ static int async_data_recv(void * data)
 /*********************************************************************
  return RET_NOK on error
  *********************************************************************/
-ret_code_t network_connect(context_t * context, const char * hostname)
+ret_code_t network_connect(Context * context, const char * hostname)
 {
 	IPaddress ip;
 	TCPsocket socket;
@@ -274,7 +274,7 @@ ret_code_t network_connect(context_t * context, const char * hostname)
 
 /*********************************************************************
  *********************************************************************/
-ret_code_t network_open_data_connection(context_t * context)
+ret_code_t network_open_data_connection(Context * context)
 {
 	IPaddress ip;
 	TCPsocket socket;

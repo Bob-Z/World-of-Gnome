@@ -19,6 +19,6 @@
 
 #include "anim.h"
 
-anim_t * imageDB_get_anim(context_t * context, const char * image_name);
-anim_t ** imageDB_get_anim_array(context_t * context, const char ** image_name);
+anim_t * imageDB_get_anim(Context * context, const char * image_name);
+anim_t ** imageDB_get_anim_array(Context * context, const char ** image_name);
 void image_DB_remove(const char * filename);

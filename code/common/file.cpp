@@ -94,7 +94,7 @@ void file_unlock(const char * filename)
 /****************************************
  filename is "table/dir/file"
  *****************************************/
-void file_update(context_t * context, const char * filename)
+void file_update(Context * context, const char * filename)
 {
 	Uint32 current_time = SDL_GetTicks();
 	file_t * file_data;

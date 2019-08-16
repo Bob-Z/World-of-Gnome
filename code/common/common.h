@@ -24,7 +24,7 @@
 
 #include "client_server.h"
 #include "const.h"
-#include "context.h"
+#include "Context.h"
 #include "entry.h"
 #include "file.h"
 #include "font.h"

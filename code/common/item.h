@@ -20,7 +20,7 @@
 #ifndef ITEM_H
 #define ITEM_H
 
-#include "context.h"
+#include "Context.h"
 #include "types.h"
 #include <string>
 #include <utility>
@@ -31,7 +31,7 @@ ret_code_t item_destroy(const char * item_id);
 std::pair<bool, std::string> resource_new(const std::string & my_template, int quantity);
 char * item_is_resource(const char * item_id);
 int resource_get_quantity(const char * item_id);
-int resource_set_quantity(context_t * context, const char * item_id, int quantity);
+int resource_set_quantity(Context * context, const char * item_id, int quantity);
 char * item_get_name(const char * item_id);
 
 #endif

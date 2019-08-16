@@ -28,7 +28,7 @@ static anim_t * def_anim = nullptr;
 
 /**************************
  **************************/
-static anim_t * default_anim(context_t * ctx)
+static anim_t * default_anim(Context * ctx)
 {
 	if (def_anim == nullptr)
 	{
@@ -51,7 +51,7 @@ static anim_t * default_anim(context_t * ctx)
 
 /**************************
  **************************/
-static anim_t * image_load(context_t * ctx, const std::string & file_name)
+static anim_t * image_load(Context * ctx, const std::string & file_name)
 {
 	const std::string file_path = base_directory + "/" + file_name;
 
@@ -64,7 +64,7 @@ static anim_t * image_load(context_t * ctx, const std::string & file_name)
  Return a pointer to an anim_t object
  image_name is the image file path
  *******************************************************/
-anim_t * imageDB_get_anim(context_t * context, const char * image_name)
+anim_t * imageDB_get_anim(Context * context, const char * image_name)
 {
 	anim_t * anim;
 
@@ -122,7 +122,7 @@ anim_t * imageDB_get_anim(context_t * context, const char * image_name)
  image_name is a nullptr terminated array of image files path
  return pointer MUST BE FREED
  *******************************************************/
-anim_t ** imageDB_get_anim_array(context_t * context, const char ** image_name)
+anim_t ** imageDB_get_anim_array(Context * context, const char ** image_name)
 {
 	anim_t ** anim_output = nullptr;
 	int num_image = 0;
