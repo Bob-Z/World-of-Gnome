@@ -54,7 +54,7 @@ static ret_code_t manage_login_ok(Context * context, const pb::LoginOk & login_o
 	{
 		return RET_NOK;
 	}
-	context_set_connected(context, true);
+	context->setConnected(true);
 	wlog(LOGUSER, "Successfully connected");
 	network_request_user_character_list(context);
 	wlog(LOGDEVELOPER, "Character list requested");
@@ -69,7 +69,8 @@ static ret_code_t manage_login_nok(Context * context, const pb::LoginNok & login
 {
 	wlog(LOGDEVELOPER, "[network] Received login NOK for user %s", context->getUserName().c_str());
 
-	context_set_connected(context, false);
+	context->setConnected(false);
+
 	werr(LOGUSER, "Check your login and password (they are case sensitive)\n");
 	exit(-1);
 

@@ -51,61 +51,61 @@ public:
  *********************************************************************/
 static int async_frame_send(void * p_pUserData)
 {
-	DataSent * l_pData = static_cast<DataSent*>(p_pUserData);
+	DataSent * data = static_cast<DataSent*>(p_pUserData);
 
-	Context * l_pContext = l_pData->m_pContext;
-	if (l_pContext == nullptr)
+	Context * context = data->m_pContext;
+	if (context == nullptr)
 	{
 		werr(LOGDEVELOPER, "null l_pContext");
-		delete l_pData;
+		delete data;
 		return -1;
 	}
 
 	TCPsocket l_Socket = 0;
 
-	if (l_pData->m_IsData)
+	if (data->m_IsData)
 	{
-		l_Socket = context_get_socket_data(l_pContext);
+		l_Socket = context_get_socket_data(context);
 	}
 	else
 	{
-		l_Socket = context_get_socket(l_pContext);
+		l_Socket = context_get_socket(context);
 	}
 
 	if (l_Socket == 0)
 	{
 		wlog(LOGDEVELOPER, "socket %d is disconnected", l_Socket);
-		delete l_pData;
+		delete data;
 		return -1;
 	}
 
-	SDL_LockMutex(l_pContext->m_send_mutex);
+	SDL_LockMutex(context->m_send_mutex);
 
 	//send frame size
-	uint32_t length = htonl(static_cast<uint32_t>(l_pData->m_serialized_data.size()));
+	uint32_t length = htonl(static_cast<uint32_t>(data->m_serialized_data.size()));
 
 	int l_BytesWritten = SDLNet_TCP_Send(l_Socket, &length, sizeof(length));
 	if (l_BytesWritten != sizeof(length))
 	{
-		werr(LOGUSER, "Could not send command to %s", l_pContext->m_id);
-		context_set_connected(l_pContext, false);
+		werr(LOGUSER, "Could not send command to %s", context->m_id);
+		context->setConnected(false);
 		goto async_frame_send_end;
 	}
 
 	//wlog(LOGDEVELOPER, "sent %u bytes on socket %d", l_BytesWritten, l_Socket);
 
 	//send frame
-	l_BytesWritten = SDLNet_TCP_Send(l_Socket, l_pData->m_serialized_data.c_str(), l_pData->m_serialized_data.size());
-	if (l_BytesWritten != static_cast<int>(l_pData->m_serialized_data.size()))
+	l_BytesWritten = SDLNet_TCP_Send(l_Socket, data->m_serialized_data.c_str(), data->m_serialized_data.size());
+	if (l_BytesWritten != static_cast<int>(data->m_serialized_data.size()))
 	{
-		werr(LOGUSER, "Could not send command to %s", l_pContext->m_id);
-		context_set_connected(l_pContext, false);
+		werr(LOGUSER, "Could not send command to %s", context->m_id);
+		context->setConnected(false);
 	}
 
 	//wlog(LOGDEVELOPER, "sent %u bytes on socket %d", l_BytesWritten, l_Socket);
 
-	async_frame_send_end: SDL_UnlockMutex(l_pContext->m_send_mutex);
-	delete l_pData;
+	async_frame_send_end: SDL_UnlockMutex(context->m_send_mutex);
+	delete data;
 
 	return RET_OK;
 }

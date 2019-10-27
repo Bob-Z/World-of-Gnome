@@ -51,7 +51,7 @@ static int npc_script(void * data)
 
 	wlog(LOGDESIGNER, "Start AI script for %s(%s)", context->m_id, context->m_character_name);
 
-	while (context_get_connected(context))
+	while (context->isConnected() == true)
 	{
 		if (script)
 		{
@@ -79,7 +79,7 @@ static int npc_script(void * data)
 		/* The previous call to action_execute_script may have changed
 		 the connected status. So we test it to avoid waiting for the
 		 timeout duration before disconnecting */
-		if (context_get_connected(context))
+		if (context->isConnected() == true)
 		{
 			SDL_LockMutex(context->m_condition_mutex);
 			SDL_CondWaitTimeout(context->m_condition, context->m_condition_mutex, timeout_ms);
@@ -156,7 +156,8 @@ void instantiate_npc(const char * id)
 	context_set_character_name(ctx, name);
 	free(name);
 	context_set_in_game(ctx, true);
-	context_set_connected(ctx, true);
+	ctx->setConnected(true);
+
 	context_set_map(ctx, map);
 	free(map);
 

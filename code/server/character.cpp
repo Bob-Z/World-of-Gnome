@@ -167,7 +167,7 @@ int character_disconnect(const char * id)
 
 	ctx = context_find(id);
 	context_set_in_game(ctx, false);
-	context_set_connected(ctx, false);
+	ctx->setConnected(false);
 	context_spread(ctx);
 
 	if (context_is_npc(ctx) == true)

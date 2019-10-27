@@ -47,13 +47,15 @@ public:
 	~Context();
 	const std::string& getUserName() const;
 	void setUserName(const std::string& userName);
+	bool isConnected() const;
+	void setConnected(bool connected);
 
 private:
 	SDL_mutex* m_mutex;
 	std::string m_userName;
+	bool m_connected; // User logged with the correct password, or NPC activated
 
 public:
-	bool m_isConnected; // User logged with the correct password, or NPC activated
 	bool m_in_game;
 	TCPsocket m_socket;
 	TCPsocket m_socket_data;
@@ -100,8 +102,6 @@ void context_free(Context * context);
 ret_code_t context_set_hostname(Context * context, const char * name);
 void context_set_in_game(Context * context, bool in_game);
 int context_get_in_game(Context * context);
-void context_set_connected(Context * context, bool connected);
-int context_get_connected(Context * context);
 void context_set_socket(Context * context, TCPsocket socket);
 TCPsocket context_get_socket(Context * context);
 void context_set_socket_data(Context * context, TCPsocket socket);

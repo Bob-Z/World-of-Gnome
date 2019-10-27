@@ -68,7 +68,7 @@ static ret_code_t manage_login(Context * context, const pb::Login & login)
 		free(password);
 		context->setUserName(login.user());
 
-		context_set_connected(context, true);
+		context->setConnected(true);
 
 		network_send_login_ok(context);
 
@@ -265,7 +265,7 @@ ret_code_t parse_incoming_data(Context * context, const std::string & serialized
 		{
 			manage_login(context, message.login());
 		}
-		else if (context_get_connected(context) == false)
+		else if (context->isConnected() == false)
 		{
 			werr(LOGUSER, "Request from not authenticated client, close connection");
 		}

@@ -171,7 +171,8 @@ static int async_recv(void * data)
 
 	werr(LOGUSER, "Socket closed on server side.");
 
-	context_set_connected(context, false);
+	context->setConnected(false);
+
 	SDLNet_TCP_Close(context->m_socket);
 	SDLNet_TCP_Close(context->m_socket_data);
 	context_set_socket(context, 0);
@@ -218,7 +219,7 @@ static int async_data_recv(void * data)
 
 	werr(LOGUSER, "Socket closed on server side.");
 
-	context_set_connected(context, false);
+	context->setConnected(false);
 	SDLNet_TCP_Close(context->m_socket);
 	SDLNet_TCP_Close(context->m_socket_data);
 	context_set_socket(context, 0);
