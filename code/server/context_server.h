@@ -25,7 +25,7 @@
 void context_spread(Context * context);
 void context_broadcast_map(const char * map);
 void context_broadcast_character(const char * character);
-void context_broadcast_text(const char * map, const char * text);
+void context_broadcast_text(const std::string & map, const char * text);
 void context_request_other_context(Context * context);
 
 #endif

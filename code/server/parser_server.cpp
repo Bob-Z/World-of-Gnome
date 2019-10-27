@@ -108,16 +108,8 @@ static ret_code_t manage_stop(Context * context, const pb::Stop & stop)
 	if (context->isInGame() == true)
 	{
 		context->setInGame(false);
-		if (context->m_map)
-		{
-			free(context->m_map);
-		}
-		context->m_map = nullptr;
-		if (context->m_prev_map)
-		{
-			free(context->m_prev_map);
-		}
-		context->m_prev_map = nullptr;
+		context->setMap("");
+		context->setPreviousMap("");
 		if (context->m_id)
 		{
 			free(context->m_id);

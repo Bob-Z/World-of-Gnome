@@ -62,12 +62,9 @@ void context_spread(Context * context)
 		}
 
 		// Skip if not on the same map or previous map
-		if ((ctx->m_map != nullptr) && (context->m_map != nullptr) && (context->m_prev_map != nullptr))
+		if ((context->getMap() != ctx->getMap()) && (context->getPreviousMap() != ctx->getMap()))
 		{
-			if (strcmp(context->m_map, ctx->m_map) != 0 && strcmp(context->m_prev_map, ctx->m_map) != 0)
-			{
-				continue;
-			}
+			continue;
 		}
 
 		network_send_context_to_context(ctx, context);
@@ -77,17 +74,16 @@ void context_spread(Context * context)
 	/* The existing context on the previous map should have
 	 been deleted, we don't need this any more -> this will
 	 generate less network request */
-	free(context->m_prev_map);
-	context->m_prev_map = nullptr;
+	context->setPreviousMap("");
 
 	context_unlock_list();
 }
 
 /**************************************
- if "map" == nullptr : server sends a message to all connected client
- if "map" != nullptr : server sends a message to all connected clients on the map
+ if "map" == "" : server sends a message to all connected client
+ if "map" != "" : server sends a message to all connected clients on the map
  **************************************/
-void context_broadcast_text(const char * map, const char * text)
+void context_broadcast_text(const std::string & map, const char * text)
 {
 	Context * ctx = nullptr;
 
@@ -120,18 +116,15 @@ void context_broadcast_text(const char * map, const char * text)
 			continue;
 		}
 
-		if (ctx->m_map == nullptr)
+		if (ctx->getMap() == "")
 		{
 			continue;
 		}
 
-		if (map)
+		// Skip if not on the same map
+		if (map != ctx->getMap())
 		{
-			// Skip if not on the same map
-			if (strcmp(map, ctx->m_map) != 0)
-			{
-				continue;
-			}
+			continue;
 		}
 
 		network_send_text(ctx->m_id, std::string(text));
@@ -174,12 +167,9 @@ void context_broadcast_map(const char * map)
 		}
 
 		// Skip if not on the same map
-		if (ctx->m_map)
+		if (map != ctx->getMap())
 		{
-			if (strcmp(map, ctx->m_map) != 0)
-			{
-				continue;
-			}
+			continue;
 		}
 
 		network_send_file(ctx, file_name.c_str());
@@ -225,12 +215,9 @@ void context_broadcast_character(const char * character)
 		}
 
 		// Skip if not on the same map
-		if (ctx->m_map)
+		if (character_ctx->getMap() != ctx->getMap())
 		{
-			if (strcmp(character_ctx->m_map, ctx->m_map) != 0)
-			{
-				continue;
-			}
+			continue;
 		}
 
 		network_send_file(ctx, file_name.c_str());
@@ -267,12 +254,9 @@ void context_request_other_context(Context * context)
 		}
 
 		// Skip if not on the same map
-		if (ctx->m_map != nullptr)
+		if (context->getMap() != ctx->getMap())
 		{
-			if (strcmp(context->m_map, ctx->m_map) != 0)
-			{
-				continue;
-			}
+			continue;
 		}
 
 		network_send_context_to_context(context, ctx);

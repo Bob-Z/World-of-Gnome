@@ -55,6 +55,12 @@ public:
 	void setNpc(bool npc);
 	const std::string& getCharacterName() const;
 	void setCharacterName(const std::string& characterName);
+	const std::string& getMap() const;
+	void setMap(const std::string& map);
+	const std::string& getPreviousMap() const;
+	void setPreviousMap(const std::string& previousMap);
+	bool isMapChanged() const;
+	void setMapChanged(bool mapChanged);
 
 private:
 	SDL_mutex* m_mutex;
@@ -63,6 +69,9 @@ private:
 	bool m_inGame;
 	bool m_npc;
 	std::string m_characterName;
+	std::string m_map;
+	std::string m_previousMap;
+	bool m_mapChanged; // FIXME
 
 public:
 	TCPsocket m_socket;
@@ -73,7 +82,6 @@ public:
 	SDL_Renderer * m_render;
 	SDL_Window * m_window;
 
-	char * m_map;	// map name
 	int m_tile_x;	// player position (in tile)
 	int m_tile_y;	// player position (in tile)
 	int m_prev_pos_tile_x;	// player previous position (in tile) for sprite direction
@@ -85,8 +93,6 @@ public:
 	char * m_type;	// character's type
 	Selection m_selection; // Selected tile or sprite
 	char * m_id; // unique ID of a character (its filename)
-	char * m_prev_map; // the map from where this context comes
-	bool m_change_map; // Has this context map changed ?
 	lua_State* m_lua_VM;	// LUA state
 	SDL_cond* m_condition;	// async condition for npc
 	SDL_mutex* m_condition_mutex;	// mutex for async condition for npc */
@@ -110,7 +116,6 @@ void context_set_socket(Context * context, TCPsocket socket);
 TCPsocket context_get_socket(Context * context);
 void context_set_socket_data(Context * context, TCPsocket socket);
 TCPsocket context_get_socket_data(Context * context);
-ret_code_t context_set_map(Context * context, const char * name);
 int context_set_map_w(Context * context, int width);
 int context_set_map_h(Context * context, int height);
 ret_code_t context_set_type(Context * context, const char * name);

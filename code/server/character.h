@@ -26,7 +26,7 @@ void character_user_send(Context * p_pCtx, const char * p_pCharacterId);
 void character_user_send_list(Context * context);
 int character_out_of_game(const char * id);
 int character_disconnect(const char * id);
-int character_set_pos(Context * ctx, const char * map, int x, int y);
+int character_set_pos(Context * ctx, const std::string & map, int x, int y);
 std::pair<bool, std::string> character_create_from_template(Context * ctx, const char * my_template, const char * map, int layer, int x, int y);
 void character_update_aggro(Context * context);
 int character_set_npc(const char * ctx, int npc);

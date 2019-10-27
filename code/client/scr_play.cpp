@@ -249,7 +249,7 @@ static void set_up_sprite(Context * ctx)
 
 	Context * player_context = context_get_player();
 
-	if (ctx->m_map == nullptr)
+	if (ctx->getMap() == "")
 	{
 		return;
 	}
@@ -257,7 +257,7 @@ static void set_up_sprite(Context * ctx)
 	{
 		return;
 	}
-	if (strcmp(ctx->m_map, player_context->m_map) != 0)
+	if (ctx->getMap() != player_context->getMap())
 	{
 		return;
 	}
@@ -273,10 +273,10 @@ static void set_up_sprite(Context * ctx)
 		force_position = true;
 	}
 	// Force position when this context has changed map
-	if (ctx->m_change_map == true)
+	if (ctx->isMapChanged() == true)
 	{
 		ctx->m_animation_tick = current_time;
-		ctx->m_change_map = false;
+		ctx->setMapChanged(false);
 		force_position = true;
 	}
 
@@ -532,7 +532,7 @@ static void compose_item(int layer_index)
 
 	sprintf(layer_name, "%s%d", MAP_KEY_LAYER, layer_index);
 
-	if (entry_get_group_list(MAP_TABLE, ctx->m_map, &item_id, layer_name,
+	if (entry_get_group_list(MAP_TABLE, ctx->getMap().c_str(), &item_id, layer_name,
 	MAP_ENTRY_ITEM_LIST, nullptr) == RET_NOK)
 	{
 		return;
@@ -545,14 +545,14 @@ static void compose_item(int layer_index)
 	{
 		sprite_align = ALIGN_CENTER;
 
-		if (entry_read_int(MAP_TABLE, ctx->m_map, &x, layer_name,
+		if (entry_read_int(MAP_TABLE, ctx->getMap().c_str(), &x, layer_name,
 		MAP_ENTRY_ITEM_LIST, item_id[i], MAP_ITEM_TILE_X, nullptr) == RET_NOK)
 		{
 			i++;
 			continue;
 		}
 
-		if (entry_read_int(MAP_TABLE, ctx->m_map, &y, layer_name,
+		if (entry_read_int(MAP_TABLE, ctx->getMap().c_str(), &y, layer_name,
 		MAP_ENTRY_ITEM_LIST, item_id[i], MAP_ITEM_TILE_Y, nullptr) == RET_NOK)
 		{
 			i++;
@@ -642,7 +642,7 @@ static void cb_select_map(void *arg)
 	sprintf(x, "%d", item->user1);
 	sprintf(y, "%d", item->user2);
 
-	network_send_action(ctx, option_get().action_select_tile, ctx->m_map, x, y, nullptr);
+	network_send_action(ctx, option_get().action_select_tile, ctx->getMap(), x, y, nullptr);
 }
 
 /**************************************
@@ -721,12 +721,12 @@ static void compose_map_set(int layer_index)
 	Context * ctx = context_get_player();
 
 	snprintf(layer_name, sizeof(layer_name), "%s%d", MAP_KEY_LAYER, layer_index);
-	if (entry_read_list(MAP_TABLE, ctx->m_map, &tile_set, layer_name, MAP_KEY_SET, nullptr) == RET_NOK)
+	if (entry_read_list(MAP_TABLE, ctx->getMap().c_str(), &tile_set, layer_name, MAP_KEY_SET, nullptr) == RET_NOK)
 	{
 		return;
 	}
 
-	layer = map_layer_new(ctx->m_map, layer_index, default_layer);
+	layer = map_layer_new(ctx->getMap(), layer_index, default_layer);
 	if (layer == nullptr)
 	{
 		return;
@@ -773,7 +773,7 @@ static void compose_map_scenery(int layer_index)
 	Context * ctx = context_get_player();
 
 	sprintf(layer_name, "%s%d", MAP_KEY_LAYER, layer_index);
-	if (entry_get_group_list(MAP_TABLE, ctx->m_map, &scenery_list, layer_name,
+	if (entry_get_group_list(MAP_TABLE, ctx->getMap().c_str(), &scenery_list, layer_name,
 	MAP_KEY_SCENERY, nullptr) == RET_NOK)
 	{
 		return;
@@ -781,17 +781,17 @@ static void compose_map_scenery(int layer_index)
 
 	while (scenery_list[i] != nullptr)
 	{
-		if (entry_read_int(MAP_TABLE, ctx->m_map, &x, layer_name, MAP_KEY_SCENERY, scenery_list[i], MAP_KEY_SCENERY_X, nullptr) == RET_NOK)
+		if (entry_read_int(MAP_TABLE, ctx->getMap().c_str(), &x, layer_name, MAP_KEY_SCENERY, scenery_list[i], MAP_KEY_SCENERY_X, nullptr) == RET_NOK)
 		{
 			i++;
 			continue;
 		}
-		if (entry_read_int(MAP_TABLE, ctx->m_map, &y, layer_name, MAP_KEY_SCENERY, scenery_list[i], MAP_KEY_SCENERY_Y, nullptr) == RET_NOK)
+		if (entry_read_int(MAP_TABLE, ctx->getMap().c_str(), &y, layer_name, MAP_KEY_SCENERY, scenery_list[i], MAP_KEY_SCENERY_Y, nullptr) == RET_NOK)
 		{
 			i++;
 			continue;
 		}
-		if (entry_read_string(MAP_TABLE, ctx->m_map, &image_name, layer_name,
+		if (entry_read_string(MAP_TABLE, ctx->getMap().c_str(), &image_name, layer_name,
 		MAP_KEY_SCENERY, scenery_list[i], MAP_KEY_SCENERY_IMAGE, nullptr) == RET_NOK)
 		{
 			i++;
@@ -832,7 +832,7 @@ static void compose_type(int layer_index)
 	}
 
 	sprintf(layer_name, "%s%d", MAP_KEY_LAYER, layer_index);
-	if (entry_exist(MAP_TABLE, ctx->m_map, layer_name, MAP_KEY_TYPE, nullptr) == false)
+	if (entry_exist(MAP_TABLE, ctx->getMap().c_str(), layer_name, MAP_KEY_TYPE, nullptr) == false)
 	{
 		return;
 	}
@@ -843,7 +843,7 @@ static void compose_type(int layer_index)
 	{
 		for (y = 0; y < default_layer->map_h; y++)
 		{
-			if (entry_read_list_index(MAP_TABLE, ctx->m_map, &type, x + y * default_layer->map_w, layer_name, MAP_KEY_TYPE, nullptr) == RET_NOK)
+			if (entry_read_list_index(MAP_TABLE, ctx->getMap().c_str(), &type, x + y * default_layer->map_w, layer_name, MAP_KEY_TYPE, nullptr) == RET_NOK)
 			{
 				continue;
 			}
@@ -881,7 +881,7 @@ static void compose_select()
 	{
 		if (ctx->m_selection.getMap() != "")
 		{
-			if (strcmp(ctx->m_selection.getMap().c_str(), ctx->m_map) == 0)
+			if (ctx->m_selection.getMap() == ctx->getMap())
 			{
 				pos_tx = ctx->m_selection.getMapCoordTx();
 				pos_ty = ctx->m_selection.getMapCoordTy();
@@ -955,7 +955,7 @@ item_t * scr_play_compose(Context * ctx)
 		item_list = nullptr;
 	}
 
-	if (ctx->m_map == nullptr)
+	if (ctx->getMap() == "")
 	{
 		if (context_update_from_file(ctx) == RET_NOK)
 		{
@@ -968,18 +968,18 @@ item_t * scr_play_compose(Context * ctx)
 	sdl_add_mousecb(MOUSE_WHEEL_UP, cb_zoom);
 	sdl_add_mousecb(MOUSE_WHEEL_DOWN, cb_unzoom);
 
-	change_map = ctx->m_change_map;
+	change_map = ctx->isMapChanged();
 
 	if (change_map == true)
 	{
-		const std::string map_file_path = std::string(MAP_TABLE) + "/" + std::string(ctx->m_map);
+		const std::string map_file_path = std::string(MAP_TABLE) + "/" + ctx->getMap();
 		network_send_req_file(ctx, map_file_path);
 
 		if (default_layer != nullptr)
 		{
 			map_layer_delete(default_layer);
 		}
-		default_layer = map_layer_new(ctx->m_map, DEFAULT_LAYER, nullptr);
+		default_layer = map_layer_new(ctx->getMap(), DEFAULT_LAYER, nullptr);
 	}
 
 	if (default_layer && default_layer->active)
@@ -998,15 +998,15 @@ item_t * scr_play_compose(Context * ctx)
 		ui_play_compose(ctx, item_list);
 	}
 
-	entry_read_int(MAP_TABLE, ctx->m_map, &bg_red, MAP_KEY_BG_RED, nullptr);
-	entry_read_int(MAP_TABLE, ctx->m_map, &bg_blue, MAP_KEY_BG_BLUE, nullptr);
-	entry_read_int(MAP_TABLE, ctx->m_map, &bg_green, MAP_KEY_BG_GREEN, nullptr);
+	entry_read_int(MAP_TABLE, ctx->getMap().c_str(), &bg_red, MAP_KEY_BG_RED, nullptr);
+	entry_read_int(MAP_TABLE, ctx->getMap().c_str(), &bg_blue, MAP_KEY_BG_BLUE, nullptr);
+	entry_read_int(MAP_TABLE, ctx->getMap().c_str(), &bg_green, MAP_KEY_BG_GREEN, nullptr);
 	SDL_SetRenderDrawColor(ctx->m_render, bg_red, bg_blue, bg_green, 255);
 
 	old_sfx = sfx;
 	sfx = nullptr;
 
-	entry_read_string(MAP_TABLE, ctx->m_map, &sfx, MAP_SFX, nullptr);
+	entry_read_string(MAP_TABLE, ctx->getMap().c_str(), &sfx, MAP_SFX, nullptr);
 
 	if (old_sfx != nullptr)
 	{
@@ -1035,7 +1035,7 @@ item_t * scr_play_compose(Context * ctx)
 				g_IsMusicPlaying = true;
 			}
 			int sfx_volume = SFX_VOLUME_MAX;
-			entry_read_int(MAP_TABLE, ctx->m_map, &sfx_volume, MAP_SFX_VOLUME, nullptr);
+			entry_read_int(MAP_TABLE, ctx->getMap().c_str(), &sfx_volume, MAP_SFX_VOLUME, nullptr);
 			sfx_set_volume(MUSIC_CHANNEL, sfx_volume);
 		}
 	}

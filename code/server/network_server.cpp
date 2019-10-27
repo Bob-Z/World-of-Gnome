@@ -194,12 +194,9 @@ void network_broadcast_entry_int(const char * table, const char * file, const ch
 			{
 				continue;
 			}
-			if (target->m_map && ctx->m_map)
+			if (target->getMap() != ctx->getMap())
 			{
-				if (strcmp(target->m_map, ctx->m_map) != 0)
-				{
-					continue;
-				}
+				continue;
 			}
 		}
 
@@ -377,7 +374,7 @@ void network_broadcast_effect(EffectManager::EffectType p_Type, const std::strin
 	switch (p_Type)
 	{
 	case EffectManager::EffectType::CONTEXT:
-		target_map = ctx->m_map;
+		target_map = ctx->getMap();
 		break;
 	case EffectManager::EffectType::MAP:
 		target_map = p_TargetId;
@@ -399,7 +396,7 @@ void network_broadcast_effect(EffectManager::EffectType p_Type, const std::strin
 
 	do
 	{
-		if (ctx->m_map == nullptr)
+		if (ctx->getMap() == "")
 		{
 			continue;
 		}
@@ -414,8 +411,7 @@ void network_broadcast_effect(EffectManager::EffectType p_Type, const std::strin
 			continue;
 		}
 
-		std::string l_CurrentMap = ctx->m_map;
-		if (target_map != l_CurrentMap)
+		if (target_map != ctx->getMap())
 		{
 			continue;
 		}
@@ -492,7 +488,7 @@ void network_send_context_to_context(Context * dest_ctx, Context * src_ctx)
 	message.mutable_context()->set_user_name(src_ctx->getUserName());
 	message.mutable_context()->set_character_name(src_ctx->getCharacterName());
 	message.mutable_context()->set_npc(src_ctx->isNpc());
-	message.mutable_context()->set_map(src_ctx->m_map);
+	message.mutable_context()->set_map(src_ctx->getMap());
 	message.mutable_context()->set_in_game(src_ctx->isInGame());
 	message.mutable_context()->set_connected(src_ctx->isConnected());
 	message.mutable_context()->set_tile_x(src_ctx->m_tile_x);

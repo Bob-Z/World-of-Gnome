@@ -40,7 +40,7 @@
 /***********************************
  return string MUST BE FREED
  ***********************************/
-static char * get_tile_type_through_layer(const char * map, int layer, int x, int y)
+static char * get_tile_type_through_layer(const std::string & map, int layer, int x, int y)
 {
 	char * type;
 	while (layer >= 0)
@@ -62,7 +62,7 @@ static char * get_tile_type_through_layer(const char * map, int layer, int x, in
  return 0 if the context is NOT allowed to go to the tile at coord x,y
  return RET_NOK on error or no data found
  *************************************/
-ret_code_t map_check_tile(Context * ctx, const char * id, const char * map, int layer, int x, int y)
+ret_code_t map_check_tile(Context * ctx, const char * id, const std::string & map, int layer, int x, int y)
 {
 	char * script;
 	char sx[64];
@@ -74,11 +74,11 @@ ret_code_t map_check_tile(Context * ctx, const char * id, const char * map, int 
 	int width = 0;
 	int height = 0;
 
-	if (entry_read_int(MAP_TABLE, map, &width, MAP_KEY_WIDTH, nullptr) == RET_NOK)
+	if (entry_read_int(MAP_TABLE, map.c_str(), &width, MAP_KEY_WIDTH, nullptr) == RET_NOK)
 	{
 		return RET_NOK;
 	}
-	if (entry_read_int(MAP_TABLE, map, &height, MAP_KEY_HEIGHT, nullptr) == RET_NOK)
+	if (entry_read_int(MAP_TABLE, map.c_str(), &height, MAP_KEY_HEIGHT, nullptr) == RET_NOK)
 	{
 		return RET_NOK;
 	}
@@ -95,7 +95,7 @@ ret_code_t map_check_tile(Context * ctx, const char * id, const char * map, int 
 		const char * param[5];
 
 		param[0] = id;
-		param[1] = (const char *) map;
+		param[1] = map.c_str();
 		sprintf(sx, "%d", x);
 		sprintf(sy, "%d", y);
 		param[2] = sx;
@@ -674,19 +674,19 @@ char * map_get_tile(const char * map, int layer, int x, int y)
  return the type of the tile on map layer at x,y
  Returned string MUST BE FREED
  ********************************************/
-char * map_get_tile_type(const char * map, int layer, int x, int y)
+char * map_get_tile_type(const std::string & map, int layer, int x, int y)
 {
 	char * map_type = nullptr;
 	int width;
 	int height;
 	char layer_name[SMALL_BUF];
 
-	if (entry_read_int(MAP_TABLE, map, &width, MAP_KEY_WIDTH, nullptr) == RET_NOK)
+	if (entry_read_int(MAP_TABLE, map.c_str(), &width, MAP_KEY_WIDTH, nullptr) == RET_NOK)
 	{
 		return nullptr;
 	}
 
-	if (entry_read_int(MAP_TABLE, map, &height, MAP_KEY_HEIGHT, nullptr) == RET_NOK)
+	if (entry_read_int(MAP_TABLE, map.c_str(), &height, MAP_KEY_HEIGHT, nullptr) == RET_NOK)
 	{
 		return nullptr;
 	}
@@ -697,7 +697,7 @@ char * map_get_tile_type(const char * map, int layer, int x, int y)
 	}
 
 	sprintf(layer_name, "%s%d", MAP_KEY_LAYER, layer);
-	entry_read_list_index(MAP_TABLE, map, &map_type, (width * y) + x, layer_name, MAP_KEY_TYPE, nullptr);
+	entry_read_list_index(MAP_TABLE, map.c_str(), &map_type, (width * y) + x, layer_name, MAP_KEY_TYPE, nullptr);
 
 	if (map_type != nullptr)
 	{
@@ -711,7 +711,7 @@ char * map_get_tile_type(const char * map, int layer, int x, int y)
  return an array of event id on given map at x,y
  This array MUST be freed by caller
  ************************************************/
-char ** map_get_event(const char * map, int layer, int x, int y)
+char ** map_get_event(const std::string & map, int layer, int x, int y)
 {
 	char ** eventlist = nullptr;
 	char ** event_id = nullptr;
@@ -731,19 +731,19 @@ char ** map_get_event(const char * map, int layer, int x, int y)
 	// Manage concurrent acces to map files
 	SDL_LockMutex(map_mutex);
 	// Search the items on the specified tile for a specific layer
-	if (entry_get_group_list(MAP_TABLE, map, &eventlist, layer_name,
+	if (entry_get_group_list(MAP_TABLE, map.c_str(), &eventlist, layer_name,
 	MAP_ENTRY_EVENT_LIST, nullptr) == RET_OK)
 	{
 		while (eventlist[i] != nullptr)
 		{
-			if (entry_read_int(MAP_TABLE, map, &mapx, layer_name,
+			if (entry_read_int(MAP_TABLE, map.c_str(), &mapx, layer_name,
 			MAP_ENTRY_EVENT_LIST, eventlist[i], MAP_EVENT_TILE_X, nullptr) == RET_NOK)
 			{
 				i++;
 				continue;
 			}
 
-			if (entry_read_int(MAP_TABLE, map, &mapy, layer_name,
+			if (entry_read_int(MAP_TABLE, map.c_str(), &mapy, layer_name,
 			MAP_ENTRY_EVENT_LIST, eventlist[i], MAP_EVENT_TILE_Y, nullptr) == RET_NOK)
 			{
 				i++;
@@ -763,17 +763,17 @@ char ** map_get_event(const char * map, int layer, int x, int y)
 	}
 	deep_free(eventlist);
 	// Search the items on the specified tile for all layers
-	if (entry_get_group_list(MAP_TABLE, map, &eventlist, MAP_ENTRY_EVENT_LIST, nullptr) == RET_OK)
+	if (entry_get_group_list(MAP_TABLE, map.c_str(), &eventlist, MAP_ENTRY_EVENT_LIST, nullptr) == RET_OK)
 	{
 		while (eventlist[i] != nullptr)
 		{
-			if (entry_read_int(MAP_TABLE, map, &mapx, MAP_ENTRY_EVENT_LIST, eventlist[i], MAP_EVENT_TILE_X, nullptr) == RET_NOK)
+			if (entry_read_int(MAP_TABLE, map.c_str(), &mapx, MAP_ENTRY_EVENT_LIST, eventlist[i], MAP_EVENT_TILE_X, nullptr) == RET_NOK)
 			{
 				i++;
 				continue;
 			}
 
-			if (entry_read_int(MAP_TABLE, map, &mapy, MAP_ENTRY_EVENT_LIST, eventlist[i], MAP_EVENT_TILE_Y, nullptr) == RET_NOK)
+			if (entry_read_int(MAP_TABLE, map.c_str(), &mapy, MAP_ENTRY_EVENT_LIST, eventlist[i], MAP_EVENT_TILE_Y, nullptr) == RET_NOK)
 			{
 				i++;
 				continue;
@@ -966,7 +966,7 @@ ret_code_t map_delete_event(const char * map, int layer, const char * script, in
  return an array of character id on given map at x,y
  This array AND its content MUST be freed by caller
  ************************************************/
-char ** map_get_character(const char * map, int x, int y)
+char ** map_get_character(const std::string & map, int x, int y)
 {
 	char ** character_list = nullptr;
 	int character_num = 0;
@@ -980,12 +980,12 @@ char ** map_get_character(const char * map, int x, int y)
 	context_lock_list();
 	while (ctx != nullptr)
 	{
-		if (ctx->m_map == nullptr)
+		if (ctx->getMap() == "")
 		{
 			ctx = ctx->m_next;
 			continue;
 		}
-		if (ctx->m_tile_x == x && ctx->m_tile_y == y && !strcmp(ctx->m_map, map))
+		if (ctx->m_tile_x == x && ctx->m_tile_y == y && (ctx->getMap() == map))
 		{
 			character_num++;
 			character_list = (char**) realloc(character_list, sizeof(char*) * (character_num + 1));

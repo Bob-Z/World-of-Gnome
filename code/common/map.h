@@ -1,21 +1,21 @@
 /*
-   World of Gnome is a 2D multiplayer role playing game.
-   Copyright (C) 2013-2019 carabobz@gmail.com
+ World of Gnome is a 2D multiplayer role playing game.
+ Copyright (C) 2013-2019 carabobz@gmail.com
 
-   This program is free software; you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 3 of the License, or
-   (at your option) any later version.
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 3 of the License, or
+ (at your option) any later version.
 
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-   You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software Foundation,
-   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
-*/
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software Foundation,
+ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
+ */
 
 #ifndef MAP_H
 #define MAP_H
@@ -26,7 +26,8 @@
 #define MAX_COL         16
 #define MAX_ROW         16
 
-typedef struct layer {
+typedef struct layer
+{
 	int active;
 	int tile_width;
 	int tile_height;
@@ -45,8 +46,8 @@ typedef struct layer {
 	int row_height_total;
 } layer_t;
 
-layer_t * map_layer_new(const char * map, int layer_index, layer_t * default_layer);
+layer_t * map_layer_new(const std::string & map, int layer_index, layer_t * default_layer);
 void map_layer_delete(layer_t * default_layer);
-int map_t2p_x(int x, int y,layer_t * layer);
-int map_t2p_y(int x, int y,layer_t * layer);
+int map_t2p_x(int x, int y, layer_t * layer);
+int map_t2p_y(int x, int y, layer_t * layer);
 #endif

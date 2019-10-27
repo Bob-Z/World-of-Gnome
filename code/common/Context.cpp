@@ -45,10 +45,10 @@ Context * context_list_start = nullptr;
 
 /*****************************************************************************/
 Context::Context() :
-		m_mutex(nullptr), m_userName(), m_connected(false), m_inGame(false), m_npc(true), m_characterName(), m_socket(), m_socket_data(), m_send_mutex(nullptr), m_hostname(
-				nullptr), m_render(nullptr), m_window(nullptr), m_map(nullptr), m_tile_x(-1), m_tile_y(-1), m_prev_pos_tile_x(-1), m_prev_pos_tile_y(-1), m_pos_changed(
-				false), m_animation_tick(0), m_type(nullptr), m_selection(), m_id(nullptr), m_prev_map(nullptr), m_change_map(false), m_lua_VM(nullptr), m_condition(
-				nullptr), m_condition_mutex(nullptr), m_orientation(0), m_direction(0), m_next_execution_time(0), m_previous(nullptr), m_next(nullptr)
+		m_mutex(nullptr), m_userName(), m_connected(false), m_inGame(false), m_npc(true), m_characterName(), m_map(), m_previousMap(), m_mapChanged(false), m_socket(), m_socket_data(), m_send_mutex(
+				nullptr), m_hostname(nullptr), m_render(nullptr), m_window(nullptr), m_tile_x(-1), m_tile_y(-1), m_prev_pos_tile_x(-1), m_prev_pos_tile_y(-1), m_pos_changed(
+				false), m_animation_tick(0), m_type(nullptr), m_selection(), m_id(nullptr), m_lua_VM(nullptr), m_condition(nullptr), m_condition_mutex(nullptr), m_orientation(
+				0), m_direction(0), m_next_execution_time(0), m_previous(nullptr), m_next(nullptr)
 {
 	m_mutex = SDL_CreateMutex();
 }
@@ -93,8 +93,6 @@ void context_init(Context * context)
 	context->m_render = nullptr;
 	context->m_window = nullptr;
 
-	context->m_map = nullptr;
-
 	context->m_tile_x = 0;
 	context->m_tile_y = 0;
 	context->m_prev_pos_tile_x = 0;
@@ -104,8 +102,6 @@ void context_init(Context * context)
 	context->m_type = nullptr;
 
 	context->m_id = nullptr;
-	context->m_prev_map = nullptr;
-	context->m_change_map = false;
 	context->m_lua_VM = nullptr;
 	context->m_condition = nullptr;
 	context->m_condition_mutex = nullptr;
@@ -169,18 +165,12 @@ void context_free_data(Context * context)
 	}
 	context->m_hostname = nullptr;
 
-	if (context->m_map)
-	{
-		free(context->m_map);
-	}
-	context->m_map = nullptr;
 	if (context->m_type)
 	{
 		free(context->m_type);
 	}
 	context->m_type = nullptr;
 
-	context->m_prev_map = nullptr;
 	if (context->m_lua_VM != nullptr)
 	{
 		lua_close(context->m_lua_VM);
@@ -347,50 +337,6 @@ TCPsocket context_get_socket_data(Context * context)
 	context_unlock_list();
 
 	return socket;
-}
-
-/**************************************
- Returns RET_NOK if error
- **************************************/
-static ret_code_t _context_set_map(Context * context, const char * map)
-{
-	if (context->m_prev_map != nullptr)
-	{
-		if (!strcmp(context->m_map, map))
-		{
-			return RET_OK;
-		}
-		free(context->m_prev_map);
-		context->m_prev_map = nullptr;
-	}
-
-	if (context->m_map)
-	{
-		context->m_prev_map = context->m_map;
-	}
-
-	context->m_map = strdup(map);
-	if (context->m_map == nullptr)
-	{
-		return RET_NOK;
-	}
-
-	context->m_change_map = true;
-
-	return RET_OK;
-}
-
-/**************************************
- **************************************/
-ret_code_t context_set_map(Context * context, const char * map)
-{
-	ret_code_t ret;
-
-	context_lock_list();
-	ret = _context_set_map(context, map);
-	context_unlock_list();
-
-	return ret;
 }
 
 /**************************************
@@ -631,8 +577,7 @@ ret_code_t context_update_from_file(Context * context)
 	if (entry_read_string(CHARACTER_TABLE, context->m_id, &result,
 	CHARACTER_KEY_MAP, nullptr) == RET_OK)
 	{
-		free(context->m_map);
-		ret = _context_set_map(context, result);
+		context->setMap(std::string(result));
 		free(result);
 	}
 	else
@@ -676,7 +621,7 @@ ret_code_t context_write_to_file(Context * context)
 
 	entry_write_string(CHARACTER_TABLE, context->m_id, context->m_type,
 	CHARACTER_KEY_TYPE, nullptr);
-	entry_write_string(CHARACTER_TABLE, context->m_id, context->m_map,
+	entry_write_string(CHARACTER_TABLE, context->m_id, context->getMap().c_str(),
 	CHARACTER_KEY_MAP, nullptr);
 
 	entry_write_int(CHARACTER_TABLE, context->m_id, context->m_tile_x,
@@ -734,7 +679,7 @@ void context_add_or_update_from_network_frame(const ContextBis & context)
 			{
 				wlog(LOGDEVELOPER, "Updating context %s / %s", context.getUserName().c_str(), context.getCharacterName().c_str());
 				// do not call context_set_* function since we already have the lock
-				_context_set_map(ctx, context.getMap().c_str());
+				ctx->setMap(context.getMap());
 
 				ctx->setNpc(context.isNpc());
 
@@ -766,7 +711,7 @@ void context_add_or_update_from_network_frame(const ContextBis & context)
 	ctx->setUserName(context.getUserName());
 	ctx->setCharacterName(context.getCharacterName().c_str());
 	ctx->setNpc(context.isNpc());
-	context_set_map(ctx, context.getMap().c_str());
+	ctx->setMap(context.getMap());
 	context_set_type(ctx, context.getType().c_str());
 	context_set_pos_tx(ctx, context.getTileX());
 	context_set_pos_ty(ctx, context.getTileY());
@@ -880,4 +825,58 @@ void Context::setCharacterName(const std::string& characterName)
 	SdlLocking lock(m_mutex);
 
 	m_characterName = characterName;
+}
+
+/*****************************************************************************/
+const std::string& Context::getMap() const
+{
+	SdlLocking lock(m_mutex);
+
+	return m_map;
+}
+
+/*****************************************************************************/
+void Context::setMap(const std::string& map)
+{
+	SdlLocking lock(m_mutex);
+
+	m_previousMap = m_map;
+
+	if (m_map != map)
+	{
+		m_mapChanged = true;
+		m_map = map;
+	}
+}
+
+/*****************************************************************************/
+const std::string& Context::getPreviousMap() const
+{
+	SdlLocking lock(m_mutex);
+
+	return m_previousMap;
+}
+
+/*****************************************************************************/
+void Context::setPreviousMap(const std::string& previousMap)
+{
+	SdlLocking lock(m_mutex);
+
+	m_previousMap = previousMap;
+}
+
+/*****************************************************************************/
+bool Context::isMapChanged() const
+{
+	SdlLocking lock(m_mutex);
+
+	return m_mapChanged;
+}
+
+/*****************************************************************************/
+void Context::setMapChanged(bool mapChanged)
+{
+	SdlLocking lock(m_mutex);
+
+	m_mapChanged = mapChanged;
 }

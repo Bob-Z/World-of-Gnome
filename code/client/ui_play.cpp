@@ -828,7 +828,7 @@ static void cb_print_coord(void * arg)
 	int map_w;
 	Context * ctx = context_get_player();
 
-	entry_read_int(MAP_TABLE, ctx->m_map, &map_w, MAP_KEY_WIDTH, nullptr);
+	entry_read_int(MAP_TABLE, ctx->getMap().c_str(), &map_w, MAP_KEY_WIDTH, nullptr);
 
 //TODO: take layer into account
 #if 0

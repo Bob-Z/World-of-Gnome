@@ -158,7 +158,7 @@ void instantiate_npc(const char * id)
 	ctx->setInGame(true);
 	ctx->setConnected(true);
 
-	context_set_map(ctx, map);
+	ctx->setMap(std::string(map));
 	free(map);
 
 	context_set_type(ctx, type);

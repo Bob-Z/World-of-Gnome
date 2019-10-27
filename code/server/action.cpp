@@ -377,7 +377,7 @@ static int l_character_get_map(lua_State* L)
 		werr(LOGDESIGNER, "Cannot find context with ID %s", id);
 		return 0;  // number of results
 	}
-	lua_pushstring(L, target->m_map);
+	lua_pushstring(L, target->getMap().c_str());
 	return 1;  // number of results
 }
 
@@ -593,7 +593,7 @@ static int l_character_set_pos(lua_State* L)
 	y = luaL_checkint(L, -1);
 
 	ctx = context_find(id);
-	res = character_set_pos(ctx, map, x, y);
+	res = character_set_pos(ctx, std::string(map), x, y);
 	lua_pushnumber(L, res);
 	return 1;  // number of results
 }
@@ -1265,8 +1265,8 @@ static int l_print_text_map(lua_State* L)
 
 	map = luaL_checkstring(L, -2);
 	string = luaL_checkstring(L, -1);
-	/* add a trailing \n */
-	context_broadcast_text(map, string);
+	// add a trailing \n
+	context_broadcast_text(std::string(map), string);
 	return 0;  // number of results
 }
 
@@ -1283,8 +1283,8 @@ static int l_print_text_server(lua_State* L)
 	const char * string;
 
 	string = luaL_checkstring(L, -1);
-	/* add a trailing \n */
-	context_broadcast_text(nullptr, string);
+	// add a trailing \n
+	context_broadcast_text("", string);
 	return 0;  // number of results
 }
 
@@ -1818,7 +1818,7 @@ static int l_map_get_tile_type(lua_State* L)
 	layer = luaL_checkint(L, -3);
 	x = luaL_checkint(L, -2);
 	y = luaL_checkint(L, -1);
-	res = map_get_tile_type(map, layer, x, y);
+	res = map_get_tile_type(std::string(map), layer, x, y);
 	lua_pushstring(L, res);
 	free(res);
 	return 1;  // number of results
@@ -1847,7 +1847,7 @@ static int l_map_get_character(lua_State* L)
 	x = luaL_checkint(L, -2);
 	y = luaL_checkint(L, -1);
 
-	res = map_get_character(map, x, y);
+	res = map_get_character(std::string(map), x, y);
 	if (res)
 	{
 		cur_res = res;

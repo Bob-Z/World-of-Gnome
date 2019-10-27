@@ -104,7 +104,7 @@ static int l_context_get_map(lua_State* p_pLuaState)
 	context = (Context*) lua_touserdata(p_pLuaState, -1);
 	lua_pop(p_pLuaState, 1);
 
-	lua_pushstring(p_pLuaState, context->m_map);
+	lua_pushstring(p_pLuaState, context->getMap().c_str());
 	return 1; // number of results
 }
 

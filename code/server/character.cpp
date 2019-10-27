@@ -302,7 +302,7 @@ static void execute_aggro(Context * agressor, Context * target, char * script, i
 
 }
 /***********************************************************************
- Call aggro script for each context in every npc context aggro dist
+ Call aggro script for each context in every NPC context aggro dist
  ***********************************************************************/
 void character_update_aggro(Context * agressor)
 {
@@ -316,7 +316,7 @@ void character_update_aggro(Context * agressor)
 		return;
 	}
 
-	if (agressor->m_map == nullptr)
+	if (agressor->getMap() == "")
 	{
 		return;
 	}
@@ -350,13 +350,14 @@ void character_update_aggro(Context * agressor)
 						target = target->m_next;
 						continue;
 					}
-					if (target->m_map == nullptr)
+					if (target->getMap() == "")
 					{
 						target = target->m_next;
 						continue;
 					}
-					/* Skip if not on the same map */
-					if (strcmp(agressor->m_map, target->m_map) != 0)
+
+					// Skip if not on the same map
+					if (agressor->getMap() != target->getMap())
 					{
 						target = target->m_next;
 						continue;
@@ -369,7 +370,7 @@ void character_update_aggro(Context * agressor)
 		}
 	}
 
-	/* Compute aggro of all other NPC to the current context */
+	// Compute aggro of all other NPC to the current context
 	target = agressor;
 	npc = context_get_first();
 
@@ -386,7 +387,7 @@ void character_update_aggro(Context * agressor)
 			npc = npc->m_next;
 			continue;
 		}
-		if (npc->m_map == nullptr)
+		if (npc->getMap() == "")
 		{
 			npc = npc->m_next;
 			continue;
@@ -396,8 +397,8 @@ void character_update_aggro(Context * agressor)
 			npc = npc->m_next;
 			continue;
 		}
-		/* Skip if not on the same map */
-		if (strcmp(npc->m_map, target->m_map) != 0)
+		// Skip if not on the same map
+		if (npc->getMap() != target->getMap())
 		{
 			npc = npc->m_next;
 			continue;
@@ -424,13 +425,13 @@ void character_update_aggro(Context * agressor)
 }
 /*************************************************************
  *************************************************************/
-static void do_set_pos(Context * ctx, const char * map, int x, int y, bool change_map)
+static void do_set_pos(Context * ctx, const std::string & map, int x, int y, bool change_map)
 {
-	context_set_map(ctx, map);
+	ctx->setMap(map);
 	context_set_pos_tx(ctx, x);
 	context_set_pos_ty(ctx, y);
 
-	entry_write_string(CHARACTER_TABLE, ctx->m_id, map, CHARACTER_KEY_MAP, nullptr);
+	entry_write_string(CHARACTER_TABLE, ctx->m_id, map.c_str(), CHARACTER_KEY_MAP, nullptr);
 	entry_write_int(CHARACTER_TABLE, ctx->m_id, x, CHARACTER_KEY_TILE_X, nullptr);
 	entry_write_int(CHARACTER_TABLE, ctx->m_id, y, CHARACTER_KEY_TILE_Y, nullptr);
 
@@ -444,7 +445,7 @@ static void do_set_pos(Context * ctx, const char * map, int x, int y, bool chang
 /*************************************************************
  Move every context on the same coordinate as platform context
  *************************************************************/
-static void platform_move(Context * platform, const char * map, int x, int y, bool change_map)
+static void platform_move(Context * platform, const std::string & map, int x, int y, bool change_map)
 {
 	Context * current = context_get_first();
 	int is_platform;
@@ -467,7 +468,7 @@ static void platform_move(Context * platform, const char * map, int x, int y, bo
 			current = current->m_next;
 			continue;
 		}
-		if (platform->m_tile_x == current->m_tile_x && platform->m_tile_y == current->m_tile_y && !strcmp(platform->m_map, current->m_map))
+		if (platform->m_tile_x == current->m_tile_x && platform->m_tile_y == current->m_tile_y && (platform->getMap() == current->getMap()))
 		{
 			do_set_pos(current, map, x, y, change_map);
 		}
@@ -479,7 +480,7 @@ static void platform_move(Context * platform, const char * map, int x, int y, bo
  return 0 if new position OK or if position has not changed.
  return -1 if the position was not set (because tile not allowed or out of bound)
  ******************************************************/
-int character_set_pos(Context * ctx, const char * map, int x, int y)
+int character_set_pos(Context * ctx, const std::string & map, int x, int y)
 {
 	char ** event_id;
 	char * script;
@@ -503,7 +504,7 @@ int character_set_pos(Context * ctx, const char * map, int x, int y)
 	}
 
 	// Do nothing if no move
-	if (!strcmp(ctx->m_map, map) && ctx->m_tile_x == x && ctx->m_tile_y == y)
+	if ((ctx->getMap() == map) && ctx->m_tile_x == x && ctx->m_tile_y == y)
 	{
 		return 0;
 	}
@@ -512,13 +513,13 @@ int character_set_pos(Context * ctx, const char * map, int x, int y)
 	entry_read_int(CHARACTER_TABLE, ctx->m_id, &ctx_layer, CHARACTER_LAYER, nullptr);
 	sprintf(layer_name, "%s%d", MAP_KEY_LAYER, ctx_layer);
 
-	entry_read_int(MAP_TABLE, map, &width, MAP_KEY_WIDTH, nullptr);
-	entry_read_int(MAP_TABLE, map, &height, MAP_KEY_HEIGHT, nullptr);
-	entry_read_int(MAP_TABLE, map, &warpx, MAP_KEY_WARP_X, nullptr);
-	entry_read_int(MAP_TABLE, map, &warpy, MAP_KEY_WARP_Y, nullptr);
+	entry_read_int(MAP_TABLE, map.c_str(), &width, MAP_KEY_WIDTH, nullptr);
+	entry_read_int(MAP_TABLE, map.c_str(), &height, MAP_KEY_HEIGHT, nullptr);
+	entry_read_int(MAP_TABLE, map.c_str(), &warpx, MAP_KEY_WARP_X, nullptr);
+	entry_read_int(MAP_TABLE, map.c_str(), &warpy, MAP_KEY_WARP_Y, nullptr);
 
 	// Offscreen script
-	entry_read_string(MAP_TABLE, map, &script, MAP_OFFSCREEN, nullptr);
+	entry_read_string(MAP_TABLE, map.c_str(), &script, MAP_OFFSCREEN, nullptr);
 	if (script != nullptr && (x < 0 || y < 0 || x >= width || y >= height))
 	{
 		snprintf(buf, SMALL_BUF, "%d", x);
@@ -579,12 +580,12 @@ int character_set_pos(Context * ctx, const char * map, int x, int y)
 	while (layer >= 0)
 	{
 		ret_value = map_check_tile(ctx, ctx->m_id, map, layer, x, y);
-		/* not allowed */
+		// not allowed
 		if (ret_value == 0)
 		{
 			return -1;
 		}
-		/* allowed */
+		// allowed
 		if (ret_value == 1)
 		{
 			break;
@@ -597,15 +598,15 @@ int character_set_pos(Context * ctx, const char * map, int x, int y)
 		return -1;
 	}
 
-	if (strcmp(ctx->m_map, map))
+	if (ctx->getMap() != map)
 	{
 		change_map = true;
 	}
 
-	/* If this character is a platform, move all characters on it */
-	platform_move(ctx, map, x, y, change_map);
+	// If this character is a platform, move all characters on it
+	platform_move(ctx, std::string(map), x, y, change_map);
 
-	do_set_pos(ctx, map, x, y, change_map);
+	do_set_pos(ctx, std::string(map), x, y, change_map);
 
 	event_id = map_get_event(map, ctx_layer, x, y);
 
@@ -615,16 +616,16 @@ int character_set_pos(Context * ctx, const char * map, int x, int y)
 		while (event_id[i])
 		{
 			script = nullptr;
-			if (entry_read_string(MAP_TABLE, map, &script, layer_name,
+			if (entry_read_string(MAP_TABLE, map.c_str(), &script, layer_name,
 			MAP_ENTRY_EVENT_LIST, event_id[i], MAP_EVENT_SCRIPT, nullptr) == RET_OK)
 			{
-				entry_read_list(MAP_TABLE, map, &param, layer_name,
+				entry_read_list(MAP_TABLE, map.c_str(), &param, layer_name,
 				MAP_ENTRY_EVENT_LIST, event_id[i], MAP_EVENT_PARAM, nullptr);
 			}
-			else if (entry_read_string(MAP_TABLE, map, &script,
+			else if (entry_read_string(MAP_TABLE, map.c_str(), &script,
 			MAP_ENTRY_EVENT_LIST, event_id[i], MAP_EVENT_SCRIPT, nullptr) == RET_OK)
 			{
-				entry_read_list(MAP_TABLE, map, &param, MAP_ENTRY_EVENT_LIST, event_id[i], MAP_EVENT_PARAM, nullptr);
+				entry_read_list(MAP_TABLE, map.c_str(), &param, MAP_ENTRY_EVENT_LIST, event_id[i], MAP_EVENT_PARAM, nullptr);
 			}
 
 			if (script == nullptr)
@@ -650,7 +651,7 @@ int character_set_pos(Context * ctx, const char * map, int x, int y)
 
 /*********************************************************
  Set NPC to the value passed.
- If the value is != 0 , the NPC is instanciated
+ If the value is != 0 , the NPC is instantiated
  return -1 on error
  *********************************************************/
 int character_set_npc(const char * id, int npc)
