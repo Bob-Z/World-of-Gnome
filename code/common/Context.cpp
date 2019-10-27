@@ -45,11 +45,10 @@ Context * context_list_start = nullptr;
 
 /*****************************************************************************/
 Context::Context() :
-		m_mutex(nullptr), m_userName(), m_connected(false), m_inGame(false), m_npc(true), m_socket(), m_socket_data(), m_send_mutex(nullptr), m_hostname(
-				nullptr), m_render(nullptr), m_window(nullptr), m_character_name(nullptr), m_map(nullptr), m_tile_x(-1), m_tile_y(-1), m_prev_pos_tile_x(-1), m_prev_pos_tile_y(
-				-1), m_pos_changed(false), m_animation_tick(0), m_type(nullptr), m_selection(), m_id(nullptr), m_prev_map(nullptr), m_change_map(false), m_lua_VM(
-				nullptr), m_condition(nullptr), m_condition_mutex(nullptr), m_orientation(0), m_direction(0), m_next_execution_time(0), m_previous(nullptr), m_next(
-				nullptr)
+		m_mutex(nullptr), m_userName(), m_connected(false), m_inGame(false), m_npc(true), m_characterName(), m_socket(), m_socket_data(), m_send_mutex(nullptr), m_hostname(
+				nullptr), m_render(nullptr), m_window(nullptr), m_map(nullptr), m_tile_x(-1), m_tile_y(-1), m_prev_pos_tile_x(-1), m_prev_pos_tile_y(-1), m_pos_changed(
+				false), m_animation_tick(0), m_type(nullptr), m_selection(), m_id(nullptr), m_prev_map(nullptr), m_change_map(false), m_lua_VM(nullptr), m_condition(
+				nullptr), m_condition_mutex(nullptr), m_orientation(0), m_direction(0), m_next_execution_time(0), m_previous(nullptr), m_next(nullptr)
 {
 	m_mutex = SDL_CreateMutex();
 }
@@ -94,7 +93,6 @@ void context_init(Context * context)
 	context->m_render = nullptr;
 	context->m_window = nullptr;
 
-	context->m_character_name = nullptr;
 	context->m_map = nullptr;
 
 	context->m_tile_x = 0;
@@ -170,11 +168,7 @@ void context_free_data(Context * context)
 		free(context->m_hostname);
 	}
 	context->m_hostname = nullptr;
-	if (context->m_character_name)
-	{
-		free(context->m_character_name);
-	}
-	context->m_character_name = nullptr;
+
 	if (context->m_map)
 	{
 		free(context->m_map);
@@ -353,25 +347,6 @@ TCPsocket context_get_socket_data(Context * context)
 	context_unlock_list();
 
 	return socket;
-}
-
-/**************************************
- Returns RET_NOK if error
- **************************************/
-ret_code_t context_set_character_name(Context * context, const char * name)
-{
-	ret_code_t ret = RET_OK;
-
-	context_lock_list();
-	free(context->m_character_name);
-	context->m_character_name = strdup(name);
-	if (context->m_character_name == nullptr)
-	{
-		ret = RET_NOK;
-	}
-	context_unlock_list();
-
-	return ret;
 }
 
 /**************************************
@@ -628,8 +603,7 @@ ret_code_t context_update_from_file(Context * context)
 	if (entry_read_string(CHARACTER_TABLE, context->m_id, &result,
 	CHARACTER_KEY_NAME, nullptr) == RET_OK)
 	{
-		free(context->m_character_name);
-		context->m_character_name = result;
+		context->setCharacterName(std::string(result));
 	}
 	else
 	{
@@ -790,7 +764,7 @@ void context_add_or_update_from_network_frame(const ContextBis & context)
 	wlog(LOGDEVELOPER, "Creating context %s / %s", context.getUserName().c_str(), context.getCharacterName().c_str());
 	ctx = context_new();
 	ctx->setUserName(context.getUserName());
-	context_set_character_name(ctx, context.getCharacterName().c_str());
+	ctx->setCharacterName(context.getCharacterName().c_str());
 	ctx->setNpc(context.isNpc());
 	context_set_map(ctx, context.getMap().c_str());
 	context_set_type(ctx, context.getType().c_str());
@@ -890,4 +864,20 @@ bool Context::isNpc() const
 void Context::setNpc(bool npc)
 {
 	m_npc = npc;
+}
+
+/*****************************************************************************/
+const std::string& Context::getCharacterName() const
+{
+	SdlLocking lock(m_mutex);
+
+	return m_characterName;
+}
+
+/*****************************************************************************/
+void Context::setCharacterName(const std::string& characterName)
+{
+	SdlLocking lock(m_mutex);
+
+	m_characterName = characterName;
 }

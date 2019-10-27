@@ -490,7 +490,7 @@ void network_send_context_to_context(Context * dest_ctx, Context * src_ctx)
 
 	pb::ServerMessage message;
 	message.mutable_context()->set_user_name(src_ctx->getUserName());
-	message.mutable_context()->set_character_name(src_ctx->m_character_name);
+	message.mutable_context()->set_character_name(src_ctx->getCharacterName());
 	message.mutable_context()->set_npc(src_ctx->isNpc());
 	message.mutable_context()->set_map(src_ctx->m_map);
 	message.mutable_context()->set_in_game(src_ctx->isInGame());

@@ -53,6 +53,8 @@ public:
 	void setInGame(bool inGame);
 	bool isNpc() const;
 	void setNpc(bool npc);
+	const std::string& getCharacterName() const;
+	void setCharacterName(const std::string& characterName);
 
 private:
 	SDL_mutex* m_mutex;
@@ -60,6 +62,7 @@ private:
 	bool m_connected; // User logged with the correct password, or NPC activated
 	bool m_inGame;
 	bool m_npc;
+	std::string m_characterName;
 
 public:
 	TCPsocket m_socket;
@@ -70,7 +73,6 @@ public:
 	SDL_Renderer * m_render;
 	SDL_Window * m_window;
 
-	char * m_character_name;
 	char * m_map;	// map name
 	int m_tile_x;	// player position (in tile)
 	int m_tile_y;	// player position (in tile)
@@ -108,7 +110,6 @@ void context_set_socket(Context * context, TCPsocket socket);
 TCPsocket context_get_socket(Context * context);
 void context_set_socket_data(Context * context, TCPsocket socket);
 TCPsocket context_get_socket_data(Context * context);
-ret_code_t context_set_character_name(Context * context, const char * name);
 ret_code_t context_set_map(Context * context, const char * name);
 int context_set_map_w(Context * context, int width);
 int context_set_map_h(Context * context, int height);

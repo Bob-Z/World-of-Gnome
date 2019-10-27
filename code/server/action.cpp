@@ -476,7 +476,7 @@ static int l_character_get_name(lua_State* L)
 		werr(LOGDESIGNER, "Cannot find context with ID %s", id);
 		return 0;  // number of results
 	}
-	lua_pushstring(L, target->m_character_name);
+	lua_pushstring(L, target->getCharacterName().c_str());
 	return 1;  // number of results
 }
 
@@ -2208,7 +2208,7 @@ static int l_popup_send(lua_State* L)
  **************************************/
 static void action_chat(Context * context, const char * text)
 {
-	const std::string new_text = std::string(context->m_character_name) + ":" + std::string(text);
+	const std::string new_text = context->getCharacterName() + ":" + std::string(text);
 
 	network_broadcast_text(context, new_text);
 }

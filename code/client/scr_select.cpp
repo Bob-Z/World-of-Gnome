@@ -95,7 +95,7 @@ static void cb_select(void * arg)
 	character = &(character_list[current_character]);
 
 	context_set_id(ctx, character->id);
-	context_set_character_name(ctx, character->name);
+	ctx->setCharacterName(character->name);
 	ctx->setInGame(true);
 
 	file_clean(ctx);
