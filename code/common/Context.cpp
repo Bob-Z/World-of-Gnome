@@ -22,10 +22,10 @@
 #include "entry.h"
 #include "log.h"
 #include "mutex.h"
-#include <stdlib.h>
+#include "SdlLocking.h"
 #include "syntax.h"
-#include <SDL_mutex.h>
 #include <cstring>
+#include <stdlib.h>
 #include <string>
 
 #include "../server/action.h"
@@ -43,14 +43,21 @@ extern "C"
 
 Context * context_list_start = nullptr;
 
-/***********************
- ***********************/
+/*****************************************************************************/
 Context::Context() :
-		m_userName(), m_connected(false), m_in_game(false), m_socket(), m_socket_data(), m_send_mutex(nullptr), m_hostname(nullptr), m_render(nullptr), m_window(
-				nullptr), m_npc(true), m_character_name(nullptr), m_map(nullptr), m_tile_x(-1), m_tile_y(-1), m_prev_pos_tile_x(-1), m_prev_pos_tile_y(-1), m_pos_changed(
-				false), m_animation_tick(0), m_type(nullptr), m_selection(), m_id(nullptr), m_prev_map(nullptr), m_change_map(false), m_lua_VM(nullptr), m_condition(
-				nullptr), m_condition_mutex(nullptr), m_orientation(0), m_direction(0), m_next_execution_time(0), m_previous(nullptr), m_next(nullptr)
+		m_mutex(nullptr), m_userName(), m_isConnected(false), m_in_game(false), m_socket(), m_socket_data(), m_send_mutex(nullptr), m_hostname(nullptr), m_render(
+				nullptr), m_window(nullptr), m_npc(true), m_character_name(nullptr), m_map(nullptr), m_tile_x(-1), m_tile_y(-1), m_prev_pos_tile_x(-1), m_prev_pos_tile_y(
+				-1), m_pos_changed(false), m_animation_tick(0), m_type(nullptr), m_selection(), m_id(nullptr), m_prev_map(nullptr), m_change_map(false), m_lua_VM(
+				nullptr), m_condition(nullptr), m_condition_mutex(nullptr), m_orientation(0), m_direction(0), m_next_execution_time(0), m_previous(nullptr), m_next(
+				nullptr)
 {
+	m_mutex = SDL_CreateMutex();
+}
+
+/*****************************************************************************/
+Context::~Context()
+{
+	SDL_DestroyMutex(m_mutex);
 }
 
 /***********************
@@ -79,7 +86,7 @@ Context * context_get_first()
  *************************************/
 void context_init(Context * context)
 {
-	context->m_connected = false;
+	context->m_isConnected = false;
 	context->m_in_game = false;
 	context->m_socket = 0;
 	context->m_socket_data = 0;
@@ -150,7 +157,7 @@ Context * context_new(void)
 void context_free_data(Context * context)
 {
 	context->m_in_game = false;
-	context->m_connected = false;
+	context->m_isConnected = false;
 	if (context->m_socket != 0)
 	{
 		SDLNet_TCP_Close(context->m_socket);
@@ -336,7 +343,7 @@ int context_get_in_game(Context * context)
 void context_set_connected(Context * context, bool connected)
 {
 	context_lock_list();
-	context->m_connected = connected;
+	context->m_isConnected = connected;
 	context_unlock_list();
 }
 
@@ -347,7 +354,7 @@ int context_get_connected(Context * context)
 	int conn = 0;
 
 	context_lock_list();
-	conn = context->m_connected;
+	conn = context->m_isConnected;
 	context_unlock_list();
 
 	return conn;
@@ -812,7 +819,7 @@ void context_add_or_update_from_network_frame(const ContextBis & context)
 		if (strcmp(context.getId().c_str(), ctx->m_id) == 0)
 		{
 			ctx->m_in_game = context.isInGame();
-			ctx->m_connected = context.isConnected();
+			ctx->m_isConnected = context.isConnected();
 
 			if (context.isInGame() == true)
 			{
@@ -890,7 +897,7 @@ int context_distance(Context * ctx1, Context * ctx2)
  **************************************/
 bool context_is_npc(Context * ctx)
 {
-	if (ctx->m_socket == nullptr && ctx->m_connected == true)
+	if (ctx->m_socket == nullptr && ctx->m_isConnected == true)
 	{
 		return true;
 	}
@@ -901,15 +908,15 @@ bool context_is_npc(Context * ctx)
 /*****************************************************************************/
 const std::string& Context::getUserName() const
 {
+	SdlLocking lock(m_mutex);
+
 	return m_userName;
 }
 
 /*****************************************************************************/
 void Context::setUserName(const std::string& userName)
 {
-	context_lock_list();
+	SdlLocking lock(m_mutex);
 
 	m_userName = userName;
-
-	context_unlock_list();
 }

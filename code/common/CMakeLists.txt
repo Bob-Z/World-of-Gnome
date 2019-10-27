@@ -50,6 +50,7 @@ add_library(
 	lua_script.cpp
 	Serializer.cpp
 	Selection.cpp
+	SdlLocking.cpp
 )
 
 target_link_libraries (${PROJECT_NAME}

@@ -38,19 +38,22 @@ extern "C"
 #endif
 
 #include "types.h"
+#include <SDL_mutex.h>
 
 class Context
 {
 public:
 	Context();
+	~Context();
 	const std::string& getUserName() const;
 	void setUserName(const std::string& userName);
 
 private:
+	SDL_mutex* m_mutex;
 	std::string m_userName;
 
 public:
-	bool m_connected; // User logged with the correct password, or NPC activated
+	bool m_isConnected; // User logged with the correct password, or NPC activated
 	bool m_in_game;
 	TCPsocket m_socket;
 	TCPsocket m_socket_data;
