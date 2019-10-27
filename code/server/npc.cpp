@@ -155,7 +155,7 @@ void instantiate_npc(const char * id)
 	ctx->setUserName("CPU");
 	context_set_character_name(ctx, name);
 	free(name);
-	context_set_in_game(ctx, true);
+	ctx->setInGame(true);
 	ctx->setConnected(true);
 
 	context_set_map(ctx, map);

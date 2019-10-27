@@ -85,10 +85,10 @@ static ret_code_t manage_start(Context * context, const pb::Start & start)
 {
 	wlog(LOGDEVELOPER, "[network] Received start");
 
-	if (context->m_in_game == false)
+	if (context->isInGame() == false)
 	{
 		context->m_id = strdup(start.id().c_str());
-		context->m_in_game = true;
+		context->setInGame(true);
 		context_update_from_file(context);
 		context_spread(context);
 		context_request_other_context(context);
@@ -105,9 +105,9 @@ static ret_code_t manage_stop(Context * context, const pb::Stop & stop)
 {
 	wlog(LOGDEVELOPER, "[network] Received stop request for ID %s of user %s", context->getUserName().c_str(), context->m_id);
 
-	if (context->m_in_game == true)
+	if (context->isInGame() == true)
 	{
-		context->m_in_game = false;
+		context->setInGame(false);
 		if (context->m_map)
 		{
 			free(context->m_map);

@@ -166,7 +166,7 @@ int character_disconnect(const char * id)
 	werr(LOGDEVELOPER, "Disconnecting %s", id);
 
 	ctx = context_find(id);
-	context_set_in_game(ctx, false);
+	ctx->setInGame(false);
 	ctx->setConnected(false);
 	context_spread(ctx);
 
@@ -196,7 +196,7 @@ int character_out_of_game(const char * id)
 	werr(LOGDEVELOPER, "Kicking %s out of the game", id);
 
 	ctx = context_find(id);
-	context_set_in_game(ctx, false);
+	ctx->setInGame(false);
 	context_spread(ctx);
 
 	if (context_is_npc(ctx) == true)

@@ -253,7 +253,7 @@ static void set_up_sprite(Context * ctx)
 	{
 		return;
 	}
-	if (ctx->m_in_game == false)
+	if (ctx->isInGame() == false)
 	{
 		return;
 	}

@@ -45,7 +45,7 @@ Context * context_list_start = nullptr;
 
 /*****************************************************************************/
 Context::Context() :
-		m_mutex(nullptr), m_userName(), m_connected(false), m_in_game(false), m_socket(), m_socket_data(), m_send_mutex(nullptr), m_hostname(nullptr), m_render(
+		m_mutex(nullptr), m_userName(), m_connected(false), m_inGame(false), m_socket(), m_socket_data(), m_send_mutex(nullptr), m_hostname(nullptr), m_render(
 				nullptr), m_window(nullptr), m_npc(true), m_character_name(nullptr), m_map(nullptr), m_tile_x(-1), m_tile_y(-1), m_prev_pos_tile_x(-1), m_prev_pos_tile_y(
 				-1), m_pos_changed(false), m_animation_tick(0), m_type(nullptr), m_selection(), m_id(nullptr), m_prev_map(nullptr), m_change_map(false), m_lua_VM(
 				nullptr), m_condition(nullptr), m_condition_mutex(nullptr), m_orientation(0), m_direction(0), m_next_execution_time(0), m_previous(nullptr), m_next(
@@ -86,7 +86,6 @@ Context * context_get_first()
  *************************************/
 void context_init(Context * context)
 {
-	context->m_in_game = false;
 	context->m_socket = 0;
 	context->m_socket_data = 0;
 	context->m_hostname = nullptr;
@@ -155,7 +154,6 @@ Context * context_new(void)
  *************************************/
 void context_free_data(Context * context)
 {
-	context->m_in_game = false;
 	if (context->m_socket != 0)
 	{
 		SDLNet_TCP_Close(context->m_socket);
@@ -312,28 +310,6 @@ ret_code_t context_set_hostname(Context * context, const char * name)
 
 	context_unlock_list();
 	return RET_OK;
-}
-
-/**************************************
- **************************************/
-void context_set_in_game(Context * context, bool in_game)
-{
-	context_lock_list();
-	context->m_in_game = in_game;
-	context_unlock_list();
-}
-
-/**************************************
- **************************************/
-int context_get_in_game(Context * context)
-{
-	int in_game = 0;
-
-	context_lock_list();
-	in_game = context->m_in_game;
-	context_unlock_list();
-
-	return in_game;
 }
 
 /**************************************
@@ -794,7 +770,7 @@ void context_add_or_update_from_network_frame(const ContextBis & context)
 	{
 		if (strcmp(context.getId().c_str(), ctx->m_id) == 0)
 		{
-			ctx->m_in_game = context.isInGame();
+			ctx->setInGame(context.isInGame());
 			ctx->setConnected(context.isConnected());
 
 			if (context.isInGame() == true)
@@ -839,7 +815,7 @@ void context_add_or_update_from_network_frame(const ContextBis & context)
 	context_set_pos_ty(ctx, context.getTileY());
 	context_set_id(ctx, context.getId().c_str());
 	ctx->setConnected(context.isConnected());
-	context_set_in_game(ctx, context.isInGame());
+	ctx->setInGame(context.isInGame());
 	context_set_selected_character(ctx, context.getSelection().getId().c_str());
 	context_set_selected_tile(ctx, context.getSelection().getMap().c_str(), context.getSelection().getMapCoordTx(), context.getSelection().getMapCoordTy());
 	context_set_selected_equipment(ctx, context.getSelection().getEquipment().c_str());
@@ -907,4 +883,16 @@ bool Context::isConnected() const
 void Context::setConnected(bool connected)
 {
 	m_connected = connected;
+}
+
+/*****************************************************************************/
+bool Context::isInGame() const
+{
+	return m_inGame;
+}
+
+/*****************************************************************************/
+void Context::setInGame(bool inGame)
+{
+	m_inGame = inGame;
 }

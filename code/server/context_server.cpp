@@ -46,7 +46,7 @@ void context_spread(Context * context)
 	do
 	{
 		// Skip if not in game
-		if (ctx->m_in_game == false)
+		if (ctx->isInGame() == false)
 		{
 			continue;
 		}
@@ -104,7 +104,7 @@ void context_broadcast_text(const char * map, const char * text)
 	do
 	{
 		// Skip if not in game
-		if (ctx->m_in_game == false)
+		if (ctx->isInGame() == false)
 		{
 			continue;
 		}
@@ -168,7 +168,7 @@ void context_broadcast_map(const char * map)
 		}
 
 		// Skip if not in game
-		if (ctx->m_in_game == false)
+		if (ctx->isInGame() == false)
 		{
 			continue;
 		}
@@ -219,7 +219,7 @@ void context_broadcast_character(const char * character)
 		}
 
 		// Skip if not in game
-		if (ctx->m_in_game == false)
+		if (ctx->isInGame() == false)
 		{
 			continue;
 		}

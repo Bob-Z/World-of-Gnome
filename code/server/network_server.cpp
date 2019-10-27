@@ -82,7 +82,7 @@ void network_broadcast_text(Context * context, const std::string & text)
 		}
 
 		// Skip if not in game
-		if (context_get_in_game(ctx) == false)
+		if (ctx->isInGame() == false)
 		{
 			continue;
 		}
@@ -183,7 +183,7 @@ void network_broadcast_entry_int(const char * table, const char * file, const ch
 			continue;
 		}
 		// Skip if not in game
-		if (context_get_in_game(ctx) == false)
+		if (ctx->isInGame() == false)
 		{
 			continue;
 		}
@@ -409,7 +409,7 @@ void network_broadcast_effect(EffectManager::EffectType p_Type, const std::strin
 			continue;
 		}
 
-		if (context_get_in_game(ctx) == false)
+		if (ctx->isInGame() == false)
 		{
 			continue;
 		}
@@ -479,7 +479,7 @@ void network_send_context_to_context(Context * dest_ctx, Context * src_ctx)
 		return;
 	}
 	// Source context is not ready yet
-	if (src_ctx->m_in_game == 0)
+	if (src_ctx->isInGame() == 0)
 	{
 		return;
 	}
@@ -493,7 +493,7 @@ void network_send_context_to_context(Context * dest_ctx, Context * src_ctx)
 	message.mutable_context()->set_character_name(src_ctx->m_character_name);
 	message.mutable_context()->set_npc(src_ctx->m_npc);
 	message.mutable_context()->set_map(src_ctx->m_map);
-	message.mutable_context()->set_in_game(src_ctx->m_in_game);
+	message.mutable_context()->set_in_game(src_ctx->isInGame());
 	message.mutable_context()->set_connected(src_ctx->isConnected());
 	message.mutable_context()->set_tile_x(src_ctx->m_tile_x);
 	message.mutable_context()->set_tile_y(src_ctx->m_tile_y);

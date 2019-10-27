@@ -49,14 +49,16 @@ public:
 	void setUserName(const std::string& userName);
 	bool isConnected() const;
 	void setConnected(bool connected);
+	bool isInGame() const;
+	void setInGame(bool inGame);
 
 private:
 	SDL_mutex* m_mutex;
 	std::string m_userName;
 	bool m_connected; // User logged with the correct password, or NPC activated
+	bool m_inGame;
 
 public:
-	bool m_in_game;
 	TCPsocket m_socket;
 	TCPsocket m_socket_data;
 	SDL_mutex* m_send_mutex; // Asynchronous network send
@@ -100,8 +102,6 @@ Context * context_new(void);
 void context_free_data(Context * context);
 void context_free(Context * context);
 ret_code_t context_set_hostname(Context * context, const char * name);
-void context_set_in_game(Context * context, bool in_game);
-int context_get_in_game(Context * context);
 void context_set_socket(Context * context, TCPsocket socket);
 TCPsocket context_get_socket(Context * context);
 void context_set_socket_data(Context * context, TCPsocket socket);
