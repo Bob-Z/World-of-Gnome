@@ -40,7 +40,7 @@ static unsigned long calc_hash(const char * str)
 
 /****************************************
  Return the list_t associated with the given key
- Return NULL if key does not match any list entry.
+ Return nullptr if key does not match any list entry.
  *****************************************/
 static list_entry_t * search_entry(list_t * list, const char * key)
 {
@@ -48,9 +48,9 @@ static list_entry_t * search_entry(list_t * list, const char * key)
 	unsigned long hash;
 	int index;
 
-	if (list == NULL)
+	if (list == nullptr)
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	hash = calc_hash(key);
@@ -66,20 +66,20 @@ static list_entry_t * search_entry(list_t * list, const char * key)
 		}
 		current_entry = current_entry->next;
 	}
-	return NULL;
+	return nullptr;
 }
 
 /****************************************
  Return the data pointer associated with the given key
- Return NULL if key does not match any list entry.
+ Return nullptr if key does not match any list entry.
  *****************************************/
 void * list_find(list_t * list, const char * key)
 {
 	list_entry_t * current_entry;
 
-	if (list == NULL)
+	if (list == nullptr)
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	current_entry = search_entry(list, key);
@@ -89,7 +89,7 @@ void * list_find(list_t * list, const char * key)
 		return current_entry->data;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 /****************************************
@@ -116,12 +116,12 @@ void list_update(list_t ** list, const char *key, void * data)
 	new_entry->key = strdup(key);
 	new_entry->data = data;
 	new_entry->hash = calc_hash(new_entry->key);
-	new_entry->next = NULL;
+	new_entry->next = nullptr;
 
 	index = new_entry->hash % HASH_TABLE_SIZE;
 
 	/* list does not exist */
-	if (*list == NULL)
+	if (*list == nullptr)
 	{
 		*list = (list_entry_t**) malloc( HASH_TABLE_SIZE * sizeof(list_entry_t *));
 		memset(*list, 0, HASH_TABLE_SIZE * sizeof(list_entry_t *));
@@ -130,10 +130,10 @@ void list_update(list_t ** list, const char *key, void * data)
 	}
 
 	/* list exists and the hash table index is already occupied */
-	if ((*list)[index] != NULL)
+	if ((*list)[index] != nullptr)
 	{
 		entry = (*list)[index];
-		while (entry->next != NULL)
+		while (entry->next != nullptr)
 		{
 			entry = entry->next;
 		}

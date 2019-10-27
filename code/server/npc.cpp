@@ -41,8 +41,8 @@ static int npc_script(void * data)
 {
 	Context * context = (Context *) data;
 	Uint32 timeout_ms;
-	char * script = NULL;
-	char ** parameters = NULL;
+	char * script = nullptr;
+	char ** parameters = nullptr;
 
 	/* Do not start every NPC at the same moment */
 	usleep((random() % NPC_TIMEOUT) * 1000);
@@ -61,12 +61,12 @@ static int npc_script(void * data)
 		{
 			deep_free(parameters);
 		}
-		if (entry_read_string(CHARACTER_TABLE, context->id, &script, CHARACTER_KEY_AI, NULL) == RET_NOK)
+		if (entry_read_string(CHARACTER_TABLE, context->id, &script, CHARACTER_KEY_AI, nullptr) == RET_NOK)
 		{
 			werr(LOGUSER, "No AI script for %s", context->id);
 			break;
 		}
-		entry_read_list(CHARACTER_TABLE, context->id, &parameters, CHARACTER_KEY_AI_PARAMS, NULL);
+		entry_read_list(CHARACTER_TABLE, context->id, &parameters, CHARACTER_KEY_AI_PARAMS, nullptr);
 
 		if (context->next_execution_time < SDL_GetTicks())
 		{
@@ -113,7 +113,7 @@ void instantiate_npc(const char * id)
 
 	// check if it's a NPC
 	if (entry_read_int(CHARACTER_TABLE, id, &is_npc, CHARACTER_KEY_NPC,
-	NULL) == RET_NOK)
+	nullptr) == RET_NOK)
 	{
 		return;
 	}
@@ -125,31 +125,31 @@ void instantiate_npc(const char * id)
 
 	// read data of this npc
 	if (entry_read_int(CHARACTER_TABLE, id, &x, CHARACTER_KEY_TILE_X,
-	NULL) == RET_NOK)
+	nullptr) == RET_NOK)
 	{
 		return;
 	}
 
 	if (entry_read_int(CHARACTER_TABLE, id, &y, CHARACTER_KEY_TILE_Y,
-	NULL) == RET_NOK)
+	nullptr) == RET_NOK)
 	{
 		return;
 	}
 
 	if (entry_read_string(CHARACTER_TABLE, id, &map, CHARACTER_KEY_MAP,
-	NULL) == RET_NOK)
+	nullptr) == RET_NOK)
 	{
 		return;
 	}
 
 	if (entry_read_string(CHARACTER_TABLE, id, &name, CHARACTER_KEY_NAME,
-	NULL) == RET_NOK)
+	nullptr) == RET_NOK)
 	{
 		name = strdup("");
 	}
 
 	if (entry_read_string(CHARACTER_TABLE, id, &type, CHARACTER_KEY_TYPE,
-	NULL) == RET_NOK)
+	nullptr) == RET_NOK)
 	{
 		free(map);
 		free(name);
@@ -191,12 +191,12 @@ void init_npc(void)
 	const std::string file_path = base_directory + "/" + std::string(CHARACTER_TABLE);
 
 	dir = opendir(file_path.c_str());
-	if (dir == NULL)
+	if (dir == nullptr)
 	{
 		return;
 	}
 
-	while ((ent = readdir(dir)) != NULL)
+	while ((ent = readdir(dir)) != nullptr)
 	{
 		// skip hidden file
 		if (ent->d_name[0] == '.')

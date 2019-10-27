@@ -48,25 +48,25 @@ int attribute_change(Context * context, const char * table, const char * id, con
 	bool do_max_action = false;
 	bool do_up_action = false;
 	char * action;
-	char * min_action = NULL;
-	char * down_action = NULL;
-	char * max_action = NULL;
-	char * up_action = NULL;
+	char * min_action = nullptr;
+	char * down_action = nullptr;
+	char * max_action = nullptr;
+	char * up_action = nullptr;
 
 	SDL_LockMutex(attribute_mutex);
 
-	if (entry_read_int(table, id, &current, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_CURRENT, NULL) == RET_NOK)
+	if (entry_read_int(table, id, &current, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_CURRENT, nullptr) == RET_NOK)
 	{
 		SDL_UnlockMutex(attribute_mutex);
 		return -1;
 	}
 
-	if (entry_read_int(table, id, &min, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_MIN, NULL) == RET_NOK)
+	if (entry_read_int(table, id, &min, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_MIN, nullptr) == RET_NOK)
 	{
 		min = -1;
 	}
 
-	if (entry_read_int(table, id, &max, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_MAX, NULL) == RET_NOK)
+	if (entry_read_int(table, id, &max, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_MAX, nullptr) == RET_NOK)
 	{
 		max = -1;
 	}
@@ -91,12 +91,12 @@ int attribute_change(Context * context, const char * table, const char * id, con
 		}
 	}
 
-	if (entry_write_int(table, id, current, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_CURRENT, NULL) == RET_NOK)
+	if (entry_write_int(table, id, current, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_CURRENT, nullptr) == RET_NOK)
 	{
 		SDL_UnlockMutex(attribute_mutex);
 		return -1;
 	}
-	if (entry_write_int(table, id, old, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_PREVIOUS, NULL) == RET_NOK)
+	if (entry_write_int(table, id, old, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_PREVIOUS, nullptr) == RET_NOK)
 	{
 		SDL_UnlockMutex(attribute_mutex);
 		return -1;
@@ -107,7 +107,7 @@ int attribute_change(Context * context, const char * table, const char * id, con
 	{
 		if (do_min_action == true)
 		{
-			if (entry_read_string(table, id, &action, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_ON_MIN, NULL) == RET_NOK)
+			if (entry_read_string(table, id, &action, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_ON_MIN, nullptr) == RET_NOK)
 			{
 				do_min_action = false;
 			}
@@ -117,7 +117,7 @@ int attribute_change(Context * context, const char * table, const char * id, con
 			}
 		}
 
-		if (entry_read_string(table, id, &action, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_ON_DOWN, NULL) == RET_OK)
+		if (entry_read_string(table, id, &action, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_ON_DOWN, nullptr) == RET_OK)
 		{
 			do_down_action = true;
 			down_action = action;
@@ -128,7 +128,7 @@ int attribute_change(Context * context, const char * table, const char * id, con
 	{
 		if (do_max_action == true)
 		{
-			if (entry_read_string(table, id, &action, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_ON_MAX, NULL) == RET_NOK)
+			if (entry_read_string(table, id, &action, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_ON_MAX, nullptr) == RET_NOK)
 			{
 				do_max_action = false;
 			}
@@ -138,7 +138,7 @@ int attribute_change(Context * context, const char * table, const char * id, con
 			}
 		}
 
-		if (entry_read_string(table, id, &action, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_ON_UP, NULL) == RET_OK)
+		if (entry_read_string(table, id, &action, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_ON_UP, nullptr) == RET_OK)
 		{
 			do_up_action = true;
 			up_action = action;
@@ -148,36 +148,36 @@ int attribute_change(Context * context, const char * table, const char * id, con
 	SDL_UnlockMutex(attribute_mutex);
 
 	// do automatic actions
-	if (do_down_action == true && down_action != NULL)
+	if (do_down_action == true && down_action != nullptr)
 	{
-		action_execute_script(context, down_action, NULL);
+		action_execute_script(context, down_action, nullptr);
 	}
 	if (down_action)
 	{
 		free(down_action);
 	}
 
-	if (do_min_action == true && min_action != NULL)
+	if (do_min_action == true && min_action != nullptr)
 	{
-		action_execute_script(context, min_action, NULL);
+		action_execute_script(context, min_action, nullptr);
 	}
 	if (min_action)
 	{
 		free(min_action);
 	}
 
-	if (do_up_action == true && up_action != NULL)
+	if (do_up_action == true && up_action != nullptr)
 	{
-		action_execute_script(context, up_action, NULL);
+		action_execute_script(context, up_action, nullptr);
 	}
 	if (min_action)
 	{
 		free(up_action);
 	}
 
-	if (do_max_action == true && max_action != NULL)
+	if (do_max_action == true && max_action != nullptr)
 	{
-		action_execute_script(context, max_action, NULL);
+		action_execute_script(context, max_action, nullptr);
 		free(max_action);
 	}
 	if (max_action)
@@ -202,7 +202,7 @@ int attribute_get(const char * table, const char *id, const char * attribute)
 
 	SDL_LockMutex(attribute_mutex);
 
-	entry_read_int(table, id, &current, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_CURRENT, NULL);
+	entry_read_int(table, id, &current, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_CURRENT, nullptr);
 
 	SDL_UnlockMutex(attribute_mutex);
 
@@ -217,7 +217,7 @@ int attribute_set(const char * table, const char * id, const char * attribute, i
 {
 	SDL_LockMutex(attribute_mutex);
 
-	if (entry_write_int(table, id, value, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_CURRENT, NULL) == RET_NOK)
+	if (entry_write_int(table, id, value, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_CURRENT, nullptr) == RET_NOK)
 	{
 		SDL_UnlockMutex(attribute_mutex);
 		return -1;
@@ -230,16 +230,16 @@ int attribute_set(const char * table, const char * id, const char * attribute, i
 
 /****************************************
  get the specified attribute tag's value
- return NULL if fails
+ return nullptr if fails
  returned value MUST be freed
  ****************************************/
 char * attribute_tag_get(const char * table, const char *id, const char * attribute)
 {
-	char * tag = NULL;
+	char * tag = nullptr;
 
 	SDL_LockMutex(attribute_mutex);
 
-	entry_read_string(table, id, &tag, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_CURRENT, NULL);
+	entry_read_string(table, id, &tag, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_CURRENT, nullptr);
 
 	SDL_UnlockMutex(attribute_mutex);
 
@@ -254,7 +254,7 @@ int attribute_tag_set(const char * table, const char * id, const char * attribut
 {
 	SDL_LockMutex(attribute_mutex);
 
-	if (entry_write_string(table, id, value, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_CURRENT, NULL) == RET_NOK)
+	if (entry_write_string(table, id, value, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_CURRENT, nullptr) == RET_NOK)
 	{
 		SDL_UnlockMutex(attribute_mutex);
 		return -1;

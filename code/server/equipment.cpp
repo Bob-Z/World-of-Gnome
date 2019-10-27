@@ -33,13 +33,13 @@
 int equipment_set_item(const char *id, const char * slot, const char * item)
 {
 	Context * context = context_find(id);
-	if (context == NULL)
+	if (context == nullptr)
 	{
 		werr(LOGDESIGNER, "Could not find context %s", id);
 		return -1;
 	}
 
-	if (entry_write_string(CHARACTER_TABLE, context->id, item, EQUIPMENT_GROUP, slot, EQUIPMENT_EQUIPPED, NULL) == RET_OK)
+	if (entry_write_string(CHARACTER_TABLE, context->id, item, EQUIPMENT_GROUP, slot, EQUIPMENT_EQUIPPED, nullptr) == RET_OK)
 	{
 		// update client
 		network_send_character_file(context);
@@ -52,21 +52,21 @@ int equipment_set_item(const char *id, const char * slot, const char * item)
 /***********************************************************************
  Return the name of the item in character's specified equipment slot
  Returned string MUST BE FREED
- return NULL if fails
+ return nullptr if fails
  ***********************************************************************/
 char * equipment_get_item(const char *id, const char * slot)
 {
 	char * item;
 	Context * context = context_find(id);
-	if (context == NULL)
+	if (context == nullptr)
 	{
 		werr(LOGDESIGNER, "Could not find context %s", id);
-		return NULL;
+		return nullptr;
 	}
 
-	if (entry_read_string(CHARACTER_TABLE, context->id, &item, EQUIPMENT_GROUP, slot, EQUIPMENT_EQUIPPED, NULL) == RET_NOK)
+	if (entry_read_string(CHARACTER_TABLE, context->id, &item, EQUIPMENT_GROUP, slot, EQUIPMENT_EQUIPPED, nullptr) == RET_NOK)
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	return item;

@@ -34,12 +34,12 @@
 const char optstring[] = "?l:f:F:ni:";
 const struct option longopts[] =
 {
-{ "log", required_argument, NULL, 'l' },
-{ "file", required_argument, NULL, 'f' },
-{ "func", required_argument, NULL, 'F' },
-{ "nonpc", no_argument, NULL, 'n' },
-{ "input", required_argument, NULL, 'i' },
-{ NULL, 0, NULL, 0 } };
+{ "log", required_argument, nullptr, 'l' },
+{ "file", required_argument, nullptr, 'f' },
+{ "func", required_argument, nullptr, 'F' },
+{ "nonpc", no_argument, nullptr, 'n' },
+{ "input", required_argument, nullptr, 'i' },
+{ nullptr, 0, nullptr, 0 } };
 
 void sigint_handler(int sig)
 {
@@ -59,7 +59,7 @@ int main(int argc, char **argv)
 
 	base_directory = std::string(getenv("HOME")) + "/.config/wog/server";
 
-	while ((opt_ret = getopt_long(argc, argv, optstring, longopts, NULL)) != -1)
+	while ((opt_ret = getopt_long(argc, argv, optstring, longopts, nullptr)) != -1)
 	{
 		switch (opt_ret)
 		{
@@ -90,7 +90,7 @@ int main(int argc, char **argv)
 	}
 
 	dir = opendir(base_directory.c_str());
-	if (dir == NULL)
+	if (dir == nullptr)
 	{
 		werr(LOGUSER, "Cannot find %s directory", base_directory.c_str());
 		return -1;
