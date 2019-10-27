@@ -45,8 +45,8 @@ Context * context_list_start = nullptr;
 
 /*****************************************************************************/
 Context::Context() :
-		m_mutex(nullptr), m_userName(), m_connected(false), m_inGame(false), m_socket(), m_socket_data(), m_send_mutex(nullptr), m_hostname(nullptr), m_render(
-				nullptr), m_window(nullptr), m_npc(true), m_character_name(nullptr), m_map(nullptr), m_tile_x(-1), m_tile_y(-1), m_prev_pos_tile_x(-1), m_prev_pos_tile_y(
+		m_mutex(nullptr), m_userName(), m_connected(false), m_inGame(false), m_npc(true), m_socket(), m_socket_data(), m_send_mutex(nullptr), m_hostname(
+				nullptr), m_render(nullptr), m_window(nullptr), m_character_name(nullptr), m_map(nullptr), m_tile_x(-1), m_tile_y(-1), m_prev_pos_tile_x(-1), m_prev_pos_tile_y(
 				-1), m_pos_changed(false), m_animation_tick(0), m_type(nullptr), m_selection(), m_id(nullptr), m_prev_map(nullptr), m_change_map(false), m_lua_VM(
 				nullptr), m_condition(nullptr), m_condition_mutex(nullptr), m_orientation(0), m_direction(0), m_next_execution_time(0), m_previous(nullptr), m_next(
 				nullptr)
@@ -94,7 +94,6 @@ void context_init(Context * context)
 	context->m_render = nullptr;
 	context->m_window = nullptr;
 
-	context->m_npc = 1;
 	context->m_character_name = nullptr;
 	context->m_map = nullptr;
 
@@ -440,22 +439,6 @@ ret_code_t context_set_type(Context * context, const char * type)
 
 /**************************************
  **************************************/
-void _context_set_npc(Context * context, bool npc)
-{
-	context->m_npc = npc;
-}
-
-/**************************************
- **************************************/
-void context_set_npc(Context * context, bool npc)
-{
-	context_lock_list();
-	_context_set_npc(context, npc);
-	context_unlock_list();
-}
-
-/**************************************
- **************************************/
 void _context_set_pos_tx(Context * context, int pos_tx)
 {
 	context->m_prev_pos_tile_x = context->m_tile_x;
@@ -658,7 +641,7 @@ ret_code_t context_update_from_file(Context * context)
 	{
 		ret = RET_NOK;
 	}
-	_context_set_npc(context, npc);
+	context->setNpc(npc);
 
 	if (entry_read_string(CHARACTER_TABLE, context->m_id, &result,
 	CHARACTER_KEY_TYPE, nullptr) == RET_OK)
@@ -779,7 +762,7 @@ void context_add_or_update_from_network_frame(const ContextBis & context)
 				// do not call context_set_* function since we already have the lock
 				_context_set_map(ctx, context.getMap().c_str());
 
-				_context_set_npc(ctx, context.isNpc());
+				ctx->setNpc(context.isNpc());
 
 				_context_set_pos_tx(ctx, context.getTileX());
 				_context_set_pos_ty(ctx, context.getTileY());
@@ -808,7 +791,7 @@ void context_add_or_update_from_network_frame(const ContextBis & context)
 	ctx = context_new();
 	ctx->setUserName(context.getUserName());
 	context_set_character_name(ctx, context.getCharacterName().c_str());
-	context_set_npc(ctx, context.isNpc());
+	ctx->setNpc(context.isNpc());
 	context_set_map(ctx, context.getMap().c_str());
 	context_set_type(ctx, context.getType().c_str());
 	context_set_pos_tx(ctx, context.getTileX());
@@ -895,4 +878,16 @@ bool Context::isInGame() const
 void Context::setInGame(bool inGame)
 {
 	m_inGame = inGame;
+}
+
+/*****************************************************************************/
+bool Context::isNpc() const
+{
+	return m_npc;
+}
+
+/*****************************************************************************/
+void Context::setNpc(bool npc)
+{
+	m_npc = npc;
 }

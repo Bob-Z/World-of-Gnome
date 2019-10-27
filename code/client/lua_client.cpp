@@ -50,10 +50,10 @@ static lua_State * g_pEffectLuaVm = nullptr;
  ***********************************/
 static int l_player_get_id(lua_State* p_pLuaState)
 {
-	Context * l_pContext;
+	Context * context;
 
-	l_pContext = context_get_player();
-	lua_pushstring(p_pLuaState, l_pContext->m_id);
+	context = context_get_player();
+	lua_pushstring(p_pLuaState, context->m_id);
 	return 1;  // number of results
 }
 
@@ -64,13 +64,13 @@ static int l_player_get_id(lua_State* p_pLuaState)
  ***********************************/
 static int l_context_get_id(lua_State* p_pLuaState)
 {
-	Context * l_pContext;
+	Context * context;
 
 	lua_getglobal(p_pLuaState, "current_context");
-	l_pContext = (Context*) lua_touserdata(p_pLuaState, -1);
+	context = (Context*) lua_touserdata(p_pLuaState, -1);
 	lua_pop(p_pLuaState, 1);
 
-	lua_pushstring(p_pLuaState, l_pContext->m_id);
+	lua_pushstring(p_pLuaState, context->m_id);
 	return 1; // number of results
 }
 
@@ -81,13 +81,13 @@ static int l_context_get_id(lua_State* p_pLuaState)
  ***********************************/
 static int l_context_get_npc(lua_State* p_pLuaState)
 {
-	Context * l_pContext;
+	Context * context;
 
 	lua_getglobal(p_pLuaState, "current_context");
-	l_pContext = (Context*) lua_touserdata(p_pLuaState, -1);
+	context = (Context*) lua_touserdata(p_pLuaState, -1);
 	lua_pop(p_pLuaState, 1);
 
-	lua_pushnumber(p_pLuaState, l_pContext->m_npc);
+	lua_pushnumber(p_pLuaState, context->isNpc());
 	return 1; // number of results
 }
 
@@ -98,13 +98,13 @@ static int l_context_get_npc(lua_State* p_pLuaState)
  ***********************************/
 static int l_context_get_map(lua_State* p_pLuaState)
 {
-	Context * l_pContext;
+	Context * context;
 
 	lua_getglobal(p_pLuaState, "current_context");
-	l_pContext = (Context*) lua_touserdata(p_pLuaState, -1);
+	context = (Context*) lua_touserdata(p_pLuaState, -1);
 	lua_pop(p_pLuaState, 1);
 
-	lua_pushstring(p_pLuaState, l_pContext->m_map);
+	lua_pushstring(p_pLuaState, context->m_map);
 	return 1; // number of results
 }
 
