@@ -209,10 +209,10 @@ void network_broadcast_entry_int(const char * table, const char * file, const ch
 
 /*******************************************************************************
  ******************************************************************************/
-static int new_connection(void * p_pData)
+static int new_connection(void * data)
 {
 	Context * context = nullptr;
-	TCPsocket socket = (TCPsocket) p_pData;
+	TCPsocket socket = (TCPsocket) data;
 
 	context = context_new();
 	if (context == nullptr)
