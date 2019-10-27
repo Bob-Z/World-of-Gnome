@@ -79,7 +79,7 @@ static int async_frame_send(void * p_pUserData)
 		return -1;
 	}
 
-	SDL_LockMutex(l_pContext->send_mutex);
+	SDL_LockMutex(l_pContext->m_send_mutex);
 
 	//send frame size
 	uint32_t length = htonl(static_cast<uint32_t>(l_pData->m_serialized_data.size()));
@@ -87,7 +87,7 @@ static int async_frame_send(void * p_pUserData)
 	int l_BytesWritten = SDLNet_TCP_Send(l_Socket, &length, sizeof(length));
 	if (l_BytesWritten != sizeof(length))
 	{
-		werr(LOGUSER, "Could not send command to %s", l_pContext->id);
+		werr(LOGUSER, "Could not send command to %s", l_pContext->m_id);
 		context_set_connected(l_pContext, false);
 		goto async_frame_send_end;
 	}
@@ -98,13 +98,13 @@ static int async_frame_send(void * p_pUserData)
 	l_BytesWritten = SDLNet_TCP_Send(l_Socket, l_pData->m_serialized_data.c_str(), l_pData->m_serialized_data.size());
 	if (l_BytesWritten != static_cast<int>(l_pData->m_serialized_data.size()))
 	{
-		werr(LOGUSER, "Could not send command to %s", l_pContext->id);
+		werr(LOGUSER, "Could not send command to %s", l_pContext->m_id);
 		context_set_connected(l_pContext, false);
 	}
 
 	//wlog(LOGDEVELOPER, "sent %u bytes on socket %d", l_BytesWritten, l_Socket);
 
-	async_frame_send_end: SDL_UnlockMutex(l_pContext->send_mutex);
+	async_frame_send_end: SDL_UnlockMutex(l_pContext->m_send_mutex);
 	delete l_pData;
 
 	return RET_OK;

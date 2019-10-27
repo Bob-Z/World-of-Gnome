@@ -66,15 +66,13 @@ static ret_code_t manage_login(Context * context, const pb::Login & login)
 	else
 	{
 		free(password);
-		if (context_set_username(context, login.user().c_str()) == RET_NOK)
-		{
-			return RET_NOK;
-		}
+		context->setUserName(login.user());
+
 		context_set_connected(context, true);
 
 		network_send_login_ok(context);
 
-		wlog(LOGUSER, "[network] Login successful for user %s", context->user_name);
+		wlog(LOGUSER, "[network] Login successful for user %s", context->getUserName().c_str());
 
 		return RET_OK;
 	}
@@ -87,15 +85,15 @@ static ret_code_t manage_start(Context * context, const pb::Start & start)
 {
 	wlog(LOGDEVELOPER, "[network] Received start");
 
-	if (context->in_game == false)
+	if (context->m_in_game == false)
 	{
-		context->id = strdup(start.id().c_str());
-		context->in_game = true;
+		context->m_id = strdup(start.id().c_str());
+		context->m_in_game = true;
 		context_update_from_file(context);
 		context_spread(context);
 		context_request_other_context(context);
 	}
-	wlog(LOGDEVELOPER, "[network] received start request for ID %s and user %s", context->id, context->user_name);
+	wlog(LOGDEVELOPER, "[network] received start request for ID %s and user %s", context->m_id, context->getUserName().c_str());
 
 	return RET_OK;
 }
@@ -105,26 +103,26 @@ static ret_code_t manage_start(Context * context, const pb::Start & start)
  **************************************/
 static ret_code_t manage_stop(Context * context, const pb::Stop & stop)
 {
-	wlog(LOGDEVELOPER, "[network] Received stop request for ID %s of user %s", context->user_name, context->id);
+	wlog(LOGDEVELOPER, "[network] Received stop request for ID %s of user %s", context->getUserName().c_str(), context->m_id);
 
-	if (context->in_game == true)
+	if (context->m_in_game == true)
 	{
-		context->in_game = false;
-		if (context->map)
+		context->m_in_game = false;
+		if (context->m_map)
 		{
-			free(context->map);
+			free(context->m_map);
 		}
-		context->map = nullptr;
-		if (context->prev_map)
+		context->m_map = nullptr;
+		if (context->m_prev_map)
 		{
-			free(context->prev_map);
+			free(context->m_prev_map);
 		}
-		context->prev_map = nullptr;
-		if (context->id)
+		context->m_prev_map = nullptr;
+		if (context->m_id)
 		{
-			free(context->id);
+			free(context->m_id);
 		}
-		context->id = nullptr;
+		context->m_id = nullptr;
 		context_spread(context);
 	}
 
@@ -186,10 +184,10 @@ static ret_code_t manage_create(Context * context, const pb::Create& create)
 		return RET_NOK;
 	}
 
-	if (entry_add_to_list(USERS_TABLE, context->user_name, create.name().c_str(),
+	if (entry_add_to_list(USERS_TABLE, context->getUserName().c_str(), create.name().c_str(),
 	USERS_CHARACTER_LIST, nullptr) == RET_NOK)
 	{
-		werr(LOGUSER, "Error adding character %s to user %s", create.name().c_str(), context->user_name);
+		werr(LOGUSER, "Error adding character %s to user %s", create.name().c_str(), context->getUserName().c_str());
 		file_delete(CHARACTER_TABLE, create.name().c_str());
 		return RET_NOK;
 	}

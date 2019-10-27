@@ -118,9 +118,9 @@ int main(int argc, char **argv)
 
 	context = context_new();
 
-	context_set_username(context, user);
+	context->setUserName(std::string(user));
 
-	sdl_init(TITLE_NAME, &context->render, &context->window, screen_compose, !maxfps);
+	sdl_init(TITLE_NAME, &context->m_render, &context->m_window, screen_compose, !maxfps);
 
 	int Mix_flags = MIX_INIT_FLAC | MIX_INIT_MP3 | MIX_INIT_OGG;
 	int result;

@@ -46,10 +46,10 @@ Context * context_list_start = nullptr;
 /***********************
  ***********************/
 Context::Context() :
-		user_name(nullptr), connected(false), in_game(false), socket(), socket_data(), send_mutex(nullptr), hostname(nullptr), render(nullptr), window(nullptr), npc(
-				true), character_name(nullptr), map(nullptr), tile_x(-1), tile_y(-1), prev_pos_tile_x(-1), prev_pos_tile_y(-1), pos_changed(false), animation_tick(
-				0), type(nullptr), selection(), id(nullptr), prev_map(nullptr), change_map(false), luaVM(nullptr), cond(nullptr), cond_mutex(nullptr), orientation(
-				0), direction(0), next_execution_time(0), previous(nullptr), next(nullptr)
+		m_userName(), m_connected(false), m_in_game(false), m_socket(), m_socket_data(), m_send_mutex(nullptr), m_hostname(nullptr), m_render(nullptr), m_window(
+				nullptr), m_npc(true), m_character_name(nullptr), m_map(nullptr), m_tile_x(-1), m_tile_y(-1), m_prev_pos_tile_x(-1), m_prev_pos_tile_y(-1), m_pos_changed(
+				false), m_animation_tick(0), m_type(nullptr), m_selection(), m_id(nullptr), m_prev_map(nullptr), m_change_map(false), m_lua_VM(nullptr), m_condition(
+				nullptr), m_condition_mutex(nullptr), m_orientation(0), m_direction(0), m_next_execution_time(0), m_previous(nullptr), m_next(nullptr)
 {
 }
 
@@ -79,41 +79,40 @@ Context * context_get_first()
  *************************************/
 void context_init(Context * context)
 {
-	context->user_name = nullptr;
-	context->connected = false;
-	context->in_game = false;
-	context->socket = 0;
-	context->socket_data = 0;
-	context->hostname = nullptr;
-	context->send_mutex = SDL_CreateMutex();
+	context->m_connected = false;
+	context->m_in_game = false;
+	context->m_socket = 0;
+	context->m_socket_data = 0;
+	context->m_hostname = nullptr;
+	context->m_send_mutex = SDL_CreateMutex();
 
-	context->render = nullptr;
-	context->window = nullptr;
+	context->m_render = nullptr;
+	context->m_window = nullptr;
 
-	context->npc = 1;
-	context->character_name = nullptr;
-	context->map = nullptr;
+	context->m_npc = 1;
+	context->m_character_name = nullptr;
+	context->m_map = nullptr;
 
-	context->tile_x = 0;
-	context->tile_y = 0;
-	context->prev_pos_tile_x = 0;
-	context->prev_pos_tile_y = 0;
-	context->pos_changed = false;
-	context->animation_tick = 0;
-	context->type = nullptr;
+	context->m_tile_x = 0;
+	context->m_tile_y = 0;
+	context->m_prev_pos_tile_x = 0;
+	context->m_prev_pos_tile_y = 0;
+	context->m_pos_changed = false;
+	context->m_animation_tick = 0;
+	context->m_type = nullptr;
 
-	context->id = nullptr;
-	context->prev_map = nullptr;
-	context->change_map = false;
-	context->luaVM = nullptr;
-	context->cond = nullptr;
-	context->cond_mutex = nullptr;
-	context->orientation = 0;
-	context->direction = 0;
-	context->next_execution_time = 0;
+	context->m_id = nullptr;
+	context->m_prev_map = nullptr;
+	context->m_change_map = false;
+	context->m_lua_VM = nullptr;
+	context->m_condition = nullptr;
+	context->m_condition_mutex = nullptr;
+	context->m_orientation = 0;
+	context->m_direction = 0;
+	context->m_next_execution_time = 0;
 
-	context->previous = nullptr;
-	context->next = nullptr;
+	context->m_previous = nullptr;
+	context->m_next = nullptr;
 }
 
 /**************************************
@@ -133,16 +132,16 @@ Context * context_new(void)
 	}
 
 	ctx = context_list_start;
-	while (ctx->next != nullptr)
+	while (ctx->m_next != nullptr)
 	{
-		ctx = ctx->next;
+		ctx = ctx->m_next;
 	}
 
-	ctx->next = new Context;
-	context_init(ctx->next);
-	ctx->next->previous = ctx;
+	ctx->m_next = new Context;
+	context_init(ctx->m_next);
+	ctx->m_next->m_previous = ctx;
 	context_unlock_list();
-	return ctx->next;
+	return ctx->m_next;
 }
 /*************************************
  context_free_data
@@ -150,65 +149,60 @@ Context * context_new(void)
  *************************************/
 void context_free_data(Context * context)
 {
-	if (context->user_name)
+	context->m_in_game = false;
+	context->m_connected = false;
+	if (context->m_socket != 0)
 	{
-		free(context->user_name);
+		SDLNet_TCP_Close(context->m_socket);
 	}
-	context->user_name = nullptr;
-	context->in_game = false;
-	context->connected = false;
-	if (context->socket != 0)
+	context->m_socket = 0;
+	if (context->m_socket_data != 0)
 	{
-		SDLNet_TCP_Close(context->socket);
+		SDLNet_TCP_Close(context->m_socket_data);
 	}
-	context->socket = 0;
-	if (context->socket_data != 0)
-	{
-		SDLNet_TCP_Close(context->socket_data);
-	}
-	context->socket_data = 0;
-	SDL_DestroyMutex(context->send_mutex);
+	context->m_socket_data = 0;
+	SDL_DestroyMutex(context->m_send_mutex);
 
-	if (context->hostname)
+	if (context->m_hostname)
 	{
-		free(context->hostname);
+		free(context->m_hostname);
 	}
-	context->hostname = nullptr;
-	if (context->character_name)
+	context->m_hostname = nullptr;
+	if (context->m_character_name)
 	{
-		free(context->character_name);
+		free(context->m_character_name);
 	}
-	context->character_name = nullptr;
-	if (context->map)
+	context->m_character_name = nullptr;
+	if (context->m_map)
 	{
-		free(context->map);
+		free(context->m_map);
 	}
-	context->map = nullptr;
-	if (context->type)
+	context->m_map = nullptr;
+	if (context->m_type)
 	{
-		free(context->type);
+		free(context->m_type);
 	}
-	context->type = nullptr;
+	context->m_type = nullptr;
 
-	context->prev_map = nullptr;
-	if (context->luaVM != nullptr)
+	context->m_prev_map = nullptr;
+	if (context->m_lua_VM != nullptr)
 	{
-		lua_close(context->luaVM);
+		lua_close(context->m_lua_VM);
 	}
-	if (context->cond != nullptr)
+	if (context->m_condition != nullptr)
 	{
-		SDL_DestroyCond(context->cond);
+		SDL_DestroyCond(context->m_condition);
 	}
-	if (context->cond_mutex != nullptr)
+	if (context->m_condition_mutex != nullptr)
 	{
-		SDL_DestroyMutex(context->cond_mutex);
+		SDL_DestroyMutex(context->m_condition_mutex);
 	}
 
-	if (context->id)
+	if (context->m_id)
 	{
-		free(context->id);
+		free(context->m_id);
 	}
-	context->id = nullptr;
+	context->m_id = nullptr;
 }
 
 /*************************************
@@ -222,20 +216,20 @@ void context_free(Context * context)
 	context_lock_list();
 
 	// First context of the list
-	if (context->previous == nullptr)
+	if (context->m_previous == nullptr)
 	{
-		context_list_start = context->next;
-		if (context->next != nullptr)
+		context_list_start = context->m_next;
+		if (context->m_next != nullptr)
 		{
-			context->next->previous = nullptr;
+			context->m_next->m_previous = nullptr;
 		}
 	}
 	else
 	{
-		context->previous->next = context->next;
-		if (context->next != nullptr)
+		context->m_previous->m_next = context->m_next;
+		if (context->m_next != nullptr)
 		{
-			context->next->previous = context->previous;
+			context->m_next->m_previous = context->m_previous;
 		}
 	}
 
@@ -243,32 +237,32 @@ void context_free(Context * context)
 	ctx = context_list_start;
 	while (ctx != nullptr)
 	{
-		if ((context->id != nullptr) && (context->selection.getId() != ""))
+		if ((context->m_id != nullptr) && (context->m_selection.getId() != ""))
 		{
-			if (strcmp(context->id, ctx->selection.getId().c_str()) == 0)
+			if (strcmp(context->m_id, ctx->m_selection.getId().c_str()) == 0)
 			{
-				ctx->selection.setId("");
+				ctx->m_selection.setId("");
 			}
 		}
-		ctx = ctx->next;
+		ctx = ctx->m_next;
 	}
 
 	// Remove this context from the list
 	if (context == context_get_first())
 	{
-		context_list_start = context->next;
+		context_list_start = context->m_next;
 	}
 	else
 	{
 		ctx = context_list_start;
 		while (ctx != nullptr)
 		{
-			if (ctx->next == context)
+			if (ctx->m_next == context)
 			{
-				ctx->next = context->next;
+				ctx->m_next = context->m_next;
 				break;
 			}
-			ctx = ctx->next;
+			ctx = ctx->m_next;
 		}
 	}
 
@@ -299,32 +293,13 @@ ret_code_t context_set_hostname(Context * context, const char * name)
 {
 	context_lock_list();
 
-	if (context->hostname)
+	if (context->m_hostname)
 	{
-		free(context->hostname);
+		free(context->m_hostname);
 	}
 
-	context->hostname = strdup(name);
-	if (context->hostname == nullptr)
-	{
-		context_unlock_list();
-		return RET_NOK;
-	}
-
-	context_unlock_list();
-	return RET_OK;
-}
-
-/**************************
- Returns RET_NOK if error
- **************************/
-ret_code_t context_set_username(Context * context, const char * name)
-{
-	context_lock_list();
-
-	free(context->user_name);
-	context->user_name = strdup(name);
-	if (context->user_name == nullptr)
+	context->m_hostname = strdup(name);
+	if (context->m_hostname == nullptr)
 	{
 		context_unlock_list();
 		return RET_NOK;
@@ -336,10 +311,10 @@ ret_code_t context_set_username(Context * context, const char * name)
 
 /**************************************
  **************************************/
-void context_set_in_game(Context * context, int in_game)
+void context_set_in_game(Context * context, bool in_game)
 {
 	context_lock_list();
-	context->in_game = in_game;
+	context->m_in_game = in_game;
 	context_unlock_list();
 }
 
@@ -350,7 +325,7 @@ int context_get_in_game(Context * context)
 	int in_game = 0;
 
 	context_lock_list();
-	in_game = context->in_game;
+	in_game = context->m_in_game;
 	context_unlock_list();
 
 	return in_game;
@@ -361,7 +336,7 @@ int context_get_in_game(Context * context)
 void context_set_connected(Context * context, bool connected)
 {
 	context_lock_list();
-	context->connected = connected;
+	context->m_connected = connected;
 	context_unlock_list();
 }
 
@@ -372,7 +347,7 @@ int context_get_connected(Context * context)
 	int conn = 0;
 
 	context_lock_list();
-	conn = context->connected;
+	conn = context->m_connected;
 	context_unlock_list();
 
 	return conn;
@@ -383,7 +358,7 @@ int context_get_connected(Context * context)
 void context_set_socket(Context * context, TCPsocket socket)
 {
 	context_lock_list();
-	context->socket = socket;
+	context->m_socket = socket;
 	context_unlock_list();
 }
 
@@ -394,7 +369,7 @@ TCPsocket context_get_socket(Context * context)
 	TCPsocket socket = 0;
 
 	context_lock_list();
-	socket = context->socket;
+	socket = context->m_socket;
 	context_unlock_list();
 
 	return socket;
@@ -405,7 +380,7 @@ TCPsocket context_get_socket(Context * context)
 void context_set_socket_data(Context * context, TCPsocket socket)
 {
 	context_lock_list();
-	context->socket_data = socket;
+	context->m_socket_data = socket;
 	context_unlock_list();
 }
 
@@ -416,7 +391,7 @@ TCPsocket context_get_socket_data(Context * context)
 	TCPsocket socket = 0;
 
 	context_lock_list();
-	socket = context->socket_data;
+	socket = context->m_socket_data;
 	context_unlock_list();
 
 	return socket;
@@ -430,9 +405,9 @@ ret_code_t context_set_character_name(Context * context, const char * name)
 	ret_code_t ret = RET_OK;
 
 	context_lock_list();
-	free(context->character_name);
-	context->character_name = strdup(name);
-	if (context->character_name == nullptr)
+	free(context->m_character_name);
+	context->m_character_name = strdup(name);
+	if (context->m_character_name == nullptr)
 	{
 		ret = RET_NOK;
 	}
@@ -446,28 +421,28 @@ ret_code_t context_set_character_name(Context * context, const char * name)
  **************************************/
 static ret_code_t _context_set_map(Context * context, const char * map)
 {
-	if (context->prev_map != nullptr)
+	if (context->m_prev_map != nullptr)
 	{
-		if (!strcmp(context->map, map))
+		if (!strcmp(context->m_map, map))
 		{
 			return RET_OK;
 		}
-		free(context->prev_map);
-		context->prev_map = nullptr;
+		free(context->m_prev_map);
+		context->m_prev_map = nullptr;
 	}
 
-	if (context->map)
+	if (context->m_map)
 	{
-		context->prev_map = context->map;
+		context->m_prev_map = context->m_map;
 	}
 
-	context->map = strdup(map);
-	if (context->map == nullptr)
+	context->m_map = strdup(map);
+	if (context->m_map == nullptr)
 	{
 		return RET_NOK;
 	}
 
-	context->change_map = true;
+	context->m_change_map = true;
 
 	return RET_OK;
 }
@@ -493,9 +468,9 @@ ret_code_t context_set_type(Context * context, const char * type)
 	ret_code_t ret = RET_OK;
 
 	context_lock_list();
-	free(context->type);
-	context->type = strdup(type);
-	if (context->type == nullptr)
+	free(context->m_type);
+	context->m_type = strdup(type);
+	if (context->m_type == nullptr)
 	{
 		ret = RET_NOK;
 	}
@@ -506,14 +481,14 @@ ret_code_t context_set_type(Context * context, const char * type)
 
 /**************************************
  **************************************/
-void _context_set_npc(Context * context, int npc)
+void _context_set_npc(Context * context, bool npc)
 {
-	context->npc = npc;
+	context->m_npc = npc;
 }
 
 /**************************************
  **************************************/
-void context_set_npc(Context * context, int npc)
+void context_set_npc(Context * context, bool npc)
 {
 	context_lock_list();
 	_context_set_npc(context, npc);
@@ -524,11 +499,11 @@ void context_set_npc(Context * context, int npc)
  **************************************/
 void _context_set_pos_tx(Context * context, int pos_tx)
 {
-	context->prev_pos_tile_x = context->tile_x;
-	if (context->tile_x != pos_tx)
+	context->m_prev_pos_tile_x = context->m_tile_x;
+	if (context->m_tile_x != pos_tx)
 	{
-		context->pos_changed = true;
-		context->tile_x = pos_tx;
+		context->m_pos_changed = true;
+		context->m_tile_x = pos_tx;
 	}
 }
 
@@ -544,11 +519,11 @@ void context_set_pos_tx(Context * context, int pos_tx)
  **************************************/
 void _context_set_pos_ty(Context * context, int pos_ty)
 {
-	context->prev_pos_tile_y = context->tile_y;
-	if (context->tile_y != pos_ty)
+	context->m_prev_pos_tile_y = context->m_tile_y;
+	if (context->m_tile_y != pos_ty)
 	{
-		context->pos_changed = true;
-		context->tile_y = pos_ty;
+		context->m_pos_changed = true;
+		context->m_tile_y = pos_ty;
 	}
 }
 
@@ -568,12 +543,12 @@ ret_code_t context_set_id(Context * context, const char * name)
 {
 	context_lock_list();
 
-	if (context->id)
+	if (context->m_id)
 	{
-		free(context->id);
+		free(context->m_id);
 	}
-	context->id = strdup(name);
-	if (context->id == nullptr)
+	context->m_id = strdup(name);
+	if (context->m_id == nullptr)
 	{
 		context_unlock_list();
 		return RET_NOK;
@@ -590,14 +565,14 @@ ret_code_t context_set_selected_character(Context * context, const char * id)
 {
 	context_lock_list();
 
-	if ((context != nullptr) && (context->selection.getId() != ""))
+	if ((context != nullptr) && (context->m_selection.getId() != ""))
 	{
-		if (strcmp(context->selection.getId().c_str(), id) == 0)
+		if (strcmp(context->m_selection.getId().c_str(), id) == 0)
 		{
 			context_unlock_list();
 			return RET_NOK;
 		}
-		context->selection.setId(std::string(id));
+		context->m_selection.setId(std::string(id));
 	}
 
 	context_unlock_list();
@@ -611,18 +586,18 @@ ret_code_t context_set_selected_tile(Context * context, const char * map, int x,
 {
 	context_lock_list();
 
-	if (!strcmp(context->selection.getMap().c_str(), map))
+	if (!strcmp(context->m_selection.getMap().c_str(), map))
 	{
-		if ((x == context->selection.getMapCoordTx()) && (y == context->selection.getMapCoordTy()))
+		if ((x == context->m_selection.getMapCoordTx()) && (y == context->m_selection.getMapCoordTy()))
 		{
 			context_unlock_list();
 			return RET_NOK;
 		}
 	}
 
-	context->selection.setMap(std::string(map));
-	context->selection.setMapCoordTx(x);
-	context->selection.setMapCoordTy(y);
+	context->m_selection.setMap(std::string(map));
+	context->m_selection.setMapCoordTx(x);
+	context->m_selection.setMapCoordTy(y);
 
 	context_unlock_list();
 	return RET_OK;
@@ -635,13 +610,13 @@ ret_code_t context_set_selected_equipment(Context * context, const char * id)
 {
 	context_lock_list();
 
-	if (strcmp(context->selection.getEquipment().c_str(), id) == 0)
+	if (strcmp(context->m_selection.getEquipment().c_str(), id) == 0)
 	{
 		context_unlock_list();
 		return RET_NOK;
 	}
 
-	context->selection.setEquipment(id);
+	context->m_selection.setEquipment(id);
 
 	context_unlock_list();
 	return RET_OK;
@@ -654,13 +629,13 @@ ret_code_t context_set_selected_item(Context * context, const char * id)
 {
 	context_lock_list();
 
-	if (strcmp(context->selection.getInventory().c_str(), id) == 0)
+	if (strcmp(context->m_selection.getInventory().c_str(), id) == 0)
 	{
 		context_unlock_list();
 		return RET_NOK;
 	}
 
-	context->selection.setInventory(id);
+	context->m_selection.setInventory(id);
 
 	context_unlock_list();
 	return RET_OK;
@@ -678,12 +653,12 @@ void register_lua_functions(Context * context);
 void context_new_VM(Context * context)
 {
 	context_lock_list();
-	context->luaVM = lua_open();
-	lua_baselibopen(context->luaVM);
-	lua_tablibopen(context->luaVM);
-	lua_iolibopen(context->luaVM);
-	lua_strlibopen(context->luaVM);
-	lua_mathlibopen(context->luaVM);
+	context->m_lua_VM = lua_open();
+	lua_baselibopen(context->m_lua_VM);
+	lua_tablibopen(context->m_lua_VM);
+	lua_iolibopen(context->m_lua_VM);
+	lua_strlibopen(context->m_lua_VM);
+	lua_mathlibopen(context->m_lua_VM);
 
 	register_lua_functions(context);
 	context_unlock_list();
@@ -702,17 +677,17 @@ ret_code_t context_update_from_file(Context * context)
 
 	context_lock_list();
 
-	if (context->id == nullptr)
+	if (context->m_id == nullptr)
 	{
 		context_unlock_list();
 		return RET_NOK;
 	}
 
-	if (entry_read_string(CHARACTER_TABLE, context->id, &result,
+	if (entry_read_string(CHARACTER_TABLE, context->m_id, &result,
 	CHARACTER_KEY_NAME, nullptr) == RET_OK)
 	{
-		free(context->character_name);
-		context->character_name = result;
+		free(context->m_character_name);
+		context->m_character_name = result;
 	}
 	else
 	{
@@ -720,27 +695,27 @@ ret_code_t context_update_from_file(Context * context)
 	}
 
 	int npc = 0;
-	if (entry_read_int(CHARACTER_TABLE, context->id, &npc, CHARACTER_KEY_NPC, nullptr) == RET_NOK)
+	if (entry_read_int(CHARACTER_TABLE, context->m_id, &npc, CHARACTER_KEY_NPC, nullptr) == RET_NOK)
 	{
 		ret = RET_NOK;
 	}
 	_context_set_npc(context, npc);
 
-	if (entry_read_string(CHARACTER_TABLE, context->id, &result,
+	if (entry_read_string(CHARACTER_TABLE, context->m_id, &result,
 	CHARACTER_KEY_TYPE, nullptr) == RET_OK)
 	{
-		free(context->type);
-		context->type = result;
+		free(context->m_type);
+		context->m_type = result;
 	}
 	else
 	{
 		ret = RET_NOK;
 	}
 
-	if (entry_read_string(CHARACTER_TABLE, context->id, &result,
+	if (entry_read_string(CHARACTER_TABLE, context->m_id, &result,
 	CHARACTER_KEY_MAP, nullptr) == RET_OK)
 	{
-		free(context->map);
+		free(context->m_map);
 		ret = _context_set_map(context, result);
 		free(result);
 	}
@@ -750,7 +725,7 @@ ret_code_t context_update_from_file(Context * context)
 	}
 
 	int pos_tx;
-	if (entry_read_int(CHARACTER_TABLE, context->id, &pos_tx,
+	if (entry_read_int(CHARACTER_TABLE, context->m_id, &pos_tx,
 	CHARACTER_KEY_TILE_X, nullptr) == RET_NOK)
 	{
 		ret = RET_NOK;
@@ -758,7 +733,7 @@ ret_code_t context_update_from_file(Context * context)
 	_context_set_pos_tx(context, pos_tx);
 
 	int pos_ty;
-	if (entry_read_int(CHARACTER_TABLE, context->id, &pos_ty,
+	if (entry_read_int(CHARACTER_TABLE, context->m_id, &pos_ty,
 	CHARACTER_KEY_TILE_Y, nullptr) == RET_NOK)
 	{
 		ret = RET_NOK;
@@ -777,21 +752,21 @@ ret_code_t context_write_to_file(Context * context)
 {
 	context_lock_list();
 
-	if (context->id == nullptr)
+	if (context->m_id == nullptr)
 	{
 		context_unlock_list();
 		return RET_NOK;
 	}
 
-	entry_write_string(CHARACTER_TABLE, context->id, context->type,
+	entry_write_string(CHARACTER_TABLE, context->m_id, context->m_type,
 	CHARACTER_KEY_TYPE, nullptr);
-	entry_write_string(CHARACTER_TABLE, context->id, context->map,
+	entry_write_string(CHARACTER_TABLE, context->m_id, context->m_map,
 	CHARACTER_KEY_MAP, nullptr);
 
-	entry_write_int(CHARACTER_TABLE, context->id, context->tile_x,
+	entry_write_int(CHARACTER_TABLE, context->m_id, context->m_tile_x,
 	CHARACTER_KEY_TILE_X, nullptr);
 
-	entry_write_int(CHARACTER_TABLE, context->id, context->tile_y,
+	entry_write_int(CHARACTER_TABLE, context->m_id, context->m_tile_y,
 	CHARACTER_KEY_TILE_Y, nullptr);
 
 	context_unlock_list();
@@ -809,15 +784,15 @@ Context * context_find(const char * id)
 
 	while (ctx != nullptr)
 	{
-		if (ctx->id)
+		if (ctx->m_id)
 		{
-			if (strcmp(ctx->id, id) == 0)
+			if (strcmp(ctx->m_id, id) == 0)
 			{
 				return ctx;
 			}
 		}
 
-		ctx = ctx->next;
+		ctx = ctx->m_next;
 	}
 
 	return nullptr;
@@ -834,10 +809,10 @@ void context_add_or_update_from_network_frame(const ContextBis & context)
 
 	while (ctx != nullptr)
 	{
-		if (strcmp(context.getId().c_str(), ctx->id) == 0)
+		if (strcmp(context.getId().c_str(), ctx->m_id) == 0)
 		{
-			ctx->in_game = context.isInGame();
-			ctx->connected = context.isConnected();
+			ctx->m_in_game = context.isInGame();
+			ctx->m_connected = context.isConnected();
 
 			if (context.isInGame() == true)
 			{
@@ -850,10 +825,10 @@ void context_add_or_update_from_network_frame(const ContextBis & context)
 				_context_set_pos_tx(ctx, context.getTileX());
 				_context_set_pos_ty(ctx, context.getTileY());
 
-				free(ctx->type);
-				ctx->type = strdup(context.getType().c_str());
+				free(ctx->m_type);
+				ctx->m_type = strdup(context.getType().c_str());
 
-				ctx->selection = context.getSelection();
+				ctx->m_selection = context.getSelection();
 			}
 
 			if (context.isConnected() == false)
@@ -865,14 +840,14 @@ void context_add_or_update_from_network_frame(const ContextBis & context)
 
 			return;
 		}
-		ctx = ctx->next;
+		ctx = ctx->m_next;
 	}
 
 	context_unlock_list();
 
 	wlog(LOGDEVELOPER, "Creating context %s / %s", context.getUserName().c_str(), context.getCharacterName().c_str());
 	ctx = context_new();
-	context_set_username(ctx, context.getUserName().c_str());
+	ctx->setUserName(context.getUserName());
 	context_set_character_name(ctx, context.getCharacterName().c_str());
 	context_set_npc(ctx, context.isNpc());
 	context_set_map(ctx, context.getMap().c_str());
@@ -896,12 +871,12 @@ int context_distance(Context * ctx1, Context * ctx2)
 	int distx;
 	int disty;
 
-	distx = ctx1->tile_x - ctx2->tile_x;
+	distx = ctx1->m_tile_x - ctx2->m_tile_x;
 	if (distx < 0)
 	{
 		distx = -distx;
 	}
-	disty = ctx1->tile_y - ctx2->tile_y;
+	disty = ctx1->m_tile_y - ctx2->m_tile_y;
 	if (disty < 0)
 	{
 		disty = -disty;
@@ -915,10 +890,26 @@ int context_distance(Context * ctx1, Context * ctx2)
  **************************************/
 bool context_is_npc(Context * ctx)
 {
-	if (ctx->socket == nullptr && ctx->connected == true)
+	if (ctx->m_socket == nullptr && ctx->m_connected == true)
 	{
 		return true;
 	}
 
 	return false;
+}
+
+/*****************************************************************************/
+const std::string& Context::getUserName() const
+{
+	return m_userName;
+}
+
+/*****************************************************************************/
+void Context::setUserName(const std::string& userName)
+{
+	context_lock_list();
+
+	m_userName = userName;
+
+	context_unlock_list();
 }

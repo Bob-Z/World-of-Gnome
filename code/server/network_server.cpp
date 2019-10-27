@@ -88,7 +88,7 @@ void network_broadcast_text(Context * context, const std::string & text)
 		}
 
 		// Skip data context
-		if (ctx->user_name == nullptr)
+		if (ctx->getUserName() == "")
 		{
 			continue;
 		}
@@ -101,14 +101,14 @@ void network_broadcast_text(Context * context, const std::string & text)
 			{
 				continue;
 			}
-			if( strcmp(target->map,ctx->map) != 0 )
+			if( strcmp(target->m_map,ctx->m_map) != 0 )
 			{
 				continue;
 			}
 		}
 #endif
-		network_send_text(ctx->id, text);
-	} while ((ctx = ctx->next) != nullptr);
+		network_send_text(ctx->m_id, text);
+	} while ((ctx = ctx->m_next) != nullptr);
 
 	context_unlock_list();
 }
@@ -124,7 +124,7 @@ void network_send_user_character(Context * context, const char * id, const char 
 	message.mutable_user_character()->set_name(name);
 	std::string serialized_data = message.SerializeAsString();
 
-	wlog(LOGDEVELOPER, "[network] Send user %s character %s", context->user_name, name);
+	wlog(LOGDEVELOPER, "[network] Send user %s character %s", context->getUserName().c_str(), name);
 	network_send_command(context, serialized_data, false);
 }
 
@@ -133,7 +133,7 @@ void network_send_user_character(Context * context, const char * id, const char 
  ******************************************************************************/
 void network_send_character_file(Context * context)
 {
-	const std::string file_name = std::string(CHARACTER_TABLE) + "/" + std::string(context->id);
+	const std::string file_name = std::string(CHARACTER_TABLE) + "/" + std::string(context->m_id);
 
 	network_send_file(context, file_name.c_str());
 }
@@ -194,9 +194,9 @@ void network_broadcast_entry_int(const char * table, const char * file, const ch
 			{
 				continue;
 			}
-			if (target->map && ctx->map)
+			if (target->m_map && ctx->m_map)
 			{
-				if (strcmp(target->map, ctx->map) != 0)
+				if (strcmp(target->m_map, ctx->m_map) != 0)
 				{
 					continue;
 				}
@@ -205,7 +205,7 @@ void network_broadcast_entry_int(const char * table, const char * file, const ch
 
 		network_send_entry_int(ctx, table, file, path, value);
 
-	} while ((ctx = ctx->next) != nullptr);
+	} while ((ctx = ctx->m_next) != nullptr);
 
 	context_unlock_list();
 }
@@ -377,7 +377,7 @@ void network_broadcast_effect(EffectManager::EffectType p_Type, const std::strin
 	switch (p_Type)
 	{
 	case EffectManager::EffectType::CONTEXT:
-		target_map = ctx->map;
+		target_map = ctx->m_map;
 		break;
 	case EffectManager::EffectType::MAP:
 		target_map = p_TargetId;
@@ -399,7 +399,7 @@ void network_broadcast_effect(EffectManager::EffectType p_Type, const std::strin
 
 	do
 	{
-		if (ctx->map == nullptr)
+		if (ctx->m_map == nullptr)
 		{
 			continue;
 		}
@@ -414,15 +414,15 @@ void network_broadcast_effect(EffectManager::EffectType p_Type, const std::strin
 			continue;
 		}
 
-		std::string l_CurrentMap = ctx->map;
+		std::string l_CurrentMap = ctx->m_map;
 		if (target_map != l_CurrentMap)
 		{
 			continue;
 		}
 
-		wlog(LOGDEVELOPER, "[network] Send effect to %s", ctx->id);
+		wlog(LOGDEVELOPER, "[network] Send effect to %s", ctx->m_id);
 		network_send_command(ctx, serialized_data, false);
-	} while ((ctx = ctx->next) != nullptr);
+	} while ((ctx = ctx->m_next) != nullptr);
 
 	context_unlock_list();
 }
@@ -479,35 +479,35 @@ void network_send_context_to_context(Context * dest_ctx, Context * src_ctx)
 		return;
 	}
 	// Source context is not ready yet
-	if (src_ctx->in_game == 0)
+	if (src_ctx->m_in_game == 0)
 	{
 		return;
 	}
-	if (src_ctx->user_name == nullptr)
-	{
-		return;
-	}
+//	if (src_ctx->m_userName == nullptr)
+//	{
+//		return;
+//	}
 
 	pb::ServerMessage message;
-	message.mutable_context()->set_user_name(src_ctx->user_name);
-	message.mutable_context()->set_character_name(src_ctx->character_name);
-	message.mutable_context()->set_npc(src_ctx->npc);
-	message.mutable_context()->set_map(src_ctx->map);
-	message.mutable_context()->set_in_game(src_ctx->in_game);
-	message.mutable_context()->set_connected(src_ctx->connected);
-	message.mutable_context()->set_tile_x(src_ctx->tile_x);
-	message.mutable_context()->set_tile_y(src_ctx->tile_y);
-	message.mutable_context()->set_type(src_ctx->type);
-	message.mutable_context()->set_id(src_ctx->id);
-	message.mutable_context()->mutable_selection()->set_id(src_ctx->selection.getId());
-	message.mutable_context()->mutable_selection()->set_map(src_ctx->selection.getMap());
-	message.mutable_context()->mutable_selection()->set_map_coord_tx(src_ctx->selection.getMapCoordTx());
-	message.mutable_context()->mutable_selection()->set_map_coord_ty(src_ctx->selection.getMapCoordTy());
-	message.mutable_context()->mutable_selection()->set_equipment(src_ctx->selection.getEquipment());
-	message.mutable_context()->mutable_selection()->set_inventory(src_ctx->selection.getInventory());
+	message.mutable_context()->set_user_name(src_ctx->getUserName());
+	message.mutable_context()->set_character_name(src_ctx->m_character_name);
+	message.mutable_context()->set_npc(src_ctx->m_npc);
+	message.mutable_context()->set_map(src_ctx->m_map);
+	message.mutable_context()->set_in_game(src_ctx->m_in_game);
+	message.mutable_context()->set_connected(src_ctx->m_connected);
+	message.mutable_context()->set_tile_x(src_ctx->m_tile_x);
+	message.mutable_context()->set_tile_y(src_ctx->m_tile_y);
+	message.mutable_context()->set_type(src_ctx->m_type);
+	message.mutable_context()->set_id(src_ctx->m_id);
+	message.mutable_context()->mutable_selection()->set_id(src_ctx->m_selection.getId());
+	message.mutable_context()->mutable_selection()->set_map(src_ctx->m_selection.getMap());
+	message.mutable_context()->mutable_selection()->set_map_coord_tx(src_ctx->m_selection.getMapCoordTx());
+	message.mutable_context()->mutable_selection()->set_map_coord_ty(src_ctx->m_selection.getMapCoordTy());
+	message.mutable_context()->mutable_selection()->set_equipment(src_ctx->m_selection.getEquipment());
+	message.mutable_context()->mutable_selection()->set_inventory(src_ctx->m_selection.getInventory());
 
 	std::string serialized_data = message.SerializeAsString();
 
-	wlog(LOGDEVELOPER, "[network] Send context of %s to %s", src_ctx->id, dest_ctx->id);
+	wlog(LOGDEVELOPER, "[network] Send context of %s to %s", src_ctx->m_id, dest_ctx->m_id);
 	network_send_command(dest_ctx, serialized_data, false);
 }

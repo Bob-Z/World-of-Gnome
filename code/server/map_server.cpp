@@ -980,20 +980,20 @@ char ** map_get_character(const char * map, int x, int y)
 	context_lock_list();
 	while (ctx != nullptr)
 	{
-		if (ctx->map == nullptr)
+		if (ctx->m_map == nullptr)
 		{
-			ctx = ctx->next;
+			ctx = ctx->m_next;
 			continue;
 		}
-		if (ctx->tile_x == x && ctx->tile_y == y && !strcmp(ctx->map, map))
+		if (ctx->m_tile_x == x && ctx->m_tile_y == y && !strcmp(ctx->m_map, map))
 		{
 			character_num++;
 			character_list = (char**) realloc(character_list, sizeof(char*) * (character_num + 1));
-			character_list[character_num - 1] = strdup(ctx->id);
+			character_list[character_num - 1] = strdup(ctx->m_id);
 			character_list[character_num] = nullptr;
 		}
 
-		ctx = ctx->next;
+		ctx = ctx->m_next;
 	}
 	context_unlock_list();
 

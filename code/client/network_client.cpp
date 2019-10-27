@@ -82,7 +82,7 @@ void network_request_playable_character_list(Context * context)
 void network_request_user_character_list(Context * context)
 {
 	pb::ClientMessage message;
-	message.mutable_user_character_list()->set_user(context->user_name);
+	message.mutable_user_character_list()->set_user(context->getUserName());
 	std::string serialized_data = message.SerializeAsString();
 
 	wlog(LOGDEVELOPER, "[network] Send USER_CHARACTER_LIST");
@@ -147,7 +147,7 @@ static int async_recv(void * data)
 	{
 		uint32_t frame_size = 0U;
 
-		if (network_read_bytes(context->socket, (char *) &frame_size, sizeof(uint32_t)) == RET_NOK)
+		if (network_read_bytes(context->m_socket, (char *) &frame_size, sizeof(uint32_t)) == RET_NOK)
 		{
 			break;
 		}
@@ -156,7 +156,7 @@ static int async_recv(void * data)
 			frame_size = ntohl(frame_size);
 			char frame[frame_size];
 
-			if (network_read_bytes(context->socket, (char *) frame, frame_size) == RET_NOK)
+			if (network_read_bytes(context->m_socket, (char *) frame, frame_size) == RET_NOK)
 			{
 				break;
 			}
@@ -172,8 +172,8 @@ static int async_recv(void * data)
 	werr(LOGUSER, "Socket closed on server side.");
 
 	context_set_connected(context, false);
-	SDLNet_TCP_Close(context->socket);
-	SDLNet_TCP_Close(context->socket_data);
+	SDLNet_TCP_Close(context->m_socket);
+	SDLNet_TCP_Close(context->m_socket_data);
 	context_set_socket(context, 0);
 	context_set_socket_data(context, 0);
 
@@ -194,7 +194,7 @@ static int async_data_recv(void * data)
 	{
 		uint32_t frame_size = 0U;
 
-		if (network_read_bytes(context->socket_data, (char *) &frame_size, sizeof(uint32_t)) == RET_NOK)
+		if (network_read_bytes(context->m_socket_data, (char *) &frame_size, sizeof(uint32_t)) == RET_NOK)
 		{
 			break;
 		}
@@ -203,7 +203,7 @@ static int async_data_recv(void * data)
 			frame_size = ntohl(frame_size);
 			char frame[frame_size];
 
-			if (network_read_bytes(context->socket_data, (char *) frame, frame_size) == RET_NOK)
+			if (network_read_bytes(context->m_socket_data, (char *) frame, frame_size) == RET_NOK)
 			{
 				break;
 			}
@@ -219,8 +219,8 @@ static int async_data_recv(void * data)
 	werr(LOGUSER, "Socket closed on server side.");
 
 	context_set_connected(context, false);
-	SDLNet_TCP_Close(context->socket);
-	SDLNet_TCP_Close(context->socket_data);
+	SDLNet_TCP_Close(context->m_socket);
+	SDLNet_TCP_Close(context->m_socket_data);
 	context_set_socket(context, 0);
 	context_set_socket_data(context, 0);
 
@@ -274,15 +274,15 @@ ret_code_t network_open_data_connection(Context * context)
 	IPaddress ip;
 	TCPsocket socket;
 
-	if (SDLNet_ResolveHost(&ip, context->hostname, PORT) < 0)
+	if (SDLNet_ResolveHost(&ip, context->m_hostname, PORT) < 0)
 	{
-		werr(LOGUSER, "Can't resolve %s:%d : %s\n", context->hostname, PORT, SDLNet_GetError());
+		werr(LOGUSER, "Can't resolve %s:%d : %s\n", context->m_hostname, PORT, SDLNet_GetError());
 		return RET_NOK;
 	}
 
 	if (!(socket = SDLNet_TCP_Open(&ip)))
 	{
-		werr(LOGUSER, "Can't open data connection to %s:%d : %s\n", context->hostname, PORT, SDLNet_GetError());
+		werr(LOGUSER, "Can't open data connection to %s:%d : %s\n", context->m_hostname, PORT, SDLNet_GetError());
 		return RET_NOK;
 	}
 

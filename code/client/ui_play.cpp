@@ -97,8 +97,8 @@ static void draw_background(Context * ctx, item_t * item_list)
 	{
 		si_anim_free(bg_anim);
 	}
-	SDL_GetRendererOutputSize(ctx->render, &sw, &sh);
-	bg_anim = anim_create_color(ctx->render, sw, sh, BACKGROUND_COLOR);
+	SDL_GetRendererOutputSize(ctx->m_render, &sw, &sh);
+	bg_anim = anim_create_color(ctx->m_render, sw, sh, BACKGROUND_COLOR);
 	item = item_list_add(&item_list);
 	item_set_pos(item, 0, 0);
 	item_set_anim(item, bg_anim, 0);
@@ -142,7 +142,7 @@ static void cb_main_quit(void * arg)
 		while (current_ctx != nullptr)
 		{
 			// Save next before freeing the current context
-			next_ctx = current_ctx->next;
+			next_ctx = current_ctx->m_next;
 			if (current_ctx != context_get_player())
 			{
 				context_free(current_ctx);
@@ -256,7 +256,7 @@ static void compose_attribute(Context * ctx, item_t * item_list)
 		attribute_string = nullptr;
 	}
 
-	if (entry_get_group_list(CHARACTER_TABLE, ctx->id, &name_list,
+	if (entry_get_group_list(CHARACTER_TABLE, ctx->m_id, &name_list,
 	ATTRIBUTE_GROUP, nullptr) == RET_NOK)
 	{
 		return;
@@ -265,7 +265,7 @@ static void compose_attribute(Context * ctx, item_t * item_list)
 	index = 0;
 	while (name_list[index] != nullptr)
 	{
-		if (entry_read_int(CHARACTER_TABLE, ctx->id, &value, ATTRIBUTE_GROUP, name_list[index], ATTRIBUTE_CURRENT, nullptr) == RET_NOK)
+		if (entry_read_int(CHARACTER_TABLE, ctx->m_id, &value, ATTRIBUTE_GROUP, name_list[index], ATTRIBUTE_CURRENT, nullptr) == RET_NOK)
 		{
 			index++;
 			continue;
@@ -361,12 +361,12 @@ static void compose_action(Context * ctx, item_t * item_list)
 	int x = 0;
 	int i;
 
-	SDL_GetRendererOutputSize(ctx->render, &sw, &sh);
+	SDL_GetRendererOutputSize(ctx->m_render, &sw, &sh);
 
 	action_bar_height = 0;
 
 	// Read action list for current user
-	if (entry_read_list(CHARACTER_TABLE, ctx->id, &action_list,
+	if (entry_read_list(CHARACTER_TABLE, ctx->m_id, &action_list,
 	CHARACTER_KEY_ACTION, nullptr) == RET_NOK)
 	{
 		return;
@@ -529,9 +529,9 @@ static void compose_equipment(Context * ctx, item_t * item_list)
 	int max_h;
 	int max_w;
 
-	SDL_GetRendererOutputSize(ctx->render, &sw, &sh);
+	SDL_GetRendererOutputSize(ctx->m_render, &sw, &sh);
 
-	entry_get_group_list(CHARACTER_TABLE, ctx->id, &slot_list, EQUIPMENT_GROUP, nullptr);
+	entry_get_group_list(CHARACTER_TABLE, ctx->m_id, &slot_list, EQUIPMENT_GROUP, nullptr);
 
 	max_w = 0;
 	max_h = 0;
@@ -540,7 +540,7 @@ static void compose_equipment(Context * ctx, item_t * item_list)
 	{
 #if 0
 		// Get the slot name
-		if(entry_read_string(CHARACTER_TABLE,ctx->id,&item_name,EQUIPMENT_GROUP,slot_list[index],EQUIPMENT_NAME,nullptr) == RET_NOK )
+		if(entry_read_string(CHARACTER_TABLE,ctx->m_id,&item_name,EQUIPMENT_GROUP,slot_list[index],EQUIPMENT_NAME,nullptr) == RET_NOK )
 		{
 			name = strdup(slot_list[index]);
 		}
@@ -552,7 +552,7 @@ static void compose_equipment(Context * ctx, item_t * item_list)
 #endif
 		h1 = 0;
 		// Get the slot icon
-		if (entry_read_string(CHARACTER_TABLE, ctx->id, &icon_name,
+		if (entry_read_string(CHARACTER_TABLE, ctx->m_id, &icon_name,
 		EQUIPMENT_GROUP, slot_list[index], EQUIPMENT_ICON, nullptr) == RET_NOK)
 		{
 			continue;
@@ -584,7 +584,7 @@ static void compose_equipment(Context * ctx, item_t * item_list)
 		}
 
 		// Is there an equipped object ?
-		if (entry_read_string(CHARACTER_TABLE, ctx->id, &equipped_name,
+		if (entry_read_string(CHARACTER_TABLE, ctx->m_id, &equipped_name,
 		EQUIPMENT_GROUP, slot_list[index], EQUIPMENT_EQUIPPED, nullptr) == RET_OK && equipped_name[0] != 0)
 		{
 #if 0
@@ -634,11 +634,11 @@ static void compose_equipment(Context * ctx, item_t * item_list)
 		}
 
 		// Draw selection cursor
-		if (ctx->selection.getEquipment() != "")
+		if (ctx->m_selection.getEquipment() != "")
 		{
 			if (option_get().cursor_equipment)
 			{
-				if (strcmp(ctx->selection.getEquipment().c_str(), slot_list[index]) == 0)
+				if (strcmp(ctx->m_selection.getEquipment().c_str(), slot_list[index]) == 0)
 				{
 					anim3 = imageDB_get_anim(ctx, option_get().cursor_equipment);
 
@@ -666,22 +666,22 @@ static void compose_equipment(Context * ctx, item_t * item_list)
 	deep_free(slot_list);
 
 	// Draw selected item
-	if (ctx->selection.getInventory() != "")
+	if (ctx->m_selection.getInventory() != "")
 	{
-		mytemplate = item_is_resource(ctx->selection.getInventory().c_str());
+		mytemplate = item_is_resource(ctx->m_selection.getInventory().c_str());
 
 		if (mytemplate == nullptr)
 		{
-			if (entry_read_string(ITEM_TABLE, ctx->selection.getInventory().c_str(), &inventory_icon_name, ITEM_ICON, nullptr) == RET_NOK)
+			if (entry_read_string(ITEM_TABLE, ctx->m_selection.getInventory().c_str(), &inventory_icon_name, ITEM_ICON, nullptr) == RET_NOK)
 			{
-				werr(LOGDESIGNER, "Can't read item %s icon name", ctx->selection.getInventory().c_str());
+				werr(LOGDESIGNER, "Can't read item %s icon name", ctx->m_selection.getInventory().c_str());
 			}
 		}
 		else
 		{
 			if (entry_read_string(ITEM_TEMPLATE_TABLE, mytemplate, &inventory_icon_name, ITEM_ICON, nullptr) == RET_NOK)
 			{
-				werr(LOGDESIGNER, "Can't read item %s icon name (template: %s)", ctx->selection.getInventory().c_str(), mytemplate);
+				werr(LOGDESIGNER, "Can't read item %s icon name (template: %s)", ctx->m_selection.getInventory().c_str(), mytemplate);
 			}
 			free(mytemplate);
 		}
@@ -712,7 +712,7 @@ static void compose_equipment(Context * ctx, item_t * item_list)
 
 		if (inventory_icon == nullptr)
 		{
-			inventory_icon = anim_create_color(ctx->render, max_w, max_h, 0x7f7f7f7f);
+			inventory_icon = anim_create_color(ctx->m_render, max_w, max_h, 0x7f7f7f7f);
 		}
 
 		item = item_list_add(&item_list);
@@ -755,7 +755,7 @@ static void compose_text(Context * ctx, item_t * item_list)
 
 	font = font_get(ctx, TEXT_FONT, TEXT_FONT_SIZE);
 
-	SDL_GetRendererOutputSize(ctx->render, &sw, &sh);
+	SDL_GetRendererOutputSize(ctx->m_render, &sw, &sh);
 	current_y = sh - action_bar_height;
 
 	// Draw edit box
@@ -828,11 +828,11 @@ static void cb_print_coord(void * arg)
 	int map_w;
 	Context * ctx = context_get_player();
 
-	entry_read_int(MAP_TABLE, ctx->map, &map_w, MAP_KEY_WIDTH, nullptr);
+	entry_read_int(MAP_TABLE, ctx->m_map, &map_w, MAP_KEY_WIDTH, nullptr);
 
 //TODO: take layer into account
 #if 0
-	entry_read_list_index(MAP_TABLE,ctx->map,&type,scr_play_get_current_x()+scr_play_get_current_y()*map_w,layer_name,MAP_KEY_TYPE,nullptr);
+	entry_read_list_index(MAP_TABLE,ctx->m_map,&type,scr_play_get_current_x()+scr_play_get_current_y()*map_w,layer_name,MAP_KEY_TYPE,nullptr);
 	sprintf(buf,"x=%d y=%d type=%s",scr_play_get_current_x(),scr_play_get_current_y(),type);
 	free(type);
 #endif
@@ -911,7 +911,7 @@ static void compose_inventory(Context * ctx, item_t * item_list)
 	draw_background(ctx, item_list);
 
 	// read data from file
-	if (entry_read_list(CHARACTER_TABLE, ctx->id, &inventory_list,
+	if (entry_read_list(CHARACTER_TABLE, ctx->m_id, &inventory_list,
 	CHARACTER_KEY_INVENTORY, nullptr) == RET_NOK)
 	{
 		return;
@@ -1040,7 +1040,7 @@ static void compose_inventory_select(Context * ctx, item_t * item_list)
 	anim_t * icon_anim = nullptr;
 	char * mytemplate = nullptr;
 
-	if (ctx->selection.getInventory() == "")
+	if (ctx->m_selection.getInventory() == "")
 	{
 		return;
 	}
@@ -1060,7 +1060,7 @@ static void compose_inventory_select(Context * ctx, item_t * item_list)
 	deep_free(inventory_list);
 
 	// read data from file
-	if (entry_read_list(CHARACTER_TABLE, ctx->id, &inventory_list,
+	if (entry_read_list(CHARACTER_TABLE, ctx->m_id, &inventory_list,
 	CHARACTER_KEY_INVENTORY, nullptr) == RET_NOK)
 	{
 		return;
@@ -1068,7 +1068,7 @@ static void compose_inventory_select(Context * ctx, item_t * item_list)
 
 	i = 0;
 	x = 0;
-	while (inventory_list[i] && strcmp(inventory_list[i], ctx->selection.getInventory().c_str()))
+	while (inventory_list[i] && strcmp(inventory_list[i], ctx->m_selection.getInventory().c_str()))
 	{
 		mytemplate = item_is_resource(inventory_list[i]);
 

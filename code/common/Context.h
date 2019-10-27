@@ -43,44 +43,50 @@ class Context
 {
 public:
 	Context();
+	const std::string& getUserName() const;
+	void setUserName(const std::string& userName);
 
-	char * user_name;
-	bool connected; // User logged with the correct password, or NPC activated
-	bool in_game;
-	TCPsocket socket;
-	TCPsocket socket_data;
-	SDL_mutex* send_mutex; // Asynchronous network send
-	char * hostname;
+private:
+	std::string m_userName;
 
-	SDL_Renderer * render;
-	SDL_Window * window;
+public:
+	bool m_connected; // User logged with the correct password, or NPC activated
+	bool m_in_game;
+	TCPsocket m_socket;
+	TCPsocket m_socket_data;
+	SDL_mutex* m_send_mutex; // Asynchronous network send
+	char * m_hostname;
 
-	int npc;	// 1 = NPC
-	char * character_name;
-	char * map;	// map name
-	int tile_x;	// player position (in tile)
-	int tile_y;	// player position (in tile)
-	int prev_pos_tile_x;	// player previous position (in tile) for sprite direction
-	int prev_pos_tile_y;	// player previous position (in tile) for sprite direction
-	bool pos_changed;
+	SDL_Renderer * m_render;
+	SDL_Window * m_window;
 
-	Uint32 animation_tick;	// Start tick for animation
+	int m_npc; // 1 = NPC
+	char * m_character_name;
+	char * m_map;	// map name
+	int m_tile_x;	// player position (in tile)
+	int m_tile_y;	// player position (in tile)
+	int m_prev_pos_tile_x;	// player previous position (in tile) for sprite direction
+	int m_prev_pos_tile_y;	// player previous position (in tile) for sprite direction
+	bool m_pos_changed;
 
-	char * type;	// character's type
-	Selection selection; // Selected tile or sprite
-	char * id; // unique ID of a character (its filename)
-	char * prev_map; // the map from where this context comes
-	bool change_map; // Has this context map changed ?
-	lua_State* luaVM;	// LUA state
-	SDL_cond* cond;	// async condition for npc
-	SDL_mutex* cond_mutex;	// mutex for async condition for npc */
-	int orientation;	// Bit field for sprite orientation (north east, south...)
-	int direction;	// Bit field for sprite direction (north, south...)
+	Uint32 m_animation_tick;	// Start tick for animation
 
-	Uint32 next_execution_time; // Time when an NPC will execute its AI script
+	char * m_type;	// character's type
+	Selection m_selection; // Selected tile or sprite
+	char * m_id; // unique ID of a character (its filename)
+	char * m_prev_map; // the map from where this context comes
+	bool m_change_map; // Has this context map changed ?
+	lua_State* m_lua_VM;	// LUA state
+	SDL_cond* m_condition;	// async condition for npc
+	SDL_mutex* m_condition_mutex;	// mutex for async condition for npc */
+	int m_orientation;	// Bit field for sprite orientation (north east, south...)
+	int m_direction;	// Bit field for sprite direction (north, south...)
 
-	Context * previous;
-	Context * next;
+	Uint32 m_next_execution_time; // Time when an NPC will execute its AI script
+
+	Context * m_previous;
+	Context * m_next;
+
 };
 
 Context * context_get_list_start();
@@ -89,8 +95,7 @@ Context * context_new(void);
 void context_free_data(Context * context);
 void context_free(Context * context);
 ret_code_t context_set_hostname(Context * context, const char * name);
-ret_code_t context_set_username(Context * context, const char * name);
-void context_set_in_game(Context * context, int in_game);
+void context_set_in_game(Context * context, bool in_game);
 int context_get_in_game(Context * context);
 void context_set_connected(Context * context, bool connected);
 int context_get_connected(Context * context);
@@ -103,7 +108,7 @@ ret_code_t context_set_map(Context * context, const char * name);
 int context_set_map_w(Context * context, int width);
 int context_set_map_h(Context * context, int height);
 ret_code_t context_set_type(Context * context, const char * name);
-void context_set_npc(Context * context, int npc);
+void context_set_npc(Context * context, bool npc);
 void context_set_pos_tx(Context * context, int pos);
 void context_set_pos_ty(Context * context, int pos);
 void context_set_tile_x(Context * context, unsigned int pos);

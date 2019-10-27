@@ -293,7 +293,7 @@ item_t * scr_create_compose(Context * context)
 	int sw = 0;
 	int sh = 0;
 
-	SDL_GetRendererOutputSize(context->render, &sw, &sh);
+	SDL_GetRendererOutputSize(context->m_render, &sw, &sh);
 
 	item = item_list_add(&item_list);
 

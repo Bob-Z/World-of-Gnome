@@ -53,7 +53,7 @@ static int l_player_get_id(lua_State* p_pLuaState)
 	Context * l_pContext;
 
 	l_pContext = context_get_player();
-	lua_pushstring(p_pLuaState, l_pContext->id);
+	lua_pushstring(p_pLuaState, l_pContext->m_id);
 	return 1;  // number of results
 }
 
@@ -70,7 +70,7 @@ static int l_context_get_id(lua_State* p_pLuaState)
 	l_pContext = (Context*) lua_touserdata(p_pLuaState, -1);
 	lua_pop(p_pLuaState, 1);
 
-	lua_pushstring(p_pLuaState, l_pContext->id);
+	lua_pushstring(p_pLuaState, l_pContext->m_id);
 	return 1; // number of results
 }
 
@@ -87,7 +87,7 @@ static int l_context_get_npc(lua_State* p_pLuaState)
 	l_pContext = (Context*) lua_touserdata(p_pLuaState, -1);
 	lua_pop(p_pLuaState, 1);
 
-	lua_pushnumber(p_pLuaState, l_pContext->npc);
+	lua_pushnumber(p_pLuaState, l_pContext->m_npc);
 	return 1; // number of results
 }
 
@@ -104,7 +104,7 @@ static int l_context_get_map(lua_State* p_pLuaState)
 	l_pContext = (Context*) lua_touserdata(p_pLuaState, -1);
 	lua_pop(p_pLuaState, 1);
 
-	lua_pushstring(p_pLuaState, l_pContext->map);
+	lua_pushstring(p_pLuaState, l_pContext->m_map);
 	return 1; // number of results
 }
 

@@ -48,7 +48,7 @@ class ContextBis;
  **************************************/
 static ret_code_t manage_login_ok(Context * context, const pb::LoginOk & login_ok)
 {
-	wlog(LOGDEVELOPER, "[network] Received login OK for user %s", context->user_name);
+	wlog(LOGDEVELOPER, "[network] Received login OK for user %s", context->getUserName().c_str());
 
 	if (network_open_data_connection(context) == RET_NOK)
 	{
@@ -67,7 +67,7 @@ static ret_code_t manage_login_ok(Context * context, const pb::LoginOk & login_o
  **************************************/
 static ret_code_t manage_login_nok(Context * context, const pb::LoginNok & login_nok)
 {
-	wlog(LOGDEVELOPER, "[network] Received login NOK for user %s", context->user_name);
+	wlog(LOGDEVELOPER, "[network] Received login NOK for user %s", context->getUserName().c_str());
 
 	context_set_connected(context, false);
 	werr(LOGUSER, "Check your login and password (they are case sensitive)\n");
@@ -81,7 +81,7 @@ static ret_code_t manage_login_nok(Context * context, const pb::LoginNok & login
  **************************************/
 static ret_code_t manage_playable_character(Context * context, const pb::PlayableCharacter & playable_character)
 {
-	wlog(LOGDEVELOPER, "[network] Received playable character for user %s", context->user_name);
+	wlog(LOGDEVELOPER, "[network] Received playable character for user %s", context->getUserName().c_str());
 
 	std::vector<std::string> id_list;
 	for (int i = 0; i < playable_character.id().size(); i++)
@@ -113,7 +113,7 @@ static ret_code_t manage_file(Context * context, const pb::File& file)
  **************************************/
 static ret_code_t manage_user_character(Context * context, const pb::UserCharacter& user_character)
 {
-	wlog(LOGDEVELOPER, "[network] Received user %s character", context->user_name, user_character.name().c_str());
+	wlog(LOGDEVELOPER, "[network] Received user %s character", context->getUserName().c_str(), user_character.name().c_str());
 
 	scr_select_add_user_character(context, user_character.id(), user_character.type(), user_character.name());
 	screen_compose();

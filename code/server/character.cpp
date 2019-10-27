@@ -137,7 +137,7 @@ void character_user_send_list(Context * context)
 {
 	char ** l_pCharacterList = nullptr;
 
-	if (entry_read_list(USERS_TABLE, context->user_name, &l_pCharacterList,
+	if (entry_read_list(USERS_TABLE, context->getUserName().c_str(), &l_pCharacterList,
 	USERS_CHARACTER_LIST, nullptr) == RET_NOK)
 	{
 		return;
@@ -173,10 +173,10 @@ int character_disconnect(const char * id)
 	if (context_is_npc(ctx) == true)
 	{
 		/* Wake up NPC */
-		if (SDL_TryLockMutex(ctx->cond_mutex) == 0)
+		if (SDL_TryLockMutex(ctx->m_condition_mutex) == 0)
 		{
-			SDL_CondSignal(ctx->cond);
-			SDL_UnlockMutex(ctx->cond_mutex);
+			SDL_CondSignal(ctx->m_condition);
+			SDL_UnlockMutex(ctx->m_condition_mutex);
 		}
 	}
 
@@ -202,10 +202,10 @@ int character_out_of_game(const char * id)
 	if (context_is_npc(ctx) == true)
 	{
 		/* Wake up NPC */
-		if (SDL_TryLockMutex(ctx->cond_mutex) == 0)
+		if (SDL_TryLockMutex(ctx->m_condition_mutex) == 0)
 		{
-			SDL_CondSignal(ctx->cond);
-			SDL_UnlockMutex(ctx->cond_mutex);
+			SDL_CondSignal(ctx->m_condition);
+			SDL_UnlockMutex(ctx->m_condition_mutex);
 		}
 	}
 
@@ -296,7 +296,7 @@ static void execute_aggro(Context * agressor, Context * target, char * script, i
 		param[1] = "0";
 	}
 
-	param[0] = target->id;
+	param[0] = target->m_id;
 	param[2] = nullptr;
 	action_execute_script(agressor, script, param);
 
@@ -316,23 +316,23 @@ void character_update_aggro(Context * agressor)
 		return;
 	}
 
-	if (agressor->map == nullptr)
+	if (agressor->m_map == nullptr)
 	{
 		return;
 	}
 
-	if (agressor->id == nullptr)
+	if (agressor->m_id == nullptr)
 	{
 		return;
 	}
 
 	/* If the current context is an NPC it might be an aggressor: compute its aggro */
-	if (character_get_npc(agressor->id) && agressor->luaVM != nullptr)
+	if (character_get_npc(agressor->m_id) && agressor->m_lua_VM != nullptr)
 	{
-		if (entry_read_int(CHARACTER_TABLE, agressor->id, &aggro_dist,
+		if (entry_read_int(CHARACTER_TABLE, agressor->m_id, &aggro_dist,
 		CHARACTER_KEY_AGGRO_DIST, nullptr) == RET_OK)
 		{
-			if (entry_read_string(CHARACTER_TABLE, agressor->id, &aggro_script,
+			if (entry_read_string(CHARACTER_TABLE, agressor->m_id, &aggro_script,
 			CHARACTER_KEY_AGGRO_SCRIPT, nullptr) == RET_OK)
 			{
 				target = context_get_first();
@@ -342,27 +342,27 @@ void character_update_aggro(Context * agressor)
 					/* Skip current context */
 					if (agressor == target)
 					{
-						target = target->next;
+						target = target->m_next;
 						continue;
 					}
-					if (target->id == nullptr)
+					if (target->m_id == nullptr)
 					{
-						target = target->next;
+						target = target->m_next;
 						continue;
 					}
-					if (target->map == nullptr)
+					if (target->m_map == nullptr)
 					{
-						target = target->next;
+						target = target->m_next;
 						continue;
 					}
 					/* Skip if not on the same map */
-					if (strcmp(agressor->map, target->map) != 0)
+					if (strcmp(agressor->m_map, target->m_map) != 0)
 					{
-						target = target->next;
+						target = target->m_next;
 						continue;
 					}
 					execute_aggro(agressor, target, aggro_script, aggro_dist);
-					target = target->next;
+					target = target->m_next;
 				}
 				free(aggro_script);
 			}
@@ -378,40 +378,40 @@ void character_update_aggro(Context * agressor)
 		/* Skip current context */
 		if (target == npc)
 		{
-			npc = npc->next;
+			npc = npc->m_next;
 			continue;
 		}
-		if (npc->id == nullptr)
+		if (npc->m_id == nullptr)
 		{
-			npc = npc->next;
+			npc = npc->m_next;
 			continue;
 		}
-		if (npc->map == nullptr)
+		if (npc->m_map == nullptr)
 		{
-			npc = npc->next;
+			npc = npc->m_next;
 			continue;
 		}
-		if (npc->luaVM == nullptr)
+		if (npc->m_lua_VM == nullptr)
 		{
-			npc = npc->next;
+			npc = npc->m_next;
 			continue;
 		}
 		/* Skip if not on the same map */
-		if (strcmp(npc->map, target->map) != 0)
+		if (strcmp(npc->m_map, target->m_map) != 0)
 		{
-			npc = npc->next;
+			npc = npc->m_next;
 			continue;
 		}
-		if (entry_read_int(CHARACTER_TABLE, npc->id, &aggro_dist,
+		if (entry_read_int(CHARACTER_TABLE, npc->m_id, &aggro_dist,
 		CHARACTER_KEY_AGGRO_DIST, nullptr) == RET_NOK)
 		{
-			npc = npc->next;
+			npc = npc->m_next;
 			continue;
 		}
-		if (entry_read_string(CHARACTER_TABLE, npc->id, &aggro_script,
+		if (entry_read_string(CHARACTER_TABLE, npc->m_id, &aggro_script,
 		CHARACTER_KEY_AGGRO_SCRIPT, nullptr) == RET_NOK)
 		{
-			npc = npc->next;
+			npc = npc->m_next;
 			continue;
 		}
 
@@ -419,7 +419,7 @@ void character_update_aggro(Context * agressor)
 
 		free(aggro_script);
 
-		npc = npc->next;
+		npc = npc->m_next;
 	}
 }
 /*************************************************************
@@ -430,9 +430,9 @@ static void do_set_pos(Context * ctx, const char * map, int x, int y, bool chang
 	context_set_pos_tx(ctx, x);
 	context_set_pos_ty(ctx, y);
 
-	entry_write_string(CHARACTER_TABLE, ctx->id, map, CHARACTER_KEY_MAP, nullptr);
-	entry_write_int(CHARACTER_TABLE, ctx->id, x, CHARACTER_KEY_TILE_X, nullptr);
-	entry_write_int(CHARACTER_TABLE, ctx->id, y, CHARACTER_KEY_TILE_Y, nullptr);
+	entry_write_string(CHARACTER_TABLE, ctx->m_id, map, CHARACTER_KEY_MAP, nullptr);
+	entry_write_int(CHARACTER_TABLE, ctx->m_id, x, CHARACTER_KEY_TILE_X, nullptr);
+	entry_write_int(CHARACTER_TABLE, ctx->m_id, y, CHARACTER_KEY_TILE_Y, nullptr);
 
 	context_spread(ctx);
 	if (change_map == true)
@@ -449,7 +449,7 @@ static void platform_move(Context * platform, const char * map, int x, int y, bo
 	Context * current = context_get_first();
 	int is_platform;
 
-	if (entry_read_int(CHARACTER_TABLE, platform->id, &is_platform,
+	if (entry_read_int(CHARACTER_TABLE, platform->m_id, &is_platform,
 	CHARACTER_KEY_PLATFORM, nullptr) == RET_NOK)
 	{
 		return;
@@ -464,14 +464,14 @@ static void platform_move(Context * platform, const char * map, int x, int y, bo
 	{
 		if (current == platform)
 		{
-			current = current->next;
+			current = current->m_next;
 			continue;
 		}
-		if (platform->tile_x == current->tile_x && platform->tile_y == current->tile_y && !strcmp(platform->map, current->map))
+		if (platform->m_tile_x == current->m_tile_x && platform->m_tile_y == current->m_tile_y && !strcmp(platform->m_map, current->m_map))
 		{
 			do_set_pos(current, map, x, y, change_map);
 		}
-		current = current->next;
+		current = current->m_next;
 	}
 }
 
@@ -503,13 +503,13 @@ int character_set_pos(Context * ctx, const char * map, int x, int y)
 	}
 
 	// Do nothing if no move
-	if (!strcmp(ctx->map, map) && ctx->tile_x == x && ctx->tile_y == y)
+	if (!strcmp(ctx->m_map, map) && ctx->m_tile_x == x && ctx->m_tile_y == y)
 	{
 		return 0;
 	}
 
 	ctx_layer = 0;
-	entry_read_int(CHARACTER_TABLE, ctx->id, &ctx_layer, CHARACTER_LAYER, nullptr);
+	entry_read_int(CHARACTER_TABLE, ctx->m_id, &ctx_layer, CHARACTER_LAYER, nullptr);
 	sprintf(layer_name, "%s%d", MAP_KEY_LAYER, ctx_layer);
 
 	entry_read_int(MAP_TABLE, map, &width, MAP_KEY_WIDTH, nullptr);
@@ -578,7 +578,7 @@ int character_set_pos(Context * ctx, const char * map, int x, int y)
 	layer = ctx_layer;
 	while (layer >= 0)
 	{
-		ret_value = map_check_tile(ctx, ctx->id, map, layer, x, y);
+		ret_value = map_check_tile(ctx, ctx->m_id, map, layer, x, y);
 		/* not allowed */
 		if (ret_value == 0)
 		{
@@ -597,7 +597,7 @@ int character_set_pos(Context * ctx, const char * map, int x, int y)
 		return -1;
 	}
 
-	if (strcmp(ctx->map, map))
+	if (strcmp(ctx->m_map, map))
 	{
 		change_map = true;
 	}
@@ -746,11 +746,11 @@ int character_wake_up(const char * id)
 	ctx = context_find(id);
 
 	/* Wake up NPC */
-	ctx->next_execution_time = 0;
-	if (SDL_TryLockMutex(ctx->cond_mutex) == 0)
+	ctx->m_next_execution_time = 0;
+	if (SDL_TryLockMutex(ctx->m_condition_mutex) == 0)
 	{
-		SDL_CondSignal(ctx->cond);
-		SDL_UnlockMutex(ctx->cond_mutex);
+		SDL_CondSignal(ctx->m_condition);
+		SDL_UnlockMutex(ctx->m_condition_mutex);
 	}
 
 	return 0;

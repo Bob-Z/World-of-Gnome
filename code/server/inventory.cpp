@@ -42,7 +42,7 @@ int inventory_delete(const char * id, const char * item)
 		return -1;
 	}
 
-	if (entry_remove_from_list(CHARACTER_TABLE, context->id, item, CHARACTER_KEY_INVENTORY, nullptr) == RET_OK)
+	if (entry_remove_from_list(CHARACTER_TABLE, context->m_id, item, CHARACTER_KEY_INVENTORY, nullptr) == RET_OK)
 	{
 		/* update client */
 		network_send_character_file(context);
@@ -79,13 +79,13 @@ int inventory_add(const char * ctx_id, const char * item_id)
 	}
 
 	// Make sure the CHARACTER_KEY_INVENTORY list exists
-	entry_list_create(CHARACTER_TABLE, context->id, CHARACTER_KEY_INVENTORY,
+	entry_list_create(CHARACTER_TABLE, context->m_id, CHARACTER_KEY_INVENTORY,
 	nullptr);
 
 	mytemplate = item_is_resource(item_id);
 	if (mytemplate == nullptr)
 	{
-		if (entry_add_to_list(CHARACTER_TABLE, context->id, item_id, CHARACTER_KEY_INVENTORY, nullptr) == RET_NOK)
+		if (entry_add_to_list(CHARACTER_TABLE, context->m_id, item_id, CHARACTER_KEY_INVENTORY, nullptr) == RET_NOK)
 		{
 			return -1;
 		}
@@ -97,7 +97,7 @@ int inventory_add(const char * ctx_id, const char * item_id)
 		{
 			return -1;
 		}
-		if (entry_read_list(CHARACTER_TABLE, context->id, &name_list, CHARACTER_KEY_INVENTORY, nullptr) == RET_NOK)
+		if (entry_read_list(CHARACTER_TABLE, context->m_id, &name_list, CHARACTER_KEY_INVENTORY, nullptr) == RET_NOK)
 		{
 			return -1;
 		}
@@ -129,7 +129,7 @@ int inventory_add(const char * ctx_id, const char * item_id)
 		/* First time we add this type of resource to inventory */
 		if (name_list[index] == nullptr)
 		{
-			if (entry_add_to_list(CHARACTER_TABLE, context->id, item_id, CHARACTER_KEY_INVENTORY, nullptr) == RET_NOK)
+			if (entry_add_to_list(CHARACTER_TABLE, context->m_id, item_id, CHARACTER_KEY_INVENTORY, nullptr) == RET_NOK)
 			{
 				return -1;
 			}
@@ -160,7 +160,7 @@ char * inventory_get_by_name(const char * id, const char * item_name)
 		return nullptr;
 	}
 
-	if (entry_read_list(CHARACTER_TABLE, context->id, &name_list, CHARACTER_KEY_INVENTORY, nullptr) == RET_NOK)
+	if (entry_read_list(CHARACTER_TABLE, context->m_id, &name_list, CHARACTER_KEY_INVENTORY, nullptr) == RET_NOK)
 	{
 		return nullptr;
 	}

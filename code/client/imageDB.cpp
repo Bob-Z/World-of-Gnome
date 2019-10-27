@@ -48,7 +48,7 @@ static anim_t * default_anim(Context * ctx)
 
 		def_anim->num_frame = 1;
 		def_anim->tex = (SDL_Texture**) malloc(sizeof(SDL_Texture*));
-		def_anim->tex[0] = SDL_CreateTexture(ctx->render, SDL_PIXELFORMAT_ABGR8888, SDL_TEXTUREACCESS_STATIC, 1, 1);
+		def_anim->tex[0] = SDL_CreateTexture(ctx->m_render, SDL_PIXELFORMAT_ABGR8888, SDL_TEXTUREACCESS_STATIC, 1, 1);
 		def_anim->w = 1;
 		def_anim->h = 1;
 		def_anim->delay = (Uint32*) malloc(sizeof(Uint32));
@@ -66,7 +66,7 @@ static anim_t * image_load(Context * ctx, const std::string & file_name)
 {
 	const std::string file_path = base_directory + "/" + file_name;
 
-	anim_t * anim = anim_load(ctx->render, file_path.c_str());
+	anim_t * anim = anim_load(ctx->m_render, file_path.c_str());
 
 	return anim;
 }

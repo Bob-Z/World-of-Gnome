@@ -255,7 +255,7 @@ item_t * scr_select_compose(Context * context)
 		int sw;
 		int sh;
 
-		SDL_GetRendererOutputSize(context->render, &sw, &sh);
+		SDL_GetRendererOutputSize(context->m_render, &sw, &sh);
 
 		anim_t *anim = imageDB_get_anim(context, icon_add_image_name);
 		int x;

@@ -75,7 +75,7 @@ int file_add(Context * context, const std::string & name, const std::string & da
  **********************************************************************************/
 void file_clean(Context * context)
 {
-	file_delete(CHARACTER_TABLE, context->id);
+	file_delete(CHARACTER_TABLE, context->m_id);
 }
 
 /***************************************************

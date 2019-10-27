@@ -46,7 +46,7 @@ void context_spread(Context * context)
 	do
 	{
 		// Skip if not in game
-		if (ctx->in_game == false)
+		if (ctx->m_in_game == false)
 		{
 			continue;
 		}
@@ -56,15 +56,15 @@ void context_spread(Context * context)
 			continue;
 		}
 
-		if (ctx->id == nullptr)
+		if (ctx->m_id == nullptr)
 		{
 			continue;
 		}
 
 		// Skip if not on the same map or previous map
-		if ((ctx->map != nullptr) && (context->map != nullptr) && (context->prev_map != nullptr))
+		if ((ctx->m_map != nullptr) && (context->m_map != nullptr) && (context->m_prev_map != nullptr))
 		{
-			if (strcmp(context->map, ctx->map) != 0 && strcmp(context->prev_map, ctx->map) != 0)
+			if (strcmp(context->m_map, ctx->m_map) != 0 && strcmp(context->m_prev_map, ctx->m_map) != 0)
 			{
 				continue;
 			}
@@ -72,13 +72,13 @@ void context_spread(Context * context)
 
 		network_send_context_to_context(ctx, context);
 
-	} while ((ctx = ctx->next) != nullptr);
+	} while ((ctx = ctx->m_next) != nullptr);
 
 	/* The existing context on the previous map should have
 	 been deleted, we don't need this any more -> this will
 	 generate less network request */
-	free(context->prev_map);
-	context->prev_map = nullptr;
+	free(context->m_prev_map);
+	context->m_prev_map = nullptr;
 
 	context_unlock_list();
 }
@@ -104,7 +104,7 @@ void context_broadcast_text(const char * map, const char * text)
 	do
 	{
 		// Skip if not in game
-		if (ctx->in_game == false)
+		if (ctx->m_in_game == false)
 		{
 			continue;
 		}
@@ -115,12 +115,12 @@ void context_broadcast_text(const char * map, const char * text)
 		}
 
 		// Skip if the player has not selected its character
-		if (ctx->id == nullptr)
+		if (ctx->m_id == nullptr)
 		{
 			continue;
 		}
 
-		if (ctx->map == nullptr)
+		if (ctx->m_map == nullptr)
 		{
 			continue;
 		}
@@ -128,15 +128,15 @@ void context_broadcast_text(const char * map, const char * text)
 		if (map)
 		{
 			// Skip if not on the same map
-			if (strcmp(map, ctx->map) != 0)
+			if (strcmp(map, ctx->m_map) != 0)
 			{
 				continue;
 			}
 		}
 
-		network_send_text(ctx->id, std::string(text));
+		network_send_text(ctx->m_id, std::string(text));
 
-	} while ((ctx = ctx->next) != nullptr);
+	} while ((ctx = ctx->m_next) != nullptr);
 
 	context_unlock_list();
 }
@@ -168,15 +168,15 @@ void context_broadcast_map(const char * map)
 		}
 
 		// Skip if not in game
-		if (ctx->in_game == false)
+		if (ctx->m_in_game == false)
 		{
 			continue;
 		}
 
 		// Skip if not on the same map
-		if (ctx->map)
+		if (ctx->m_map)
 		{
-			if (strcmp(map, ctx->map) != 0)
+			if (strcmp(map, ctx->m_map) != 0)
 			{
 				continue;
 			}
@@ -184,7 +184,7 @@ void context_broadcast_map(const char * map)
 
 		network_send_file(ctx, file_name.c_str());
 
-	} while ((ctx = ctx->next) != nullptr);
+	} while ((ctx = ctx->m_next) != nullptr);
 
 	context_unlock_list();
 }
@@ -219,15 +219,15 @@ void context_broadcast_character(const char * character)
 		}
 
 		// Skip if not in game
-		if (ctx->in_game == false)
+		if (ctx->m_in_game == false)
 		{
 			continue;
 		}
 
 		// Skip if not on the same map
-		if (ctx->map)
+		if (ctx->m_map)
 		{
-			if (strcmp(character_ctx->map, ctx->map) != 0)
+			if (strcmp(character_ctx->m_map, ctx->m_map) != 0)
 			{
 				continue;
 			}
@@ -235,7 +235,7 @@ void context_broadcast_character(const char * character)
 
 		network_send_file(ctx, file_name.c_str());
 
-	} while ((ctx = ctx->next) != nullptr);
+	} while ((ctx = ctx->m_next) != nullptr);
 
 	context_unlock_list();
 }
@@ -267,9 +267,9 @@ void context_request_other_context(Context * context)
 		}
 
 		// Skip if not on the same map
-		if (ctx->map != nullptr)
+		if (ctx->m_map != nullptr)
 		{
-			if (strcmp(context->map, ctx->map) != 0)
+			if (strcmp(context->m_map, ctx->m_map) != 0)
 			{
 				continue;
 			}
@@ -277,7 +277,7 @@ void context_request_other_context(Context * context)
 
 		network_send_context_to_context(context, ctx);
 
-	} while ((ctx = ctx->next) != nullptr);
+	} while ((ctx = ctx->m_next) != nullptr);
 
 	context_unlock_list();
 }

@@ -69,7 +69,7 @@ static int l_player_get_id(lua_State* L)
 	lua_getglobal(L, LUAVM_CONTEXT);
 	context = (Context*) lua_touserdata(L, -1);
 	lua_pop(L, 1);
-	lua_pushstring(L, context->id);
+	lua_pushstring(L, context->m_id);
 	return 1;  // number of results
 }
 
@@ -125,7 +125,7 @@ static int l_character_get_selected_map_tile_x(lua_State* L)
 		werr(LOGDESIGNER, "Cannot find context with ID %s", id);
 		return 0;  // number of results
 	}
-	lua_pushnumber(L, target->selection.getMapCoordTx());
+	lua_pushnumber(L, target->m_selection.getMapCoordTx());
 	return 1;  // number of results
 }
 
@@ -146,7 +146,7 @@ static int l_character_get_selected_map_tile_y(lua_State* L)
 		werr(LOGDESIGNER, "Cannot find context with ID %s", id);
 		return 0;  // number of results
 	}
-	lua_pushnumber(L, target->selection.getMapCoordTy());
+	lua_pushnumber(L, target->m_selection.getMapCoordTy());
 	return 1;  // number of results
 }
 
@@ -167,7 +167,7 @@ static int l_character_get_selected_map(lua_State* L)
 		werr(LOGDESIGNER, "Cannot find context with ID %s", id);
 		return 0;  // number of results
 	}
-	lua_pushstring(L, target->selection.getMap().c_str());
+	lua_pushstring(L, target->m_selection.getMap().c_str());
 	return 1;  // number of results
 }
 
@@ -224,7 +224,7 @@ static int l_character_get_selected_inventory_id(lua_State* L)
 		werr(LOGDESIGNER, "Cannot find context with ID %s", id);
 		return 0;  // number of results
 	}
-	lua_pushstring(L, target->selection.getInventory().c_str());
+	lua_pushstring(L, target->m_selection.getInventory().c_str());
 	return 1;  // number of results
 }
 
@@ -275,7 +275,7 @@ static int l_character_get_selected_equipment_slot(lua_State* L)
 		werr(LOGDESIGNER, "Cannot find context with ID %s", id);
 		return 0;  // number of results
 	}
-	lua_pushstring(L, target->selection.getEquipment().c_str());
+	lua_pushstring(L, target->m_selection.getEquipment().c_str());
 	return 1;  // number of results
 }
 
@@ -326,7 +326,7 @@ static int l_character_get_selected_character_id(lua_State* L)
 		werr(LOGDESIGNER, "Cannot find context with ID %s", id);
 		return 0;  // number of results
 	}
-	lua_pushstring(L, target->selection.getId().c_str());
+	lua_pushstring(L, target->m_selection.getId().c_str());
 	return 1;  // number of results
 }
 
@@ -377,7 +377,7 @@ static int l_character_get_map(lua_State* L)
 		werr(LOGDESIGNER, "Cannot find context with ID %s", id);
 		return 0;  // number of results
 	}
-	lua_pushstring(L, target->map);
+	lua_pushstring(L, target->m_map);
 	return 1;  // number of results
 }
 
@@ -434,7 +434,7 @@ static int l_character_get_x(lua_State* L)
 		werr(LOGDESIGNER, "Cannot find context with ID %s", id);
 		return 0;  // number of results
 	}
-	lua_pushnumber(L, target->tile_x);
+	lua_pushnumber(L, target->m_tile_x);
 	return 1;  // number of results
 }
 
@@ -455,7 +455,7 @@ static int l_character_get_y(lua_State* L)
 		werr(LOGDESIGNER, "Cannot find context with ID %s", id);
 		return 0;  // number of results
 	}
-	lua_pushnumber(L, target->tile_y);
+	lua_pushnumber(L, target->m_tile_y);
 	return 1;  // number of results
 }
 
@@ -476,7 +476,7 @@ static int l_character_get_name(lua_State* L)
 		werr(LOGDESIGNER, "Cannot find context with ID %s", id);
 		return 0;  // number of results
 	}
-	lua_pushstring(L, target->character_name);
+	lua_pushstring(L, target->m_character_name);
 	return 1;  // number of results
 }
 
@@ -497,7 +497,7 @@ static int l_character_get_type(lua_State* L)
 		werr(LOGDESIGNER, "Cannot find context with ID %s", id);
 		return 0;  // number of results
 	}
-	lua_pushstring(L, target->type);
+	lua_pushstring(L, target->m_type);
 	return 1;  // number of results
 }
 
@@ -2208,7 +2208,7 @@ static int l_popup_send(lua_State* L)
  **************************************/
 static void action_chat(Context * context, const char * text)
 {
-	const std::string new_text = std::string(context->character_name) + ":" + std::string(text);
+	const std::string new_text = std::string(context->m_character_name) + ":" + std::string(text);
 
 	network_broadcast_text(context, new_text);
 }
@@ -2231,7 +2231,7 @@ int action_execute_script(Context * context, const char * script, const char ** 
 		return -1;
 	}
 
-	return lua_execute_script(context->luaVM, script, parameters);
+	return lua_execute_script(context->m_lua_VM, script, parameters);
 }
 
 /**************************************
@@ -2385,7 +2385,7 @@ static int l_call_action(lua_State* L)
  ***************************************************/
 void register_lua_functions(Context * context)
 {
-	lua_State* L = context->luaVM;
+	lua_State* L = context->m_lua_VM;
 
 	// player functions
 	lua_pushcfunction(L, l_player_get_id);

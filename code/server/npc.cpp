@@ -49,7 +49,7 @@ static int npc_script(void * data)
 
 	context_new_VM(context);
 
-	wlog(LOGDESIGNER, "Start AI script for %s(%s)", context->id, context->character_name);
+	wlog(LOGDESIGNER, "Start AI script for %s(%s)", context->m_id, context->m_character_name);
 
 	while (context_get_connected(context))
 	{
@@ -61,19 +61,19 @@ static int npc_script(void * data)
 		{
 			deep_free(parameters);
 		}
-		if (entry_read_string(CHARACTER_TABLE, context->id, &script, CHARACTER_KEY_AI, nullptr) == RET_NOK)
+		if (entry_read_string(CHARACTER_TABLE, context->m_id, &script, CHARACTER_KEY_AI, nullptr) == RET_NOK)
 		{
-			werr(LOGUSER, "No AI script for %s", context->id);
+			werr(LOGUSER, "No AI script for %s", context->m_id);
 			break;
 		}
-		entry_read_list(CHARACTER_TABLE, context->id, &parameters, CHARACTER_KEY_AI_PARAMS, nullptr);
+		entry_read_list(CHARACTER_TABLE, context->m_id, &parameters, CHARACTER_KEY_AI_PARAMS, nullptr);
 
-		if (context->next_execution_time < SDL_GetTicks())
+		if (context->m_next_execution_time < SDL_GetTicks())
 		{
 			SDL_LockMutex(npc_mutex);
 			timeout_ms = action_execute_script(context, script, (const char **) parameters);
 			SDL_UnlockMutex(npc_mutex);
-			context->next_execution_time = SDL_GetTicks() + timeout_ms;
+			context->m_next_execution_time = SDL_GetTicks() + timeout_ms;
 		}
 
 		/* The previous call to action_execute_script may have changed
@@ -81,13 +81,13 @@ static int npc_script(void * data)
 		 timeout duration before disconnecting */
 		if (context_get_connected(context))
 		{
-			SDL_LockMutex(context->cond_mutex);
-			SDL_CondWaitTimeout(context->cond, context->cond_mutex, timeout_ms);
-			SDL_UnlockMutex(context->cond_mutex);
+			SDL_LockMutex(context->m_condition_mutex);
+			SDL_CondWaitTimeout(context->m_condition, context->m_condition_mutex, timeout_ms);
+			SDL_UnlockMutex(context->m_condition_mutex);
 		}
 	}
 
-	wlog(LOGDESIGNER, "End AI script for %s(%s)", context->id, context->character_name);
+	wlog(LOGDESIGNER, "End AI script for %s(%s)", context->m_id, context->m_character_name);
 
 	/* Send connected  = FALSE to other context */
 	context_spread(context);
@@ -112,8 +112,7 @@ void instantiate_npc(const char * id)
 	char buf[512];
 
 	// check if it's a NPC
-	if (entry_read_int(CHARACTER_TABLE, id, &is_npc, CHARACTER_KEY_NPC,
-	nullptr) == RET_NOK)
+	if (entry_read_int(CHARACTER_TABLE, id, &is_npc, CHARACTER_KEY_NPC, nullptr) == RET_NOK)
 	{
 		return;
 	}
@@ -124,32 +123,27 @@ void instantiate_npc(const char * id)
 	}
 
 	// read data of this npc
-	if (entry_read_int(CHARACTER_TABLE, id, &x, CHARACTER_KEY_TILE_X,
-	nullptr) == RET_NOK)
+	if (entry_read_int(CHARACTER_TABLE, id, &x, CHARACTER_KEY_TILE_X, nullptr) == RET_NOK)
 	{
 		return;
 	}
 
-	if (entry_read_int(CHARACTER_TABLE, id, &y, CHARACTER_KEY_TILE_Y,
-	nullptr) == RET_NOK)
+	if (entry_read_int(CHARACTER_TABLE, id, &y, CHARACTER_KEY_TILE_Y, nullptr) == RET_NOK)
 	{
 		return;
 	}
 
-	if (entry_read_string(CHARACTER_TABLE, id, &map, CHARACTER_KEY_MAP,
-	nullptr) == RET_NOK)
+	if (entry_read_string(CHARACTER_TABLE, id, &map, CHARACTER_KEY_MAP, nullptr) == RET_NOK)
 	{
 		return;
 	}
 
-	if (entry_read_string(CHARACTER_TABLE, id, &name, CHARACTER_KEY_NAME,
-	nullptr) == RET_NOK)
+	if (entry_read_string(CHARACTER_TABLE, id, &name, CHARACTER_KEY_NAME, nullptr) == RET_NOK)
 	{
 		name = strdup("");
 	}
 
-	if (entry_read_string(CHARACTER_TABLE, id, &type, CHARACTER_KEY_TYPE,
-	nullptr) == RET_NOK)
+	if (entry_read_string(CHARACTER_TABLE, id, &type, CHARACTER_KEY_TYPE, nullptr) == RET_NOK)
 	{
 		free(map);
 		free(name);
@@ -158,7 +152,7 @@ void instantiate_npc(const char * id)
 
 	wlog(LOGDESIGNER, "Creating npc %s of type %s in map %s at %d,%d", name, type, map, x, y);
 	ctx = context_new();
-	context_set_username(ctx, "CPU");
+	ctx->setUserName("CPU");
 	context_set_character_name(ctx, name);
 	free(name);
 	context_set_in_game(ctx, true);
@@ -171,8 +165,8 @@ void instantiate_npc(const char * id)
 	context_set_pos_tx(ctx, x);
 	context_set_pos_ty(ctx, y);
 	context_set_id(ctx, id);
-	ctx->cond = SDL_CreateCond();
-	ctx->cond_mutex = SDL_CreateMutex();
+	ctx->m_condition = SDL_CreateCond();
+	ctx->m_condition_mutex = SDL_CreateMutex();
 
 	context_spread(ctx);
 

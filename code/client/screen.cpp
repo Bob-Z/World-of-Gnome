@@ -85,7 +85,7 @@ static void compose_scr(Context * context)
 {
 	static TTF_Font * font = nullptr;
 
-	SDL_SetRenderDrawColor(context->render, 0, 0, 0, 255);
+	SDL_SetRenderDrawColor(context->m_render, 0, 0, 0, 255);
 
 	switch (g_Camera.getScreen())
 	{
@@ -205,7 +205,7 @@ static void execute_draw_script(Context * p_pCtx, const char * p_pScriptName, Co
 		file_request_from_network(p_pCtx, SCRIPT_TABLE, p_pScriptName);
 	}
 
-	sdl_blit_item(p_pCtx->render, &l_TempItem);
+	sdl_blit_item(p_pCtx->m_render, &l_TempItem);
 }
 
 /************************************************
@@ -229,14 +229,14 @@ void screen_display(Context * ctx)
 
 		while (SDL_PollEvent(&event))
 		{
-			g_Compose |= sdl_screen_manager(ctx->window, ctx->render, &event);
-			sdl_mouse_manager(ctx->render, &event, item_list);
+			g_Compose |= sdl_screen_manager(ctx->m_window, ctx->m_render, &event);
+			sdl_mouse_manager(ctx->m_render, &event, item_list);
 			sdl_keyboard_manager(&event);
 		}
 
-		sdl_mouse_position_manager(ctx->render, item_list);
+		sdl_mouse_position_manager(ctx->m_render, item_list);
 
-		SDL_RenderClear(ctx->render);
+		SDL_RenderClear(ctx->m_render);
 
 //		sdl_blit_item_list(ctx->render,item_list);
 		item_t * item;
@@ -257,7 +257,7 @@ void screen_display(Context * ctx)
 				}
 				else
 				{
-					entry_read_string(CHARACTER_TABLE, ctx_drawn->id, &draw_script, CHARACTER_KEY_DRAW_SCRIPT, nullptr);
+					entry_read_string(CHARACTER_TABLE, ctx_drawn->m_id, &draw_script, CHARACTER_KEY_DRAW_SCRIPT, nullptr);
 				}
 
 				if (draw_script != nullptr)
@@ -271,13 +271,13 @@ void screen_display(Context * ctx)
 				}
 			}
 
-			sdl_blit_item(ctx->render, item);
+			sdl_blit_item(ctx->m_render, item);
 			item = item->next;
 		}
 
 		calculate_camera_position(ctx);
 
-		sdl_blit_to_screen(ctx->render);
+		sdl_blit_to_screen(ctx->m_render);
 
 		sdl_loop_manager();
 	}
