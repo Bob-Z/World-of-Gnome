@@ -140,22 +140,22 @@ static anim_t ** select_sprite(Context * ctx)
 	// Try to find a sprite depending on the orientation
 	if (ctx->getOrientation() & NORTH)
 	{
-		entry_read_string(CHARACTER_TABLE, ctx->m_id, &sprite_name,
+		entry_read_string(CHARACTER_TABLE, ctx->getId().c_str(), &sprite_name,
 		CHARACTER_KEY_DIR_N_SPRITE, nullptr);
 	}
 	if ((ctx->getOrientation() & SOUTH) && sprite_name == nullptr)
 	{
-		entry_read_string(CHARACTER_TABLE, ctx->m_id, &sprite_name,
+		entry_read_string(CHARACTER_TABLE, ctx->getId().c_str(), &sprite_name,
 		CHARACTER_KEY_DIR_S_SPRITE, nullptr);
 	}
 	if ((ctx->getOrientation() & EAST) && sprite_name == nullptr)
 	{
-		entry_read_string(CHARACTER_TABLE, ctx->m_id, &sprite_name,
+		entry_read_string(CHARACTER_TABLE, ctx->getId().c_str(), &sprite_name,
 		CHARACTER_KEY_DIR_E_SPRITE, nullptr);
 	}
 	if ((ctx->getOrientation() & WEST) && sprite_name == nullptr)
 	{
-		entry_read_string(CHARACTER_TABLE, ctx->m_id, &sprite_name,
+		entry_read_string(CHARACTER_TABLE, ctx->getId().c_str(), &sprite_name,
 		CHARACTER_KEY_DIR_W_SPRITE, nullptr);
 	}
 
@@ -174,22 +174,22 @@ static anim_t ** select_sprite(Context * ctx)
 	// Try sprite lists
 	if (ctx->getOrientation() & NORTH)
 	{
-		entry_read_list(CHARACTER_TABLE, ctx->m_id, &sprite_list,
+		entry_read_list(CHARACTER_TABLE, ctx->getId().c_str(), &sprite_list,
 		CHARACTER_KEY_DIR_N_SPRITE, nullptr);
 	}
 	if ((ctx->getOrientation() & SOUTH) && sprite_list == nullptr)
 	{
-		entry_read_list(CHARACTER_TABLE, ctx->m_id, &sprite_list,
+		entry_read_list(CHARACTER_TABLE, ctx->getId().c_str(), &sprite_list,
 		CHARACTER_KEY_DIR_S_SPRITE, nullptr);
 	}
 	if ((ctx->getOrientation() & EAST) && sprite_list == nullptr)
 	{
-		entry_read_list(CHARACTER_TABLE, ctx->m_id, &sprite_list,
+		entry_read_list(CHARACTER_TABLE, ctx->getId().c_str(), &sprite_list,
 		CHARACTER_KEY_DIR_E_SPRITE, nullptr);
 	}
 	if ((ctx->getOrientation() & WEST) && sprite_list == nullptr)
 	{
-		entry_read_list(CHARACTER_TABLE, ctx->m_id, &sprite_list,
+		entry_read_list(CHARACTER_TABLE, ctx->getId().c_str(), &sprite_list,
 		CHARACTER_KEY_DIR_W_SPRITE, nullptr);
 	}
 
@@ -201,7 +201,7 @@ static anim_t ** select_sprite(Context * ctx)
 	}
 
 	// try default sprite file
-	if (entry_read_string(CHARACTER_TABLE, ctx->m_id, &sprite_name,
+	if (entry_read_string(CHARACTER_TABLE, ctx->getId().c_str(), &sprite_name,
 	CHARACTER_KEY_SPRITE, nullptr) == RET_OK)
 	{
 		if (sprite_name[0] != 0)
@@ -214,7 +214,7 @@ static anim_t ** select_sprite(Context * ctx)
 		free(sprite_name);
 	}
 	// try default sprite list
-	if (entry_read_list(CHARACTER_TABLE, ctx->m_id, &sprite_list,
+	if (entry_read_list(CHARACTER_TABLE, ctx->getId().c_str(), &sprite_list,
 	CHARACTER_KEY_SPRITE, nullptr) == RET_OK)
 	{
 		sprite = imageDB_get_anim_array(player_context, (const char **) sprite_list);
@@ -222,7 +222,7 @@ static anim_t ** select_sprite(Context * ctx)
 		return sprite;
 	}
 
-	werr(LOGDESIGNER, "Can't read sprite name for \"%s\"", ctx->m_id);
+	werr(LOGDESIGNER, "Can't read sprite name for \"%s\"", ctx->getId().c_str());
 	return nullptr;
 }
 
@@ -345,7 +345,7 @@ static void set_up_sprite(Context * ctx)
 	py = map_t2p_y(ctx->getTileX(), ctx->getTileY(), default_layer);
 
 	// Get per sprite zoom
-	if (entry_read_string(CHARACTER_TABLE, ctx->m_id, &zoom_str,
+	if (entry_read_string(CHARACTER_TABLE, ctx->getId().c_str(), &zoom_str,
 	CHARACTER_KEY_ZOOM, nullptr) == RET_OK)
 	{
 		zoom = atof(zoom_str);
@@ -353,7 +353,7 @@ static void set_up_sprite(Context * ctx)
 	}
 
 	// Align sprite on tile
-	entry_read_int(CHARACTER_TABLE, ctx->m_id, &sprite_align, CHARACTER_KEY_ALIGN, nullptr);
+	entry_read_int(CHARACTER_TABLE, ctx->getId().c_str(), &sprite_align, CHARACTER_KEY_ALIGN, nullptr);
 	if (sprite_align == ALIGN_CENTER)
 	{
 		px -= ((sprite_list[0]->w * default_layer->map_zoom * zoom) - default_layer->tile_width) / 2;
@@ -366,7 +366,7 @@ static void set_up_sprite(Context * ctx)
 	}
 
 	// Add Y offset
-	entry_read_int(CHARACTER_TABLE, ctx->m_id, &sprite_offset_y,
+	entry_read_int(CHARACTER_TABLE, ctx->getId().c_str(), &sprite_offset_y,
 	CHARACTER_KEY_OFFSET_Y, nullptr);
 	py += sprite_offset_y;
 
@@ -380,56 +380,56 @@ static void set_up_sprite(Context * ctx)
 	angle = 0;
 	if ((ctx->getOrientation() & NORTH) && (ctx->getOrientation() & EAST))
 	{
-		entry_read_int(CHARACTER_TABLE, ctx->m_id, &angle,
+		entry_read_int(CHARACTER_TABLE, ctx->getId().c_str(), &angle,
 		CHARACTER_KEY_DIR_NE_ROT, nullptr);
 		item_set_angle(item, (double) angle);
 	}
 	else if ((ctx->getOrientation() & SOUTH) && (ctx->getOrientation() & EAST))
 	{
-		entry_read_int(CHARACTER_TABLE, ctx->m_id, &angle,
+		entry_read_int(CHARACTER_TABLE, ctx->getId().c_str(), &angle,
 		CHARACTER_KEY_DIR_SE_ROT, nullptr);
 		item_set_angle(item, (double) angle);
 	}
 	else if ((ctx->getOrientation() & SOUTH) && (ctx->getOrientation() & WEST))
 	{
-		entry_read_int(CHARACTER_TABLE, ctx->m_id, &angle,
+		entry_read_int(CHARACTER_TABLE, ctx->getId().c_str(), &angle,
 		CHARACTER_KEY_DIR_SW_ROT, nullptr);
 		item_set_angle(item, (double) angle);
 	}
 	else if ((ctx->getOrientation() & NORTH) && (ctx->getOrientation() & WEST))
 	{
-		entry_read_int(CHARACTER_TABLE, ctx->m_id, &angle,
+		entry_read_int(CHARACTER_TABLE, ctx->getId().c_str(), &angle,
 		CHARACTER_KEY_DIR_NW_ROT, nullptr);
 		item_set_angle(item, (double) angle);
 	}
 	else if (ctx->getOrientation() & NORTH)
 	{
-		entry_read_int(CHARACTER_TABLE, ctx->m_id, &angle,
+		entry_read_int(CHARACTER_TABLE, ctx->getId().c_str(), &angle,
 		CHARACTER_KEY_DIR_N_ROT, nullptr);
 		item_set_angle(item, (double) angle);
 	}
 	else if (ctx->getOrientation() & SOUTH)
 	{
-		entry_read_int(CHARACTER_TABLE, ctx->m_id, &angle,
+		entry_read_int(CHARACTER_TABLE, ctx->getId().c_str(), &angle,
 		CHARACTER_KEY_DIR_S_ROT, nullptr);
 		item_set_angle(item, (double) angle);
 	}
 	else if (ctx->getOrientation() & WEST)
 	{
-		entry_read_int(CHARACTER_TABLE, ctx->m_id, &angle,
+		entry_read_int(CHARACTER_TABLE, ctx->getId().c_str(), &angle,
 		CHARACTER_KEY_DIR_W_ROT, nullptr);
 		item_set_angle(item, (double) angle);
 	}
 	else if (ctx->getOrientation() & EAST)
 	{
-		entry_read_int(CHARACTER_TABLE, ctx->m_id, &angle,
+		entry_read_int(CHARACTER_TABLE, ctx->getId().c_str(), &angle,
 		CHARACTER_KEY_DIR_E_ROT, nullptr);
 		item_set_angle(item, (double) angle);
 	}
 
 	// Get flip configuration
 	force_flip = 0;
-	entry_read_int(CHARACTER_TABLE, ctx->m_id, &force_flip,
+	entry_read_int(CHARACTER_TABLE, ctx->getId().c_str(), &force_flip,
 	CHARACTER_KEY_FORCE_FLIP, nullptr);
 	move_status = ctx->getDirection();
 	if (force_flip == true)
@@ -442,22 +442,22 @@ static void set_up_sprite(Context * ctx)
 	{
 		if (move_status & NORTH)
 		{
-			entry_read_int(CHARACTER_TABLE, ctx->m_id, &flip,
+			entry_read_int(CHARACTER_TABLE, ctx->getId().c_str(), &flip,
 			CHARACTER_KEY_DIR_N_FLIP, nullptr);
 		}
 		if (move_status & SOUTH)
 		{
-			entry_read_int(CHARACTER_TABLE, ctx->m_id, &flip,
+			entry_read_int(CHARACTER_TABLE, ctx->getId().c_str(), &flip,
 			CHARACTER_KEY_DIR_S_FLIP, nullptr);
 		}
 		if (move_status & WEST)
 		{
-			entry_read_int(CHARACTER_TABLE, ctx->m_id, &flip,
+			entry_read_int(CHARACTER_TABLE, ctx->getId().c_str(), &flip,
 			CHARACTER_KEY_DIR_W_FLIP, nullptr);
 		}
 		if (move_status & EAST)
 		{
-			entry_read_int(CHARACTER_TABLE, ctx->m_id, &flip,
+			entry_read_int(CHARACTER_TABLE, ctx->getId().c_str(), &flip,
 			CHARACTER_KEY_DIR_E_FLIP, nullptr);
 		}
 
@@ -477,7 +477,7 @@ static void set_up_sprite(Context * ctx)
 		}
 	}
 
-	item_set_click_left(item, cb_select_sprite, ctx->m_id, nullptr);
+	item_set_click_left(item, cb_select_sprite, (void*) (ctx->getId().c_str()), nullptr);
 	item_set_click_right(item, cb_redo_sprite, item, nullptr);
 
 	item_set_zoom_x(item, zoom * default_layer->map_zoom);
@@ -499,7 +499,7 @@ static void compose_sprite(int layer_index)
 	while (ctx != nullptr)
 	{
 		layer = 0;
-		entry_read_int(CHARACTER_TABLE, ctx->m_id, &layer, CHARACTER_LAYER, nullptr);
+		entry_read_int(CHARACTER_TABLE, ctx->getId().c_str(), &layer, CHARACTER_LAYER, nullptr);
 
 		if (layer == layer_index)
 		{
@@ -938,7 +938,7 @@ void scr_play_init()
 {
 	// Register this character to receive server notifications
 	Context * context = context_get_player();
-	network_request_start(context, context->m_id);
+	network_request_start(context, context->getId());
 	ui_play_init();
 }
 

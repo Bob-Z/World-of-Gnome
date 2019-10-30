@@ -41,7 +41,7 @@ void network_login(Context * context, const char * user_name, const char * passw
 
 /*********************************************************************
  **********************************************************************/
-void network_request_start(Context * context, const char * id)
+void network_request_start(Context * context, const std::string & id)
 {
 	pb::ClientMessage message;
 	message.mutable_start()->set_id(id);

@@ -36,7 +36,7 @@ ret_code_t file_get_contents(const char *filename, void **contents, int_fast32_t
 ret_code_t file_set_contents(const char *filename, const void * contents, int length);
 bool file_copy(const char * src_table, const char * src_name, const char * dst_table, const char * dst_name);
 int file_create_directory(const std::string & p_rFullName);
-int file_delete(const char * table, const char * filename);
+int file_delete(const char * table, const std::string & filename);
 Uint32 file_get_timestamp(const char * p_pTable, const char * p_pFilename);
 
 #endif

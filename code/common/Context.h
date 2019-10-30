@@ -77,6 +77,8 @@ public:
 	void setAnimationTick(Uint32 animationTick);
 	const std::string& getType() const;
 	void setType(const std::string& type);
+	const std::string& getId() const;
+	void setId(const std::string& id);
 
 private:
 	SDL_mutex* m_mutex;
@@ -97,6 +99,7 @@ private:
 	int m_direction;	// Bit field for sprite direction (north, south...)
 	Uint32 m_animationTick;	// Start tick for animation
 	std::string m_type;	// character's type
+	std::string m_id; // unique ID of a character (its filename)
 
 public:
 	TCPsocket m_socket;
@@ -108,7 +111,7 @@ public:
 	SDL_Window * m_window;
 
 	Selection m_selection; // Selected tile or sprite
-	char * m_id; // unique ID of a character (its filename)
+
 	lua_State* m_lua_VM;	// LUA state
 	SDL_cond* m_condition;	// async condition for npc
 	SDL_mutex* m_condition_mutex;	// mutex for async condition for npc */
@@ -130,7 +133,7 @@ TCPsocket context_get_socket(Context * context);
 void context_set_socket_data(Context * context, TCPsocket socket);
 TCPsocket context_get_socket_data(Context * context);
 void context_new_VM(Context * context);
-ret_code_t context_set_id(Context * context, const char * name);
+
 ret_code_t context_set_selected_character(Context * context, const char * selected_character);
 ret_code_t context_set_selected_tile(Context * context, const char * selected_map, int selected_map_x, int selected_map_y);
 ret_code_t context_set_selected_equipment(Context * context, const char * selected_equipment);
@@ -143,7 +146,7 @@ void context_unlock_list();
 Context * context_get_first();
 Context * context_get_player();
 ret_code_t context_write_to_file(Context * context);
-Context * context_find(const char * id);
+Context * context_find(const std::string & id);
 int context_distance(Context * ctx1, Context * ctx2);
 void context_reset_all_position();
 bool context_is_npc(Context * ctx);

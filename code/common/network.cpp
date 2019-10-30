@@ -87,7 +87,7 @@ static int async_frame_send(void * p_pUserData)
 	int l_BytesWritten = SDLNet_TCP_Send(l_Socket, &length, sizeof(length));
 	if (l_BytesWritten != sizeof(length))
 	{
-		werr(LOGUSER, "Could not send command to %s", context->m_id);
+		werr(LOGUSER, "Could not send command to %s", context->getId().c_str());
 		context->setConnected(false);
 		goto async_frame_send_end;
 	}
@@ -98,7 +98,7 @@ static int async_frame_send(void * p_pUserData)
 	l_BytesWritten = SDLNet_TCP_Send(l_Socket, data->m_serialized_data.c_str(), data->m_serialized_data.size());
 	if (l_BytesWritten != static_cast<int>(data->m_serialized_data.size()))
 	{
-		werr(LOGUSER, "Could not send command to %s", context->m_id);
+		werr(LOGUSER, "Could not send command to %s", context->getId().c_str());
 		context->setConnected(false);
 	}
 

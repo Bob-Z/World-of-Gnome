@@ -30,7 +30,7 @@ int character_set_pos(Context * ctx, const std::string & map, int x, int y);
 std::pair<bool, std::string> character_create_from_template(Context * ctx, const char * my_template, const char * map, int layer, int x, int y);
 void character_update_aggro(Context * context);
 int character_set_npc(const char * ctx, int npc);
-int character_get_npc(const char * id);
+int character_get_npc(const std::string & id);
 char * character_get_portrait(const char * id);
 int character_set_portrait(const char * id, const char * portrait);
 int character_set_ai_script(const char * id, const char * script_name);

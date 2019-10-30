@@ -257,7 +257,7 @@ void screen_display(Context * ctx)
 				}
 				else
 				{
-					entry_read_string(CHARACTER_TABLE, ctx_drawn->m_id, &draw_script, CHARACTER_KEY_DRAW_SCRIPT, nullptr);
+					entry_read_string(CHARACTER_TABLE, ctx_drawn->getId().c_str(), &draw_script, CHARACTER_KEY_DRAW_SCRIPT, nullptr);
 				}
 
 				if (draw_script != nullptr)

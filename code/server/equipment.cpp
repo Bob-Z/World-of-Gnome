@@ -39,7 +39,7 @@ int equipment_set_item(const char *id, const char * slot, const char * item)
 		return -1;
 	}
 
-	if (entry_write_string(CHARACTER_TABLE, context->m_id, item, EQUIPMENT_GROUP, slot, EQUIPMENT_EQUIPPED, nullptr) == RET_OK)
+	if (entry_write_string(CHARACTER_TABLE, context->getId().c_str(), item, EQUIPMENT_GROUP, slot, EQUIPMENT_EQUIPPED, nullptr) == RET_OK)
 	{
 		// update client
 		network_send_character_file(context);
@@ -64,7 +64,7 @@ char * equipment_get_item(const char *id, const char * slot)
 		return nullptr;
 	}
 
-	if (entry_read_string(CHARACTER_TABLE, context->m_id, &item, EQUIPMENT_GROUP, slot, EQUIPMENT_EQUIPPED, nullptr) == RET_NOK)
+	if (entry_read_string(CHARACTER_TABLE, context->getId().c_str(), &item, EQUIPMENT_GROUP, slot, EQUIPMENT_EQUIPPED, nullptr) == RET_NOK)
 	{
 		return nullptr;
 	}

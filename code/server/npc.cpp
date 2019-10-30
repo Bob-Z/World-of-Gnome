@@ -49,7 +49,7 @@ static int npc_script(void * data)
 
 	context_new_VM(context);
 
-	wlog(LOGDESIGNER, "Start AI script for %s(%s)", context->m_id, context->getCharacterName().c_str());
+	wlog(LOGDESIGNER, "Start AI script for %s(%s)", context->getId().c_str(), context->getCharacterName().c_str());
 
 	while (context->isConnected() == true)
 	{
@@ -61,12 +61,12 @@ static int npc_script(void * data)
 		{
 			deep_free(parameters);
 		}
-		if (entry_read_string(CHARACTER_TABLE, context->m_id, &script, CHARACTER_KEY_AI, nullptr) == RET_NOK)
+		if (entry_read_string(CHARACTER_TABLE, context->getId().c_str(), &script, CHARACTER_KEY_AI, nullptr) == RET_NOK)
 		{
-			werr(LOGUSER, "No AI script for %s", context->m_id);
+			werr(LOGUSER, "No AI script for %s", context->getId().c_str());
 			break;
 		}
-		entry_read_list(CHARACTER_TABLE, context->m_id, &parameters, CHARACTER_KEY_AI_PARAMS, nullptr);
+		entry_read_list(CHARACTER_TABLE, context->getId().c_str(), &parameters, CHARACTER_KEY_AI_PARAMS, nullptr);
 
 		if (context->m_next_execution_time < SDL_GetTicks())
 		{
@@ -87,7 +87,7 @@ static int npc_script(void * data)
 		}
 	}
 
-	wlog(LOGDESIGNER, "End AI script for %s(%s)", context->m_id, context->getCharacterName().c_str());
+	wlog(LOGDESIGNER, "End AI script for %s(%s)", context->getId().c_str(), context->getCharacterName().c_str());
 
 	/* Send connected  = FALSE to other context */
 	context_spread(context);
@@ -100,19 +100,18 @@ static int npc_script(void * data)
 
 /***************************
  ***************************/
-void instantiate_npc(const char * id)
+void instantiate_npc(const std::string & id)
 {
-	char * type;
-	char * name;
-	char * map;
-	int is_npc;
-	int x;
-	int y;
-	Context * ctx;
-	char buf[512];
+	char * type = nullptr;
+	char * name = nullptr;
+	char * map = nullptr;
+	int is_npc = 0;
+	int x = 0;
+	int y = 0;
+	Context * ctx = nullptr;
 
 	// check if it's a NPC
-	if (entry_read_int(CHARACTER_TABLE, id, &is_npc, CHARACTER_KEY_NPC, nullptr) == RET_NOK)
+	if (entry_read_int(CHARACTER_TABLE, id.c_str(), &is_npc, CHARACTER_KEY_NPC, nullptr) == RET_NOK)
 	{
 		return;
 	}
@@ -123,34 +122,34 @@ void instantiate_npc(const char * id)
 	}
 
 	// read data of this npc
-	if (entry_read_int(CHARACTER_TABLE, id, &x, CHARACTER_KEY_TILE_X, nullptr) == RET_NOK)
+	if (entry_read_int(CHARACTER_TABLE, id.c_str(), &x, CHARACTER_KEY_TILE_X, nullptr) == RET_NOK)
 	{
 		return;
 	}
 
-	if (entry_read_int(CHARACTER_TABLE, id, &y, CHARACTER_KEY_TILE_Y, nullptr) == RET_NOK)
+	if (entry_read_int(CHARACTER_TABLE, id.c_str(), &y, CHARACTER_KEY_TILE_Y, nullptr) == RET_NOK)
 	{
 		return;
 	}
 
-	if (entry_read_string(CHARACTER_TABLE, id, &map, CHARACTER_KEY_MAP, nullptr) == RET_NOK)
+	if (entry_read_string(CHARACTER_TABLE, id.c_str(), &map, CHARACTER_KEY_MAP, nullptr) == RET_NOK)
 	{
 		return;
 	}
 
-	if (entry_read_string(CHARACTER_TABLE, id, &name, CHARACTER_KEY_NAME, nullptr) == RET_NOK)
+	if (entry_read_string(CHARACTER_TABLE, id.c_str(), &name, CHARACTER_KEY_NAME, nullptr) == RET_NOK)
 	{
 		name = strdup("");
 	}
 
-	if (entry_read_string(CHARACTER_TABLE, id, &type, CHARACTER_KEY_TYPE, nullptr) == RET_NOK)
+	if (entry_read_string(CHARACTER_TABLE, id.c_str(), &type, CHARACTER_KEY_TYPE, nullptr) == RET_NOK)
 	{
 		free(map);
 		free(name);
 		return;
 	}
 
-	wlog(LOGDESIGNER, "Creating npc %s of type %s in map %s at %d,%d", name, type, map, x, y);
+	wlog(LOGDESIGNER, "Creating NPC %s of type %s in map %s at %d,%d", name, type, map, x, y);
 	ctx = context_new();
 	ctx->setUserName("CPU");
 	ctx->setCharacterName(name);
@@ -167,14 +166,14 @@ void instantiate_npc(const char * id)
 	ctx->setTileX(x);
 	ctx->setTileY(y);
 
-	context_set_id(ctx, id);
+	ctx->setId(id);
 	ctx->m_condition = SDL_CreateCond();
 	ctx->m_condition_mutex = SDL_CreateMutex();
 
 	context_spread(ctx);
 
-	sprintf(buf, "npc:%s", id);
-	SDL_CreateThread(npc_script, buf, (void*) ctx);
+	std::string threadName = "NPC: " + id;
+	SDL_CreateThread(npc_script, threadName.c_str(), (void*) ctx);
 }
 /**************************
  init non playing character

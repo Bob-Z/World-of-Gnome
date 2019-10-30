@@ -56,7 +56,7 @@ void context_spread(Context * context)
 			continue;
 		}
 
-		if (ctx->m_id == nullptr)
+		if (ctx->getId() == "")
 		{
 			continue;
 		}
@@ -111,7 +111,7 @@ void context_broadcast_text(const std::string & map, const char * text)
 		}
 
 		// Skip if the player has not selected its character
-		if (ctx->m_id == nullptr)
+		if (ctx->getId() == "")
 		{
 			continue;
 		}
@@ -127,7 +127,7 @@ void context_broadcast_text(const std::string & map, const char * text)
 			continue;
 		}
 
-		network_send_text(ctx->m_id, std::string(text));
+		network_send_text(ctx->getId(), std::string(text));
 
 	} while ((ctx = ctx->m_next) != nullptr);
 

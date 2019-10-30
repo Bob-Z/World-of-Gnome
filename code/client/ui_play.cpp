@@ -256,7 +256,7 @@ static void compose_attribute(Context * ctx, item_t * item_list)
 		attribute_string = nullptr;
 	}
 
-	if (entry_get_group_list(CHARACTER_TABLE, ctx->m_id, &name_list,
+	if (entry_get_group_list(CHARACTER_TABLE, ctx->getId().c_str(), &name_list,
 	ATTRIBUTE_GROUP, nullptr) == RET_NOK)
 	{
 		return;
@@ -265,7 +265,7 @@ static void compose_attribute(Context * ctx, item_t * item_list)
 	index = 0;
 	while (name_list[index] != nullptr)
 	{
-		if (entry_read_int(CHARACTER_TABLE, ctx->m_id, &value, ATTRIBUTE_GROUP, name_list[index], ATTRIBUTE_CURRENT, nullptr) == RET_NOK)
+		if (entry_read_int(CHARACTER_TABLE, ctx->getId().c_str(), &value, ATTRIBUTE_GROUP, name_list[index], ATTRIBUTE_CURRENT, nullptr) == RET_NOK)
 		{
 			index++;
 			continue;
@@ -366,7 +366,7 @@ static void compose_action(Context * ctx, item_t * item_list)
 	action_bar_height = 0;
 
 	// Read action list for current user
-	if (entry_read_list(CHARACTER_TABLE, ctx->m_id, &action_list,
+	if (entry_read_list(CHARACTER_TABLE, ctx->getId().c_str(), &action_list,
 	CHARACTER_KEY_ACTION, nullptr) == RET_NOK)
 	{
 		return;
@@ -531,7 +531,7 @@ static void compose_equipment(Context * ctx, item_t * item_list)
 
 	SDL_GetRendererOutputSize(ctx->m_render, &sw, &sh);
 
-	entry_get_group_list(CHARACTER_TABLE, ctx->m_id, &slot_list, EQUIPMENT_GROUP, nullptr);
+	entry_get_group_list(CHARACTER_TABLE, ctx->getId().c_str(), &slot_list, EQUIPMENT_GROUP, nullptr);
 
 	max_w = 0;
 	max_h = 0;
@@ -552,7 +552,7 @@ static void compose_equipment(Context * ctx, item_t * item_list)
 #endif
 		h1 = 0;
 		// Get the slot icon
-		if (entry_read_string(CHARACTER_TABLE, ctx->m_id, &icon_name,
+		if (entry_read_string(CHARACTER_TABLE, ctx->getId().c_str(), &icon_name,
 		EQUIPMENT_GROUP, slot_list[index], EQUIPMENT_ICON, nullptr) == RET_NOK)
 		{
 			continue;
@@ -584,7 +584,7 @@ static void compose_equipment(Context * ctx, item_t * item_list)
 		}
 
 		// Is there an equipped object ?
-		if (entry_read_string(CHARACTER_TABLE, ctx->m_id, &equipped_name,
+		if (entry_read_string(CHARACTER_TABLE, ctx->getId().c_str(), &equipped_name,
 		EQUIPMENT_GROUP, slot_list[index], EQUIPMENT_EQUIPPED, nullptr) == RET_OK && equipped_name[0] != 0)
 		{
 #if 0
@@ -740,18 +740,18 @@ static void keyboard_text(void * arg)
  **********************************/
 static void compose_text(Context * ctx, item_t * item_list)
 {
-	const history_entry_t * history;
-	history_entry_t * hist;
+	const history_entry_t * history = nullptr;
+	history_entry_t * hist = nullptr;
 	Uint32 time = SDL_GetTicks();
-	int sw;
-	int sh;
-	int current_y;
+	int sw = 0;
+	int sh = 0;
+	int current_y = 0;
 	static TTF_Font * font = nullptr;
-	item_t * item;
-	int w;
-	int h;
-	int x;
-	int y;
+	item_t * item = nullptr;
+	int w = 0;
+	int h = 0;
+	int x = 0;
+	int y = 0;
 
 	font = font_get(ctx, TEXT_FONT, TEXT_FONT_SIZE);
 
@@ -911,7 +911,7 @@ static void compose_inventory(Context * ctx, item_t * item_list)
 	draw_background(ctx, item_list);
 
 	// read data from file
-	if (entry_read_list(CHARACTER_TABLE, ctx->m_id, &inventory_list,
+	if (entry_read_list(CHARACTER_TABLE, ctx->getId().c_str(), &inventory_list,
 	CHARACTER_KEY_INVENTORY, nullptr) == RET_NOK)
 	{
 		return;
@@ -1060,7 +1060,7 @@ static void compose_inventory_select(Context * ctx, item_t * item_list)
 	deep_free(inventory_list);
 
 	// read data from file
-	if (entry_read_list(CHARACTER_TABLE, ctx->m_id, &inventory_list,
+	if (entry_read_list(CHARACTER_TABLE, ctx->getId().c_str(), &inventory_list,
 	CHARACTER_KEY_INVENTORY, nullptr) == RET_NOK)
 	{
 		return;

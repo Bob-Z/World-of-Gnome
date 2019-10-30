@@ -27,25 +27,17 @@
 #include "../client/EffectManager.h"
 
 void network_broadcast_text(Context * context, const std::string & text);
-void network_send_user_character(Context * context,
-		const char * p_pCharacterId, const char * p_pType,
-		const char * p_pName);
+void network_send_user_character(Context * context, const char * p_pCharacterId, const char * p_pType, const char * p_pName);
 void network_send_character_file(Context * context);
-void network_broadcast_entry_int(const char * table, const char * file,
-		const char * path, int value, bool same_map_only);
+void network_broadcast_entry_int(const char * table, const char * file, const char * path, int value, bool same_map_only);
 void network_init(void);
-void network_send_popup(const std::string & p_rCtxId,
-		const std::vector<std::string> & p_rPopupData);
-void network_broadcast_effect(EffectManager::EffectType p_Type,
-		const std::string & p_TargetId,
-		const std::vector<std::string> & p_Param);
+void network_send_popup(const std::string & p_rCtxId, const std::vector<std::string> & p_rPopupData);
+void network_broadcast_effect(EffectManager::EffectType p_Type, const std::string & p_TargetId, const std::vector<std::string> & p_Param);
 void network_send_login_ok(Context * context);
 void network_send_login_nok(Context * context);
-void network_send_playable_character(Context * context,
-		const std::vector<std::string> & id_list);
+void network_send_playable_character(Context * context, const std::vector<std::string> & id_list);
 void network_send_context_to_context(Context * dest_ctx, Context * src_ctx);
-void network_send_text(const char * id, const std::string & string);
-void network_send_entry_int(Context * context, const char * table,
-		const char * file, const char *path, int value);
+void network_send_text(const std::string & id, const std::string & string);
+void network_send_entry_int(Context * context, const char * table, const char * file, const char *path, int value);
 
 #endif

@@ -989,7 +989,7 @@ char ** map_get_character(const std::string & map, int x, int y)
 		{
 			character_num++;
 			character_list = (char**) realloc(character_list, sizeof(char*) * (character_num + 1));
-			character_list[character_num - 1] = strdup(ctx->m_id);
+			character_list[character_num - 1] = strdup(ctx->getId().c_str());
 			character_list[character_num] = nullptr;
 		}
 

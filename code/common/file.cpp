@@ -438,14 +438,14 @@ int file_create_directory(const std::string & file_path)
  Delete a file from file system
  return 0 if file was successfully deleted
  ****************************************************/
-int file_delete(const char * table, const char * filename)
+int file_delete(const char * table, const std::string & filename)
 {
-	const std::string file_path = base_directory + "/" + std::string(table) + "/" + std::string(filename);
+	const std::string file_path = base_directory + "/" + std::string(table) + "/" + filename;
 	return unlink(file_path.c_str());
 }
 
 /***************************************************
- return timestamp of last update
+ return time stamp of last update
  ****************************************************/
 Uint32 file_get_timestamp(const char * table, const char * file_name)
 {

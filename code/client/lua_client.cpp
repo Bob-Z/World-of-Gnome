@@ -53,7 +53,7 @@ static int l_player_get_id(lua_State* p_pLuaState)
 	Context * context;
 
 	context = context_get_player();
-	lua_pushstring(p_pLuaState, context->m_id);
+	lua_pushstring(p_pLuaState, context->getId().c_str());
 	return 1;  // number of results
 }
 
@@ -70,7 +70,7 @@ static int l_context_get_id(lua_State* p_pLuaState)
 	context = (Context*) lua_touserdata(p_pLuaState, -1);
 	lua_pop(p_pLuaState, 1);
 
-	lua_pushstring(p_pLuaState, context->m_id);
+	lua_pushstring(p_pLuaState, context->getId().c_str());
 	return 1; // number of results
 }
 

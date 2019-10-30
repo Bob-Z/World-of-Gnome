@@ -87,13 +87,13 @@ static ret_code_t manage_start(Context * context, const pb::Start & start)
 
 	if (context->isInGame() == false)
 	{
-		context->m_id = strdup(start.id().c_str());
+		context->setId(start.id());
 		context->setInGame(true);
 		context_update_from_file(context);
 		context_spread(context);
 		context_request_other_context(context);
 	}
-	wlog(LOGDEVELOPER, "[network] received start request for ID %s and user %s", context->m_id, context->getUserName().c_str());
+	wlog(LOGDEVELOPER, "[network] received start request for ID %s and user %s", context->getId().c_str(), context->getUserName().c_str());
 
 	return RET_OK;
 }
@@ -103,18 +103,14 @@ static ret_code_t manage_start(Context * context, const pb::Start & start)
  **************************************/
 static ret_code_t manage_stop(Context * context, const pb::Stop & stop)
 {
-	wlog(LOGDEVELOPER, "[network] Received stop request for ID %s of user %s", context->getUserName().c_str(), context->m_id);
+	wlog(LOGDEVELOPER, "[network] Received stop request for ID %s of user %s", context->getUserName().c_str(), context->getId().c_str());
 
 	if (context->isInGame() == true)
 	{
 		context->setInGame(false);
 		context->setMap("");
 		context->setPreviousMap("");
-		if (context->m_id)
-		{
-			free(context->m_id);
-		}
-		context->m_id = nullptr;
+		context->setId("");
 		context_spread(context);
 	}
 
@@ -164,7 +160,7 @@ static ret_code_t manage_create(Context * context, const pb::Create& create)
 	CHARACTER_TABLE, create.name().c_str()) == false)
 	{
 		werr(LOGUSER, "Error copying character template %s to character %s (maybe template doesn't exists ?)", create.id(), create.name());
-		file_delete(CHARACTER_TABLE, create.name().c_str());
+		file_delete(CHARACTER_TABLE, create.name());
 		return RET_NOK;
 	}
 
@@ -172,7 +168,7 @@ static ret_code_t manage_create(Context * context, const pb::Create& create)
 	CHARACTER_KEY_NAME, nullptr) == RET_NOK)
 	{
 		werr(LOGUSER, "Error setting character name %s", create.name().c_str());
-		file_delete(CHARACTER_TABLE, create.name().c_str());
+		file_delete(CHARACTER_TABLE, create.name());
 		return RET_NOK;
 	}
 
@@ -180,7 +176,7 @@ static ret_code_t manage_create(Context * context, const pb::Create& create)
 	USERS_CHARACTER_LIST, nullptr) == RET_NOK)
 	{
 		werr(LOGUSER, "Error adding character %s to user %s", create.name().c_str(), context->getUserName().c_str());
-		file_delete(CHARACTER_TABLE, create.name().c_str());
+		file_delete(CHARACTER_TABLE, create.name());
 		return RET_NOK;
 	}
 

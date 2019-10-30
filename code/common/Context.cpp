@@ -46,8 +46,8 @@ Context * context_list_start = nullptr;
 /*****************************************************************************/
 Context::Context() :
 		m_mutex(nullptr), m_userName(), m_connected(false), m_inGame(false), m_npc(true), m_characterName(), m_map(), m_previousMap(), m_mapChanged(false), m_tileX(
-				0), m_tileY(0), m_previousTileX(0), m_previousTileY(0), m_positionChanged(false), m_orientation(0), m_direction(0), m_animationTick(0), m_type(), m_socket(), m_socket_data(), m_send_mutex(
-				nullptr), m_hostname(nullptr), m_render(nullptr), m_window(nullptr), m_selection(), m_id(nullptr), m_lua_VM(nullptr), m_condition(nullptr), m_condition_mutex(
+				0), m_tileY(0), m_previousTileX(0), m_previousTileY(0), m_positionChanged(false), m_orientation(0), m_direction(0), m_animationTick(0), m_type(), m_id(), m_socket(), m_socket_data(), m_send_mutex(
+				nullptr), m_hostname(nullptr), m_render(nullptr), m_window(nullptr), m_selection(), m_lua_VM(nullptr), m_condition(nullptr), m_condition_mutex(
 				nullptr), m_next_execution_time(0), m_previous(nullptr), m_next(nullptr)
 {
 	m_mutex = SDL_CreateMutex();
@@ -93,7 +93,6 @@ void context_init(Context * context)
 	context->m_render = nullptr;
 	context->m_window = nullptr;
 
-	context->m_id = nullptr;
 	context->m_lua_VM = nullptr;
 	context->m_condition = nullptr;
 	context->m_condition_mutex = nullptr;
@@ -167,12 +166,6 @@ void context_free_data(Context * context)
 	{
 		SDL_DestroyMutex(context->m_condition_mutex);
 	}
-
-	if (context->m_id)
-	{
-		free(context->m_id);
-	}
-	context->m_id = nullptr;
 }
 
 /*************************************
@@ -207,12 +200,9 @@ void context_free(Context * context)
 	ctx = context_list_start;
 	while (ctx != nullptr)
 	{
-		if ((context->m_id != nullptr) && (context->m_selection.getId() != ""))
+		if (context->getId() == ctx->m_selection.getId())
 		{
-			if (strcmp(context->m_id, ctx->m_selection.getId().c_str()) == 0)
-			{
-				ctx->m_selection.setId("");
-			}
+			ctx->m_selection.setId("");
 		}
 		ctx = ctx->m_next;
 	}
@@ -321,28 +311,6 @@ TCPsocket context_get_socket_data(Context * context)
 	context_unlock_list();
 
 	return socket;
-}
-
-/**************************************
- return RET_NOK on error
- **************************************/
-ret_code_t context_set_id(Context * context, const char * name)
-{
-	context_lock_list();
-
-	if (context->m_id)
-	{
-		free(context->m_id);
-	}
-	context->m_id = strdup(name);
-	if (context->m_id == nullptr)
-	{
-		context_unlock_list();
-		return RET_NOK;
-	}
-
-	context_unlock_list();
-	return RET_OK;
 }
 
 /**************************************
@@ -464,13 +432,13 @@ ret_code_t context_update_from_file(Context * context)
 
 	context_lock_list();
 
-	if (context->m_id == nullptr)
+	if (context->getId() == "")
 	{
 		context_unlock_list();
 		return RET_NOK;
 	}
 
-	if (entry_read_string(CHARACTER_TABLE, context->m_id, &result,
+	if (entry_read_string(CHARACTER_TABLE, context->getId().c_str(), &result,
 	CHARACTER_KEY_NAME, nullptr) == RET_OK)
 	{
 		context->setCharacterName(std::string(result));
@@ -481,13 +449,13 @@ ret_code_t context_update_from_file(Context * context)
 	}
 
 	int npc = 0;
-	if (entry_read_int(CHARACTER_TABLE, context->m_id, &npc, CHARACTER_KEY_NPC, nullptr) == RET_NOK)
+	if (entry_read_int(CHARACTER_TABLE, context->getId().c_str(), &npc, CHARACTER_KEY_NPC, nullptr) == RET_NOK)
 	{
 		ret = RET_NOK;
 	}
 	context->setNpc(npc);
 
-	if (entry_read_string(CHARACTER_TABLE, context->m_id, &result,
+	if (entry_read_string(CHARACTER_TABLE, context->getId().c_str(), &result,
 	CHARACTER_KEY_TYPE, nullptr) == RET_OK)
 	{
 		context->setType(std::string(result));
@@ -497,7 +465,7 @@ ret_code_t context_update_from_file(Context * context)
 		ret = RET_NOK;
 	}
 
-	if (entry_read_string(CHARACTER_TABLE, context->m_id, &result,
+	if (entry_read_string(CHARACTER_TABLE, context->getId().c_str(), &result,
 	CHARACTER_KEY_MAP, nullptr) == RET_OK)
 	{
 		context->setMap(std::string(result));
@@ -509,7 +477,7 @@ ret_code_t context_update_from_file(Context * context)
 	}
 
 	int pos_tx;
-	if (entry_read_int(CHARACTER_TABLE, context->m_id, &pos_tx,
+	if (entry_read_int(CHARACTER_TABLE, context->getId().c_str(), &pos_tx,
 	CHARACTER_KEY_TILE_X, nullptr) == RET_NOK)
 	{
 		ret = RET_NOK;
@@ -517,7 +485,7 @@ ret_code_t context_update_from_file(Context * context)
 	context->setTileX(pos_tx);
 
 	int pos_ty;
-	if (entry_read_int(CHARACTER_TABLE, context->m_id, &pos_ty,
+	if (entry_read_int(CHARACTER_TABLE, context->getId().c_str(), &pos_ty,
 	CHARACTER_KEY_TILE_Y, nullptr) == RET_NOK)
 	{
 		ret = RET_NOK;
@@ -536,21 +504,21 @@ ret_code_t context_write_to_file(Context * context)
 {
 	context_lock_list();
 
-	if (context->m_id == nullptr)
+	if (context->getId() == "")
 	{
 		context_unlock_list();
 		return RET_NOK;
 	}
 
-	entry_write_string(CHARACTER_TABLE, context->m_id, context->getType().c_str(),
+	entry_write_string(CHARACTER_TABLE, context->getId().c_str(), context->getType().c_str(),
 	CHARACTER_KEY_TYPE, nullptr);
-	entry_write_string(CHARACTER_TABLE, context->m_id, context->getMap().c_str(),
+	entry_write_string(CHARACTER_TABLE, context->getId().c_str(), context->getMap().c_str(),
 	CHARACTER_KEY_MAP, nullptr);
 
-	entry_write_int(CHARACTER_TABLE, context->m_id, context->getTileX(),
+	entry_write_int(CHARACTER_TABLE, context->getId().c_str(), context->getTileX(),
 	CHARACTER_KEY_TILE_X, nullptr);
 
-	entry_write_int(CHARACTER_TABLE, context->m_id, context->getTileY(),
+	entry_write_int(CHARACTER_TABLE, context->getId().c_str(), context->getTileY(),
 	CHARACTER_KEY_TILE_Y, nullptr);
 
 	context_unlock_list();
@@ -560,7 +528,7 @@ ret_code_t context_write_to_file(Context * context)
 /*******************************
  Find a context in memory from its id
  *******************************/
-Context * context_find(const char * id)
+Context * context_find(const std::string & id)
 {
 	Context * ctx;
 
@@ -568,12 +536,9 @@ Context * context_find(const char * id)
 
 	while (ctx != nullptr)
 	{
-		if (ctx->m_id)
+		if (ctx->getId() == id)
 		{
-			if (strcmp(ctx->m_id, id) == 0)
-			{
-				return ctx;
-			}
+			return ctx;
 		}
 
 		ctx = ctx->m_next;
@@ -593,7 +558,7 @@ void context_add_or_update_from_network_frame(const ContextBis & context)
 
 	while (ctx != nullptr)
 	{
-		if (strcmp(context.getId().c_str(), ctx->m_id) == 0)
+		if (context.getId() == ctx->getId())
 		{
 			ctx->setInGame(context.isInGame());
 			ctx->setConnected(context.isConnected());
@@ -637,7 +602,7 @@ void context_add_or_update_from_network_frame(const ContextBis & context)
 	ctx->setType(context.getType());
 	ctx->setTileX(context.getTileX());
 	ctx->setTileY(context.getTileY());
-	context_set_id(ctx, context.getId().c_str());
+	ctx->setId(context.getId());
 	ctx->setConnected(context.isConnected());
 	ctx->setInGame(context.isInGame());
 	context_set_selected_character(ctx, context.getSelection().getId().c_str());
@@ -912,11 +877,31 @@ void Context::setAnimationTick(Uint32 animationTick)
 /*****************************************************************************/
 const std::string& Context::getType() const
 {
+	SdlLocking lock(m_mutex);
+
 	return m_type;
 }
 
 /*****************************************************************************/
 void Context::setType(const std::string& type)
 {
+	SdlLocking lock(m_mutex);
+
 	m_type = type;
+}
+
+/*****************************************************************************/
+const std::string& Context::getId() const
+{
+	SdlLocking lock(m_mutex);
+
+	return m_id;
+}
+
+/*****************************************************************************/
+void Context::setId(const std::string& id)
+{
+	SdlLocking lock(m_mutex);
+
+	m_id = id;
 }

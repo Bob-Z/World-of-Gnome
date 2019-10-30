@@ -69,7 +69,7 @@ static int l_player_get_id(lua_State* L)
 	lua_getglobal(L, LUAVM_CONTEXT);
 	context = (Context*) lua_touserdata(L, -1);
 	lua_pop(L, 1);
-	lua_pushstring(L, context->m_id);
+	lua_pushstring(L, context->getId().c_str());
 	return 1;  // number of results
 }
 
@@ -558,7 +558,7 @@ static int l_character_delete(lua_State* L)
 	res = entry_destroy(CHARACTER_TABLE, id);
 	if (res == 0)
 	{
-		res = file_delete(CHARACTER_TABLE, id);
+		res = file_delete(CHARACTER_TABLE, std::string(id));
 	}
 	lua_pushnumber(L, res);
 	return 1;  // number of results
@@ -638,7 +638,7 @@ static int l_character_get_npc(lua_State* L)
 
 	id = luaL_checkstring(L, -1);
 
-	res = character_get_npc(id);
+	res = character_get_npc(std::string(id));
 	lua_pushnumber(L, res);
 	return 1;  // number of results
 }
@@ -1240,12 +1240,12 @@ static int l_map_set_custom_row(lua_State* L)
 static int l_print_text_id(lua_State* L)
 {
 	const char * id;
-	const char * string;
+	const char * text;
 
 	id = luaL_checkstring(L, -2);
-	string = luaL_checkstring(L, -1);
+	text = luaL_checkstring(L, -1);
 	// add a trailing \n
-	network_send_text(id, std::string(string));
+	network_send_text(std::string(id), std::string(text));
 	return 0;  // number of results
 }
 
@@ -2206,9 +2206,9 @@ static int l_popup_send(lua_State* L)
 
 /**************************************
  **************************************/
-static void action_chat(Context * context, const char * text)
+static void action_chat(Context * context, const std::string & text)
 {
-	const std::string new_text = context->getCharacterName() + ":" + std::string(text);
+	const std::string new_text = context->getCharacterName() + ":" + text;
 
 	network_broadcast_text(context, new_text);
 }
@@ -2227,7 +2227,7 @@ int action_execute_script(Context * context, const char * script, const char ** 
 	// Special case for chat
 	if (strcmp(script, WOG_CHAT) == 0)
 	{
-		action_chat(context, parameters[0]);
+		action_chat(context, std::string(parameters[0]));
 		return -1;
 	}
 

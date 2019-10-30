@@ -40,7 +40,7 @@
 
 /*********************************************************************
  *********************************************************************/
-void network_send_text(const char * id, const std::string & string)
+void network_send_text(const std::string & id, const std::string & text)
 {
 	Context * context = context_find(id);
 	if (context == nullptr)
@@ -50,7 +50,7 @@ void network_send_text(const char * id, const std::string & string)
 	}
 
 	pb::ServerMessage message;
-	message.mutable_text()->set_text(string);
+	message.mutable_text()->set_text(text);
 	std::string serialized_data = message.SerializeAsString();
 
 	wlog(LOGDEVELOPER, "[network] Send text to %s", id);
@@ -107,7 +107,7 @@ void network_broadcast_text(Context * context, const std::string & text)
 			}
 		}
 #endif
-		network_send_text(ctx->m_id, text);
+		network_send_text(ctx->getId(), text);
 	} while ((ctx = ctx->m_next) != nullptr);
 
 	context_unlock_list();
@@ -133,7 +133,7 @@ void network_send_user_character(Context * context, const char * id, const char 
  ******************************************************************************/
 void network_send_character_file(Context * context)
 {
-	const std::string file_name = std::string(CHARACTER_TABLE) + "/" + std::string(context->m_id);
+	const std::string file_name = std::string(CHARACTER_TABLE) + "/" + context->getId();
 
 	network_send_file(context, file_name.c_str());
 }
@@ -416,7 +416,7 @@ void network_broadcast_effect(EffectManager::EffectType p_Type, const std::strin
 			continue;
 		}
 
-		wlog(LOGDEVELOPER, "[network] Send effect to %s", ctx->m_id);
+		wlog(LOGDEVELOPER, "[network] Send effect to %s", ctx->getId().c_str());
 		network_send_command(ctx, serialized_data, false);
 	} while ((ctx = ctx->m_next) != nullptr);
 
@@ -494,7 +494,7 @@ void network_send_context_to_context(Context * dest_ctx, Context * src_ctx)
 	message.mutable_context()->set_tile_x(src_ctx->getTileX());
 	message.mutable_context()->set_tile_y(src_ctx->getTileY());
 	message.mutable_context()->set_type(src_ctx->getType());
-	message.mutable_context()->set_id(src_ctx->m_id);
+	message.mutable_context()->set_id(src_ctx->getId());
 	message.mutable_context()->mutable_selection()->set_id(src_ctx->m_selection.getId());
 	message.mutable_context()->mutable_selection()->set_map(src_ctx->m_selection.getMap());
 	message.mutable_context()->mutable_selection()->set_map_coord_tx(src_ctx->m_selection.getMapCoordTx());
@@ -504,6 +504,6 @@ void network_send_context_to_context(Context * dest_ctx, Context * src_ctx)
 
 	std::string serialized_data = message.SerializeAsString();
 
-	wlog(LOGDEVELOPER, "[network] Send context of %s to %s", src_ctx->m_id, dest_ctx->m_id);
+	wlog(LOGDEVELOPER, "[network] Send context of %s to %s", src_ctx->getId().c_str(), dest_ctx->getId().c_str());
 	network_send_command(dest_ctx, serialized_data, false);
 }

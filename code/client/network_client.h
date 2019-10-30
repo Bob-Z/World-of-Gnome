@@ -25,7 +25,7 @@
 class Context;
 
 void network_login(Context * context, const char * name, const char * password);
-void network_request_start(Context * context, const char * id);
+void network_request_start(Context * context, const std::string & id);
 void network_request_stop(Context * context);
 void network_request_character_creation(Context * context, const char * id, const char * name);
 void network_login(Context * context, const char * name, const char * password);

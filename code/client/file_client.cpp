@@ -71,11 +71,11 @@ int file_add(Context * context, const std::string & name, const std::string & da
 }
 
 /*********************************************************************************
- Remove character file to be sure they are always downloaded at start-up time
+ Remove character file to be sure they are always down loaded at start-up time
  **********************************************************************************/
 void file_clean(Context * context)
 {
-	file_delete(CHARACTER_TABLE, context->m_id);
+	file_delete(CHARACTER_TABLE, context->getId());
 }
 
 /***************************************************

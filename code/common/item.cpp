@@ -52,7 +52,7 @@ std::pair<bool, std::string> item_create_from_template(const std::string & my_te
 	{
 		if (file_copy(ITEM_TEMPLATE_TABLE, my_template.c_str(), ITEM_TABLE, new_name.second.c_str()) == false)
 		{
-			file_delete(ITEM_TABLE, new_name.second.c_str());
+			file_delete(ITEM_TABLE, new_name.second);
 			return std::pair<bool, std::string>
 			{ false, "" };
 		}
