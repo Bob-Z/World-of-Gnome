@@ -161,7 +161,7 @@ void instantiate_npc(const char * id)
 	ctx->setMap(std::string(map));
 	free(map);
 
-	context_set_type(ctx, type);
+	ctx->setType(std::string(type));
 	free(type);
 
 	ctx->setTileX(x);

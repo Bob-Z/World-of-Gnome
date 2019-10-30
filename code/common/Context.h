@@ -75,6 +75,8 @@ public:
 	int getPreviousTileY() const;
 	Uint32 getAnimationTick() const;
 	void setAnimationTick(Uint32 animationTick);
+	const std::string& getType() const;
+	void setType(const std::string& type);
 
 private:
 	SDL_mutex* m_mutex;
@@ -94,6 +96,7 @@ private:
 	int m_orientation;	// Bit field for sprite orientation (north east, south...)
 	int m_direction;	// Bit field for sprite direction (north, south...)
 	Uint32 m_animationTick;	// Start tick for animation
+	std::string m_type;	// character's type
 
 public:
 	TCPsocket m_socket;
@@ -104,7 +107,6 @@ public:
 	SDL_Renderer * m_render;
 	SDL_Window * m_window;
 
-	char * m_type;	// character's type
 	Selection m_selection; // Selected tile or sprite
 	char * m_id; // unique ID of a character (its filename)
 	lua_State* m_lua_VM;	// LUA state
@@ -115,7 +117,6 @@ public:
 
 	Context * m_previous;
 	Context * m_next;
-
 };
 
 Context * context_get_list_start();
@@ -128,11 +129,6 @@ void context_set_socket(Context * context, TCPsocket socket);
 TCPsocket context_get_socket(Context * context);
 void context_set_socket_data(Context * context, TCPsocket socket);
 TCPsocket context_get_socket_data(Context * context);
-int context_set_map_w(Context * context, int width);
-int context_set_map_h(Context * context, int height);
-ret_code_t context_set_type(Context * context, const char * name);
-void context_set_tile_x(Context * context, unsigned int pos);
-void context_set_tile_y(Context * context, unsigned int pos);
 void context_new_VM(Context * context);
 ret_code_t context_set_id(Context * context, const char * name);
 ret_code_t context_set_selected_character(Context * context, const char * selected_character);

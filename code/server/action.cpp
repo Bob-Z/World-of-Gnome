@@ -497,7 +497,7 @@ static int l_character_get_type(lua_State* L)
 		werr(LOGDESIGNER, "Cannot find context with ID %s", id);
 		return 0;  // number of results
 	}
-	lua_pushstring(L, target->m_type);
+	lua_pushstring(L, target->getType().c_str());
 	return 1;  // number of results
 }
 

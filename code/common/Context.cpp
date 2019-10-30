@@ -46,9 +46,9 @@ Context * context_list_start = nullptr;
 /*****************************************************************************/
 Context::Context() :
 		m_mutex(nullptr), m_userName(), m_connected(false), m_inGame(false), m_npc(true), m_characterName(), m_map(), m_previousMap(), m_mapChanged(false), m_tileX(
-				0), m_tileY(0), m_previousTileX(0), m_previousTileY(0), m_positionChanged(false), m_orientation(0), m_direction(0), m_animationTick(0), m_socket(), m_socket_data(), m_send_mutex(
-				nullptr), m_hostname(nullptr), m_render(nullptr), m_window(nullptr), m_type(nullptr), m_selection(), m_id(nullptr), m_lua_VM(nullptr), m_condition(
-				nullptr), m_condition_mutex(nullptr), m_next_execution_time(0), m_previous(nullptr), m_next(nullptr)
+				0), m_tileY(0), m_previousTileX(0), m_previousTileY(0), m_positionChanged(false), m_orientation(0), m_direction(0), m_animationTick(0), m_type(), m_socket(), m_socket_data(), m_send_mutex(
+				nullptr), m_hostname(nullptr), m_render(nullptr), m_window(nullptr), m_selection(), m_id(nullptr), m_lua_VM(nullptr), m_condition(nullptr), m_condition_mutex(
+				nullptr), m_next_execution_time(0), m_previous(nullptr), m_next(nullptr)
 {
 	m_mutex = SDL_CreateMutex();
 }
@@ -92,8 +92,6 @@ void context_init(Context * context)
 
 	context->m_render = nullptr;
 	context->m_window = nullptr;
-
-	context->m_type = nullptr;
 
 	context->m_id = nullptr;
 	context->m_lua_VM = nullptr;
@@ -156,12 +154,6 @@ void context_free_data(Context * context)
 		free(context->m_hostname);
 	}
 	context->m_hostname = nullptr;
-
-	if (context->m_type)
-	{
-		free(context->m_type);
-	}
-	context->m_type = nullptr;
 
 	if (context->m_lua_VM != nullptr)
 	{
@@ -332,25 +324,6 @@ TCPsocket context_get_socket_data(Context * context)
 }
 
 /**************************************
- Returns RET_NOK if error
- **************************************/
-ret_code_t context_set_type(Context * context, const char * type)
-{
-	ret_code_t ret = RET_OK;
-
-	context_lock_list();
-	free(context->m_type);
-	context->m_type = strdup(type);
-	if (context->m_type == nullptr)
-	{
-		ret = RET_NOK;
-	}
-	context_unlock_list();
-
-	return ret;
-}
-
-/**************************************
  return RET_NOK on error
  **************************************/
 ret_code_t context_set_id(Context * context, const char * name)
@@ -517,8 +490,7 @@ ret_code_t context_update_from_file(Context * context)
 	if (entry_read_string(CHARACTER_TABLE, context->m_id, &result,
 	CHARACTER_KEY_TYPE, nullptr) == RET_OK)
 	{
-		free(context->m_type);
-		context->m_type = result;
+		context->setType(std::string(result));
 	}
 	else
 	{
@@ -570,7 +542,7 @@ ret_code_t context_write_to_file(Context * context)
 		return RET_NOK;
 	}
 
-	entry_write_string(CHARACTER_TABLE, context->m_id, context->m_type,
+	entry_write_string(CHARACTER_TABLE, context->m_id, context->getType().c_str(),
 	CHARACTER_KEY_TYPE, nullptr);
 	entry_write_string(CHARACTER_TABLE, context->m_id, context->getMap().c_str(),
 	CHARACTER_KEY_MAP, nullptr);
@@ -637,8 +609,7 @@ void context_add_or_update_from_network_frame(const ContextBis & context)
 				ctx->setTileX(context.getTileX());
 				ctx->setTileY(context.getTileY());
 
-				free(ctx->m_type);
-				ctx->m_type = strdup(context.getType().c_str());
+				ctx->setType(context.getType());
 
 				ctx->m_selection = context.getSelection();
 			}
@@ -663,7 +634,7 @@ void context_add_or_update_from_network_frame(const ContextBis & context)
 	ctx->setCharacterName(context.getCharacterName().c_str());
 	ctx->setNpc(context.isNpc());
 	ctx->setMap(context.getMap());
-	context_set_type(ctx, context.getType().c_str());
+	ctx->setType(context.getType());
 	ctx->setTileX(context.getTileX());
 	ctx->setTileY(context.getTileY());
 	context_set_id(ctx, context.getId().c_str());
@@ -936,4 +907,16 @@ Uint32 Context::getAnimationTick() const
 void Context::setAnimationTick(Uint32 animationTick)
 {
 	m_animationTick = animationTick;
+}
+
+/*****************************************************************************/
+const std::string& Context::getType() const
+{
+	return m_type;
+}
+
+/*****************************************************************************/
+void Context::setType(const std::string& type)
+{
+	m_type = type;
 }
