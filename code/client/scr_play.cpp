@@ -138,22 +138,22 @@ static anim_t ** select_sprite(Context * ctx)
 	Context * player_context = context_get_player();
 
 	// Try to find a sprite depending on the orientation
-	if (ctx->m_orientation & NORTH)
+	if (ctx->getOrientation() & NORTH)
 	{
 		entry_read_string(CHARACTER_TABLE, ctx->m_id, &sprite_name,
 		CHARACTER_KEY_DIR_N_SPRITE, nullptr);
 	}
-	if ((ctx->m_orientation & SOUTH) && sprite_name == nullptr)
+	if ((ctx->getOrientation() & SOUTH) && sprite_name == nullptr)
 	{
 		entry_read_string(CHARACTER_TABLE, ctx->m_id, &sprite_name,
 		CHARACTER_KEY_DIR_S_SPRITE, nullptr);
 	}
-	if ((ctx->m_orientation & EAST) && sprite_name == nullptr)
+	if ((ctx->getOrientation() & EAST) && sprite_name == nullptr)
 	{
 		entry_read_string(CHARACTER_TABLE, ctx->m_id, &sprite_name,
 		CHARACTER_KEY_DIR_E_SPRITE, nullptr);
 	}
-	if ((ctx->m_orientation & WEST) && sprite_name == nullptr)
+	if ((ctx->getOrientation() & WEST) && sprite_name == nullptr)
 	{
 		entry_read_string(CHARACTER_TABLE, ctx->m_id, &sprite_name,
 		CHARACTER_KEY_DIR_W_SPRITE, nullptr);
@@ -172,22 +172,22 @@ static anim_t ** select_sprite(Context * ctx)
 	}
 
 	// Try sprite lists
-	if (ctx->m_orientation & NORTH)
+	if (ctx->getOrientation() & NORTH)
 	{
 		entry_read_list(CHARACTER_TABLE, ctx->m_id, &sprite_list,
 		CHARACTER_KEY_DIR_N_SPRITE, nullptr);
 	}
-	if ((ctx->m_orientation & SOUTH) && sprite_list == nullptr)
+	if ((ctx->getOrientation() & SOUTH) && sprite_list == nullptr)
 	{
 		entry_read_list(CHARACTER_TABLE, ctx->m_id, &sprite_list,
 		CHARACTER_KEY_DIR_S_SPRITE, nullptr);
 	}
-	if ((ctx->m_orientation & EAST) && sprite_list == nullptr)
+	if ((ctx->getOrientation() & EAST) && sprite_list == nullptr)
 	{
 		entry_read_list(CHARACTER_TABLE, ctx->m_id, &sprite_list,
 		CHARACTER_KEY_DIR_E_SPRITE, nullptr);
 	}
-	if ((ctx->m_orientation & WEST) && sprite_list == nullptr)
+	if ((ctx->getOrientation() & WEST) && sprite_list == nullptr)
 	{
 		entry_read_list(CHARACTER_TABLE, ctx->m_id, &sprite_list,
 		CHARACTER_KEY_DIR_W_SPRITE, nullptr);
@@ -286,9 +286,9 @@ static void set_up_sprite(Context * ctx)
 	}
 
 	// Detect sprite movement, initiate animation
-	if (ctx->m_pos_changed && force_position == false)
+	if ((ctx->isPositionChanged() == true) && (force_position == false))
 	{
-		ctx->m_pos_changed = false;
+		ctx->setPositionChanged(false);
 
 		/* flip need to remember previous direction to avoid resetting a
 		 east -> west flip when a sprite goes to north for instance.
@@ -296,31 +296,35 @@ static void set_up_sprite(Context * ctx)
 		 the rotation will be wrong.
 		 Hence the distinction between orientation (no memory) and
 		 direction (memory). */
-		ctx->m_orientation = 0;
+		ctx->setOrientation(0);
 		// Compute direction
-		if (ctx->m_tile_x > ctx->m_prev_pos_tile_x)
+		if (ctx->getTileX() > ctx->getPreviousTileX())
 		{
-			ctx->m_direction &= ~WEST;
-			ctx->m_direction |= EAST;
-			ctx->m_orientation |= EAST;
+			ctx->setDirection(ctx->getDirection() & ~WEST);
+			ctx->setDirection(ctx->getDirection() | EAST);
+
+			ctx->setOrientation(ctx->getOrientation() | EAST);
 		}
-		if (ctx->m_tile_x < ctx->m_prev_pos_tile_x)
+		if (ctx->getTileX() < ctx->getPreviousTileX())
 		{
-			ctx->m_direction &= ~EAST;
-			ctx->m_direction |= WEST;
-			ctx->m_orientation |= WEST;
+			ctx->setDirection(ctx->getDirection() & ~EAST);
+			ctx->setDirection(ctx->getDirection() | WEST);
+
+			ctx->setOrientation(ctx->getOrientation() | WEST);
 		}
-		if (ctx->m_tile_y > ctx->m_prev_pos_tile_y)
+		if (ctx->getTileY() > ctx->getPreviousTileY())
 		{
-			ctx->m_direction &= ~NORTH;
-			ctx->m_direction |= SOUTH;
-			ctx->m_orientation |= SOUTH;
+			ctx->setDirection(ctx->getDirection() & ~NORTH);
+			ctx->setDirection(ctx->getDirection() | SOUTH);
+
+			ctx->setOrientation(ctx->getOrientation() | SOUTH);
 		}
-		if (ctx->m_tile_y < ctx->m_prev_pos_tile_y)
+		if (ctx->getTileY() < ctx->getPreviousTileY())
 		{
-			ctx->m_direction &= ~SOUTH;
-			ctx->m_direction |= NORTH;
-			ctx->m_orientation |= NORTH;
+			ctx->setDirection(ctx->getDirection() & ~SOUTH);
+			ctx->setDirection(ctx->getDirection() | NORTH);
+
+			ctx->setOrientation(ctx->getOrientation() | NORTH);
 		}
 	}
 
@@ -337,8 +341,8 @@ static void set_up_sprite(Context * ctx)
 	}
 
 	// Get position in pixel
-	px = map_t2p_x(ctx->m_tile_x, ctx->m_tile_y, default_layer);
-	py = map_t2p_y(ctx->m_tile_x, ctx->m_tile_y, default_layer);
+	px = map_t2p_x(ctx->getTileX(), ctx->getTileY(), default_layer);
+	py = map_t2p_y(ctx->getTileX(), ctx->getTileY(), default_layer);
 
 	// Get per sprite zoom
 	if (entry_read_string(CHARACTER_TABLE, ctx->m_id, &zoom_str,
@@ -374,49 +378,49 @@ static void set_up_sprite(Context * ctx)
 
 	// Get rotation configuration
 	angle = 0;
-	if ((ctx->m_orientation & NORTH) && (ctx->m_orientation & EAST))
+	if ((ctx->getOrientation() & NORTH) && (ctx->getOrientation() & EAST))
 	{
 		entry_read_int(CHARACTER_TABLE, ctx->m_id, &angle,
 		CHARACTER_KEY_DIR_NE_ROT, nullptr);
 		item_set_angle(item, (double) angle);
 	}
-	else if ((ctx->m_orientation & SOUTH) && (ctx->m_orientation & EAST))
+	else if ((ctx->getOrientation() & SOUTH) && (ctx->getOrientation() & EAST))
 	{
 		entry_read_int(CHARACTER_TABLE, ctx->m_id, &angle,
 		CHARACTER_KEY_DIR_SE_ROT, nullptr);
 		item_set_angle(item, (double) angle);
 	}
-	else if ((ctx->m_orientation & SOUTH) && (ctx->m_orientation & WEST))
+	else if ((ctx->getOrientation() & SOUTH) && (ctx->getOrientation() & WEST))
 	{
 		entry_read_int(CHARACTER_TABLE, ctx->m_id, &angle,
 		CHARACTER_KEY_DIR_SW_ROT, nullptr);
 		item_set_angle(item, (double) angle);
 	}
-	else if ((ctx->m_orientation & NORTH) && (ctx->m_orientation & WEST))
+	else if ((ctx->getOrientation() & NORTH) && (ctx->getOrientation() & WEST))
 	{
 		entry_read_int(CHARACTER_TABLE, ctx->m_id, &angle,
 		CHARACTER_KEY_DIR_NW_ROT, nullptr);
 		item_set_angle(item, (double) angle);
 	}
-	else if (ctx->m_orientation & NORTH)
+	else if (ctx->getOrientation() & NORTH)
 	{
 		entry_read_int(CHARACTER_TABLE, ctx->m_id, &angle,
 		CHARACTER_KEY_DIR_N_ROT, nullptr);
 		item_set_angle(item, (double) angle);
 	}
-	else if (ctx->m_orientation & SOUTH)
+	else if (ctx->getOrientation() & SOUTH)
 	{
 		entry_read_int(CHARACTER_TABLE, ctx->m_id, &angle,
 		CHARACTER_KEY_DIR_S_ROT, nullptr);
 		item_set_angle(item, (double) angle);
 	}
-	else if (ctx->m_orientation & WEST)
+	else if (ctx->getOrientation() & WEST)
 	{
 		entry_read_int(CHARACTER_TABLE, ctx->m_id, &angle,
 		CHARACTER_KEY_DIR_W_ROT, nullptr);
 		item_set_angle(item, (double) angle);
 	}
-	else if (ctx->m_orientation & EAST)
+	else if (ctx->getOrientation() & EAST)
 	{
 		entry_read_int(CHARACTER_TABLE, ctx->m_id, &angle,
 		CHARACTER_KEY_DIR_E_ROT, nullptr);
@@ -427,10 +431,10 @@ static void set_up_sprite(Context * ctx)
 	force_flip = 0;
 	entry_read_int(CHARACTER_TABLE, ctx->m_id, &force_flip,
 	CHARACTER_KEY_FORCE_FLIP, nullptr);
-	move_status = ctx->m_direction;
+	move_status = ctx->getDirection();
 	if (force_flip == true)
 	{
-		move_status = ctx->m_orientation;
+		move_status = ctx->getOrientation();
 	}
 
 	flip = 0;

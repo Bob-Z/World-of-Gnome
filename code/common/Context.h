@@ -61,6 +61,18 @@ public:
 	void setPreviousMap(const std::string& previousMap);
 	bool isMapChanged() const;
 	void setMapChanged(bool mapChanged);
+	int getTileX() const;
+	void setTileX(int tileX);
+	int getTileY() const;
+	void setTileY(int tileY);
+	bool isPositionChanged() const;
+	void setPositionChanged(bool positionChanged);
+	int getDirection() const;
+	void setDirection(int direction);
+	int getOrientation() const;
+	void setOrientation(int orientation);
+	int getPreviousTileX() const;
+	int getPreviousTileY() const;
 
 private:
 	SDL_mutex* m_mutex;
@@ -72,6 +84,13 @@ private:
 	std::string m_map;
 	std::string m_previousMap;
 	bool m_mapChanged; // FIXME
+	int m_tileX;	// player position (in tile)
+	int m_tileY;	// player position (in tile)
+	int m_previousTileX;	// player previous position (in tile) for sprite direction
+	int m_previousTileY;	// player previous position (in tile) for sprite direction
+	bool m_positionChanged;
+	int m_orientation;	// Bit field for sprite orientation (north east, south...)
+	int m_direction;	// Bit field for sprite direction (north, south...)
 
 public:
 	TCPsocket m_socket;
@@ -82,12 +101,6 @@ public:
 	SDL_Renderer * m_render;
 	SDL_Window * m_window;
 
-	int m_tile_x;	// player position (in tile)
-	int m_tile_y;	// player position (in tile)
-	int m_prev_pos_tile_x;	// player previous position (in tile) for sprite direction
-	int m_prev_pos_tile_y;	// player previous position (in tile) for sprite direction
-	bool m_pos_changed;
-
 	Uint32 m_animation_tick;	// Start tick for animation
 
 	char * m_type;	// character's type
@@ -96,8 +109,6 @@ public:
 	lua_State* m_lua_VM;	// LUA state
 	SDL_cond* m_condition;	// async condition for npc
 	SDL_mutex* m_condition_mutex;	// mutex for async condition for npc */
-	int m_orientation;	// Bit field for sprite orientation (north east, south...)
-	int m_direction;	// Bit field for sprite direction (north, south...)
 
 	Uint32 m_next_execution_time; // Time when an NPC will execute its AI script
 
@@ -119,8 +130,6 @@ TCPsocket context_get_socket_data(Context * context);
 int context_set_map_w(Context * context, int width);
 int context_set_map_h(Context * context, int height);
 ret_code_t context_set_type(Context * context, const char * name);
-void context_set_pos_tx(Context * context, int pos);
-void context_set_pos_ty(Context * context, int pos);
 void context_set_tile_x(Context * context, unsigned int pos);
 void context_set_tile_y(Context * context, unsigned int pos);
 void context_new_VM(Context * context);

@@ -491,8 +491,8 @@ void network_send_context_to_context(Context * dest_ctx, Context * src_ctx)
 	message.mutable_context()->set_map(src_ctx->getMap());
 	message.mutable_context()->set_in_game(src_ctx->isInGame());
 	message.mutable_context()->set_connected(src_ctx->isConnected());
-	message.mutable_context()->set_tile_x(src_ctx->m_tile_x);
-	message.mutable_context()->set_tile_y(src_ctx->m_tile_y);
+	message.mutable_context()->set_tile_x(src_ctx->getTileX());
+	message.mutable_context()->set_tile_y(src_ctx->getTileY());
 	message.mutable_context()->set_type(src_ctx->m_type);
 	message.mutable_context()->set_id(src_ctx->m_id);
 	message.mutable_context()->mutable_selection()->set_id(src_ctx->m_selection.getId());

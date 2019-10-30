@@ -45,10 +45,10 @@ Context * context_list_start = nullptr;
 
 /*****************************************************************************/
 Context::Context() :
-		m_mutex(nullptr), m_userName(), m_connected(false), m_inGame(false), m_npc(true), m_characterName(), m_map(), m_previousMap(), m_mapChanged(false), m_socket(), m_socket_data(), m_send_mutex(
-				nullptr), m_hostname(nullptr), m_render(nullptr), m_window(nullptr), m_tile_x(-1), m_tile_y(-1), m_prev_pos_tile_x(-1), m_prev_pos_tile_y(-1), m_pos_changed(
-				false), m_animation_tick(0), m_type(nullptr), m_selection(), m_id(nullptr), m_lua_VM(nullptr), m_condition(nullptr), m_condition_mutex(nullptr), m_orientation(
-				0), m_direction(0), m_next_execution_time(0), m_previous(nullptr), m_next(nullptr)
+		m_mutex(nullptr), m_userName(), m_connected(false), m_inGame(false), m_npc(true), m_characterName(), m_map(), m_previousMap(), m_mapChanged(false), m_tileX(
+				0), m_tileY(0), m_previousTileX(0), m_previousTileY(0), m_positionChanged(false), m_orientation(0), m_direction(0), m_socket(), m_socket_data(), m_send_mutex(
+				nullptr), m_hostname(nullptr), m_render(nullptr), m_window(nullptr), m_animation_tick(0), m_type(nullptr), m_selection(), m_id(nullptr), m_lua_VM(
+				nullptr), m_condition(nullptr), m_condition_mutex(nullptr), m_next_execution_time(0), m_previous(nullptr), m_next(nullptr)
 {
 	m_mutex = SDL_CreateMutex();
 }
@@ -93,11 +93,6 @@ void context_init(Context * context)
 	context->m_render = nullptr;
 	context->m_window = nullptr;
 
-	context->m_tile_x = 0;
-	context->m_tile_y = 0;
-	context->m_prev_pos_tile_x = 0;
-	context->m_prev_pos_tile_y = 0;
-	context->m_pos_changed = false;
 	context->m_animation_tick = 0;
 	context->m_type = nullptr;
 
@@ -105,8 +100,6 @@ void context_init(Context * context)
 	context->m_lua_VM = nullptr;
 	context->m_condition = nullptr;
 	context->m_condition_mutex = nullptr;
-	context->m_orientation = 0;
-	context->m_direction = 0;
 	context->m_next_execution_time = 0;
 
 	context->m_previous = nullptr;
@@ -359,47 +352,6 @@ ret_code_t context_set_type(Context * context, const char * type)
 }
 
 /**************************************
- **************************************/
-void _context_set_pos_tx(Context * context, int pos_tx)
-{
-	context->m_prev_pos_tile_x = context->m_tile_x;
-	if (context->m_tile_x != pos_tx)
-	{
-		context->m_pos_changed = true;
-		context->m_tile_x = pos_tx;
-	}
-}
-
-/**************************************
- **************************************/
-void context_set_pos_tx(Context * context, int pos_tx)
-{
-	context_lock_list();
-	_context_set_pos_tx(context, pos_tx);
-	context_unlock_list();
-}
-/**************************************
- **************************************/
-void _context_set_pos_ty(Context * context, int pos_ty)
-{
-	context->m_prev_pos_tile_y = context->m_tile_y;
-	if (context->m_tile_y != pos_ty)
-	{
-		context->m_pos_changed = true;
-		context->m_tile_y = pos_ty;
-	}
-}
-
-/**************************************
- **************************************/
-void context_set_pos_ty(Context * context, int pos_ty)
-{
-	context_lock_list();
-	_context_set_pos_ty(context, pos_ty);
-	context_unlock_list();
-}
-
-/**************************************
  return RET_NOK on error
  **************************************/
 ret_code_t context_set_id(Context * context, const char * name)
@@ -591,7 +543,7 @@ ret_code_t context_update_from_file(Context * context)
 	{
 		ret = RET_NOK;
 	}
-	_context_set_pos_tx(context, pos_tx);
+	context->setTileX(pos_tx);
 
 	int pos_ty;
 	if (entry_read_int(CHARACTER_TABLE, context->m_id, &pos_ty,
@@ -599,7 +551,7 @@ ret_code_t context_update_from_file(Context * context)
 	{
 		ret = RET_NOK;
 	}
-	_context_set_pos_ty(context, pos_ty);
+	context->setTileY(pos_ty);
 
 	context_unlock_list();
 	return ret;
@@ -624,10 +576,10 @@ ret_code_t context_write_to_file(Context * context)
 	entry_write_string(CHARACTER_TABLE, context->m_id, context->getMap().c_str(),
 	CHARACTER_KEY_MAP, nullptr);
 
-	entry_write_int(CHARACTER_TABLE, context->m_id, context->m_tile_x,
+	entry_write_int(CHARACTER_TABLE, context->m_id, context->getTileX(),
 	CHARACTER_KEY_TILE_X, nullptr);
 
-	entry_write_int(CHARACTER_TABLE, context->m_id, context->m_tile_y,
+	entry_write_int(CHARACTER_TABLE, context->m_id, context->getTileY(),
 	CHARACTER_KEY_TILE_Y, nullptr);
 
 	context_unlock_list();
@@ -683,8 +635,8 @@ void context_add_or_update_from_network_frame(const ContextBis & context)
 
 				ctx->setNpc(context.isNpc());
 
-				_context_set_pos_tx(ctx, context.getTileX());
-				_context_set_pos_ty(ctx, context.getTileY());
+				ctx->setTileX(context.getTileX());
+				ctx->setTileY(context.getTileY());
 
 				free(ctx->m_type);
 				ctx->m_type = strdup(context.getType().c_str());
@@ -713,8 +665,8 @@ void context_add_or_update_from_network_frame(const ContextBis & context)
 	ctx->setNpc(context.isNpc());
 	ctx->setMap(context.getMap());
 	context_set_type(ctx, context.getType().c_str());
-	context_set_pos_tx(ctx, context.getTileX());
-	context_set_pos_ty(ctx, context.getTileY());
+	ctx->setTileX(context.getTileX());
+	ctx->setTileY(context.getTileY());
 	context_set_id(ctx, context.getId().c_str());
 	ctx->setConnected(context.isConnected());
 	ctx->setInGame(context.isInGame());
@@ -732,12 +684,12 @@ int context_distance(Context * ctx1, Context * ctx2)
 	int distx;
 	int disty;
 
-	distx = ctx1->m_tile_x - ctx2->m_tile_x;
+	distx = ctx1->getTileX() - ctx2->getTileX();
 	if (distx < 0)
 	{
 		distx = -distx;
 	}
-	disty = ctx1->m_tile_y - ctx2->m_tile_y;
+	disty = ctx1->getTileY() - ctx2->getTileY();
 	if (disty < 0)
 	{
 		disty = -disty;
@@ -879,4 +831,98 @@ void Context::setMapChanged(bool mapChanged)
 	SdlLocking lock(m_mutex);
 
 	m_mapChanged = mapChanged;
+}
+
+/*****************************************************************************/
+bool Context::isPositionChanged() const
+{
+	SdlLocking lock(m_mutex);
+
+	return m_positionChanged;
+}
+
+/*****************************************************************************/
+void Context::setPositionChanged(bool positionChanged)
+{
+	SdlLocking lock(m_mutex);
+
+	m_positionChanged = positionChanged;
+}
+
+/*****************************************************************************/
+int Context::getTileX() const
+{
+	SdlLocking lock(m_mutex);
+
+	return m_tileX;
+}
+
+/*****************************************************************************/
+void Context::setTileX(int tileX)
+{
+	SdlLocking lock(m_mutex);
+
+	if (tileX != m_previousTileX)
+	{
+		m_previousTileX = m_tileX;
+		m_tileX = tileX;
+		m_positionChanged = true;
+	}
+}
+
+/*****************************************************************************/
+int Context::getTileY() const
+{
+	SdlLocking lock(m_mutex);
+
+	return m_tileY;
+}
+
+/*****************************************************************************/
+void Context::setTileY(int tileY)
+{
+	SdlLocking lock(m_mutex);
+
+	if (tileY != m_previousTileY)
+	{
+		m_previousTileY = m_tileY;
+		m_tileY = tileY;
+		m_positionChanged = true;
+	}
+}
+
+/*****************************************************************************/
+int Context::getDirection() const
+{
+	return m_direction;
+}
+
+/*****************************************************************************/
+void Context::setDirection(int direction)
+{
+	m_direction = direction;
+}
+
+/*****************************************************************************/
+int Context::getOrientation() const
+{
+	return m_orientation;
+}
+
+/*****************************************************************************/
+void Context::setOrientation(int orientation)
+{
+	m_orientation = orientation;
+}
+
+/*****************************************************************************/
+int Context::getPreviousTileX() const
+{
+	return m_previousTileX;
+}
+
+/*****************************************************************************/
+int Context::getPreviousTileY() const
+{
+	return m_previousTileY;
 }

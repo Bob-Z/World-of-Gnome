@@ -985,7 +985,7 @@ char ** map_get_character(const std::string & map, int x, int y)
 			ctx = ctx->m_next;
 			continue;
 		}
-		if (ctx->m_tile_x == x && ctx->m_tile_y == y && (ctx->getMap() == map))
+		if ((ctx->getTileX() == x) && (ctx->getTileY() == y) && (ctx->getMap() == map))
 		{
 			character_num++;
 			character_list = (char**) realloc(character_list, sizeof(char*) * (character_num + 1));

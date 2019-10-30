@@ -428,8 +428,8 @@ void character_update_aggro(Context * agressor)
 static void do_set_pos(Context * ctx, const std::string & map, int x, int y, bool change_map)
 {
 	ctx->setMap(map);
-	context_set_pos_tx(ctx, x);
-	context_set_pos_ty(ctx, y);
+	ctx->setTileX(x);
+	ctx->setTileY(y);
 
 	entry_write_string(CHARACTER_TABLE, ctx->m_id, map.c_str(), CHARACTER_KEY_MAP, nullptr);
 	entry_write_int(CHARACTER_TABLE, ctx->m_id, x, CHARACTER_KEY_TILE_X, nullptr);
@@ -468,7 +468,7 @@ static void platform_move(Context * platform, const std::string & map, int x, in
 			current = current->m_next;
 			continue;
 		}
-		if (platform->m_tile_x == current->m_tile_x && platform->m_tile_y == current->m_tile_y && (platform->getMap() == current->getMap()))
+		if ((platform->getTileX() == current->getTileX()) && (platform->getTileY() == current->getTileY()) && (platform->getMap() == current->getMap()))
 		{
 			do_set_pos(current, map, x, y, change_map);
 		}
@@ -504,7 +504,7 @@ int character_set_pos(Context * ctx, const std::string & map, int x, int y)
 	}
 
 	// Do nothing if no move
-	if ((ctx->getMap() == map) && ctx->m_tile_x == x && ctx->m_tile_y == y)
+	if ((ctx->getMap() == map) && (ctx->getTileX() == x) && (ctx->getTileY() == y))
 	{
 		return 0;
 	}
