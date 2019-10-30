@@ -46,9 +46,9 @@ Context * context_list_start = nullptr;
 /*****************************************************************************/
 Context::Context() :
 		m_mutex(nullptr), m_userName(), m_connected(false), m_inGame(false), m_npc(true), m_characterName(), m_map(), m_previousMap(), m_mapChanged(false), m_tileX(
-				0), m_tileY(0), m_previousTileX(0), m_previousTileY(0), m_positionChanged(false), m_orientation(0), m_direction(0), m_socket(), m_socket_data(), m_send_mutex(
-				nullptr), m_hostname(nullptr), m_render(nullptr), m_window(nullptr), m_animation_tick(0), m_type(nullptr), m_selection(), m_id(nullptr), m_lua_VM(
-				nullptr), m_condition(nullptr), m_condition_mutex(nullptr), m_next_execution_time(0), m_previous(nullptr), m_next(nullptr)
+				0), m_tileY(0), m_previousTileX(0), m_previousTileY(0), m_positionChanged(false), m_orientation(0), m_direction(0), m_animationTick(0), m_socket(), m_socket_data(), m_send_mutex(
+				nullptr), m_hostname(nullptr), m_render(nullptr), m_window(nullptr), m_type(nullptr), m_selection(), m_id(nullptr), m_lua_VM(nullptr), m_condition(
+				nullptr), m_condition_mutex(nullptr), m_next_execution_time(0), m_previous(nullptr), m_next(nullptr)
 {
 	m_mutex = SDL_CreateMutex();
 }
@@ -93,7 +93,6 @@ void context_init(Context * context)
 	context->m_render = nullptr;
 	context->m_window = nullptr;
 
-	context->m_animation_tick = 0;
 	context->m_type = nullptr;
 
 	context->m_id = nullptr;
@@ -925,4 +924,16 @@ int Context::getPreviousTileX() const
 int Context::getPreviousTileY() const
 {
 	return m_previousTileY;
+}
+
+/*****************************************************************************/
+Uint32 Context::getAnimationTick() const
+{
+	return m_animationTick;
+}
+
+/*****************************************************************************/
+void Context::setAnimationTick(Uint32 animationTick)
+{
+	m_animationTick = animationTick;
 }

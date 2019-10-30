@@ -269,20 +269,20 @@ static void set_up_sprite(Context * ctx)
 	// Force position when the player has changed map
 	if (change_map == true)
 	{
-		ctx->m_animation_tick = current_time;
+		ctx->setAnimationTick(current_time);
 		force_position = true;
 	}
 	// Force position when this context has changed map
 	if (ctx->isMapChanged() == true)
 	{
-		ctx->m_animation_tick = current_time;
+		ctx->setAnimationTick(current_time);
 		ctx->setMapChanged(false);
 		force_position = true;
 	}
 
-	if (ctx->m_animation_tick == 0)
+	if (ctx->getAnimationTick() == 0)
 	{
-		ctx->m_animation_tick = current_time;
+		ctx->setAnimationTick(current_time);
 	}
 
 	// Detect sprite movement, initiate animation
@@ -372,7 +372,7 @@ static void set_up_sprite(Context * ctx)
 
 	// Set sprite to item
 	item_set_pos(item, px, py);
-	item_set_anim_start_tick(item, ctx->m_animation_tick);
+	item_set_anim_start_tick(item, ctx->getAnimationTick());
 	item_set_anim_array(item, sprite_list);
 	free(sprite_list);
 
@@ -646,7 +646,7 @@ static void cb_select_map(void *arg)
 	sprintf(x, "%d", item->user1);
 	sprintf(y, "%d", item->user2);
 
-	network_send_action(ctx, option_get().action_select_tile, ctx->getMap(), x, y, nullptr);
+	network_send_action(ctx, option_get().action_select_tile, ctx->getMap().c_str(), x, y, nullptr);
 }
 
 /**************************************

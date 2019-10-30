@@ -73,6 +73,8 @@ public:
 	void setOrientation(int orientation);
 	int getPreviousTileX() const;
 	int getPreviousTileY() const;
+	Uint32 getAnimationTick() const;
+	void setAnimationTick(Uint32 animationTick);
 
 private:
 	SDL_mutex* m_mutex;
@@ -91,6 +93,7 @@ private:
 	bool m_positionChanged;
 	int m_orientation;	// Bit field for sprite orientation (north east, south...)
 	int m_direction;	// Bit field for sprite direction (north, south...)
+	Uint32 m_animationTick;	// Start tick for animation
 
 public:
 	TCPsocket m_socket;
@@ -100,8 +103,6 @@ public:
 
 	SDL_Renderer * m_render;
 	SDL_Window * m_window;
-
-	Uint32 m_animation_tick;	// Start tick for animation
 
 	char * m_type;	// character's type
 	Selection m_selection; // Selected tile or sprite
