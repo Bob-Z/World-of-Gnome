@@ -19,24 +19,24 @@
 
 #include "anim.h"
 #include "common.h"
+#include "const.h"
+#include "entry.h"
+#include "font.h"
 #include "imageDB.h"
 #include "item.h"
+#include "log.h"
 #include "network_client.h"
 #include "option_client.h"
+#include "protocol.h"
 #include "scr_play.h"
 #include "screen.h"
 #include "sdl.h"
-#include "textview.h"
-#include <stack>
-#include <vector>
-#include <string>
-#include "entry.h"
 #include "syntax.h"
-#include "font.h"
+#include "textview.h"
 #include "util.h"
-#include "log.h"
-#include "const.h"
-#include "protocol.h"
+#include <stack>
+#include <string>
+#include <vector>
 
 #define UI_MAIN		0
 #define UI_INVENTORY	1
@@ -44,12 +44,12 @@
 
 #define FONT "Ubuntu-C.ttf"
 #define FONT_SIZE 30
-#define TEXT_FONT "Ubuntu-C.ttf"
+static const std::string TEXT_FONT = "Ubuntu-C.ttf";
 #define TEXT_FONT_SIZE 15
 #define TEXT_TIMEOUT 5000 // Text display timeout
 #define ITEM_FONT "Ubuntu-C.ttf"
 #define ITEM_FONT_SIZE 15
-#define SPEAK_FONT "Ubuntu-C.ttf"
+static const std::string SPEAK_FONT = "Ubuntu-C.ttf";
 #define SPEAK_FONT_SIZE 32
 
 #define BACKGROUND_COLOR (0xFFFFFF40)

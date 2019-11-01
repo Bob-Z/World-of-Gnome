@@ -21,14 +21,14 @@
 #include "common.h"
 #include "const.h"
 #include "file.h"
-#include "log.h"
 #include "imageDB.h"
+#include "log.h"
 #include "lua_client.h"
+#include "mutex.h"
 #include "network_client.h"
 #include "option_client.h"
 #include "screen.h"
 #include "sdl.h"
-#include "mutex.h"
 #include <getopt.h>
 #include <SDL2/SDL_mixer.h>
 #include <stdlib.h>

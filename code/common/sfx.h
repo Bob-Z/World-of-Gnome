@@ -28,9 +28,8 @@ static const int LOOP = -1;
 static const int NO_LOOP = 0;
 static const int ANY_CHANNEL = -1;
 
-int sfx_play(Context* p_Ctx, const std::string & p_FileName, int p_Channel,
-		int p_Loops);
-void sfx_stop(int p_Channel);
-void sfx_set_volume(int p_Channel, int p_VolumePerCent);
+int sfx_play(Context* ctx, const std::string & fileName, int channel, int loops);
+void sfx_stop(int channel);
+void sfx_set_volume(int channel, int volumePerCent);
 
 #endif

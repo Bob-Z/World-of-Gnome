@@ -19,19 +19,16 @@
 
 /* This manage an image data base */
 
-#include "anim.h"
+#include "imageDB.h"
+
 #include "client_server.h"
 #include "Context.h"
 #include "file.h"
 #include "list.h"
 #include "log.h"
-#include "syntax.h"
 #include "mutex.h"
 #include "sdl.h"
-#include <stdlib.h>
-#include <SDL_mutex.h>
-#include <SDL_pixels.h>
-#include <SDL_stdinc.h>
+#include "syntax.h"
 #include <string>
 
 static list_t * image_list = nullptr;

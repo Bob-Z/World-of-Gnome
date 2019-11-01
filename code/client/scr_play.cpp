@@ -22,8 +22,8 @@
 #include "common.h"
 #include "const.h"
 #include "entry.h"
-#include "font.h"
 #include "file.h"
+#include "font.h"
 #include "imageDB.h"
 #include "item.h"
 #include "log.h"
@@ -40,9 +40,9 @@
 #include "util.h"
 #include <limits.h>
 
-constexpr int SFX_VOLUME_MAX = 100;
+static constexpr int SFX_VOLUME_MAX = 100;
 
-#define ITEM_FONT "Ubuntu-C.ttf"
+static const std::string ITEM_FONT = "Ubuntu-C.ttf";
 #define ITEM_FONT_SIZE (15)
 
 #define NORTH (1<<0)

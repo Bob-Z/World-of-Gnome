@@ -21,68 +21,63 @@
 #include "file.h"
 #include "log.h"
 #include "syntax.h"
+#include <map>
 #include <SDL_mixer.h>
 #include <SDL_rwops.h>
-#include <map>
 #include <string>
-
-class Context;
 
 static std::map<std::string, Mix_Chunk*> g_SoundList;
 
-/*******************************************************************************
- ******************************************************************************/
-int sfx_play(Context* p_Ctx, const std::string & p_FileName, int p_Channel, int p_Loops)
+/*****************************************************************************/
+int sfx_play(Context* ctx, const std::string & fileName, int channel, int loops)
 {
-	auto l_It = g_SoundList.find(p_FileName);
+	auto l_It = g_SoundList.find(fileName);
 
 	if (l_It != g_SoundList.end())
 	{
-		return Mix_PlayChannel(p_Channel, l_It->second, p_Loops);
+		return Mix_PlayChannel(channel, l_It->second, loops);
 	}
 
-	const std::string l_TableFilename = std::string(SFX_TABLE) + std::string("/") + p_FileName;
-	const std::string l_FullName = std::string(base_directory) + "/" + l_TableFilename;
+	const std::string tableFilename = SFX_TABLE + "/" + fileName;
+	const std::string fullName = base_directory + "/" + tableFilename;
 
-	file_lock(l_TableFilename.c_str());
+	file_lock(tableFilename.c_str());
 
-	SDL_RWops * l_pFileDesc = SDL_RWFromFile(l_FullName.c_str(), "r");
-	if (l_pFileDesc == nullptr)
+	SDL_RWops * fileDesc = SDL_RWFromFile(fullName.c_str(), "r");
+	if (fileDesc == nullptr)
 	{
-		std::string l_Err = std::string("sfx_play: cannot open ") + l_FullName.c_str();
-		werr(LOGDESIGNER, l_Err.c_str());
-		file_update(p_Ctx, l_TableFilename.c_str());
-		file_unlock(l_TableFilename.c_str());
+		std::string errorText = std::string("sfx_play: cannot open ") + fullName.c_str();
+		werr(LOGDESIGNER, errorText.c_str());
+		file_update(ctx, tableFilename.c_str());
+		file_unlock(tableFilename.c_str());
 		return -1;
 	}
 
-	Mix_Chunk * l_pChunk = Mix_LoadWAV_RW(l_pFileDesc, 1);
-	if (l_pChunk == nullptr)
+	Mix_Chunk * chunk = Mix_LoadWAV_RW(fileDesc, 1);
+	if (chunk == nullptr)
 	{
-		std::string l_Err = std::string("sfx_play: cannot read ") + l_FullName.c_str();
+		std::string l_Err = std::string("sfx_play: cannot read ") + fullName.c_str();
 		werr(LOGDESIGNER, l_Err.c_str());
-		file_update(p_Ctx, l_TableFilename.c_str());
-		file_unlock(l_TableFilename.c_str());
+		file_update(ctx, tableFilename.c_str());
+		file_unlock(tableFilename.c_str());
 		return -1;
 	}
 
-	g_SoundList[p_FileName] = l_pChunk;
+	g_SoundList[fileName] = chunk;
 
-	file_unlock(l_TableFilename.c_str());
+	file_unlock(tableFilename.c_str());
 
-	return Mix_PlayChannel(p_Channel, l_pChunk, p_Loops);
+	return Mix_PlayChannel(channel, chunk, loops);
 }
 
-/*******************************************************************************
- ******************************************************************************/
-void sfx_stop(int p_Channel)
+/*****************************************************************************/
+void sfx_stop(int channel)
 {
-	Mix_HaltChannel(p_Channel);
+	Mix_HaltChannel(channel);
 }
 
-/*******************************************************************************
- ******************************************************************************/
-void sfx_set_volume(int p_Channel, int p_VolumePerCent)
+/*****************************************************************************/
+void sfx_set_volume(int channel, int volumePerCent)
 {
-	Mix_Volume(p_Channel, p_VolumePerCent * MIX_MAX_VOLUME / 100);
+	Mix_Volume(channel, volumePerCent * MIX_MAX_VOLUME / 100);
 }

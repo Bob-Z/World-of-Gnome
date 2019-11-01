@@ -17,45 +17,45 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
+#include "font.h"
+
 #include "client_server.h"
+#include "Context.h"
 #include "file.h"
 #include "list.h"
-#include <SDL_ttf.h>
 #include <string>
-
-class Context;
 
 static list_t * font_list = nullptr;
 
 /****************************************
  *****************************************/
-TTF_Font * font_get(Context* ctx, const char * filename, int size)
+TTF_Font * font_get(Context* ctx, const std::string & filename, int size)
 {
 	TTF_Font * font = nullptr;
 
-	file_lock(filename);
+	file_lock(filename.c_str());
 
-	font = (TTF_Font*) list_find(font_list, filename);
+	font = (TTF_Font*) list_find(font_list, filename.c_str());
 
 	if (font != nullptr)
 	{
-		file_unlock(filename);
+		file_unlock(filename.c_str());
 		return font;
 	}
 
-	const std::string file_path = base_directory + "/" + std::string(filename);
+	const std::string file_path = base_directory + "/" + filename;
 	font = TTF_OpenFont(file_path.c_str(), size);
 
 	if (font != nullptr)
 	{
-		list_update(&font_list, filename, font);
-		file_unlock(filename);
+		list_update(&font_list, filename.c_str(), font);
+		file_unlock(filename.c_str());
 		return font;
 	}
 
-	file_update(ctx, filename);
+	file_update(ctx, filename.c_str());
 
-	file_unlock(filename);
+	file_unlock(filename.c_str());
 
 	return nullptr;
 }

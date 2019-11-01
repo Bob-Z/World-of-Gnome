@@ -20,24 +20,14 @@
 #ifndef CONTEXT_H
 #define CONTEXT_H
 
-#include <SDL_stdinc.h>
 #include "Selection.h"
+#include "types.h"
+#include <SDL2/SDL_net.h>
 
-struct lua_State;
-
-#ifdef __cplusplus
 extern "C"
 {
-#endif
 #include <lua.h>
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_net.h>
-#ifdef __cplusplus
 }
-#endif
-
-#include "types.h"
-#include <SDL_mutex.h>
 
 class Context
 {

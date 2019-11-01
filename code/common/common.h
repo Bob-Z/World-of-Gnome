@@ -20,8 +20,6 @@
 #ifndef WOG_COMMON_INCLUDE
 #define WOG_COMMON_INCLUDE
 
-#include <SDL2/SDL_net.h>
-
 #define RET_OK		(0)
 #define RET_NOK		(-1)
 

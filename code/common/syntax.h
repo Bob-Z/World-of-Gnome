@@ -20,7 +20,7 @@
 #ifndef SYNTAX_H
 #define SYNTAX_H
 
-#define DEFAULT_IMAGE_FILE	"default.jpg"
+#include <string>
 
 // users data
 #define USERS_TABLE		"user"
@@ -195,5 +195,6 @@
 #define CLIENT_KEY_CREATE_CHARACTER_SFX 	"create_character_sfx"
 #define CLIENT_KEY_CREATE_CHARACTER_SFX_VOLUME 	"create_character_sfx_volume"
 
-#define SFX_TABLE 				"sfx"
+const std::string SFX_TABLE("sfx");
+
 #endif

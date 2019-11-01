@@ -17,29 +17,20 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
+#include "../server/action.h"
+#include "common.h"
 #include "Context.h"
-#include "ContextBis.h"
 #include "entry.h"
 #include "log.h"
 #include "mutex.h"
 #include "SdlLocking.h"
 #include "syntax.h"
-#include <cstring>
-#include <stdlib.h>
-#include <string>
-
-#include "../server/action.h"
-
-class ContextBis;
 
 extern "C"
 {
 #include "lualib.h"
 #include "lauxlib.h"
 }
-#include <unistd.h>
-#include <limits.h>
-#include "common.h"
 
 Context * context_list_start = nullptr;
 
@@ -79,9 +70,9 @@ Context * context_get_first()
 {
 	return context_list_start;
 }
-/*************************************
+/************************************
  context_init
- Initialize a context_t struct
+ Initialize a context
  *************************************/
 void context_init(Context * context)
 {
@@ -126,6 +117,7 @@ Context * context_new(void)
 	context_unlock_list();
 	return ctx->m_next;
 }
+
 /*************************************
  context_free_data
  Deep free of all context_t data

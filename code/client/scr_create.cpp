@@ -20,23 +20,23 @@
 #include "anim.h"
 #include "Camera.h"
 #include "common.h"
+#include "entry.h"
 #include "file.h"
+#include "font.h"
 #include "imageDB.h"
 #include "item.h"
+#include "log.h"
+#include "mutex.h"
 #include "network_client.h"
 #include "screen.h"
 #include "sdl.h"
 #include "sfx.h"
-#include "log.h"
-#include "entry.h"
 #include "syntax.h"
-#include "font.h"
 #include "util.h"
-#include "mutex.h"
 
 static const constexpr int BORDER = 20;
 static const constexpr int FONT_SIZE = 30;
-static const constexpr char * const FONT = "Ubuntu-C.ttf";
+static const std::string FONT = "Ubuntu-C.ttf";
 static constexpr unsigned long BACKGROUND_COLOR = 0xFFFFFF40U;
 static bool g_IsMusicPlaying = false;
 

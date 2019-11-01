@@ -20,9 +20,11 @@
 #ifndef FONT_H
 #define FONT_H
 
-#include "common.h"
-#include <SDL2/SDL_ttf.h>
+#include <SDL_ttf.h>
+#include <string>
 
-TTF_Font * font_get(Context* ctx, const char * filename, int size);
+class Context;
+
+TTF_Font * font_get(Context* ctx, const std::string & filename, int size);
 
 #endif

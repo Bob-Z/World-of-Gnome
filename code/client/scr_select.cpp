@@ -17,22 +17,22 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#include "common.h"
-#include "imageDB.h"
-#include "file.h"
-#include "file_client.h"
 #include "anim.h"
+#include "Camera.h"
+#include "common.h"
+#include "entry.h"
+#include "file_client.h"
+#include "file.h"
+#include "font.h"
+#include "imageDB.h"
 #include "item.h"
-#include "sdl.h"
+#include "log.h"
+#include "mutex.h"
 #include "network_client.h"
 #include "screen.h"
-#include "Camera.h"
+#include "sdl.h"
 #include "sfx.h"
-#include "log.h"
-#include "entry.h"
-#include "mutex.h"
 #include "syntax.h"
-#include "font.h"
 #include "util.h"
 
 static const constexpr int BORDER = 20;
