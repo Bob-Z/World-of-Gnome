@@ -230,8 +230,8 @@ void screen_display(Context * ctx)
 		while (SDL_PollEvent(&event))
 		{
 			g_Compose |= sdl_screen_manager(ctx->m_window, ctx->m_render, &event);
-			sdl_mouse_manager(ctx->m_render, &event, item_list);
-			sdl_keyboard_manager(&event);
+			g_Compose |= sdl_mouse_manager(ctx->m_render, &event, item_list);
+			g_Compose |= sdl_keyboard_manager(&event);
 		}
 
 		sdl_mouse_position_manager(ctx->m_render, item_list);

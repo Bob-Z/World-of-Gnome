@@ -120,7 +120,7 @@ int main(int argc, char **argv)
 
 	context->setUserName(std::string(user));
 
-	sdl_init(TITLE_NAME, &context->m_render, &context->m_window, screen_compose, !maxfps);
+	sdl_init(TITLE_NAME, &context->m_render, &context->m_window, !maxfps);
 
 	int Mix_flags = MIX_INIT_FLAC | MIX_INIT_MP3 | MIX_INIT_OGG;
 	int result;
