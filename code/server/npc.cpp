@@ -68,12 +68,12 @@ static int npc_script(void * data)
 		}
 		entry_read_list(CHARACTER_TABLE, context->getId().c_str(), &parameters, CHARACTER_KEY_AI_PARAMS, nullptr);
 
-		if (context->m_next_execution_time < SDL_GetTicks())
+		if (context->getNextExecutionTick() < SDL_GetTicks())
 		{
 			SDL_LockMutex(npc_mutex);
 			timeout_ms = action_execute_script(context, script, (const char **) parameters);
 			SDL_UnlockMutex(npc_mutex);
-			context->m_next_execution_time = SDL_GetTicks() + timeout_ms;
+			context->setNextExecutionTick(SDL_GetTicks() + timeout_ms);
 		}
 
 		/* The previous call to action_execute_script may have changed

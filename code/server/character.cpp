@@ -746,8 +746,8 @@ int character_wake_up(const char * id)
 
 	ctx = context_find(id);
 
-	/* Wake up NPC */
-	ctx->m_next_execution_time = 0;
+	// Wake up NPC
+	ctx->setNextExecutionTick(0);
 	if (SDL_TryLockMutex(ctx->m_condition_mutex) == 0)
 	{
 		SDL_CondSignal(ctx->m_condition);

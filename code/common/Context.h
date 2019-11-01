@@ -90,6 +90,8 @@ public:
 	const std::string & getSelectionEquipment() const;
 	void setSelectionInventory(const std::string & item);
 	const std::string & getSelectionInventory() const;
+	Uint32 getNextExecutionTick() const;
+	void setNextExecutionTick(Uint32 nextExecutionTick);
 
 private:
 	SDL_mutex* m_mutex;
@@ -112,6 +114,7 @@ private:
 	std::string m_type;	// character's type
 	std::string m_id; // unique ID of a character (its filename)
 	Selection m_selection; // Selected tile or sprite
+	Uint32 m_nextExecutionTick; // Time when an NPC will execute its AI script
 
 public:
 	TCPsocket m_socket;
@@ -125,8 +128,6 @@ public:
 	lua_State* m_lua_VM;	// LUA state
 	SDL_cond* m_condition;	// async condition for NPC
 	SDL_mutex* m_condition_mutex;	// mutex for async condition for NPC
-
-	Uint32 m_next_execution_time; // Time when an NPC will execute its AI script
 
 	Context * m_previous;
 	Context * m_next;
@@ -154,7 +155,6 @@ Context * context_get_player();
 ret_code_t context_write_to_file(Context * context);
 Context * context_find(const std::string & id);
 int context_distance(Context * ctx1, Context * ctx2);
-void context_reset_all_position();
 bool context_is_npc(Context * ctx);
 
 #endif
