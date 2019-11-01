@@ -65,9 +65,9 @@ std::pair<bool, std::string> item_create_from_template(const std::string & my_te
  Remove an item file
  return RET_NOK on error
  *****************************/
-ret_code_t item_destroy(const char * item_id)
+ret_code_t item_destroy(const std::string & item_id)
 {
-	return entry_destroy(ITEM_TABLE, item_id);
+	return entry_destroy(ITEM_TABLE, item_id.c_str());
 }
 
 /***********************************************************
@@ -106,11 +106,11 @@ std::pair<bool, std::string> resource_new(const std::string & my_template, int q
  Returned string MUST BE FREED
  return nullptr  if item is unique (i.e. not a resource)
  *****************************************************/
-char * item_is_resource(const char * item_id)
+char * item_is_resource(const std::string & inventory_id)
 {
 	char * my_template = nullptr;
 
-	entry_read_string(ITEM_TABLE, item_id, &my_template, ITEM_TEMPLATE, nullptr);
+	entry_read_string(ITEM_TABLE, inventory_id.c_str(), &my_template, ITEM_TEMPLATE, nullptr);
 
 	return my_template;
 }
@@ -119,7 +119,7 @@ char * item_is_resource(const char * item_id)
  return the quantity of a resource
  return -1 on error
  *****************************/
-int resource_get_quantity(const char * item_id)
+int resource_get_quantity(const std::string & item_id)
 {
 	int quantity;
 	char * my_template;
@@ -130,7 +130,7 @@ int resource_get_quantity(const char * item_id)
 	}
 	free(my_template);
 
-	if (entry_read_int(ITEM_TABLE, item_id, &quantity, ITEM_QUANTITY, nullptr) == RET_NOK)
+	if (entry_read_int(ITEM_TABLE, item_id.c_str(), &quantity, ITEM_QUANTITY, nullptr) == RET_NOK)
 	{
 		return -1;
 	}
@@ -142,23 +142,23 @@ int resource_get_quantity(const char * item_id)
  set the quantity of a resource
  return -1 on error
  *****************************/
-int resource_set_quantity(Context * context, const char * item_id, int quantity)
+int resource_set_quantity(Context * context, const std::string & item_id, int quantity)
 {
 	char * my_template;
 
-	/* unique item */
+	// unique item
 	if ((my_template = item_is_resource(item_id)) == nullptr)
 	{
 		return -1;
 	}
 	free(my_template);
 
-	if (entry_write_int(ITEM_TABLE, item_id, quantity, ITEM_QUANTITY, nullptr) == RET_NOK)
+	if (entry_write_int(ITEM_TABLE, item_id.c_str(), quantity, ITEM_QUANTITY, nullptr) == RET_NOK)
 	{
 		return -1;
 	}
 
-	network_send_table_file(context, ITEM_TABLE, item_id);
+	network_send_table_file(context, ITEM_TABLE, item_id.c_str());
 
 	return 0;
 }
@@ -167,7 +167,7 @@ int resource_set_quantity(Context * context, const char * item_id, int quantity)
  Return the name of an item
  return nullptr on error
  *****************************/
-char * item_get_name(const char * item_id)
+char * item_get_name(const std::string & item_id)
 {
 	char * my_template;
 	char * name;
@@ -184,7 +184,7 @@ char * item_get_name(const char * item_id)
 	}
 	else
 	{
-		if (entry_read_string(ITEM_TABLE, item_id, &name, ITEM_NAME, nullptr) == RET_OK)
+		if (entry_read_string(ITEM_TABLE, item_id.c_str(), &name, ITEM_NAME, nullptr) == RET_OK)
 		{
 			return name;
 		}

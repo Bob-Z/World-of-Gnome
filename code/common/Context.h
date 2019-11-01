@@ -79,6 +79,18 @@ public:
 	void setType(const std::string& type);
 	const std::string& getId() const;
 	void setId(const std::string& id);
+	const Selection& getSelection() const;
+	void setSelection(const Selection& selection);
+	void setSelectionContextId(const std::string & contextId);
+	const std::string& getSelectionContextId() const;
+	void setSelectionTile(const std::string & map, int tx, int ty);
+	const std::string& getSelectionMap() const;
+	int getSelectionMapTx() const;
+	int getSelectionMapTy() const;
+	void setSelectionEquipment(const std::string & equipment);
+	const std::string & getSelectionEquipment() const;
+	void setSelectionInventory(const std::string & item);
+	const std::string & getSelectionInventory() const;
 
 private:
 	SDL_mutex* m_mutex;
@@ -100,6 +112,7 @@ private:
 	Uint32 m_animationTick;	// Start tick for animation
 	std::string m_type;	// character's type
 	std::string m_id; // unique ID of a character (its filename)
+	Selection m_selection; // Selected tile or sprite
 
 public:
 	TCPsocket m_socket;
@@ -110,11 +123,9 @@ public:
 	SDL_Renderer * m_render;
 	SDL_Window * m_window;
 
-	Selection m_selection; // Selected tile or sprite
-
 	lua_State* m_lua_VM;	// LUA state
-	SDL_cond* m_condition;	// async condition for npc
-	SDL_mutex* m_condition_mutex;	// mutex for async condition for npc */
+	SDL_cond* m_condition;	// async condition for NPC
+	SDL_mutex* m_condition_mutex;	// mutex for async condition for NPC
 
 	Uint32 m_next_execution_time; // Time when an NPC will execute its AI script
 
@@ -134,10 +145,6 @@ void context_set_socket_data(Context * context, TCPsocket socket);
 TCPsocket context_get_socket_data(Context * context);
 void context_new_VM(Context * context);
 
-ret_code_t context_set_selected_character(Context * context, const char * selected_character);
-ret_code_t context_set_selected_tile(Context * context, const char * selected_map, int selected_map_x, int selected_map_y);
-ret_code_t context_set_selected_equipment(Context * context, const char * selected_equipment);
-ret_code_t context_set_selected_item(Context * context, const char * selected_item);
 ret_code_t context_update_from_file(Context * context);
 void context_spread(Context * context);
 void context_add_or_update_from_network_frame(const ContextBis & context);

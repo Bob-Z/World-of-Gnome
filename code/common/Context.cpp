@@ -46,9 +46,9 @@ Context * context_list_start = nullptr;
 /*****************************************************************************/
 Context::Context() :
 		m_mutex(nullptr), m_userName(), m_connected(false), m_inGame(false), m_npc(true), m_characterName(), m_map(), m_previousMap(), m_mapChanged(false), m_tileX(
-				0), m_tileY(0), m_previousTileX(0), m_previousTileY(0), m_positionChanged(false), m_orientation(0), m_direction(0), m_animationTick(0), m_type(), m_id(), m_socket(), m_socket_data(), m_send_mutex(
-				nullptr), m_hostname(nullptr), m_render(nullptr), m_window(nullptr), m_selection(), m_lua_VM(nullptr), m_condition(nullptr), m_condition_mutex(
-				nullptr), m_next_execution_time(0), m_previous(nullptr), m_next(nullptr)
+				0), m_tileY(0), m_previousTileX(0), m_previousTileY(0), m_positionChanged(false), m_orientation(0), m_direction(0), m_animationTick(0), m_type(), m_id(), m_selection(), m_socket(), m_socket_data(), m_send_mutex(
+				nullptr), m_hostname(nullptr), m_render(nullptr), m_window(nullptr), m_lua_VM(nullptr), m_condition(nullptr), m_condition_mutex(nullptr), m_next_execution_time(
+				0), m_previous(nullptr), m_next(nullptr)
 {
 	m_mutex = SDL_CreateMutex();
 }
@@ -200,9 +200,9 @@ void context_free(Context * context)
 	ctx = context_list_start;
 	while (ctx != nullptr)
 	{
-		if (context->getId() == ctx->m_selection.getId())
+		if (context->getId() == ctx->getSelectionContextId())
 		{
-			ctx->m_selection.setId("");
+			ctx->setSelectionContextId("");
 		}
 		ctx = ctx->m_next;
 	}
@@ -311,89 +311,6 @@ TCPsocket context_get_socket_data(Context * context)
 	context_unlock_list();
 
 	return socket;
-}
-
-/**************************************
- * return RET_NOK if context has already the same values
- **************************************/
-ret_code_t context_set_selected_character(Context * context, const char * id)
-{
-	context_lock_list();
-
-	if ((context != nullptr) && (context->m_selection.getId() != ""))
-	{
-		if (strcmp(context->m_selection.getId().c_str(), id) == 0)
-		{
-			context_unlock_list();
-			return RET_NOK;
-		}
-		context->m_selection.setId(std::string(id));
-	}
-
-	context_unlock_list();
-	return RET_OK;
-}
-
-/**************************************
- * return RET_NOK if context has already the same values
- **************************************/
-ret_code_t context_set_selected_tile(Context * context, const char * map, int x, int y)
-{
-	context_lock_list();
-
-	if (!strcmp(context->m_selection.getMap().c_str(), map))
-	{
-		if ((x == context->m_selection.getMapCoordTx()) && (y == context->m_selection.getMapCoordTy()))
-		{
-			context_unlock_list();
-			return RET_NOK;
-		}
-	}
-
-	context->m_selection.setMap(std::string(map));
-	context->m_selection.setMapCoordTx(x);
-	context->m_selection.setMapCoordTy(y);
-
-	context_unlock_list();
-	return RET_OK;
-}
-
-/**************************************
- * return RET_NOK if context has already the same values
- **************************************/
-ret_code_t context_set_selected_equipment(Context * context, const char * id)
-{
-	context_lock_list();
-
-	if (strcmp(context->m_selection.getEquipment().c_str(), id) == 0)
-	{
-		context_unlock_list();
-		return RET_NOK;
-	}
-
-	context->m_selection.setEquipment(id);
-
-	context_unlock_list();
-	return RET_OK;
-}
-
-/**************************************
- * return RET_NOK if context has already the same values
- **************************************/
-ret_code_t context_set_selected_item(Context * context, const char * id)
-{
-	context_lock_list();
-
-	if (strcmp(context->m_selection.getInventory().c_str(), id) == 0)
-	{
-		context_unlock_list();
-		return RET_NOK;
-	}
-
-	context->m_selection.setInventory(id);
-
-	context_unlock_list();
-	return RET_OK;
 }
 
 /**************************************
@@ -566,7 +483,7 @@ void context_add_or_update_from_network_frame(const ContextBis & context)
 			if (context.isInGame() == true)
 			{
 				wlog(LOGDEVELOPER, "Updating context %s / %s", context.getUserName().c_str(), context.getCharacterName().c_str());
-				// do not call context_set_* function since we already have the lock
+
 				ctx->setMap(context.getMap());
 
 				ctx->setNpc(context.isNpc());
@@ -576,7 +493,7 @@ void context_add_or_update_from_network_frame(const ContextBis & context)
 
 				ctx->setType(context.getType());
 
-				ctx->m_selection = context.getSelection();
+				ctx->setSelection(context.getSelection());
 			}
 
 			if (context.isConnected() == false)
@@ -605,10 +522,10 @@ void context_add_or_update_from_network_frame(const ContextBis & context)
 	ctx->setId(context.getId());
 	ctx->setConnected(context.isConnected());
 	ctx->setInGame(context.isInGame());
-	context_set_selected_character(ctx, context.getSelection().getId().c_str());
-	context_set_selected_tile(ctx, context.getSelection().getMap().c_str(), context.getSelection().getMapCoordTx(), context.getSelection().getMapCoordTy());
-	context_set_selected_equipment(ctx, context.getSelection().getEquipment().c_str());
-	context_set_selected_item(ctx, context.getSelection().getInventory().c_str());
+	ctx->setSelectionContextId(context.getSelection().getContextId());
+	ctx->setSelectionTile(context.getSelection().getMap(), context.getSelection().getMapTx(), context.getSelection().getMapTy());
+	ctx->setSelectionEquipment(context.getSelection().getEquipment());
+	ctx->setSelectionInventory(context.getSelection().getInventory());
 }
 
 /**************************************
@@ -904,4 +821,99 @@ void Context::setId(const std::string& id)
 	SdlLocking lock(m_mutex);
 
 	m_id = id;
+}
+
+/*****************************************************************************/
+const Selection& Context::getSelection() const
+{
+	SdlLocking lock(m_mutex);
+
+	return m_selection;
+}
+
+/*****************************************************************************/
+void Context::setSelection(const Selection& selection)
+{
+	SdlLocking lock(m_mutex);
+
+	m_selection = selection;
+}
+
+/*****************************************************************************/
+void Context::setSelectionContextId(const std::string & id)
+{
+	SdlLocking lock(m_mutex);
+
+	m_selection.setContextId(id);
+}
+
+/*****************************************************************************/
+const std::string& Context::getSelectionContextId() const
+{
+	SdlLocking lock(m_mutex);
+
+	return m_selection.getContextId();
+}
+
+/*****************************************************************************/
+void Context::setSelectionTile(const std::string & map, int tx, int ty)
+{
+	SdlLocking lock(m_mutex);
+
+	m_selection.setMap(map);
+	m_selection.setMapTx(tx);
+	m_selection.setMapTy(ty);
+}
+
+/*****************************************************************************/
+const std::string& Context::getSelectionMap() const
+{
+	SdlLocking lock(m_mutex);
+
+	return m_selection.getMap();
+}
+
+/*****************************************************************************/
+int Context::getSelectionMapTx() const
+{
+	SdlLocking lock(m_mutex);
+	return m_selection.getMapTx();
+}
+
+/*****************************************************************************/
+int Context::getSelectionMapTy() const
+{
+	SdlLocking lock(m_mutex);
+	return m_selection.getMapTy();
+}
+
+/*****************************************************************************/
+void Context::setSelectionEquipment(const std::string & equipment)
+{
+	SdlLocking lock(m_mutex);
+	m_selection.setEquipment(equipment);
+}
+
+/*****************************************************************************/
+const std::string & Context::getSelectionEquipment() const
+{
+	SdlLocking lock(m_mutex);
+
+	return m_selection.getEquipment();
+}
+
+/*****************************************************************************/
+void Context::setSelectionInventory(const std::string & inventory)
+{
+	SdlLocking lock(m_mutex);
+
+	m_selection.setInventory(inventory);
+}
+
+/*****************************************************************************/
+const std::string & Context::getSelectionInventory() const
+{
+	SdlLocking lock(m_mutex);
+
+	return m_selection.getInventory();
 }

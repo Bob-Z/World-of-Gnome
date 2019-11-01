@@ -143,11 +143,11 @@ static ret_code_t manage_context(Context * context, const pb::Context& incoming_
 
 	Selection selection;
 	selection.setEquipment(incoming_context.selection().equipment());
-	selection.setId(incoming_context.selection().id());
+	selection.setContextId(incoming_context.selection().id());
 	selection.setInventory(incoming_context.selection().inventory());
 	selection.setMap(incoming_context.selection().map());
-	selection.setMapCoordTx(incoming_context.selection().map_coord_tx());
-	selection.setMapCoordTy(incoming_context.selection().map_coord_ty());
+	selection.setMapTx(incoming_context.selection().map_coord_tx());
+	selection.setMapTy(incoming_context.selection().map_coord_ty());
 
 	received_context.setSelection(selection);
 

@@ -81,7 +81,7 @@ int inventory_add(const char * ctx_id, const char * item_id)
 	// Make sure the CHARACTER_KEY_INVENTORY list exists
 	entry_list_create(CHARACTER_TABLE, context->getId().c_str(), CHARACTER_KEY_INVENTORY, nullptr);
 
-	mytemplate = item_is_resource(item_id);
+	mytemplate = item_is_resource(std::string(item_id));
 	if (mytemplate == nullptr)
 	{
 		if (entry_add_to_list(CHARACTER_TABLE, context->getId().c_str(), item_id, CHARACTER_KEY_INVENTORY, nullptr) == RET_NOK)
@@ -112,8 +112,8 @@ int inventory_add(const char * ctx_id, const char * item_id)
 						free(current_template);
 						free(mytemplate);
 						add_count += current_count;
-						resource_set_quantity(context, name_list[index], add_count);
-						item_destroy(item_id);
+						resource_set_quantity(context, std::string(name_list[index]), add_count);
+						item_destroy(std::string(item_id));
 						network_send_table_file(context, ITEM_TABLE, name_list[index]);
 						return 0;
 					}

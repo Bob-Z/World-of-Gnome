@@ -596,7 +596,7 @@ static void compose_equipment(Context * ctx, item_t * item_list)
 			free(equipped_text);
 #endif
 			// Get its icon
-			mytemplate = item_is_resource(equipped_name);
+			mytemplate = item_is_resource(std::string(equipped_name));
 
 			if (mytemplate == nullptr)
 			{
@@ -634,21 +634,18 @@ static void compose_equipment(Context * ctx, item_t * item_list)
 		}
 
 		// Draw selection cursor
-		if (ctx->m_selection.getEquipment() != "")
+		if (option_get().cursor_equipment)
 		{
-			if (option_get().cursor_equipment)
+			if (ctx->getSelectionEquipment() == std::string(slot_list[index]))
 			{
-				if (strcmp(ctx->m_selection.getEquipment().c_str(), slot_list[index]) == 0)
-				{
-					anim3 = imageDB_get_anim(ctx, option_get().cursor_equipment);
+				anim3 = imageDB_get_anim(ctx, option_get().cursor_equipment);
 
-					item = item_list_add(&item_list);
+				item = item_list_add(&item_list);
 
-					// Center on icon
-					item_set_overlay(item, 1);
-					item_set_pos(item, x - (anim3->w - anim->w) / 2, y - (anim3->h - anim->w) / 2);
-					item_set_anim(item, anim3, 0);
-				}
+				// Center on icon
+				item_set_overlay(item, 1);
+				item_set_pos(item, x - (anim3->w - anim->w) / 2, y - (anim3->h - anim->w) / 2);
+				item_set_anim(item, anim3, 0);
 			}
 		}
 
@@ -666,22 +663,24 @@ static void compose_equipment(Context * ctx, item_t * item_list)
 	deep_free(slot_list);
 
 	// Draw selected item
-	if (ctx->m_selection.getInventory() != "")
+	const std::string & inventory = ctx->getSelectionInventory();
+
+	if (inventory != "")
 	{
-		mytemplate = item_is_resource(ctx->m_selection.getInventory().c_str());
+		mytemplate = item_is_resource(inventory);
 
 		if (mytemplate == nullptr)
 		{
-			if (entry_read_string(ITEM_TABLE, ctx->m_selection.getInventory().c_str(), &inventory_icon_name, ITEM_ICON, nullptr) == RET_NOK)
+			if (entry_read_string(ITEM_TABLE, inventory.c_str(), &inventory_icon_name, ITEM_ICON, nullptr) == RET_NOK)
 			{
-				werr(LOGDESIGNER, "Can't read item %s icon name", ctx->m_selection.getInventory().c_str());
+				werr(LOGDESIGNER, "Can't read item %s icon name", inventory.c_str());
 			}
 		}
 		else
 		{
 			if (entry_read_string(ITEM_TEMPLATE_TABLE, mytemplate, &inventory_icon_name, ITEM_ICON, nullptr) == RET_NOK)
 			{
-				werr(LOGDESIGNER, "Can't read item %s icon name (template: %s)", ctx->m_selection.getInventory().c_str(), mytemplate);
+				werr(LOGDESIGNER, "Can't read item %s icon name (template: %s)", inventory.c_str(), mytemplate);
 			}
 			free(mytemplate);
 		}
@@ -919,7 +918,7 @@ static void compose_inventory(Context * ctx, item_t * item_list)
 
 	while (inventory_list[i] != nullptr)
 	{
-		mytemplate = item_is_resource(inventory_list[i]);
+		mytemplate = item_is_resource(std::string(inventory_list[i]));
 
 		if (mytemplate == nullptr)
 		{
@@ -993,7 +992,7 @@ static void compose_inventory(Context * ctx, item_t * item_list)
 
 		}
 
-		quantity = resource_get_quantity(inventory_list[i]);
+		quantity = resource_get_quantity(std::string(inventory_list[i]));
 
 		if (quantity > 0)
 		{
@@ -1040,7 +1039,9 @@ static void compose_inventory_select(Context * ctx, item_t * item_list)
 	anim_t * icon_anim = nullptr;
 	char * mytemplate = nullptr;
 
-	if (ctx->m_selection.getInventory() == "")
+	const std::string & inventory = ctx->getSelectionInventory();
+
+	if (inventory == "")
 	{
 		return;
 	}
@@ -1068,9 +1069,9 @@ static void compose_inventory_select(Context * ctx, item_t * item_list)
 
 	i = 0;
 	x = 0;
-	while (inventory_list[i] && strcmp(inventory_list[i], ctx->m_selection.getInventory().c_str()))
+	while (inventory_list[i] && strcmp(inventory_list[i], inventory.c_str()))
 	{
-		mytemplate = item_is_resource(inventory_list[i]);
+		mytemplate = item_is_resource(std::string(inventory_list[i]));
 
 		if (mytemplate == nullptr)
 		{

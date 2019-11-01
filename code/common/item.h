@@ -27,11 +27,11 @@
 
 std::pair<bool, std::string> item_create_empty();
 std::pair<bool, std::string> item_create_from_template(const std::string & my_template);
-ret_code_t item_destroy(const char * item_id);
+ret_code_t item_destroy(const std::string & item_id);
 std::pair<bool, std::string> resource_new(const std::string & my_template, int quantity);
-char * item_is_resource(const char * item_id);
-int resource_get_quantity(const char * item_id);
-int resource_set_quantity(Context * context, const char * item_id, int quantity);
-char * item_get_name(const char * item_id);
+char * item_is_resource(const std::string & item_id);
+int resource_get_quantity(const std::string & item_id);
+int resource_set_quantity(Context * context, const std::string & item_id, int quantity);
+char * item_get_name(const std::string & item_id);
 
 #endif

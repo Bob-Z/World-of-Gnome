@@ -22,7 +22,7 @@
 
 /******************************************************************************/
 Selection::Selection() :
-		m_id(), m_map_coord_tx(-1), m_map_coord_ty(-1), m_map(), m_inventory(), m_equipment()
+		m_contextId(), m_mapTx(-1), m_mapTy(-1), m_map(), m_inventory(), m_equipment()
 {
 }
 
@@ -32,7 +32,7 @@ Selection::~Selection()
 }
 
 /******************************************************************************/
-std::string Selection::getEquipment() const
+const std::string & Selection::getEquipment() const
 {
 	return m_equipment;
 }
@@ -44,19 +44,19 @@ void Selection::setEquipment(std::string equipment)
 }
 
 /******************************************************************************/
-std::string Selection::getId() const
+const std::string & Selection::getContextId() const
 {
-	return m_id;
+	return m_contextId;
 }
 
 /******************************************************************************/
-void Selection::setId(std::string id)
+void Selection::setContextId(std::string id)
 {
-	m_id = id;
+	m_contextId = id;
 }
 
 /******************************************************************************/
-std::string Selection::getInventory() const
+const std::string & Selection::getInventory() const
 {
 	return m_inventory;
 }
@@ -68,7 +68,7 @@ void Selection::setInventory(std::string inventory)
 }
 
 /******************************************************************************/
-std::string Selection::getMap() const
+const std::string & Selection::getMap() const
 {
 	return m_map;
 }
@@ -80,25 +80,25 @@ void Selection::setMap(std::string map)
 }
 
 /******************************************************************************/
-int Selection::getMapCoordTx() const
+int Selection::getMapTx() const
 {
-	return m_map_coord_tx;
+	return m_mapTx;
 }
 
 /******************************************************************************/
-void Selection::setMapCoordTx(int mapCoordTx)
+void Selection::setMapTx(int mapCoordTx)
 {
-	m_map_coord_tx = mapCoordTx;
+	m_mapTx = mapCoordTx;
 }
 
 /******************************************************************************/
-int Selection::getMapCoordTy() const
+int Selection::getMapTy() const
 {
-	return m_map_coord_ty;
+	return m_mapTy;
 }
 
 /******************************************************************************/
-void Selection::setMapCoordTy(int mapCoordTy)
+void Selection::setMapTy(int mapCoordTy)
 {
-	m_map_coord_ty = mapCoordTy;
+	m_mapTy = mapCoordTy;
 }

@@ -495,12 +495,12 @@ void network_send_context_to_context(Context * dest_ctx, Context * src_ctx)
 	message.mutable_context()->set_tile_y(src_ctx->getTileY());
 	message.mutable_context()->set_type(src_ctx->getType());
 	message.mutable_context()->set_id(src_ctx->getId());
-	message.mutable_context()->mutable_selection()->set_id(src_ctx->m_selection.getId());
-	message.mutable_context()->mutable_selection()->set_map(src_ctx->m_selection.getMap());
-	message.mutable_context()->mutable_selection()->set_map_coord_tx(src_ctx->m_selection.getMapCoordTx());
-	message.mutable_context()->mutable_selection()->set_map_coord_ty(src_ctx->m_selection.getMapCoordTy());
-	message.mutable_context()->mutable_selection()->set_equipment(src_ctx->m_selection.getEquipment());
-	message.mutable_context()->mutable_selection()->set_inventory(src_ctx->m_selection.getInventory());
+	message.mutable_context()->mutable_selection()->set_id(src_ctx->getSelectionContextId());
+	message.mutable_context()->mutable_selection()->set_map(src_ctx->getSelectionMap());
+	message.mutable_context()->mutable_selection()->set_map_coord_tx(src_ctx->getSelectionMapTx());
+	message.mutable_context()->mutable_selection()->set_map_coord_ty(src_ctx->getSelectionMapTy());
+	message.mutable_context()->mutable_selection()->set_equipment(src_ctx->getSelectionEquipment());
+	message.mutable_context()->mutable_selection()->set_inventory(src_ctx->getSelectionInventory());
 
 	std::string serialized_data = message.SerializeAsString();
 

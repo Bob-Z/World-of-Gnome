@@ -563,7 +563,7 @@ static void compose_item(int layer_index)
 			continue;
 		}
 
-		mytemplate = item_is_resource(item_id[i]);
+		mytemplate = item_is_resource(std::string(item_id[i]));
 
 		if (mytemplate == nullptr)
 		{
@@ -622,7 +622,7 @@ static void compose_item(int layer_index)
 		item_set_zoom_y(item, default_layer->map_zoom);
 		if (font)
 		{
-			quantity = resource_get_quantity(item_id[i]);
+			quantity = resource_get_quantity(std::string(item_id[i]));
 			sprintf(buf, "%d", quantity);
 			item_set_string(item, buf);
 			item_set_font(item, font);
@@ -883,26 +883,23 @@ static void compose_select()
 	// Tile selection
 	if (option_get().cursor_tile)
 	{
-		if (ctx->m_selection.getMap() != "")
+		if (ctx->getSelectionMap() == ctx->getMap())
 		{
-			if (ctx->m_selection.getMap() == ctx->getMap())
+			pos_tx = ctx->getSelectionMapTx();
+			pos_ty = ctx->getSelectionMapTy();
+
+			if (pos_tx != -1 && pos_ty != -1)
 			{
-				pos_tx = ctx->m_selection.getMapCoordTx();
-				pos_ty = ctx->m_selection.getMapCoordTy();
+				anim = imageDB_get_anim(ctx, option_get().cursor_tile);
 
-				if (pos_tx != -1 && pos_ty != -1)
-				{
-					anim = imageDB_get_anim(ctx, option_get().cursor_tile);
+				item = item_list_add(&item_list);
 
-					item = item_list_add(&item_list);
+				// get pixel coordinate from tile coordinate
+				x = map_t2p_x(pos_tx, pos_ty, default_layer);
+				y = map_t2p_y(pos_tx, pos_ty, default_layer);
 
-					// get pixel coordinate from tile coordinate
-					x = map_t2p_x(pos_tx, pos_ty, default_layer);
-					y = map_t2p_y(pos_tx, pos_ty, default_layer);
-
-					item_set_pos(item, x, y);
-					item_set_anim(item, anim, 0);
-				}
+				item_set_pos(item, x, y);
+				item_set_anim(item, anim, 0);
 			}
 		}
 	}
@@ -910,19 +907,16 @@ static void compose_select()
 	// Sprite selection
 	if (option_get().cursor_character_draw_script)
 	{
-		if (ctx->m_selection.getId() != "")
+		Context * selected_context = nullptr;
+		selected_context = context_find(ctx->getSelectionContextId());
+		if (selected_context == nullptr)
 		{
-			Context * selected_context = nullptr;
-			selected_context = context_find(ctx->m_selection.getId().c_str());
-			if (selected_context == nullptr)
-			{
-				return;
-			}
-
-			item = item_list_add(&item_list);
-			item->user_ptr = selected_context;
-			item->user1_ptr = option_get().cursor_character_draw_script;
+			return;
 		}
+
+		item = item_list_add(&item_list);
+		item->user_ptr = selected_context;
+		item->user1_ptr = option_get().cursor_character_draw_script;
 	}
 }
 

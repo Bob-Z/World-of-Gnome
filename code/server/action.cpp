@@ -125,7 +125,7 @@ static int l_character_get_selected_map_tile_x(lua_State* L)
 		werr(LOGDESIGNER, "Cannot find context with ID %s", id);
 		return 0;  // number of results
 	}
-	lua_pushnumber(L, target->m_selection.getMapCoordTx());
+	lua_pushnumber(L, target->getSelectionMapTx());
 	return 1;  // number of results
 }
 
@@ -146,7 +146,7 @@ static int l_character_get_selected_map_tile_y(lua_State* L)
 		werr(LOGDESIGNER, "Cannot find context with ID %s", id);
 		return 0;  // number of results
 	}
-	lua_pushnumber(L, target->m_selection.getMapCoordTy());
+	lua_pushnumber(L, target->getSelectionMapTy());
 	return 1;  // number of results
 }
 
@@ -167,7 +167,7 @@ static int l_character_get_selected_map(lua_State* L)
 		werr(LOGDESIGNER, "Cannot find context with ID %s", id);
 		return 0;  // number of results
 	}
-	lua_pushstring(L, target->m_selection.getMap().c_str());
+	lua_pushstring(L, target->getSelectionMap().c_str());
 	return 1;  // number of results
 }
 
@@ -184,13 +184,13 @@ static int l_character_set_selected_tile(lua_State* L)
 	Context * target;
 	const char * id;
 	const char * selected_map;
-	int x;
-	int y;
+	int tx;
+	int ty;
 
 	id = luaL_checkstring(L, -4);
 	selected_map = luaL_checkstring(L, -3);
-	x = luaL_checkint(L, -2);
-	y = luaL_checkint(L, -1);
+	tx = luaL_checkint(L, -2);
+	ty = luaL_checkint(L, -1);
 
 	target = context_find(id);
 	if (target == nullptr)
@@ -199,10 +199,9 @@ static int l_character_set_selected_tile(lua_State* L)
 		return 0;  // number of results
 	}
 
-	if (context_set_selected_tile(target, selected_map, x, y) == RET_OK)
-	{
-		network_send_context_to_context(target, target);
-	}
+	target->setSelectionTile(std::string(selected_map), tx, ty);
+
+	network_send_context_to_context(target, target);
 
 	return 0;  // number of results
 }
@@ -224,7 +223,7 @@ static int l_character_get_selected_inventory_id(lua_State* L)
 		werr(LOGDESIGNER, "Cannot find context with ID %s", id);
 		return 0;  // number of results
 	}
-	lua_pushstring(L, target->m_selection.getInventory().c_str());
+	lua_pushstring(L, target->getSelectionInventory().c_str());
 	return 1;  // number of results
 }
 
@@ -250,10 +249,9 @@ static int l_character_set_selected_inventory_id(lua_State* L)
 		return 0;  // number of results
 	}
 
-	if (context_set_selected_item(target, selected_item) == RET_OK)
-	{
-		network_send_context_to_context(target, target);
-	}
+	target->setSelectionInventory(selected_item);
+
+	network_send_context_to_context(target, target);
 
 	return 0;  // number of results
 }
@@ -275,7 +273,7 @@ static int l_character_get_selected_equipment_slot(lua_State* L)
 		werr(LOGDESIGNER, "Cannot find context with ID %s", id);
 		return 0;  // number of results
 	}
-	lua_pushstring(L, target->m_selection.getEquipment().c_str());
+	lua_pushstring(L, target->getSelectionEquipment().c_str());
 	return 1;  // number of results
 }
 
@@ -301,10 +299,9 @@ static int l_character_set_selected_equipment_slot(lua_State* L)
 		return 0;  // number of results
 	}
 
-	if (context_set_selected_equipment(target, selected_equipment) == RET_OK)
-	{
-		network_send_context_to_context(target, target);
-	}
+	target->setSelectionEquipment(selected_equipment);
+
+	network_send_context_to_context(target, target);
 
 	return 0;  // number of results
 }
@@ -326,7 +323,7 @@ static int l_character_get_selected_character_id(lua_State* L)
 		werr(LOGDESIGNER, "Cannot find context with ID %s", id);
 		return 0;  // number of results
 	}
-	lua_pushstring(L, target->m_selection.getId().c_str());
+	lua_pushstring(L, target->getSelectionContextId().c_str());
 	return 1;  // number of results
 }
 
@@ -352,10 +349,9 @@ static int l_character_set_selected_character_id(lua_State* L)
 		return 0;  // number of results
 	}
 
-	if (context_set_selected_character(target, selected_id) == RET_OK)
-	{
-		network_send_context_to_context(target, target);
-	}
+	target->setSelectionContextId(selected_id);
+
+	network_send_context_to_context(target, target);
 
 	return 0;  // number of results
 }
@@ -1709,7 +1705,7 @@ static int l_resource_get_quantity(lua_State* L)
 	int res;
 
 	resource = luaL_checkstring(L, -1);
-	res = resource_get_quantity(resource);
+	res = resource_get_quantity(std::string(resource));
 	lua_pushnumber(L, res);
 	return 1;  // number of results
 }
@@ -1736,7 +1732,7 @@ static int l_resource_set_quantity(lua_State* L)
 
 	resource = luaL_checkstring(L, -2);
 	quantity = luaL_checkint(L, -1);
-	res = resource_set_quantity(context, resource, quantity);
+	res = resource_set_quantity(context, std::string(resource), quantity);
 	lua_pushnumber(L, res);
 	return 1;  // number of results
 }
@@ -1757,7 +1753,7 @@ static int l_item_destroy(lua_State* L)
 	ret_code_t res;
 
 	item = luaL_checkstring(L, -1);
-	res = item_destroy(item);
+	res = item_destroy(std::string(item));
 	lua_pushnumber(L, res);
 	return 1;  // number of results
 }
