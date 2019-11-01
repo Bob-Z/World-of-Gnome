@@ -252,10 +252,10 @@ item_t * scr_select_compose(Context * context)
 	entry_read_string(nullptr, CLIENT_CONF_FILE, &icon_add_image_name, CLIENT_KEY_SELECT_CHARACTER_ADD_ICON, nullptr);
 	if (icon_add_image_name != nullptr)
 	{
-		int sw;
-		int sh;
+		int sw = 0;
+		int sh = 0;
 
-		SDL_GetRendererOutputSize(context->m_render, &sw, &sh);
+		sdl_get_output_size(&sw, &sh);
 
 		anim_t *anim = imageDB_get_anim(context, icon_add_image_name);
 		int x;

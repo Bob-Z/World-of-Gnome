@@ -27,38 +27,16 @@
 #include "log.h"
 #include "syntax.h"
 #include "mutex.h"
+#include "sdl.h"
 #include <stdlib.h>
 #include <SDL_mutex.h>
 #include <SDL_pixels.h>
-#include <SDL_render.h>
 #include <SDL_stdinc.h>
 #include <string>
 
 static list_t * image_list = nullptr;
 
-static anim_t * def_anim = nullptr;
-
-/**************************
- **************************/
-static anim_t * default_anim(Context * ctx)
-{
-	if (def_anim == nullptr)
-	{
-		def_anim = (anim_t*) malloc(sizeof(anim_t));
-
-		def_anim->num_frame = 1;
-		def_anim->tex = (SDL_Texture**) malloc(sizeof(SDL_Texture*));
-		def_anim->tex[0] = SDL_CreateTexture(ctx->m_render, SDL_PIXELFORMAT_ABGR8888, SDL_TEXTUREACCESS_STATIC, 1, 1);
-		def_anim->w = 1;
-		def_anim->h = 1;
-		def_anim->delay = (Uint32*) malloc(sizeof(Uint32));
-		;
-		def_anim->delay[0] = 0;
-		def_anim->total_duration = 0;
-	}
-
-	return def_anim;
-}
+static anim_t * def_anim = sdl_get_minimal_anim();
 
 /**************************
  **************************/
@@ -66,7 +44,7 @@ static anim_t * image_load(Context * ctx, const std::string & file_name)
 {
 	const std::string file_path = base_directory + "/" + file_name;
 
-	anim_t * anim = anim_load(ctx->m_render, file_path.c_str());
+	anim_t * anim = anim_load(file_path.c_str());
 
 	return anim;
 }
@@ -81,12 +59,12 @@ anim_t * imageDB_get_anim(Context * context, const char * image_name)
 
 	if (image_name == nullptr)
 	{
-		return default_anim(context);
+		return def_anim;
 	}
 
 	if (image_name[0] == 0)
 	{
-		return default_anim(context);
+		return def_anim;
 	}
 
 	const std::string file_name = std::string(IMAGE_TABLE) + "/" + std::string(image_name);
@@ -124,7 +102,7 @@ anim_t * imageDB_get_anim(Context * context, const char * image_name)
 	file_unlock(file_name.c_str());
 	SDL_UnlockMutex(imageDB_mutex);
 
-	return default_anim(context);
+	return def_anim;
 }
 
 /******************************************************
@@ -169,12 +147,12 @@ void image_DB_remove(const char * filename)
 	anim_t * old_anim = nullptr;
 
 	wlog(LOGDEVELOPER, "Image remove: %s", filename);
-	/* Clean-up old anim if any */
+	// Clean-up old anim if any
 	SDL_LockMutex(imageDB_mutex);
 	old_anim = (anim_t*) list_find(image_list, filename);
-	/* TODO Fix memory leak here */
-	/* If we free the anim, it may still be used by the screen renderer and cause a crash */
-	/* Try to postpone deletion ?? */
+	/* TODO Fix memory leak here
+	 If we free the anim, it may still be used by the screen renderer and cause a crash
+	 Try to postpone deletion ?? */
 	if (old_anim)
 	{
 //		si_anim_free(old_anim);

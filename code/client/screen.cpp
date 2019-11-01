@@ -85,7 +85,7 @@ static void compose_scr(Context * context)
 {
 	static TTF_Font * font = nullptr;
 
-	SDL_SetRenderDrawColor(context->m_render, 0, 0, 0, 255);
+	sdl_set_background_color(0, 0, 0, 255);
 
 	switch (g_Camera.getScreen())
 	{
@@ -205,7 +205,7 @@ static void execute_draw_script(Context * p_pCtx, const char * p_pScriptName, Co
 		file_request_from_network(p_pCtx, SCRIPT_TABLE, p_pScriptName);
 	}
 
-	sdl_blit_item(p_pCtx->m_render, &l_TempItem);
+	sdl_blit_item(&l_TempItem);
 }
 
 /************************************************
@@ -229,16 +229,16 @@ void screen_display(Context * ctx)
 
 		while (SDL_PollEvent(&event))
 		{
-			g_Compose |= sdl_screen_manager(ctx->m_window, ctx->m_render, &event);
-			g_Compose |= sdl_mouse_manager(ctx->m_render, &event, item_list);
+			g_Compose |= sdl_screen_manager(&event);
+			g_Compose |= sdl_mouse_manager(&event, item_list);
 			g_Compose |= sdl_keyboard_manager(&event);
 		}
 
-		sdl_mouse_position_manager(ctx->m_render, item_list);
+		sdl_mouse_position_manager(item_list);
 
-		SDL_RenderClear(ctx->m_render);
+		sdl_clear();
 
-//		sdl_blit_item_list(ctx->render,item_list);
+//		sdl_blit_item_list(item_list);
 		item_t * item;
 
 		item = item_list;
@@ -271,13 +271,13 @@ void screen_display(Context * ctx)
 				}
 			}
 
-			sdl_blit_item(ctx->m_render, item);
+			sdl_blit_item(item);
 			item = item->next;
 		}
 
 		calculate_camera_position(ctx);
 
-		sdl_blit_to_screen(ctx->m_render);
+		sdl_blit_to_screen();
 
 		sdl_loop_manager();
 	}

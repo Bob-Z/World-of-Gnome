@@ -124,9 +124,6 @@ public:
 	SDL_mutex* m_send_mutex; // Asynchronous network send
 	char * m_hostname;
 
-	SDL_Renderer * m_render;
-	SDL_Window * m_window;
-
 	lua_State* m_lua_VM;	// LUA state
 	SDL_cond* m_condition;	// async condition for NPC
 	SDL_mutex* m_condition_mutex;	// mutex for async condition for NPC

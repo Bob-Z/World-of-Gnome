@@ -999,7 +999,7 @@ item_t * scr_play_compose(Context * ctx)
 	entry_read_int(MAP_TABLE, ctx->getMap().c_str(), &bg_red, MAP_KEY_BG_RED, nullptr);
 	entry_read_int(MAP_TABLE, ctx->getMap().c_str(), &bg_blue, MAP_KEY_BG_BLUE, nullptr);
 	entry_read_int(MAP_TABLE, ctx->getMap().c_str(), &bg_green, MAP_KEY_BG_GREEN, nullptr);
-	SDL_SetRenderDrawColor(ctx->m_render, bg_red, bg_blue, bg_green, 255);
+	sdl_set_background_color(bg_red, bg_blue, bg_green, 255);
 
 	old_sfx = sfx;
 	sfx = nullptr;

@@ -97,8 +97,8 @@ static void draw_background(Context * ctx, item_t * item_list)
 	{
 		si_anim_free(bg_anim);
 	}
-	SDL_GetRendererOutputSize(ctx->m_render, &sw, &sh);
-	bg_anim = anim_create_color(ctx->m_render, sw, sh, BACKGROUND_COLOR);
+	sdl_get_output_size(&sw, &sh);
+	bg_anim = anim_create_color(sw, sh, BACKGROUND_COLOR);
 	item = item_list_add(&item_list);
 	item_set_pos(item, 0, 0);
 	item_set_anim(item, bg_anim, 0);
@@ -361,7 +361,7 @@ static void compose_action(Context * ctx, item_t * item_list)
 	int x = 0;
 	int i;
 
-	SDL_GetRendererOutputSize(ctx->m_render, &sw, &sh);
+	sdl_get_output_size(&sw, &sh);
 
 	action_bar_height = 0;
 
@@ -529,7 +529,7 @@ static void compose_equipment(Context * ctx, item_t * item_list)
 	int max_h;
 	int max_w;
 
-	SDL_GetRendererOutputSize(ctx->m_render, &sw, &sh);
+	sdl_get_output_size(&sw, &sh);
 
 	entry_get_group_list(CHARACTER_TABLE, ctx->getId().c_str(), &slot_list, EQUIPMENT_GROUP, nullptr);
 
@@ -711,7 +711,7 @@ static void compose_equipment(Context * ctx, item_t * item_list)
 
 		if (inventory_icon == nullptr)
 		{
-			inventory_icon = anim_create_color(ctx->m_render, max_w, max_h, 0x7f7f7f7f);
+			inventory_icon = anim_create_color(max_w, max_h, 0x7f7f7f7f);
 		}
 
 		item = item_list_add(&item_list);
@@ -754,7 +754,7 @@ static void compose_text(Context * ctx, item_t * item_list)
 
 	font = font_get(ctx, TEXT_FONT, TEXT_FONT_SIZE);
 
-	SDL_GetRendererOutputSize(ctx->m_render, &sw, &sh);
+	sdl_get_output_size(&sw, &sh);
 	current_y = sh - action_bar_height;
 
 	// Draw edit box

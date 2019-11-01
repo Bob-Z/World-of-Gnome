@@ -47,8 +47,8 @@ Context * context_list_start = nullptr;
 Context::Context() :
 		m_mutex(nullptr), m_userName(), m_connected(false), m_inGame(false), m_npc(true), m_characterName(), m_map(), m_previousMap(), m_mapChanged(false), m_tileX(
 				0), m_tileY(0), m_previousTileX(0), m_previousTileY(0), m_positionChanged(false), m_orientation(0), m_direction(0), m_animationTick(0), m_type(), m_id(), m_selection(), m_nextExecutionTick(
-				0), m_socket(), m_socket_data(), m_send_mutex(nullptr), m_hostname(nullptr), m_render(nullptr), m_window(nullptr), m_lua_VM(nullptr), m_condition(
-				nullptr), m_condition_mutex(nullptr), m_previous(nullptr), m_next(nullptr)
+				0), m_socket(), m_socket_data(), m_send_mutex(nullptr), m_hostname(nullptr), m_lua_VM(nullptr), m_condition(nullptr), m_condition_mutex(
+				nullptr), m_previous(nullptr), m_next(nullptr)
 {
 	m_mutex = SDL_CreateMutex();
 }
@@ -89,9 +89,6 @@ void context_init(Context * context)
 	context->m_socket_data = 0;
 	context->m_hostname = nullptr;
 	context->m_send_mutex = SDL_CreateMutex();
-
-	context->m_render = nullptr;
-	context->m_window = nullptr;
 
 	context->m_lua_VM = nullptr;
 	context->m_condition = nullptr;
