@@ -279,13 +279,13 @@ std::pair<bool, std::string> character_create_from_template(Context * ctx, const
 
 /***********************************************************************
  ***********************************************************************/
-static void execute_aggro(Context * agressor, Context * target, char * script, int aggro_dist)
+static void execute_aggro(Context * agressor, const Context & target, char * script, int aggro_dist)
 {
 	int dist;
 	const char * param[] =
 	{ nullptr, nullptr, nullptr };
 
-	dist = context_distance(agressor, target);
+	dist = agressor->tileDistance(target);
 
 	if (dist <= aggro_dist)
 	{
@@ -296,7 +296,7 @@ static void execute_aggro(Context * agressor, Context * target, char * script, i
 		param[1] = "0";
 	}
 
-	param[0] = target->getId().c_str();
+	param[0] = target.getId().c_str();
 	param[2] = nullptr;
 	action_execute_script(agressor, script, param);
 
@@ -362,7 +362,7 @@ void character_update_aggro(Context * agressor)
 						target = target->m_next;
 						continue;
 					}
-					execute_aggro(agressor, target, aggro_script, aggro_dist);
+					execute_aggro(agressor, *target, aggro_script, aggro_dist);
 					target = target->m_next;
 				}
 				free(aggro_script);
@@ -416,7 +416,7 @@ void character_update_aggro(Context * agressor)
 			continue;
 		}
 
-		execute_aggro(npc, target, aggro_script, aggro_dist);
+		execute_aggro(npc, *target, aggro_script, aggro_dist);
 
 		free(aggro_script);
 

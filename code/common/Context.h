@@ -93,6 +93,8 @@ public:
 	Uint32 getNextExecutionTick() const;
 	void setNextExecutionTick(Uint32 nextExecutionTick);
 
+	int tileDistance(const Context & ctx) const;
+
 private:
 	SDL_mutex* m_mutex;
 	std::string m_userName;
@@ -154,7 +156,6 @@ Context * context_get_first();
 Context * context_get_player();
 ret_code_t context_write_to_file(Context * context);
 Context * context_find(const std::string & id);
-int context_distance(Context * ctx1, Context * ctx2);
 bool context_is_npc(Context * ctx);
 
 #endif

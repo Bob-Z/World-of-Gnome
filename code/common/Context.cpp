@@ -526,19 +526,21 @@ void context_add_or_update_from_network_frame(const Context & receivedCtx)
 }
 
 /**************************************
- Return the distance between two contexts
+ Return the distance between this context and the given context (in tile)
  **************************************/
-int context_distance(Context * ctx1, Context * ctx2)
+int Context::tileDistance(const Context & ctx) const
 {
-	int distx;
-	int disty;
+	int distx = 0;
+	int disty = 0;
 
-	distx = ctx1->getTileX() - ctx2->getTileX();
+	SdlLocking lock(m_mutex);
+
+	distx = m_tileX - ctx.getTileX();
 	if (distx < 0)
 	{
 		distx = -distx;
 	}
-	disty = ctx1->getTileY() - ctx2->getTileY();
+	disty = m_tileY - ctx.getTileY();
 	if (disty < 0)
 	{
 		disty = -disty;
