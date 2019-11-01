@@ -23,7 +23,6 @@
 #include <SDL_stdinc.h>
 #include "Selection.h"
 
-class ContextBis;
 struct lua_State;
 
 #ifdef __cplusplus
@@ -147,7 +146,7 @@ void context_new_VM(Context * context);
 
 ret_code_t context_update_from_file(Context * context);
 void context_spread(Context * context);
-void context_add_or_update_from_network_frame(const ContextBis & context);
+void context_add_or_update_from_network_frame(const Context & context);
 void context_lock_list();
 void context_unlock_list();
 Context * context_get_first();

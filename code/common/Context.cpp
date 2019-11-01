@@ -467,38 +467,36 @@ Context * context_find(const std::string & id)
 /**************************************
  Called from client
  **************************************/
-void context_add_or_update_from_network_frame(const ContextBis & context)
+void context_add_or_update_from_network_frame(const Context & receivedCtx)
 {
-	// search for this context
 	context_lock_list();
 	Context * ctx = context_list_start;
 
 	while (ctx != nullptr)
 	{
-		if (context.getId() == ctx->getId())
+		if (receivedCtx.getId() == ctx->getId())
 		{
-			ctx->setInGame(context.isInGame());
-			ctx->setConnected(context.isConnected());
+			ctx->setInGame(receivedCtx.isInGame());
+			ctx->setConnected(receivedCtx.isConnected());
 
-			if (context.isInGame() == true)
+			if (receivedCtx.isInGame() == true)
 			{
-				wlog(LOGDEVELOPER, "Updating context %s / %s", context.getUserName().c_str(), context.getCharacterName().c_str());
+				wlog(LOGDEVELOPER, "Updating context %s / %s", receivedCtx.getUserName().c_str(), receivedCtx.getCharacterName().c_str());
 
-				ctx->setMap(context.getMap());
+				ctx->setMap(receivedCtx.getMap());
+				ctx->setTileX(receivedCtx.getTileX());
+				ctx->setTileY(receivedCtx.getTileY());
 
-				ctx->setNpc(context.isNpc());
+				ctx->setNpc(receivedCtx.isNpc());
 
-				ctx->setTileX(context.getTileX());
-				ctx->setTileY(context.getTileY());
+				ctx->setType(receivedCtx.getType());
 
-				ctx->setType(context.getType());
-
-				ctx->setSelection(context.getSelection());
+				ctx->setSelection(receivedCtx.getSelection());
 			}
 
-			if (context.isConnected() == false)
+			if (receivedCtx.isConnected() == false)
 			{
-				wlog(LOGDEVELOPER, "Deleting context %s / %s", context.getUserName().c_str(), context.getCharacterName().c_str());
+				wlog(LOGDEVELOPER, "Deleting context %s / %s", receivedCtx.getUserName().c_str(), receivedCtx.getCharacterName().c_str());
 				context_free(ctx);
 			}
 			context_unlock_list();
@@ -510,22 +508,22 @@ void context_add_or_update_from_network_frame(const ContextBis & context)
 
 	context_unlock_list();
 
-	wlog(LOGDEVELOPER, "Creating context %s / %s", context.getUserName().c_str(), context.getCharacterName().c_str());
+	wlog(LOGDEVELOPER, "Creating context %s / %s", receivedCtx.getUserName().c_str(), receivedCtx.getCharacterName().c_str());
 	ctx = context_new();
-	ctx->setUserName(context.getUserName());
-	ctx->setCharacterName(context.getCharacterName().c_str());
-	ctx->setNpc(context.isNpc());
-	ctx->setMap(context.getMap());
-	ctx->setType(context.getType());
-	ctx->setTileX(context.getTileX());
-	ctx->setTileY(context.getTileY());
-	ctx->setId(context.getId());
-	ctx->setConnected(context.isConnected());
-	ctx->setInGame(context.isInGame());
-	ctx->setSelectionContextId(context.getSelection().getContextId());
-	ctx->setSelectionTile(context.getSelection().getMap(), context.getSelection().getMapTx(), context.getSelection().getMapTy());
-	ctx->setSelectionEquipment(context.getSelection().getEquipment());
-	ctx->setSelectionInventory(context.getSelection().getInventory());
+	ctx->setUserName(receivedCtx.getUserName());
+	ctx->setCharacterName(receivedCtx.getCharacterName().c_str());
+	ctx->setNpc(receivedCtx.isNpc());
+	ctx->setMap(receivedCtx.getMap());
+	ctx->setType(receivedCtx.getType());
+	ctx->setTileX(receivedCtx.getTileX());
+	ctx->setTileY(receivedCtx.getTileY());
+	ctx->setId(receivedCtx.getId());
+	ctx->setConnected(receivedCtx.isConnected());
+	ctx->setInGame(receivedCtx.isInGame());
+	ctx->setSelectionContextId(receivedCtx.getSelection().getContextId());
+	ctx->setSelectionTile(receivedCtx.getSelection().getMap(), receivedCtx.getSelection().getMapTx(), receivedCtx.getSelection().getMapTy());
+	ctx->setSelectionEquipment(receivedCtx.getSelection().getEquipment());
+	ctx->setSelectionInventory(receivedCtx.getSelection().getInventory());
 }
 
 /**************************************

@@ -34,7 +34,6 @@ add_library(
 	${PROTO_HEADER}
 	${PROTO_SRC}
 
-	ContextBis.cpp
 	Context.cpp
 	entry.cpp
 	file.cpp

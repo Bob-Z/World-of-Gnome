@@ -19,7 +19,6 @@
 
 #include <common.h>
 #include "Context.h"
-#include "ContextBis.h"
 #include "entry.h"
 #include "log.h"
 #include "protocol.h"
@@ -40,8 +39,6 @@
 #include "textview.h"
 #include "ui_play.h"
 #include "file_client.h"
-
-class ContextBis;
 
 /**************************************
  Return RET_NOK on error
@@ -129,7 +126,7 @@ static ret_code_t manage_context(Context * context, const pb::Context& incoming_
 {
 	wlog(LOGDEVELOPER, "[network] Received context %s", incoming_context.id().c_str());
 
-	ContextBis received_context;
+	Context received_context;
 	received_context.setCharacterName(incoming_context.character_name());
 	received_context.setConnected(incoming_context.connected());
 	received_context.setId(incoming_context.id());
@@ -140,16 +137,11 @@ static ret_code_t manage_context(Context * context, const pb::Context& incoming_
 	received_context.setTileY(incoming_context.tile_y());
 	received_context.setType(incoming_context.type());
 	received_context.setUserName(incoming_context.user_name());
-
-	Selection selection;
-	selection.setEquipment(incoming_context.selection().equipment());
-	selection.setContextId(incoming_context.selection().id());
-	selection.setInventory(incoming_context.selection().inventory());
-	selection.setMap(incoming_context.selection().map());
-	selection.setMapTx(incoming_context.selection().map_coord_tx());
-	selection.setMapTy(incoming_context.selection().map_coord_ty());
-
-	received_context.setSelection(selection);
+	received_context.setSelectionEquipment(incoming_context.selection().equipment());
+	received_context.setSelectionContextId(incoming_context.selection().id());
+	received_context.setSelectionInventory(incoming_context.selection().inventory());
+	received_context.setSelectionTile(incoming_context.selection().map(), incoming_context.selection().map_coord_tx(),
+			incoming_context.selection().map_coord_ty());
 
 	context_add_or_update_from_network_frame(received_context);
 	screen_compose();
