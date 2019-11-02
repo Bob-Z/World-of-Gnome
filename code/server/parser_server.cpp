@@ -27,7 +27,6 @@
 #include <protocol.h>
 #include <stdlib.h>
 #include <syntax.h>
-#include <types.h>
 #include <util.h>
 #include <wog.pb.h>
 #include <cstdint>
@@ -44,7 +43,7 @@
 /**************************************
  Return RET_NOK on error
  **************************************/
-static ret_code_t manage_login(Context * context, const pb::Login & login)
+static int manage_login(Context * context, const pb::Login & login)
 {
 	wlog(LOGDEVELOPER, "[network] Received login request for user %s", login.user().c_str());
 
@@ -81,7 +80,7 @@ static ret_code_t manage_login(Context * context, const pb::Login & login)
 /**************************************
  Return RET_NOK on error
  **************************************/
-static ret_code_t manage_start(Context * context, const pb::Start & start)
+static int manage_start(Context * context, const pb::Start & start)
 {
 	wlog(LOGDEVELOPER, "[network] Received start");
 
@@ -101,7 +100,7 @@ static ret_code_t manage_start(Context * context, const pb::Start & start)
 /**************************************
  Return RET_NOK on error
  **************************************/
-static ret_code_t manage_stop(Context * context, const pb::Stop & stop)
+static int manage_stop(Context * context, const pb::Stop & stop)
 {
 	wlog(LOGDEVELOPER, "[network] Received stop request for ID %s of user %s", context->getUserName().c_str(), context->getId().c_str());
 
@@ -120,7 +119,7 @@ static ret_code_t manage_stop(Context * context, const pb::Stop & stop)
 /**************************************
  Return RET_NOK on error
  **************************************/
-static ret_code_t manage_playable_character_list(Context * context, const pb::PlayableCharacterList & list)
+static int manage_playable_character_list(Context * context, const pb::PlayableCharacterList & list)
 {
 	wlog(LOGDEVELOPER, "[network] Received playable character list request");
 
@@ -132,7 +131,7 @@ static ret_code_t manage_playable_character_list(Context * context, const pb::Pl
 /**************************************
  Return RET_NOK on error
  **************************************/
-static ret_code_t manage_user_character_list(Context * context, const pb::UserCharacterList & list)
+static int manage_user_character_list(Context * context, const pb::UserCharacterList & list)
 {
 	wlog(LOGDEVELOPER, "[network] Received user character list request for user %s", list.user().c_str());
 
@@ -144,7 +143,7 @@ static ret_code_t manage_user_character_list(Context * context, const pb::UserCh
 /**************************************
  Return RET_NOK on error
  **************************************/
-static ret_code_t manage_create(Context * context, const pb::Create& create)
+static int manage_create(Context * context, const pb::Create& create)
 {
 	wlog(LOGDEVELOPER, "[network] Received create ID %s with name %s", create.id().c_str(), create.name().c_str());
 
@@ -190,7 +189,7 @@ static ret_code_t manage_create(Context * context, const pb::Create& create)
 /**************************************
  Return RET_NOK on error
  **************************************/
-static ret_code_t manage_action(Context * context, const pb::Action& action)
+static int manage_action(Context * context, const pb::Action& action)
 {
 	wlog(LOGDEVELOPER, "[network] Received action script %s", action.script().c_str());
 
@@ -208,7 +207,7 @@ static ret_code_t manage_action(Context * context, const pb::Action& action)
 /**************************************
  Return RET_NOK on error
  **************************************/
-static ret_code_t manage_file(Context * context, const pb::File& file)
+static int manage_file(Context * context, const pb::File& file)
 {
 	wlog(LOGDEVELOPER, "[network] Received file request for %s", file.name().c_str());
 
@@ -236,7 +235,7 @@ static ret_code_t manage_file(Context * context, const pb::File& file)
 /**************************************
  Return RET_NOK on error
  **************************************/
-ret_code_t parse_incoming_data(Context * context, const std::string & serialized_data)
+int parse_incoming_data(Context * context, const std::string & serialized_data)
 {
 	pb::ClientMessage message;
 	if (message.ParseFromString(serialized_data) == false)

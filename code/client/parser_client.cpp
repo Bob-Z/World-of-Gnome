@@ -17,33 +17,31 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#include <common.h>
+#include "common.h"
 #include "Context.h"
+#include "EffectManager.h"
 #include "entry.h"
+#include "file_client.h"
+#include "file.h"
 #include "log.h"
+#include "network_client.h"
 #include "protocol.h"
+#include "scr_create.h"
+#include "scr_select.h"
+#include "screen.h"
 #include "Selection.h"
-#include "types.h"
+#include "textview.h"
+#include "ui_play.h"
 #include "wog.pb.h"
 #include <cstdint>
 #include <cstdlib>
 #include <string>
 #include <vector>
 
-#include "EffectManager.h"
-#include "file.h"
-#include "network_client.h"
-#include "scr_create.h"
-#include "scr_select.h"
-#include "screen.h"
-#include "textview.h"
-#include "ui_play.h"
-#include "file_client.h"
-
 /**************************************
  Return RET_NOK on error
  **************************************/
-static ret_code_t manage_login_ok(Context * context, const pb::LoginOk & login_ok)
+static int manage_login_ok(Context * context, const pb::LoginOk & login_ok)
 {
 	wlog(LOGDEVELOPER, "[network] Received login OK for user %s", context->getUserName().c_str());
 
@@ -62,7 +60,7 @@ static ret_code_t manage_login_ok(Context * context, const pb::LoginOk & login_o
 /**************************************
  Return RET_NOK on error
  **************************************/
-static ret_code_t manage_login_nok(Context * context, const pb::LoginNok & login_nok)
+static int manage_login_nok(Context * context, const pb::LoginNok & login_nok)
 {
 	wlog(LOGDEVELOPER, "[network] Received login NOK for user %s", context->getUserName().c_str());
 
@@ -77,7 +75,7 @@ static ret_code_t manage_login_nok(Context * context, const pb::LoginNok & login
 /**************************************
  Return RET_NOK on error
  **************************************/
-static ret_code_t manage_playable_character(Context * context, const pb::PlayableCharacter & playable_character)
+static int manage_playable_character(Context * context, const pb::PlayableCharacter & playable_character)
 {
 	wlog(LOGDEVELOPER, "[network] Received playable character for user %s", context->getUserName().c_str());
 
@@ -96,7 +94,7 @@ static ret_code_t manage_playable_character(Context * context, const pb::Playabl
 /**************************************
  Return RET_NOK on error
  **************************************/
-static ret_code_t manage_file(Context * context, const pb::File& file)
+static int manage_file(Context * context, const pb::File& file)
 {
 	wlog(LOGDEVELOPER, "[network] Received file %s", file.name().c_str());
 
@@ -109,7 +107,7 @@ static ret_code_t manage_file(Context * context, const pb::File& file)
 /**************************************
  Return RET_NOK on error
  **************************************/
-static ret_code_t manage_user_character(Context * context, const pb::UserCharacter& user_character)
+static int manage_user_character(Context * context, const pb::UserCharacter& user_character)
 {
 	wlog(LOGDEVELOPER, "[network] Received user %s character", context->getUserName().c_str(), user_character.name().c_str());
 
@@ -122,7 +120,7 @@ static ret_code_t manage_user_character(Context * context, const pb::UserCharact
 /**************************************
  Return RET_NOK on error
  **************************************/
-static ret_code_t manage_context(Context * context, const pb::Context& incoming_context)
+static int manage_context(Context * context, const pb::Context& incoming_context)
 {
 	wlog(LOGDEVELOPER, "[network] Received context %s", incoming_context.id().c_str());
 
@@ -152,7 +150,7 @@ static ret_code_t manage_context(Context * context, const pb::Context& incoming_
 /**************************************
  Return RET_NOK on error
  **************************************/
-static ret_code_t manage_text(Context * context, const pb::Text& text)
+static int manage_text(Context * context, const pb::Text& text)
 {
 	wlog(LOGDEVELOPER, "[network] Received text");
 
@@ -164,7 +162,7 @@ static ret_code_t manage_text(Context * context, const pb::Text& text)
 /**************************************
  Return RET_NOK on error
  **************************************/
-static ret_code_t manage_entry(Context * context, const pb::Entry& entry)
+static int manage_entry(Context * context, const pb::Entry& entry)
 {
 	wlog(LOGDEVELOPER, "[network] Received entry");
 
@@ -179,7 +177,7 @@ static ret_code_t manage_entry(Context * context, const pb::Entry& entry)
 /**************************************
  Return RET_NOK on error
  **************************************/
-static ret_code_t manage_popup(Context * context, const pb::PopUp& popup)
+static int manage_popup(Context * context, const pb::PopUp& popup)
 {
 	wlog(LOGDEVELOPER, "[network] Received pop-up");
 
@@ -198,7 +196,7 @@ static ret_code_t manage_popup(Context * context, const pb::PopUp& popup)
 /**************************************
  Return RET_NOK on error
  **************************************/
-static ret_code_t manage_effect(Context * context, const pb::Effect& effect)
+static int manage_effect(Context * context, const pb::Effect& effect)
 {
 	wlog(LOGDEVELOPER, "[network] Received effect");
 
@@ -216,7 +214,7 @@ static ret_code_t manage_effect(Context * context, const pb::Effect& effect)
 /***********************************
  Return RET_NOK on error
  ***********************************/
-ret_code_t parse_incoming_data(Context * context, const std::string & serialized_data)
+int parse_incoming_data(Context * context, const std::string & serialized_data)
 {
 	pb::ServerMessage message;
 	if (message.ParseFromString(serialized_data) == false)

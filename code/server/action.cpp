@@ -35,7 +35,6 @@
 #include "network.h"
 #include "protocol.h"
 #include "syntax.h"
-#include "types.h"
 #include "util.h"
 #include <cstring>
 #include <stdlib.h>
@@ -1750,7 +1749,7 @@ static int l_resource_set_quantity(lua_State* L)
 static int l_item_destroy(lua_State* L)
 {
 	const char * item;
-	ret_code_t res;
+	int res;
 
 	item = luaL_checkstring(L, -1);
 	res = item_destroy(std::string(item));

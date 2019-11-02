@@ -22,20 +22,15 @@
 
 #include "Context.h"
 #include <SDL_net.h>
-#include "types.h"
 #include <string>
 
-ret_code_t network_read_bytes(TCPsocket socket, char * data, int size);
-void network_send_command(Context * p_pContext,
-		const std::string & serialized_data, const bool p_IsData);
+int network_read_bytes(TCPsocket socket, char * data, int size);
+void network_send_command(Context * p_pContext, const std::string & serialized_data, const bool p_IsData);
 int network_send_file(Context * context, const char * filename);
-void network_send_file_data(Context * context, const std::string & name,
-		const std::string & data);
-int network_send_table_file(Context * context, const char * table,
-		const char * filename);
+void network_send_file_data(Context * context, const std::string & name, const std::string & data);
+int network_send_table_file(Context * context, const char * table, const char * filename);
 void network_send_req_file(Context * context, const std::string & file_name);
 
 // The code of this function is in parser_client.c and parser_server.c
-ret_code_t parse_incoming_data(Context * context,
-		const std::string & serialized_data);
+int parse_incoming_data(Context * context, const std::string & serialized_data);
 #endif

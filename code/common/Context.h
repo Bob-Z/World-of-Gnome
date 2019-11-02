@@ -21,7 +21,6 @@
 #define CONTEXT_H
 
 #include "Selection.h"
-#include "types.h"
 #include <SDL2/SDL_net.h>
 
 extern "C"
@@ -127,21 +126,21 @@ void context_init(Context * context);
 Context * context_new(void);
 void context_free_data(Context * context);
 void context_free(Context * context);
-ret_code_t context_set_hostname(Context * context, const char * name);
+int context_set_hostname(Context * context, const char * name);
 void context_set_socket(Context * context, TCPsocket socket);
 TCPsocket context_get_socket(Context * context);
 void context_set_socket_data(Context * context, TCPsocket socket);
 TCPsocket context_get_socket_data(Context * context);
 void context_new_VM(Context * context);
 
-ret_code_t context_update_from_file(Context * context);
+int context_update_from_file(Context * context);
 void context_spread(Context * context);
 void context_add_or_update_from_network_frame(const Context & context);
 void context_lock_list();
 void context_unlock_list();
 Context * context_get_first();
 Context * context_get_player();
-ret_code_t context_write_to_file(Context * context);
+int context_write_to_file(Context * context);
 Context * context_find(const std::string & id);
 bool context_is_npc(Context * ctx);
 

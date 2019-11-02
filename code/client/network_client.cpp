@@ -233,7 +233,7 @@ static int async_data_recv(void * data)
 /*********************************************************************
  return RET_NOK on error
  *********************************************************************/
-ret_code_t network_connect(Context * context, const char * hostname)
+int network_connect(Context * context, const char * hostname)
 {
 	IPaddress ip;
 	TCPsocket socket;
@@ -270,7 +270,7 @@ ret_code_t network_connect(Context * context, const char * hostname)
 
 /*********************************************************************
  *********************************************************************/
-ret_code_t network_open_data_connection(Context * context)
+int network_open_data_connection(Context * context)
 {
 	IPaddress ip;
 	TCPsocket socket;

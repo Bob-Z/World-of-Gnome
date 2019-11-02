@@ -20,7 +20,6 @@
 #ifndef WOG_FILE_H
 #define WOG_FILE_H
 
-#include "types.h"
 #include <string>
 #include <SDL_stdinc.h>
 
@@ -32,8 +31,8 @@ void file_lock(const char * filename);
 void file_unlock(const char * filename);
 void file_update(Context * context, const char * filename);
 std::pair<bool, std::string> file_new(const std::string & table, const std::string & suggested_name = NO_SUGGESTED_NAME);
-ret_code_t file_get_contents(const char *filename, void **contents, int_fast32_t *length);
-ret_code_t file_set_contents(const char *filename, const void * contents, int length);
+int file_get_contents(const char *filename, void **contents, int_fast32_t *length);
+int file_set_contents(const char *filename, const void * contents, int length);
 bool file_copy(const char * src_table, const char * src_name, const char * dst_table, const char * dst_name);
 int file_create_directory(const std::string & p_rFullName);
 int file_delete(const char * table, const std::string & filename);

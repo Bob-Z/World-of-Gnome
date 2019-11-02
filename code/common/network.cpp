@@ -28,7 +28,6 @@
 #include <SDL_net.h>
 #include <SDL_thread.h>
 #include "syntax.h"
-#include "types.h"
 #include "util.h"
 #include <wog.pb.h>
 #include <cstdint>
@@ -155,7 +154,7 @@ void network_send_req_file(Context * context, const std::string & file_name)
 /*********************************************************************
  Return RET_NOK on error, RET_OK on OK
  *********************************************************************/
-ret_code_t network_read_bytes(TCPsocket socket, char * data, int size)
+int network_read_bytes(TCPsocket socket, char * data, int size)
 {
 	int bytes_read = 0;
 	int total_bytes = 0;

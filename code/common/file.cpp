@@ -34,7 +34,6 @@
 #include <SDL_mutex.h>
 #include <SDL_stdinc.h>
 #include <SDL_timer.h>
-#include "types.h"
 #include <unistd.h>
 #include <cerrno>
 #include <cstdint>
@@ -254,7 +253,7 @@ std::pair<bool, std::string> file_new(const std::string & table, const std::stri
  contents MUST BE FREED by caller
  return RET_NOK on error
  ****************************/
-ret_code_t file_get_contents(const char *filename, void **contents, int_fast32_t *length)
+int file_get_contents(const char *filename, void **contents, int_fast32_t *length)
 {
 	struct stat sts;
 	int fd;
@@ -334,7 +333,7 @@ ret_code_t file_get_contents(const char *filename, void **contents, int_fast32_t
  filename is "table/dir/file"
  return RET_NOK on error
  ****************************/
-ret_code_t file_set_contents(const char *filename, const void *contents, int length)
+int file_set_contents(const char *filename, const void *contents, int length)
 {
 	int fd;
 	ssize_t size;

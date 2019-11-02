@@ -19,5 +19,5 @@
 
 #include "common.h"
 
-ret_code_t parse_incoming_data(Context * context,
+int parse_incoming_data(Context * context,
 		const std::string & serialized_data);

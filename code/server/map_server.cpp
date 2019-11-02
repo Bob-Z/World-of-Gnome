@@ -29,7 +29,6 @@
 #include <stdlib.h>
 #include <syntax.h>
 #include <SDL_mutex.h>
-#include <types.h>
 #include <util.h>
 #include <cstdio>
 #include <cstring>
@@ -62,7 +61,7 @@ static char * get_tile_type_through_layer(const std::string & map, int layer, in
  return 0 if the context is NOT allowed to go to the tile at coord x,y
  return RET_NOK on error or no data found
  *************************************/
-ret_code_t map_check_tile(Context * ctx, const char * id, const std::string & map, int layer, int x, int y)
+int map_check_tile(Context * ctx, const char * id, const std::string & map, int layer, int x, int y)
 {
 	char * script;
 	char sx[64];
@@ -283,7 +282,7 @@ char * map_delete_item(const char * map, int layer, int x, int y)
  Add an item on map at given coordinate
  return RET_NOK if fails
  ******************************************/
-ret_code_t map_add_item(const char * map, int layer, const char * id, int x, int y)
+int map_add_item(const char * map, int layer, const char * id, int x, int y)
 {
 	char layer_name[SMALL_BUF];
 
@@ -323,7 +322,7 @@ ret_code_t map_add_item(const char * map, int layer, const char * id, int x, int
  Write a new tile into a map set
  return RET_NOK if fails
  ***********************************/
-ret_code_t map_set_tile(const char * map, int layer, const char * tile, int x, int y, int network_broadcast)
+int map_set_tile(const char * map, int layer, const char * tile, int x, int y, int network_broadcast)
 {
 	char * previous_tile = nullptr;
 	int width = -1;
@@ -394,7 +393,7 @@ ret_code_t map_set_tile(const char * map, int layer, const char * tile, int x, i
  tile_array is a nullptr teminated tiles ID
  return RET_NOK if fails
  ***********************************/
-ret_code_t map_set_tile_array(const char * map, int layer, const char** tile_array)
+int map_set_tile_array(const char * map, int layer, const char** tile_array)
 {
 	char ** previous_tile = nullptr;
 	char ** current_tile = nullptr;
@@ -442,7 +441,7 @@ ret_code_t map_set_tile_array(const char * map, int layer, const char** tile_arr
  Write a new tile type into a map file
  return RET_NOK if fails
  ***********************************/
-ret_code_t map_set_tile_type(const char * map, int layer, const char * type, int x, int y, int network_broadcast)
+int map_set_tile_type(const char * map, int layer, const char * type, int x, int y, int network_broadcast)
 {
 	char * previous_type = nullptr;
 	int width = -1;
@@ -514,9 +513,9 @@ void map_broadcast(const char * map)
  Set offscreen script of a map
  return RET_NOK if fails
  ***********************************/
-ret_code_t map_set_offscreen(const char * map, const char * script)
+int map_set_offscreen(const char * map, const char * script)
 {
-	ret_code_t res;
+	int res;
 
 	if (map == nullptr || script == nullptr)
 	{
@@ -538,12 +537,12 @@ ret_code_t map_set_offscreen(const char * map, const char * script)
  if layer == -1, set the map's grid custom columns
  return RET_NOK if fails
  ***********************************/
-ret_code_t map_set_custom_column(const char * map, int layer, int num, int width, int height)
+int map_set_custom_column(const char * map, int layer, int num, int width, int height)
 {
 	char layer_name[SMALL_BUF];
 	char width_name[SMALL_BUF];
 	char height_name[SMALL_BUF];
-	ret_code_t res;
+	int res;
 
 	if (map == nullptr)
 	{
@@ -586,12 +585,12 @@ ret_code_t map_set_custom_column(const char * map, int layer, int num, int width
  if layer == -1, set the map's grid custom rows
  return RET_NOK if fails
  ***********************************/
-ret_code_t map_set_custom_row(const char * map, int layer, int num, int width, int height)
+int map_set_custom_row(const char * map, int layer, int num, int width, int height)
 {
 	char layer_name[SMALL_BUF];
 	char width_name[SMALL_BUF];
 	char height_name[SMALL_BUF];
-	ret_code_t res;
+	int res;
 
 	if (map == nullptr)
 	{
@@ -865,7 +864,7 @@ char * map_add_event(const char * map, int layer, const char * script, int x, in
  Add a parameter to the given event
  return RET_NOK on error
  ***********************************************/
-ret_code_t map_add_event_param(const char * map, int layer, const char * event_id, const char * param)
+int map_add_event_param(const char * map, int layer, const char * event_id, const char * param)
 {
 	char layer_name[SMALL_BUF];
 
@@ -882,7 +881,7 @@ ret_code_t map_add_event_param(const char * map, int layer, const char * event_i
  Delete an event on map at given coordinate
  return RET_NOK if fails
  **********************************************/
-ret_code_t map_delete_event(const char * map, int layer, const char * script, int x, int y)
+int map_delete_event(const char * map, int layer, const char * script, int x, int y)
 {
 	char ** eventlist;
 	int i = 0;
@@ -1063,7 +1062,7 @@ char ** map_get_item(const char * map, int layer, int map_x, int map_y)
  tx and ty are not modified on error
  return RET_NOK on error
  ************************************************/
-ret_code_t map_get_tile_coord(const char * map, int layer, int x, int y, int * tx, int * ty)
+int map_get_tile_coord(const char * map, int layer, int x, int y, int * tx, int * ty)
 {
 	layer_t * default_layer;
 
@@ -1157,7 +1156,7 @@ char * map_add_scenery(const char * map, int layer, int x, int y, const char * i
  Add a layer filled with image_name on map
  return RET_NOK on failure
  ***********************************************/
-ret_code_t map_add_layer(const char * map_name, int layer, int w, int h, int tile_w, int tile_h, const char * default_tile, const char * default_type)
+int map_add_layer(const char * map_name, int layer, int w, int h, int tile_w, int tile_h, const char * default_tile, const char * default_type)
 {
 	char layer_name[SMALL_BUF];
 
@@ -1249,7 +1248,7 @@ ret_code_t map_add_layer(const char * map_name, int layer, int w, int h, int til
  remove a layer
  return RET_NOK on failure
  ***********************************************/
-ret_code_t map_delete_layer(const char * map_name, int layer)
+int map_delete_layer(const char * map_name, int layer)
 {
 	char layer_name[SMALL_BUF];
 

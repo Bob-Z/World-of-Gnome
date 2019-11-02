@@ -24,7 +24,6 @@
 #include "network.h"
 #include <stdlib.h>
 #include "syntax.h"
-#include "types.h"
 #include <string>
 #include <utility>
 
@@ -65,7 +64,7 @@ std::pair<bool, std::string> item_create_from_template(const std::string & my_te
  Remove an item file
  return RET_NOK on error
  *****************************/
-ret_code_t item_destroy(const std::string & item_id)
+int item_destroy(const std::string & item_id)
 {
 	return entry_destroy(ITEM_TABLE, item_id.c_str());
 }

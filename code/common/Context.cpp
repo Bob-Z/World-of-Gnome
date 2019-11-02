@@ -237,7 +237,7 @@ Context * context_get_player()
 /**************************
  Returns RET_NOK if error
  **************************/
-ret_code_t context_set_hostname(Context * context, const char * name)
+int context_set_hostname(Context * context, const char * name)
 {
 	context_lock_list();
 
@@ -328,12 +328,12 @@ void context_new_VM(Context * context)
  Update the memory context by reading the character's data file on disk
  Return RET_NOK if there is an error
  *******************************/
-ret_code_t context_update_from_file(Context * context)
+int context_update_from_file(Context * context)
 {
 	// Don't call context_set_* functions here to avoid inter-blocking
 
 	char * result;
-	ret_code_t ret = RET_OK;
+	int ret = RET_OK;
 
 	context_lock_list();
 
@@ -405,7 +405,7 @@ ret_code_t context_update_from_file(Context * context)
  Write a context to server's disk
  return RET_NOK on error
  *******************************/
-ret_code_t context_write_to_file(Context * context)
+int context_write_to_file(Context * context)
 {
 	context_lock_list();
 

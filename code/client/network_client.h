@@ -20,7 +20,7 @@
 #ifndef NETWORK_CLIENT
 #define NETWORK_CLIENT
 
-#include <types.h>
+#include <string>
 
 class Context;
 
@@ -32,7 +32,7 @@ void network_login(Context * context, const char * name, const char * password);
 void network_request_playable_character_list(Context * context);
 void network_request_user_character_list(Context * context);
 void network_send_action(Context * context, const char * frame, ...);
-ret_code_t network_connect(Context * context, const char * hostname);
-ret_code_t network_open_data_connection(Context * context);
+int network_connect(Context * context, const char * hostname);
+int network_open_data_connection(Context * context);
 
 #endif
