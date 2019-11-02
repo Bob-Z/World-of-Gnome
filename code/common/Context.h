@@ -41,6 +41,7 @@ public:
 	void setInGame(bool inGame);
 	bool isNpc() const;
 	void setNpc(bool npc);
+	bool isNpcActive() const;
 	const std::string& getCharacterName() const;
 	void setCharacterName(const std::string& characterName);
 	const std::string& getMap() const;
@@ -81,6 +82,8 @@ public:
 	const std::string & getSelectionInventory() const;
 	Uint32 getNextExecutionTick() const;
 	void setNextExecutionTick(Uint32 nextExecutionTick);
+
+	bool update_from_file();
 
 	int tileDistance(const Context & ctx) const;
 
@@ -136,7 +139,6 @@ TCPsocket context_get_socket(Context * context);
 void context_set_socket_data(Context * context, TCPsocket socket);
 TCPsocket context_get_socket_data(Context * context);
 
-bool context_update_from_file(Context * context);
 void context_spread(Context * context);
 void context_add_or_update_from_network_frame(const Context & context);
 void context_lock_list();
@@ -145,6 +147,5 @@ Context * context_get_first();
 Context * context_get_player();
 int context_write_to_file(Context * context);
 Context * context_find(const std::string & id);
-bool context_is_npc(Context * ctx);
 
 #endif

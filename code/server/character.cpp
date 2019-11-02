@@ -169,7 +169,7 @@ int character_disconnect(const char * id)
 	ctx->setConnected(false);
 	context_spread(ctx);
 
-	if (context_is_npc(ctx) == true)
+	if (ctx->isNpcActive())
 	{
 		ctx->wakeUp();
 	}
@@ -193,7 +193,7 @@ int character_out_of_game(const char * id)
 	ctx->setInGame(false);
 	context_spread(ctx);
 
-	if (context_is_npc(ctx) == true)
+	if (ctx->isNpcActive())
 	{
 		ctx->wakeUp();
 	}

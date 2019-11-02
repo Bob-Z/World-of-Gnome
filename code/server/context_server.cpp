@@ -51,7 +51,7 @@ void context_spread(Context * context)
 			continue;
 		}
 
-		if (context_is_npc(ctx) == true)
+		if (ctx->isNpc() == true)
 		{
 			continue;
 		}
@@ -105,7 +105,7 @@ void context_broadcast_text(const std::string & map, const char * text)
 			continue;
 		}
 
-		if (context_is_npc(ctx) == true)
+		if (ctx->isNpc() == true)
 		{
 			continue;
 		}
@@ -155,7 +155,7 @@ void context_broadcast_map(const char * map)
 
 	do
 	{
-		if (context_is_npc(ctx) == true)
+		if (ctx->isNpc() == true)
 		{
 			continue;
 		}
@@ -203,7 +203,7 @@ void context_broadcast_character(const char * character)
 
 	do
 	{
-		if (context_is_npc(ctx) == true)
+		if (ctx->isNpc() == true)
 		{
 			continue;
 		}

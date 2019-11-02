@@ -75,7 +75,7 @@ void network_broadcast_text(Context * context, const std::string & text)
 
 	do
 	{
-		if (context_is_npc(ctx) == true)
+		if (ctx->isNpc() == true)
 		{
 			continue;
 		}
@@ -177,7 +177,7 @@ void network_broadcast_entry_int(const char * table, const char * file, const ch
 
 	do
 	{
-		if (context_is_npc(ctx) == true)
+		if (ctx->isNpc() == true)
 		{
 			continue;
 		}
@@ -397,7 +397,7 @@ void network_broadcast_effect(EffectManager::EffectType type, const std::string 
 			continue;
 		}
 
-		if (context_is_npc(ctx) == true)
+		if (ctx->isNpc() == true)
 		{
 			continue;
 		}
@@ -465,13 +465,12 @@ void network_send_playable_character(Context * context, const std::vector<std::s
  *********************************************************************/
 void network_send_context_to_context(Context * dest_ctx, Context * src_ctx)
 {
-	// Skip if destination context is an NPC
-	if (context_is_npc(dest_ctx))
+	if (dest_ctx->isNpc() == true)
 	{
 		return;
 	}
 	// Source context is not ready yet
-	if (src_ctx->isInGame() == 0)
+	if (src_ctx->isInGame() == false)
 	{
 		return;
 	}

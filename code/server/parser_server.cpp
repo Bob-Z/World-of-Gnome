@@ -86,7 +86,7 @@ static int manage_start(Context * context, const pb::Start & start)
 	{
 		context->setId(start.id());
 		context->setInGame(true);
-		context_update_from_file(context);
+		context->update_from_file();
 		context_spread(context);
 		context_request_other_context(context);
 	}

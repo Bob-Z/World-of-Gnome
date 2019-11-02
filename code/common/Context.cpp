@@ -309,83 +309,6 @@ TCPsocket context_get_socket_data(Context * context)
 }
 
 /*******************************
- Update the memory context by reading the character's data file on disk
- Return false if there is an error
- *******************************/
-bool context_update_from_file(Context * context)
-{
-	// Don't call context_set_* functions here to avoid inter-blocking
-
-	char * result;
-	bool ret = false;
-
-	context_lock_list();
-
-	if (context->getId() == "")
-	{
-		context_unlock_list();
-		return false;
-	}
-
-	if (entry_read_string(CHARACTER_TABLE, context->getId().c_str(), &result,
-	CHARACTER_KEY_NAME, nullptr) == true)
-	{
-		context->setCharacterName(std::string(result));
-	}
-	else
-	{
-		ret = false;
-	}
-
-	int npc = 0;
-	if (entry_read_int(CHARACTER_TABLE, context->getId().c_str(), &npc, CHARACTER_KEY_NPC, nullptr) == false)
-	{
-		ret = false;
-	}
-	context->setNpc(npc);
-
-	if (entry_read_string(CHARACTER_TABLE, context->getId().c_str(), &result,
-	CHARACTER_KEY_TYPE, nullptr) == false)
-	{
-		context->setType(std::string(result));
-	}
-	else
-	{
-		ret = false;
-	}
-
-	if (entry_read_string(CHARACTER_TABLE, context->getId().c_str(), &result,
-	CHARACTER_KEY_MAP, nullptr) == true)
-	{
-		context->setMap(std::string(result));
-		free(result);
-	}
-	else
-	{
-		ret = false;
-	}
-
-	int pos_tx;
-	if (entry_read_int(CHARACTER_TABLE, context->getId().c_str(), &pos_tx,
-	CHARACTER_KEY_TILE_X, nullptr) == false)
-	{
-		ret = false;
-	}
-	context->setTileX(pos_tx);
-
-	int pos_ty;
-	if (entry_read_int(CHARACTER_TABLE, context->getId().c_str(), &pos_ty,
-	CHARACTER_KEY_TILE_Y, nullptr) == false)
-	{
-		ret = false;
-	}
-	context->setTileY(pos_ty);
-
-	context_unlock_list();
-	return ret;
-}
-
-/*******************************
  Write a context to server's disk
  return false on error
  *******************************/
@@ -522,19 +445,6 @@ int Context::tileDistance(const Context & ctx) const
 	return (distx > disty ? distx : disty);
 }
 
-/**************************************
- Return true is context is an NPC
- **************************************/
-bool context_is_npc(Context * ctx)
-{
-	if (ctx->m_socket == nullptr && ctx->isConnected() == true)
-	{
-		return true;
-	}
-
-	return false;
-}
-
 /*****************************************************************************/
 const std::string& Context::getUserName() const
 {
@@ -585,6 +495,14 @@ bool Context::isNpc() const
 void Context::setNpc(bool npc)
 {
 	m_npc = npc;
+}
+
+/*****************************************************************************/
+bool Context::isNpcActive() const
+{
+	SdlLocking lock(m_mutex);
+
+	return (m_npc && m_connected);
 }
 
 /*****************************************************************************/
@@ -924,4 +842,75 @@ void Context::sleep(Uint32 timeOutMs)
 	SDL_LockMutex(m_conditionMutex);
 	SDL_CondWaitTimeout(m_condition, m_conditionMutex, timeOutMs);
 	SDL_UnlockMutex(m_conditionMutex);
+}
+
+/*****************************************************************************/
+bool Context::update_from_file()
+{
+	char * result = nullptr;
+	bool ret = false;
+
+	SdlLocking lock(m_mutex);
+
+	if (getId() == "")
+	{
+		return false;
+	}
+
+	if (entry_read_string(CHARACTER_TABLE, getId().c_str(), &result,
+	CHARACTER_KEY_NAME, nullptr) == true)
+	{
+		setCharacterName(std::string(result));
+	}
+	else
+	{
+		ret = false;
+	}
+
+	int npc = 0;
+	if (entry_read_int(CHARACTER_TABLE, getId().c_str(), &npc, CHARACTER_KEY_NPC, nullptr) == false)
+	{
+		ret = false;
+	}
+	setNpc(npc);
+
+	if (entry_read_string(CHARACTER_TABLE, getId().c_str(), &result,
+	CHARACTER_KEY_TYPE, nullptr) == false)
+	{
+		setType(std::string(result));
+	}
+	else
+	{
+		ret = false;
+	}
+
+	if (entry_read_string(CHARACTER_TABLE, getId().c_str(), &result,
+	CHARACTER_KEY_MAP, nullptr) == true)
+	{
+		setMap(std::string(result));
+		free(result);
+	}
+	else
+	{
+		ret = false;
+	}
+
+	int pos_tx;
+	if (entry_read_int(CHARACTER_TABLE, getId().c_str(), &pos_tx,
+	CHARACTER_KEY_TILE_X, nullptr) == false)
+	{
+		ret = false;
+	}
+	setTileX(pos_tx);
+
+	int pos_ty = 0;
+	if (entry_read_int(CHARACTER_TABLE, getId().c_str(), &pos_ty,
+	CHARACTER_KEY_TILE_Y, nullptr) == false)
+	{
+		ret = false;
+	}
+	setTileY(pos_ty);
+
+	context_unlock_list();
+	return ret;
 }

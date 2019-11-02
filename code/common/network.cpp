@@ -200,8 +200,7 @@ void network_send_file_data(Context * context, const std::string & name, const s
  *********************************************************************/
 int network_send_file(Context * context, const char * file_name)
 {
-	// Check if NPC
-	if (context_is_npc(context) == true)
+	if (context->isNpc() == true)
 	{
 		return -1;
 	}

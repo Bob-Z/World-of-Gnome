@@ -954,7 +954,7 @@ item_t * scr_play_compose(Context * ctx)
 
 	if (ctx->getMap() == "")
 	{
-		if (context_update_from_file(ctx) == false)
+		if (ctx->update_from_file() == false)
 		{
 			return nullptr;
 		}
