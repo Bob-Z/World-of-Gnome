@@ -34,6 +34,7 @@
 #include <vector>
 #include <wog.pb.h>
 
+#include "../client/EffectManager.h"
 #include "network.h"
 
 /*********************************************************************
@@ -257,8 +258,7 @@ static int new_connection(void * data)
 	return true;
 }
 
-/*******************************************************************************
- ******************************************************************************/
+/*****************************************************************************/
 void network_init(void)
 {
 	IPaddress IP;
@@ -326,18 +326,18 @@ void network_init(void)
  "eol" end of line
  "eop" end of paragraph
  ******************************************************************************/
-void network_send_popup(const std::string & context_id, const std::vector<std::string> & popup_data)
+void network_send_popup(const std::string & contextId, const std::vector<std::string> & popupData)
 {
-	Context * context = context_find(context_id.c_str());
+	Context * context = context_find(contextId.c_str());
 	if (context == nullptr)
 	{
-		werr(LOGDEVELOPER, "[network] No context with ID %s", context_id.c_str());
+		werr(LOGDEVELOPER, "[network] No context with ID %s", contextId.c_str());
 		return;
 	}
 
 	pb::ServerMessage message;
 
-	for (auto data : popup_data)
+	for (auto data : popupData)
 	{
 		message.mutable_popup()->add_data(data);
 	}
@@ -354,7 +354,7 @@ void network_send_popup(const std::string & context_id, const std::vector<std::s
  p_TargetId is the name of the target (either a context ID or map ID)
  p_Parameters is an array of parameter string
  ******************************************************************************/
-void network_broadcast_effect(EffectManager::EffectType p_Type, const std::string & p_TargetId, const std::vector<std::string> & params)
+void network_broadcast_effect(EffectManager::EffectType type, const std::string & targetId, const std::vector<std::string> & params)
 {
 	Context * ctx = nullptr;
 
@@ -369,13 +369,13 @@ void network_broadcast_effect(EffectManager::EffectType p_Type, const std::strin
 	}
 
 	std::string target_map;
-	switch (p_Type)
+	switch (type)
 	{
 	case EffectManager::EffectType::CONTEXT:
 		target_map = ctx->getMap();
 		break;
 	case EffectManager::EffectType::MAP:
-		target_map = p_TargetId;
+		target_map = targetId;
 		break;
 	default:
 		werr(LOGDESIGNER, "network_broadcast_effect: Unknown EffectType");
