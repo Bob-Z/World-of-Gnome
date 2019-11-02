@@ -19,7 +19,6 @@
 
 #include <bits/stdint-uintn.h>
 #include "client_server.h"
-#include "common.h"
 #include "Context.h"
 #include "file.h"
 #include "log.h"
@@ -106,7 +105,7 @@ static int async_frame_send(void * p_pUserData)
 	async_frame_send_end: SDL_UnlockMutex(context->m_send_mutex);
 	delete data;
 
-	return RET_OK;
+	return true;
 }
 
 /*******************************************************************************
@@ -152,7 +151,7 @@ void network_send_req_file(Context * context, const std::string & file_name)
 }
 
 /*********************************************************************
- Return RET_NOK on error, RET_OK on OK
+ Return false on error, true on OK
  *********************************************************************/
 int network_read_bytes(TCPsocket socket, char * data, int size)
 {
@@ -161,7 +160,7 @@ int network_read_bytes(TCPsocket socket, char * data, int size)
 
 	if (socket == 0)
 	{
-		return RET_NOK;
+		return false;
 	}
 
 	while (total_bytes != size && bytes_read != -1)
@@ -170,14 +169,14 @@ int network_read_bytes(TCPsocket socket, char * data, int size)
 		if (bytes_read < 1)
 		{
 			werr(LOGDEVELOPER, "Read error on socket %d", socket);
-			return RET_NOK;
+			return false;
 		}
 		total_bytes += bytes_read;
 	}
 
 	//wlog(LOGDEVELOPER, "read %u bytes on socket %d", total_bytes, socket);
 
-	return RET_OK;
+	return true;
 }
 
 /*********************************************************************
@@ -220,7 +219,7 @@ int network_send_file(Context * context, const char * file_name)
 	int res = 0;
 
 	res = file_get_contents(file_name, &file_data, &file_length);
-	if (res == RET_NOK)
+	if (res == false)
 	{
 		werr(LOGUSER, "send_file : Error reading file \"%s\"", file_name);
 		return -1;

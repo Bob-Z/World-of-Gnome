@@ -17,7 +17,6 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#include "common.h"
 #include "const.h"
 #include "entry.h"
 #include "mutex.h"
@@ -55,18 +54,18 @@ int attribute_change(Context * context, const char * table, const char * id, con
 
 	SDL_LockMutex(attribute_mutex);
 
-	if (entry_read_int(table, id, &current, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_CURRENT, nullptr) == RET_NOK)
+	if (entry_read_int(table, id, &current, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_CURRENT, nullptr) == false)
 	{
 		SDL_UnlockMutex(attribute_mutex);
 		return -1;
 	}
 
-	if (entry_read_int(table, id, &min, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_MIN, nullptr) == RET_NOK)
+	if (entry_read_int(table, id, &min, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_MIN, nullptr) == false)
 	{
 		min = -1;
 	}
 
-	if (entry_read_int(table, id, &max, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_MAX, nullptr) == RET_NOK)
+	if (entry_read_int(table, id, &max, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_MAX, nullptr) == false)
 	{
 		max = -1;
 	}
@@ -91,12 +90,12 @@ int attribute_change(Context * context, const char * table, const char * id, con
 		}
 	}
 
-	if (entry_write_int(table, id, current, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_CURRENT, nullptr) == RET_NOK)
+	if (entry_write_int(table, id, current, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_CURRENT, nullptr) == false)
 	{
 		SDL_UnlockMutex(attribute_mutex);
 		return -1;
 	}
-	if (entry_write_int(table, id, old, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_PREVIOUS, nullptr) == RET_NOK)
+	if (entry_write_int(table, id, old, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_PREVIOUS, nullptr) == false)
 	{
 		SDL_UnlockMutex(attribute_mutex);
 		return -1;
@@ -107,7 +106,7 @@ int attribute_change(Context * context, const char * table, const char * id, con
 	{
 		if (do_min_action == true)
 		{
-			if (entry_read_string(table, id, &action, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_ON_MIN, nullptr) == RET_NOK)
+			if (entry_read_string(table, id, &action, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_ON_MIN, nullptr) == false)
 			{
 				do_min_action = false;
 			}
@@ -117,7 +116,7 @@ int attribute_change(Context * context, const char * table, const char * id, con
 			}
 		}
 
-		if (entry_read_string(table, id, &action, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_ON_DOWN, nullptr) == RET_OK)
+		if (entry_read_string(table, id, &action, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_ON_DOWN, nullptr) == true)
 		{
 			do_down_action = true;
 			down_action = action;
@@ -128,7 +127,7 @@ int attribute_change(Context * context, const char * table, const char * id, con
 	{
 		if (do_max_action == true)
 		{
-			if (entry_read_string(table, id, &action, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_ON_MAX, nullptr) == RET_NOK)
+			if (entry_read_string(table, id, &action, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_ON_MAX, nullptr) == false)
 			{
 				do_max_action = false;
 			}
@@ -138,7 +137,7 @@ int attribute_change(Context * context, const char * table, const char * id, con
 			}
 		}
 
-		if (entry_read_string(table, id, &action, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_ON_UP, nullptr) == RET_OK)
+		if (entry_read_string(table, id, &action, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_ON_UP, nullptr) == true)
 		{
 			do_up_action = true;
 			up_action = action;
@@ -217,7 +216,7 @@ int attribute_set(const char * table, const char * id, const char * attribute, i
 {
 	SDL_LockMutex(attribute_mutex);
 
-	if (entry_write_int(table, id, value, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_CURRENT, nullptr) == RET_NOK)
+	if (entry_write_int(table, id, value, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_CURRENT, nullptr) == false)
 	{
 		SDL_UnlockMutex(attribute_mutex);
 		return -1;
@@ -254,7 +253,7 @@ int attribute_tag_set(const char * table, const char * id, const char * attribut
 {
 	SDL_LockMutex(attribute_mutex);
 
-	if (entry_write_string(table, id, value, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_CURRENT, nullptr) == RET_NOK)
+	if (entry_write_string(table, id, value, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_CURRENT, nullptr) == false)
 	{
 		SDL_UnlockMutex(attribute_mutex);
 		return -1;

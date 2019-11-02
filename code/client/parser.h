@@ -17,7 +17,8 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#include "common.h"
+#include <string>
 
-int parse_incoming_data(Context * context,
-		const std::string & serialized_data);
+class Context;
+
+int parse_incoming_data(Context * context, const std::string & serialized_data);

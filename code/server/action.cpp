@@ -20,7 +20,6 @@
 #include "attribute.h"
 #include "character.h"
 #include "client_server.h"
-#include "common.h"
 #include "context_server.h"
 #include "Context.h"
 #include "entry.h"
@@ -2240,7 +2239,7 @@ int action_execute(Context * context, const char * action, char ** parameters)
 	char ** all_params = nullptr;
 	int ret = -1;
 
-	if (entry_read_string(ACTION_TABLE, action, &script, ACTION_KEY_SCRIPT, nullptr) == RET_NOK)
+	if (entry_read_string(ACTION_TABLE, action, &script, ACTION_KEY_SCRIPT, nullptr) == false)
 	{
 		return -1;
 	}
@@ -2269,7 +2268,7 @@ int action_execute(Context * context, const std::string & p_rScriptName, const s
 	int ret = -1;
 
 	if (entry_read_string(ACTION_TABLE, p_rScriptName.c_str(), &script,
-	ACTION_KEY_SCRIPT, nullptr) == RET_NOK)
+	ACTION_KEY_SCRIPT, nullptr) == false)
 	{
 		return -1;
 	}

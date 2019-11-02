@@ -19,14 +19,13 @@
 
 #include "action.h"
 #include "client_server.h"
-#include "common.h"
 #include "Context.h"
-#include "npc.h"
-#include "log.h"
-#include "util.h"
 #include "entry.h"
-#include "syntax.h"
+#include "log.h"
 #include "mutex.h"
+#include "npc.h"
+#include "syntax.h"
+#include "util.h"
 #include <dirent.h>
 #include <stdlib.h>
 #include <sys/types.h>
@@ -61,7 +60,7 @@ static int npc_script(void * data)
 		{
 			deep_free(parameters);
 		}
-		if (entry_read_string(CHARACTER_TABLE, context->getId().c_str(), &script, CHARACTER_KEY_AI, nullptr) == RET_NOK)
+		if (entry_read_string(CHARACTER_TABLE, context->getId().c_str(), &script, CHARACTER_KEY_AI, nullptr) == false)
 		{
 			werr(LOGUSER, "No AI script for %s", context->getId().c_str());
 			break;
@@ -111,7 +110,7 @@ void instantiate_npc(const std::string & id)
 	Context * ctx = nullptr;
 
 	// check if it's a NPC
-	if (entry_read_int(CHARACTER_TABLE, id.c_str(), &is_npc, CHARACTER_KEY_NPC, nullptr) == RET_NOK)
+	if (entry_read_int(CHARACTER_TABLE, id.c_str(), &is_npc, CHARACTER_KEY_NPC, nullptr) == false)
 	{
 		return;
 	}
@@ -122,27 +121,27 @@ void instantiate_npc(const std::string & id)
 	}
 
 	// read data of this npc
-	if (entry_read_int(CHARACTER_TABLE, id.c_str(), &x, CHARACTER_KEY_TILE_X, nullptr) == RET_NOK)
+	if (entry_read_int(CHARACTER_TABLE, id.c_str(), &x, CHARACTER_KEY_TILE_X, nullptr) == false)
 	{
 		return;
 	}
 
-	if (entry_read_int(CHARACTER_TABLE, id.c_str(), &y, CHARACTER_KEY_TILE_Y, nullptr) == RET_NOK)
+	if (entry_read_int(CHARACTER_TABLE, id.c_str(), &y, CHARACTER_KEY_TILE_Y, nullptr) == false)
 	{
 		return;
 	}
 
-	if (entry_read_string(CHARACTER_TABLE, id.c_str(), &map, CHARACTER_KEY_MAP, nullptr) == RET_NOK)
+	if (entry_read_string(CHARACTER_TABLE, id.c_str(), &map, CHARACTER_KEY_MAP, nullptr) == false)
 	{
 		return;
 	}
 
-	if (entry_read_string(CHARACTER_TABLE, id.c_str(), &name, CHARACTER_KEY_NAME, nullptr) == RET_NOK)
+	if (entry_read_string(CHARACTER_TABLE, id.c_str(), &name, CHARACTER_KEY_NAME, nullptr) == false)
 	{
 		name = strdup("");
 	}
 
-	if (entry_read_string(CHARACTER_TABLE, id.c_str(), &type, CHARACTER_KEY_TYPE, nullptr) == RET_NOK)
+	if (entry_read_string(CHARACTER_TABLE, id.c_str(), &type, CHARACTER_KEY_TYPE, nullptr) == false)
 	{
 		free(map);
 		free(name);

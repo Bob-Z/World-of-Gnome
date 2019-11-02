@@ -52,7 +52,7 @@ static void parse_client_conf()
 	int version;
 
 	while (entry_read_int(nullptr, CLIENT_CONF_FILE, &version,
-	CLIENT_KEY_VERSION, nullptr) == RET_NOK)
+	CLIENT_KEY_VERSION, nullptr) == false)
 	{
 		wlog(LOGUSER, "Waiting for client configuration");
 		usleep(100000);

@@ -21,7 +21,6 @@
 #define SCREEN_H
 
 #include "item.h"
-#include "common.h"
 
 class Camera;
 

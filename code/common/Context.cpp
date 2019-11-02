@@ -18,7 +18,6 @@
  */
 
 #include "../server/action.h"
-#include "common.h"
 #include "Context.h"
 #include "entry.h"
 #include "log.h"
@@ -235,9 +234,9 @@ Context * context_get_player()
 	return context_list_start;
 }
 /**************************
- Returns RET_NOK if error
+ Returns false if error
  **************************/
-int context_set_hostname(Context * context, const char * name)
+bool context_set_hostname(Context * context, const char * name)
 {
 	context_lock_list();
 
@@ -250,11 +249,11 @@ int context_set_hostname(Context * context, const char * name)
 	if (context->m_hostname == nullptr)
 	{
 		context_unlock_list();
-		return RET_NOK;
+		return false;
 	}
 
 	context_unlock_list();
-	return RET_OK;
+	return true;
 }
 
 /**************************************
@@ -326,74 +325,74 @@ void context_new_VM(Context * context)
 
 /*******************************
  Update the memory context by reading the character's data file on disk
- Return RET_NOK if there is an error
+ Return false if there is an error
  *******************************/
-int context_update_from_file(Context * context)
+bool context_update_from_file(Context * context)
 {
 	// Don't call context_set_* functions here to avoid inter-blocking
 
 	char * result;
-	int ret = RET_OK;
+	bool ret = false;
 
 	context_lock_list();
 
 	if (context->getId() == "")
 	{
 		context_unlock_list();
-		return RET_NOK;
+		return false;
 	}
 
 	if (entry_read_string(CHARACTER_TABLE, context->getId().c_str(), &result,
-	CHARACTER_KEY_NAME, nullptr) == RET_OK)
+	CHARACTER_KEY_NAME, nullptr) == true)
 	{
 		context->setCharacterName(std::string(result));
 	}
 	else
 	{
-		ret = RET_NOK;
+		ret = false;
 	}
 
 	int npc = 0;
-	if (entry_read_int(CHARACTER_TABLE, context->getId().c_str(), &npc, CHARACTER_KEY_NPC, nullptr) == RET_NOK)
+	if (entry_read_int(CHARACTER_TABLE, context->getId().c_str(), &npc, CHARACTER_KEY_NPC, nullptr) == false)
 	{
-		ret = RET_NOK;
+		ret = false;
 	}
 	context->setNpc(npc);
 
 	if (entry_read_string(CHARACTER_TABLE, context->getId().c_str(), &result,
-	CHARACTER_KEY_TYPE, nullptr) == RET_OK)
+	CHARACTER_KEY_TYPE, nullptr) == false)
 	{
 		context->setType(std::string(result));
 	}
 	else
 	{
-		ret = RET_NOK;
+		ret = false;
 	}
 
 	if (entry_read_string(CHARACTER_TABLE, context->getId().c_str(), &result,
-	CHARACTER_KEY_MAP, nullptr) == RET_OK)
+	CHARACTER_KEY_MAP, nullptr) == true)
 	{
 		context->setMap(std::string(result));
 		free(result);
 	}
 	else
 	{
-		ret = RET_NOK;
+		ret = false;
 	}
 
 	int pos_tx;
 	if (entry_read_int(CHARACTER_TABLE, context->getId().c_str(), &pos_tx,
-	CHARACTER_KEY_TILE_X, nullptr) == RET_NOK)
+	CHARACTER_KEY_TILE_X, nullptr) == false)
 	{
-		ret = RET_NOK;
+		ret = false;
 	}
 	context->setTileX(pos_tx);
 
 	int pos_ty;
 	if (entry_read_int(CHARACTER_TABLE, context->getId().c_str(), &pos_ty,
-	CHARACTER_KEY_TILE_Y, nullptr) == RET_NOK)
+	CHARACTER_KEY_TILE_Y, nullptr) == false)
 	{
-		ret = RET_NOK;
+		ret = false;
 	}
 	context->setTileY(pos_ty);
 
@@ -403,7 +402,7 @@ int context_update_from_file(Context * context)
 
 /*******************************
  Write a context to server's disk
- return RET_NOK on error
+ return false on error
  *******************************/
 int context_write_to_file(Context * context)
 {
@@ -412,7 +411,7 @@ int context_write_to_file(Context * context)
 	if (context->getId() == "")
 	{
 		context_unlock_list();
-		return RET_NOK;
+		return false;
 	}
 
 	entry_write_string(CHARACTER_TABLE, context->getId().c_str(), context->getType().c_str(),
@@ -427,7 +426,7 @@ int context_write_to_file(Context * context)
 	CHARACTER_KEY_TILE_Y, nullptr);
 
 	context_unlock_list();
-	return RET_OK;
+	return true;
 }
 
 /*******************************

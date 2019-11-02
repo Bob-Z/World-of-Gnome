@@ -20,7 +20,6 @@
 #ifndef SFX_H
 #define SFX_H
 
-#include "common.h"
 #include <SDL2/SDL_mixer.h>
 #include <string>
 

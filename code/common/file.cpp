@@ -17,28 +17,27 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#include <bits/types/FILE.h>
 #include "client_server.h"
-#include "common.h"
 #include "const.h"
-#include <dirent.h>
-#include <fcntl.h>
-#include <features.h>
 #include "file.h"
 #include "list.h"
 #include "log.h"
 #include "mutex.h"
 #include "network.h"
-#include <stdlib.h>
-#include <sys/stat.h>
-#include <SDL_mutex.h>
-#include <SDL_stdinc.h>
-#include <SDL_timer.h>
-#include <unistd.h>
+#include <bits/types/FILE.h>
 #include <cerrno>
 #include <cstdint>
 #include <cstdio>
 #include <cstring>
+#include <dirent.h>
+#include <fcntl.h>
+#include <features.h>
+#include <SDL_mutex.h>
+#include <SDL_stdinc.h>
+#include <SDL_timer.h>
+#include <stdlib.h>
+#include <sys/stat.h>
+#include <unistd.h>
 #include <utility>
 
 list_t * file_list = nullptr;
@@ -251,7 +250,7 @@ std::pair<bool, std::string> file_new(const std::string & table, const std::stri
  filename is "table/dir/file"
  Fill contents and size with data from filename file.
  contents MUST BE FREED by caller
- return RET_NOK on error
+ return false on error
  ****************************/
 int file_get_contents(const char *filename, void **contents, int_fast32_t *length)
 {
@@ -277,7 +276,7 @@ int file_get_contents(const char *filename, void **contents, int_fast32_t *lengt
 #endif
 		file_unlock(filename);
 		werr(LOGDESIGNER, "Error stat on file %s: %s\n", file_path.c_str(), error_str);
-		return RET_NOK;
+		return false;
 	}
 
 	fd = open(file_path.c_str(), O_RDONLY);
@@ -291,7 +290,7 @@ int file_get_contents(const char *filename, void **contents, int_fast32_t *lengt
 #endif
 		file_unlock(filename);
 		werr(LOGDESIGNER, "Error open on file %s: %s\n", file_path.c_str(), error_str);
-		return RET_NOK;
+		return false;
 	}
 
 	void * buf;
@@ -300,7 +299,7 @@ int file_get_contents(const char *filename, void **contents, int_fast32_t *lengt
 	{
 		close(fd);
 		file_unlock(filename);
-		return RET_NOK;
+		return false;
 	}
 
 	size = read(fd, buf, sts.st_size);
@@ -316,7 +315,7 @@ int file_get_contents(const char *filename, void **contents, int_fast32_t *lengt
 		file_unlock(filename);
 		free(buf);
 		werr(LOGDESIGNER, "Error read on file %s: %s\n", file_path.c_str(), error_str);
-		return RET_NOK;
+		return false;
 	}
 
 	close(fd);
@@ -325,13 +324,13 @@ int file_get_contents(const char *filename, void **contents, int_fast32_t *lengt
 	*contents = buf;
 	*length = size;
 
-	return RET_OK;
+	return true;
 }
 
 /****************************
  file_set_contents
  filename is "table/dir/file"
- return RET_NOK on error
+ return false on error
  ****************************/
 int file_set_contents(const char *filename, const void *contents, int length)
 {
@@ -356,7 +355,7 @@ int file_set_contents(const char *filename, const void *contents, int length)
 #endif
 		file_unlock(filename);
 		werr(LOGDESIGNER, "Error open on file %s: %s\n", file_path.c_str(), error_str);
-		return RET_NOK;
+		return false;
 	}
 
 	size = write(fd, contents, length);
@@ -371,14 +370,14 @@ int file_set_contents(const char *filename, const void *contents, int length)
 		close(fd);
 		file_unlock(filename);
 		werr(LOGDESIGNER, "Error write on file %s: %s\n", file_path.c_str(), error_str);
-		return RET_NOK;
+		return false;
 	}
 
 	close(fd);
 
 	file_unlock(filename);
 
-	return RET_OK;
+	return true;
 }
 
 /******************************************************

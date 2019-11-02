@@ -18,7 +18,6 @@
  */
 
 #include "anim.h"
-#include "common.h"
 #include "const.h"
 #include "entry.h"
 #include "font.h"
@@ -257,7 +256,7 @@ static void compose_attribute(Context * ctx, item_t * item_list)
 	}
 
 	if (entry_get_group_list(CHARACTER_TABLE, ctx->getId().c_str(), &name_list,
-	ATTRIBUTE_GROUP, nullptr) == RET_NOK)
+	ATTRIBUTE_GROUP, nullptr) == false)
 	{
 		return;
 	}
@@ -265,7 +264,7 @@ static void compose_attribute(Context * ctx, item_t * item_list)
 	index = 0;
 	while (name_list[index] != nullptr)
 	{
-		if (entry_read_int(CHARACTER_TABLE, ctx->getId().c_str(), &value, ATTRIBUTE_GROUP, name_list[index], ATTRIBUTE_CURRENT, nullptr) == RET_NOK)
+		if (entry_read_int(CHARACTER_TABLE, ctx->getId().c_str(), &value, ATTRIBUTE_GROUP, name_list[index], ATTRIBUTE_CURRENT, nullptr) == false)
 		{
 			index++;
 			continue;
@@ -367,7 +366,7 @@ static void compose_action(Context * ctx, item_t * item_list)
 
 	// Read action list for current user
 	if (entry_read_list(CHARACTER_TABLE, ctx->getId().c_str(), &action_list,
-	CHARACTER_KEY_ACTION, nullptr) == RET_NOK)
+	CHARACTER_KEY_ACTION, nullptr) == false)
 	{
 		return;
 	}
@@ -397,18 +396,18 @@ static void compose_action(Context * ctx, item_t * item_list)
 		}
 
 		if (entry_read_string(ACTION_TABLE, action_list[i], &text,
-		ACTION_KEY_TEXT, nullptr) == RET_NOK)
+		ACTION_KEY_TEXT, nullptr) == false)
 		{
 			i++;
 			continue;
 		}
 		if (entry_read_string(ACTION_TABLE, action_list[i], &icon_array[0],
-		ACTION_KEY_ICON, nullptr) == RET_OK)
+		ACTION_KEY_ICON, nullptr) == true)
 		{
 			icon = icon_array;
 		}
 		else if (entry_read_list(ACTION_TABLE, action_list[i], &icon,
-		ACTION_KEY_ICON, nullptr) == RET_NOK)
+		ACTION_KEY_ICON, nullptr) == false)
 		{
 			i++;
 			continue;
@@ -445,7 +444,7 @@ static void compose_action(Context * ctx, item_t * item_list)
 		free(anim_array);
 
 		if (entry_read_list(ACTION_TABLE, action_list[i], &icon_over,
-		ACTION_KEY_ICON_OVER, nullptr) == RET_OK)
+		ACTION_KEY_ICON_OVER, nullptr) == true)
 		{
 			anim_array = imageDB_get_anim_array(ctx, (const char **) icon_over);
 			item_set_anim_over_array(item, anim_array);
@@ -454,7 +453,7 @@ static void compose_action(Context * ctx, item_t * item_list)
 		}
 
 		if (entry_read_list(ACTION_TABLE, action_list[i], &icon_click,
-		ACTION_KEY_ICON_CLICK, nullptr) == RET_OK)
+		ACTION_KEY_ICON_CLICK, nullptr) == true)
 		{
 			anim_array = imageDB_get_anim_array(ctx, (const char **) icon_click);
 			item_set_anim_click_array(item, anim_array);
@@ -540,7 +539,7 @@ static void compose_equipment(Context * ctx, item_t * item_list)
 	{
 #if 0
 		// Get the slot name
-		if(entry_read_string(CHARACTER_TABLE,ctx->m_id,&item_name,EQUIPMENT_GROUP,slot_list[index],EQUIPMENT_NAME,nullptr) == RET_NOK )
+		if(entry_read_string(CHARACTER_TABLE,ctx->m_id,&item_name,EQUIPMENT_GROUP,slot_list[index],EQUIPMENT_NAME,nullptr) == false )
 		{
 			name = strdup(slot_list[index]);
 		}
@@ -553,7 +552,7 @@ static void compose_equipment(Context * ctx, item_t * item_list)
 		h1 = 0;
 		// Get the slot icon
 		if (entry_read_string(CHARACTER_TABLE, ctx->getId().c_str(), &icon_name,
-		EQUIPMENT_GROUP, slot_list[index], EQUIPMENT_ICON, nullptr) == RET_NOK)
+		EQUIPMENT_GROUP, slot_list[index], EQUIPMENT_ICON, nullptr) == false)
 		{
 			continue;
 		}
@@ -585,11 +584,11 @@ static void compose_equipment(Context * ctx, item_t * item_list)
 
 		// Is there an equipped object ?
 		if (entry_read_string(CHARACTER_TABLE, ctx->getId().c_str(), &equipped_name,
-		EQUIPMENT_GROUP, slot_list[index], EQUIPMENT_EQUIPPED, nullptr) == RET_OK && equipped_name[0] != 0)
+		EQUIPMENT_GROUP, slot_list[index], EQUIPMENT_EQUIPPED, nullptr) == true && equipped_name[0] != 0)
 		{
 #if 0
 			// Get the equipped object name
-			if(entry_read_string(ITEM_TABLE,equipped_name,&equipped_text,ITEM_NAME,nullptr) == RET_NOK )
+			if(entry_read_string(ITEM_TABLE,equipped_name,&equipped_text,ITEM_NAME,nullptr) == false )
 			{
 				werr(LOGDESIGNER,"Can't read object %s name in equipment slot %s",equipped_name,slot_list[index]);
 			}
@@ -600,14 +599,14 @@ static void compose_equipment(Context * ctx, item_t * item_list)
 
 			if (mytemplate == nullptr)
 			{
-				if (entry_read_string(ITEM_TABLE, equipped_name, &equipped_icon_name, ITEM_ICON, nullptr) == RET_NOK)
+				if (entry_read_string(ITEM_TABLE, equipped_name, &equipped_icon_name, ITEM_ICON, nullptr) == false)
 				{
 					werr(LOGDESIGNER, "Can't read object %s icon in equipment slot %s", equipped_name, slot_list[index]);
 				}
 			}
 			else
 			{
-				if (entry_read_string(ITEM_TEMPLATE_TABLE, mytemplate, &equipped_icon_name, ITEM_ICON, nullptr) == RET_NOK)
+				if (entry_read_string(ITEM_TEMPLATE_TABLE, mytemplate, &equipped_icon_name, ITEM_ICON, nullptr) == false)
 				{
 					werr(LOGDESIGNER, "Can't read item %s icon name (template: %s)", equipped_name, mytemplate);
 				}
@@ -671,14 +670,14 @@ static void compose_equipment(Context * ctx, item_t * item_list)
 
 		if (mytemplate == nullptr)
 		{
-			if (entry_read_string(ITEM_TABLE, inventory.c_str(), &inventory_icon_name, ITEM_ICON, nullptr) == RET_NOK)
+			if (entry_read_string(ITEM_TABLE, inventory.c_str(), &inventory_icon_name, ITEM_ICON, nullptr) == false)
 			{
 				werr(LOGDESIGNER, "Can't read item %s icon name", inventory.c_str());
 			}
 		}
 		else
 		{
-			if (entry_read_string(ITEM_TEMPLATE_TABLE, mytemplate, &inventory_icon_name, ITEM_ICON, nullptr) == RET_NOK)
+			if (entry_read_string(ITEM_TEMPLATE_TABLE, mytemplate, &inventory_icon_name, ITEM_ICON, nullptr) == false)
 			{
 				werr(LOGDESIGNER, "Can't read item %s icon name (template: %s)", inventory.c_str(), mytemplate);
 			}
@@ -911,7 +910,7 @@ static void compose_inventory(Context * ctx, item_t * item_list)
 
 	// read data from file
 	if (entry_read_list(CHARACTER_TABLE, ctx->getId().c_str(), &inventory_list,
-	CHARACTER_KEY_INVENTORY, nullptr) == RET_NOK)
+	CHARACTER_KEY_INVENTORY, nullptr) == false)
 	{
 		return;
 	}
@@ -924,7 +923,7 @@ static void compose_inventory(Context * ctx, item_t * item_list)
 		{
 			// Icon is mandatory for now
 			if (entry_read_string(ITEM_TABLE, inventory_list[i], &value,
-			ITEM_ICON, nullptr) == RET_NOK)
+			ITEM_ICON, nullptr) == false)
 			{
 				i++;
 				continue;
@@ -934,7 +933,7 @@ static void compose_inventory(Context * ctx, item_t * item_list)
 			free(value);
 
 			if (entry_read_string(ITEM_TABLE, inventory_list[i], &value,
-			ITEM_NAME, nullptr) == RET_NOK)
+			ITEM_NAME, nullptr) == false)
 			{
 				label = strdup(inventory_list[i]);
 			}
@@ -944,7 +943,7 @@ static void compose_inventory(Context * ctx, item_t * item_list)
 			}
 
 			if (entry_read_string(ITEM_TABLE, inventory_list[i], &value,
-			ITEM_DESC, nullptr) == RET_NOK)
+			ITEM_DESC, nullptr) == false)
 			{
 				description = strdup("");
 				;
@@ -958,7 +957,7 @@ static void compose_inventory(Context * ctx, item_t * item_list)
 		{
 			// Icon is mandatory for now
 			if (entry_read_string(ITEM_TEMPLATE_TABLE, mytemplate, &value,
-			ITEM_ICON, nullptr) == RET_NOK)
+			ITEM_ICON, nullptr) == false)
 			{
 				i++;
 				free(mytemplate);
@@ -969,7 +968,7 @@ static void compose_inventory(Context * ctx, item_t * item_list)
 			free(value);
 
 			if (entry_read_string(ITEM_TEMPLATE_TABLE, mytemplate, &value,
-			ITEM_NAME, nullptr) == RET_NOK)
+			ITEM_NAME, nullptr) == false)
 			{
 				label = strdup(inventory_list[i]);
 			}
@@ -979,7 +978,7 @@ static void compose_inventory(Context * ctx, item_t * item_list)
 			}
 
 			if (entry_read_string(ITEM_TEMPLATE_TABLE, mytemplate, &value,
-			ITEM_DESC, nullptr) == RET_NOK)
+			ITEM_DESC, nullptr) == false)
 			{
 				description = strdup("");
 				;
@@ -1062,7 +1061,7 @@ static void compose_inventory_select(Context * ctx, item_t * item_list)
 
 	// read data from file
 	if (entry_read_list(CHARACTER_TABLE, ctx->getId().c_str(), &inventory_list,
-	CHARACTER_KEY_INVENTORY, nullptr) == RET_NOK)
+	CHARACTER_KEY_INVENTORY, nullptr) == false)
 	{
 		return;
 	}
@@ -1076,7 +1075,7 @@ static void compose_inventory_select(Context * ctx, item_t * item_list)
 		if (mytemplate == nullptr)
 		{
 			if (entry_read_string(ITEM_TABLE, inventory_list[i], &icon_name,
-			ITEM_ICON, nullptr) == RET_NOK)
+			ITEM_ICON, nullptr) == false)
 			{
 				werr(LOGDESIGNER, "Can't read item %s icon name", inventory_list[i]);
 			}
@@ -1084,7 +1083,7 @@ static void compose_inventory_select(Context * ctx, item_t * item_list)
 		else
 		{
 			if (entry_read_string(ITEM_TEMPLATE_TABLE, mytemplate, &icon_name,
-			ITEM_ICON, nullptr) == RET_NOK)
+			ITEM_ICON, nullptr) == false)
 			{
 				werr(LOGDESIGNER, "Can't read item %s icon name (template: %s)", inventory_list[i], mytemplate);
 			}

@@ -17,31 +17,29 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#include <client_server.h>
-#include <common.h>
+#include "action.h"
+#include "character.h"
+#include "context_server.h"
 #include "Context.h"
+#include "network_server.h"
+#include <client_server.h>
+#include <cstdint>
+#include <cstring>
 #include <entry.h>
 #include <file.h>
 #include <log.h>
 #include <network.h>
 #include <protocol.h>
 #include <stdlib.h>
+#include <string>
 #include <syntax.h>
 #include <util.h>
-#include <wog.pb.h>
-#include <cstdint>
-#include <cstring>
-#include <string>
 #include <utility>
 #include <vector>
-
-#include "action.h"
-#include "character.h"
-#include "context_server.h"
-#include "network_server.h"
+#include <wog.pb.h>
 
 /**************************************
- Return RET_NOK on error
+ Return false on error
  **************************************/
 static int manage_login(Context * context, const pb::Login & login)
 {
@@ -49,9 +47,9 @@ static int manage_login(Context * context, const pb::Login & login)
 
 	char * password = nullptr;
 	if (entry_read_string(PASSWD_TABLE, login.user().c_str(), &password,
-	PASSWD_KEY_PASSWORD, nullptr) == RET_NOK)
+	PASSWD_KEY_PASSWORD, nullptr) == false)
 	{
-		return RET_NOK;
+		return false;
 	}
 
 	if (strcmp(password, login.password().c_str()) != 0)
@@ -60,7 +58,7 @@ static int manage_login(Context * context, const pb::Login & login)
 		werr(LOGUSER, "[network] Wrong login for %s", login.user().c_str());
 		network_send_login_nok(context);
 		// force client disconnection
-		return RET_NOK;
+		return false;
 	}
 	else
 	{
@@ -73,12 +71,12 @@ static int manage_login(Context * context, const pb::Login & login)
 
 		wlog(LOGUSER, "[network] Login successful for user %s", context->getUserName().c_str());
 
-		return RET_OK;
+		return true;
 	}
 }
 
 /**************************************
- Return RET_NOK on error
+ Return false on error
  **************************************/
 static int manage_start(Context * context, const pb::Start & start)
 {
@@ -94,11 +92,11 @@ static int manage_start(Context * context, const pb::Start & start)
 	}
 	wlog(LOGDEVELOPER, "[network] received start request for ID %s and user %s", context->getId().c_str(), context->getUserName().c_str());
 
-	return RET_OK;
+	return true;
 }
 
 /**************************************
- Return RET_NOK on error
+ Return false on error
  **************************************/
 static int manage_stop(Context * context, const pb::Stop & stop)
 {
@@ -113,11 +111,11 @@ static int manage_stop(Context * context, const pb::Stop & stop)
 		context_spread(context);
 	}
 
-	return RET_OK;
+	return true;
 }
 
 /**************************************
- Return RET_NOK on error
+ Return false on error
  **************************************/
 static int manage_playable_character_list(Context * context, const pb::PlayableCharacterList & list)
 {
@@ -125,11 +123,11 @@ static int manage_playable_character_list(Context * context, const pb::PlayableC
 
 	character_playable_send_list(context);
 
-	return RET_OK;
+	return true;
 }
 
 /**************************************
- Return RET_NOK on error
+ Return false on error
  **************************************/
 static int manage_user_character_list(Context * context, const pb::UserCharacterList & list)
 {
@@ -137,11 +135,11 @@ static int manage_user_character_list(Context * context, const pb::UserCharacter
 
 	character_user_send_list(context);
 
-	return RET_OK;
+	return true;
 }
 
 /**************************************
- Return RET_NOK on error
+ Return false on error
  **************************************/
 static int manage_create(Context * context, const pb::Create& create)
 {
@@ -152,7 +150,7 @@ static int manage_create(Context * context, const pb::Create& create)
 	if (file_name.first == false)
 	{
 		werr(LOGUSER, "%s already exists", create.name().c_str());
-		return RET_NOK;
+		return false;
 	}
 
 	if (file_copy(CHARACTER_TEMPLATE_TABLE, create.id().c_str(),
@@ -160,34 +158,34 @@ static int manage_create(Context * context, const pb::Create& create)
 	{
 		werr(LOGUSER, "Error copying character template %s to character %s (maybe template doesn't exists ?)", create.id(), create.name());
 		file_delete(CHARACTER_TABLE, create.name());
-		return RET_NOK;
+		return false;
 	}
 
 	if (entry_write_string(CHARACTER_TABLE, create.name().c_str(), create.name().c_str(),
-	CHARACTER_KEY_NAME, nullptr) == RET_NOK)
+	CHARACTER_KEY_NAME, nullptr) == false)
 	{
 		werr(LOGUSER, "Error setting character name %s", create.name().c_str());
 		file_delete(CHARACTER_TABLE, create.name());
-		return RET_NOK;
+		return false;
 	}
 
 	if (entry_add_to_list(USERS_TABLE, context->getUserName().c_str(), create.name().c_str(),
-	USERS_CHARACTER_LIST, nullptr) == RET_NOK)
+	USERS_CHARACTER_LIST, nullptr) == false)
 	{
 		werr(LOGUSER, "Error adding character %s to user %s", create.name().c_str(), context->getUserName().c_str());
 		file_delete(CHARACTER_TABLE, create.name());
-		return RET_NOK;
+		return false;
 	}
 
 	character_user_send(context, create.name().c_str());
 
 	wlog(LOGDEVELOPER, "Successfully created: ID=%s, NAME=%s", create.id().c_str(), create.name().c_str());
 
-	return RET_OK;
+	return true;
 }
 
 /**************************************
- Return RET_NOK on error
+ Return false on error
  **************************************/
 static int manage_action(Context * context, const pb::Action& action)
 {
@@ -201,11 +199,11 @@ static int manage_action(Context * context, const pb::Action& action)
 
 	action_execute(context, action.script().c_str(), params);
 
-	return RET_OK;
+	return true;
 }
 
 /**************************************
- Return RET_NOK on error
+ Return false on error
  **************************************/
 static int manage_file(Context * context, const pb::File& file)
 {
@@ -218,22 +216,22 @@ static int manage_file(Context * context, const pb::File& file)
 	if (crc.first == false)
 	{
 		werr(LOGUSER, "Required file %s doesn't exists", file_path.c_str());
-		return RET_NOK;
+		return false;
 	}
 
 	if (file.crc() == crc.second)
 	{
 		wlog(LOGDEVELOPER, "Client has already newest %s file", file.name().c_str());
-		return RET_NOK;
+		return false;
 	}
 
 	network_send_file(context, file.name().c_str());
 
-	return RET_OK;
+	return true;
 }
 
 /**************************************
- Return RET_NOK on error
+ Return false on error
  **************************************/
 int parse_incoming_data(Context * context, const std::string & serialized_data)
 {
@@ -286,5 +284,5 @@ int parse_incoming_data(Context * context, const std::string & serialized_data)
 		}
 	}
 
-	return RET_OK;
+	return true;
 }

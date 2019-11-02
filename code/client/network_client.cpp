@@ -17,12 +17,11 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#include "common.h"
+#include "const.h"
+#include "log.h"
+#include "network.h"
 #include "screen.h"
 #include "wog.pb.h"
-#include "log.h"
-#include "const.h"
-#include "network.h"
 #include <arpa/inet.h>
 
 /*********************************************************************
@@ -147,7 +146,7 @@ static int async_recv(void * data)
 	{
 		uint32_t frame_size = 0U;
 
-		if (network_read_bytes(context->m_socket, (char *) &frame_size, sizeof(uint32_t)) == RET_NOK)
+		if (network_read_bytes(context->m_socket, (char *) &frame_size, sizeof(uint32_t)) == false)
 		{
 			break;
 		}
@@ -156,13 +155,13 @@ static int async_recv(void * data)
 			frame_size = ntohl(frame_size);
 			char frame[frame_size];
 
-			if (network_read_bytes(context->m_socket, (char *) frame, frame_size) == RET_NOK)
+			if (network_read_bytes(context->m_socket, (char *) frame, frame_size) == false)
 			{
 				break;
 			}
 
 			std::string serialized_data(frame, frame_size);
-			if (parse_incoming_data(context, serialized_data) == RET_NOK)
+			if (parse_incoming_data(context, serialized_data) == false)
 			{
 				break;
 			}
@@ -195,7 +194,7 @@ static int async_data_recv(void * data)
 	{
 		uint32_t frame_size = 0U;
 
-		if (network_read_bytes(context->m_socket_data, (char *) &frame_size, sizeof(uint32_t)) == RET_NOK)
+		if (network_read_bytes(context->m_socket_data, (char *) &frame_size, sizeof(uint32_t)) == false)
 		{
 			break;
 		}
@@ -204,13 +203,13 @@ static int async_data_recv(void * data)
 			frame_size = ntohl(frame_size);
 			char frame[frame_size];
 
-			if (network_read_bytes(context->m_socket_data, (char *) frame, frame_size) == RET_NOK)
+			if (network_read_bytes(context->m_socket_data, (char *) frame, frame_size) == false)
 			{
 				break;
 			}
 
 			std::string serialized_data(frame, frame_size);
-			if (parse_incoming_data(context, serialized_data) == RET_NOK)
+			if (parse_incoming_data(context, serialized_data) == false)
 			{
 				break;
 			}
@@ -231,7 +230,7 @@ static int async_data_recv(void * data)
 }
 
 /*********************************************************************
- return RET_NOK on error
+ return false on error
  *********************************************************************/
 int network_connect(Context * context, const char * hostname)
 {
@@ -243,19 +242,19 @@ int network_connect(Context * context, const char * hostname)
 	if (SDLNet_Init() < 0)
 	{
 		werr(LOGUSER, "Can't init SDLNet: %s\n", SDLNet_GetError());
-		return RET_NOK;
+		return false;
 	}
 
 	if (SDLNet_ResolveHost(&ip, hostname, PORT) < 0)
 	{
 		werr(LOGUSER, "Can't resolve %s:%d : %s\n", hostname, PORT, SDLNet_GetError());
-		return RET_NOK;
+		return false;
 	}
 
 	if (!(socket = SDLNet_TCP_Open(&ip)))
 	{
 		werr(LOGUSER, "Can't connect to %s:%d : %s\n", hostname, PORT, SDLNet_GetError());
-		return RET_NOK;
+		return false;
 	}
 
 	wlog(LOGUSER, "Connected to %s:%d", hostname, PORT);
@@ -265,7 +264,7 @@ int network_connect(Context * context, const char * hostname)
 
 	SDL_CreateThread(async_recv, "async_recv", (void*) context);
 
-	return RET_OK;
+	return true;
 }
 
 /*********************************************************************
@@ -278,18 +277,18 @@ int network_open_data_connection(Context * context)
 	if (SDLNet_ResolveHost(&ip, context->m_hostname, PORT) < 0)
 	{
 		werr(LOGUSER, "Can't resolve %s:%d : %s\n", context->m_hostname, PORT, SDLNet_GetError());
-		return RET_NOK;
+		return false;
 	}
 
 	if (!(socket = SDLNet_TCP_Open(&ip)))
 	{
 		werr(LOGUSER, "Can't open data connection to %s:%d : %s\n", context->m_hostname, PORT, SDLNet_GetError());
-		return RET_NOK;
+		return false;
 	}
 
 	context_set_socket_data(context, socket);
 
 	SDL_CreateThread(async_data_recv, "async_data_recv", (void*) context);
 
-	return RET_OK;
+	return true;
 }

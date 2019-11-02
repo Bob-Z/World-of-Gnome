@@ -19,21 +19,20 @@
 
 #include "character.h"
 
-#include <client_server.h>
-#include <common.h>
-#include <const.h>
 #include "Context.h"
+#include <client_server.h>
+#include <const.h>
+#include <cstdio>
+#include <cstring>
 #include <dirent.h>
 #include <entry.h>
 #include <file.h>
 #include <log.h>
-#include <stdlib.h>
-#include <syntax.h>
 #include <SDL_mutex.h>
-#include <util.h>
-#include <cstdio>
-#include <cstring>
+#include <stdlib.h>
 #include <string>
+#include <syntax.h>
+#include <util.h>
 #include <vector>
 
 #include "action.h"
@@ -71,7 +70,7 @@ void character_playable_send_list(Context * context)
 		}
 
 		if (entry_read_string(CHARACTER_TEMPLATE_TABLE, ent->d_name, &marquee,
-		CHARACTER_KEY_MARQUEE, nullptr) == RET_OK)
+		CHARACTER_KEY_MARQUEE, nullptr) == true)
 		{
 			if (marquee[0] == '\0')
 			{
@@ -83,7 +82,7 @@ void character_playable_send_list(Context * context)
 		else
 		{
 			char ** marquee_list = nullptr;
-			if (entry_read_list(CHARACTER_TEMPLATE_TABLE, ent->d_name, &marquee_list, CHARACTER_KEY_MARQUEE, nullptr) == RET_NOK)
+			if (entry_read_list(CHARACTER_TEMPLATE_TABLE, ent->d_name, &marquee_list, CHARACTER_KEY_MARQUEE, nullptr) == false)
 			{
 				wlog(LOGDESIGNER, "%s has no marquee", ent->d_name);
 				continue;
@@ -113,13 +112,13 @@ void character_user_send(Context * p_pCtx, const char * p_pCharacterId)
 	char * l_pName = nullptr;
 
 	if (entry_read_string(CHARACTER_TABLE, p_pCharacterId, &l_pType,
-	CHARACTER_KEY_TYPE, nullptr) == RET_NOK)
+	CHARACTER_KEY_TYPE, nullptr) == false)
 	{
 		return;
 	}
 
 	if (entry_read_string(CHARACTER_TABLE, p_pCharacterId, &l_pName,
-	CHARACTER_KEY_NAME, nullptr) == RET_NOK)
+	CHARACTER_KEY_NAME, nullptr) == false)
 	{
 		free(l_pType);
 		return;
@@ -138,7 +137,7 @@ void character_user_send_list(Context * context)
 	char ** l_pCharacterList = nullptr;
 
 	if (entry_read_list(USERS_TABLE, context->getUserName().c_str(), &l_pCharacterList,
-	USERS_CHARACTER_LIST, nullptr) == RET_NOK)
+	USERS_CHARACTER_LIST, nullptr) == false)
 	{
 		return;
 	}
@@ -239,7 +238,7 @@ std::pair<bool, std::string> character_create_from_template(Context * ctx, const
 		{ false, "" };
 	}
 
-	if (entry_write_string(CHARACTER_TABLE, new_id.second.c_str(), map, CHARACTER_KEY_MAP, nullptr) == RET_NOK)
+	if (entry_write_string(CHARACTER_TABLE, new_id.second.c_str(), map, CHARACTER_KEY_MAP, nullptr) == false)
 	{
 		entry_destroy(CHARACTER_TABLE, new_id.second.c_str());
 		file_delete(CHARACTER_TABLE, new_id.second);
@@ -247,7 +246,7 @@ std::pair<bool, std::string> character_create_from_template(Context * ctx, const
 		{ false, "" };
 	}
 
-	if (entry_write_int(CHARACTER_TABLE, new_id.second.c_str(), x, CHARACTER_KEY_TILE_X, nullptr) == RET_NOK)
+	if (entry_write_int(CHARACTER_TABLE, new_id.second.c_str(), x, CHARACTER_KEY_TILE_X, nullptr) == false)
 	{
 		entry_destroy(CHARACTER_TABLE, new_id.second.c_str());
 		file_delete(CHARACTER_TABLE, new_id.second);
@@ -255,7 +254,7 @@ std::pair<bool, std::string> character_create_from_template(Context * ctx, const
 		{ false, "" };
 	}
 
-	if (entry_write_int(CHARACTER_TABLE, new_id.second.c_str(), y, CHARACTER_KEY_TILE_Y, nullptr) == RET_NOK)
+	if (entry_write_int(CHARACTER_TABLE, new_id.second.c_str(), y, CHARACTER_KEY_TILE_Y, nullptr) == false)
 	{
 		entry_destroy(CHARACTER_TABLE, new_id.second.c_str());
 		file_delete(CHARACTER_TABLE, new_id.second);
@@ -265,7 +264,7 @@ std::pair<bool, std::string> character_create_from_template(Context * ctx, const
 
 	if (layer != -1) // FIXME
 	{
-		if (entry_write_int(CHARACTER_TABLE, new_id.second.c_str(), layer, CHARACTER_LAYER, nullptr) == RET_NOK)
+		if (entry_write_int(CHARACTER_TABLE, new_id.second.c_str(), layer, CHARACTER_LAYER, nullptr) == false)
 		{
 			entry_destroy(CHARACTER_TABLE, new_id.second.c_str());
 			file_delete(CHARACTER_TABLE, new_id.second);
@@ -330,10 +329,10 @@ void character_update_aggro(Context * agressor)
 	if (character_get_npc(agressor->getId()) && agressor->m_lua_VM != nullptr)
 	{
 		if (entry_read_int(CHARACTER_TABLE, agressor->getId().c_str(), &aggro_dist,
-		CHARACTER_KEY_AGGRO_DIST, nullptr) == RET_OK)
+		CHARACTER_KEY_AGGRO_DIST, nullptr) == true)
 		{
 			if (entry_read_string(CHARACTER_TABLE, agressor->getId().c_str(), &aggro_script,
-			CHARACTER_KEY_AGGRO_SCRIPT, nullptr) == RET_OK)
+			CHARACTER_KEY_AGGRO_SCRIPT, nullptr) == true)
 			{
 				target = context_get_first();
 
@@ -404,13 +403,13 @@ void character_update_aggro(Context * agressor)
 			continue;
 		}
 		if (entry_read_int(CHARACTER_TABLE, npc->getId().c_str(), &aggro_dist,
-		CHARACTER_KEY_AGGRO_DIST, nullptr) == RET_NOK)
+		CHARACTER_KEY_AGGRO_DIST, nullptr) == false)
 		{
 			npc = npc->m_next;
 			continue;
 		}
 		if (entry_read_string(CHARACTER_TABLE, npc->getId().c_str(), &aggro_script,
-		CHARACTER_KEY_AGGRO_SCRIPT, nullptr) == RET_NOK)
+		CHARACTER_KEY_AGGRO_SCRIPT, nullptr) == false)
 		{
 			npc = npc->m_next;
 			continue;
@@ -451,7 +450,7 @@ static void platform_move(Context * platform, const std::string & map, int x, in
 	int is_platform;
 
 	if (entry_read_int(CHARACTER_TABLE, platform->getId().c_str(), &is_platform,
-	CHARACTER_KEY_PLATFORM, nullptr) == RET_NOK)
+	CHARACTER_KEY_PLATFORM, nullptr) == false)
 	{
 		return;
 	}
@@ -617,13 +616,13 @@ int character_set_pos(Context * ctx, const std::string & map, int x, int y)
 		{
 			script = nullptr;
 			if (entry_read_string(MAP_TABLE, map.c_str(), &script, layer_name,
-			MAP_ENTRY_EVENT_LIST, event_id[i], MAP_EVENT_SCRIPT, nullptr) == RET_OK)
+			MAP_ENTRY_EVENT_LIST, event_id[i], MAP_EVENT_SCRIPT, nullptr) == true)
 			{
 				entry_read_list(MAP_TABLE, map.c_str(), &param, layer_name,
 				MAP_ENTRY_EVENT_LIST, event_id[i], MAP_EVENT_PARAM, nullptr);
 			}
 			else if (entry_read_string(MAP_TABLE, map.c_str(), &script,
-			MAP_ENTRY_EVENT_LIST, event_id[i], MAP_EVENT_SCRIPT, nullptr) == RET_OK)
+			MAP_ENTRY_EVENT_LIST, event_id[i], MAP_EVENT_SCRIPT, nullptr) == true)
 			{
 				entry_read_list(MAP_TABLE, map.c_str(), &param, MAP_ENTRY_EVENT_LIST, event_id[i], MAP_EVENT_PARAM, nullptr);
 			}
@@ -656,7 +655,7 @@ int character_set_pos(Context * ctx, const std::string & map, int x, int y)
  *********************************************************/
 int character_set_npc(const char * id, int npc)
 {
-	if (entry_write_int(CHARACTER_TABLE, id, npc, CHARACTER_KEY_NPC, nullptr) == RET_NOK)
+	if (entry_write_int(CHARACTER_TABLE, id, npc, CHARACTER_KEY_NPC, nullptr) == false)
 	{
 		return -1;
 	}
@@ -678,7 +677,7 @@ int character_get_npc(const std::string & id)
 {
 	int npc;
 
-	if (entry_read_int(CHARACTER_TABLE, id.c_str(), &npc, CHARACTER_KEY_NPC, nullptr) == RET_NOK)
+	if (entry_read_int(CHARACTER_TABLE, id.c_str(), &npc, CHARACTER_KEY_NPC, nullptr) == false)
 	{
 		return 0;
 	}
@@ -694,7 +693,7 @@ int character_set_portrait(const char * id, const char * portrait)
 	Context * ctx;
 
 	if (entry_write_string(CHARACTER_TABLE, id, portrait,
-	CHARACTER_KEY_PORTRAIT, nullptr) == RET_NOK)
+	CHARACTER_KEY_PORTRAIT, nullptr) == false)
 	{
 		return -1;
 	}
@@ -702,7 +701,7 @@ int character_set_portrait(const char * id, const char * portrait)
 	ctx = context_find(id);
 	network_send_character_file(ctx);
 
-	return RET_OK;
+	return true;
 }
 
 /*********************************************************
@@ -714,7 +713,7 @@ char * character_get_portrait(const char * id)
 	char * portrait;
 
 	if (entry_read_string(CHARACTER_TABLE, id, &portrait,
-	CHARACTER_KEY_PORTRAIT, nullptr) == RET_NOK)
+	CHARACTER_KEY_PORTRAIT, nullptr) == false)
 	{
 		return nullptr;
 	}
@@ -728,7 +727,7 @@ char * character_get_portrait(const char * id)
  *********************************************************/
 int character_set_ai_script(const char * id, const char * script_name)
 {
-	if (entry_write_string(CHARACTER_TABLE, id, script_name, CHARACTER_KEY_AI, nullptr) == RET_NOK)
+	if (entry_write_string(CHARACTER_TABLE, id, script_name, CHARACTER_KEY_AI, nullptr) == false)
 	{
 		return -1;
 	}
@@ -759,27 +758,27 @@ int character_wake_up(const char * id)
 
 /***********************************
  Write a new filename in a character's sprite list
- return RET_NOK on error
+ return false on error
  ***********************************/
 int character_set_sprite(const char * id, int index, const char * filename)
 {
 	if (id == nullptr || filename == nullptr)
 	{
-		return RET_NOK;
+		return false;
 	}
 
 	if (entry_write_list_index(CHARACTER_TABLE, id, filename, index,
-	CHARACTER_KEY_SPRITE, nullptr) == RET_NOK)
+	CHARACTER_KEY_SPRITE, nullptr) == false)
 	{
-		return RET_NOK;
+		return false;
 	}
 
-	return RET_OK;
+	return true;
 }
 
 /***********************************
  Write a new filename in a character's sprite direction list
- return RET_NOK on error
+ return false on error
  ***********************************/
 int character_set_sprite_dir(const char * id, const char * dir, int index, const char * filename)
 {
@@ -787,7 +786,7 @@ int character_set_sprite_dir(const char * id, const char * dir, int index, const
 
 	if (id == nullptr || filename == nullptr || dir == nullptr)
 	{
-		return RET_NOK;
+		return false;
 	}
 
 	switch (dir[0])
@@ -809,21 +808,21 @@ int character_set_sprite_dir(const char * id, const char * dir, int index, const
 		key = CHARACTER_KEY_DIR_E_SPRITE;
 		break;
 	default:
-		return RET_NOK;
+		return false;
 		break;
 	}
 
-	if (entry_write_list_index(CHARACTER_TABLE, id, filename, index, key, nullptr) == RET_NOK)
+	if (entry_write_list_index(CHARACTER_TABLE, id, filename, index, key, nullptr) == false)
 	{
-		return RET_NOK;
+		return false;
 	}
 
-	return RET_OK;
+	return true;
 }
 
 /***********************************
  Write a new filename in a character's moving sprite list
- return RET_NOK on error
+ return false on error
  ***********************************/
 int character_set_sprite_move(const char * id, const char * dir, int index, const char * filename)
 {
@@ -831,7 +830,7 @@ int character_set_sprite_move(const char * id, const char * dir, int index, cons
 
 	if (id == nullptr || filename == nullptr || dir == nullptr)
 	{
-		return RET_NOK;
+		return false;
 	}
 
 	switch (dir[0])
@@ -853,16 +852,16 @@ int character_set_sprite_move(const char * id, const char * dir, int index, cons
 		key = CHARACTER_KEY_MOV_E_SPRITE;
 		break;
 	default:
-		return RET_NOK;
+		return false;
 		break;
 	}
 
-	if (entry_write_list_index(CHARACTER_TABLE, id, filename, index, key, nullptr) == RET_NOK)
+	if (entry_write_list_index(CHARACTER_TABLE, id, filename, index, key, nullptr) == false)
 	{
-		return RET_NOK;
+		return false;
 	}
 
-	return RET_OK;
+	return true;
 }
 
 /***********************************

@@ -20,8 +20,6 @@
 #ifndef WOG_OPTION_CLIENT
 #define WOG_OPTION_CLIENT
 
-#include "common.h"
-
 typedef struct
 {
 	int show_tile_type;

@@ -17,7 +17,6 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#include "common.h"
 #include "const.h"
 #include "entry.h"
 #include "map.h"
@@ -67,19 +66,19 @@ layer_t * map_layer_new(const std::string & map, int layer_index, layer_t * defa
 		entry_read_int(MAP_TABLE, map.c_str(), &layer->map_h, layer_name, MAP_KEY_HEIGHT, nullptr);
 
 		layer->tile_width = default_layer->tile_width;
-		if (entry_read_int(MAP_TABLE, map.c_str(), &layer->tile_width, layer_name, MAP_KEY_TILE_WIDTH, nullptr) == RET_OK)
+		if (entry_read_int(MAP_TABLE, map.c_str(), &layer->tile_width, layer_name, MAP_KEY_TILE_WIDTH, nullptr) == true)
 		{
 			layer->col_width[0] = layer->tile_width;
 		}
 
 		layer->tile_height = default_layer->tile_height;
-		if (entry_read_int(MAP_TABLE, map.c_str(), &layer->tile_height, layer_name, MAP_KEY_TILE_HEIGHT, nullptr) == RET_OK)
+		if (entry_read_int(MAP_TABLE, map.c_str(), &layer->tile_height, layer_name, MAP_KEY_TILE_HEIGHT, nullptr) == true)
 		{
 			layer->row_height[0] = layer->tile_height;
 		}
 
 		layer->map_zoom = default_layer->map_zoom;
-		if (entry_read_string(MAP_TABLE, map.c_str(), &zoom_str, layer_name, MAP_KEY_SPRITE_ZOOM, nullptr) == RET_OK)
+		if (entry_read_string(MAP_TABLE, map.c_str(), &zoom_str, layer_name, MAP_KEY_SPRITE_ZOOM, nullptr) == true)
 		{
 			layer->map_zoom = atof(zoom_str);
 			free(zoom_str);
@@ -90,22 +89,22 @@ layer_t * map_layer_new(const std::string & map, int layer_index, layer_t * defa
 	}
 	else
 	{
-		if (entry_read_int(MAP_TABLE, map.c_str(), &layer->map_w, MAP_KEY_WIDTH, nullptr) == RET_NOK)
+		if (entry_read_int(MAP_TABLE, map.c_str(), &layer->map_w, MAP_KEY_WIDTH, nullptr) == false)
 		{
 			free(layer);
 			return nullptr;
 		}
-		if (entry_read_int(MAP_TABLE, map.c_str(), &layer->map_h, MAP_KEY_HEIGHT, nullptr) == RET_NOK)
+		if (entry_read_int(MAP_TABLE, map.c_str(), &layer->map_h, MAP_KEY_HEIGHT, nullptr) == false)
 		{
 			free(layer);
 			return nullptr;
 		}
-		if (entry_read_int(MAP_TABLE, map.c_str(), &layer->tile_width, MAP_KEY_TILE_WIDTH, nullptr) == RET_NOK)
+		if (entry_read_int(MAP_TABLE, map.c_str(), &layer->tile_width, MAP_KEY_TILE_WIDTH, nullptr) == false)
 		{
 			free(layer);
 			return nullptr;
 		}
-		if (entry_read_int(MAP_TABLE, map.c_str(), &layer->tile_height, MAP_KEY_TILE_HEIGHT, nullptr) == RET_NOK)
+		if (entry_read_int(MAP_TABLE, map.c_str(), &layer->tile_height, MAP_KEY_TILE_HEIGHT, nullptr) == false)
 		{
 			free(layer);
 			return nullptr;
@@ -118,7 +117,7 @@ layer_t * map_layer_new(const std::string & map, int layer_index, layer_t * defa
 		layer->row_height[0] = layer->tile_height;
 
 		layer->map_zoom = 1.0;
-		if (entry_read_string(MAP_TABLE, map.c_str(), &zoom_str, MAP_KEY_SPRITE_ZOOM, nullptr) == RET_OK)
+		if (entry_read_string(MAP_TABLE, map.c_str(), &zoom_str, MAP_KEY_SPRITE_ZOOM, nullptr) == true)
 		{
 			layer->map_zoom = atof(zoom_str);
 			free(zoom_str);
@@ -142,12 +141,12 @@ layer_t * map_layer_new(const std::string & map, int layer_index, layer_t * defa
 			}
 
 			sprintf(keyword, "%s%d", MAP_KEY_COL_WIDTH, tiling_index);
-			if (entry_read_int(MAP_TABLE, map.c_str(), &layer->col_width[tiling_index], layer_name, keyword, nullptr) == RET_OK)
+			if (entry_read_int(MAP_TABLE, map.c_str(), &layer->col_width[tiling_index], layer_name, keyword, nullptr) == true)
 			{
 				more = true;
 			}
 			sprintf(keyword, "%s%d", MAP_KEY_COL_HEIGHT, tiling_index);
-			if (entry_read_int(MAP_TABLE, map.c_str(), &layer->col_height[tiling_index], layer_name, keyword, nullptr) == RET_OK)
+			if (entry_read_int(MAP_TABLE, map.c_str(), &layer->col_height[tiling_index], layer_name, keyword, nullptr) == true)
 			{
 				more = true;
 			}
@@ -161,12 +160,12 @@ layer_t * map_layer_new(const std::string & map, int layer_index, layer_t * defa
 			}
 
 			sprintf(keyword, "%s%d", MAP_KEY_COL_WIDTH, tiling_index);
-			if (entry_read_int(MAP_TABLE, map.c_str(), &layer->col_width[tiling_index], keyword, nullptr) == RET_OK)
+			if (entry_read_int(MAP_TABLE, map.c_str(), &layer->col_width[tiling_index], keyword, nullptr) == true)
 			{
 				more = true;
 			}
 			sprintf(keyword, "%s%d", MAP_KEY_COL_HEIGHT, tiling_index);
-			if (entry_read_int(MAP_TABLE, map.c_str(), &layer->col_height[tiling_index], keyword, nullptr) == RET_OK)
+			if (entry_read_int(MAP_TABLE, map.c_str(), &layer->col_height[tiling_index], keyword, nullptr) == true)
 			{
 				more = true;
 			}
@@ -193,12 +192,12 @@ layer_t * map_layer_new(const std::string & map, int layer_index, layer_t * defa
 			}
 
 			sprintf(keyword, "%s%d", MAP_KEY_ROW_WIDTH, tiling_index);
-			if (entry_read_int(MAP_TABLE, map.c_str(), &layer->row_width[tiling_index], layer_name, keyword, nullptr) == RET_OK)
+			if (entry_read_int(MAP_TABLE, map.c_str(), &layer->row_width[tiling_index], layer_name, keyword, nullptr) == true)
 			{
 				more = true;
 			}
 			sprintf(keyword, "%s%d", MAP_KEY_ROW_HEIGHT, tiling_index);
-			if (entry_read_int(MAP_TABLE, map.c_str(), &layer->row_height[tiling_index], layer_name, keyword, nullptr) == RET_OK)
+			if (entry_read_int(MAP_TABLE, map.c_str(), &layer->row_height[tiling_index], layer_name, keyword, nullptr) == true)
 			{
 				more = true;
 			}
@@ -212,12 +211,12 @@ layer_t * map_layer_new(const std::string & map, int layer_index, layer_t * defa
 			}
 
 			sprintf(keyword, "%s%d", MAP_KEY_ROW_WIDTH, tiling_index);
-			if (entry_read_int(MAP_TABLE, map.c_str(), &layer->row_width[tiling_index], keyword, nullptr) == RET_OK)
+			if (entry_read_int(MAP_TABLE, map.c_str(), &layer->row_width[tiling_index], keyword, nullptr) == true)
 			{
 				more = true;
 			}
 			sprintf(keyword, "%s%d", MAP_KEY_ROW_HEIGHT, tiling_index);
-			if (entry_read_int(MAP_TABLE, map.c_str(), &layer->row_height[tiling_index], keyword, nullptr) == RET_OK)
+			if (entry_read_int(MAP_TABLE, map.c_str(), &layer->row_height[tiling_index], keyword, nullptr) == true)
 			{
 				more = true;
 			}

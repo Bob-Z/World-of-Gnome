@@ -20,7 +20,9 @@
 #ifndef CONTEXT_SERVER_H
 #define CONTEXT_SERVER_H
 
-#include "common.h"
+#include <string>
+
+class Context;
 
 void context_spread(Context * context);
 void context_broadcast_map(const char * map);

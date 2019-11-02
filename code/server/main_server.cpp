@@ -18,11 +18,10 @@
  */
 
 #include "client_server.h"
-#include "common.h"
+#include "log.h"
 #include "mutex.h"
 #include "network_server.h"
 #include "npc.h"
-#include "log.h"
 #include <dirent.h>
 #include <getopt.h>
 #include <signal.h>

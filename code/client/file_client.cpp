@@ -18,19 +18,17 @@
  */
 
 #include "client_server.h"
-#include "common.h"
 #include "const.h"
 #include "Context.h"
 #include "entry.h"
 #include "file.h"
-#include "syntax.h"
-#include "log.h"
-#include <cstdio>
-#include <string>
-
 #include "imageDB.h"
+#include "log.h"
 #include "option_client.h"
 #include "screen.h"
+#include "syntax.h"
+#include <cstdio>
+#include <string>
 
 /*************************************
  return 0 on success
@@ -42,7 +40,7 @@ int file_add(Context * context, const std::string & name, const std::string & da
 
 	file_create_directory(temp_path);
 
-	if (file_set_contents(temp_name.c_str(), data.c_str(), data.size()) == RET_NOK)
+	if (file_set_contents(temp_name.c_str(), data.c_str(), data.size()) == false)
 	{
 		werr(LOGDESIGNER, "Error writing file %s with size %d", temp_name.c_str(), data.size());
 		return -1;
@@ -53,7 +51,7 @@ int file_add(Context * context, const std::string & name, const std::string & da
 	if (rename(temp_path.c_str(), file_path.c_str()) == -1)
 	{
 		wlog(LOGDEVELOPER, "Error renaming file %s to %s", temp_path.c_str(), file_path.c_str());
-		return RET_NOK;
+		return false;
 	}
 
 	wlog(LOGDEVELOPER, "write file %s", file_path.c_str());

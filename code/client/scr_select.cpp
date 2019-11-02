@@ -19,7 +19,6 @@
 
 #include "anim.h"
 #include "Camera.h"
-#include "common.h"
 #include "entry.h"
 #include "file_client.h"
 #include "file.h"
@@ -279,7 +278,7 @@ item_t * scr_select_compose(Context * context)
 	{
 		// Compute the marquee file name
 		char * marquee_name = nullptr;
-		if (entry_read_string(CHARACTER_TABLE, character_list[i].id, &marquee_name, CHARACTER_KEY_MARQUEE, nullptr) == RET_OK)
+		if (entry_read_string(CHARACTER_TABLE, character_list[i].id, &marquee_name, CHARACTER_KEY_MARQUEE, nullptr) == true)
 		{
 			const char * name_array[2] =
 			{ nullptr, nullptr };
@@ -290,7 +289,7 @@ item_t * scr_select_compose(Context * context)
 		else
 		{
 			char ** marquee_list = nullptr;
-			if (entry_read_list(CHARACTER_TABLE, character_list[i].id, &marquee_list, CHARACTER_KEY_MARQUEE, nullptr) == RET_NOK)
+			if (entry_read_list(CHARACTER_TABLE, character_list[i].id, &marquee_list, CHARACTER_KEY_MARQUEE, nullptr) == false)
 			{
 				wlog(LOGDESIGNER, "%s has no marquee", character_list[i].id);
 				continue;

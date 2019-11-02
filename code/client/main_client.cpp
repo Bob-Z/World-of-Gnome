@@ -18,7 +18,6 @@
  */
 
 #include "client_server.h"
-#include "common.h"
 #include "const.h"
 #include "file.h"
 #include "imageDB.h"
@@ -133,7 +132,7 @@ int main(int argc, char **argv)
 	Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 1024);
 
 	// connect to server
-	if (network_connect(context, ip) == RET_OK)
+	if (network_connect(context, ip) == true)
 	{
 		network_login(context, user, pass);
 	}

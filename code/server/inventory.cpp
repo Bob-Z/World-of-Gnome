@@ -18,13 +18,12 @@
  */
 
 #include "action.h"
-#include "common.h"
 #include "entry.h"
-#include "log.h"
 #include "item.h"
-#include "syntax.h"
-#include "network.h"
+#include "log.h"
 #include "network_server.h"
+#include "network.h"
+#include "syntax.h"
 #include "util.h"
 #include <dirent.h>
 #include <string.h>
@@ -42,7 +41,7 @@ int inventory_delete(const char * id, const char * item)
 		return -1;
 	}
 
-	if (entry_remove_from_list(CHARACTER_TABLE, context->getId().c_str(), item, CHARACTER_KEY_INVENTORY, nullptr) == RET_OK)
+	if (entry_remove_from_list(CHARACTER_TABLE, context->getId().c_str(), item, CHARACTER_KEY_INVENTORY, nullptr) == true)
 	{
 		/* update client */
 		network_send_character_file(context);
@@ -84,18 +83,18 @@ int inventory_add(const char * ctx_id, const char * item_id)
 	mytemplate = item_is_resource(std::string(item_id));
 	if (mytemplate == nullptr)
 	{
-		if (entry_add_to_list(CHARACTER_TABLE, context->getId().c_str(), item_id, CHARACTER_KEY_INVENTORY, nullptr) == RET_NOK)
+		if (entry_add_to_list(CHARACTER_TABLE, context->getId().c_str(), item_id, CHARACTER_KEY_INVENTORY, nullptr) == false)
 		{
 			return -1;
 		}
 	}
 	else
 	{
-		if (entry_read_int(ITEM_TABLE, item_id, &add_count, ITEM_QUANTITY, nullptr) == RET_NOK)
+		if (entry_read_int(ITEM_TABLE, item_id, &add_count, ITEM_QUANTITY, nullptr) == false)
 		{
 			return -1;
 		}
-		if (entry_read_list(CHARACTER_TABLE, context->getId().c_str(), &name_list, CHARACTER_KEY_INVENTORY, nullptr) == RET_NOK)
+		if (entry_read_list(CHARACTER_TABLE, context->getId().c_str(), &name_list, CHARACTER_KEY_INVENTORY, nullptr) == false)
 		{
 			return -1;
 		}
@@ -103,11 +102,11 @@ int inventory_add(const char * ctx_id, const char * item_id)
 		index = 0;
 		while (name_list[index] != nullptr)
 		{
-			if (entry_read_string(ITEM_TABLE, name_list[index], &current_template, ITEM_TEMPLATE, nullptr) == RET_OK)
+			if (entry_read_string(ITEM_TABLE, name_list[index], &current_template, ITEM_TEMPLATE, nullptr) == true)
 			{
 				if (strcmp(mytemplate, current_template) == 0)
 				{
-					if (entry_read_int(ITEM_TABLE, name_list[index], &current_count, ITEM_QUANTITY, nullptr) == RET_OK)
+					if (entry_read_int(ITEM_TABLE, name_list[index], &current_count, ITEM_QUANTITY, nullptr) == true)
 					{
 						free(current_template);
 						free(mytemplate);
@@ -127,7 +126,7 @@ int inventory_add(const char * ctx_id, const char * item_id)
 		// First time we add this type of resource to inventory
 		if (name_list[index] == nullptr)
 		{
-			if (entry_add_to_list(CHARACTER_TABLE, context->getId().c_str(), item_id, CHARACTER_KEY_INVENTORY, nullptr) == RET_NOK)
+			if (entry_add_to_list(CHARACTER_TABLE, context->getId().c_str(), item_id, CHARACTER_KEY_INVENTORY, nullptr) == false)
 			{
 				return -1;
 			}
@@ -158,7 +157,7 @@ char * inventory_get_by_name(const char * id, const char * item_name)
 		return nullptr;
 	}
 
-	if (entry_read_list(CHARACTER_TABLE, context->getId().c_str(), &name_list, CHARACTER_KEY_INVENTORY, nullptr) == RET_NOK)
+	if (entry_read_list(CHARACTER_TABLE, context->getId().c_str(), &name_list, CHARACTER_KEY_INVENTORY, nullptr) == false)
 	{
 		return nullptr;
 	}

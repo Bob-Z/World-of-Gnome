@@ -18,16 +18,15 @@
  */
 
 #include "Camera.h"
-#include "common.h"
 #include "Context.h"
+#include "entry.h"
 #include "imageDB.h"
 #include "item.h"
-#include "sdl.h"
-#include "syntax.h"
-#include "entry.h"
 #include "log.h"
-#include "util.h"
+#include "sdl.h"
 #include "sfx.h"
+#include "syntax.h"
+#include "util.h"
 
 #ifdef __cplusplus
 extern "C"
@@ -320,7 +319,7 @@ static anim_t ** getAnimArray(const char * p_pId, const char * p_pKey)
 
 	// Try single image anim
 	char * sprite_name = nullptr;
-	if (entry_read_string(CHARACTER_TABLE, p_pId, &sprite_name, p_pKey, nullptr) == RET_OK)
+	if (entry_read_string(CHARACTER_TABLE, p_pId, &sprite_name, p_pKey, nullptr) == true)
 	{
 		if (sprite_name[0] != 0)
 		{
@@ -336,7 +335,7 @@ static anim_t ** getAnimArray(const char * p_pId, const char * p_pKey)
 
 	// Try list of image
 	char ** sprite_list = nullptr;
-	if (entry_read_list(CHARACTER_TABLE, p_pId, &sprite_list, p_pKey, nullptr) == RET_OK)
+	if (entry_read_list(CHARACTER_TABLE, p_pId, &sprite_list, p_pKey, nullptr) == true)
 	{
 		l_pAnimArray = imageDB_get_anim_array(context_get_player(), (const char **) sprite_list);
 		deep_free(sprite_list);

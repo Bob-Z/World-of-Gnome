@@ -17,23 +17,22 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#include <bits/stdint-uintn.h>
-#include <common.h>
-#include <const.h>
 #include "Context.h"
+#include <bits/stdint-uintn.h>
+#include <const.h>
+#include <cstring>
 #include <log.h>
 #include <netinet/in.h>
 #include <network.h>
 #include <protocol.h>
-#include <stdlib.h>
-#include <syntax.h>
 #include <SDL_net.h>
 #include <SDL_thread.h>
-#include <util.h>
-#include <wog.pb.h>
-#include <cstring>
+#include <stdlib.h>
 #include <string>
+#include <syntax.h>
+#include <util.h>
 #include <vector>
+#include <wog.pb.h>
 
 #include "../client/EffectManager.h"
 #include "../client/parser.h"
@@ -218,7 +217,7 @@ static int new_connection(void * data)
 	if (context == nullptr)
 	{
 		werr(LOGUSER, "Failed to create context");
-		return RET_NOK;
+		return false;
 	}
 
 	context_set_socket(context, socket);
@@ -229,7 +228,7 @@ static int new_connection(void * data)
 	{
 		uint32_t frame_size = 0U;
 
-		if (network_read_bytes(socket, (char *) &frame_size, sizeof(uint32_t)) == RET_NOK)
+		if (network_read_bytes(socket, (char *) &frame_size, sizeof(uint32_t)) == false)
 		{
 			break;
 		}
@@ -238,13 +237,13 @@ static int new_connection(void * data)
 			frame_size = ntohl(frame_size);
 			char frame[frame_size];
 
-			if (network_read_bytes(socket, (char *) frame, frame_size) == RET_NOK)
+			if (network_read_bytes(socket, (char *) frame, frame_size) == false)
 			{
 				break;
 			}
 
 			std::string serialized_data(frame, frame_size);
-			if (parse_incoming_data(context, serialized_data) == RET_NOK)
+			if (parse_incoming_data(context, serialized_data) == false)
 			{
 				break;
 			}
@@ -256,7 +255,7 @@ static int new_connection(void * data)
 	context_write_to_file(context);
 	context_free(context);
 
-	return RET_OK;
+	return true;
 }
 
 /*******************************************************************************

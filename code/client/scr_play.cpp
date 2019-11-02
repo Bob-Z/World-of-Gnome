@@ -19,7 +19,6 @@
 
 #include "anim.h"
 #include "Camera.h"
-#include "common.h"
 #include "const.h"
 #include "entry.h"
 #include "file.h"
@@ -202,7 +201,7 @@ static anim_t ** select_sprite(Context * ctx)
 
 	// try default sprite file
 	if (entry_read_string(CHARACTER_TABLE, ctx->getId().c_str(), &sprite_name,
-	CHARACTER_KEY_SPRITE, nullptr) == RET_OK)
+	CHARACTER_KEY_SPRITE, nullptr) == true)
 	{
 		if (sprite_name[0] != 0)
 		{
@@ -215,7 +214,7 @@ static anim_t ** select_sprite(Context * ctx)
 	}
 	// try default sprite list
 	if (entry_read_list(CHARACTER_TABLE, ctx->getId().c_str(), &sprite_list,
-	CHARACTER_KEY_SPRITE, nullptr) == RET_OK)
+	CHARACTER_KEY_SPRITE, nullptr) == true)
 	{
 		sprite = imageDB_get_anim_array(player_context, (const char **) sprite_list);
 		deep_free(sprite_list);
@@ -346,7 +345,7 @@ static void set_up_sprite(Context * ctx)
 
 	// Get per sprite zoom
 	if (entry_read_string(CHARACTER_TABLE, ctx->getId().c_str(), &zoom_str,
-	CHARACTER_KEY_ZOOM, nullptr) == RET_OK)
+	CHARACTER_KEY_ZOOM, nullptr) == true)
 	{
 		zoom = atof(zoom_str);
 		free(zoom_str);
@@ -537,7 +536,7 @@ static void compose_item(int layer_index)
 	sprintf(layer_name, "%s%d", MAP_KEY_LAYER, layer_index);
 
 	if (entry_get_group_list(MAP_TABLE, ctx->getMap().c_str(), &item_id, layer_name,
-	MAP_ENTRY_ITEM_LIST, nullptr) == RET_NOK)
+	MAP_ENTRY_ITEM_LIST, nullptr) == false)
 	{
 		return;
 	}
@@ -550,14 +549,14 @@ static void compose_item(int layer_index)
 		sprite_align = ALIGN_CENTER;
 
 		if (entry_read_int(MAP_TABLE, ctx->getMap().c_str(), &x, layer_name,
-		MAP_ENTRY_ITEM_LIST, item_id[i], MAP_ITEM_TILE_X, nullptr) == RET_NOK)
+		MAP_ENTRY_ITEM_LIST, item_id[i], MAP_ITEM_TILE_X, nullptr) == false)
 		{
 			i++;
 			continue;
 		}
 
 		if (entry_read_int(MAP_TABLE, ctx->getMap().c_str(), &y, layer_name,
-		MAP_ENTRY_ITEM_LIST, item_id[i], MAP_ITEM_TILE_Y, nullptr) == RET_NOK)
+		MAP_ENTRY_ITEM_LIST, item_id[i], MAP_ITEM_TILE_Y, nullptr) == false)
 		{
 			i++;
 			continue;
@@ -568,7 +567,7 @@ static void compose_item(int layer_index)
 		if (mytemplate == nullptr)
 		{
 			if (entry_read_string(ITEM_TABLE, item_id[i], &sprite_name,
-			ITEM_SPRITE, nullptr) == RET_NOK)
+			ITEM_SPRITE, nullptr) == false)
 			{
 				i++;
 				continue;
@@ -580,7 +579,7 @@ static void compose_item(int layer_index)
 		else
 		{
 			if (entry_read_string(ITEM_TEMPLATE_TABLE, mytemplate, &sprite_name,
-			ITEM_SPRITE, nullptr) == RET_NOK)
+			ITEM_SPRITE, nullptr) == false)
 			{
 				free(mytemplate);
 				i++;
@@ -725,7 +724,7 @@ static void compose_map_set(int layer_index)
 	Context * ctx = context_get_player();
 
 	snprintf(layer_name, sizeof(layer_name), "%s%d", MAP_KEY_LAYER, layer_index);
-	if (entry_read_list(MAP_TABLE, ctx->getMap().c_str(), &tile_set, layer_name, MAP_KEY_SET, nullptr) == RET_NOK)
+	if (entry_read_list(MAP_TABLE, ctx->getMap().c_str(), &tile_set, layer_name, MAP_KEY_SET, nullptr) == false)
 	{
 		return;
 	}
@@ -778,25 +777,25 @@ static void compose_map_scenery(int layer_index)
 
 	sprintf(layer_name, "%s%d", MAP_KEY_LAYER, layer_index);
 	if (entry_get_group_list(MAP_TABLE, ctx->getMap().c_str(), &scenery_list, layer_name,
-	MAP_KEY_SCENERY, nullptr) == RET_NOK)
+	MAP_KEY_SCENERY, nullptr) == false)
 	{
 		return;
 	}
 
 	while (scenery_list[i] != nullptr)
 	{
-		if (entry_read_int(MAP_TABLE, ctx->getMap().c_str(), &x, layer_name, MAP_KEY_SCENERY, scenery_list[i], MAP_KEY_SCENERY_X, nullptr) == RET_NOK)
+		if (entry_read_int(MAP_TABLE, ctx->getMap().c_str(), &x, layer_name, MAP_KEY_SCENERY, scenery_list[i], MAP_KEY_SCENERY_X, nullptr) == false)
 		{
 			i++;
 			continue;
 		}
-		if (entry_read_int(MAP_TABLE, ctx->getMap().c_str(), &y, layer_name, MAP_KEY_SCENERY, scenery_list[i], MAP_KEY_SCENERY_Y, nullptr) == RET_NOK)
+		if (entry_read_int(MAP_TABLE, ctx->getMap().c_str(), &y, layer_name, MAP_KEY_SCENERY, scenery_list[i], MAP_KEY_SCENERY_Y, nullptr) == false)
 		{
 			i++;
 			continue;
 		}
 		if (entry_read_string(MAP_TABLE, ctx->getMap().c_str(), &image_name, layer_name,
-		MAP_KEY_SCENERY, scenery_list[i], MAP_KEY_SCENERY_IMAGE, nullptr) == RET_NOK)
+		MAP_KEY_SCENERY, scenery_list[i], MAP_KEY_SCENERY_IMAGE, nullptr) == false)
 		{
 			i++;
 			continue;
@@ -847,7 +846,7 @@ static void compose_type(int layer_index)
 	{
 		for (y = 0; y < default_layer->map_h; y++)
 		{
-			if (entry_read_list_index(MAP_TABLE, ctx->getMap().c_str(), &type, x + y * default_layer->map_w, layer_name, MAP_KEY_TYPE, nullptr) == RET_NOK)
+			if (entry_read_list_index(MAP_TABLE, ctx->getMap().c_str(), &type, x + y * default_layer->map_w, layer_name, MAP_KEY_TYPE, nullptr) == false)
 			{
 				continue;
 			}
@@ -955,7 +954,7 @@ item_t * scr_play_compose(Context * ctx)
 
 	if (ctx->getMap() == "")
 	{
-		if (context_update_from_file(ctx) == RET_NOK)
+		if (context_update_from_file(ctx) == false)
 		{
 			return nullptr;
 		}

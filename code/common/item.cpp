@@ -17,13 +17,12 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#include "common.h"
 #include "Context.h"
 #include "entry.h"
 #include "file.h"
 #include "network.h"
-#include <stdlib.h>
 #include "syntax.h"
+#include <stdlib.h>
 #include <string>
 #include <utility>
 
@@ -62,7 +61,7 @@ std::pair<bool, std::string> item_create_from_template(const std::string & my_te
 
 /*****************************
  Remove an item file
- return RET_NOK on error
+ return false on error
  *****************************/
 int item_destroy(const std::string & item_id)
 {
@@ -83,14 +82,14 @@ std::pair<bool, std::string> resource_new(const std::string & my_template, int q
 		return new_id;
 	}
 
-	if (entry_write_string(ITEM_TABLE, new_id.second.c_str(), my_template.c_str(), ITEM_TEMPLATE, nullptr) == RET_NOK)
+	if (entry_write_string(ITEM_TABLE, new_id.second.c_str(), my_template.c_str(), ITEM_TEMPLATE, nullptr) == false)
 	{
 		entry_destroy(ITEM_TABLE, new_id.second.c_str());
 		return std::pair<bool, std::string>
 		{ false, "" };
 	}
 
-	if (entry_write_int(ITEM_TABLE, new_id.second.c_str(), quantity, ITEM_QUANTITY, nullptr) == RET_NOK)
+	if (entry_write_int(ITEM_TABLE, new_id.second.c_str(), quantity, ITEM_QUANTITY, nullptr) == false)
 	{
 		entry_destroy(ITEM_TABLE, new_id.second.c_str());
 		return std::pair<bool, std::string>
@@ -129,7 +128,7 @@ int resource_get_quantity(const std::string & item_id)
 	}
 	free(my_template);
 
-	if (entry_read_int(ITEM_TABLE, item_id.c_str(), &quantity, ITEM_QUANTITY, nullptr) == RET_NOK)
+	if (entry_read_int(ITEM_TABLE, item_id.c_str(), &quantity, ITEM_QUANTITY, nullptr) == false)
 	{
 		return -1;
 	}
@@ -152,7 +151,7 @@ int resource_set_quantity(Context * context, const std::string & item_id, int qu
 	}
 	free(my_template);
 
-	if (entry_write_int(ITEM_TABLE, item_id.c_str(), quantity, ITEM_QUANTITY, nullptr) == RET_NOK)
+	if (entry_write_int(ITEM_TABLE, item_id.c_str(), quantity, ITEM_QUANTITY, nullptr) == false)
 	{
 		return -1;
 	}
@@ -174,7 +173,7 @@ char * item_get_name(const std::string & item_id)
 	if ((my_template = item_is_resource(item_id)) != nullptr)
 	{
 		if (entry_read_string(ITEM_TEMPLATE_TABLE, my_template, &name,
-		ITEM_NAME, nullptr) == RET_OK)
+		ITEM_NAME, nullptr) == true)
 		{
 			free(my_template);
 			return name;
@@ -183,7 +182,7 @@ char * item_get_name(const std::string & item_id)
 	}
 	else
 	{
-		if (entry_read_string(ITEM_TABLE, item_id.c_str(), &name, ITEM_NAME, nullptr) == RET_OK)
+		if (entry_read_string(ITEM_TABLE, item_id.c_str(), &name, ITEM_NAME, nullptr) == true)
 		{
 			return name;
 		}

@@ -17,7 +17,6 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#include "common.h"
 #include "Context.h"
 #include "EffectManager.h"
 #include "entry.h"
@@ -39,26 +38,26 @@
 #include <vector>
 
 /**************************************
- Return RET_NOK on error
+ Return false on error
  **************************************/
 static int manage_login_ok(Context * context, const pb::LoginOk & login_ok)
 {
 	wlog(LOGDEVELOPER, "[network] Received login OK for user %s", context->getUserName().c_str());
 
-	if (network_open_data_connection(context) == RET_NOK)
+	if (network_open_data_connection(context) == false)
 	{
-		return RET_NOK;
+		return false;
 	}
 	context->setConnected(true);
 	wlog(LOGUSER, "Successfully connected");
 	network_request_user_character_list(context);
 	wlog(LOGDEVELOPER, "Character list requested");
 
-	return RET_OK;
+	return true;
 }
 
 /**************************************
- Return RET_NOK on error
+ Return false on error
  **************************************/
 static int manage_login_nok(Context * context, const pb::LoginNok & login_nok)
 {
@@ -69,11 +68,11 @@ static int manage_login_nok(Context * context, const pb::LoginNok & login_nok)
 	werr(LOGUSER, "Check your login and password (they are case sensitive)\n");
 	exit(-1);
 
-	return RET_OK;
+	return true;
 }
 
 /**************************************
- Return RET_NOK on error
+ Return false on error
  **************************************/
 static int manage_playable_character(Context * context, const pb::PlayableCharacter & playable_character)
 {
@@ -88,11 +87,11 @@ static int manage_playable_character(Context * context, const pb::PlayableCharac
 	scr_create_add_playable_character(context, id_list);
 	screen_compose();
 
-	return RET_OK;
+	return true;
 }
 
 /**************************************
- Return RET_NOK on error
+ Return false on error
  **************************************/
 static int manage_file(Context * context, const pb::File& file)
 {
@@ -101,11 +100,11 @@ static int manage_file(Context * context, const pb::File& file)
 	file_add(context, file.name(), file.data());
 	screen_compose();
 
-	return RET_OK;
+	return true;
 }
 
 /**************************************
- Return RET_NOK on error
+ Return false on error
  **************************************/
 static int manage_user_character(Context * context, const pb::UserCharacter& user_character)
 {
@@ -114,11 +113,11 @@ static int manage_user_character(Context * context, const pb::UserCharacter& use
 	scr_select_add_user_character(context, user_character.id(), user_character.type(), user_character.name());
 	screen_compose();
 
-	return RET_OK;
+	return true;
 }
 
 /**************************************
- Return RET_NOK on error
+ Return false on error
  **************************************/
 static int manage_context(Context * context, const pb::Context& incoming_context)
 {
@@ -144,11 +143,11 @@ static int manage_context(Context * context, const pb::Context& incoming_context
 	context_add_or_update_from_network_frame(received_context);
 	screen_compose();
 
-	return RET_OK;
+	return true;
 }
 
 /**************************************
- Return RET_NOK on error
+ Return false on error
  **************************************/
 static int manage_text(Context * context, const pb::Text& text)
 {
@@ -156,11 +155,11 @@ static int manage_text(Context * context, const pb::Text& text)
 
 	textview_add_line(text.text());
 
-	return RET_OK;
+	return true;
 }
 
 /**************************************
- Return RET_NOK on error
+ Return false on error
  **************************************/
 static int manage_entry(Context * context, const pb::Entry& entry)
 {
@@ -171,11 +170,11 @@ static int manage_entry(Context * context, const pb::Entry& entry)
 		screen_compose();
 	}
 
-	return RET_OK;
+	return true;
 }
 
 /**************************************
- Return RET_NOK on error
+ Return false on error
  **************************************/
 static int manage_popup(Context * context, const pb::PopUp& popup)
 {
@@ -190,11 +189,11 @@ static int manage_popup(Context * context, const pb::PopUp& popup)
 	ui_play_popup_add(data);
 	screen_compose();
 
-	return RET_OK;
+	return true;
 }
 
 /**************************************
- Return RET_NOK on error
+ Return false on error
  **************************************/
 static int manage_effect(Context * context, const pb::Effect& effect)
 {
@@ -208,11 +207,11 @@ static int manage_effect(Context * context, const pb::Effect& effect)
 
 	EffectManager::processEffectFrame(context, params);
 
-	return RET_OK;
+	return true;
 }
 
 /***********************************
- Return RET_NOK on error
+ Return false on error
  ***********************************/
 int parse_incoming_data(Context * context, const std::string & serialized_data)
 {
@@ -269,5 +268,5 @@ int parse_incoming_data(Context * context, const std::string & serialized_data)
 		}
 	}
 
-	return RET_OK;
+	return true;
 }
