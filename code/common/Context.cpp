@@ -308,13 +308,6 @@ TCPsocket context_get_socket_data(Context * context)
 	return socket;
 }
 
-/**************************************
- **************************************/
-// Client use only one LUA VM, not one LUA VM by context
-#ifdef SERVER
-void register_lua_functions(Context * context);
-#endif
-
 /*******************************
  Update the memory context by reading the character's data file on disk
  Return false if there is an error
