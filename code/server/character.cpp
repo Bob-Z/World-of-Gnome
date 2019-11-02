@@ -171,12 +171,7 @@ int character_disconnect(const char * id)
 
 	if (context_is_npc(ctx) == true)
 	{
-		/* Wake up NPC */
-		if (SDL_TryLockMutex(ctx->m_condition_mutex) == 0)
-		{
-			SDL_CondSignal(ctx->m_condition);
-			SDL_UnlockMutex(ctx->m_condition_mutex);
-		}
+		ctx->wakeUp();
 	}
 
 	return 0;
@@ -200,12 +195,7 @@ int character_out_of_game(const char * id)
 
 	if (context_is_npc(ctx) == true)
 	{
-		/* Wake up NPC */
-		if (SDL_TryLockMutex(ctx->m_condition_mutex) == 0)
-		{
-			SDL_CondSignal(ctx->m_condition);
-			SDL_UnlockMutex(ctx->m_condition_mutex);
-		}
+		ctx->wakeUp();
 	}
 
 	return 0;
@@ -326,7 +316,7 @@ void character_update_aggro(Context * agressor)
 	}
 
 	// If the current context is an NPC it might be an aggressor: compute its aggro
-	if (character_get_npc(agressor->getId()) && agressor->m_lua_VM != nullptr)
+	if (character_get_npc(agressor->getId()))
 	{
 		if (entry_read_int(CHARACTER_TABLE, agressor->getId().c_str(), &aggro_dist,
 		CHARACTER_KEY_AGGRO_DIST, nullptr) == true)
@@ -338,7 +328,7 @@ void character_update_aggro(Context * agressor)
 
 				while (target != nullptr)
 				{
-					/* Skip current context */
+					// Skip current context
 					if (agressor == target)
 					{
 						target = target->m_next;
@@ -375,7 +365,7 @@ void character_update_aggro(Context * agressor)
 
 	while (npc != nullptr)
 	{
-		/* Skip current context */
+		// Skip current context
 		if (target == npc)
 		{
 			npc = npc->m_next;
@@ -391,7 +381,7 @@ void character_update_aggro(Context * agressor)
 			npc = npc->m_next;
 			continue;
 		}
-		if (npc->m_lua_VM == nullptr)
+		if (npc->isNpc() == false)
 		{
 			npc = npc->m_next;
 			continue;
@@ -402,6 +392,7 @@ void character_update_aggro(Context * agressor)
 			npc = npc->m_next;
 			continue;
 		}
+
 		if (entry_read_int(CHARACTER_TABLE, npc->getId().c_str(), &aggro_dist,
 		CHARACTER_KEY_AGGRO_DIST, nullptr) == false)
 		{
@@ -741,17 +732,13 @@ int character_set_ai_script(const char * id, const char * script_name)
  *********************************************************/
 int character_wake_up(const char * id)
 {
-	Context * ctx;
+	Context * ctx = nullptr;
 
 	ctx = context_find(id);
 
 	// Wake up NPC
 	ctx->setNextExecutionTick(0);
-	if (SDL_TryLockMutex(ctx->m_condition_mutex) == 0)
-	{
-		SDL_CondSignal(ctx->m_condition);
-		SDL_UnlockMutex(ctx->m_condition_mutex);
-	}
+	ctx->wakeUp();
 
 	return 0;
 }

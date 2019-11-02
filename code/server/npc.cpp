@@ -39,7 +39,7 @@
 static int npc_script(void * data)
 {
 	Context * context = (Context *) data;
-	Uint32 timeout_ms;
+	Uint32 timeOutMs = 0U;
 	char * script = nullptr;
 	char ** parameters = nullptr;
 
@@ -70,9 +70,9 @@ static int npc_script(void * data)
 		if (context->getNextExecutionTick() < SDL_GetTicks())
 		{
 			SDL_LockMutex(npc_mutex);
-			timeout_ms = action_execute_script(context, script, (const char **) parameters);
+			timeOutMs = action_execute_script(context, script, (const char **) parameters);
 			SDL_UnlockMutex(npc_mutex);
-			context->setNextExecutionTick(SDL_GetTicks() + timeout_ms);
+			context->setNextExecutionTick(SDL_GetTicks() + timeOutMs);
 		}
 
 		/* The previous call to action_execute_script may have changed
@@ -80,18 +80,15 @@ static int npc_script(void * data)
 		 timeout duration before disconnecting */
 		if (context->isConnected() == true)
 		{
-			SDL_LockMutex(context->m_condition_mutex);
-			SDL_CondWaitTimeout(context->m_condition, context->m_condition_mutex, timeout_ms);
-			SDL_UnlockMutex(context->m_condition_mutex);
+			context->sleep(timeOutMs);
 		}
 	}
 
 	wlog(LOGDESIGNER, "End AI script for %s(%s)", context->getId().c_str(), context->getCharacterName().c_str());
 
-	/* Send connected  = FALSE to other context */
+	// Send connected  = FALSE to other context
 	context_spread(context);
 
-	/* clean up */
 	context_free(context);
 
 	return 0;
@@ -166,8 +163,6 @@ void instantiate_npc(const std::string & id)
 	ctx->setTileY(y);
 
 	ctx->setId(id);
-	ctx->m_condition = SDL_CreateCond();
-	ctx->m_condition_mutex = SDL_CreateMutex();
 
 	context_spread(ctx);
 

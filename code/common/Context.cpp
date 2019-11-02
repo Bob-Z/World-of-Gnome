@@ -37,16 +37,41 @@ Context * context_list_start = nullptr;
 Context::Context() :
 		m_mutex(nullptr), m_userName(), m_connected(false), m_inGame(false), m_npc(true), m_characterName(), m_map(), m_previousMap(), m_mapChanged(false), m_tileX(
 				0), m_tileY(0), m_previousTileX(0), m_previousTileY(0), m_positionChanged(false), m_orientation(0), m_direction(0), m_animationTick(0), m_type(), m_id(), m_selection(), m_nextExecutionTick(
-				0), m_socket(), m_socket_data(), m_send_mutex(nullptr), m_hostname(nullptr), m_lua_VM(nullptr), m_condition(nullptr), m_condition_mutex(
-				nullptr), m_previous(nullptr), m_next(nullptr)
+				0), m_luaVm(nullptr), m_condition(nullptr), m_conditionMutex(nullptr), m_socket(), m_socket_data(), m_send_mutex(nullptr), m_hostname(nullptr), m_previous(
+				nullptr), m_next(nullptr)
 {
 	m_mutex = SDL_CreateMutex();
+
+	m_luaVm = lua_open();
+	lua_baselibopen(m_luaVm);
+	lua_tablibopen(m_luaVm);
+	lua_iolibopen(m_luaVm);
+	lua_strlibopen(m_luaVm);
+	lua_mathlibopen(m_luaVm);
+
+	register_lua_functions(this);
+
+	m_condition = SDL_CreateCond();
+	m_conditionMutex = SDL_CreateMutex();
 }
 
 /*****************************************************************************/
 Context::~Context()
 {
 	SDL_DestroyMutex(m_mutex);
+
+	if (m_luaVm != nullptr)
+	{
+		lua_close(m_luaVm);
+	}
+	if (m_condition != nullptr)
+	{
+		SDL_DestroyCond(m_condition);
+	}
+	if (m_conditionMutex != nullptr)
+	{
+		SDL_DestroyMutex(m_conditionMutex);
+	}
 }
 
 /***********************
@@ -79,10 +104,6 @@ void context_init(Context * context)
 	context->m_socket_data = 0;
 	context->m_hostname = nullptr;
 	context->m_send_mutex = SDL_CreateMutex();
-
-	context->m_lua_VM = nullptr;
-	context->m_condition = nullptr;
-	context->m_condition_mutex = nullptr;
 
 	context->m_previous = nullptr;
 	context->m_next = nullptr;
@@ -140,19 +161,6 @@ void context_free_data(Context * context)
 		free(context->m_hostname);
 	}
 	context->m_hostname = nullptr;
-
-	if (context->m_lua_VM != nullptr)
-	{
-		lua_close(context->m_lua_VM);
-	}
-	if (context->m_condition != nullptr)
-	{
-		SDL_DestroyCond(context->m_condition);
-	}
-	if (context->m_condition_mutex != nullptr)
-	{
-		SDL_DestroyMutex(context->m_condition_mutex);
-	}
 }
 
 /*************************************
@@ -312,14 +320,6 @@ void register_lua_functions(Context * context);
 void context_new_VM(Context * context)
 {
 	context_lock_list();
-	context->m_lua_VM = lua_open();
-	lua_baselibopen(context->m_lua_VM);
-	lua_tablibopen(context->m_lua_VM);
-	lua_iolibopen(context->m_lua_VM);
-	lua_strlibopen(context->m_lua_VM);
-	lua_mathlibopen(context->m_lua_VM);
-
-	register_lua_functions(context);
 	context_unlock_list();
 }
 
@@ -915,4 +915,28 @@ Uint32 Context::getNextExecutionTick() const
 void Context::setNextExecutionTick(Uint32 nextExecutionTick)
 {
 	m_nextExecutionTick = nextExecutionTick;
+}
+
+/*****************************************************************************/
+lua_State* Context::getLuaVm() const
+{
+	return m_luaVm;
+}
+
+/*****************************************************************************/
+void Context::wakeUp()
+{
+	if (SDL_TryLockMutex(m_conditionMutex) == 0)
+	{
+		SDL_CondSignal(m_condition);
+		SDL_UnlockMutex(m_conditionMutex);
+	}
+}
+
+/*****************************************************************************/
+void Context::sleep(Uint32 timeOutMs)
+{
+	SDL_LockMutex(m_conditionMutex);
+	SDL_CondWaitTimeout(m_condition, m_conditionMutex, timeOutMs);
+	SDL_UnlockMutex(m_conditionMutex);
 }

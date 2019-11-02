@@ -84,6 +84,10 @@ public:
 
 	int tileDistance(const Context & ctx) const;
 
+	lua_State* getLuaVm() const;
+	void wakeUp();
+	void sleep(Uint32 timeOutMs);
+
 private:
 	SDL_mutex* m_mutex;
 	std::string m_userName;
@@ -107,15 +111,15 @@ private:
 	Selection m_selection; // Selected tile or sprite
 	Uint32 m_nextExecutionTick; // Time when an NPC will execute its AI script
 
+	lua_State* m_luaVm;	// LUA state
+	SDL_cond* m_condition;	// async condition for NPC
+	SDL_mutex* m_conditionMutex;	// mutex for async condition for NPC
+
 public:
 	TCPsocket m_socket;
 	TCPsocket m_socket_data;
 	SDL_mutex* m_send_mutex; // Asynchronous network send
 	char * m_hostname;
-
-	lua_State* m_lua_VM;	// LUA state
-	SDL_cond* m_condition;	// async condition for NPC
-	SDL_mutex* m_condition_mutex;	// mutex for async condition for NPC
 
 	Context * m_previous;
 	Context * m_next;

@@ -2225,7 +2225,7 @@ int action_execute_script(Context * context, const char * script, const char ** 
 		return -1;
 	}
 
-	return lua_execute_script(context->m_lua_VM, script, parameters);
+	return lua_execute_script(context->getLuaVm(), script, parameters);
 }
 
 /**************************************
@@ -2379,7 +2379,7 @@ static int l_call_action(lua_State* L)
  ***************************************************/
 void register_lua_functions(Context * context)
 {
-	lua_State* L = context->m_lua_VM;
+	lua_State* L = context->getLuaVm();
 
 	// player functions
 	lua_pushcfunction(L, l_player_get_id);
