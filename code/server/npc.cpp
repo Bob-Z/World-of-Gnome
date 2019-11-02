@@ -46,8 +46,6 @@ static int npc_script(void * data)
 	/* Do not start every NPC at the same moment */
 	usleep((random() % NPC_TIMEOUT) * 1000);
 
-	context_new_VM(context);
-
 	wlog(LOGDESIGNER, "Start AI script for %s(%s)", context->getId().c_str(), context->getCharacterName().c_str());
 
 	while (context->isConnected() == true)

@@ -135,7 +135,6 @@ void context_set_socket(Context * context, TCPsocket socket);
 TCPsocket context_get_socket(Context * context);
 void context_set_socket_data(Context * context, TCPsocket socket);
 TCPsocket context_get_socket_data(Context * context);
-void context_new_VM(Context * context);
 
 bool context_update_from_file(Context * context);
 void context_spread(Context * context);

@@ -222,8 +222,6 @@ static int new_connection(void * data)
 
 	context_set_socket(context, socket);
 
-	context_new_VM(context);
-
 	while (context_get_socket(context))
 	{
 		uint32_t frame_size = 0U;

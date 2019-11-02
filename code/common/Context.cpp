@@ -315,14 +315,6 @@ TCPsocket context_get_socket_data(Context * context)
 void register_lua_functions(Context * context);
 #endif
 
-/**************************************
- **************************************/
-void context_new_VM(Context * context)
-{
-	context_lock_list();
-	context_unlock_list();
-}
-
 /*******************************
  Update the memory context by reading the character's data file on disk
  Return false if there is an error
