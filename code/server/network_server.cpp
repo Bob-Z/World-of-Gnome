@@ -34,8 +34,7 @@
 #include <vector>
 #include <wog.pb.h>
 
-#include "../client/EffectManager.h"
-#include "../client/parser.h"
+#include "network.h"
 
 /*********************************************************************
  *********************************************************************/
