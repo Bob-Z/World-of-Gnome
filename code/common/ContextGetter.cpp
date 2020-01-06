@@ -17,26 +17,24 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
+#include "ContextContainer.h"
 #include "ContextGetter.h"
 
-#include "ContextList.h"
-
 /*****************************************************************************/
-ContextGetter::ContextGetter(ContextList & list) :
-		m_list(list)
+ContextGetter::ContextGetter(ContextContainer & container) :
+		m_container(container)
 {
-	SDL_LockMutex(m_list.getMutex());
+	SDL_LockMutex(m_container.getMutex());
 }
 
 /*****************************************************************************/
 Context & ContextGetter::get(const std::string & contextId)
 {
-	return m_list.get(contextId);
+	return m_container.get(contextId);
 }
 
 /*****************************************************************************/
 ContextGetter::~ContextGetter()
 {
-	SDL_UnlockMutex(m_list.getMutex());
+	SDL_UnlockMutex(m_container.getMutex());
 }
-

@@ -1,6 +1,6 @@
 /*
  World of Gnome is a 2D multiplayer role playing game.
- Copyright (C) 2013-2019 carabobz@gmail.com
+ Copyright (C) 2013-2020 carabobz@gmail.com
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@
 
 #include "client_server.h"
 #include "const.h"
+#include "ContextContainer.h"
 #include "file.h"
 #include "imageDB.h"
 #include "log.h"
@@ -48,11 +49,15 @@ const struct option longopts[] =
 { "maxfps", no_argument, nullptr, 'm' },
 { nullptr, 0, nullptr, 0 } };
 
-Context * context;
+ContextContainer contextContainer;
 
-/**************************
- main
- **************************/
+/*****************************************************************************/
+ContextContainer & getContextContainer()
+{
+	return contextContainer;
+}
+
+/*****************************************************************************/
 int main(int argc, char **argv)
 {
 	int opt_ret;
@@ -115,7 +120,7 @@ int main(int argc, char **argv)
 
 	common_mutex_init();
 
-	context = context_new();
+	Context * context = context_new();
 
 	context->setUserName(std::string(user));
 

@@ -17,8 +17,8 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#ifndef COMMON_CONTEXTLIST_H_
-#define COMMON_CONTEXTLIST_H_
+#ifndef COMMON_CONTEXTCONTAINER_H_
+#define COMMON_CONTEXTCONTAINER_H_
 
 #include "Context.h"
 #include <map>
@@ -28,15 +28,15 @@
 
 class ContextGetter;
 
-class ContextList
+class ContextContainer
 {
 	friend ContextGetter;
 
 public:
-	ContextList();
-	virtual ~ContextList();
+	ContextContainer();
+	virtual ~ContextContainer();
 
-	void add(std::pair<std::string, Context> & to_be_added);
+	void add(std::pair<std::string, Context> & toBeAdded);
 
 private:
 	SDL_mutex* getMutex() const;
@@ -46,4 +46,4 @@ private:
 	SDL_mutex* m_mutex;
 };
 
-#endif /* COMMON_CONTEXTLIST_H_ */
+#endif /* COMMON_CONTEXTCONTAINER_H_ */

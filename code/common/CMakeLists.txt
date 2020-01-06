@@ -35,6 +35,8 @@ add_library(
 	${PROTO_SRC}
 
 	Context.cpp
+	ContextContainer.cpp
+	ContextGetter.cpp
 	entry.cpp
 	file.cpp
 	font.cpp

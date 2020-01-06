@@ -21,18 +21,18 @@
 #define COMMON_CONTEXTGETTER_H_
 
 #include "Context.h"
-#include "ContextList.h"
+#include "ContextContainer.h"
 #include <string>
 
 class ContextGetter
 {
 public:
-	ContextGetter(ContextList & list);
+	ContextGetter(ContextContainer & container);
 	virtual ~ContextGetter();
 	Context & get(const std::string & contextId);
 
 private:
-	ContextList & m_list;
+	ContextContainer & m_container;
 };
 
 #endif /* COMMON_CONTEXTGETTER_H_ */
