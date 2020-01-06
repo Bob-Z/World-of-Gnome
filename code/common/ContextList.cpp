@@ -17,17 +17,51 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
+#include "ContextList.h"
+
 #include "SdlLocking.h"
 
 /*****************************************************************************/
-SdlLocking::SdlLocking(SDL_mutex* mutex) :
-		m_mutex(mutex)
+ContextList::ContextList() :
+		m_list(), m_mutex()
 {
-	SDL_LockMutex(m_mutex);
+	m_mutex = SDL_CreateMutex();
 }
 
 /*****************************************************************************/
-SdlLocking::~SdlLocking()
+ContextList::~ContextList()
 {
-	SDL_UnlockMutex(m_mutex);
+	if (m_mutex != nullptr)
+	{
+		SDL_DestroyMutex(m_mutex);
+	}
+}
+
+/*****************************************************************************/
+void ContextList::add(std::pair<std::string, Context> & to_be_added)
+{
+	SdlLocking lock(m_mutex);
+
+	m_list.insert(to_be_added);
+}
+
+/*****************************************************************************/
+Context & ContextList::get(const std::string & contextId)
+{
+	SdlLocking lock(m_mutex);
+
+	auto iter = m_list.find(contextId);
+
+	if (iter == m_list.end())
+	{
+		throw std::runtime_error("Cannot find context with ID: " + contextId);
+	}
+
+	return iter->second;
+}
+
+/*****************************************************************************/
+SDL_mutex* ContextList::getMutex() const
+{
+	return m_mutex;
 }

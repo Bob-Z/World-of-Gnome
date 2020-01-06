@@ -1,6 +1,6 @@
 /*
  World of Gnome is a 2D multiplayer role playing game.
- Copyright (C) 2013-2020 carabobz@gmail.com
+ Copyright (C) 2019-2020 carabobz@gmail.com
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -17,10 +17,22 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#include "sdl_item.h"
+#ifndef COMMON_CONTEXTGETTER_H_
+#define COMMON_CONTEXTGETTER_H_
 
-item_t * scr_play_compose(Context * context);
-void scr_play_frame_start(Context * context);
-void scr_play_init();
-int scr_play_get_current_x();
-int scr_play_get_current_y();
+#include "Context.h"
+#include "ContextList.h"
+#include <string>
+
+class ContextGetter
+{
+public:
+	ContextGetter(ContextList & list);
+	virtual ~ContextGetter();
+	Context & get(const std::string & contextId);
+
+private:
+	ContextList & m_list;
+};
+
+#endif /* COMMON_CONTEXTGETTER_H_ */
