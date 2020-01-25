@@ -31,6 +31,7 @@ include_directories(${CMAKE_BINARY_DIR}/common/proto)
 set(COMMON_PATH ../common/)
 include_directories( ${COMMON_PATH} )
 include_directories(${COMMON_PATH}/Context)
+include_directories(${COMMON_PATH}/Network)
 
 add_executable(
 	${PROJECT_NAME}

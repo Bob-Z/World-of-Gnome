@@ -29,6 +29,7 @@ include_directories(${CMAKE_BINARY_DIR}/common/proto)
 
 include_directories(.)
 include_directories(./Context)
+include_directories(./Network)
 
 add_library(
 	${PROJECT_NAME}
@@ -48,8 +49,7 @@ add_library(
 	log.cpp
 	map.cpp
 	mutex.cpp
-	network.cpp
-	sfx.cpp
+	Network/network.cpp
 	util.cpp
 	lua_script.cpp
 	Serializer.cpp

@@ -31,6 +31,7 @@ include_directories(${CMAKE_BINARY_DIR}/common/proto)
 set(COMMON_PATH ../common/)
 include_directories(${COMMON_PATH})
 include_directories(${COMMON_PATH}/Context)
+include_directories(${COMMON_PATH}/Network)
 
 set(SDL_ITEM_PATH ../sdl_item/)
 include_directories(${SDL_ITEM_PATH})
@@ -54,6 +55,7 @@ add_executable(
 	lua_client.cpp
 	Camera.cpp
 	EffectManager.cpp
+	sfx.cpp
 	${PROTO_SRCS} ${PROTO_HDRS}
 )
 
