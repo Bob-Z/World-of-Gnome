@@ -17,8 +17,9 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#include "../server/action.h"
 #include "Context.h"
+
+#include "../server/action.h"
 #include "entry.h"
 #include "log.h"
 #include "mutex.h"

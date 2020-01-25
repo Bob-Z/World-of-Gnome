@@ -17,11 +17,12 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
+#include "Context.h"
+
 #include "attribute.h"
 #include "character.h"
 #include "client_server.h"
 #include "context_server.h"
-#include "Context.h"
 #include "entry.h"
 #include "equipment.h"
 #include "file.h"

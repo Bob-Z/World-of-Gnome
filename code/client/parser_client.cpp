@@ -18,6 +18,7 @@
  */
 
 #include "Context.h"
+
 #include "EffectManager.h"
 #include "entry.h"
 #include "file_client.h"

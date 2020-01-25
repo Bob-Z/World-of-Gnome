@@ -19,11 +19,12 @@
 
 #include "action.h"
 #include "client_server.h"
-#include "Context.h"
 #include "entry.h"
 #include "log.h"
 #include "mutex.h"
 #include "npc.h"
+
+#include "Context.h"
 #include "syntax.h"
 #include "util.h"
 #include <dirent.h>

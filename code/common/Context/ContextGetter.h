@@ -17,11 +17,11 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#ifndef COMMON_CONTEXTGETTER_H_
-#define COMMON_CONTEXTGETTER_H_
+#ifndef COMMON_CONTEXT_CONTEXTGETTER_H_
+#define COMMON_CONTEXT_CONTEXTGETTER_H_
 
 #include "Context.h"
-#include "ContextContainer.h"
+#include <Context/ContextContainer.h>
 #include <string>
 
 class ContextGetter
@@ -29,10 +29,10 @@ class ContextGetter
 public:
 	ContextGetter(ContextContainer & container);
 	virtual ~ContextGetter();
-	Context & get(const std::string & contextId);
+//	Context & get(const std::string & contextId);
 
 private:
 	ContextContainer & m_container;
 };
 
-#endif /* COMMON_CONTEXTGETTER_H_ */
+#endif /* COMMON_CONTEXT_CONTEXTGETTER_H_ */

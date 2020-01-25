@@ -17,8 +17,9 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#include "Camera.h"
 #include "Context.h"
+
+#include "Camera.h"
 #include "entry.h"
 #include "imageDB.h"
 #include "item.h"

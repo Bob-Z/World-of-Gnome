@@ -19,9 +19,9 @@
 
 #include "character.h"
 
-#include "Context.h"
 #include <client_server.h>
 #include <const.h>
+#include "Context.h"
 #include <cstdio>
 #include <cstring>
 #include <dirent.h>

@@ -18,49 +18,48 @@
  */
 
 #include "ContextContainer.h"
-#include "SdlLocking.h"
+
+#include "Context.h"
 
 /*****************************************************************************/
 ContextContainer::ContextContainer() :
-		m_list(), m_mutex()
+		m_list()
 {
-	m_mutex = SDL_CreateMutex();
 }
 
 /*****************************************************************************/
-ContextContainer::~ContextContainer()
+void ContextContainer::add(const std::string & id)
 {
-	if (m_mutex != nullptr)
-	{
-		SDL_DestroyMutex(m_mutex);
-	}
+	m_list.insert(std::make_pair(id, std::make_shared<Context>()));
 }
 
 /*****************************************************************************/
-void ContextContainer::add(std::pair<std::string, Context> & toBeAdded)
+void ContextContainer::remove(const std::string & id)
 {
-	SdlLocking lock(m_mutex);
-
-	m_list.insert(toBeAdded);
+	m_list.erase(id);
 }
 
 /*****************************************************************************/
-Context & ContextContainer::get(const std::string & contextId)
+std::shared_ptr<Context> ContextContainer::get(const std::string & id) const
 {
-	SdlLocking lock(m_mutex);
-
-	auto iter = m_list.find(contextId);
+	auto iter = m_list.find(id);
 
 	if (iter == m_list.end())
 	{
-		throw std::runtime_error("Cannot find context with ID: " + contextId);
+		throw std::runtime_error("Context " + id + " not found");
 	}
 
 	return iter->second;
 }
 
 /*****************************************************************************/
-SDL_mutex * ContextContainer::getMutex() const
+std::map<std::string, std::shared_ptr<Context>>::const_iterator ContextContainer::begin() const
 {
-	return m_mutex;
+	return m_list.cbegin();
+}
+
+/*****************************************************************************/
+std::map<std::string, std::shared_ptr<Context>>::const_iterator ContextContainer::end() const
+{
+	return m_list.cend();
 }

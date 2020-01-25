@@ -17,9 +17,9 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#include "Context.h"
 #include <bits/stdint-uintn.h>
 #include <const.h>
+#include "Context.h"
 #include <cstring>
 #include <log.h>
 #include <netinet/in.h>

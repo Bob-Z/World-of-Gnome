@@ -29,9 +29,11 @@ include_directories( ${Protobuf_INCLUDE_DIRS} )
 include_directories(${CMAKE_BINARY_DIR}/common/proto)
 
 set(COMMON_PATH ../common/)
-set(SDL_ITEM_PATH ../sdl_item/)
-include_directories( ${COMMON_PATH} ${SDL_ITEM_PATH} )
+include_directories(${COMMON_PATH})
+include_directories(${COMMON_PATH}/Context)
 
+set(SDL_ITEM_PATH ../sdl_item/)
+include_directories(${SDL_ITEM_PATH})
 
 add_executable(
 	${PROJECT_NAME}	

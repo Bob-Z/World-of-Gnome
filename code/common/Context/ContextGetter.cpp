@@ -17,33 +17,25 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#ifndef COMMON_CONTEXTCONTAINER_H_
-#define COMMON_CONTEXTCONTAINER_H_
+#include "ContextContainer.h"
+#include "ContextGetter.h"
 
-#include "Context.h"
-#include <map>
-#include <SDL2/SDL_mutex.h>
-#include <string>
-#include <tuple>
-
-class ContextGetter;
-
-class ContextContainer
+/*****************************************************************************/
+ContextGetter::ContextGetter(ContextContainer & container) :
+		m_container(container)
 {
-	friend ContextGetter;
+}
 
-public:
-	ContextContainer();
-	virtual ~ContextContainer();
+/*****************************************************************************/
+/*
+ Context & ContextGetter::get(const std::string & contextId)
+ {
+ return m_container.get(contextId);
+ }
+ */
 
-	void add(std::pair<std::string, Context> & toBeAdded);
-
-private:
-	SDL_mutex* getMutex() const;
-	Context & get(const std::string & contextId);
-
-	std::map<std::string, Context> m_list;
-	SDL_mutex* m_mutex;
-};
-
-#endif /* COMMON_CONTEXTCONTAINER_H_ */
+/*****************************************************************************/
+ContextGetter::~ContextGetter()
+{
+	//SDL_UnlockMutex(m_container.getMutex());
+}

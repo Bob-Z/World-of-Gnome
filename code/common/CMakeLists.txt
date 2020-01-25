@@ -27,6 +27,9 @@ find_package(Protobuf REQUIRED)
 # for generated protobuf
 include_directories(${CMAKE_BINARY_DIR}/common/proto)
 
+include_directories(.)
+include_directories(./Context)
+
 add_library(
 	${PROJECT_NAME}
 	SHARED
@@ -34,9 +37,9 @@ add_library(
 	${PROTO_HEADER}
 	${PROTO_SRC}
 
-	Context.cpp
-	ContextContainer.cpp
-	ContextGetter.cpp
+	Context/Context.cpp
+	Context/ContextContainer.cpp
+	Context/ContextGetter.cpp
 	entry.cpp
 	file.cpp
 	font.cpp

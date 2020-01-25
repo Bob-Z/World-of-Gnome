@@ -17,9 +17,9 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
+#include <Context/ContextContainer.h>
 #include "client_server.h"
 #include "const.h"
-#include "ContextContainer.h"
 #include "file.h"
 #include "imageDB.h"
 #include "log.h"

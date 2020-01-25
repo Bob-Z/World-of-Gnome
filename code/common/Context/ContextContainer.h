@@ -17,24 +17,32 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#include "ContextContainer.h"
-#include "ContextGetter.h"
+#ifndef COMMON_CONTEXT_CONTEXTCONTAINER_H_
+#define COMMON_CONTEXT_CONTEXTCONTAINER_H_
 
-/*****************************************************************************/
-ContextGetter::ContextGetter(ContextContainer & container) :
-		m_container(container)
-{
-	SDL_LockMutex(m_container.getMutex());
-}
+#include "Context.h"
+#include <map>
+#include <memory>
+#include <string>
 
-/*****************************************************************************/
-Context & ContextGetter::get(const std::string & contextId)
-{
-	return m_container.get(contextId);
-}
+class Context;
 
-/*****************************************************************************/
-ContextGetter::~ContextGetter()
+class ContextContainer
 {
-	SDL_UnlockMutex(m_container.getMutex());
-}
+public:
+	ContextContainer();
+	virtual ~ContextContainer() = default;
+
+	void add(const std::string & id);
+	void remove(const std::string & id);
+
+	std::shared_ptr<Context> get(const std::string & id) const;
+
+	std::map<std::string, std::shared_ptr<Context>>::const_iterator begin() const;
+	std::map<std::string, std::shared_ptr<Context>>::const_iterator end() const;
+
+private:
+	std::map<std::string, std::shared_ptr<Context>> m_list;
+};
+
+#endif /* COMMON_CONTEXT_CONTEXTCONTAINER_H_ */

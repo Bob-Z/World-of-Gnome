@@ -20,9 +20,9 @@
 #include "action.h"
 #include "character.h"
 #include "context_server.h"
-#include "Context.h"
 #include "network_server.h"
 #include <client_server.h>
+#include "Context.h"
 #include <cstdint>
 #include <cstring>
 #include <entry.h>
