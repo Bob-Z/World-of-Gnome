@@ -33,7 +33,7 @@ public:
 	ContextContainer();
 	virtual ~ContextContainer() = default;
 
-	void add(const std::string & id);
+	std::shared_ptr<Context> add(const std::string & id);
 	void remove(const std::string & id);
 
 	std::shared_ptr<Context> get(const std::string & id) const;

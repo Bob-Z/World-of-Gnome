@@ -28,9 +28,11 @@ ContextContainer::ContextContainer() :
 }
 
 /*****************************************************************************/
-void ContextContainer::add(const std::string & id)
+std::shared_ptr<Context> ContextContainer::add(const std::string & id)
 {
-	m_list.insert(std::make_pair(id, std::make_shared<Context>()));
+	std::shared_ptr<Context> context = std::make_shared<Context>();
+	m_list.insert(std::make_pair(id, context));
+	return context;
 }
 
 /*****************************************************************************/
