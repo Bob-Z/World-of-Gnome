@@ -23,9 +23,11 @@
 #include <SDL2/SDL_mixer.h>
 #include <string>
 
-static const int LOOP = -1;
-static const int NO_LOOP = 0;
-static const int ANY_CHANNEL = -1;
+static constexpr int LOOP = -1;
+static constexpr int NO_LOOP = 0;
+static constexpr int ANY_CHANNEL = -1;
+
+class Context;
 
 int sfx_play(Context* ctx, const std::string & fileName, int channel, int loops);
 void sfx_stop(int channel);

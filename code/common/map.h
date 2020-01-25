@@ -20,9 +20,11 @@
 #ifndef MAP_H
 #define MAP_H
 
+#include <string>
+
 #define DEFAULT_LAYER      (-1)
 
-// Max number of consecutive tiles with custom alignement
+// Max number of consecutive tiles with custom alignment
 #define MAX_COL         16
 #define MAX_ROW         16
 

@@ -20,6 +20,8 @@
 #ifndef PROTOCOL_H
 #define PROTOCOL_H
 
+#include <string>
+
 const std::string ENTRY_TYPE_INT("int");
 const std::string ENTRY_TYPE_STRING("string");
 
@@ -27,4 +29,3 @@ const std::string ENTRY_TYPE_STRING("string");
 #define WOG_CHAT	"__wog_chat__"
 
 #endif
-

@@ -19,6 +19,8 @@
 
 #include "sdl_item.h"
 
+class Context;
+
 item_t * scr_play_compose(Context * context);
 void scr_play_frame_start(Context * context);
 void scr_play_init();
