@@ -112,22 +112,22 @@ static int manage_user_character(const pb::UserCharacter& user_character)
  **************************************/
 static int manage_context(const pb::Context& incoming_context)
 {
-	Context received_context;
-	received_context.setCharacterName(incoming_context.character_name());
-	received_context.setId(incoming_context.id());
-	received_context.setInGame(incoming_context.in_game());
-	received_context.setMap(incoming_context.map());
-	received_context.setNpc(incoming_context.npc());
-	received_context.setTileX(incoming_context.tile_x());
-	received_context.setTileY(incoming_context.tile_y());
-	received_context.setType(incoming_context.type());
-	received_context.setSelectionEquipment(incoming_context.selection().equipment());
-	received_context.setSelectionContextId(incoming_context.selection().id());
-	received_context.setSelectionInventory(incoming_context.selection().inventory());
-	received_context.setSelectionTile(incoming_context.selection().map(), incoming_context.selection().map_coord_tx(),
+	Context receivedContext;
+	receivedContext.setCharacterName(incoming_context.character_name());
+	receivedContext.setId(incoming_context.id());
+	receivedContext.setInGame(incoming_context.in_game());
+	receivedContext.setMap(incoming_context.map());
+	receivedContext.setNpc(incoming_context.npc());
+	receivedContext.setTileX(incoming_context.tile_x());
+	receivedContext.setTileY(incoming_context.tile_y());
+	receivedContext.setType(incoming_context.type());
+	receivedContext.setSelectionEquipment(incoming_context.selection().equipment());
+	receivedContext.setSelectionContextId(incoming_context.selection().id());
+	receivedContext.setSelectionInventory(incoming_context.selection().inventory());
+	receivedContext.setSelectionTile(incoming_context.selection().map(), incoming_context.selection().map_coord_tx(),
 			incoming_context.selection().map_coord_ty());
 
-	context_add_or_update_from_network_frame(received_context);
+	context_add_or_update_from_network_frame(receivedContext);
 	screen_compose();
 
 	return true;
@@ -192,10 +192,10 @@ static int manage_effect(Connection & connection, const pb::Effect& effect)
 /***********************************
  Return false on error
  ***********************************/
-int parse_incoming_data(Connection & connection, const std::string & serialized_data)
+int parse_incoming_data(Connection & connection, const std::string & serializedData)
 {
 	pb::ServerMessage message;
-	if (message.ParseFromString(serialized_data) == false)
+	if (message.ParseFromString(serializedData) == false)
 	{
 		werr(LOGUSER, "Parsing failed");
 	}
