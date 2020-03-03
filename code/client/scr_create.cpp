@@ -51,7 +51,7 @@ typedef struct
 
 static character_t * character_list = nullptr;
 static int character_num = 0;
-static item_t * item_list = nullptr;
+static item_t * g_itemList = nullptr;
 static long current_character = -1;
 static long selected_character = -1;
 static char * sfx_filename = nullptr;
@@ -167,7 +167,7 @@ static void cb_keyboard_text(void * arg)
 		return;
 	}
 
-	network_request_character_creation(context_get_player(), character_list[selected_character].id, text);
+	network_request_character_creation(*(context_get_player()->getConnection()), character_list[selected_character].id, text);
 
 	if (sfx_filename != nullptr)
 	{
@@ -192,8 +192,8 @@ void scr_create_init()
 {
 	current_character = -1;
 
-	item_list_free(item_list);
-	item_list = nullptr;
+	g_itemList_free(g_itemList);
+	g_itemList = nullptr;
 
 	if (character_list != nullptr)
 	{
@@ -203,7 +203,7 @@ void scr_create_init()
 
 	character_num = 0;
 
-	network_request_playable_character_list(context_get_player());
+	network_request_playable_character_list(*(context_get_player()->getConnection()));
 }
 
 /*************************
@@ -257,7 +257,7 @@ item_t * scr_create_compose(Context * context)
 	{
 		if (g_IsMusicPlaying == false)
 		{
-			if (sfx_play(context, std::string(sfx_filename), MUSIC_CHANNEL, LOOP) != -1)
+			if (sfx_play(*(context->getConnection()), std::string(sfx_filename), MUSIC_CHANNEL, LOOP) != -1)
 			{
 				g_IsMusicPlaying = true;
 			}
@@ -268,10 +268,10 @@ item_t * scr_create_compose(Context * context)
 		}
 	}
 
-	if (item_list != nullptr)
+	if (g_itemList != nullptr)
 	{
-		item_list_free(item_list);
-		item_list = nullptr;
+		g_itemList_free(g_itemList);
+		g_itemList = nullptr;
 	}
 
 	font_name = font_get(context, FONT, FONT_SIZE);
@@ -294,7 +294,7 @@ item_t * scr_create_compose(Context * context)
 
 	sdl_get_output_size(&sw, &sh);
 
-	item = item_list_add(&item_list);
+	item = g_itemList_add(&g_itemList);
 
 	item_set_overlay(item, 1);
 	item_set_buffer(item, text_buffer, TEXT_BUFFER_SIZE);
@@ -376,7 +376,7 @@ item_t * scr_create_compose(Context * context)
 		}
 
 		// Character picture
-		item = item_list_add(&item_list);
+		item = g_itemList_add(&g_itemList);
 		item_image = item;
 		character_list[i].item = item;
 
@@ -397,7 +397,7 @@ item_t * scr_create_compose(Context * context)
 		{
 			if (character_list[i].name != nullptr)
 			{
-				item = item_list_add(&item_list);
+				item = g_itemList_add(&g_itemList);
 				item_set_string(item, character_list[i].name);
 				item_set_font(item, font_name);
 				// display string just above the picture
@@ -414,7 +414,7 @@ item_t * scr_create_compose(Context * context)
 		}
 		else
 		{
-			item = item_list_add(&item_list);
+			item = g_itemList_add(&g_itemList);
 			item_set_string(item, character_list[i].type);
 			item_set_font(item, font_type);
 			// display string just below the picture
@@ -436,13 +436,13 @@ item_t * scr_create_compose(Context * context)
 	sdl_add_keycb(SDL_SCANCODE_LEFT, cb_previous_character, nullptr, nullptr);
 	//sdl_add_keycb(SDL_SCANCODE_RETURN,cb_select,nullptr,(void *)context);
 
-	return item_list;
+	return g_itemList;
 }
 
 /*************************
  Add a character to the list
  *************************/
-void scr_create_add_playable_character(Context * context, const std::vector<std::string> & id_list)
+void scr_create_add_playable_character(const std::vector<std::string> & id_list)
 {
 	SDL_LockMutex(character_create_mutex);
 

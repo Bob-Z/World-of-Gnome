@@ -54,7 +54,10 @@ int lua_execute_script(lua_State* lua_vm, const char * script, const char ** par
 	}
 
 	// Fake call to read global variable from the script file (i.e. the f function
-	lua_pcall(lua_vm, 0, 0, 0);
+	if (lua_pcall(lua_vm, 0, 0, 0) != 0)
+	{
+		werr(LOGDEVELOPER, "Error calling lua_pcall");
+	}
 
 	// push f function on LUA VM stack
 	lua_getglobal(lua_vm, "f");
@@ -71,7 +74,7 @@ int lua_execute_script(lua_State* lua_vm, const char * script, const char ** par
 	}
 
 	// Ask LUA to call the f function with the given parameters
-	// number of argument = l_ParamNum, number of result = 1
+	// number of argument = param_qty, number of result = 1
 	if (lua_pcall(lua_vm, param_qty, 1, 0) != 0)
 	{
 		werr(LOGUSER, "Error running LUA script %s: %s\n", file_path.c_str(), lua_tostring(lua_vm, -1));
@@ -79,7 +82,7 @@ int lua_execute_script(lua_State* lua_vm, const char * script, const char ** par
 	}
 
 	// we expect a number as the result
-	if (!lua_isnumber(lua_vm, -1))
+	if (lua_isnumber(lua_vm, -1) == 0)
 	{
 		lua_pop(lua_vm, 1);
 		return -1;
@@ -98,7 +101,7 @@ int lua_execute_script(lua_State* lua_vm, const char * script, const char ** par
  Execute the given script with its parameters
  return -1 on error or return value from execution
  *******************************************************************************/
-int lua_execute_script(lua_State* lua_vm, const std::string & script, const std::vector<std::string> & p_rParams)
+int lua_execute_script(lua_State* lua_vm, const std::string & script, const std::vector<std::string> & parameterss)
 {
 	// Load script
 	const std::string file_path = base_directory + "/" + std::string(SCRIPT_TABLE) + "/" + script;
@@ -118,7 +121,7 @@ int lua_execute_script(lua_State* lua_vm, const std::string & script, const std:
 
 	// push parameters on LUA VM stack (only strings parameters are supported)
 	int l_ParamNum = 0;
-	for (auto l_It = p_rParams.begin(); l_It != p_rParams.end(); ++l_It)
+	for (auto l_It = parameterss.begin(); l_It != parameterss.end(); ++l_It)
 	{
 		lua_pushstring(lua_vm, l_It->c_str());
 		l_ParamNum++;

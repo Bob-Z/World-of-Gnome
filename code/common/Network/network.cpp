@@ -17,92 +17,35 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#include <bits/stdint-uintn.h>
-#include "Context.h"
 #include "client_server.h"
+#include "Context.h"
+#include "DataSent.h"
 #include "file.h"
 #include "log.h"
+#include "SdlLocking.h"
+#include "syntax.h"
+#include "util.h"
+#include <bits/stdint-uintn.h>
+#include <cstdint>
+#include <cstring>
 #include <netinet/in.h>
 #include <SDL_mutex.h>
 #include <SDL_net.h>
 #include <SDL_thread.h>
-#include "syntax.h"
-#include "util.h"
-#include <wog.pb.h>
-#include <cstdint>
-#include <cstring>
 #include <string>
 #include <utility>
-
-// FIXME create NetworkManager
-class DataSent
-{
-public:
-	Context * m_pContext;
-	std::string m_serialized_data;
-	bool m_IsData;
-};
+#include <wog.pb.h>
 
 /*********************************************************************
  return -1 on error
  return 0 on success
  *********************************************************************/
-static int async_frame_send(void * p_pUserData)
+static int async_frame_send(void * user_data)
 {
-	DataSent * data = static_cast<DataSent*>(p_pUserData);
+	DataSent * data = static_cast<DataSent*>(user_data);
 
-	Context * context = data->m_pContext;
-	if (context == nullptr)
-	{
-		werr(LOGDEVELOPER, "null l_pContext");
-		delete data;
-		return -1;
-	}
+	data->send();
 
-	TCPsocket l_Socket = 0;
-
-	if (data->m_IsData)
-	{
-		l_Socket = context_get_socket_data(context);
-	}
-	else
-	{
-		l_Socket = context_get_socket(context);
-	}
-
-	if (l_Socket == 0)
-	{
-		wlog(LOGDEVELOPER, "socket %d is disconnected", l_Socket);
-		delete data;
-		return -1;
-	}
-
-	SDL_LockMutex(context->m_send_mutex);
-
-	//send frame size
-	uint32_t length = htonl(static_cast<uint32_t>(data->m_serialized_data.size()));
-
-	int l_BytesWritten = SDLNet_TCP_Send(l_Socket, &length, sizeof(length));
-	if (l_BytesWritten != sizeof(length))
-	{
-		werr(LOGUSER, "Could not send command to %s", context->getId().c_str());
-		context->setConnected(false);
-		goto async_frame_send_end;
-	}
-
-	//wlog(LOGDEVELOPER, "sent %u bytes on socket %d", l_BytesWritten, l_Socket);
-
-	//send frame
-	l_BytesWritten = SDLNet_TCP_Send(l_Socket, data->m_serialized_data.c_str(), data->m_serialized_data.size());
-	if (l_BytesWritten != static_cast<int>(data->m_serialized_data.size()))
-	{
-		werr(LOGUSER, "Could not send command to %s", context->getId().c_str());
-		context->setConnected(false);
-	}
-
-	//wlog(LOGDEVELOPER, "sent %u bytes on socket %d", l_BytesWritten, l_Socket);
-
-	async_frame_send_end: SDL_UnlockMutex(context->m_send_mutex);
 	delete data;
 
 	return true;
@@ -110,14 +53,13 @@ static int async_frame_send(void * p_pUserData)
 
 /*******************************************************************************
  ******************************************************************************/
-void network_send_command(Context * context, const std::string & serialized_data, const bool is_data)
+void network_send_command(Connection & connection, const std::string & serialized_data, const bool is_data)
 {
-	// FIXME create a NetworkManager
 	DataSent *data = new (DataSent);
 
-	data->m_pContext = context;
-	data->m_serialized_data = serialized_data;
-	data->m_IsData = is_data;
+	data->setConnection(&connection);
+	data->setSerializedData(serialized_data);
+	data->setIsData(is_data);
 
 	SDL_CreateThread(async_frame_send, "async_frame_send", (void*) data);
 }
@@ -127,7 +69,7 @@ void network_send_command(Context * context, const std::string & serialized_data
  It adds the local file checksum so that the server only send the file if it is different
  It make sure there are a minimum time between to consecutive request on the same file
  *********************************************************************/
-void network_send_req_file(Context * context, const std::string & file_name)
+void network_send_req_file(Connection & connection, const std::string & file_name)
 {
 	wlog(LOGDEVELOPER, "[network] Send request for file : %s", file_name.c_str());
 
@@ -146,42 +88,41 @@ void network_send_req_file(Context * context, const std::string & file_name)
 	std::string serialized_data = message.SerializeAsString();
 
 	wlog(LOGDEVELOPER, "[network] Send FILE request for file : %s", file_name.c_str());
-	// FIXME should last arg should be true
-	network_send_command(context, serialized_data, false);
+
+	network_send_command(connection, serialized_data, true);
 }
 
 /*********************************************************************
  Return false on error, true on OK
  *********************************************************************/
-int network_read_bytes(TCPsocket socket, char * data, int size)
+bool network_read_bytes(TCPsocket socket, char * data, int size)
 {
-	int bytes_read = 0;
-	int total_bytes = 0;
+	//wlog(LOGDEVELOPER, "read %d bytes on socket %d", size, socket);
 
 	if (socket == 0)
 	{
 		return false;
 	}
 
-	while (total_bytes != size && bytes_read != -1)
+	int read = 0;
+	int total = 0;
+
+	while (total != size && read != -1)
 	{
-		bytes_read = SDLNet_TCP_Recv(socket, data + total_bytes, 1);
-		if (bytes_read < 1)
+		read = SDLNet_TCP_Recv(socket, data + total, 1);
+		if (read < 1)
 		{
-			werr(LOGDEVELOPER, "Read error on socket %d", socket);
+			werr(LOGDEVELOPER, "Read error %d on socket %d", read, socket);
 			return false;
 		}
-		total_bytes += bytes_read;
+		total += read;
 	}
-
-	//wlog(LOGDEVELOPER, "read %u bytes on socket %d", total_bytes, socket);
 
 	return true;
 }
 
-/*********************************************************************
- **********************************************************************/
-void network_send_file_data(Context * context, const std::string & name, const std::string & data)
+/*****************************************************************************/
+void network_send_file_data(Connection & connection, const std::string & name, const std::string & data)
 {
 	pb::ServerMessage message;
 	message.mutable_file()->set_name(name);
@@ -189,22 +130,17 @@ void network_send_file_data(Context * context, const std::string & name, const s
 	std::string serialized_data = message.SerializeAsString();
 
 	wlog(LOGDEVELOPER, "[network] Send file data for %s", name.c_str());
-	network_send_command(context, serialized_data, false);
+	network_send_command(connection, serialized_data, false);
 }
 
 /*********************************************************************
  filename is relative to the data dir
 
- send a file to a context
+ send a file to a connection
  return 0 on success
  *********************************************************************/
-int network_send_file(Context * context, const char * file_name)
+int network_send_file(Connection & connection, const char * file_name)
 {
-	if (context->isNpc() == true)
-	{
-		return -1;
-	}
-
 	// Never send files with password
 	if (strstr(file_name, PASSWD_TABLE) != nullptr)
 	{
@@ -226,7 +162,7 @@ int network_send_file(Context * context, const char * file_name)
 
 	const std::string data(static_cast<char*>(file_data), file_length);
 
-	network_send_file_data(context, file_name, data);
+	network_send_file_data(connection, file_name, data);
 
 	return 0;
 }
@@ -239,5 +175,5 @@ int network_send_table_file(Context * context, const char * table, const char * 
 {
 	const std::string file_name = std::string(table) + "/" + std::string(id);
 
-	return network_send_file(context, file_name.c_str());
+	return network_send_file(*(context->getConnection()), file_name.c_str());
 }

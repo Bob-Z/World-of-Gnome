@@ -41,9 +41,9 @@ Screen Camera::getScreen()
 
 /******************************************************
  ******************************************************/
-void Camera::setScreen(Screen & p_Screen)
+void Camera::setScreen(Screen & screen)
 {
-	m_Screen = p_Screen;
+	m_Screen = screen;
 }
 
 /******************************************************

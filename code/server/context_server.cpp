@@ -172,7 +172,7 @@ void context_broadcast_map(const char * map)
 			continue;
 		}
 
-		network_send_file(ctx, file_name.c_str());
+		network_send_file(*(ctx->getConnection()), file_name.c_str());
 
 	} while ((ctx = ctx->m_next) != nullptr);
 
@@ -220,7 +220,7 @@ void context_broadcast_character(const char * character)
 			continue;
 		}
 
-		network_send_file(ctx, file_name.c_str());
+		network_send_file(*(ctx->getConnection()), file_name.c_str());
 
 	} while ((ctx = ctx->m_next) != nullptr);
 

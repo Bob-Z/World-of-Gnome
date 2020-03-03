@@ -85,7 +85,7 @@ static int num_action = 0;
 
 /**********************************
  **********************************/
-static void draw_background(Context * ctx, item_t * item_list)
+static void draw_background(Context * ctx, item_t * g_itemList)
 {
 	static anim_t * bg_anim = nullptr;
 	int sw;
@@ -98,7 +98,7 @@ static void draw_background(Context * ctx, item_t * item_list)
 	}
 	sdl_get_output_size(&sw, &sh);
 	bg_anim = anim_create_color(sw, sh, BACKGROUND_COLOR);
-	item = item_list_add(&item_list);
+	item = g_itemList_add(&g_itemList);
 	item_set_pos(item, 0, 0);
 	item_set_anim(item, bg_anim, 0);
 	item_set_overlay(item, 1);
@@ -136,7 +136,7 @@ static void cb_main_quit(void * arg)
 	if (ui_play_get() == UI_MAIN)
 	{
 		context_get_player()->setInGame(false);
-		network_request_stop(context_get_player());
+		network_request_stop(*(context_get_player()->getConnection()));
 		current_ctx = context_get_first();
 		while (current_ctx != nullptr)
 		{
@@ -159,7 +159,7 @@ static void key_up(void * arg)
 {
 	Context * ctx = context_get_player();
 
-	network_send_action(ctx, option_get().action_move_up, nullptr);
+	network_send_action(*(ctx->getConnection()), option_get().action_move_up, nullptr);
 }
 
 /**************************************
@@ -168,7 +168,7 @@ static void key_down(void * arg)
 {
 	Context * ctx = context_get_player();
 
-	network_send_action(ctx, option_get().action_move_down, nullptr);
+	network_send_action(*(ctx->getConnection()), option_get().action_move_down, nullptr);
 }
 
 /**************************************
@@ -177,7 +177,7 @@ static void key_left(void * arg)
 {
 	Context * ctx = context_get_player();
 
-	network_send_action(ctx, option_get().action_move_left, nullptr);
+	network_send_action(*(ctx->getConnection()), option_get().action_move_left, nullptr);
 }
 
 /**************************************
@@ -186,7 +186,7 @@ static void key_right(void * arg)
 {
 	Context * ctx = context_get_player();
 
-	network_send_action(ctx, option_get().action_move_right, nullptr);
+	network_send_action(*(ctx->getConnection()), option_get().action_move_right, nullptr);
 }
 
 /**************************************
@@ -195,7 +195,7 @@ static void key_up_left(void * arg)
 {
 	Context * ctx = context_get_player();
 
-	network_send_action(ctx, option_get().action_move_up_left, nullptr);
+	network_send_action(*(ctx->getConnection()), option_get().action_move_up_left, nullptr);
 }
 
 /**************************************
@@ -204,7 +204,7 @@ static void key_up_right(void * arg)
 {
 	Context * ctx = context_get_player();
 
-	network_send_action(ctx, option_get().action_move_up_right, nullptr);
+	network_send_action(*(ctx->getConnection()), option_get().action_move_up_right, nullptr);
 }
 
 /**************************************
@@ -213,7 +213,7 @@ static void key_down_left(void * arg)
 {
 	Context * ctx = context_get_player();
 
-	network_send_action(ctx, option_get().action_move_down_left, nullptr);
+	network_send_action(*(ctx->getConnection()), option_get().action_move_down_left, nullptr);
 }
 
 /**************************************
@@ -222,13 +222,13 @@ static void key_down_right(void * arg)
 {
 	Context * ctx = context_get_player();
 
-	network_send_action(ctx, option_get().action_move_down_right, nullptr);
+	network_send_action(*(ctx->getConnection()), option_get().action_move_down_right, nullptr);
 }
 
 /**********************************
  Compose attribute
  **********************************/
-static void compose_attribute(Context * ctx, item_t * item_list)
+static void compose_attribute(Context * ctx, item_t * g_itemList)
 {
 	item_t * item;
 	char ** name_list;
@@ -276,7 +276,7 @@ static void compose_attribute(Context * ctx, item_t * item_list)
 		attribute_string[num_attr - 1] = strdup(buf);
 		attribute_string[num_attr] = nullptr;
 
-		item = item_list_add(&item_list);
+		item = g_itemList_add(&g_itemList);
 
 		item_set_overlay(item, 1);
 		item_set_string(item, attribute_string[num_attr - 1]);
@@ -301,7 +301,7 @@ void ui_play_cb_action(void * arg)
 {
 	char * action = (char *) arg;
 
-	network_send_action(context_get_player(), action, nullptr);
+	network_send_action(*(context_get_player()->getConnection()), action, nullptr);
 
 	if (last_action)
 	{
@@ -343,7 +343,7 @@ static void cb_wheel_down_action(void* not_used)
 /**********************************
  Compose action icon
  **********************************/
-static void compose_action(Context * ctx, item_t * item_list)
+static void compose_action(Context * ctx, item_t * g_itemList)
 {
 	char ** action_list = nullptr;
 	char * text = nullptr;
@@ -417,7 +417,7 @@ static void compose_action(Context * ctx, item_t * item_list)
 		entry_read_int(ACTION_TABLE, action_list[i], (int*) &layout,
 		ACTION_KEY_ICON_LAYOUT, nullptr);
 
-		item = item_list_add(&item_list);
+		item = g_itemList_add(&g_itemList);
 		item_set_layout(item, layout);
 		item_set_overlay(item, 1);
 		item_set_click_left(item, ui_play_cb_action, (void*) strdup(action_list[i]), free);
@@ -487,7 +487,7 @@ static void cb_select_slot(void * arg)
 	char * id = (char*) arg;
 	Context * ctx = context_get_player();
 
-	network_send_action(ctx, option_get().action_select_equipment, id, nullptr);
+	network_send_action(*(ctx->getConnection()), option_get().action_select_equipment, id, nullptr);
 }
 
 /**************************************
@@ -500,7 +500,7 @@ static void show_inventory(void * arg)
 /**********************************
  Compose equipment icon
  **********************************/
-static void compose_equipment(Context * ctx, item_t * item_list)
+static void compose_equipment(Context * ctx, item_t * g_itemList)
 {
 	char ** slot_list = nullptr;
 	anim_t * anim;
@@ -562,7 +562,7 @@ static void compose_equipment(Context * ctx, item_t * item_list)
 			anim = imageDB_get_anim(ctx, icon_name);
 			free(icon_name);
 
-			item = item_list_add(&item_list);
+			item = g_itemList_add(&g_itemList);
 
 			x = sw - anim->w;
 			h1 = anim->h;
@@ -615,7 +615,7 @@ static void compose_equipment(Context * ctx, item_t * item_list)
 
 			if (equipped_icon_name)
 			{
-				item = item_list_add(&item_list);
+				item = g_itemList_add(&g_itemList);
 
 				anim2 = imageDB_get_anim(ctx, equipped_icon_name);
 				free(equipped_icon_name);
@@ -639,7 +639,7 @@ static void compose_equipment(Context * ctx, item_t * item_list)
 			{
 				anim3 = imageDB_get_anim(ctx, option_get().cursor_equipment);
 
-				item = item_list_add(&item_list);
+				item = g_itemList_add(&g_itemList);
 
 				// Center on icon
 				item_set_overlay(item, 1);
@@ -686,7 +686,7 @@ static void compose_equipment(Context * ctx, item_t * item_list)
 
 		if (inventory_icon_name)
 		{
-			item = item_list_add(&item_list);
+			item = g_itemList_add(&g_itemList);
 
 			anim = imageDB_get_anim(ctx, inventory_icon_name);
 			free(inventory_icon_name);
@@ -713,7 +713,7 @@ static void compose_equipment(Context * ctx, item_t * item_list)
 			inventory_icon = anim_create_color(max_w, max_h, 0x7f7f7f7f);
 		}
 
-		item = item_list_add(&item_list);
+		item = g_itemList_add(&g_itemList);
 
 		item_set_overlay(item, 1);
 		item_set_pos(item, sw - inventory_icon->w, y);
@@ -728,7 +728,7 @@ static void keyboard_text(void * arg)
 {
 	const char * text = (const char*) arg;
 
-	network_send_action(context_get_player(), WOG_CHAT, text, nullptr);
+	network_send_action(*(context_get_player()->getConnection()), WOG_CHAT, text, nullptr);
 	text_buffer[0] = 0;
 	screen_compose();
 }
@@ -736,7 +736,7 @@ static void keyboard_text(void * arg)
 /**********************************
  Compose text
  **********************************/
-static void compose_text(Context * ctx, item_t * item_list)
+static void compose_text(Context * ctx, item_t * g_itemList)
 {
 	const history_entry_t * history = nullptr;
 	history_entry_t * hist = nullptr;
@@ -757,7 +757,7 @@ static void compose_text(Context * ctx, item_t * item_list)
 	current_y = sh - action_bar_height;
 
 	// Draw edit box
-	item = item_list_add(&item_list);
+	item = g_itemList_add(&g_itemList);
 
 	item_set_overlay(item, 1);
 	item_set_buffer(item, text_buffer, TEXT_BUFFER_SIZE);
@@ -800,7 +800,7 @@ static void compose_text(Context * ctx, item_t * item_list)
 			return;
 		}
 
-		item = item_list_add(&item_list);
+		item = g_itemList_add(&g_itemList);
 
 		item_set_overlay(item, 1);
 		item_set_string(item, hist->text);
@@ -842,12 +842,12 @@ static void cb_print_coord(void * arg)
 
 /**********************************
  **********************************/
-static void main_compose(Context * ctx, item_t * item_list)
+static void main_compose(Context * ctx, item_t * g_itemList)
 {
-	compose_attribute(ctx, item_list);
-	compose_action(ctx, item_list);
-	compose_equipment(ctx, item_list);
-	compose_text(ctx, item_list);
+	compose_attribute(ctx, g_itemList);
+	compose_action(ctx, g_itemList);
+	compose_equipment(ctx, g_itemList);
+	compose_text(ctx, g_itemList);
 
 	sdl_add_keycb(SDL_SCANCODE_I, show_inventory, nullptr, nullptr);
 	sdl_add_keycb(SDL_SCANCODE_UP, key_up, nullptr, nullptr);
@@ -880,13 +880,13 @@ void cb_inventory_select(void * arg)
 	char * item_id = (char *) arg;
 	Context * ctx = context_get_player();
 
-	network_send_action(ctx, option_get().action_select_inventory, item_id, nullptr);
+	network_send_action(*(ctx->getConnection()), option_get().action_select_inventory, item_id, nullptr);
 }
 
 /**********************************
  Compose inventory
  **********************************/
-static void compose_inventory(Context * ctx, item_t * item_list)
+static void compose_inventory(Context * ctx, item_t * g_itemList)
 {
 	char * value = nullptr;
 	char * label;
@@ -906,7 +906,7 @@ static void compose_inventory(Context * ctx, item_t * item_list)
 
 	deep_free(inventory_list);
 
-	draw_background(ctx, item_list);
+	draw_background(ctx, g_itemList);
 
 	// read data from file
 	if (entry_read_list(CHARACTER_TABLE, ctx->getId().c_str(), &inventory_list,
@@ -996,7 +996,7 @@ static void compose_inventory(Context * ctx, item_t * item_list)
 		if (quantity > 0)
 		{
 			w = 0;
-			item = item_list_add(&item_list);
+			item = g_itemList_add(&g_itemList);
 			item_set_pos(item, x, 0);
 			item_set_anim(item, anim, 0);
 			if (quantity > 1)
@@ -1028,7 +1028,7 @@ static void compose_inventory(Context * ctx, item_t * item_list)
 /**********************************
  Compose select cursor
  **********************************/
-static void compose_inventory_select(Context * ctx, item_t * item_list)
+static void compose_inventory_select(Context * ctx, item_t * g_itemList)
 {
 	item_t * item = nullptr;
 	int x = -1;
@@ -1045,7 +1045,7 @@ static void compose_inventory_select(Context * ctx, item_t * item_list)
 		return;
 	}
 
-	if (item_list == nullptr)
+	if (g_itemList == nullptr)
 	{
 		return;
 	}
@@ -1099,7 +1099,7 @@ static void compose_inventory_select(Context * ctx, item_t * item_list)
 
 	if (inventory_list[i])
 	{
-		item = item_list_add(&item_list);
+		item = g_itemList_add(&g_itemList);
 		item_set_pos(item, x, 0);
 		item_set_anim(item, anim, 0);
 		item_set_overlay(item, 1);
@@ -1108,10 +1108,10 @@ static void compose_inventory_select(Context * ctx, item_t * item_list)
 
 /**********************************
  **********************************/
-static void inventory_compose(Context * ctx, item_t * item_list)
+static void inventory_compose(Context * ctx, item_t * g_itemList)
 {
-	compose_inventory(ctx, item_list);
-	compose_inventory_select(ctx, item_list);
+	compose_inventory(ctx, g_itemList);
+	compose_inventory_select(ctx, g_itemList);
 
 	sdl_add_keycb(SDL_SCANCODE_I, cb_inventory_quit, nullptr, nullptr);
 	sdl_add_keycb(SDL_SCANCODE_ESCAPE, cb_inventory_quit, nullptr, nullptr);
@@ -1141,7 +1141,7 @@ void cb_popup(void * arg)
 
 	cb_popup_quit(nullptr);
 
-	network_send_action(player, action_param->action, action_param->param, nullptr);
+	network_send_action(*(player->getConnection()), action_param->action, action_param->param, nullptr);
 
 	screen_compose();
 }
@@ -1180,14 +1180,14 @@ static void cb_wheel_down(Uint32 y, Uint32 unused)
 /**********************************
  Compose screen
  **********************************/
-static void compose_popup(Context * ctx, item_t * item_list)
+static void compose_popup(Context * ctx, item_t * g_itemList)
 {
 	if (g_PopupFifo.size() == 0)
 	{
 		return;
 	}
 
-	draw_background(ctx, item_list);
+	draw_background(ctx, g_itemList);
 
 	static TTF_Font *l_pFont = font_get(ctx, SPEAK_FONT, SPEAK_FONT_SIZE);
 
@@ -1212,7 +1212,7 @@ static void compose_popup(Context * ctx, item_t * item_list)
 			++l_It;
 			anim_t * l_pAnim = imageDB_get_anim(ctx, l_It->c_str());
 
-			l_pItem = item_list_add(&item_list);
+			l_pItem = g_itemList_add(&g_itemList);
 			item_set_pos(l_pItem, l_X, l_Y - popup_offset);
 			item_set_anim(l_pItem, l_pAnim, 0);
 			item_set_overlay(l_pItem, 1);
@@ -1231,7 +1231,7 @@ static void compose_popup(Context * ctx, item_t * item_list)
 		if (*l_It == POPUP_TAG_TEXT)
 		{
 			++l_It;
-			l_pItem = item_list_add(&item_list);
+			l_pItem = g_itemList_add(&g_itemList);
 			item_set_string(l_pItem, l_It->c_str());
 			item_set_font(l_pItem, l_pFont);
 			sdl_get_string_size(l_pItem->font, l_pItem->string, &l_Width, &l_Height);
@@ -1286,27 +1286,27 @@ void ui_play_popup_add(const std::vector<std::string> & data)
 
 /**********************************
  **********************************/
-static void popup_compose(Context * ctx, item_t * item_list)
+static void popup_compose(Context * ctx, item_t * g_itemList)
 {
-	compose_popup(ctx, item_list);
+	compose_popup(ctx, g_itemList);
 
 	sdl_add_keycb(SDL_SCANCODE_ESCAPE, cb_popup_quit, nullptr, nullptr);
 	sdl_add_keycb(SDL_SCANCODE_SPACE, cb_popup_quit, nullptr, nullptr);
 }
 /**********************************
  **********************************/
-void ui_play_compose(Context * ctx, item_t * item_list)
+void ui_play_compose(Context * ctx, item_t * g_itemList)
 {
 	switch (current_ui)
 	{
 	case UI_MAIN:
-		main_compose(ctx, item_list);
+		main_compose(ctx, g_itemList);
 		break;
 	case UI_INVENTORY:
-		inventory_compose(ctx, item_list);
+		inventory_compose(ctx, g_itemList);
 		break;
 	case UI_POPUP:
-		popup_compose(ctx, item_list);
+		popup_compose(ctx, g_itemList);
 		break;
 	default:
 		werr(LOGUSER, "Wrong UI type");

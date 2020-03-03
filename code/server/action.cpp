@@ -63,6 +63,8 @@ extern "C"
  */
 static int l_player_get_id(lua_State* L)
 {
+	wlog(LOGDEVELOPER, "l_player_get_id");
+
 	Context * context;
 
 	lua_getglobal(L, LUAVM_CONTEXT);
@@ -118,7 +120,7 @@ static int l_character_get_selected_map_tile_x(lua_State* L)
 	const char * id;
 
 	id = luaL_checkstring(L, -1);
-	target = context_find(id);
+	target = context_find(std::string(id));
 	if (target == nullptr)
 	{
 		werr(LOGDESIGNER, "Cannot find context with ID %s", id);
@@ -139,7 +141,7 @@ static int l_character_get_selected_map_tile_y(lua_State* L)
 	const char * id;
 
 	id = luaL_checkstring(L, -1);
-	target = context_find(id);
+	target = context_find(std::string(id));
 	if (target == nullptr)
 	{
 		werr(LOGDESIGNER, "Cannot find context with ID %s", id);
@@ -160,7 +162,7 @@ static int l_character_get_selected_map(lua_State* L)
 	const char * id;
 
 	id = luaL_checkstring(L, -1);
-	target = context_find(id);
+	target = context_find(std::string(id));
 	if (target == nullptr)
 	{
 		werr(LOGDESIGNER, "Cannot find context with ID %s", id);
@@ -191,7 +193,7 @@ static int l_character_set_selected_tile(lua_State* L)
 	tx = luaL_checkint(L, -2);
 	ty = luaL_checkint(L, -1);
 
-	target = context_find(id);
+	target = context_find(std::string(id));
 	if (target == nullptr)
 	{
 		werr(LOGDESIGNER, "Cannot find context with ID %s", id);
@@ -216,7 +218,7 @@ static int l_character_get_selected_inventory_id(lua_State* L)
 	const char * id;
 
 	id = luaL_checkstring(L, -1);
-	target = context_find(id);
+	target = context_find(std::string(id));
 	if (target == nullptr)
 	{
 		werr(LOGDESIGNER, "Cannot find context with ID %s", id);
@@ -241,7 +243,7 @@ static int l_character_set_selected_inventory_id(lua_State* L)
 	id = luaL_checkstring(L, -2);
 	selected_item = luaL_checkstring(L, -1);
 
-	target = context_find(id);
+	target = context_find(std::string(id));
 	if (target == nullptr)
 	{
 		werr(LOGDESIGNER, "Cannot find context with ID %s", id);
@@ -266,7 +268,7 @@ static int l_character_get_selected_equipment_slot(lua_State* L)
 	const char * id;
 
 	id = luaL_checkstring(L, -1);
-	target = context_find(id);
+	target = context_find(std::string(id));
 	if (target == nullptr)
 	{
 		werr(LOGDESIGNER, "Cannot find context with ID %s", id);
@@ -291,7 +293,7 @@ static int l_character_set_selected_equipment_slot(lua_State* L)
 	id = luaL_checkstring(L, -2);
 	selected_equipment = luaL_checkstring(L, -1);
 
-	target = context_find(id);
+	target = context_find(std::string(id));
 	if (target == nullptr)
 	{
 		werr(LOGDESIGNER, "Cannot find context with ID %s", id);
@@ -316,7 +318,7 @@ static int l_character_get_selected_character_id(lua_State* L)
 	const char * id;
 
 	id = luaL_checkstring(L, -1);
-	target = context_find(id);
+	target = context_find(std::string(id));
 	if (target == nullptr)
 	{
 		werr(LOGDESIGNER, "Cannot find context with ID %s", id);
@@ -341,7 +343,7 @@ static int l_character_set_selected_character_id(lua_State* L)
 	id = luaL_checkstring(L, -2);
 	selected_id = luaL_checkstring(L, -1);
 
-	target = context_find(id);
+	target = context_find(std::string(id));
 	if (target == nullptr)
 	{
 		werr(LOGDESIGNER, "Cannot find context with ID %s", id);
@@ -366,7 +368,7 @@ static int l_character_get_map(lua_State* L)
 	const char * id;
 
 	id = luaL_checkstring(L, -1);
-	target = context_find(id);
+	target = context_find(std::string(id));
 	if (target == nullptr)
 	{
 		werr(LOGDESIGNER, "Cannot find context with ID %s", id);
@@ -423,7 +425,7 @@ static int l_character_get_x(lua_State* L)
 	const char * id;
 
 	id = luaL_checkstring(L, -1);
-	target = context_find(id);
+	target = context_find(std::string(id));
 	if (target == nullptr)
 	{
 		werr(LOGDESIGNER, "Cannot find context with ID %s", id);
@@ -444,7 +446,7 @@ static int l_character_get_y(lua_State* L)
 	const char * id;
 
 	id = luaL_checkstring(L, -1);
-	target = context_find(id);
+	target = context_find(std::string(id));
 	if (target == nullptr)
 	{
 		werr(LOGDESIGNER, "Cannot find context with ID %s", id);
@@ -465,7 +467,7 @@ static int l_character_get_name(lua_State* L)
 	const char * id;
 
 	id = luaL_checkstring(L, -1);
-	target = context_find(id);
+	target = context_find(std::string(id));
 	if (target == nullptr)
 	{
 		werr(LOGDESIGNER, "Cannot find context with ID %s", id);
@@ -486,7 +488,7 @@ static int l_character_get_type(lua_State* L)
 	const char * id;
 
 	id = luaL_checkstring(L, -1);
-	target = context_find(id);
+	target = context_find(std::string(id));
 	if (target == nullptr)
 	{
 		werr(LOGDESIGNER, "Cannot find context with ID %s", id);
@@ -575,6 +577,8 @@ static int l_character_delete(lua_State* L)
  */
 static int l_character_set_pos(lua_State* L)
 {
+	wlog(LOGDEVELOPER, "l_character_set_pos");
+
 	const char * id;
 	const char * map;
 	int x;
@@ -2261,27 +2265,28 @@ int action_execute(Context * context, const char * action, char ** parameters)
  Execute an action configuration file
  return -1 if the script do not return something
  **************************************/
-int action_execute(Context * context, const std::string & p_rScriptName, const std::vector<std::string> & p_rParam)
+int action_execute(Context * context, const std::string & scriptName, const std::vector<std::string> & parameters)
 {
 	char * script = nullptr;
-	char ** params = nullptr;
-	char ** all_params = nullptr;
-	int ret = -1;
 
-	if (entry_read_string(ACTION_TABLE, p_rScriptName.c_str(), &script,
+	if (entry_read_string(ACTION_TABLE, scriptName.c_str(), &script,
 	ACTION_KEY_SCRIPT, nullptr) == false)
 	{
 		return -1;
 	}
 
-	entry_read_list(ACTION_TABLE, p_rScriptName.c_str(), &params,
+	char ** params = nullptr;
+
+	entry_read_list(ACTION_TABLE, scriptName.c_str(), &params,
 	ACTION_KEY_PARAM, nullptr);
 
-	char ** passed_param = to_array(p_rParam);
+	char ** passed_param = to_array(parameters);
 
-	all_params = add_array(params, passed_param);
+	char ** all_params = add_array(params, passed_param);
 
-	ret = action_execute_script(context, script, (const char**) all_params);
+	int ret = action_execute_script(context, script, (const char**) all_params);
+
+	free(script);
 
 	deep_free(params);
 	deep_free(passed_param);
@@ -2380,6 +2385,8 @@ static int l_call_action(lua_State* L)
  ***************************************************/
 void register_lua_functions(Context * context)
 {
+	wlog(LOGDEVELOPER, "Registering LUA functions");
+
 	lua_State* L = context->getLuaVm();
 
 	// player functions

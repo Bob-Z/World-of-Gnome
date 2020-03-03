@@ -50,7 +50,7 @@ typedef struct
 
 static character_t * character_list = nullptr;
 static int character_num = 0;
-static item_t * item_list = nullptr;
+static item_t * g_itemList = nullptr;
 static long current_character = -1;
 static char * sfx_filename = nullptr;
 static bool g_IsMusicPlaying = false;
@@ -223,7 +223,7 @@ item_t * scr_select_compose(Context * context)
 	{
 		if (g_IsMusicPlaying == false)
 		{
-			if (sfx_play(context, std::string(sfx_filename), MUSIC_CHANNEL, LOOP) != -1)
+			if (sfx_play(*(context->getConnection()), std::string(sfx_filename), MUSIC_CHANNEL, LOOP) != -1)
 			{
 				g_IsMusicPlaying = true;
 			}
@@ -234,10 +234,10 @@ item_t * scr_select_compose(Context * context)
 		}
 	}
 
-	if (item_list)
+	if (g_itemList)
 	{
-		item_list_free(item_list);
-		item_list = nullptr;
+		g_itemList_free(g_itemList);
+		g_itemList = nullptr;
 	}
 
 	font_name = font_get(context, FONT, FONT_SIZE);
@@ -262,7 +262,7 @@ item_t * scr_select_compose(Context * context)
 		x = sw / 2 - (anim->w / 2);
 		y = sh - anim->h;
 
-		item = item_list_add(&item_list);
+		item = g_itemList_add(&g_itemList);
 		item_set_overlay(item, 1);
 		item_set_pos(item, x, y);
 		item_set_anim(item, anim, 0);
@@ -332,7 +332,7 @@ item_t * scr_select_compose(Context * context)
 		}
 
 		// Character picture
-		item = item_list_add(&item_list);
+		item = g_itemList_add(&g_itemList);
 		item_image = item;
 		character_list[i].item = item;
 
@@ -346,7 +346,7 @@ item_t * scr_select_compose(Context * context)
 		// character name
 		if (font_name)
 		{
-			item = item_list_add(&item_list);
+			item = g_itemList_add(&g_itemList);
 			item_set_string(item, character_list[i].name);
 			item_set_font(item, font_name);
 			// display string just above the picture
@@ -361,7 +361,7 @@ item_t * scr_select_compose(Context * context)
 		// character type
 		if (font_type)
 		{
-			item = item_list_add(&item_list);
+			item = g_itemList_add(&g_itemList);
 			item_set_string(item, character_list[i].type);
 			item_set_font(item, font_type);
 			// display string just below the picture
@@ -387,13 +387,13 @@ item_t * scr_select_compose(Context * context)
 	sdl_add_keycb(SDL_SCANCODE_LEFT, cb_previous_character, nullptr, nullptr);
 	sdl_add_keycb(SDL_SCANCODE_RETURN, cb_select, nullptr, (void *) context);
 
-	return item_list;
+	return g_itemList;
 }
 
 /*************************
  Add a character to the list
  *************************/
-void scr_select_add_user_character(Context * context, const std::string & id, const std::string & type, const std::string & name)
+void scr_select_add_user_character(const std::string & id, const std::string & type, const std::string & name)
 {
 	SDL_LockMutex(character_select_mutex);
 

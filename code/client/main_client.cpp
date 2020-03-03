@@ -61,7 +61,7 @@ ContextContainer & getContextContainer()
 int main(int argc, char **argv)
 {
 	int opt_ret;
-	char * ip = nullptr;
+	std::string ip;
 	char * user = nullptr;
 	char * pass = nullptr;
 	int maxfps = false;
@@ -77,7 +77,7 @@ int main(int argc, char **argv)
 		switch (opt_ret)
 		{
 		case 'i':
-			ip = strdup(optarg);
+			ip = std::string(optarg);
 			break;
 		case 'u':
 			user = strdup(optarg);
@@ -120,10 +120,6 @@ int main(int argc, char **argv)
 
 	common_mutex_init();
 
-	Context * context = context_new();
-
-	context->setUserName(std::string(user));
-
 	sdl_init(TITLE_NAME, !maxfps);
 
 	int Mix_flags = MIX_INIT_FLAC | MIX_INIT_MP3 | MIX_INIT_OGG;
@@ -136,10 +132,17 @@ int main(int argc, char **argv)
 
 	Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 1024);
 
+	Context * context = context_new();
+
+	Connection connection;
+	connection.setUserName(std::string(user));
+
+	context->setConnection(&connection);
+
 	// connect to server
-	if (network_connect(context, ip) == true)
+	if (network_connect(connection, ip) == true)
 	{
-		network_login(context, user, pass);
+		network_login(connection, std::string(user), std::string(pass));
 	}
 	else
 	{
@@ -147,7 +150,7 @@ int main(int argc, char **argv)
 		return 0;
 	}
 
-	while (context_get_socket_data(context) == 0)
+	while (connection.isConnected() == false)
 	{
 		usleep(100000);
 	}

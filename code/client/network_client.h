@@ -24,15 +24,15 @@
 
 class Context;
 
+void network_login(Connection & connection, const std::string & name, const std::string & password);
+void network_request_start(Connection & connection, const std::string & id);
+void network_request_stop(Connection & connection);
+void network_request_character_creation(Connection & connection, const char * id, const char * name);
 void network_login(Context * context, const char * name, const char * password);
-void network_request_start(Context * context, const std::string & id);
-void network_request_stop(Context * context);
-void network_request_character_creation(Context * context, const char * id, const char * name);
-void network_login(Context * context, const char * name, const char * password);
-void network_request_playable_character_list(Context * context);
-void network_request_user_character_list(Context * context);
-void network_send_action(Context * context, const char * frame, ...);
-int network_connect(Context * context, const char * hostname);
-int network_open_data_connection(Context * context);
+void network_request_playable_character_list(Connection & connection);
+void network_request_user_character_list(Connection & connection);
+void network_send_action(Connection & connection, const char * frame, ...);
+int network_connect(Connection & connection, const std::string & host_name);
+int network_open_data_connection(Connection & connection);
 
 #endif

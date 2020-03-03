@@ -25,4 +25,4 @@ class Context;
 item_t * scr_select_compose(Context * context);
 void scr_select_frame_start(Context * context);
 void scr_select_init();
-void scr_select_add_user_character(Context * context, const std::string & id, const std::string & type, const std::string & name);
+void scr_select_add_user_character(const std::string & id, const std::string & type, const std::string & name);

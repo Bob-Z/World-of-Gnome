@@ -1005,7 +1005,7 @@ char ** map_get_character(const std::string & map, int x, int y)
 char ** map_get_item(const char * map, int layer, int map_x, int map_y)
 {
 	char ** item_id = nullptr;
-	char ** item_list = nullptr;
+	char ** g_itemList = nullptr;
 	int item_num = 0;
 	int x;
 	int y;
@@ -1043,16 +1043,16 @@ char ** map_get_item(const char * map, int layer, int map_x, int map_y)
 		if (x == map_x && y == map_y)
 		{
 			item_num++;
-			item_list = (char**) realloc(item_list, sizeof(char*) * (item_num + 1));
-			item_list[item_num - 1] = strdup(item_id[i]);
-			item_list[item_num] = nullptr;
+			g_itemList = (char**) realloc(g_itemList, sizeof(char*) * (item_num + 1));
+			g_itemList[item_num - 1] = strdup(item_id[i]);
+			g_itemList[item_num] = nullptr;
 		}
 		i++;
 	}
 
 	deep_free(item_id);
 
-	return item_list;
+	return g_itemList;
 }
 
 /************************************************

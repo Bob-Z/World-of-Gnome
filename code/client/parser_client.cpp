@@ -17,7 +17,7 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#include "Context.h"
+#include "Connection.h"
 
 #include "EffectManager.h"
 #include "entry.h"
@@ -41,17 +41,15 @@
 /**************************************
  Return false on error
  **************************************/
-static int manage_login_ok(Context * context, const pb::LoginOk & login_ok)
+static int manage_login_ok(Connection & connection, const pb::LoginOk & login_ok)
 {
-	wlog(LOGDEVELOPER, "[network] Received login OK for user %s", context->getUserName().c_str());
-
-	if (network_open_data_connection(context) == false)
+	if (network_open_data_connection(connection) == false)
 	{
 		return false;
 	}
-	context->setConnected(true);
+	connection.setConnected(true);
 	wlog(LOGUSER, "Successfully connected");
-	network_request_user_character_list(context);
+	network_request_user_character_list(connection);
 	wlog(LOGDEVELOPER, "Character list requested");
 
 	return true;
@@ -60,11 +58,9 @@ static int manage_login_ok(Context * context, const pb::LoginOk & login_ok)
 /**************************************
  Return false on error
  **************************************/
-static int manage_login_nok(Context * context, const pb::LoginNok & login_nok)
+static int manage_login_nok(Connection & connection, const pb::LoginNok & login_nok)
 {
-	wlog(LOGDEVELOPER, "[network] Received login NOK for user %s", context->getUserName().c_str());
-
-	context->setConnected(false);
+	connection.setConnected(false);
 
 	werr(LOGUSER, "Check your login and password (they are case sensitive)\n");
 	exit(-1);
@@ -75,17 +71,15 @@ static int manage_login_nok(Context * context, const pb::LoginNok & login_nok)
 /**************************************
  Return false on error
  **************************************/
-static int manage_playable_character(Context * context, const pb::PlayableCharacter & playable_character)
+static int manage_playable_character(const pb::PlayableCharacter & playable_character)
 {
-	wlog(LOGDEVELOPER, "[network] Received playable character for user %s", context->getUserName().c_str());
-
 	std::vector<std::string> id_list;
 	for (int i = 0; i < playable_character.id().size(); i++)
 	{
 		id_list.push_back(playable_character.id(i));
 	}
 
-	scr_create_add_playable_character(context, id_list);
+	scr_create_add_playable_character(id_list);
 	screen_compose();
 
 	return true;
@@ -94,11 +88,9 @@ static int manage_playable_character(Context * context, const pb::PlayableCharac
 /**************************************
  Return false on error
  **************************************/
-static int manage_file(Context * context, const pb::File& file)
+static int manage_file(const pb::File& file)
 {
-	wlog(LOGDEVELOPER, "[network] Received file %s", file.name().c_str());
-
-	file_add(context, file.name(), file.data());
+	file_add(file.name(), file.data());
 	screen_compose();
 
 	return true;
@@ -107,11 +99,9 @@ static int manage_file(Context * context, const pb::File& file)
 /**************************************
  Return false on error
  **************************************/
-static int manage_user_character(Context * context, const pb::UserCharacter& user_character)
+static int manage_user_character(const pb::UserCharacter& user_character)
 {
-	wlog(LOGDEVELOPER, "[network] Received user %s character", context->getUserName().c_str(), user_character.name().c_str());
-
-	scr_select_add_user_character(context, user_character.id(), user_character.type(), user_character.name());
+	scr_select_add_user_character(user_character.id(), user_character.type(), user_character.name());
 	screen_compose();
 
 	return true;
@@ -120,13 +110,10 @@ static int manage_user_character(Context * context, const pb::UserCharacter& use
 /**************************************
  Return false on error
  **************************************/
-static int manage_context(Context * context, const pb::Context& incoming_context)
+static int manage_context(const pb::Context& incoming_context)
 {
-	wlog(LOGDEVELOPER, "[network] Received context %s", incoming_context.id().c_str());
-
 	Context received_context;
 	received_context.setCharacterName(incoming_context.character_name());
-	received_context.setConnected(incoming_context.connected());
 	received_context.setId(incoming_context.id());
 	received_context.setInGame(incoming_context.in_game());
 	received_context.setMap(incoming_context.map());
@@ -134,7 +121,6 @@ static int manage_context(Context * context, const pb::Context& incoming_context
 	received_context.setTileX(incoming_context.tile_x());
 	received_context.setTileY(incoming_context.tile_y());
 	received_context.setType(incoming_context.type());
-	received_context.setUserName(incoming_context.user_name());
 	received_context.setSelectionEquipment(incoming_context.selection().equipment());
 	received_context.setSelectionContextId(incoming_context.selection().id());
 	received_context.setSelectionInventory(incoming_context.selection().inventory());
@@ -150,10 +136,8 @@ static int manage_context(Context * context, const pb::Context& incoming_context
 /**************************************
  Return false on error
  **************************************/
-static int manage_text(Context * context, const pb::Text& text)
+static int manage_text(const pb::Text& text)
 {
-	wlog(LOGDEVELOPER, "[network] Received text");
-
 	textview_add_line(text.text());
 
 	return true;
@@ -162,10 +146,8 @@ static int manage_text(Context * context, const pb::Text& text)
 /**************************************
  Return false on error
  **************************************/
-static int manage_entry(Context * context, const pb::Entry& entry)
+static int manage_entry(const pb::Entry& entry)
 {
-	wlog(LOGDEVELOPER, "[network] Received entry");
-
 	if (entry_update(entry.type(), entry.table(), entry.file(), entry.path(), entry.value()) != -1)
 	{
 		screen_compose();
@@ -177,10 +159,8 @@ static int manage_entry(Context * context, const pb::Entry& entry)
 /**************************************
  Return false on error
  **************************************/
-static int manage_popup(Context * context, const pb::PopUp& popup)
+static int manage_popup(const pb::PopUp& popup)
 {
-	wlog(LOGDEVELOPER, "[network] Received pop-up");
-
 	std::vector<std::string> data;
 	for (int i = 0; i < popup.data().size(); i++)
 	{
@@ -196,17 +176,15 @@ static int manage_popup(Context * context, const pb::PopUp& popup)
 /**************************************
  Return false on error
  **************************************/
-static int manage_effect(Context * context, const pb::Effect& effect)
+static int manage_effect(Connection & connection, const pb::Effect& effect)
 {
-	wlog(LOGDEVELOPER, "[network] Received effect");
-
 	std::vector<std::string> params;
 	for (int i = 0; i < effect.param().size(); i++)
 	{
 		params.push_back(effect.param(i));
 	}
 
-	EffectManager::processEffectFrame(context, params);
+	EffectManager::processEffectFrame(connection, params);
 
 	return true;
 }
@@ -214,7 +192,7 @@ static int manage_effect(Context * context, const pb::Effect& effect)
 /***********************************
  Return false on error
  ***********************************/
-int parse_incoming_data(Context * context, const std::string & serialized_data)
+int parse_incoming_data(Connection & connection, const std::string & serialized_data)
 {
 	pb::ServerMessage message;
 	if (message.ParseFromString(serialized_data) == false)
@@ -225,43 +203,53 @@ int parse_incoming_data(Context * context, const std::string & serialized_data)
 	{
 		if (message.has_login_ok())
 		{
-			manage_login_ok(context, message.login_ok());
+			wlog(LOGDEVELOPER, "[network] Received login OK for user %s", connection.getUserName().c_str());
+			manage_login_ok(connection, message.login_ok());
 		}
 		else if (message.has_login_nok())
 		{
-			manage_login_nok(context, message.login_nok());
+			wlog(LOGDEVELOPER, "[network] Received login NOK for user %s", connection.getUserName().c_str());
+			manage_login_nok(connection, message.login_nok());
 		}
 		else if (message.has_playable_character())
 		{
-			manage_playable_character(context, message.playable_character());
+			wlog(LOGDEVELOPER, "[network] Received playable character for user %s", connection.getUserName().c_str());
+			manage_playable_character(message.playable_character());
 		}
 		else if (message.has_file())
 		{
-			manage_file(context, message.file());
+			wlog(LOGDEVELOPER, "[network] Received file %s", message.file().name().c_str());
+			manage_file(message.file());
 		}
 		else if (message.has_user_character())
 		{
-			manage_user_character(context, message.user_character());
+			wlog(LOGDEVELOPER, "[network] Received user %s character", connection.getUserName().c_str(), message.user_character().name().c_str());
+			manage_user_character(message.user_character());
 		}
 		else if (message.has_context())
 		{
-			manage_context(context, message.context());
+			wlog(LOGDEVELOPER, "[network] Received context %s", message.context().id().c_str());
+			manage_context(message.context());
 		}
 		else if (message.has_text())
 		{
-			manage_text(context, message.text());
+			wlog(LOGDEVELOPER, "[network] Received text");
+			manage_text(message.text());
 		}
 		else if (message.has_entry())
 		{
-			manage_entry(context, message.entry());
+			wlog(LOGDEVELOPER, "[network] Received entry");
+			manage_entry(message.entry());
 		}
 		else if (message.has_popup())
 		{
-			manage_popup(context, message.popup());
+			wlog(LOGDEVELOPER, "[network] Received pop-up");
+			manage_popup(message.popup());
 		}
 		else if (message.has_effect())
 		{
-			manage_effect(context, message.effect());
+			wlog(LOGDEVELOPER, "[network] Received effect");
+			manage_effect(connection, message.effect());
 		}
 		else
 		{

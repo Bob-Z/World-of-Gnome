@@ -20,8 +20,9 @@
 #ifndef WOG_FILE_H
 #define WOG_FILE_H
 
-#include <string>
+#include "Connection.h"
 #include <SDL_stdinc.h>
+#include <string>
 
 class Context;
 
@@ -29,7 +30,7 @@ const std::string NO_SUGGESTED_NAME = "";
 
 void file_lock(const char * filename);
 void file_unlock(const char * filename);
-void file_update(Context * context, const char * filename);
+void file_update(Connection * connection, const char * filename);
 std::pair<bool, std::string> file_new(const std::string & table, const std::string & suggested_name = NO_SUGGESTED_NAME);
 int file_get_contents(const char *filename, void **contents, int_fast32_t *length);
 int file_set_contents(const char *filename, const void * contents, int length);

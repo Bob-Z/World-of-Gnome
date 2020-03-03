@@ -49,7 +49,7 @@ static int npc_script(void * data)
 
 	wlog(LOGDESIGNER, "Start AI script for %s(%s)", context->getId().c_str(), context->getCharacterName().c_str());
 
-	while (context->isConnected() == true)
+	while (context->isInGame() == true)
 	{
 		if (script)
 		{
@@ -77,7 +77,7 @@ static int npc_script(void * data)
 		/* The previous call to action_execute_script may have changed
 		 the connected status. So we test it to avoid waiting for the
 		 timeout duration before disconnecting */
-		if (context->isConnected() == true)
+		if (context->isInGame() == true)
 		{
 			context->sleep(timeOutMs);
 		}
@@ -146,11 +146,9 @@ void instantiate_npc(const std::string & id)
 
 	wlog(LOGDESIGNER, "Creating NPC %s of type %s in map %s at %d,%d", name, type, map, x, y);
 	ctx = context_new();
-	ctx->setUserName("CPU");
 	ctx->setCharacterName(name);
 	free(name);
 	ctx->setInGame(true);
-	ctx->setConnected(true);
 
 	ctx->setMap(std::string(map));
 	free(map);

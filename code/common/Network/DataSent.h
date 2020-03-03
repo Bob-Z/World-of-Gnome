@@ -1,6 +1,6 @@
 /*
  World of Gnome is a 2D multiplayer role playing game.
- Copyright (C) 2013-2020 carabobz@gmail.com
+ Copyright (C) 2019 carabobz@gmail.com
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -17,13 +17,33 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
+#ifndef COMMON_NETWORK_DATASENT_H_
+#define COMMON_NETWORK_DATASENT_H_
+
 #include <string>
 
-#include "Connection.h"
+class Connection;
 
-class Context;
+class DataSent
+{
+public:
+	DataSent();
+	virtual ~DataSent() = default;
 
-int file_add(const std::string & name, const std::string & data);
-void file_clean(Context *);
-void file_request_from_network(Connection & connection, const char * table, const char * filename);
-int file_create_directory(const std::string & file_path);
+	void send();
+
+	void setConnection(Connection* connection);
+
+	bool isIsData() const;
+	void setIsData(bool isData);
+
+	const std::string& getSerializedData() const;
+	void setSerializedData(const std::string& serializedData);
+
+private:
+	Connection * m_connection;
+	std::string m_serializedData;
+	bool m_isData;
+};
+
+#endif /* COMMON_NETWORK_DATASENT_H_ */

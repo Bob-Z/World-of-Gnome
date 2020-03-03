@@ -21,9 +21,9 @@
 #include <string>
 #include <utility>
 
-void character_playable_send_list(Context * context);
-void character_user_send(Context * p_pCtx, const char * p_pCharacterId);
-void character_user_send_list(Context * context);
+void character_playable_send_list(Connection & connection);
+void character_user_send(Connection & connection, const std::string & id);
+void character_user_send_list(Connection & connection);
 int character_out_of_game(const char * id);
 int character_disconnect(const char * id);
 int character_set_pos(Context * ctx, const std::string & map, int x, int y);

@@ -53,7 +53,7 @@ TTF_Font * font_get(Context* ctx, const std::string & filename, int size)
 		return font;
 	}
 
-	file_update(ctx, filename.c_str());
+	file_update(ctx->getConnection(), filename.c_str());
 
 	file_unlock(filename.c_str());
 

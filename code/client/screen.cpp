@@ -35,14 +35,14 @@
 #include <limits.h>
 #include <pthread.h>
 
-static bool screen_running = true;
-static item_t * item_list = nullptr;
+static bool g_screenRunning = true;
+static item_t * g_itemList = nullptr;
 static bool g_Compose = true;
 
 #define ITEM_FONT "Ubuntu-C.ttf"
 #define ITEM_FONT_SIZE 15
 
-static item_t * frame_rate_item = nullptr;
+static item_t * g_frameRateItem = nullptr;
 static constexpr int FPS_DISPLAY_PERIOD = 1000;
 static Camera g_Camera;
 
@@ -80,36 +80,45 @@ static void frame_start(Context * context)
 
 /******************************************************
  create a list of item for the currently selected screen
+ return true if composing succeed
  ******************************************************/
-static void compose_scr(Context * context)
+static bool compose_scr(Context * context)
 {
-	static TTF_Font * font = nullptr;
-
 	sdl_set_background_color(0, 0, 0, 255);
 
 	switch (g_Camera.getScreen())
 	{
 	case Screen::SELECT:
-		item_list = scr_select_compose(context);
+		g_itemList = scr_select_compose(context);
 		break;
 	case Screen::CREATE:
-		item_list = scr_create_compose(context);
+		g_itemList = scr_create_compose(context);
 		break;
 	case Screen::PLAY:
-		item_list = scr_play_compose(context);
+		g_itemList = scr_play_compose(context);
 		break;
 	default:
 		break;
 	}
 
+	bool ret = false;
+	if (g_itemList != nullptr)
+	{
+		ret = true;
+	}
+
 	if (option_get().show_fps)
 	{
+		static TTF_Font * font = nullptr;
+
 		font = font_get(context, ITEM_FONT, ITEM_FONT_SIZE);
-		frame_rate_item = item_list_add(&item_list);
-		item_set_font(frame_rate_item, font);
-		item_set_anim_shape(frame_rate_item, 100, 50, 20, 20);
-		item_set_overlay(frame_rate_item, 1);
+		g_frameRateItem = g_itemList_add(&g_itemList);
+		item_set_font(g_frameRateItem, font);
+		item_set_anim_shape(g_frameRateItem, 100, 50, 20, 20);
+		item_set_overlay(g_frameRateItem, 1);
 	}
+
+	return ret;
 }
 
 /******************************************************
@@ -143,7 +152,7 @@ static void display_fps()
 	double sample;
 	static int num_frame = 0;
 
-	if (frame_rate_item != nullptr)
+	if (g_frameRateItem != nullptr)
 	{
 		if (option_get().show_fps)
 		{
@@ -156,18 +165,17 @@ static void display_fps()
 				timer = new_timer;
 				sprintf(shown_fps, "%f", sample);
 			}
-			item_set_string(frame_rate_item, shown_fps);
+			item_set_string(g_frameRateItem, shown_fps);
 		}
 	}
 }
 
-/************************************************
- ************************************************/
-void calculate_camera_position(Context * p_pCtx)
+/*****************************************************************************/
+static void calculate_camera_position(Context * ctx)
 {
-	char * l_pCameraScript = nullptr;
-	entry_read_string(nullptr, CLIENT_CONF_FILE, &l_pCameraScript, CLIENT_KEY_CAMERA_SCRIPT, nullptr);
-	if (l_pCameraScript == nullptr || l_pCameraScript[0] == '\0')
+	char * cameraScript = nullptr;
+	entry_read_string(nullptr, CLIENT_CONF_FILE, &cameraScript, CLIENT_KEY_CAMERA_SCRIPT, nullptr);
+	if (cameraScript == nullptr || cameraScript[0] == '\0')
 	{
 		werr(LOGDESIGNER, "No camera script defined. Camera won't move");
 	}
@@ -176,36 +184,36 @@ void calculate_camera_position(Context * p_pCtx)
 		lua_pushlightuserdata(getLuaVm(), (void *) &g_Camera);
 		lua_setglobal(getLuaVm(), "current_camera");
 
-		if (lua_execute_script(getLuaVm(), l_pCameraScript, nullptr) == -1)
+		if (lua_execute_script(getLuaVm(), cameraScript, nullptr) == -1)
 		{
-			file_request_from_network(p_pCtx, SCRIPT_TABLE, l_pCameraScript);
+			file_request_from_network(*(ctx->getConnection()), SCRIPT_TABLE, cameraScript);
 		}
 	}
-	if (l_pCameraScript != nullptr)
+	if (cameraScript != nullptr)
 	{
-		free(l_pCameraScript);
+		free(cameraScript);
 	}
 }
 
 /************************************************
  ************************************************/
-static void execute_draw_script(Context * p_pCtx, const char * p_pScriptName, Context * p_pCtxToDraw, item_t * p_pItem)
+static void execute_draw_script(Context * ctx, const char * scriptName, Context * ctxToDraw, item_t * p_pItem)
 {
-	item_t l_TempItem;
-	memcpy(&l_TempItem, p_pItem, sizeof(item_t));
+	item_t tempItem;
+	memcpy(&tempItem, p_pItem, sizeof(item_t));
 
-	lua_pushlightuserdata(getLuaVm(), &l_TempItem);
+	lua_pushlightuserdata(getLuaVm(), &tempItem);
 	lua_setglobal(getLuaVm(), "current_item");
 
-	lua_pushlightuserdata(getLuaVm(), p_pCtxToDraw);
+	lua_pushlightuserdata(getLuaVm(), ctxToDraw);
 	lua_setglobal(getLuaVm(), "current_context");
 
-	if (lua_execute_script(getLuaVm(), p_pScriptName, nullptr) == -1)
+	if (lua_execute_script(getLuaVm(), scriptName, nullptr) == -1)
 	{
-		file_request_from_network(p_pCtx, SCRIPT_TABLE, p_pScriptName);
+		file_request_from_network(*(ctx->getConnection()), SCRIPT_TABLE, scriptName);
 	}
 
-	sdl_blit_item(&l_TempItem);
+	sdl_blit_item(&tempItem);
 }
 
 /************************************************
@@ -215,14 +223,16 @@ void screen_display(Context * ctx)
 {
 	SDL_Event event;
 
-	while (screen_running == true)
+	while (g_screenRunning == true)
 	{
 		frame_start(ctx);
 
 		if (g_Compose == true)
 		{
-			g_Compose = false;
-			compose_scr(ctx);
+			if (compose_scr(ctx) == true)
+			{
+				g_Compose = false;
+			}
 		}
 
 		display_fps();
@@ -230,18 +240,18 @@ void screen_display(Context * ctx)
 		while (SDL_PollEvent(&event))
 		{
 			g_Compose |= sdl_screen_manager(&event);
-			g_Compose |= sdl_mouse_manager(&event, item_list);
+			g_Compose |= sdl_mouse_manager(&event, g_itemList);
 			g_Compose |= sdl_keyboard_manager(&event);
 		}
 
-		sdl_mouse_position_manager(item_list);
+		sdl_mouse_position_manager(g_itemList);
 
 		sdl_clear();
 
-//		sdl_blit_item_list(item_list);
+//		sdl_blit_g_itemList(g_itemList);
 		item_t * item;
 
-		item = item_list;
+		item = g_itemList;
 		while (item != nullptr)
 		{
 			if (item->user_ptr != nullptr)
@@ -287,11 +297,11 @@ void screen_display(Context * ctx)
 /************************************************
  Select the screen to be rendered
  ************************************************/
-void screen_set_screen(Screen p_Screen)
+void screen_set_screen(Screen screen)
 {
-	if (p_Screen != g_Camera.getScreen())
+	if (screen != g_Camera.getScreen())
 	{
-		g_Camera.setScreen(p_Screen);
+		g_Camera.setScreen(screen);
 		init_scr();
 	}
 	screen_compose();
@@ -302,7 +312,7 @@ void screen_set_screen(Screen p_Screen)
  ************************************************/
 void screen_quit()
 {
-	screen_running = false;
+	g_screenRunning = false;
 }
 
 /************************************************

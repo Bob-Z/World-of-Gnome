@@ -27,71 +27,71 @@
 /*********************************************************************
  sends a login request, the answer is asynchronously read by async_recv
  **********************************************************************/
-void network_login(Context * context, const char * user_name, const char * password)
+void network_login(Connection & connection, const std::string & user_name, const std::string & password)
 {
 	pb::ClientMessage message;
 	message.mutable_login()->set_user(user_name);
 	message.mutable_login()->set_password(password);
-	std::string serialized_data = message.SerializeAsString();
+	const std::string serialized_data = message.SerializeAsString();
 
 	wlog(LOGDEVELOPER, "[network] Send LOGIN");
-	network_send_command(context, serialized_data, false);
+	network_send_command(connection, serialized_data, false);
 }
 
 /*********************************************************************
  **********************************************************************/
-void network_request_start(Context * context, const std::string & id)
+void network_request_start(Connection & connection, const std::string & id)
 {
 	pb::ClientMessage message;
 	message.mutable_start()->set_id(id);
 	std::string serialized_data = message.SerializeAsString();
 
 	wlog(LOGDEVELOPER, "[network] Send START");
-	network_send_command(context, serialized_data, false);
+	network_send_command(connection, serialized_data, false);
 }
 
 /*********************************************************************
  **********************************************************************/
-void network_request_stop(Context * context)
+void network_request_stop(Connection & connection)
 {
 	pb::ClientMessage message;
 	message.mutable_stop()->Clear();
 	std::string serialized_data = message.SerializeAsString();
 
 	wlog(LOGDEVELOPER, "[network] Send STOP");
-	network_send_command(context, serialized_data, false);
+	network_send_command(connection, serialized_data, false);
 }
 
 /*********************************************************************
  request all playable characters list
  *********************************************************************/
-void network_request_playable_character_list(Context * context)
+void network_request_playable_character_list(Connection & connection)
 {
 	pb::ClientMessage message;
 	message.mutable_playable_character_list()->Clear();
 	std::string serialized_data = message.SerializeAsString();
 
 	wlog(LOGDEVELOPER, "[network] Send PLAYABLE_CHARACTER_LIST");
-	network_send_command(context, serialized_data, false);
+	network_send_command(connection, serialized_data, false);
 }
 
 /*********************************************************************
  request a specific user's characters list
  *********************************************************************/
-void network_request_user_character_list(Context * context)
+void network_request_user_character_list(Connection & connection)
 {
 	pb::ClientMessage message;
-	message.mutable_user_character_list()->set_user(context->getUserName());
+	message.mutable_user_character_list()->set_user(connection.getUserName());
 	std::string serialized_data = message.SerializeAsString();
 
 	wlog(LOGDEVELOPER, "[network] Send USER_CHARACTER_LIST");
-	network_send_command(context, serialized_data, false);
+	network_send_command(connection, serialized_data, false);
 }
 
 /*********************************************************************
  request a character's creation
  *********************************************************************/
-void network_request_character_creation(Context * context, const char * id, const char * name)
+void network_request_character_creation(Connection & connection, const char * id, const char * name)
 {
 	pb::ClientMessage message;
 	message.mutable_create()->set_id(id);
@@ -99,13 +99,13 @@ void network_request_character_creation(Context * context, const char * id, cons
 	std::string serialized_data = message.SerializeAsString();
 
 	wlog(LOGDEVELOPER, "[network] Send CREATE ID = %s, NAME = %s", id, name);
-	network_send_command(context, serialized_data, false);
+	network_send_command(connection, serialized_data, false);
 }
 
 /*********************************************************************
  Player sends an action to server
  *********************************************************************/
-void network_send_action(Context * context, const char * script, ...)
+void network_send_action(Connection & connection, const char * script, ...)
 {
 	if (script == nullptr)
 	{
@@ -131,7 +131,7 @@ void network_send_action(Context * context, const char * script, ...)
 	std::string serialized_data = message.SerializeAsString();
 
 	wlog(LOGDEVELOPER, "[network] Send action script %s", script);
-	network_send_command(context, serialized_data, false);
+	network_send_command(connection, serialized_data, false);
 }
 
 /*********************************************************************
@@ -140,13 +140,13 @@ void network_send_action(Context * context, const char * script, ...)
  *********************************************************************/
 static int async_recv(void * data)
 {
-	Context * context = (Context *) data;
+	Connection * connection = (Connection *) data;
 
 	while (true)
 	{
 		uint32_t frame_size = 0U;
 
-		if (network_read_bytes(context->m_socket, (char *) &frame_size, sizeof(uint32_t)) == false)
+		if (network_read_bytes(connection->getSocket(), (char *) &frame_size, sizeof(uint32_t)) == false)
 		{
 			break;
 		}
@@ -155,13 +155,13 @@ static int async_recv(void * data)
 			frame_size = ntohl(frame_size);
 			char frame[frame_size];
 
-			if (network_read_bytes(context->m_socket, (char *) frame, frame_size) == false)
+			if (network_read_bytes(connection->getSocket(), (char *) frame, frame_size) == false)
 			{
 				break;
 			}
 
 			std::string serialized_data(frame, frame_size);
-			if (parse_incoming_data(context, serialized_data) == false)
+			if (parse_incoming_data(*connection, serialized_data) == false)
 			{
 				break;
 			}
@@ -170,12 +170,7 @@ static int async_recv(void * data)
 
 	werr(LOGUSER, "Socket closed on server side.");
 
-	context->setConnected(false);
-
-	SDLNet_TCP_Close(context->m_socket);
-	SDLNet_TCP_Close(context->m_socket_data);
-	context_set_socket(context, 0);
-	context_set_socket_data(context, 0);
+	connection->disconnect();
 
 	screen_quit();
 
@@ -188,13 +183,13 @@ static int async_recv(void * data)
  *********************************************************************/
 static int async_data_recv(void * data)
 {
-	Context * context = (Context *) data;
+	Connection * connection = (Connection *) data;
 
 	while (true)
 	{
 		uint32_t frame_size = 0U;
 
-		if (network_read_bytes(context->m_socket_data, (char *) &frame_size, sizeof(uint32_t)) == false)
+		if (network_read_bytes(connection->getSocketData(), (char *) &frame_size, sizeof(uint32_t)) == false)
 		{
 			break;
 		}
@@ -203,13 +198,13 @@ static int async_data_recv(void * data)
 			frame_size = ntohl(frame_size);
 			char frame[frame_size];
 
-			if (network_read_bytes(context->m_socket_data, (char *) frame, frame_size) == false)
+			if (network_read_bytes(connection->getSocketData(), (char *) frame, frame_size) == false)
 			{
 				break;
 			}
 
 			std::string serialized_data(frame, frame_size);
-			if (parse_incoming_data(context, serialized_data) == false)
+			if (parse_incoming_data(*connection, serialized_data) == false)
 			{
 				break;
 			}
@@ -218,11 +213,7 @@ static int async_data_recv(void * data)
 
 	werr(LOGUSER, "Socket closed on server side.");
 
-	context->setConnected(false);
-	SDLNet_TCP_Close(context->m_socket);
-	SDLNet_TCP_Close(context->m_socket_data);
-	context_set_socket(context, 0);
-	context_set_socket_data(context, 0);
+	connection->disconnect();
 
 	screen_quit();
 
@@ -232,12 +223,12 @@ static int async_data_recv(void * data)
 /*********************************************************************
  return false on error
  *********************************************************************/
-int network_connect(Context * context, const char * hostname)
+int network_connect(Connection & connection, const std::string & host_name)
 {
 	IPaddress ip;
 	TCPsocket socket;
 
-	wlog(LOGUSER, "Trying to connect to %s:%d", hostname, PORT);
+	wlog(LOGUSER, "Trying to connect to %s:%d", host_name.c_str(), PORT);
 
 	if (SDLNet_Init() < 0)
 	{
@@ -245,50 +236,50 @@ int network_connect(Context * context, const char * hostname)
 		return false;
 	}
 
-	if (SDLNet_ResolveHost(&ip, hostname, PORT) < 0)
+	if (SDLNet_ResolveHost(&ip, host_name.c_str(), PORT) < 0)
 	{
-		werr(LOGUSER, "Can't resolve %s:%d : %s\n", hostname, PORT, SDLNet_GetError());
+		werr(LOGUSER, "Can't resolve %s:%d : %s\n", host_name.c_str(), PORT, SDLNet_GetError());
 		return false;
 	}
 
-	if (!(socket = SDLNet_TCP_Open(&ip)))
+	if ((socket = SDLNet_TCP_Open(&ip)) == 0)
 	{
-		werr(LOGUSER, "Can't connect to %s:%d : %s\n", hostname, PORT, SDLNet_GetError());
+		werr(LOGUSER, "Can't connect to %s:%d : %s\n", host_name.c_str(), PORT, SDLNet_GetError());
 		return false;
 	}
 
-	wlog(LOGUSER, "Connected to %s:%d", hostname, PORT);
+	wlog(LOGUSER, "Connected to %s:%d on socket %d", host_name.c_str(), PORT, socket);
 
-	context_set_hostname(context, hostname);
-	context_set_socket(context, socket);
+	connection.setHostName(host_name);
+	connection.setSocket(socket);
+	connection.setConnected(true);
 
-	SDL_CreateThread(async_recv, "async_recv", (void*) context);
+	SDL_CreateThread(async_recv, "async_recv", (void*) &connection);
 
 	return true;
 }
 
-/*********************************************************************
- *********************************************************************/
-int network_open_data_connection(Context * context)
+/*****************************************************************************/
+int network_open_data_connection(Connection & connection)
 {
 	IPaddress ip;
-	TCPsocket socket;
+	TCPsocket socket = 0;
 
-	if (SDLNet_ResolveHost(&ip, context->m_hostname, PORT) < 0)
+	if (SDLNet_ResolveHost(&ip, connection.getHostName().c_str(), PORT) < 0)
 	{
-		werr(LOGUSER, "Can't resolve %s:%d : %s\n", context->m_hostname, PORT, SDLNet_GetError());
+		werr(LOGUSER, "Can't resolve %s:%d : %s\n", connection.getHostName().c_str(), PORT, SDLNet_GetError());
 		return false;
 	}
 
-	if (!(socket = SDLNet_TCP_Open(&ip)))
+	if ((socket = SDLNet_TCP_Open(&ip)) == 0)
 	{
-		werr(LOGUSER, "Can't open data connection to %s:%d : %s\n", context->m_hostname, PORT, SDLNet_GetError());
+		werr(LOGUSER, "Can't open data connection to %s:%d : %s\n", connection.getHostName().c_str(), PORT, SDLNet_GetError());
 		return false;
 	}
 
-	context_set_socket_data(context, socket);
+	connection.setSocketData(socket);
 
-	SDL_CreateThread(async_data_recv, "async_data_recv", (void*) context);
+	SDL_CreateThread(async_data_recv, "async_data_recv", (void*) &connection);
 
 	return true;
 }

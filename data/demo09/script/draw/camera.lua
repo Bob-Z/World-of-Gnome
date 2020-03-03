@@ -1,6 +1,9 @@
 function f ()
 
 id = player_get_id()
+-- text = string.format("player ID = %s",id)
+--print_text_debug(text)
+
 screen = camera_get_screen()
 
 -- Init tables
@@ -15,6 +18,14 @@ if( _G.from_camera_Z == nil ) then
 end
 if( _G.current_camera_Z == nil ) then
 	_G.current_camera_Z = {}
+end
+if( _G.current_X == nil ) then
+	_G.current_X = {}
+	_G.current_X[id] = camera_get_X()
+end
+if( _G.current_Y == nil ) then
+	_G.current_Y = {}
+	_G.current_Y[id] = camera_get_Y()
 end
 
 -- Init per screen variables
@@ -109,7 +120,14 @@ if( screen == 0 or screen == 1) then -- SELECT screen or CREATE screen
 end
 
 if( screen == 2 ) then -- PLAY screen
-	camera_set_coord(_G.current_X[id], (_G.current_Y[id]))
+	if( _G.current_X[id] == nil ) then
+		_G.current_X[id] = camera_get_X()
+	end
+	if( _G.current_Y[id] == nil ) then
+		_G.current_Y[id] = camera_get_Y()
+	end
+
+	camera_set_coord(_G.current_X[id], _G.current_Y[id])
 end
 
 return 0

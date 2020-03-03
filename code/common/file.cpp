@@ -92,15 +92,19 @@ void file_unlock(const char * filename)
 /****************************************
  filename is "table/dir/file"
  *****************************************/
-void file_update(Context * context, const char * filename)
+void file_update(Connection * connection, const char * filename)
 {
-	Uint32 current_time = SDL_GetTicks();
-	file_t * file_data;
+	if (connection == nullptr)
+	{
+		return;
+	}
 
 	if (client_server == SERVER)
 	{
 		return;
 	}
+
+	file_t * file_data;
 
 	SDL_LockMutex(file_list_mutex);
 	file_data = (file_t *) list_find(file_list, filename);
@@ -112,13 +116,14 @@ void file_update(Context * context, const char * filename)
 	}
 
 	// Avoid flooding the server
+	Uint32 current_time = SDL_GetTicks();
 	if (file_data->timestamp != 0 && file_data->timestamp + FILE_REQUEST_TIMEOUT > current_time)
 	{
 		//wlog(LOGDEBUG,"Previous request of file  %s has been %d ms ago",filename,current_time - file_data->timestamp );
 		return;
 	}
 
-	network_send_req_file(context, std::string(filename));
+	network_send_req_file(*connection, std::string(filename));
 
 	file_data->timestamp = current_time;
 }

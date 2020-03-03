@@ -49,6 +49,8 @@ add_library(
 	log.cpp
 	map.cpp
 	mutex.cpp
+	Network/Connection.cpp
+	Network/DataSent.cpp
 	Network/network.cpp
 	util.cpp
 	lua_script.cpp

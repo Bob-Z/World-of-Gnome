@@ -54,7 +54,7 @@ static const std::string ITEM_FONT = "Ubuntu-C.ttf";
 
 #define MAX_LAYER	(100)
 
-static item_t * item_list = nullptr;
+static item_t * g_itemList = nullptr;
 static bool change_map = false;
 static int current_map_x = -1;
 static int current_map_y = -1;
@@ -83,7 +83,7 @@ static void cb_select_sprite(void *arg)
 	char * id = (char*) arg;
 	Context * ctx = context_get_player();
 
-	network_send_action(ctx, option_get().action_select_character, id, nullptr);
+	network_send_action(*(ctx->getConnection()), option_get().action_select_character, id, nullptr);
 }
 
 /**********************************
@@ -108,18 +108,18 @@ static void cb_redo_sprite(void *arg)
  **********************************/
 static void cb_zoom(Uint32 l_Unused1, Uint32 l_Unused2)
 {
-	Camera * l_pCamera = screen_get_camera();
+	Camera * camera = screen_get_camera();
 
-	l_pCamera->setZoom(l_pCamera->getZoom() + 1);
+	camera->setZoom(camera->getZoom() + 1);
 }
 
 /**********************************
  **********************************/
 static void cb_unzoom(Uint32 l_Unused1, Uint32 l_Unused2)
 {
-	Camera * l_pCamera = screen_get_camera();
+	Camera * camera = screen_get_camera();
 
-	l_pCamera->setZoom(l_pCamera->getZoom() - 1);
+	camera->setZoom(camera->getZoom() - 1);
 }
 
 /**********************************
@@ -261,7 +261,7 @@ static void set_up_sprite(Context * ctx)
 		return;
 	}
 
-	item = item_list_add(&item_list);
+	item = g_itemList_add(&g_itemList);
 
 	current_time = sdl_get_global_time();
 
@@ -592,7 +592,7 @@ static void compose_item(int layer_index)
 			free(mytemplate);
 		}
 
-		item = item_list_add(&item_list);
+		item = g_itemList_add(&g_itemList);
 
 		anim = imageDB_get_anim(ctx, sprite_name);
 		free(sprite_name);
@@ -645,7 +645,7 @@ static void cb_select_map(void *arg)
 	sprintf(x, "%d", item->user1);
 	sprintf(y, "%d", item->user2);
 
-	network_send_action(ctx, option_get().action_select_tile, ctx->getMap().c_str(), x, y, nullptr);
+	network_send_action(*(ctx->getConnection()), option_get().action_select_tile, ctx->getMap().c_str(), x, y, nullptr);
 }
 
 /**************************************
@@ -697,7 +697,7 @@ static void compose_map_button()
 	{
 		for (x = 0; x < default_layer->map_w; x++)
 		{
-			item = item_list_add(&item_list);
+			item = g_itemList_add(&g_itemList);
 			item_set_anim_shape(item, map_t2p_x(x, y, default_layer), map_t2p_y(x, y, default_layer), default_layer->tile_width, default_layer->tile_height);
 			item_set_user(item, x, y);
 			item_set_click_left(item, cb_select_map, item, nullptr);
@@ -740,7 +740,7 @@ static void compose_map_set(int layer_index)
 		// Skip empty tile
 		if (tile_set[i][0] != 0)
 		{
-			item = item_list_add(&item_list);
+			item = g_itemList_add(&g_itemList);
 			anim = imageDB_get_anim(ctx, tile_set[i]);
 			item_set_pos(item, map_t2p_x(x, y, layer), map_t2p_y(x, y, layer));
 			item_set_anim(item, anim, 0);
@@ -803,7 +803,7 @@ static void compose_map_scenery(int layer_index)
 
 		anim = imageDB_get_anim(ctx, image_name);
 
-		item = item_list_add(&item_list);
+		item = g_itemList_add(&g_itemList);
 		item_set_pos(item, x, y);
 		item_set_anim(item, anim, 0);
 		//item_set_anim(item, x*ctx->tile_width, y*ctx->tile_height, anim,0);
@@ -856,7 +856,7 @@ static void compose_type(int layer_index)
 				continue;
 			}
 
-			item = item_list_add(&item_list);
+			item = g_itemList_add(&g_itemList);
 
 			item_set_string(item, type);
 			item_set_font(item, font);
@@ -891,7 +891,7 @@ static void compose_select()
 			{
 				anim = imageDB_get_anim(ctx, option_get().cursor_tile);
 
-				item = item_list_add(&item_list);
+				item = g_itemList_add(&g_itemList);
 
 				// get pixel coordinate from tile coordinate
 				x = map_t2p_x(pos_tx, pos_ty, default_layer);
@@ -913,7 +913,7 @@ static void compose_select()
 			return;
 		}
 
-		item = item_list_add(&item_list);
+		item = g_itemList_add(&g_itemList);
 		item->user_ptr = selected_context;
 		item->user1_ptr = option_get().cursor_character_draw_script;
 	}
@@ -931,7 +931,7 @@ void scr_play_init()
 {
 	// Register this character to receive server notifications
 	Context * context = context_get_player();
-	network_request_start(context, context->getId());
+	network_request_start(*(context->getConnection()), context->getId());
 	ui_play_init();
 }
 
@@ -940,16 +940,10 @@ void scr_play_init()
  **********************************/
 item_t * scr_play_compose(Context * ctx)
 {
-	int bg_red = 0;
-	int bg_blue = 0;
-	int bg_green = 0;
-	int layer_index = 0;
-	char * old_sfx = nullptr;
-
-	if (item_list != nullptr)
+	if (g_itemList != nullptr)
 	{
-		item_list_free(item_list);
-		item_list = nullptr;
+		g_itemList_free(g_itemList);
+		g_itemList = nullptr;
 	}
 
 	if (ctx->getMap() == "")
@@ -970,7 +964,7 @@ item_t * scr_play_compose(Context * ctx)
 	if (change_map == true)
 	{
 		const std::string map_file_path = std::string(MAP_TABLE) + "/" + ctx->getMap();
-		network_send_req_file(ctx, map_file_path);
+		network_send_req_file(*(ctx->getConnection()), map_file_path);
 
 		if (default_layer != nullptr)
 		{
@@ -981,6 +975,7 @@ item_t * scr_play_compose(Context * ctx)
 
 	if (default_layer && default_layer->active)
 	{ // Make sure map data are available
+		int layer_index = 0;
 		for (layer_index = 0; layer_index < MAX_LAYER; layer_index++)
 		{
 			compose_map_set(layer_index);
@@ -992,14 +987,18 @@ item_t * scr_play_compose(Context * ctx)
 		compose_map_button();
 		compose_select();
 
-		ui_play_compose(ctx, item_list);
+		ui_play_compose(ctx, g_itemList);
 	}
 
+	int bg_red = 0;
+	int bg_blue = 0;
+	int bg_green = 0;
 	entry_read_int(MAP_TABLE, ctx->getMap().c_str(), &bg_red, MAP_KEY_BG_RED, nullptr);
 	entry_read_int(MAP_TABLE, ctx->getMap().c_str(), &bg_blue, MAP_KEY_BG_BLUE, nullptr);
 	entry_read_int(MAP_TABLE, ctx->getMap().c_str(), &bg_green, MAP_KEY_BG_GREEN, nullptr);
 	sdl_set_background_color(bg_red, bg_blue, bg_green, 255);
 
+	char * old_sfx = nullptr;
 	old_sfx = sfx;
 	sfx = nullptr;
 
@@ -1027,7 +1026,7 @@ item_t * scr_play_compose(Context * ctx)
 	{
 		if (g_IsMusicPlaying == false)
 		{
-			if (sfx_play(ctx, std::string(sfx), MUSIC_CHANNEL, LOOP) != -1)
+			if (sfx_play(*(ctx->getConnection()), std::string(sfx), MUSIC_CHANNEL, LOOP) != -1)
 			{
 				g_IsMusicPlaying = true;
 			}
@@ -1037,5 +1036,5 @@ item_t * scr_play_compose(Context * ctx)
 		}
 	}
 
-	return item_list;
+	return g_itemList;
 }

@@ -119,7 +119,7 @@
 #define MAP_KEY_SCENERY_Y	"y"
 #define MAP_KEY_SCENERY_IMAGE	"image"
 #define MAP_KEY_TYPE		"type"
-#define MAP_ENTRY_ITEM_LIST 	"item_list"
+#define MAP_ENTRY_ITEM_LIST 	"g_itemList"
 #define MAP_ENTRY_EVENT_LIST 	"event_list"
 #define MAP_OFFSCREEN	 	"offscreen"
 #define MAP_SFX		 	"sfx"

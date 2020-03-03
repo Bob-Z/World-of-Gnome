@@ -33,7 +33,7 @@
 /*************************************
  return 0 on success
  **************************************/
-int file_add(Context * context, const std::string & name, const std::string & data)
+int file_add(const std::string & name, const std::string & data)
 {
 	const std::string temp_name = name + APP_NAME + "tmp";
 	const std::string temp_path = base_directory + "/" + temp_name;
@@ -69,7 +69,7 @@ int file_add(Context * context, const std::string & name, const std::string & da
 }
 
 /*********************************************************************************
- Remove character file to be sure they are always down loaded at start-up time
+ Remove character file to be sure they are always downloaded at start-up time
  **********************************************************************************/
 void file_clean(Context * context)
 {
@@ -79,12 +79,12 @@ void file_clean(Context * context)
 /***************************************************
  Request a file from network
  ****************************************************/
-void file_request_from_network(Context * context, const char * table, const char * file_name)
+void file_request_from_network(Connection & connection, const char * table, const char * file_name)
 {
 	const std::string table_path = std::string(table) + "/" + std::string(file_name);
 
 	file_lock(table_path.c_str());
-	file_update(context, table_path.c_str());
+	file_update(&connection, table_path.c_str());
 	file_unlock(table_path.c_str());
 
 	return;

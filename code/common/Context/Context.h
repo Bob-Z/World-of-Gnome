@@ -20,8 +20,9 @@
 #ifndef CONTEXT_H
 #define CONTEXT_H
 
+#include "Connection.h"
 #include "Selection.h"
-#include <SDL2/SDL_net.h>
+#include <memory>
 
 extern "C"
 {
@@ -33,10 +34,6 @@ class Context
 public:
 	Context();
 	~Context();
-	const std::string& getUserName() const;
-	void setUserName(const std::string& userName);
-	bool isConnected() const;
-	void setConnected(bool connected);
 	bool isInGame() const;
 	void setInGame(bool inGame);
 	bool isNpc() const;
@@ -83,6 +80,9 @@ public:
 	Uint32 getNextExecutionTick() const;
 	void setNextExecutionTick(Uint32 nextExecutionTick);
 
+	Connection* getConnection() const;
+	void setConnection(Connection* connection);
+
 	bool update_from_file();
 
 	int tileDistance(const Context & ctx) const;
@@ -93,8 +93,6 @@ public:
 
 private:
 	SDL_mutex* m_mutex;
-	std::string m_userName;
-	bool m_connected; // User logged with the correct password, or NPC activated
 	bool m_inGame;
 	bool m_npc;
 	std::string m_characterName;
@@ -118,22 +116,16 @@ private:
 	SDL_cond* m_condition;	// async condition for NPC
 	SDL_mutex* m_conditionMutex;	// mutex for async condition for NPC
 
-public:
-	TCPsocket m_socket;
-	TCPsocket m_socket_data;
-	SDL_mutex* m_send_mutex; // Asynchronous network send
-	char * m_hostname;
+	Connection * m_connection;
 
+public:
 	Context * m_previous;
 	Context * m_next;
 };
 
 Context * context_get_list_start();
-void context_init(Context * context);
 Context * context_new(void);
-void context_free_data(Context * context);
 void context_free(Context * context);
-bool context_set_hostname(Context * context, const char * name);
 void context_set_socket(Context * context, TCPsocket socket);
 TCPsocket context_get_socket(Context * context);
 void context_set_socket_data(Context * context, TCPsocket socket);

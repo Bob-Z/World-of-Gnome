@@ -18,16 +18,18 @@
  */
 
 #include "EffectManager.h"
-#include "file.h"
+
+#include "Connection.h"
 #include "file_client.h"
+#include "file.h"
 #include "lua_client.h"
 #include "lua_script.h"
 #include "syntax.h"
-#include <vector>
 #include <string>
+#include <vector>
 
 /******************************************************************************/
-void EffectManager::processEffectFrame(Context * context, const std::vector<std::string> & params)
+void EffectManager::processEffectFrame(Connection & connection, const std::vector<std::string> & params)
 {
 	std::string script = params.front();
 	const std::vector<std::string> script_params(params.begin() + 1, params.end());
@@ -35,6 +37,6 @@ void EffectManager::processEffectFrame(Context * context, const std::vector<std:
 	// TODO use the same LUA VM as the one in render screen
 	if (lua_execute_script(getEffectLuaVm(), script, script_params) == -1)
 	{
-		file_request_from_network(context, SCRIPT_TABLE, script.c_str());
+		file_request_from_network(connection, SCRIPT_TABLE, script.c_str());
 	}
 }

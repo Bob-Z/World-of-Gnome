@@ -33,7 +33,7 @@ static constexpr int MUSIC_CHANNEL = 0;
 
 void screen_display(Context * ctx);
 void screen_compose();
-void screen_set_screen(Screen p_Screen);
+void screen_set_screen(Screen screen);
 void screen_quit();
 Screen screen_get_current_screen();
 Camera * screen_get_camera();

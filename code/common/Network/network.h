@@ -20,17 +20,18 @@
 #ifndef NETWORK_H
 #define NETWORK_H
 
+#include "Connection.h"
 #include "Context.h"
 #include <SDL_net.h>
 #include <string>
 
-int network_read_bytes(TCPsocket socket, char * data, int size);
-void network_send_command(Context * p_pContext, const std::string & serialized_data, const bool p_IsData);
-int network_send_file(Context * context, const char * filename);
-void network_send_file_data(Context * context, const std::string & name, const std::string & data);
+bool network_read_bytes(TCPsocket socket, char * data, int size);
+void network_send_command(Connection & connection, const std::string & serialized_data, const bool p_IsData);
+int network_send_file(Connection & connection, const char * filename);
+void network_send_file_data(Connection & connection, const std::string & name, const std::string & data);
 int network_send_table_file(Context * context, const char * table, const char * filename);
-void network_send_req_file(Context * context, const std::string & file_name);
+void network_send_req_file(Connection & connection, const std::string & file_name);
 
 // The code of this function is in parser_client.c and parser_server.c
-int parse_incoming_data(Context * context, const std::string & serialized_data);
+int parse_incoming_data(Connection & connection, const std::string & serialized_data);
 #endif

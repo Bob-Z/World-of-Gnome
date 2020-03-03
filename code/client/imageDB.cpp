@@ -94,7 +94,7 @@ anim_t * imageDB_get_anim(Context * context, const char * image_name)
 
 	// Request an update to the server
 //	wlog(LOGDEBUG,"Image asked: %s",filename);
-	file_update(context, file_name.c_str());
+	file_update(context->getConnection(), file_name.c_str());
 
 	file_unlock(file_name.c_str());
 	SDL_UnlockMutex(imageDB_mutex);

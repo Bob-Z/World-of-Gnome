@@ -27,9 +27,9 @@ static constexpr int LOOP = -1;
 static constexpr int NO_LOOP = 0;
 static constexpr int ANY_CHANNEL = -1;
 
-class Context;
+class Connection;
 
-int sfx_play(Context* ctx, const std::string & fileName, int channel, int loops);
+int sfx_play(Connection & connection, const std::string & fileName, int channel, int loops);
 void sfx_stop(int channel);
 void sfx_set_volume(int channel, int volumePerCent);
 

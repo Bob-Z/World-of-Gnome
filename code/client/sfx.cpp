@@ -29,7 +29,7 @@
 static std::map<std::string, Mix_Chunk*> g_SoundList;
 
 /*****************************************************************************/
-int sfx_play(Context* ctx, const std::string & fileName, int channel, int loops)
+int sfx_play(Connection & connection, const std::string & fileName, int channel, int loops)
 {
 	auto l_It = g_SoundList.find(fileName);
 
@@ -48,7 +48,7 @@ int sfx_play(Context* ctx, const std::string & fileName, int channel, int loops)
 	{
 		std::string errorText = std::string("sfx_play: cannot open ") + fullName.c_str();
 		werr(LOGDESIGNER, errorText.c_str());
-		file_update(ctx, tableFilename.c_str());
+		file_update(&connection, tableFilename.c_str());
 		file_unlock(tableFilename.c_str());
 		return -1;
 	}
@@ -58,7 +58,7 @@ int sfx_play(Context* ctx, const std::string & fileName, int channel, int loops)
 	{
 		std::string l_Err = std::string("sfx_play: cannot read ") + fullName.c_str();
 		werr(LOGDESIGNER, l_Err.c_str());
-		file_update(ctx, tableFilename.c_str());
+		file_update(&connection, tableFilename.c_str());
 		file_unlock(tableFilename.c_str());
 		return -1;
 	}

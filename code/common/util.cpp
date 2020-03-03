@@ -60,7 +60,7 @@ std::pair<bool, std::string> checksum_file(const std::string & file_name)
 	result.first = true;
 	result.second = text;
 
-	wlog(LOGDEVELOPER, "Checksum for %s is %s", file_name.c_str(), result.second.c_str());
+	//wlog(LOGDEVELOPER, "Checksum for %s is %s", file_name.c_str(), result.second.c_str());
 
 	return result;
 }
@@ -164,12 +164,12 @@ char ** add_array(char ** array1, char ** array2)
  Convert a vector to an array
  Return pointer must be deep free
  ********************************/
-char ** to_array(const std::vector<std::string> & p_rParam)
+char ** to_array(const std::vector<std::string> & parameters)
 {
 	int array_index = 0;
 	char ** ret_array = nullptr;
 
-	for (auto l_Param : p_rParam)
+	for (auto l_Param : parameters)
 	{
 		array_index++;
 		ret_array = (char **) realloc(ret_array, array_index * sizeof(char*));

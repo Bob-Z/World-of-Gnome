@@ -20,10 +20,9 @@
 #ifndef CLIENT_EFFECTMANAGER_H_
 #define CLIENT_EFFECTMANAGER_H_
 
+#include "Connection.h"
 #include <string>
 #include <vector>
-
-class Context;
 
 class EffectManager
 {
@@ -33,7 +32,7 @@ public:
 		CONTEXT, MAP
 	};
 
-	static void processEffectFrame(Context * context, const std::vector<std::string> & params);
+	static void processEffectFrame(Connection & connection, const std::vector<std::string> & params);
 };
 
 #endif // CLIENT_EFFECTMANAGER_H_

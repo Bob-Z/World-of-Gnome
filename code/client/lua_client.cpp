@@ -48,12 +48,12 @@ static lua_State * g_pEffectLuaVm = nullptr;
  Input:
  Output: ID of the current context
  ***********************************/
-static int l_player_get_id(lua_State* p_pLuaState)
+static int l_player_get_id(lua_State* luaState)
 {
 	Context * context;
 
 	context = context_get_player();
-	lua_pushstring(p_pLuaState, context->getId().c_str());
+	lua_pushstring(luaState, context->getId().c_str());
 	return 1;  // number of results
 }
 
@@ -62,15 +62,15 @@ static int l_player_get_id(lua_State* p_pLuaState)
  Input:
  Output: ID of current context
  ***********************************/
-static int l_context_get_id(lua_State* p_pLuaState)
+static int l_context_get_id(lua_State* luaState)
 {
 	Context * context;
 
-	lua_getglobal(p_pLuaState, "current_context");
-	context = (Context*) lua_touserdata(p_pLuaState, -1);
-	lua_pop(p_pLuaState, 1);
+	lua_getglobal(luaState, "current_context");
+	context = (Context*) lua_touserdata(luaState, -1);
+	lua_pop(luaState, 1);
 
-	lua_pushstring(p_pLuaState, context->getId().c_str());
+	lua_pushstring(luaState, context->getId().c_str());
 	return 1; // number of results
 }
 
@@ -79,15 +79,15 @@ static int l_context_get_id(lua_State* p_pLuaState)
  Input:
  Output: 1 if context is an NPC
  ***********************************/
-static int l_context_get_npc(lua_State* p_pLuaState)
+static int l_context_get_npc(lua_State* luaState)
 {
 	Context * context;
 
-	lua_getglobal(p_pLuaState, "current_context");
-	context = (Context*) lua_touserdata(p_pLuaState, -1);
-	lua_pop(p_pLuaState, 1);
+	lua_getglobal(luaState, "current_context");
+	context = (Context*) lua_touserdata(luaState, -1);
+	lua_pop(luaState, 1);
 
-	lua_pushnumber(p_pLuaState, context->isNpc());
+	lua_pushnumber(luaState, context->isNpc());
 	return 1; // number of results
 }
 
@@ -96,15 +96,15 @@ static int l_context_get_npc(lua_State* p_pLuaState)
  Input:
  Output: current map name
  ***********************************/
-static int l_context_get_map(lua_State* p_pLuaState)
+static int l_context_get_map(lua_State* luaState)
 {
 	Context * context;
 
-	lua_getglobal(p_pLuaState, "current_context");
-	context = (Context*) lua_touserdata(p_pLuaState, -1);
-	lua_pop(p_pLuaState, 1);
+	lua_getglobal(luaState, "current_context");
+	context = (Context*) lua_touserdata(luaState, -1);
+	lua_pop(luaState, 1);
 
-	lua_pushstring(p_pLuaState, context->getMap().c_str());
+	lua_pushstring(luaState, context->getMap().c_str());
 	return 1; // number of results
 }
 
@@ -113,16 +113,16 @@ static int l_context_get_map(lua_State* p_pLuaState)
  Input: X ccordinate in pixel
  Output:
  ***********************************/
-static int l_item_set_px(lua_State* p_pLuaState)
+static int l_item_set_px(lua_State* luaState)
 {
 	item_t * l_pItem;
 
-	lua_getglobal(p_pLuaState, "current_item");
-	l_pItem = (item_t*) lua_touserdata(p_pLuaState, -1);
-	lua_pop(p_pLuaState, 1);
+	lua_getglobal(luaState, "current_item");
+	l_pItem = (item_t*) lua_touserdata(luaState, -1);
+	lua_pop(luaState, 1);
 
 	int l_X;
-	l_X = luaL_checkint(p_pLuaState, -1);
+	l_X = luaL_checkint(luaState, -1);
 	l_pItem->rect.x = l_X;
 	return 0; // number of results
 }
@@ -132,16 +132,16 @@ static int l_item_set_px(lua_State* p_pLuaState)
  Input: Y ccordinate in pixel
  Output:
  ***********************************/
-static int l_item_set_py(lua_State* p_pLuaState)
+static int l_item_set_py(lua_State* luaState)
 {
 	item_t * l_pItem;
 
-	lua_getglobal(p_pLuaState, "current_item");
-	l_pItem = (item_t*) lua_touserdata(p_pLuaState, -1);
-	lua_pop(p_pLuaState, 1);
+	lua_getglobal(luaState, "current_item");
+	l_pItem = (item_t*) lua_touserdata(luaState, -1);
+	lua_pop(luaState, 1);
 
 	int l_Y;
-	l_Y = luaL_checkint(p_pLuaState, -1);
+	l_Y = luaL_checkint(luaState, -1);
 	l_pItem->rect.y = l_Y;
 	return 0; // number of results
 }
@@ -151,15 +151,15 @@ static int l_item_set_py(lua_State* p_pLuaState)
  Input:
  Output: X ccordinate in pixel
  ***********************************/
-static int l_item_get_px(lua_State* p_pLuaState)
+static int l_item_get_px(lua_State* luaState)
 {
 	item_t * l_pItem;
 
-	lua_getglobal(p_pLuaState, "current_item");
-	l_pItem = (item_t*) lua_touserdata(p_pLuaState, -1);
-	lua_pop(p_pLuaState, 1);
+	lua_getglobal(luaState, "current_item");
+	l_pItem = (item_t*) lua_touserdata(luaState, -1);
+	lua_pop(luaState, 1);
 
-	lua_pushnumber(p_pLuaState, l_pItem->rect.x);
+	lua_pushnumber(luaState, l_pItem->rect.x);
 	return 1; // number of results
 }
 
@@ -168,15 +168,15 @@ static int l_item_get_px(lua_State* p_pLuaState)
  Input:
  Output: Y ccordinate in pixel
  ***********************************/
-static int l_item_get_py(lua_State* p_pLuaState)
+static int l_item_get_py(lua_State* luaState)
 {
 	item_t * l_pItem;
 
-	lua_getglobal(p_pLuaState, "current_item");
-	l_pItem = (item_t*) lua_touserdata(p_pLuaState, -1);
-	lua_pop(p_pLuaState, 1);
+	lua_getglobal(luaState, "current_item");
+	l_pItem = (item_t*) lua_touserdata(luaState, -1);
+	lua_pop(luaState, 1);
 
-	lua_pushnumber(p_pLuaState, l_pItem->rect.y);
+	lua_pushnumber(luaState, l_pItem->rect.y);
 	return 1; // number of results
 }
 
@@ -185,15 +185,15 @@ static int l_item_get_py(lua_State* p_pLuaState)
  Input:
  Output: Width in pixel
  ***********************************/
-static int l_item_get_w(lua_State* p_pLuaState)
+static int l_item_get_w(lua_State* luaState)
 {
 	item_t * l_pItem;
 
-	lua_getglobal(p_pLuaState, "current_item");
-	l_pItem = (item_t*) lua_touserdata(p_pLuaState, -1);
-	lua_pop(p_pLuaState, 1);
+	lua_getglobal(luaState, "current_item");
+	l_pItem = (item_t*) lua_touserdata(luaState, -1);
+	lua_pop(luaState, 1);
 
-	lua_pushnumber(p_pLuaState, l_pItem->rect.w);
+	lua_pushnumber(luaState, l_pItem->rect.w);
 	return 1; // number of results
 }
 
@@ -202,15 +202,15 @@ static int l_item_get_w(lua_State* p_pLuaState)
  Input:
  Output: Height in pixel
  ***********************************/
-static int l_item_get_h(lua_State* p_pLuaState)
+static int l_item_get_h(lua_State* luaState)
 {
 	item_t * l_pItem;
 
-	lua_getglobal(p_pLuaState, "current_item");
-	l_pItem = (item_t*) lua_touserdata(p_pLuaState, -1);
-	lua_pop(p_pLuaState, 1);
+	lua_getglobal(luaState, "current_item");
+	l_pItem = (item_t*) lua_touserdata(luaState, -1);
+	lua_pop(luaState, 1);
 
-	lua_pushnumber(p_pLuaState, l_pItem->rect.h);
+	lua_pushnumber(luaState, l_pItem->rect.h);
 	return 1; // number of results
 }
 /***********************************
@@ -218,16 +218,16 @@ static int l_item_get_h(lua_State* p_pLuaState)
  Input: Tick from when animation will be calculated
  Output:
  ***********************************/
-static int l_item_set_anim_start_tick(lua_State* p_pLuaState)
+static int l_item_set_anim_start_tick(lua_State* luaState)
 {
 	item_t * l_pItem;
 
-	lua_getglobal(p_pLuaState, "current_item");
-	l_pItem = (item_t*) lua_touserdata(p_pLuaState, -1);
-	lua_pop(p_pLuaState, 1);
+	lua_getglobal(luaState, "current_item");
+	l_pItem = (item_t*) lua_touserdata(luaState, -1);
+	lua_pop(luaState, 1);
 
 	int l_Tick;
-	l_Tick = luaL_checkint(p_pLuaState, -1);
+	l_Tick = luaL_checkint(luaState, -1);
 	l_pItem->anim_start_tick = l_Tick;
 
 	return 0; // number of results
@@ -239,15 +239,15 @@ static int l_item_set_anim_start_tick(lua_State* p_pLuaState)
  - file name
  Output:
  ***********************************/
-static int l_item_set_anim(lua_State* p_pLuaState)
+static int l_item_set_anim(lua_State* luaState)
 {
 	item_t * l_pItem;
-	lua_getglobal(p_pLuaState, "current_item");
-	l_pItem = (item_t*) lua_touserdata(p_pLuaState, -1);
-	lua_pop(p_pLuaState, 1);
+	lua_getglobal(luaState, "current_item");
+	l_pItem = (item_t*) lua_touserdata(luaState, -1);
+	lua_pop(luaState, 1);
 
 	const char * l_pFileName;
-	l_pFileName = luaL_checkstring(p_pLuaState, -1);
+	l_pFileName = luaL_checkstring(luaState, -1);
 
 	anim_t ** l_pAnimArray;
 
@@ -380,21 +380,21 @@ static char flip(char p_Orientation)
  - entry name in context file
  Output:
  ***********************************/
-static int l_item_set_anim_from_context(lua_State* p_pLuaState)
+static int l_item_set_anim_from_context(lua_State* luaState)
 {
 	item_t * l_pItem;
-	lua_getglobal(p_pLuaState, "current_item");
-	l_pItem = (item_t*) lua_touserdata(p_pLuaState, -1);
-	lua_pop(p_pLuaState, 1);
+	lua_getglobal(luaState, "current_item");
+	l_pItem = (item_t*) lua_touserdata(luaState, -1);
+	lua_pop(luaState, 1);
 
 	const char * l_pId = "";
-	l_pId = luaL_checkstring(p_pLuaState, -4);
+	l_pId = luaL_checkstring(luaState, -4);
 	int l_IsMoving = 0;
-	l_IsMoving = luaL_checkint(p_pLuaState, -3);
+	l_IsMoving = luaL_checkint(luaState, -3);
 	const char * l_pMainOrientation = "";
-	l_pMainOrientation = luaL_checkstring(p_pLuaState, -2);
+	l_pMainOrientation = luaL_checkstring(luaState, -2);
 	const char * l_pSecondaryOrientation = "";
-	l_pSecondaryOrientation = luaL_checkstring(p_pLuaState, -1);
+	l_pSecondaryOrientation = luaL_checkstring(luaState, -1);
 
 	// reset previous anim
 	l_pItem->anim.list = nullptr;
@@ -468,14 +468,14 @@ static int l_item_set_anim_from_context(lua_State* p_pLuaState)
  Output:
  - screen number
  ***********************************/
-static int l_camera_get_screen(lua_State* p_pLuaState)
+static int l_camera_get_screen(lua_State* luaState)
 {
-	Camera * l_pCamera;
-	lua_getglobal(p_pLuaState, "current_camera");
-	l_pCamera = (Camera*) lua_touserdata(p_pLuaState, -1);
-	lua_pop(p_pLuaState, 1);
+	Camera * camera;
+	lua_getglobal(luaState, "current_camera");
+	camera = (Camera*) lua_touserdata(luaState, -1);
+	lua_pop(luaState, 1);
 
-	lua_pushnumber(p_pLuaState, (int) l_pCamera->getScreen());
+	lua_pushnumber(luaState, (int) camera->getScreen());
 	return 1; // number of results
 }
 
@@ -488,14 +488,14 @@ static int l_camera_get_screen(lua_State* p_pLuaState)
  Output:
  - zoom factor ( +1 for one level of zoom, -1 for UNzoom)
  ***********************************/
-static int l_camera_get_zoom(lua_State* p_pLuaState)
+static int l_camera_get_zoom(lua_State* luaState)
 {
-	Camera * l_pCamera;
-	lua_getglobal(p_pLuaState, "current_camera");
-	l_pCamera = (Camera*) lua_touserdata(p_pLuaState, -1);
-	lua_pop(p_pLuaState, 1);
+	Camera * camera;
+	lua_getglobal(luaState, "current_camera");
+	camera = (Camera*) lua_touserdata(luaState, -1);
+	lua_pop(luaState, 1);
 
-	lua_pushnumber(p_pLuaState, l_pCamera->getZoom());
+	lua_pushnumber(luaState, camera->getZoom());
 	return 1; // number of results
 }
 
@@ -508,14 +508,14 @@ static int l_camera_get_zoom(lua_State* p_pLuaState)
  Output:
  - X position in pixel
  ***********************************/
-static int l_camera_get_X(lua_State* p_pLuaState)
+static int l_camera_get_X(lua_State* luaState)
 {
-	Camera * l_pCamera;
-	lua_getglobal(p_pLuaState, "current_camera");
-	l_pCamera = (Camera*) lua_touserdata(p_pLuaState, -1);
-	lua_pop(p_pLuaState, 1);
+	Camera * camera;
+	lua_getglobal(luaState, "current_camera");
+	camera = (Camera*) lua_touserdata(luaState, -1);
+	lua_pop(luaState, 1);
 
-	lua_pushnumber(p_pLuaState, l_pCamera->getX());
+	lua_pushnumber(luaState, camera->getX());
 	return 1; // number of results
 }
 
@@ -528,14 +528,14 @@ static int l_camera_get_X(lua_State* p_pLuaState)
  Output:
  - Y position in pixel
  ***********************************/
-static int l_camera_get_Y(lua_State* p_pLuaState)
+static int l_camera_get_Y(lua_State* luaState)
 {
-	Camera * l_pCamera;
-	lua_getglobal(p_pLuaState, "current_camera");
-	l_pCamera = (Camera*) lua_touserdata(p_pLuaState, -1);
-	lua_pop(p_pLuaState, 1);
+	Camera * camera;
+	lua_getglobal(luaState, "current_camera");
+	camera = (Camera*) lua_touserdata(luaState, -1);
+	lua_pop(luaState, 1);
 
-	lua_pushnumber(p_pLuaState, l_pCamera->getY());
+	lua_pushnumber(luaState, camera->getY());
 	return 1; // number of results
 }
 
@@ -549,15 +549,15 @@ static int l_camera_get_Y(lua_State* p_pLuaState)
  - Y
  Output:
  ***********************************/
-static int l_camera_set_coord(lua_State* p_pLuaState)
+static int l_camera_set_coord(lua_State* luaState)
 {
-	int l_X;
-	l_X = luaL_checknumber(p_pLuaState, -2);
-	int l_Y;
-	l_Y = luaL_checknumber(p_pLuaState, -1);
+	int x;
+	x = luaL_checknumber(luaState, -2);
+	int y;
+	y = luaL_checknumber(luaState, -1);
 
-	sdl_force_virtual_x(l_X);
-	sdl_force_virtual_y(l_Y);
+	sdl_force_virtual_x(x);
+	sdl_force_virtual_y(y);
 
 	return 0; // number of results
 }
@@ -571,10 +571,10 @@ static int l_camera_set_coord(lua_State* p_pLuaState)
  - Zoom level (1.0 = 100%)
  Output:
  ***********************************/
-static int l_camera_set_zoom(lua_State* p_pLuaState)
+static int l_camera_set_zoom(lua_State* luaState)
 {
 	double l_Zoom;
-	l_Zoom = luaL_checknumber(p_pLuaState, -1);
+	l_Zoom = luaL_checknumber(luaState, -1);
 
 	sdl_force_virtual_z(l_Zoom);
 
@@ -586,11 +586,11 @@ static int l_camera_set_zoom(lua_State* p_pLuaState)
  Input: sound filename
  Output:
  ***********************************/
-static int l_sound_play(lua_State* p_pLuaState)
+static int l_sound_play(lua_State* luaState)
 {
 	const char * l_FileName;
-	l_FileName = luaL_checkstring(p_pLuaState, -1);
-	sfx_play(context_get_player(), std::string(l_FileName), ANY_CHANNEL, NO_LOOP);
+	l_FileName = luaL_checkstring(luaState, -1);
+	sfx_play(*(context_get_player()->getConnection()), std::string(l_FileName), ANY_CHANNEL, NO_LOOP);
 
 	return 0; // number of results
 }
@@ -604,12 +604,12 @@ static int l_sound_play(lua_State* p_pLuaState)
  Output:
  - tick in milliseconds
  ***********************************/
-static int l_get_tick(lua_State* p_pLuaState)
+static int l_get_tick(lua_State* luaState)
 {
 	Uint32 l_CurrentTime;
 	l_CurrentTime = sdl_get_global_time();
 
-	lua_pushnumber(p_pLuaState, l_CurrentTime);
+	lua_pushnumber(luaState, l_CurrentTime);
 	return 1; // number of results
 }
 
@@ -622,18 +622,18 @@ static int l_get_tick(lua_State* p_pLuaState)
  - message
  Output:
  ***********************************/
-static int l_print_text_debug(lua_State* p_pLuaState)
+static int l_print_text_debug(lua_State* luaState)
 {
 	const char * l_pString;
 
-	l_pString = luaL_checkstring(p_pLuaState, -1);
+	l_pString = luaL_checkstring(luaState, -1);
 	wlog(LOGDESIGNER, (char* ) l_pString);
 	return 0;  // number of results
 }
 
 /***********************************
  ***********************************/
-static void register_lua_functions(lua_State * l_pLuaVm)
+static void register_lua_functions_client(lua_State * l_pLuaVm)
 {
 	// player function
 	lua_pushcfunction(l_pLuaVm, l_player_get_id);
@@ -698,7 +698,7 @@ void lua_init()
 	lua_iolibopen(g_pLuaVm);
 	lua_strlibopen(g_pLuaVm);
 	lua_mathlibopen(g_pLuaVm);
-	register_lua_functions(g_pLuaVm);
+	register_lua_functions_client(g_pLuaVm);
 
 	g_pEffectLuaVm = lua_open();
 	lua_baselibopen(g_pEffectLuaVm);
@@ -706,7 +706,7 @@ void lua_init()
 	lua_iolibopen(g_pEffectLuaVm);
 	lua_strlibopen(g_pEffectLuaVm);
 	lua_mathlibopen(g_pEffectLuaVm);
-	register_lua_functions(g_pEffectLuaVm);
+	register_lua_functions_client(g_pEffectLuaVm);
 }
 
 /***********************************

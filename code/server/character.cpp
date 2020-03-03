@@ -44,7 +44,7 @@
 /*********************************************
  Send playable character templates
  *********************************************/
-void character_playable_send_list(Context * context)
+void character_playable_send_list(Connection & connection)
 {
 	char * marquee;
 	DIR * dir;
@@ -59,7 +59,7 @@ void character_playable_send_list(Context * context)
 		return;
 	}
 
-	std::vector<std::string> l_Array;
+	std::vector<std::string> array;
 
 	while ((ent = readdir(dir)) != nullptr)
 	{
@@ -96,47 +96,47 @@ void character_playable_send_list(Context * context)
 		}
 
 		// add file name to network frame
-		l_Array.push_back(std::string(ent->d_name));
+		array.push_back(std::string(ent->d_name));
 	}
 
 	closedir(dir);
 
-	network_send_playable_character(context, l_Array);
+	network_send_playable_character(connection, array);
 }
 
 /*********************************************
  *********************************************/
-void character_user_send(Context * p_pCtx, const char * p_pCharacterId)
+void character_user_send(Connection & connection, const std::string & id)
 {
-	char * l_pType = nullptr;
-	char * l_pName = nullptr;
+	char * type = nullptr;
+	char * name = nullptr;
 
-	if (entry_read_string(CHARACTER_TABLE, p_pCharacterId, &l_pType,
+	if (entry_read_string(CHARACTER_TABLE, id.c_str(), &type,
 	CHARACTER_KEY_TYPE, nullptr) == false)
 	{
 		return;
 	}
 
-	if (entry_read_string(CHARACTER_TABLE, p_pCharacterId, &l_pName,
+	if (entry_read_string(CHARACTER_TABLE, id.c_str(), &name,
 	CHARACTER_KEY_NAME, nullptr) == false)
 	{
-		free(l_pType);
+		free(type);
 		return;
 	}
 
-	network_send_user_character(p_pCtx, p_pCharacterId, l_pType, l_pName);
+	network_send_user_character(connection, id, std::string(type), std::string(name));
 
-	free(l_pType);
-	free(l_pName);
+	free(type);
+	free(name);
 }
 
 /*********************************************
  *********************************************/
-void character_user_send_list(Context * context)
+void character_user_send_list(Connection & connection)
 {
-	char ** l_pCharacterList = nullptr;
+	char ** characterList = nullptr;
 
-	if (entry_read_list(USERS_TABLE, context->getUserName().c_str(), &l_pCharacterList,
+	if (entry_read_list(USERS_TABLE, connection.getUserName().c_str(), &characterList,
 	USERS_CHARACTER_LIST, nullptr) == false)
 	{
 		return;
@@ -144,13 +144,13 @@ void character_user_send_list(Context * context)
 
 	int l_Index = 0;
 
-	while (l_pCharacterList[l_Index] != nullptr)
+	while (characterList[l_Index] != nullptr)
 	{
-		character_user_send(context, l_pCharacterList[l_Index]);
+		character_user_send(connection, characterList[l_Index]);
 		l_Index++;
 	}
 
-	deep_free(l_pCharacterList);
+	deep_free(characterList);
 }
 
 /*****************************
@@ -166,7 +166,7 @@ int character_disconnect(const char * id)
 
 	ctx = context_find(id);
 	ctx->setInGame(false);
-	ctx->setConnected(false);
+	ctx->getConnection()->setConnected(false);
 	context_spread(ctx);
 
 	if (ctx->isNpcActive())

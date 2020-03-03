@@ -36,12 +36,13 @@ Context * context_list_start = nullptr;
 
 /*****************************************************************************/
 Context::Context() :
-		m_mutex(nullptr), m_userName(), m_connected(false), m_inGame(false), m_npc(true), m_characterName(), m_map(), m_previousMap(), m_mapChanged(false), m_tileX(
-				0), m_tileY(0), m_previousTileX(0), m_previousTileY(0), m_positionChanged(false), m_orientation(0), m_direction(0), m_animationTick(0), m_type(), m_id(), m_selection(), m_nextExecutionTick(
-				0), m_luaVm(nullptr), m_condition(nullptr), m_conditionMutex(nullptr), m_socket(), m_socket_data(), m_send_mutex(nullptr), m_hostname(nullptr), m_previous(
-				nullptr), m_next(nullptr)
+		m_mutex(nullptr), m_inGame(false), m_npc(true), m_characterName(), m_map(), m_previousMap(), m_mapChanged(false), m_tileX(0), m_tileY(0), m_previousTileX(
+				0), m_previousTileY(0), m_positionChanged(false), m_orientation(0), m_direction(0), m_animationTick(0), m_type(), m_id(), m_selection(), m_nextExecutionTick(
+				0), m_luaVm(nullptr), m_condition(nullptr), m_conditionMutex(nullptr), m_connection(nullptr), m_previous(nullptr), m_next(nullptr)
 {
 	m_mutex = SDL_CreateMutex();
+	m_condition = SDL_CreateCond();
+	m_conditionMutex = SDL_CreateMutex();
 
 	m_luaVm = lua_open();
 	lua_baselibopen(m_luaVm);
@@ -50,10 +51,7 @@ Context::Context() :
 	lua_strlibopen(m_luaVm);
 	lua_mathlibopen(m_luaVm);
 
-	register_lua_functions(this);
-
-	m_condition = SDL_CreateCond();
-	m_conditionMutex = SDL_CreateMutex();
+	register_lua_functions(static_cast<Context *>(this));
 }
 
 /*****************************************************************************/
@@ -75,37 +73,27 @@ Context::~Context()
 	}
 }
 
-/***********************
- ***********************/
+/*****************************************************************************/
 Context * context_get_list_start()
 {
 	return context_list_start;
 }
 
-/***********************
- ***********************/
+/*****************************************************************************/
 void context_unlock_list()
 {
 	SDL_UnlockMutex(context_list_mutex);
 }
 
-/***********************
- ***********************/
+/*****************************************************************************/
 Context * context_get_first()
 {
 	return context_list_start;
 }
-/************************************
- context_init
- Initialize a context
- *************************************/
-void context_init(Context * context)
-{
-	context->m_socket = 0;
-	context->m_socket_data = 0;
-	context->m_hostname = nullptr;
-	context->m_send_mutex = SDL_CreateMutex();
 
+/*****************************************************************************/
+static void context_init(Context * context)
+{
 	context->m_previous = nullptr;
 	context->m_next = nullptr;
 }
@@ -137,31 +125,6 @@ Context * context_new(void)
 	ctx->m_next->m_previous = ctx;
 	context_unlock_list();
 	return ctx->m_next;
-}
-
-/*************************************
- context_free_data
- Deep free of all context_t data
- *************************************/
-void context_free_data(Context * context)
-{
-	if (context->m_socket != 0)
-	{
-		SDLNet_TCP_Close(context->m_socket);
-	}
-	context->m_socket = 0;
-	if (context->m_socket_data != 0)
-	{
-		SDLNet_TCP_Close(context->m_socket_data);
-	}
-	context->m_socket_data = 0;
-	SDL_DestroyMutex(context->m_send_mutex);
-
-	if (context->m_hostname)
-	{
-		free(context->m_hostname);
-	}
-	context->m_hostname = nullptr;
 }
 
 /*************************************
@@ -224,8 +187,6 @@ void context_free(Context * context)
 
 	context_unlock_list();
 
-	context_free_data(context);
-
 	delete (context);
 }
 
@@ -241,72 +202,6 @@ void context_lock_list()
 Context * context_get_player()
 {
 	return context_list_start;
-}
-/**************************
- Returns false if error
- **************************/
-bool context_set_hostname(Context * context, const char * name)
-{
-	context_lock_list();
-
-	if (context->m_hostname)
-	{
-		free(context->m_hostname);
-	}
-
-	context->m_hostname = strdup(name);
-	if (context->m_hostname == nullptr)
-	{
-		context_unlock_list();
-		return false;
-	}
-
-	context_unlock_list();
-	return true;
-}
-
-/**************************************
- **************************************/
-void context_set_socket(Context * context, TCPsocket socket)
-{
-	context_lock_list();
-	context->m_socket = socket;
-	context_unlock_list();
-}
-
-/**************************************
- **************************************/
-TCPsocket context_get_socket(Context * context)
-{
-	TCPsocket socket = 0;
-
-	context_lock_list();
-	socket = context->m_socket;
-	context_unlock_list();
-
-	return socket;
-}
-
-/**************************************
- **************************************/
-void context_set_socket_data(Context * context, TCPsocket socket)
-{
-	context_lock_list();
-	context->m_socket_data = socket;
-	context_unlock_list();
-}
-
-/**************************************
- **************************************/
-TCPsocket context_get_socket_data(Context * context)
-{
-	TCPsocket socket = 0;
-
-	context_lock_list();
-	socket = context->m_socket_data;
-	context_unlock_list();
-
-	return socket;
 }
 
 /*******************************
@@ -373,11 +268,10 @@ void context_add_or_update_from_network_frame(const Context & receivedCtx)
 		if (receivedCtx.getId() == ctx->getId())
 		{
 			ctx->setInGame(receivedCtx.isInGame());
-			ctx->setConnected(receivedCtx.isConnected());
 
 			if (receivedCtx.isInGame() == true)
 			{
-				wlog(LOGDEVELOPER, "Updating context %s / %s", receivedCtx.getUserName().c_str(), receivedCtx.getCharacterName().c_str());
+				wlog(LOGDEVELOPER, "Updating context %s", receivedCtx.getCharacterName().c_str());
 
 				ctx->setMap(receivedCtx.getMap());
 				ctx->setTileX(receivedCtx.getTileX());
@@ -390,9 +284,9 @@ void context_add_or_update_from_network_frame(const Context & receivedCtx)
 				ctx->setSelection(receivedCtx.getSelection());
 			}
 
-			if (receivedCtx.isConnected() == false)
+			if (receivedCtx.isInGame() == false)
 			{
-				wlog(LOGDEVELOPER, "Deleting context %s / %s", receivedCtx.getUserName().c_str(), receivedCtx.getCharacterName().c_str());
+				wlog(LOGDEVELOPER, "Deleting context %s / %s", receivedCtx.getConnection()->getUserName().c_str(), receivedCtx.getCharacterName().c_str());
 				context_free(ctx);
 			}
 			context_unlock_list();
@@ -404,9 +298,8 @@ void context_add_or_update_from_network_frame(const Context & receivedCtx)
 
 	context_unlock_list();
 
-	wlog(LOGDEVELOPER, "Creating context %s / %s", receivedCtx.getUserName().c_str(), receivedCtx.getCharacterName().c_str());
+	wlog(LOGDEVELOPER, "Creating context %s", receivedCtx.getCharacterName().c_str());
 	ctx = context_new();
-	ctx->setUserName(receivedCtx.getUserName());
 	ctx->setCharacterName(receivedCtx.getCharacterName().c_str());
 	ctx->setNpc(receivedCtx.isNpc());
 	ctx->setMap(receivedCtx.getMap());
@@ -414,7 +307,6 @@ void context_add_or_update_from_network_frame(const Context & receivedCtx)
 	ctx->setTileX(receivedCtx.getTileX());
 	ctx->setTileY(receivedCtx.getTileY());
 	ctx->setId(receivedCtx.getId());
-	ctx->setConnected(receivedCtx.isConnected());
 	ctx->setInGame(receivedCtx.isInGame());
 	ctx->setSelectionContextId(receivedCtx.getSelection().getContextId());
 	ctx->setSelectionTile(receivedCtx.getSelection().getMap(), receivedCtx.getSelection().getMapTx(), receivedCtx.getSelection().getMapTy());
@@ -447,34 +339,6 @@ int Context::tileDistance(const Context & ctx) const
 }
 
 /*****************************************************************************/
-const std::string& Context::getUserName() const
-{
-	SdlLocking lock(m_mutex);
-
-	return m_userName;
-}
-
-/*****************************************************************************/
-void Context::setUserName(const std::string& userName)
-{
-	SdlLocking lock(m_mutex);
-
-	m_userName = userName;
-}
-
-/*****************************************************************************/
-bool Context::isConnected() const
-{
-	return m_connected;
-}
-
-/*****************************************************************************/
-void Context::setConnected(bool connected)
-{
-	m_connected = connected;
-}
-
-/*****************************************************************************/
 bool Context::isInGame() const
 {
 	return m_inGame;
@@ -503,7 +367,7 @@ bool Context::isNpcActive() const
 {
 	SdlLocking lock(m_mutex);
 
-	return (m_npc && m_connected);
+	return ((m_npc == true) && ((m_connection != nullptr) && (m_connection->isConnected())));
 }
 
 /*****************************************************************************/
@@ -848,15 +712,15 @@ void Context::sleep(Uint32 timeOutMs)
 /*****************************************************************************/
 bool Context::update_from_file()
 {
-	char * result = nullptr;
-	bool ret = false;
-
 	SdlLocking lock(m_mutex);
 
 	if (getId() == "")
 	{
 		return false;
 	}
+
+	char * result = nullptr;
+	bool ret = false;
 
 	if (entry_read_string(CHARACTER_TABLE, getId().c_str(), &result,
 	CHARACTER_KEY_NAME, nullptr) == true)
@@ -876,9 +740,10 @@ bool Context::update_from_file()
 	setNpc(npc);
 
 	if (entry_read_string(CHARACTER_TABLE, getId().c_str(), &result,
-	CHARACTER_KEY_TYPE, nullptr) == false)
+	CHARACTER_KEY_TYPE, nullptr) == true)
 	{
 		setType(std::string(result));
+		free(result);
 	}
 	else
 	{
@@ -914,4 +779,16 @@ bool Context::update_from_file()
 
 	context_unlock_list();
 	return ret;
+}
+
+/*****************************************************************************/
+Connection* Context::getConnection() const
+{
+	return m_connection;
+}
+
+/*****************************************************************************/
+void Context::setConnection(Connection* connection)
+{
+	m_connection = connection;
 }

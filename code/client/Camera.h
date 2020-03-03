@@ -26,7 +26,7 @@ public:
 	~Camera();
 
 	Screen getScreen();
-	void setScreen(Screen & p_Screen);
+	void setScreen(Screen & screen);
 	int getZoom();
 	void setZoom(int p_Zoom);
 	int getX();

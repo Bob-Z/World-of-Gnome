@@ -150,8 +150,14 @@ static const config_t * get_config(const char * table, const char * file)
 
 	file_lock(file_name.c_str());
 
-//	wlog(LOGDEBUG,"Entry asked : %s",filename);
-	file_update(context_get_player(), file_name.c_str());
+	Context * context = context_get_player();
+	Connection * connection = nullptr;
+	if (context != nullptr)
+	{
+		connection = context->getConnection();
+	}
+
+	file_update(connection, file_name.c_str());
 
 	if ((config = load_config(file_name.c_str())) == nullptr)
 	{
