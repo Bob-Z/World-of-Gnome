@@ -367,7 +367,7 @@ bool Context::isNpcActive() const
 {
 	SdlLocking lock(m_mutex);
 
-	return ((m_npc == true) && ((m_connection != nullptr) && (m_connection->isConnected())));
+	return ((m_npc == true) && (m_inGame == true));
 }
 
 /*****************************************************************************/

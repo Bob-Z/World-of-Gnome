@@ -480,18 +480,11 @@ void network_send_context_to_context(Context * dest_ctx, Context * src_ctx)
 		return;
 	}
 
-	if (src_ctx->getConnection() == nullptr)
-	{
-		return;
-	}
-
 	pb::ServerMessage message;
-	message.mutable_context()->set_user_name(src_ctx->getConnection()->getUserName());
 	message.mutable_context()->set_character_name(src_ctx->getCharacterName());
 	message.mutable_context()->set_npc(src_ctx->isNpc());
 	message.mutable_context()->set_map(src_ctx->getMap());
 	message.mutable_context()->set_in_game(src_ctx->isInGame());
-	message.mutable_context()->set_connected(src_ctx->getConnection()->isConnected());
 	message.mutable_context()->set_tile_x(src_ctx->getTileX());
 	message.mutable_context()->set_tile_y(src_ctx->getTileY());
 	message.mutable_context()->set_type(src_ctx->getType());

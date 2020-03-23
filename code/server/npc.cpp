@@ -19,12 +19,11 @@
 
 #include "action.h"
 #include "client_server.h"
+#include "Context.h"
 #include "entry.h"
 #include "log.h"
 #include "mutex.h"
 #include "npc.h"
-
-#include "Context.h"
 #include "syntax.h"
 #include "util.h"
 #include <dirent.h>
@@ -44,18 +43,20 @@ static int npc_script(void * data)
 	char * script = nullptr;
 	char ** parameters = nullptr;
 
-	/* Do not start every NPC at the same moment */
+	// Do not start every NPC at the same moment
 	usleep((random() % NPC_TIMEOUT) * 1000);
 
 	wlog(LOGDESIGNER, "Start AI script for %s(%s)", context->getId().c_str(), context->getCharacterName().c_str());
 
+	context->setInGame(true);
+
 	while (context->isInGame() == true)
 	{
-		if (script)
+		if (script != nullptr)
 		{
 			free(script);
 		}
-		if (parameters)
+		if (parameters != nullptr)
 		{
 			deep_free(parameters);
 		}
@@ -64,6 +65,7 @@ static int npc_script(void * data)
 			werr(LOGUSER, "No AI script for %s", context->getId().c_str());
 			break;
 		}
+
 		entry_read_list(CHARACTER_TABLE, context->getId().c_str(), &parameters, CHARACTER_KEY_AI_PARAMS, nullptr);
 
 		if (context->getNextExecutionTick() < SDL_GetTicks())
@@ -111,12 +113,12 @@ void instantiate_npc(const std::string & id)
 		return;
 	}
 
-	if (!is_npc)
+	if (is_npc == false)
 	{
 		return;
 	}
 
-	// read data of this npc
+	// read data of this NPC
 	if (entry_read_int(CHARACTER_TABLE, id.c_str(), &x, CHARACTER_KEY_TILE_X, nullptr) == false)
 	{
 		return;
