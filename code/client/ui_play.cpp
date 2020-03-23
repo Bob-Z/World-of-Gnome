@@ -98,7 +98,7 @@ static void draw_background(Context * ctx, item_t * g_itemList)
 	}
 	sdl_get_output_size(&sw, &sh);
 	bg_anim = anim_create_color(sw, sh, BACKGROUND_COLOR);
-	item = g_itemList_add(&g_itemList);
+	item = item_list_add(&g_itemList);
 	item_set_pos(item, 0, 0);
 	item_set_anim(item, bg_anim, 0);
 	item_set_overlay(item, 1);
@@ -276,7 +276,7 @@ static void compose_attribute(Context * ctx, item_t * g_itemList)
 		attribute_string[num_attr - 1] = strdup(buf);
 		attribute_string[num_attr] = nullptr;
 
-		item = g_itemList_add(&g_itemList);
+		item = item_list_add(&g_itemList);
 
 		item_set_overlay(item, 1);
 		item_set_string(item, attribute_string[num_attr - 1]);
@@ -417,7 +417,7 @@ static void compose_action(Context * ctx, item_t * g_itemList)
 		entry_read_int(ACTION_TABLE, action_list[i], (int*) &layout,
 		ACTION_KEY_ICON_LAYOUT, nullptr);
 
-		item = g_itemList_add(&g_itemList);
+		item = item_list_add(&g_itemList);
 		item_set_layout(item, layout);
 		item_set_overlay(item, 1);
 		item_set_click_left(item, ui_play_cb_action, (void*) strdup(action_list[i]), free);
@@ -562,7 +562,7 @@ static void compose_equipment(Context * ctx, item_t * g_itemList)
 			anim = imageDB_get_anim(ctx, icon_name);
 			free(icon_name);
 
-			item = g_itemList_add(&g_itemList);
+			item = item_list_add(&g_itemList);
 
 			x = sw - anim->w;
 			h1 = anim->h;
@@ -615,7 +615,7 @@ static void compose_equipment(Context * ctx, item_t * g_itemList)
 
 			if (equipped_icon_name)
 			{
-				item = g_itemList_add(&g_itemList);
+				item = item_list_add(&g_itemList);
 
 				anim2 = imageDB_get_anim(ctx, equipped_icon_name);
 				free(equipped_icon_name);
@@ -639,7 +639,7 @@ static void compose_equipment(Context * ctx, item_t * g_itemList)
 			{
 				anim3 = imageDB_get_anim(ctx, option_get().cursor_equipment);
 
-				item = g_itemList_add(&g_itemList);
+				item = item_list_add(&g_itemList);
 
 				// Center on icon
 				item_set_overlay(item, 1);
@@ -686,7 +686,7 @@ static void compose_equipment(Context * ctx, item_t * g_itemList)
 
 		if (inventory_icon_name)
 		{
-			item = g_itemList_add(&g_itemList);
+			item = item_list_add(&g_itemList);
 
 			anim = imageDB_get_anim(ctx, inventory_icon_name);
 			free(inventory_icon_name);
@@ -713,7 +713,7 @@ static void compose_equipment(Context * ctx, item_t * g_itemList)
 			inventory_icon = anim_create_color(max_w, max_h, 0x7f7f7f7f);
 		}
 
-		item = g_itemList_add(&g_itemList);
+		item = item_list_add(&g_itemList);
 
 		item_set_overlay(item, 1);
 		item_set_pos(item, sw - inventory_icon->w, y);
@@ -757,7 +757,7 @@ static void compose_text(Context * ctx, item_t * g_itemList)
 	current_y = sh - action_bar_height;
 
 	// Draw edit box
-	item = g_itemList_add(&g_itemList);
+	item = item_list_add(&g_itemList);
 
 	item_set_overlay(item, 1);
 	item_set_buffer(item, text_buffer, TEXT_BUFFER_SIZE);
@@ -800,7 +800,7 @@ static void compose_text(Context * ctx, item_t * g_itemList)
 			return;
 		}
 
-		item = g_itemList_add(&g_itemList);
+		item = item_list_add(&g_itemList);
 
 		item_set_overlay(item, 1);
 		item_set_string(item, hist->text);
@@ -996,7 +996,7 @@ static void compose_inventory(Context * ctx, item_t * g_itemList)
 		if (quantity > 0)
 		{
 			w = 0;
-			item = g_itemList_add(&g_itemList);
+			item = item_list_add(&g_itemList);
 			item_set_pos(item, x, 0);
 			item_set_anim(item, anim, 0);
 			if (quantity > 1)
@@ -1099,7 +1099,7 @@ static void compose_inventory_select(Context * ctx, item_t * g_itemList)
 
 	if (inventory_list[i])
 	{
-		item = g_itemList_add(&g_itemList);
+		item = item_list_add(&g_itemList);
 		item_set_pos(item, x, 0);
 		item_set_anim(item, anim, 0);
 		item_set_overlay(item, 1);
@@ -1212,7 +1212,7 @@ static void compose_popup(Context * ctx, item_t * g_itemList)
 			++l_It;
 			anim_t * l_pAnim = imageDB_get_anim(ctx, l_It->c_str());
 
-			l_pItem = g_itemList_add(&g_itemList);
+			l_pItem = item_list_add(&g_itemList);
 			item_set_pos(l_pItem, l_X, l_Y - popup_offset);
 			item_set_anim(l_pItem, l_pAnim, 0);
 			item_set_overlay(l_pItem, 1);
@@ -1231,7 +1231,7 @@ static void compose_popup(Context * ctx, item_t * g_itemList)
 		if (*l_It == POPUP_TAG_TEXT)
 		{
 			++l_It;
-			l_pItem = g_itemList_add(&g_itemList);
+			l_pItem = item_list_add(&g_itemList);
 			item_set_string(l_pItem, l_It->c_str());
 			item_set_font(l_pItem, l_pFont);
 			sdl_get_string_size(l_pItem->font, l_pItem->string, &l_Width, &l_Height);

@@ -112,7 +112,7 @@ static bool compose_scr(Context * context)
 		static TTF_Font * font = nullptr;
 
 		font = font_get(context, ITEM_FONT, ITEM_FONT_SIZE);
-		g_frameRateItem = g_itemList_add(&g_itemList);
+		g_frameRateItem = item_list_add(&g_itemList);
 		item_set_font(g_frameRateItem, font);
 		item_set_anim_shape(g_frameRateItem, 100, 50, 20, 20);
 		item_set_overlay(g_frameRateItem, 1);

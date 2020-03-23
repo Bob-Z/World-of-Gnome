@@ -192,7 +192,7 @@ void scr_create_init()
 {
 	current_character = -1;
 
-	g_itemList_free(g_itemList);
+	item_list_free(g_itemList);
 	g_itemList = nullptr;
 
 	if (character_list != nullptr)
@@ -270,7 +270,7 @@ item_t * scr_create_compose(Context * context)
 
 	if (g_itemList != nullptr)
 	{
-		g_itemList_free(g_itemList);
+		item_list_free(g_itemList);
 		g_itemList = nullptr;
 	}
 
@@ -294,7 +294,7 @@ item_t * scr_create_compose(Context * context)
 
 	sdl_get_output_size(&sw, &sh);
 
-	item = g_itemList_add(&g_itemList);
+	item = item_list_add(&g_itemList);
 
 	item_set_overlay(item, 1);
 	item_set_buffer(item, text_buffer, TEXT_BUFFER_SIZE);
@@ -376,7 +376,7 @@ item_t * scr_create_compose(Context * context)
 		}
 
 		// Character picture
-		item = g_itemList_add(&g_itemList);
+		item = item_list_add(&g_itemList);
 		item_image = item;
 		character_list[i].item = item;
 
@@ -397,7 +397,7 @@ item_t * scr_create_compose(Context * context)
 		{
 			if (character_list[i].name != nullptr)
 			{
-				item = g_itemList_add(&g_itemList);
+				item = item_list_add(&g_itemList);
 				item_set_string(item, character_list[i].name);
 				item_set_font(item, font_name);
 				// display string just above the picture
@@ -414,7 +414,7 @@ item_t * scr_create_compose(Context * context)
 		}
 		else
 		{
-			item = g_itemList_add(&g_itemList);
+			item = item_list_add(&g_itemList);
 			item_set_string(item, character_list[i].type);
 			item_set_font(item, font_type);
 			// display string just below the picture

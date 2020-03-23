@@ -236,7 +236,7 @@ item_t * scr_select_compose(Context * context)
 
 	if (g_itemList)
 	{
-		g_itemList_free(g_itemList);
+		item_list_free(g_itemList);
 		g_itemList = nullptr;
 	}
 
@@ -262,7 +262,7 @@ item_t * scr_select_compose(Context * context)
 		x = sw / 2 - (anim->w / 2);
 		y = sh - anim->h;
 
-		item = g_itemList_add(&g_itemList);
+		item = item_list_add(&g_itemList);
 		item_set_overlay(item, 1);
 		item_set_pos(item, x, y);
 		item_set_anim(item, anim, 0);
@@ -332,7 +332,7 @@ item_t * scr_select_compose(Context * context)
 		}
 
 		// Character picture
-		item = g_itemList_add(&g_itemList);
+		item = item_list_add(&g_itemList);
 		item_image = item;
 		character_list[i].item = item;
 
@@ -346,7 +346,7 @@ item_t * scr_select_compose(Context * context)
 		// character name
 		if (font_name)
 		{
-			item = g_itemList_add(&g_itemList);
+			item = item_list_add(&g_itemList);
 			item_set_string(item, character_list[i].name);
 			item_set_font(item, font_name);
 			// display string just above the picture
@@ -361,7 +361,7 @@ item_t * scr_select_compose(Context * context)
 		// character type
 		if (font_type)
 		{
-			item = g_itemList_add(&g_itemList);
+			item = item_list_add(&g_itemList);
 			item_set_string(item, character_list[i].type);
 			item_set_font(item, font_type);
 			// display string just below the picture

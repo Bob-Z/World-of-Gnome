@@ -261,7 +261,7 @@ static void set_up_sprite(Context * ctx)
 		return;
 	}
 
-	item = g_itemList_add(&g_itemList);
+	item = item_list_add(&g_itemList);
 
 	current_time = sdl_get_global_time();
 
@@ -592,7 +592,7 @@ static void compose_item(int layer_index)
 			free(mytemplate);
 		}
 
-		item = g_itemList_add(&g_itemList);
+		item = item_list_add(&g_itemList);
 
 		anim = imageDB_get_anim(ctx, sprite_name);
 		free(sprite_name);
@@ -697,7 +697,7 @@ static void compose_map_button()
 	{
 		for (x = 0; x < default_layer->map_w; x++)
 		{
-			item = g_itemList_add(&g_itemList);
+			item = item_list_add(&g_itemList);
 			item_set_anim_shape(item, map_t2p_x(x, y, default_layer), map_t2p_y(x, y, default_layer), default_layer->tile_width, default_layer->tile_height);
 			item_set_user(item, x, y);
 			item_set_click_left(item, cb_select_map, item, nullptr);
@@ -740,7 +740,7 @@ static void compose_map_set(int layer_index)
 		// Skip empty tile
 		if (tile_set[i][0] != 0)
 		{
-			item = g_itemList_add(&g_itemList);
+			item = item_list_add(&g_itemList);
 			anim = imageDB_get_anim(ctx, tile_set[i]);
 			item_set_pos(item, map_t2p_x(x, y, layer), map_t2p_y(x, y, layer));
 			item_set_anim(item, anim, 0);
@@ -803,7 +803,7 @@ static void compose_map_scenery(int layer_index)
 
 		anim = imageDB_get_anim(ctx, image_name);
 
-		item = g_itemList_add(&g_itemList);
+		item = item_list_add(&g_itemList);
 		item_set_pos(item, x, y);
 		item_set_anim(item, anim, 0);
 		//item_set_anim(item, x*ctx->tile_width, y*ctx->tile_height, anim,0);
@@ -856,7 +856,7 @@ static void compose_type(int layer_index)
 				continue;
 			}
 
-			item = g_itemList_add(&g_itemList);
+			item = item_list_add(&g_itemList);
 
 			item_set_string(item, type);
 			item_set_font(item, font);
@@ -891,7 +891,7 @@ static void compose_select()
 			{
 				anim = imageDB_get_anim(ctx, option_get().cursor_tile);
 
-				item = g_itemList_add(&g_itemList);
+				item = item_list_add(&g_itemList);
 
 				// get pixel coordinate from tile coordinate
 				x = map_t2p_x(pos_tx, pos_ty, default_layer);
@@ -913,7 +913,7 @@ static void compose_select()
 			return;
 		}
 
-		item = g_itemList_add(&g_itemList);
+		item = item_list_add(&g_itemList);
 		item->user_ptr = selected_context;
 		item->user1_ptr = option_get().cursor_character_draw_script;
 	}
@@ -942,7 +942,7 @@ item_t * scr_play_compose(Context * ctx)
 {
 	if (g_itemList != nullptr)
 	{
-		g_itemList_free(g_itemList);
+		item_list_free(g_itemList);
 		g_itemList = nullptr;
 	}
 
