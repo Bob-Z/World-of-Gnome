@@ -63,8 +63,6 @@ extern "C"
  */
 static int l_player_get_id(lua_State* L)
 {
-	wlog(LOGDEVELOPER, "l_player_get_id");
-
 	Context * context;
 
 	lua_getglobal(L, LUAVM_CONTEXT);
@@ -577,8 +575,6 @@ static int l_character_delete(lua_State* L)
  */
 static int l_character_set_pos(lua_State* L)
 {
-	wlog(LOGDEVELOPER, "l_character_set_pos");
-
 	const char * id;
 	const char * map;
 	int x;
