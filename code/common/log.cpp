@@ -50,8 +50,7 @@ static const std::string LEVEL_DEVELOPER("developer");
 void log_add_file_filter(const char * file)
 {
 	file_filter_num++;
-	file_filter = (char **) realloc(file_filter,
-			sizeof(char*) * file_filter_num);
+	file_filter = (char **) realloc(file_filter, sizeof(char*) * file_filter_num);
 	file_filter[file_filter_num - 1] = strdup(file);
 }
 
@@ -60,8 +59,7 @@ void log_add_file_filter(const char * file)
 void log_add_func_filter(const char * func)
 {
 	func_filter_num++;
-	func_filter = (char **) realloc(func_filter,
-			sizeof(char*) * func_filter_num);
+	func_filter = (char **) realloc(func_filter, sizeof(char*) * func_filter_num);
 	func_filter[func_filter_num - 1] = strdup(func);
 }
 
@@ -113,8 +111,7 @@ static int is_allowed_func(const char * func)
 
 /**************************************************
  **************************************************/
-void log_print(int type, const char * file, const char * func, int line,
-		FILE *stream, int level, const char * format, ...)
+void log_print(int type, const char * file, const char * func, int line, FILE *stream, int level, const char * format, ...)
 {
 	va_list ap;
 	char buf[10000];
@@ -145,8 +142,7 @@ void log_print(int type, const char * file, const char * func, int line,
 
 	if (log_level == LOGDEVELOPER)
 	{
-		fprintf(stream, "%09d|%ld|%s(%d):%s|%s", SDL_GetTicks(), SDL_ThreadID(),
-				file, line, func, buf);
+		fprintf(stream, "%09d|%ld|%s:%d :%s|%s", SDL_GetTicks(), SDL_ThreadID(), file, line, func, buf);
 	}
 	else if (log_level == LOGDESIGNER)
 	{
