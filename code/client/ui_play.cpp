@@ -144,10 +144,10 @@ static void cb_main_quit(void * arg)
 			{
 				current_ctx->setInGame(false);
 
-				wlog(LOGDEVELOPER, "Waiting for %s", current_ctx->getId().c_str());
+				LOG("Waiting for " + current_ctx->getId());
 				int threadStatus = 0;
 				SDL_WaitThread(current_ctx->getNpcThread(), &threadStatus);
-				wlog(LOGDEVELOPER, "%s exited", current_ctx->getId().c_str());
+				LOG(current_ctx->getId() + " exited");
 
 				context_free(current_ctx);
 			}
