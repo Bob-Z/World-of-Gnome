@@ -130,13 +130,13 @@ char * ui_play_get_last_action()
  ****************************/
 static void cb_main_quit(void * arg)
 {
-	Context * current_ctx;
+	item_t * item = static_cast<item_t*>(arg);
 
 	if (ui_play_get() == UI_MAIN)
 	{
 		context_get_player()->setInGame(false);
 		network_request_stop(*(context_get_player()->getConnection()));
-		current_ctx = context_get_first();
+		Context * current_ctx = context_get_first();
 		while (current_ctx != nullptr)
 		{
 			Context * next_ctx = current_ctx->m_next;
@@ -150,6 +150,17 @@ static void cb_main_quit(void * arg)
 				LOG(current_ctx->getId() + " exited");
 
 				context_free(current_ctx);
+
+				// Remove selection
+				while (item != nullptr)
+				{
+					if (item->user_ptr != nullptr)
+					{
+						item->user_ptr = nullptr;
+					}
+
+					item = item->next;
+				}
 			}
 			current_ctx = next_ctx;
 		}
@@ -867,7 +878,7 @@ static void main_compose(Context * ctx, item_t * g_itemList)
 	sdl_add_keycb(SDL_SCANCODE_KP_9, key_up_right, nullptr, nullptr);
 	sdl_add_keycb(SDL_SCANCODE_KP_1, key_down_left, nullptr, nullptr);
 	sdl_add_keycb(SDL_SCANCODE_KP_3, key_down_right, nullptr, nullptr);
-	sdl_add_keycb(SDL_SCANCODE_ESCAPE, cb_main_quit, nullptr, nullptr);
+	sdl_add_keycb(SDL_SCANCODE_ESCAPE, cb_main_quit, nullptr, g_itemList);
 	sdl_add_keycb(SDL_SCANCODE_SCROLLLOCK, cb_print_coord, nullptr, nullptr);
 }
 
