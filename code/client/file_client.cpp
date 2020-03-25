@@ -50,11 +50,11 @@ int file_add(const std::string & name, const std::string & data)
 
 	if (rename(temp_path.c_str(), file_path.c_str()) == -1)
 	{
-		wlog(LOGDEVELOPER, "Error renaming file %s to %s", temp_path.c_str(), file_path.c_str());
+		LOG("Error renaming file " + temp_path + " to " + file_path);
 		return false;
 	}
 
-	wlog(LOGDEVELOPER, "write file %s", file_path.c_str());
+	LOG("write file " + file_path);
 
 	// Update the entry DB
 	entry_remove(name.c_str());

@@ -34,7 +34,7 @@ void network_login(Connection & connection, const std::string & user_name, const
 	message.mutable_login()->set_password(password);
 	const std::string serialized_data = message.SerializeAsString();
 
-	wlog(LOGDEVELOPER, "[network] Send LOGIN");
+	LOG("[network] Send LOGIN");
 	network_send_command(connection, serialized_data, false);
 }
 
@@ -46,7 +46,7 @@ void network_request_start(Connection & connection, const std::string & id)
 	message.mutable_start()->set_id(id);
 	std::string serialized_data = message.SerializeAsString();
 
-	wlog(LOGDEVELOPER, "[network] Send START");
+	LOG("[network] Send START");
 	network_send_command(connection, serialized_data, false);
 }
 
@@ -58,7 +58,7 @@ void network_request_stop(Connection & connection)
 	message.mutable_stop()->Clear();
 	std::string serialized_data = message.SerializeAsString();
 
-	wlog(LOGDEVELOPER, "[network] Send STOP");
+	LOG("[network] Send STOP");
 	network_send_command(connection, serialized_data, false);
 }
 
@@ -71,7 +71,7 @@ void network_request_playable_character_list(Connection & connection)
 	message.mutable_playable_character_list()->Clear();
 	std::string serialized_data = message.SerializeAsString();
 
-	wlog(LOGDEVELOPER, "[network] Send PLAYABLE_CHARACTER_LIST");
+	LOG("[network] Send PLAYABLE_CHARACTER_LIST");
 	network_send_command(connection, serialized_data, false);
 }
 
@@ -84,7 +84,7 @@ void network_request_user_character_list(Connection & connection)
 	message.mutable_user_character_list()->set_user(connection.getUserName());
 	std::string serialized_data = message.SerializeAsString();
 
-	wlog(LOGDEVELOPER, "[network] Send USER_CHARACTER_LIST");
+	LOG("[network] Send USER_CHARACTER_LIST");
 	network_send_command(connection, serialized_data, false);
 }
 
@@ -228,7 +228,7 @@ int network_connect(Connection & connection, const std::string & host_name)
 	IPaddress ip;
 	TCPsocket socket;
 
-	wlog(LOGUSER, "Trying to connect to %s:%d", host_name.c_str(), PORT);
+	LOG_USER("Trying to connect to " + host_name + ":" + std::to_string(PORT));
 
 	if (SDLNet_Init() < 0)
 	{
@@ -248,7 +248,7 @@ int network_connect(Connection & connection, const std::string & host_name)
 		return false;
 	}
 
-	wlog(LOGUSER, "Connected to %s:%d on socket %d", host_name.c_str(), PORT, socket);
+	LOG_USER("Connected to " + host_name + ":" + std::to_string(PORT));
 
 	connection.setHostName(host_name);
 	connection.setSocket(socket);
@@ -267,13 +267,13 @@ int network_open_data_connection(Connection & connection)
 
 	if (SDLNet_ResolveHost(&ip, connection.getHostName().c_str(), PORT) < 0)
 	{
-		werr(LOGUSER, "Can't resolve %s:%d : %s\n", connection.getHostName().c_str(), PORT, SDLNet_GetError());
+		ERR_USER("Can't resolve " + connection.getHostName() + ":" + std::to_string(PORT) + " : " + std::string(SDLNet_GetError()));
 		return false;
 	}
 
 	if ((socket = SDLNet_TCP_Open(&ip)) == 0)
 	{
-		werr(LOGUSER, "Can't open data connection to %s:%d : %s\n", connection.getHostName().c_str(), PORT, SDLNet_GetError());
+		ERR_USER("Can't open data connection to " + connection.getHostName() + ":" + std::to_string(PORT) + " : " + std::string(SDLNet_GetError()));
 		return false;
 	}
 
