@@ -109,8 +109,7 @@ static int is_allowed_func(const char * func)
 	return 0;
 }
 
-/**************************************************
- **************************************************/
+/*****************************************************************************/
 void log_print(int type, const char * file, const char * func, int line, FILE *stream, int level, const char * format, ...)
 {
 	va_list ap;
@@ -159,6 +158,12 @@ void log_print(int type, const char * file, const char * func, int line, FILE *s
 	}
 
 	fprintf(stream, "\n");
+}
+
+/*****************************************************************************/
+void log_print_std(int type, const char * file, const char * func, int line, FILE *stream, int level, const std::string & format)
+{
+	log_print(type, file, func, line, stream, level, format.c_str());
 }
 
 /**************************************************

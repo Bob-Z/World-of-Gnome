@@ -21,6 +21,7 @@
 #define LOG_H
 
 #include <stdio.h>
+#include <string>
 
 #ifdef __cplusplus
 extern "C"
@@ -30,8 +31,8 @@ extern "C"
 void log_set_level(char * log_level);
 void log_add_file_filter(const char * file);
 void log_add_func_filter(const char * func);
-void log_print(int type, const char * file, const char * func, int line,
-		FILE *stream, int level, const char * format, ...);
+void log_print(int type, const char * file, const char * func, int line, FILE *stream, int level, const char * format, ...);
+void log_print_std(int type, const char * file, const char * func, int line, FILE *stream, int level, const std::string & format);
 
 #define LOGUSER			0
 #define LOGDESIGNER		1
@@ -42,6 +43,9 @@ void log_print(int type, const char * file, const char * func, int line,
 
 #define wlog(level,str,args...) log_print(TYPELOG,__FILE__,__func__,__LINE__,stdout,level,str, ## args)
 #define werr(level,str,args...) log_print(TYPEERR,__FILE__,__func__,__LINE__,stderr,level,str, ## args)
+
+#define LOG(str,args...) log_print_std(TYPELOG,__FILE__,__func__,__LINE__,stdout,LOGDEVELOPER,str)
+#define ERR(str,args...) log_print_std(TYPEERR,__FILE__,__func__,__LINE__,stderr,LOGDEVELOPER,str)
 
 #ifdef __cplusplus
 }
