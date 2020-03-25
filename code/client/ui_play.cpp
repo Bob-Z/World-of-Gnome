@@ -131,7 +131,6 @@ char * ui_play_get_last_action()
 static void cb_main_quit(void * arg)
 {
 	Context * current_ctx;
-	Context * next_ctx;
 
 	if (ui_play_get() == UI_MAIN)
 	{
@@ -140,10 +139,16 @@ static void cb_main_quit(void * arg)
 		current_ctx = context_get_first();
 		while (current_ctx != nullptr)
 		{
-			// Save next before freeing the current context
-			next_ctx = current_ctx->m_next;
+			Context * next_ctx = current_ctx->m_next;
 			if (current_ctx != context_get_player())
 			{
+				current_ctx->setInGame(false);
+
+				wlog(LOGDEVELOPER, "Waiting for %s", current_ctx->getId().c_str());
+				int threadStatus = 0;
+				SDL_WaitThread(current_ctx->getNpcThread(), &threadStatus);
+				wlog(LOGDEVELOPER, "%s exited", current_ctx->getId().c_str());
+
 				context_free(current_ctx);
 			}
 			current_ctx = next_ctx;

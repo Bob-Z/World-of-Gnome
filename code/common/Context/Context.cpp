@@ -38,7 +38,8 @@ Context * context_list_start = nullptr;
 Context::Context() :
 		m_mutex(nullptr), m_inGame(false), m_npc(true), m_characterName(), m_map(), m_previousMap(), m_mapChanged(false), m_tileX(0), m_tileY(0), m_previousTileX(
 				0), m_previousTileY(0), m_positionChanged(false), m_orientation(0), m_direction(0), m_animationTick(0), m_type(), m_id(), m_selection(), m_nextExecutionTick(
-				0), m_luaVm(nullptr), m_condition(nullptr), m_conditionMutex(nullptr), m_connection(nullptr), m_previous(nullptr), m_next(nullptr)
+				0), m_luaVm(nullptr), m_condition(nullptr), m_conditionMutex(nullptr), m_connection(nullptr), m_npcThread(nullptr), m_previous(nullptr), m_next(
+				nullptr)
 {
 	m_mutex = SDL_CreateMutex();
 	m_condition = SDL_CreateCond();
@@ -791,4 +792,16 @@ Connection* Context::getConnection() const
 void Context::setConnection(Connection* connection)
 {
 	m_connection = connection;
+}
+
+/*****************************************************************************/
+SDL_Thread* Context::getNpcThread() const
+{
+	return m_npcThread;
+}
+
+/*****************************************************************************/
+void Context::setNpcThread(SDL_Thread* npcThread)
+{
+	m_npcThread = npcThread;
 }

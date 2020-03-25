@@ -83,6 +83,9 @@ public:
 	Connection* getConnection() const;
 	void setConnection(Connection* connection);
 
+	SDL_Thread* getNpcThread() const;
+	void setNpcThread(SDL_Thread* npcThread);
+
 	bool update_from_file();
 
 	int tileDistance(const Context & ctx) const;
@@ -117,6 +120,8 @@ private:
 	SDL_mutex* m_conditionMutex;	// mutex for async condition for NPC
 
 	Connection * m_connection;
+
+	SDL_Thread * m_npcThread;
 
 public:
 	Context * m_previous;

@@ -99,15 +99,7 @@ static int npc_script(void * data)
  ***************************/
 void instantiate_npc(const std::string & id)
 {
-	char * type = nullptr;
-	char * name = nullptr;
-	char * map = nullptr;
 	int is_npc = 0;
-	int x = 0;
-	int y = 0;
-	Context * ctx = nullptr;
-
-	// check if it's a NPC
 	if (entry_read_int(CHARACTER_TABLE, id.c_str(), &is_npc, CHARACTER_KEY_NPC, nullptr) == false)
 	{
 		return;
@@ -118,27 +110,31 @@ void instantiate_npc(const std::string & id)
 		return;
 	}
 
-	// read data of this NPC
+	int x = 0;
 	if (entry_read_int(CHARACTER_TABLE, id.c_str(), &x, CHARACTER_KEY_TILE_X, nullptr) == false)
 	{
 		return;
 	}
 
+	int y = 0;
 	if (entry_read_int(CHARACTER_TABLE, id.c_str(), &y, CHARACTER_KEY_TILE_Y, nullptr) == false)
 	{
 		return;
 	}
 
+	char * map = nullptr;
 	if (entry_read_string(CHARACTER_TABLE, id.c_str(), &map, CHARACTER_KEY_MAP, nullptr) == false)
 	{
 		return;
 	}
 
+	char * name = nullptr;
 	if (entry_read_string(CHARACTER_TABLE, id.c_str(), &name, CHARACTER_KEY_NAME, nullptr) == false)
 	{
 		name = strdup("");
 	}
 
+	char * type = nullptr;
 	if (entry_read_string(CHARACTER_TABLE, id.c_str(), &type, CHARACTER_KEY_TYPE, nullptr) == false)
 	{
 		free(map);
@@ -147,7 +143,8 @@ void instantiate_npc(const std::string & id)
 	}
 
 	wlog(LOGDESIGNER, "Creating NPC %s of type %s in map %s at %d,%d", name, type, map, x, y);
-	ctx = context_new();
+	Context * ctx = context_new();
+
 	ctx->setCharacterName(name);
 	free(name);
 	ctx->setInGame(true);
@@ -166,7 +163,7 @@ void instantiate_npc(const std::string & id)
 	context_spread(ctx);
 
 	std::string threadName = "NPC: " + id;
-	SDL_CreateThread(npc_script, threadName.c_str(), (void*) ctx);
+	ctx->setNpcThread(SDL_CreateThread(npc_script, threadName.c_str(), (void*) ctx));
 }
 /**************************
  init non playing character
