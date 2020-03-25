@@ -90,7 +90,7 @@ public:
 
 	int tileDistance(const Context & ctx) const;
 
-	lua_State* getLuaVm() const;
+	lua_State* getLuaVm();
 	void wakeUp();
 	void sleep(Uint32 timeOutMs);
 
