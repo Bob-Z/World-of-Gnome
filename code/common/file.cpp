@@ -269,7 +269,7 @@ int file_get_contents(const char *filename, void **contents, int_fast32_t *lengt
 
 	const std::string file_path = base_directory + "/" + std::string(filename);
 
-	file_lock(file_path.c_str());
+	file_lock(filename);
 
 	if (stat(file_path.c_str(), &sts) == -1)
 	{
