@@ -46,6 +46,8 @@ void log_print_std(int type, const char * file, const char * func, int line, FIL
 
 #define LOG(str,args...) log_print_std(TYPELOG,__FILE__,__func__,__LINE__,stdout,LOGDEVELOPER,str)
 #define ERR(str,args...) log_print_std(TYPEERR,__FILE__,__func__,__LINE__,stderr,LOGDEVELOPER,str)
+#define LOG_USER(str,args...) log_print_std(TYPELOG,__FILE__,__func__,__LINE__,stdout,LOGUSER,str)
+#define ERR_USER(str,args...) log_print_std(TYPEERR,__FILE__,__func__,__LINE__,stderr,LOGUSER,str)
 
 #ifdef __cplusplus
 }
