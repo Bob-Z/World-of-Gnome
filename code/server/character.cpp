@@ -594,9 +594,9 @@ int character_set_pos(Context * ctx, const std::string & map, int x, int y)
 	}
 
 	// If this character is a platform, move all characters on it
-	platform_move(ctx, std::string(map), x, y, change_map);
+	platform_move(ctx, map, x, y, change_map);
 
-	do_set_pos(ctx, std::string(map), x, y, change_map);
+	do_set_pos(ctx, map, x, y, change_map);
 
 	event_id = map_get_event(map, ctx_layer, x, y);
 
