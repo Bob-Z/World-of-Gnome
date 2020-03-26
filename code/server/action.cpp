@@ -2268,7 +2268,7 @@ int action_execute(Context * context, const std::string & actionName, const std:
 	if (entry_read_string(ACTION_TABLE, actionName.c_str(), &script,
 	ACTION_KEY_SCRIPT, nullptr) == false)
 	{
-		ERR_DESIGN
+		ERR_DESIGN("Cannot find script for action " + actionName);
 		return -1;
 	}
 
@@ -2281,13 +2281,13 @@ int action_execute(Context * context, const std::string & actionName, const std:
 
 	char ** all_params = add_array(params, passed_param);
 
+	free(passed_param);
+	free(params);
+
 	int ret = action_execute_script(context, script, (const char**) all_params);
 
 	free(script);
-
-	deep_free(params);
-	deep_free(passed_param);
-	free(all_params);
+	deep_free(all_params);
 
 	return ret;
 }
