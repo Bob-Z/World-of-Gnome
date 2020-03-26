@@ -48,9 +48,8 @@ public:
 	bool isMapChanged() const;
 	void setMapChanged(bool mapChanged);
 	int getTileX() const;
-	void setTileX(int tileX);
 	int getTileY() const;
-	void setTileY(int tileY);
+	void setTile(const int tileX, const int tileY);
 	bool isPositionChanged() const;
 	void setPositionChanged(bool positionChanged);
 	int getDirection() const;

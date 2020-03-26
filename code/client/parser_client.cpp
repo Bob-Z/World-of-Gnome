@@ -118,8 +118,7 @@ static int manage_context(const pb::Context& incoming_context)
 	receivedContext.setInGame(incoming_context.in_game());
 	receivedContext.setMap(incoming_context.map());
 	receivedContext.setNpc(incoming_context.npc());
-	receivedContext.setTileX(incoming_context.tile_x());
-	receivedContext.setTileY(incoming_context.tile_y());
+	receivedContext.setTile(incoming_context.tile_x(), incoming_context.tile_y());
 	receivedContext.setType(incoming_context.type());
 	receivedContext.setSelectionEquipment(incoming_context.selection().equipment());
 	receivedContext.setSelectionContextId(incoming_context.selection().id());

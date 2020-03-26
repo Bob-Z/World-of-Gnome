@@ -155,8 +155,7 @@ void instantiate_npc(const std::string & id)
 	ctx->setType(std::string(type));
 	free(type);
 
-	ctx->setTileX(x);
-	ctx->setTileY(y);
+	ctx->setTile(x, y);
 
 	ctx->setId(id);
 

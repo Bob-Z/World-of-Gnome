@@ -418,8 +418,7 @@ void character_update_aggro(Context * agressor)
 static void do_set_pos(Context * ctx, const std::string & map, int x, int y, bool change_map)
 {
 	ctx->setMap(map);
-	ctx->setTileX(x);
-	ctx->setTileY(y);
+	ctx->setTile(x, y);
 
 	entry_write_string(CHARACTER_TABLE, ctx->getId().c_str(), map.c_str(), CHARACTER_KEY_MAP, nullptr);
 	entry_write_int(CHARACTER_TABLE, ctx->getId().c_str(), x, CHARACTER_KEY_TILE_X, nullptr);

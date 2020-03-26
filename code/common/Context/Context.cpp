@@ -263,8 +263,7 @@ void context_add_or_update_from_network_frame(const Context & receivedCtx)
 				wlog(LOGDEVELOPER, "Updating context %s", receivedCtx.getCharacterName().c_str());
 
 				ctx->setMap(receivedCtx.getMap());
-				ctx->setTileX(receivedCtx.getTileX());
-				ctx->setTileY(receivedCtx.getTileY());
+				ctx->setTile(receivedCtx.getTileX(), receivedCtx.getTileY());
 
 				ctx->setNpc(receivedCtx.isNpc());
 
@@ -293,8 +292,7 @@ void context_add_or_update_from_network_frame(const Context & receivedCtx)
 	ctx->setNpc(receivedCtx.isNpc());
 	ctx->setMap(receivedCtx.getMap());
 	ctx->setType(receivedCtx.getType());
-	ctx->setTileX(receivedCtx.getTileX());
-	ctx->setTileY(receivedCtx.getTileY());
+	ctx->setTile(receivedCtx.getTileX(), receivedCtx.getTileY());
 	ctx->setId(receivedCtx.getId());
 	ctx->setInGame(receivedCtx.isInGame());
 	ctx->setSelectionContextId(receivedCtx.getSelection().getContextId());
@@ -454,19 +452,6 @@ int Context::getTileX() const
 }
 
 /*****************************************************************************/
-void Context::setTileX(int tileX)
-{
-	SdlLocking lock(m_mutex);
-
-	if (tileX != m_previousTileX)
-	{
-		m_previousTileX = m_tileX;
-		m_tileX = tileX;
-		m_positionChanged = true;
-	}
-}
-
-/*****************************************************************************/
 int Context::getTileY() const
 {
 	SdlLocking lock(m_mutex);
@@ -475,13 +460,15 @@ int Context::getTileY() const
 }
 
 /*****************************************************************************/
-void Context::setTileY(int tileY)
+void Context::setTile(const int tileX, const int tileY)
 {
 	SdlLocking lock(m_mutex);
 
-	if (tileY != m_previousTileY)
+	if ((tileX != m_tileX) || (tileY != m_tileY))
 	{
+		m_previousTileX = m_tileX;
 		m_previousTileY = m_tileY;
+		m_tileX = tileX;
 		m_tileY = tileY;
 		m_positionChanged = true;
 	}
@@ -762,21 +749,20 @@ bool Context::update_from_file()
 		ret = false;
 	}
 
-	int pos_tx;
+	int pos_tx = 0;
 	if (entry_read_int(CHARACTER_TABLE, getId().c_str(), &pos_tx,
 	CHARACTER_KEY_TILE_X, nullptr) == false)
 	{
 		ret = false;
 	}
-	setTileX(pos_tx);
-
 	int pos_ty = 0;
 	if (entry_read_int(CHARACTER_TABLE, getId().c_str(), &pos_ty,
 	CHARACTER_KEY_TILE_Y, nullptr) == false)
 	{
 		ret = false;
 	}
-	setTileY(pos_ty);
+
+	setTile(pos_tx, pos_ty);
 
 	context_unlock_list();
 	return ret;
