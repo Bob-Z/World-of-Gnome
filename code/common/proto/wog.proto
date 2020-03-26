@@ -48,7 +48,7 @@ message Create
 
 message Action
 {
-  string script = 1;
+  string action = 1;
   repeated string params = 2;
 }
 

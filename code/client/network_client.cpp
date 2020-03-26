@@ -105,21 +105,21 @@ void network_request_character_creation(Connection & connection, const char * id
 /*********************************************************************
  Player sends an action to server
  *********************************************************************/
-void network_send_action(Connection & connection, const char * script, ...)
+void network_send_action(Connection & connection, const char * actionFile, ...)
 {
-	if (script == nullptr)
+	if (actionFile == nullptr)
 	{
-		werr(LOGDESIGNER, "Cannot ask for null script");
+		werr(LOGDESIGNER, "Cannot ask for null action");
 		return;
 	}
 
 	pb::ClientMessage message;
-	message.mutable_action()->set_script(script);
+	message.mutable_action()->set_action(actionFile);
 
 	va_list ap;
 	char * parameter = nullptr;
 
-	va_start(ap, script);
+	va_start(ap, actionFile);
 
 	while ((parameter = va_arg(ap, char*)) != nullptr)
 	{
@@ -130,7 +130,7 @@ void network_send_action(Connection & connection, const char * script, ...)
 
 	std::string serialized_data = message.SerializeAsString();
 
-	wlog(LOGDEVELOPER, "[network] Send action script %s", script);
+	wlog(LOGDEVELOPER, "[network] Send action %s", actionFile);
 	network_send_command(connection, serialized_data, false);
 }
 

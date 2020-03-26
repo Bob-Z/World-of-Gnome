@@ -189,7 +189,7 @@ static int manage_action(Connection & connection, const pb::Action& action)
 	}
 
 	Context * context = context_find(connection.getContextId());
-	action_execute(context, action.script().c_str(), params);
+	action_execute(context, action.action().c_str(), params);
 
 	return true;
 }
@@ -274,7 +274,7 @@ int parse_incoming_data(Connection & connection, const std::string & serialized_
 		}
 		else if (message.has_action())
 		{
-			wlog(LOGDEVELOPER, "[network] Received action script %s", message.action().script().c_str());
+			wlog(LOGDEVELOPER, "[network] Received action %s", message.action().action().c_str());
 			manage_action(connection, message.action());
 		}
 		else

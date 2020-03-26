@@ -2261,11 +2261,11 @@ int action_execute(Context * context, const char * action, char ** parameters)
  Execute an action configuration file
  return -1 if the script do not return something
  **************************************/
-int action_execute(Context * context, const std::string & scriptName, const std::vector<std::string> & parameters)
+int action_execute(Context * context, const std::string & actionName, const std::vector<std::string> & parameters)
 {
 	char * script = nullptr;
 
-	if (entry_read_string(ACTION_TABLE, scriptName.c_str(), &script,
+	if (entry_read_string(ACTION_TABLE, actionName.c_str(), &script,
 	ACTION_KEY_SCRIPT, nullptr) == false)
 	{
 		return -1;
@@ -2273,7 +2273,7 @@ int action_execute(Context * context, const std::string & scriptName, const std:
 
 	char ** params = nullptr;
 
-	entry_read_list(ACTION_TABLE, scriptName.c_str(), &params,
+	entry_read_list(ACTION_TABLE, actionName.c_str(), &params,
 	ACTION_KEY_PARAM, nullptr);
 
 	char ** passed_param = to_array(parameters);
