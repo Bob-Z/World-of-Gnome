@@ -189,7 +189,7 @@ static int manage_action(Connection & connection, const pb::Action& action)
 	}
 
 	Context * context = context_find(connection.getContextId());
-	action_execute(context, action.action().c_str(), params);
+	action_execute(context, action.action(), params);
 
 	return true;
 }

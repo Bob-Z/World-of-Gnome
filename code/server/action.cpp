@@ -2233,34 +2233,6 @@ int action_execute_script(Context * context, const char * script, const char ** 
  Execute an action configuration file
  return -1 if the script do not return something
  **************************************/
-int action_execute(Context * context, const char * action, char ** parameters)
-{
-	char * script = nullptr;
-	char ** params = nullptr;
-	char ** all_params = nullptr;
-	int ret = -1;
-
-	if (entry_read_string(ACTION_TABLE, action, &script, ACTION_KEY_SCRIPT, nullptr) == false)
-	{
-		return -1;
-	}
-
-	entry_read_list(ACTION_TABLE, action, &params, ACTION_KEY_PARAM, nullptr);
-
-	all_params = add_array(params, parameters);
-
-	ret = action_execute_script(context, script, (const char**) all_params);
-
-	deep_free(params);
-	free(all_params);
-
-	return ret;
-}
-
-/**************************************
- Execute an action configuration file
- return -1 if the script do not return something
- **************************************/
 int action_execute(Context * context, const std::string & actionName, const std::vector<std::string> & parameters)
 {
 	char * script = nullptr;
@@ -2346,9 +2318,7 @@ static int l_call_script(lua_State* L)
 static int l_call_action(lua_State* L)
 {
 	const char * action;
-	int num_arg;
-	char **arg = nullptr;
-	int i;
+
 	int res;
 	Context * context;
 
@@ -2356,24 +2326,22 @@ static int l_call_action(lua_State* L)
 	context = (Context*) lua_touserdata(L, -1);
 	lua_pop(L, 1);
 
+	int num_arg;
 	num_arg = lua_gettop(L);
 	action = luaL_checkstring(L, -num_arg);
+
+	std::vector<std::string> params;
+
 	if (num_arg > 1)
 	{
-		arg = (char**) malloc(sizeof(char*) * num_arg);
-		for (i = 0; i < num_arg - 1; i++)
+		for (int i = 0; i < num_arg - 1; i++)
 		{
-			arg[i] = (char *) luaL_checkstring(L, -num_arg + 1 + i); // FIXME wrong casting ?
+			params.push_back(std::string(luaL_checkstring(L, -num_arg + 1 + i)));
 		}
-		arg[i] = nullptr; // End of list
 	}
 
-	res = action_execute(context, action, arg);
+	res = action_execute(context, std::string(action), params);
 
-	if (arg)
-	{
-		free(arg);
-	}
 	lua_pushnumber(L, res);
 	return 1;  // number of results
 }
