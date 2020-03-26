@@ -2268,6 +2268,7 @@ int action_execute(Context * context, const std::string & actionName, const std:
 	if (entry_read_string(ACTION_TABLE, actionName.c_str(), &script,
 	ACTION_KEY_SCRIPT, nullptr) == false)
 	{
+		ERR_DESIGN
 		return -1;
 	}
 
