@@ -1,0 +1,55 @@
+/*
+ World of Gnome is a 2D multiplayer role playing game.
+ Copyright (C) 2020 carabobz@gmail.com
+
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 3 of the License, or
+ (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software Foundation,
+ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
+ */
+
+#ifndef COMMON_CONTEXT_RUNNINGACTION_H_
+#define COMMON_CONTEXT_RUNNINGACTION_H_
+
+#include "SDL_mutex.h"
+#include <string>
+#include <vector>
+
+class Context;
+
+class RunningAction
+{
+public:
+	RunningAction(Context * context, const std::string & action, const std::vector<std::string> params, int coolDownMs);
+	~RunningAction();
+
+	void beginAction();
+	void endAction();
+
+	bool isRunning() const;
+	void stop();
+
+	Context* getContext() const;
+	const std::string& getAction() const;
+	const std::vector<std::string>& getParams() const;
+	const int getCoolDownMs() const;
+
+private:
+	SDL_mutex* m_mutex;
+	bool m_running;
+	Context * const m_context;
+	const std::string m_action;
+	const std::vector<std::string> m_params;
+	const int m_coolDownMs;
+};
+
+#endif /* COMMON_CONTEXT_RUNNINGACTION_H_ */
