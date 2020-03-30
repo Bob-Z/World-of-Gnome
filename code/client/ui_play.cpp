@@ -169,8 +169,7 @@ static void cb_main_quit(void * arg)
 	}
 }
 
-/****************************
- ****************************/
+/*****************************************************************************/
 static void key_up(void * arg)
 {
 	Context * ctx = context_get_player();
@@ -178,8 +177,15 @@ static void key_up(void * arg)
 	network_send_action(*(ctx->getConnection()), option_get().action_move_up, nullptr);
 }
 
-/**************************************
- **************************************/
+/*****************************************************************************/
+static void key_up_released(void * arg)
+{
+	Context * ctx = context_get_player();
+
+	network_send_action_stop(*(ctx->getConnection()), option_get().action_move_up);
+}
+
+/*****************************************************************************/
 static void key_down(void * arg)
 {
 	Context * ctx = context_get_player();
@@ -187,8 +193,15 @@ static void key_down(void * arg)
 	network_send_action(*(ctx->getConnection()), option_get().action_move_down, nullptr);
 }
 
-/**************************************
- **************************************/
+/*****************************************************************************/
+static void key_down_released(void * arg)
+{
+	Context * ctx = context_get_player();
+
+	network_send_action_stop(*(ctx->getConnection()), option_get().action_move_down);
+}
+
+/*****************************************************************************/
 static void key_left(void * arg)
 {
 	Context * ctx = context_get_player();
@@ -196,8 +209,15 @@ static void key_left(void * arg)
 	network_send_action(*(ctx->getConnection()), option_get().action_move_left, nullptr);
 }
 
-/**************************************
- **************************************/
+/*****************************************************************************/
+static void key_left_released(void * arg)
+{
+	Context * ctx = context_get_player();
+
+	network_send_action_stop(*(ctx->getConnection()), option_get().action_move_left);
+}
+
+/*****************************************************************************/
 static void key_right(void * arg)
 {
 	Context * ctx = context_get_player();
@@ -205,8 +225,15 @@ static void key_right(void * arg)
 	network_send_action(*(ctx->getConnection()), option_get().action_move_right, nullptr);
 }
 
-/**************************************
- **************************************/
+/*****************************************************************************/
+static void key_right_released(void * arg)
+{
+	Context * ctx = context_get_player();
+
+	network_send_action_stop(*(ctx->getConnection()), option_get().action_move_right);
+}
+
+/*****************************************************************************/
 static void key_up_left(void * arg)
 {
 	Context * ctx = context_get_player();
@@ -214,8 +241,15 @@ static void key_up_left(void * arg)
 	network_send_action(*(ctx->getConnection()), option_get().action_move_up_left, nullptr);
 }
 
-/**************************************
- **************************************/
+/*****************************************************************************/
+static void key_up_left_released(void * arg)
+{
+	Context * ctx = context_get_player();
+
+	network_send_action_stop(*(ctx->getConnection()), option_get().action_move_up_left);
+}
+
+/*****************************************************************************/
 static void key_up_right(void * arg)
 {
 	Context * ctx = context_get_player();
@@ -223,8 +257,15 @@ static void key_up_right(void * arg)
 	network_send_action(*(ctx->getConnection()), option_get().action_move_up_right, nullptr);
 }
 
-/**************************************
- **************************************/
+/*****************************************************************************/
+static void key_up_right_released(void * arg)
+{
+	Context * ctx = context_get_player();
+
+	network_send_action_stop(*(ctx->getConnection()), option_get().action_move_up_right);
+}
+
+/*****************************************************************************/
 static void key_down_left(void * arg)
 {
 	Context * ctx = context_get_player();
@@ -232,13 +273,28 @@ static void key_down_left(void * arg)
 	network_send_action(*(ctx->getConnection()), option_get().action_move_down_left, nullptr);
 }
 
-/**************************************
- **************************************/
+/*****************************************************************************/
+static void key_down_left_released(void * arg)
+{
+	Context * ctx = context_get_player();
+
+	network_send_action_stop(*(ctx->getConnection()), option_get().action_move_down_left);
+}
+
+/*****************************************************************************/
 static void key_down_right(void * arg)
 {
 	Context * ctx = context_get_player();
 
 	network_send_action(*(ctx->getConnection()), option_get().action_move_down_right, nullptr);
+}
+
+/*****************************************************************************/
+static void key_down_right_released(void * arg)
+{
+	Context * ctx = context_get_player();
+
+	network_send_action_stop(*(ctx->getConnection()), option_get().action_move_down_right);
 }
 
 /**********************************
@@ -866,18 +922,18 @@ static void main_compose(Context * ctx, item_t * g_itemList)
 	compose_text(ctx, g_itemList);
 
 	sdl_add_keycb(SDL_SCANCODE_I, show_inventory, nullptr, nullptr);
-	sdl_add_keycb(SDL_SCANCODE_UP, key_up, nullptr, nullptr);
-	sdl_add_keycb(SDL_SCANCODE_KP_8, key_up, nullptr, nullptr);
-	sdl_add_keycb(SDL_SCANCODE_DOWN, key_down, nullptr, nullptr);
-	sdl_add_keycb(SDL_SCANCODE_KP_2, key_down, nullptr, nullptr);
-	sdl_add_keycb(SDL_SCANCODE_LEFT, key_left, nullptr, nullptr);
-	sdl_add_keycb(SDL_SCANCODE_KP_4, key_left, nullptr, nullptr);
-	sdl_add_keycb(SDL_SCANCODE_RIGHT, key_right, nullptr, nullptr);
-	sdl_add_keycb(SDL_SCANCODE_KP_6, key_right, nullptr, nullptr);
-	sdl_add_keycb(SDL_SCANCODE_KP_7, key_up_left, nullptr, nullptr);
-	sdl_add_keycb(SDL_SCANCODE_KP_9, key_up_right, nullptr, nullptr);
-	sdl_add_keycb(SDL_SCANCODE_KP_1, key_down_left, nullptr, nullptr);
-	sdl_add_keycb(SDL_SCANCODE_KP_3, key_down_right, nullptr, nullptr);
+	sdl_add_keycb(SDL_SCANCODE_UP, key_up, key_up_released, nullptr);
+	sdl_add_keycb(SDL_SCANCODE_KP_8, key_up, key_up_released, nullptr);
+	sdl_add_keycb(SDL_SCANCODE_DOWN, key_down, key_down_released, nullptr);
+	sdl_add_keycb(SDL_SCANCODE_KP_2, key_down, key_down_released, nullptr);
+	sdl_add_keycb(SDL_SCANCODE_LEFT, key_left, key_left_released, nullptr);
+	sdl_add_keycb(SDL_SCANCODE_KP_4, key_left, key_left_released, nullptr);
+	sdl_add_keycb(SDL_SCANCODE_RIGHT, key_right, key_right_released, nullptr);
+	sdl_add_keycb(SDL_SCANCODE_KP_6, key_right, key_right_released, nullptr);
+	sdl_add_keycb(SDL_SCANCODE_KP_7, key_up_left, key_up_left_released, nullptr);
+	sdl_add_keycb(SDL_SCANCODE_KP_9, key_up_right, key_up_right_released, nullptr);
+	sdl_add_keycb(SDL_SCANCODE_KP_1, key_down_left, key_down_left_released, nullptr);
+	sdl_add_keycb(SDL_SCANCODE_KP_3, key_down_right, key_down_right_released, nullptr);
 	sdl_add_keycb(SDL_SCANCODE_ESCAPE, cb_main_quit, nullptr, g_itemList);
 	sdl_add_keycb(SDL_SCANCODE_SCROLLLOCK, cb_print_coord, nullptr, nullptr);
 }

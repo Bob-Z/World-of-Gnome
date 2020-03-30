@@ -38,16 +38,14 @@
 #include <vector>
 #include <wog.pb.h>
 
-/**************************************
- Return false on error
- **************************************/
-static int manage_login(Connection & connection, const pb::Login & login)
+/*****************************************************************************/
+static void manage_login(Connection & connection, const pb::Login & login)
 {
 	char * password = nullptr;
 	if (entry_read_string(PASSWD_TABLE, login.user().c_str(), &password,
 	PASSWD_KEY_PASSWORD, nullptr) == false)
 	{
-		return false;
+		return;
 	}
 
 	if (strcmp(password, login.password().c_str()) != 0)
@@ -56,7 +54,7 @@ static int manage_login(Connection & connection, const pb::Login & login)
 		werr(LOGUSER, "[network] Wrong login for %s", login.user().c_str());
 		network_send_login_nok(connection);
 		// force client disconnection
-		return false;
+		return;
 	}
 	else
 	{
@@ -69,14 +67,12 @@ static int manage_login(Connection & connection, const pb::Login & login)
 
 		wlog(LOGUSER, "[network] Login successful for user %s", connection.getUserName().c_str());
 
-		return true;
+		return;
 	}
 }
 
-/**************************************
- Return false on error
- **************************************/
-static int manage_start(Connection & connection, const pb::Start & start)
+/*****************************************************************************/
+static void manage_start(Connection & connection, const pb::Start & start)
 {
 	connection.setContextId(start.id());
 
@@ -90,14 +86,10 @@ static int manage_start(Connection & connection, const pb::Start & start)
 	context_request_other_context(context);
 
 	wlog(LOGDEVELOPER, "[network] received start request for ID %s and user %s", start.id().c_str(), connection.getUserName().c_str());
-
-	return true;
 }
 
-/**************************************
- Return false on error
- **************************************/
-static int manage_stop(Connection & connection, const pb::Stop & stop)
+/*****************************************************************************/
+static void manage_stop(Connection & connection, const pb::Stop & stop)
 {
 	Context * context = context_find(connection.getContextId());
 
@@ -109,41 +101,29 @@ static int manage_stop(Connection & connection, const pb::Stop & stop)
 		context->setId("");
 		context_spread(context);
 	}
-
-	return true;
 }
 
-/**************************************
- Return false on error
- **************************************/
-static int manage_playable_character_list(Connection & connection)
+/*****************************************************************************/
+static void manage_playable_character_list(Connection & connection)
 {
 	character_playable_send_list(connection);
-
-	return true;
 }
 
-/**************************************
- Return false on error
- **************************************/
-static int manage_user_character_list(Connection & connection)
+/*****************************************************************************/
+static void manage_user_character_list(Connection & connection)
 {
 	character_user_send_list(connection);
-
-	return true;
 }
 
-/**************************************
- Return false on error
- **************************************/
-static int manage_create(Connection & connection, const pb::Create& create)
+/*****************************************************************************/
+static void manage_create(Connection & connection, const pb::Create& create)
 {
 	const std::pair<bool, std::string> file_name = file_new(CHARACTER_TABLE, create.name());
 
 	if (file_name.first == false)
 	{
 		werr(LOGUSER, "%s already exists", create.name().c_str());
-		return false;
+		return;
 	}
 
 	if (file_copy(CHARACTER_TEMPLATE_TABLE, create.id().c_str(),
@@ -151,7 +131,7 @@ static int manage_create(Connection & connection, const pb::Create& create)
 	{
 		werr(LOGUSER, "Error copying character template %s to character %s (maybe template doesn't exists ?)", create.id(), create.name());
 		file_delete(CHARACTER_TABLE, create.name());
-		return false;
+		return;
 	}
 
 	if (entry_write_string(CHARACTER_TABLE, create.name().c_str(), create.name().c_str(),
@@ -159,7 +139,7 @@ static int manage_create(Connection & connection, const pb::Create& create)
 	{
 		werr(LOGUSER, "Error setting character name %s", create.name().c_str());
 		file_delete(CHARACTER_TABLE, create.name());
-		return false;
+		return;
 	}
 
 	if (entry_add_to_list(USERS_TABLE, connection.getUserName().c_str(), create.name().c_str(),
@@ -167,20 +147,16 @@ static int manage_create(Connection & connection, const pb::Create& create)
 	{
 		werr(LOGUSER, "Error adding character %s to user %s", create.name().c_str(), connection.getUserName().c_str());
 		file_delete(CHARACTER_TABLE, create.name());
-		return false;
+		return;
 	}
 
 	character_user_send(connection, create.name().c_str());
 
 	wlog(LOGDEVELOPER, "Successfully created: ID=%s, NAME=%s", create.id().c_str(), create.name().c_str());
-
-	return true;
 }
 
-/**************************************
- Return false on error
- **************************************/
-static int manage_action(Connection & connection, const pb::Action& action)
+/*****************************************************************************/
+static void manage_action(Connection & connection, const pb::Action& action)
 {
 	std::vector<std::string> params;
 	for (int i = 0; i < action.params_size(); i++)
@@ -189,15 +165,18 @@ static int manage_action(Connection & connection, const pb::Action& action)
 	}
 
 	Context * context = context_find(connection.getContextId());
-	action_execute(context, action.action(), params);
-
-	return true;
+	action_run_or_execute(context, action.action(), params);
 }
 
-/**************************************
- Return false on error
- **************************************/
-static int manage_file(Connection & connection, const pb::File& file)
+/*****************************************************************************/
+static void manage_action_stop(Connection & connection, const pb::ActionStop& action)
+{
+	Context * context = context_find(connection.getContextId());
+	action_stop(context, action.action());
+}
+
+/*****************************************************************************/
+static void manage_file(Connection & connection, const pb::File& file)
 {
 	const std::string file_path = base_directory + "/" + file.name();
 
@@ -206,18 +185,16 @@ static int manage_file(Connection & connection, const pb::File& file)
 	if (crc.first == false)
 	{
 		werr(LOGUSER, "Required file %s doesn't exists", file_path.c_str());
-		return false;
+		return;
 	}
 
 	if (file.crc() == crc.second)
 	{
 		wlog(LOGDEVELOPER, "Client has already newest %s file", file.name().c_str());
-		return false;
+		return;
 	}
 
 	network_send_file(connection, file.name().c_str());
-
-	return true;
 }
 
 /**************************************
@@ -276,6 +253,11 @@ int parse_incoming_data(Connection & connection, const std::string & serialized_
 		{
 			wlog(LOGDEVELOPER, "[network] Received action %s", message.action().action().c_str());
 			manage_action(connection, message.action());
+		}
+		else if (message.has_action_stop())
+		{
+			wlog(LOGDEVELOPER, "[network] Received action stop %s", message.action_stop().action().c_str());
+			manage_action_stop(connection, message.action_stop());
 		}
 		else
 		{

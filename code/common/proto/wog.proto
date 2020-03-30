@@ -12,7 +12,8 @@ message ClientMessage
      UserCharacterList user_character_list = 5;
      Create create = 6;
      Action action = 7;
-     File file = 8;
+     ActionStop action_stop = 8;
+     File file = 9;
   }
 }
 
@@ -50,6 +51,11 @@ message Action
 {
   string action = 1;
   repeated string params = 2;
+}
+
+message ActionStop
+{
+  string action = 1;
 }
 
 message File

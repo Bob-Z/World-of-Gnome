@@ -38,7 +38,7 @@ Context * context_list_start = nullptr;
 Context::Context() :
 		m_mutex(SDL_CreateMutex()), m_inGame(false), m_npc(true), m_characterName(), m_map(), m_previousMap(), m_mapChanged(false), m_tileX(0), m_tileY(0), m_previousTileX(
 				0), m_previousTileY(0), m_positionChanged(false), m_orientation(0), m_direction(0), m_animationTick(0), m_type(), m_id(), m_selection(), m_nextExecutionTick(
-				0), m_luaVm(nullptr), m_condition(SDL_CreateCond()), m_conditionMutex(SDL_CreateMutex()), m_connection(nullptr), m_npcThread(nullptr), m_previous(
+				0), m_luaVm(nullptr), m_condition(SDL_CreateCond()), m_conditionMutex(SDL_CreateMutex()), m_connection(nullptr), m_npcThread(nullptr), m_actionRunning(), m_previous(
 				nullptr), m_next(nullptr)
 {
 }
@@ -790,4 +790,21 @@ SDL_Thread* Context::getNpcThread() const
 void Context::setNpcThread(SDL_Thread* npcThread)
 {
 	m_npcThread = npcThread;
+}
+
+/*****************************************************************************/
+void Context::addRunningAction(const std::string & action, RunningAction * runningAction)
+{
+	m_actionRunning.insert(std::pair<std::string, RunningAction *>(action, runningAction));
+}
+
+/*****************************************************************************/
+void Context::stopRunningAction(const std::string & action)
+{
+	auto it = m_actionRunning.find(action);
+	if (it != m_actionRunning.end())
+	{
+		it->second->stop();
+		m_actionRunning.erase(it);
+	}
 }

@@ -21,8 +21,12 @@
 #define CONTEXT_H
 
 #include "Connection.h"
+#include "RunningAction.h"
 #include "Selection.h"
+#include <map>
 #include <memory>
+#include <string>
+#include <vector>
 
 extern "C"
 {
@@ -93,6 +97,9 @@ public:
 	void wakeUp();
 	void sleep(Uint32 timeOutMs);
 
+	void addRunningAction(const std::string & action, RunningAction * runningAction);
+	void stopRunningAction(const std::string & action);
+
 private:
 	SDL_mutex* m_mutex;
 	bool m_inGame;
@@ -121,6 +128,8 @@ private:
 	Connection * m_connection;
 
 	SDL_Thread * m_npcThread;
+
+	std::map<std::string, RunningAction *> m_actionRunning;
 
 public:
 	Context * m_previous;

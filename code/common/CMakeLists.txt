@@ -57,6 +57,7 @@ add_library(
 	Serializer.cpp
 	Selection.cpp
 	SdlLocking.cpp
+	RunningAction.cpp
 )
 
 target_link_libraries (${PROJECT_NAME}

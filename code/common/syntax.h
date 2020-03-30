@@ -144,6 +144,7 @@
 #define ACTION_KEY_ICON_CLICK	"icon_click"
 #define ACTION_KEY_ICON_LAYOUT	"icon_layout"
 #define ACTION_KEY_PARAM	"param"
+#define ACTION_KEY_COOLDOWN	"cooldown"
 
 // item data
 #define ITEM_TABLE		"item"

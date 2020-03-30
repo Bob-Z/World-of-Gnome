@@ -135,6 +135,26 @@ void network_send_action(Connection & connection, const char * actionFile, ...)
 }
 
 /*********************************************************************
+ Player sends an action stop to server
+ *********************************************************************/
+void network_send_action_stop(Connection & connection, const char * actionFile)
+{
+	if (actionFile == nullptr)
+	{
+		werr(LOGDESIGNER, "Cannot ask for null action stop");
+		return;
+	}
+
+	pb::ClientMessage message;
+	message.mutable_action_stop()->set_action(actionFile);
+
+	std::string serialized_data = message.SerializeAsString();
+
+	wlog(LOGDEVELOPER, "[network] Send action stop %s", actionFile);
+	network_send_command(connection, serialized_data, false);
+}
+
+/*********************************************************************
  Callback from client listening to server in its own thread
  only used for game information transfer
  *********************************************************************/

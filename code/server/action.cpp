@@ -34,11 +34,13 @@
 #include "network_server.h"
 #include "network.h"
 #include "protocol.h"
+#include "RunningAction.h"
 #include "syntax.h"
 #include "util.h"
 #include <cstring>
 #include <stdlib.h>
 #include <string>
+#include <unistd.h>
 #include <vector>
 
 #ifdef __cplusplus
@@ -2264,6 +2266,65 @@ int action_execute(Context * context, const std::string & actionName, const std:
 	return ret;
 }
 
+/*****************************************************************************/
+static int async_action(void * data)
+{
+	RunningAction * runningAction = static_cast<RunningAction*>(data);
+
+	while (true)
+	{
+		runningAction->beginAction();
+		if (runningAction->isRunning() == true)
+		{
+			action_execute(runningAction->getContext(), runningAction->getAction(), runningAction->getParams());
+		}
+		else
+		{
+			delete (runningAction);
+			return 0;
+		}
+
+		runningAction->endAction();
+
+		usleep(runningAction->getCoolDownMs() * 1000);
+	}
+
+	return 0;
+}
+
+/*****************************************************************************/
+void action_run(Context * context, const std::string & actionName, const std::vector<std::string> & parameters, int coolDownMs)
+{
+// The thread using this RunningAction will free it when it ends
+	RunningAction * runningAction = new RunningAction(context, actionName, parameters, coolDownMs);
+
+	context->addRunningAction(actionName, runningAction);
+
+	SDL_CreateThread(async_action, actionName.c_str(), (void*) runningAction);
+}
+
+/*****************************************************************************/
+void action_stop(Context * context, const std::string & actionName)
+{
+	context->stopRunningAction(actionName);
+}
+
+/*****************************************************************************/
+void action_run_or_execute(Context * context, const std::string & actionName, const std::vector<std::string> & parameters)
+{
+	int coolDownMs = 0;
+	entry_read_int(ACTION_TABLE, actionName.c_str(), &coolDownMs, ACTION_KEY_COOLDOWN, nullptr);
+
+	if (coolDownMs == 0)
+	{
+		action_execute(context, actionName, parameters);
+	}
+	else
+	{
+		action_run(context, actionName, parameters, coolDownMs);
+	}
+}
+
 /***************************************************
  Call another script
 
@@ -2354,10 +2415,10 @@ void register_lua_functions(Context * context)
 
 	lua_State* L = context->getLuaVm();
 
-	// player functions
+// player functions
 	lua_pushcfunction(L, l_player_get_id);
 	lua_setglobal(L, "player_get_id");
-	// character functions
+// character functions
 	lua_pushcfunction(L, l_character_create_from_template);
 	lua_setglobal(L, "character_create_from_template");
 	lua_pushcfunction(L, l_character_get_selected_map);
@@ -2424,7 +2485,7 @@ void register_lua_functions(Context * context)
 	lua_setglobal(L, "character_broadcast");
 	lua_pushcfunction(L, l_character_effect);
 	lua_setglobal(L, "character_effect");
-	// map functions
+// map functions
 	lua_pushcfunction(L, l_map_new);
 	lua_setglobal(L, "map_new");
 	lua_pushcfunction(L, l_map_add_layer);
@@ -2471,19 +2532,19 @@ void register_lua_functions(Context * context)
 	lua_setglobal(L, "map_add_scenery");
 	lua_pushcfunction(L, l_map_effect);
 	lua_setglobal(L, "map_effect");
-	// tile functions
+// tile functions
 	lua_pushcfunction(L, l_tile_get_x);
 	lua_setglobal(L, "tile_get_x");
 	lua_pushcfunction(L, l_tile_get_y);
 	lua_setglobal(L, "tile_get_y");
-	// inventory functions
+// inventory functions
 	lua_pushcfunction(L, l_inventory_delete);
 	lua_setglobal(L, "inventory_delete");
 	lua_pushcfunction(L, l_inventory_add);
 	lua_setglobal(L, "inventory_add");
 	lua_pushcfunction(L, l_inventory_get_by_name);
 	lua_setglobal(L, "inventory_get_by_name");
-	// item functions
+// item functions
 	lua_pushcfunction(L, l_item_create_empty);
 	lua_setglobal(L, "item_create_empty");
 	lua_pushcfunction(L, l_item_create_from_template);
@@ -2496,7 +2557,7 @@ void register_lua_functions(Context * context)
 	lua_setglobal(L, "resource_set_quantity");
 	lua_pushcfunction(L, l_item_destroy);
 	lua_setglobal(L, "item_destroy");
-	// character attribute functions
+// character attribute functions
 	lua_pushcfunction(L, l_character_attribute_change);
 	lua_setglobal(L, "character_attribute_change");
 	lua_pushcfunction(L, l_character_attribute_get);
@@ -2507,19 +2568,19 @@ void register_lua_functions(Context * context)
 	lua_setglobal(L, "character_attribute_tag_get");
 	lua_pushcfunction(L, l_character_attribute_tag_set);
 	lua_setglobal(L, "character_attribute_tag_set");
-	// map attribute functions
+// map attribute functions
 	lua_pushcfunction(L, l_map_attribute_change);
 	lua_setglobal(L, "map_attribute_change");
 	lua_pushcfunction(L, l_map_attribute_get);
 	lua_setglobal(L, "map_attribute_get");
 	lua_pushcfunction(L, l_map_attribute_set);
 	lua_setglobal(L, "map_attribute_set");
-	// equipment functions
+// equipment functions
 	lua_pushcfunction(L, l_equipment_slot_set_item);
 	lua_setglobal(L, "equipment_slot_set_item");
 	lua_pushcfunction(L, l_equipment_slot_get_item);
 	lua_setglobal(L, "equipment_slot_get_item");
-	// Miscellaneous functions
+// Miscellaneous functions
 	lua_pushcfunction(L, l_get_base_directory);
 	lua_setglobal(L, "get_base_directory");
 	lua_pushcfunction(L, l_popup_send);
@@ -2537,7 +2598,7 @@ void register_lua_functions(Context * context)
 	lua_pushcfunction(L, l_call_action);
 	lua_setglobal(L, "call_action");
 
-	// push the context on LUA VM stack
+// push the context on LUA VM stack
 	lua_pushlightuserdata(L, context);
 	lua_setglobal(L, LUAVM_CONTEXT);
 }

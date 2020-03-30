@@ -32,6 +32,7 @@ void network_login(Context * context, const char * name, const char * password);
 void network_request_playable_character_list(Connection & connection);
 void network_request_user_character_list(Connection & connection);
 void network_send_action(Connection & connection, const char * actionFile, ...);
+void network_send_action_stop(Connection & connection, const char * actionFile);
 int network_connect(Connection & connection, const std::string & host_name);
 int network_open_data_connection(Connection & connection);
 
