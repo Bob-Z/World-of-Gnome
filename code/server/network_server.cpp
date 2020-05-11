@@ -340,7 +340,7 @@ void network_send_popup(const std::string & contextId, const std::vector<std::st
 
 	pb::ServerMessage message;
 
-	for (auto data : popupData)
+	for (auto && data : popupData)
 	{
 		message.mutable_popup()->add_data(data);
 	}
@@ -357,7 +357,7 @@ void network_send_popup(const std::string & contextId, const std::vector<std::st
  p_TargetId is the name of the target (either a context ID or map ID)
  p_Parameters is an array of parameter string
  ******************************************************************************/
-void network_broadcast_effect(EffectManager::EffectType type, const std::string & targetId, const std::vector<std::string> & params)
+void network_broadcast_effect(EffectManager::EffectType type, const std::string & targetId, const std::vector<std::string> & paramArray)
 {
 	Context * ctx = nullptr;
 
@@ -388,7 +388,7 @@ void network_broadcast_effect(EffectManager::EffectType type, const std::string 
 
 	pb::ServerMessage message;
 
-	for (auto param : params)
+	for (auto && param : paramArray)
 	{
 		message.mutable_effect()->add_param(param);
 	}
@@ -436,8 +436,7 @@ void network_send_login_ok(Connection & connection)
 	network_send_command(connection, serialized_data, false);
 }
 
-/*********************************************************************
- **********************************************************************/
+/*****************************************************************************/
 void network_send_login_nok(Connection & connection)
 {
 	pb::ServerMessage message;
@@ -448,13 +447,12 @@ void network_send_login_nok(Connection & connection)
 	network_send_command(connection, serialized_data, false);
 }
 
-/*********************************************************************
- **********************************************************************/
-void network_send_playable_character(Connection & connection, const std::vector<std::string> & id_list)
+/*****************************************************************************/
+void network_send_playable_character(Connection & connection, const std::vector<std::string> & idArray)
 {
 	pb::ServerMessage message;
 
-	for (auto id : id_list)
+	for (auto && id : idArray)
 	{
 		message.mutable_playable_character()->add_id(id);
 	}
@@ -465,9 +463,9 @@ void network_send_playable_character(Connection & connection, const std::vector<
 	network_send_command(connection, serialized_data, false);
 }
 
-/*********************************************************************
+/******************************************************************************
  send a source context's data to a destination context
- *********************************************************************/
+ *****************************************************************************/
 void network_send_context_to_context(Context * dest_ctx, Context * src_ctx)
 {
 	if (dest_ctx->isNpc() == true)

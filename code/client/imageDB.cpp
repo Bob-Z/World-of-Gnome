@@ -21,141 +21,98 @@
 
 #include "imageDB.h"
 
-#include "Context.h"
 #include "client_server.h"
+#include "Context.h"
 #include "file.h"
 #include "list.h"
 #include "log.h"
 #include "mutex.h"
+#include "reader.h"
 #include "sdl.h"
 #include "syntax.h"
 #include <string>
 
-static list_t * image_list = nullptr;
+static SDL_mutex* imageDbMutex = SDL_CreateMutex();
 
-static anim_t * def_anim = sdl_get_minimal_anim();
+static std::map<std::string, Anim*> imageArray;
 
-/**************************
- **************************/
-static anim_t * image_load(Context * ctx, const std::string & file_name)
+static Anim * def_anim = sdl_get_minimal_anim();
+
+/*****************************************************************************/
+static Anim * image_load(const std::string & fileName)
 {
-	const std::string file_path = base_directory + "/" + file_name;
+	const std::string filePath = base_directory + "/" + fileName;
 
-	anim_t * anim = anim_load(file_path.c_str());
+	Anim * anim = anim_load(filePath);
 
 	return anim;
 }
 
-/******************************************************
- Return a pointer to an anim_t object
- image_name is the image file path
- *******************************************************/
-anim_t * imageDB_get_anim(Context * context, const char * image_name)
+/*****************************************************************************/
+Anim * imageDB_get_anim(Context * context, const std::string & imageName)
 {
-	anim_t * anim;
+	Anim * anim = nullptr;
 
-	if (image_name == nullptr)
-	{
-		return def_anim;
-	}
+	const std::string fileName = std::string(IMAGE_TABLE) + "/" + std::string(imageName);
 
-	if (image_name[0] == 0)
-	{
-		return def_anim;
-	}
+	SDL_LockMutex(imageDbMutex);
 
-	const std::string file_name = std::string(IMAGE_TABLE) + "/" + std::string(image_name);
-
-//	wlog(LOGDEBUG,"Image get: %s",filename);
-
-	SDL_LockMutex(imageDB_mutex);
 	// Search for a previously loaded anim
-	anim = (anim_t*) list_find(image_list, file_name.c_str());
-	if (anim)
+	auto iter = imageArray.find(fileName);
+	if (iter != imageArray.end())
 	{
-//		wlog(LOGDEBUG,"Image find: %s",filename);
-		SDL_UnlockMutex(imageDB_mutex);
-		return anim;
+		SDL_UnlockMutex(imageDbMutex);
+		return iter->second;
 	}
 
 	// Try to load from a file
-	file_lock(file_name.c_str());
+	file_lock(fileName.c_str());
 
-	anim = image_load(context, file_name);
+	anim = image_load(fileName);
 
 	if (anim != nullptr)
 	{
-//		wlog(LOGDEBUG,"Image loaded: %s",filename);
-		list_update(&image_list, file_name.c_str(), anim);
-		file_unlock(file_name.c_str());
-		SDL_UnlockMutex(imageDB_mutex);
+		imageArray[fileName] = anim;
+		file_unlock(fileName.c_str());
+		SDL_UnlockMutex(imageDbMutex);
 		return anim;
 	}
 
 	// Request an update to the server
-//	wlog(LOGDEBUG,"Image asked: %s",filename);
-	file_update(context->getConnection(), file_name.c_str());
+	file_update(context->getConnection(), fileName.c_str());
 
-	file_unlock(file_name.c_str());
-	SDL_UnlockMutex(imageDB_mutex);
+	file_unlock(fileName.c_str());
+	SDL_UnlockMutex(imageDbMutex);
 
 	return def_anim;
 }
 
-/******************************************************
- Return a pointer to a nullptr terminated array of anim_t object
- image_name is a nullptr terminated array of image files path
- return pointer MUST BE FREED
- *******************************************************/
-anim_t ** imageDB_get_anim_array(Context * context, const char ** image_name)
+/*****************************************************************************/
+std::vector<Anim*> imageDB_get_anim_array(Context * context, const std::vector<std::string> & imageNameArray)
 {
-	anim_t ** anim_output = nullptr;
-	int num_image = 0;
-	int current_image = 0;
+	std::vector<Anim*> animArray;
 
-	anim_output = (anim_t**) malloc(sizeof(anim_t*));
-	anim_output[0] = nullptr;
-
-	if (image_name == nullptr)
+	for (auto && imageName : imageNameArray)
 	{
-		return anim_output;
+		animArray.push_back(imageDB_get_anim(context, imageName));
 	}
 
-	while (image_name[current_image])
-	{
-		if (image_name[current_image][0] != 0)
-		{
-			anim_output = (anim_t**) realloc(anim_output, (num_image + 2) * sizeof(anim_t*));
-			anim_output[num_image] = imageDB_get_anim(context, image_name[current_image]);
-			anim_output[num_image + 1] = nullptr;
-			num_image++;
-		}
-		current_image++;
-	}
-
-	return anim_output;
+	return animArray;
 }
 
-/****************************************************
- Remove an entry from the DB
- ******************************************************/
-void image_DB_remove(const char * filename)
+/*****************************************************************************/
+void image_DB_remove(const std::string & fileName)
 {
-	anim_t * old_anim = nullptr;
+	LOG("Image remove: " + fileName);
 
-	wlog(LOGDEVELOPER, "Image remove: %s", filename);
 	// Clean-up old anim if any
-	SDL_LockMutex(imageDB_mutex);
-	old_anim = (anim_t*) list_find(image_list, filename);
-	/* TODO Fix memory leak here
-	 If we free the anim, it may still be used by the screen renderer and cause a crash
-	 Try to postpone deletion ?? */
-	if (old_anim)
+	SDL_LockMutex(imageDbMutex);
+
+	auto iter = imageArray.find(fileName);
+	if (iter != imageArray.end())
 	{
-//		si_anim_free(old_anim);
+		imageArray.erase(iter);
 	}
 
-	list_update(&image_list, filename, nullptr);
-
-	SDL_UnlockMutex(imageDB_mutex);
+	SDL_UnlockMutex(imageDbMutex);
 }

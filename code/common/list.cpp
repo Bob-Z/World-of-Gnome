@@ -21,6 +21,8 @@
 #include <stdlib.h>
 #include <cstring>
 
+#include "log.h"
+
 /****************************************
  Hash calculation
  *****************************************/
@@ -126,6 +128,7 @@ void list_update(list_t ** list, const char *key, void * data)
 		*list = (list_entry_t**) malloc( HASH_TABLE_SIZE * sizeof(list_entry_t *));
 		memset(*list, 0, HASH_TABLE_SIZE * sizeof(list_entry_t *));
 		(*list)[index] = new_entry;
+
 		return;
 	}
 

@@ -17,14 +17,15 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#include "Context.h"
 #include "client_server.h"
 #include "const.h"
+#include "Context.h"
 #include "file.h"
 #include "list.h"
 #include "log.h"
-#include "protocol.h"
 #include "mutex.h"
+#include "protocol.h"
+#include "SdlLocking.h"
 #include <cstdarg>
 #include <cstdio>
 #include <cstdlib>
@@ -36,6 +37,7 @@
 #include <sys/stat.h>
 
 list_t * entry_list = nullptr;
+SDL_mutex* entryListMutex = SDL_CreateMutex();
 
 /*********************
  *********************/
@@ -104,7 +106,7 @@ void entry_remove(const char * filename)
 
 	wlog(LOGDEVELOPER, "Removing entry : %s", filename);
 	// Clean-up old anim if any
-	SDL_LockMutex(entry_mutex);
+	SDL_LockMutex(entryListMutex);
 	old_config = (config_t*) list_find(entry_list, filename);
 	if (old_config)
 	{
@@ -113,7 +115,7 @@ void entry_remove(const char * filename)
 
 	list_update(&entry_list, filename, nullptr);
 
-	SDL_UnlockMutex(entry_mutex);
+	SDL_UnlockMutex(entryListMutex);
 }
 
 /*********************
@@ -127,20 +129,20 @@ static const config_t * get_config(const char * table, const char * file)
 	}
 
 	const config_t * config = nullptr;
-	std::string file_name;
+	std::string fileName;
 
 	if (table == nullptr)
 	{
-		file_name = std::string(file);
+		fileName = std::string(file);
 	}
 	else
 	{
-		file_name = std::string(table) + "/" + std::string(file);
+		fileName = std::string(table) + "/" + std::string(file);
 	}
 
 //	wlog(LOGDEBUG,"Entry get : %s",filename);
 
-	config = (config_t*) list_find(entry_list, file_name.c_str());
+	config = (config_t*) list_find(entry_list, fileName.c_str());
 
 	if (config != nullptr)
 	{
@@ -148,26 +150,27 @@ static const config_t * get_config(const char * table, const char * file)
 		return config;
 	}
 
-	file_lock(file_name.c_str());
-
 	Context * context = context_get_player();
 	Connection * connection = nullptr;
+
 	if (context != nullptr)
 	{
 		connection = context->getConnection();
 	}
 
-	file_update(connection, file_name.c_str());
+	file_lock(fileName.c_str());
 
-	if ((config = load_config(file_name.c_str())) == nullptr)
+	file_update(connection, fileName.c_str());
+
+	if ((config = load_config(fileName.c_str())) == nullptr)
 	{
-		file_unlock(file_name.c_str());
+		file_unlock(fileName.c_str());
 		return nullptr;
 	}
-	file_unlock(file_name.c_str());
+	file_unlock(fileName.c_str());
 
 //	wlog(LOGDEBUG,"Entry loaded : %s",filename);
-	list_update(&entry_list, file_name.c_str(), (config_t*) config);
+	list_update(&entry_list, fileName.c_str(), (config_t*) config);
 
 	return config;
 }
@@ -206,7 +209,13 @@ static char * get_path(va_list ap)
 	while (entry != nullptr)
 	{
 		const std::string new_path = add_entry_to_path(path, entry);
-		free(path);
+
+		if (path != nullptr)
+		{
+			free(path);
+			path = nullptr;
+		}
+
 		path = strdup(new_path.c_str());
 		if (path == nullptr)
 		{
@@ -227,30 +236,30 @@ static int __read_int(const char * table, const char * file, int * res, va_list 
 	char * path = nullptr;
 	int result;
 
-	SDL_LockMutex(entry_mutex);
+	SDL_LockMutex(entryListMutex);
 	config = get_config(table, file);
 	if (config == nullptr)
 	{
-		SDL_UnlockMutex(entry_mutex);
+		SDL_UnlockMutex(entryListMutex);
 		return false;
 	}
 
 	path = get_path(ap);
 	if (path == nullptr)
 	{
-		SDL_UnlockMutex(entry_mutex);
+		SDL_UnlockMutex(entryListMutex);
 		return false;
 	}
 
 	if (config_lookup_int(config, path, &result) == CONFIG_FALSE)
 	{
-		SDL_UnlockMutex(entry_mutex);
+		SDL_UnlockMutex(entryListMutex);
 		free(path);
 		return false;
 	}
 	free(path);
 
-	SDL_UnlockMutex(entry_mutex);
+	SDL_UnlockMutex(entryListMutex);
 
 	*res = result;
 
@@ -284,30 +293,30 @@ static int __read_string(const char * table, const char * file, char ** res, va_
 
 	*res = nullptr;
 
-	SDL_LockMutex(entry_mutex);
+	SDL_LockMutex(entryListMutex);
 	config = get_config(table, file);
 	if (config == nullptr)
 	{
-		SDL_UnlockMutex(entry_mutex);
+		SDL_UnlockMutex(entryListMutex);
 		return false;
 	}
 
 	path = get_path(ap);
 	if (path == nullptr)
 	{
-		SDL_UnlockMutex(entry_mutex);
+		SDL_UnlockMutex(entryListMutex);
 		return false;
 	}
 
 	if (config_lookup_string(config, path, &result) == CONFIG_FALSE)
 	{
 //		g_warning("%s: Can't read %s/%s/%s",__func__,table,file,path);
-		SDL_UnlockMutex(entry_mutex);
+		SDL_UnlockMutex(entryListMutex);
 		free(path);
 		return false;
 	}
 	free(path);
-	SDL_UnlockMutex(entry_mutex);
+	SDL_UnlockMutex(entryListMutex);
 
 	*res = strdup(result);
 
@@ -344,25 +353,25 @@ static int __read_list_index(const char * table, const char * file, char ** res,
 
 	*res = nullptr;
 
-	SDL_LockMutex(entry_mutex);
+	SDL_LockMutex(entryListMutex);
 	config = get_config(table, file);
 	if (config == nullptr)
 	{
-		SDL_UnlockMutex(entry_mutex);
+		SDL_UnlockMutex(entryListMutex);
 		return false;
 	}
 
 	path = get_path(ap);
 	if (path == nullptr)
 	{
-		SDL_UnlockMutex(entry_mutex);
+		SDL_UnlockMutex(entryListMutex);
 		return false;
 	}
 
 	setting = config_lookup(config, path);
 	if (setting == nullptr)
 	{
-		SDL_UnlockMutex(entry_mutex);
+		SDL_UnlockMutex(entryListMutex);
 		free(path);
 		return false;
 	}
@@ -371,11 +380,11 @@ static int __read_list_index(const char * table, const char * file, char ** res,
 	result = config_setting_get_string_elem(setting, index);
 	if (result == nullptr)
 	{
-		SDL_UnlockMutex(entry_mutex);
+		SDL_UnlockMutex(entryListMutex);
 		return false;
 	}
 
-	SDL_UnlockMutex(entry_mutex);
+	SDL_UnlockMutex(entryListMutex);
 	*res = strdup(result);
 	return true;
 }
@@ -409,25 +418,25 @@ static int __read_list(const char * table, const char * file, char *** res, va_l
 
 	*res = nullptr;
 
-	SDL_LockMutex(entry_mutex);
+	SDL_LockMutex(entryListMutex);
 	config = get_config(table, file);
 	if (config == nullptr)
 	{
-		SDL_UnlockMutex(entry_mutex);
+		SDL_UnlockMutex(entryListMutex);
 		return false;
 	}
 
 	path = get_path(ap);
 	if (path == nullptr)
 	{
-		SDL_UnlockMutex(entry_mutex);
+		SDL_UnlockMutex(entryListMutex);
 		return false;
 	}
 
 	setting = config_lookup(config, path);
 	if (setting == nullptr)
 	{
-		SDL_UnlockMutex(entry_mutex);
+		SDL_UnlockMutex(entryListMutex);
 		free(path);
 		return false;
 	}
@@ -442,7 +451,7 @@ static int __read_list(const char * table, const char * file, char *** res, va_l
 
 	}
 
-	SDL_UnlockMutex(entry_mutex);
+	SDL_UnlockMutex(entryListMutex);
 
 	if (*res == nullptr)
 	{
@@ -537,11 +546,11 @@ static int __write_int(const char * table, const char * file, int data, va_list 
 	config_setting_t * setting;
 	const config_t * config;
 
-	SDL_LockMutex(entry_mutex);
+	SDL_LockMutex(entryListMutex);
 	config = get_config(table, file);
 	if (config == nullptr)
 	{
-		SDL_UnlockMutex(entry_mutex);
+		SDL_UnlockMutex(entryListMutex);
 		return false;
 	}
 
@@ -550,12 +559,12 @@ static int __write_int(const char * table, const char * file, int data, va_list 
 	/* update int */
 	if (config_setting_set_int(setting, data) == CONFIG_FALSE)
 	{
-		SDL_UnlockMutex(entry_mutex);
+		SDL_UnlockMutex(entryListMutex);
 		return false;
 	}
 
 	write_config(config, table, file);
-	SDL_UnlockMutex(entry_mutex);
+	SDL_UnlockMutex(entryListMutex);
 	return true;
 }
 
@@ -582,11 +591,11 @@ static int __write_string(const char * table, const char * file, const char * da
 	config_setting_t * setting;
 	const config_t * config;
 
-	SDL_LockMutex(entry_mutex);
+	SDL_LockMutex(entryListMutex);
 	config = get_config(table, file);
 	if (config == nullptr)
 	{
-		SDL_UnlockMutex(entry_mutex);
+		SDL_UnlockMutex(entryListMutex);
 		return false;
 	}
 
@@ -595,12 +604,12 @@ static int __write_string(const char * table, const char * file, const char * da
 	/* update string */
 	if (config_setting_set_string(setting, data) == CONFIG_FALSE)
 	{
-		SDL_UnlockMutex(entry_mutex);
+		SDL_UnlockMutex(entryListMutex);
 		return false;
 	}
 
 	write_config(config, table, file);
-	SDL_UnlockMutex(entry_mutex);
+	SDL_UnlockMutex(entryListMutex);
 	return true;
 }
 
@@ -628,15 +637,19 @@ static int __write_list_index(const char * table, const char * file, const char 
 	const config_t * config;
 	int list_size;
 
-	SDL_LockMutex(entry_mutex);
+	SdlLocking lock(entryListMutex);
+
 	config = get_config(table, file);
 	if (config == nullptr)
 	{
-		SDL_UnlockMutex(entry_mutex);
 		return false;
 	}
 
 	setting = create_tree(config, nullptr, nullptr, nullptr, CONFIG_TYPE_ARRAY, ap);
+	if (setting == nullptr)
+	{
+		return false;
+	}
 
 	// Create empty entry before index
 	list_size = config_setting_length(setting);
@@ -644,7 +657,6 @@ static int __write_list_index(const char * table, const char * file, const char 
 	{
 		if (config_setting_set_string_elem(setting, -1, "") == nullptr)
 		{
-			SDL_UnlockMutex(entry_mutex);
 			return false;
 		}
 		list_size++;
@@ -652,12 +664,10 @@ static int __write_list_index(const char * table, const char * file, const char 
 
 	if (config_setting_set_string_elem(setting, index, data) == nullptr)
 	{
-		SDL_UnlockMutex(entry_mutex);
 		return false;
 	}
 
 	write_config(config, table, file);
-	SDL_UnlockMutex(entry_mutex);
 	return true;
 }
 
@@ -685,11 +695,11 @@ static int __write_list(const char * table, const char * file, char ** data, va_
 	const config_t * config;
 	int i = 0;
 
-	SDL_LockMutex(entry_mutex);
+	SDL_LockMutex(entryListMutex);
 	config = get_config(table, file);
 	if (config == nullptr)
 	{
-		SDL_UnlockMutex(entry_mutex);
+		SDL_UnlockMutex(entryListMutex);
 		return false;
 	}
 
@@ -703,7 +713,7 @@ static int __write_list(const char * table, const char * file, char ** data, va_
 			// If it down not exist, add a new setting at the end of the list
 			if (config_setting_set_string_elem(setting, -1, data[i]) == nullptr)
 			{
-				SDL_UnlockMutex(entry_mutex);
+				SDL_UnlockMutex(entryListMutex);
 				return false;
 			}
 		}
@@ -711,7 +721,7 @@ static int __write_list(const char * table, const char * file, char ** data, va_
 	}
 
 	write_config(config, table, file);
-	SDL_UnlockMutex(entry_mutex);
+	SDL_UnlockMutex(entryListMutex);
 
 	return true;
 }
@@ -740,25 +750,25 @@ static int __add_to_list(const char * table, const char * file, const char * to_
 	config_setting_t * setting = nullptr;
 	char * path;
 
-	SDL_LockMutex(entry_mutex);
+	SDL_LockMutex(entryListMutex);
 	config = get_config(table, file);
 	if (config == nullptr)
 	{
-		SDL_UnlockMutex(entry_mutex);
+		SDL_UnlockMutex(entryListMutex);
 		return false;
 	}
 
 	path = get_path(ap);
 	if (path == nullptr)
 	{
-		SDL_UnlockMutex(entry_mutex);
+		SDL_UnlockMutex(entryListMutex);
 		return false;
 	}
 
 	setting = config_lookup(config, path);
 	if (setting == nullptr)
 	{
-		SDL_UnlockMutex(entry_mutex);
+		SDL_UnlockMutex(entryListMutex);
 		free(path);
 		return false;
 	}
@@ -766,12 +776,12 @@ static int __add_to_list(const char * table, const char * file, const char * to_
 
 	if (config_setting_set_string_elem(setting, -1, to_be_added) == nullptr)
 	{
-		SDL_UnlockMutex(entry_mutex);
+		SDL_UnlockMutex(entryListMutex);
 		return false;
 	}
 
 	write_config(config, table, file);
-	SDL_UnlockMutex(entry_mutex);
+	SDL_UnlockMutex(entryListMutex);
 
 	return true;
 }
@@ -801,11 +811,11 @@ static int __remove_group(const char * table, const char * file, const char * gr
 	config_setting_t * setting = nullptr;
 	char * path;
 
-	SDL_LockMutex(entry_mutex);
+	SDL_LockMutex(entryListMutex);
 	config = get_config(table, file);
 	if (config == nullptr)
 	{
-		SDL_UnlockMutex(entry_mutex);
+		SDL_UnlockMutex(entryListMutex);
 		return false;
 	}
 
@@ -822,18 +832,18 @@ static int __remove_group(const char * table, const char * file, const char * gr
 
 	if (setting == nullptr)
 	{
-		SDL_UnlockMutex(entry_mutex);
+		SDL_UnlockMutex(entryListMutex);
 		return false;
 	}
 
 	if (config_setting_remove(setting, group) == CONFIG_FALSE)
 	{
-		SDL_UnlockMutex(entry_mutex);
+		SDL_UnlockMutex(entryListMutex);
 		return false;
 	}
 
 	write_config(config, table, file);
-	SDL_UnlockMutex(entry_mutex);
+	SDL_UnlockMutex(entryListMutex);
 
 	return true;
 }
@@ -907,11 +917,11 @@ char * __get_unused_group(const char * table, const char * file, va_list ap)
 	config_setting_t * setting;
 	const config_t * config;
 
-	SDL_LockMutex(entry_mutex);
+	SDL_LockMutex(entryListMutex);
 	config = get_config(table, file);
 	if (config == nullptr)
 	{
-		SDL_UnlockMutex(entry_mutex);
+		SDL_UnlockMutex(entryListMutex);
 		return nullptr;
 	}
 
@@ -934,7 +944,7 @@ char * __get_unused_group(const char * table, const char * file, va_list ap)
 		index++;
 		sprintf(tag, "A%05x", index);
 	}
-	SDL_UnlockMutex(entry_mutex);
+	SDL_UnlockMutex(entryListMutex);
 
 	return strdup(tag);
 }
@@ -969,11 +979,11 @@ char * __get_unused_group_on_path(const char * table, const char * file, char * 
 	config_setting_t * setting;
 	const config_t * config;
 
-	SDL_LockMutex(entry_mutex);
+	SDL_LockMutex(entryListMutex);
 	config = get_config(table, file);
 	if (config == nullptr)
 	{
-		SDL_UnlockMutex(entry_mutex);
+		SDL_UnlockMutex(entryListMutex);
 		return nullptr;
 	}
 
@@ -996,7 +1006,7 @@ char * __get_unused_group_on_path(const char * table, const char * file, char * 
 	}
 
 	config_setting_remove(setting, tag);
-	SDL_UnlockMutex(entry_mutex);
+	SDL_UnlockMutex(entryListMutex);
 
 	return strdup(tag);
 }
@@ -1017,11 +1027,11 @@ int entry_get_group_list(const char * table, const char * file, char *** res, ..
 
 	*res = nullptr;
 
-	SDL_LockMutex(entry_mutex);
+	SDL_LockMutex(entryListMutex);
 	config = get_config(table, file);
 	if (config == nullptr)
 	{
-		SDL_UnlockMutex(entry_mutex);
+		SDL_UnlockMutex(entryListMutex);
 		return false;
 	}
 
@@ -1042,7 +1052,7 @@ int entry_get_group_list(const char * table, const char * file, char *** res, ..
 	/* The path does not exist in the conf file */
 	if (setting == nullptr)
 	{
-		SDL_UnlockMutex(entry_mutex);
+		SDL_UnlockMutex(entryListMutex);
 		return false;
 	}
 
@@ -1054,7 +1064,7 @@ int entry_get_group_list(const char * table, const char * file, char *** res, ..
 		(*res)[index] = nullptr;
 	}
 
-	SDL_UnlockMutex(entry_mutex);
+	SDL_UnlockMutex(entryListMutex);
 
 	if (*res == nullptr)
 	{
@@ -1075,25 +1085,25 @@ static int __remove_from_list(const char * table, const char * file, const char 
 	int i = 0;
 	const char * elem;
 
-	SDL_LockMutex(entry_mutex);
+	SDL_LockMutex(entryListMutex);
 	config = get_config(table, file);
 	if (config == nullptr)
 	{
-		SDL_UnlockMutex(entry_mutex);
+		SDL_UnlockMutex(entryListMutex);
 		return false;
 	}
 
 	path = get_path(ap);
 	if (path == nullptr)
 	{
-		SDL_UnlockMutex(entry_mutex);
+		SDL_UnlockMutex(entryListMutex);
 		return false;
 	}
 
 	setting = config_lookup(config, path);
 	if (setting == nullptr)
 	{
-		SDL_UnlockMutex(entry_mutex);
+		SDL_UnlockMutex(entryListMutex);
 		free(path);
 		return false;
 	}
@@ -1105,18 +1115,18 @@ static int __remove_from_list(const char * table, const char * file, const char 
 		{
 			if (config_setting_remove_elem(setting, i) == CONFIG_FALSE)
 			{
-				SDL_UnlockMutex(entry_mutex);
+				SDL_UnlockMutex(entryListMutex);
 				return false;
 			}
 
 			write_config(config, table, file);
-			SDL_UnlockMutex(entry_mutex);
+			SDL_UnlockMutex(entryListMutex);
 			return true;
 		}
 		i++;
 	}
 
-	SDL_UnlockMutex(entry_mutex);
+	SDL_UnlockMutex(entryListMutex);
 	return false;
 }
 
@@ -1257,18 +1267,18 @@ static int __list_create(const char * table, const char * file, va_list ap)
 {
 	const config_t * config;
 
-	SDL_LockMutex(entry_mutex);
+	SDL_LockMutex(entryListMutex);
 	config = get_config(table, file);
 	if (config == nullptr)
 	{
-		SDL_UnlockMutex(entry_mutex);
+		SDL_UnlockMutex(entryListMutex);
 		return false;
 	}
 
 	create_tree(config, nullptr, nullptr, nullptr, CONFIG_TYPE_LIST, ap);
 
 	write_config(config, table, file);
-	SDL_UnlockMutex(entry_mutex);
+	SDL_UnlockMutex(entryListMutex);
 	return true;
 }
 
@@ -1294,18 +1304,18 @@ static int __group_create(const char * table, const char * file, va_list ap)
 {
 	const config_t * config = nullptr;
 
-	SDL_LockMutex(entry_mutex);
+	SDL_LockMutex(entryListMutex);
 	config = get_config(table, file);
 	if (config == nullptr)
 	{
-		SDL_UnlockMutex(entry_mutex);
+		SDL_UnlockMutex(entryListMutex);
 		return false;
 	}
 
 	create_tree(config, nullptr, nullptr, nullptr, CONFIG_TYPE_GROUP, ap);
 
 	write_config(config, table, file);
-	SDL_UnlockMutex(entry_mutex);
+	SDL_UnlockMutex(entryListMutex);
 	return true;
 }
 
@@ -1340,11 +1350,11 @@ static char * __copy_group(const char * src_table, const char * src_file, const 
 	path = get_path(ap);
 	std::string full_path = add_entry_to_path(path, (char *) group_name);
 
-	SDL_LockMutex(entry_mutex);
+	SDL_LockMutex(entryListMutex);
 	src_config = get_config(src_table, src_file);
 	if (src_config == nullptr)
 	{
-		SDL_UnlockMutex(entry_mutex);
+		SDL_UnlockMutex(entryListMutex);
 		free(path);
 		return nullptr;
 	}
@@ -1352,7 +1362,7 @@ static char * __copy_group(const char * src_table, const char * src_file, const 
 	src_setting = config_lookup(src_config, full_path.c_str());
 	if (src_setting == nullptr)
 	{
-		SDL_UnlockMutex(entry_mutex);
+		SDL_UnlockMutex(entryListMutex);
 		free(path);
 		return nullptr;
 	}
@@ -1360,7 +1370,7 @@ static char * __copy_group(const char * src_table, const char * src_file, const 
 	dst_config = get_config(dst_table, dst_file);
 	if (dst_config == nullptr)
 	{
-		SDL_UnlockMutex(entry_mutex);
+		SDL_UnlockMutex(entryListMutex);
 		free(path);
 		return nullptr;
 	}
@@ -1394,11 +1404,11 @@ static char * __copy_group(const char * src_table, const char * src_file, const 
 
 	if (!entry_copy_config(src_setting, dst_setting))
 	{
-		SDL_UnlockMutex(entry_mutex);
+		SDL_UnlockMutex(entryListMutex);
 		return nullptr;
 	}
 
-	SDL_UnlockMutex(entry_mutex);
+	SDL_UnlockMutex(entryListMutex);
 	if (new_group_name != nullptr)
 	{
 		return new_group_name;
@@ -1428,51 +1438,51 @@ char * entry_copy_group(const char * src_table, const char * src_file, const cha
  *********************************************/
 int entry_update(const std::string & type, const std::string & table, const std::string & file, const std::string & path, const std::string & value)
 {
-	SDL_LockMutex(entry_mutex);
+	SDL_LockMutex(entryListMutex);
 
-	const config_t * l_pConfig = get_config(table.c_str(), file.c_str());
-	if (l_pConfig == nullptr)
+	const config_t * config = get_config(table.c_str(), file.c_str());
+	if (config == nullptr)
 	{
-		SDL_UnlockMutex(entry_mutex);
+		SDL_UnlockMutex(entryListMutex);
 		return false;
 	}
 
-	config_setting_t * l_pSetting = nullptr;
+	config_setting_t * setting = nullptr;
 
-	l_pSetting = config_lookup(l_pConfig, path.c_str());
-	if (l_pSetting == nullptr)
+	setting = config_lookup(config, path.c_str());
+	if (setting == nullptr)
 	{
-		SDL_UnlockMutex(entry_mutex);
+		SDL_UnlockMutex(entryListMutex);
 		return false;
 	}
 
 	if (type == ENTRY_TYPE_INT)
 	{
-		int l_IntValue;
+		int intValue;
 
-		l_IntValue = atoll(value.c_str());
-		if (config_setting_set_int(l_pSetting, l_IntValue) == CONFIG_FALSE)
+		intValue = atoll(value.c_str());
+		if (config_setting_set_int(setting, intValue) == CONFIG_FALSE)
 		{
-			werr(LOGUSER, "Error setting %s/%s/%s to %d", table.c_str(), file.c_str(), path.c_str(), l_IntValue);
+			werr(LOGUSER, "Error setting %s/%s/%s to %d", table.c_str(), file.c_str(), path.c_str(), intValue);
 		}
 		else
 		{
-			write_config(l_pConfig, table.c_str(), file.c_str());
+			write_config(config, table.c_str(), file.c_str());
 		}
 	}
 	else if (type == ENTRY_TYPE_STRING)
 	{
-		if (config_setting_set_string(l_pSetting, value.c_str()) == CONFIG_FALSE)
+		if (config_setting_set_string(setting, value.c_str()) == CONFIG_FALSE)
 		{
 			werr(LOGUSER, "Error setting %s/%s/%s to %s", table.c_str(), file.c_str(), path.c_str(), value.c_str());
 		}
 		else
 		{
-			write_config(l_pConfig, table.c_str(), file.c_str());
+			write_config(config, table.c_str(), file.c_str());
 		}
 	}
 
-	SDL_UnlockMutex(entry_mutex);
+	SDL_UnlockMutex(entryListMutex);
 
 	return true;
 }
@@ -1499,9 +1509,9 @@ static bool __exist(const char * table, const char * file, va_list ap)
 	char * path;
 	config_setting_t * setting = nullptr;
 
-	SDL_LockMutex(entry_mutex);
+	SDL_LockMutex(entryListMutex);
 	config = get_config(table, file);
-	SDL_UnlockMutex(entry_mutex);
+	SDL_UnlockMutex(entryListMutex);
 	if (config == nullptr)
 	{
 		return false;

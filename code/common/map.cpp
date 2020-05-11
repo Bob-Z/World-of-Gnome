@@ -260,10 +260,10 @@ void map_layer_delete(layer_t * layer)
 	free(layer);
 }
 
-/**********************************
+/******************************************************************************
  Convert tiles coordinates into pixels coordinates
- **********************************/
-int map_t2p_x(int x, int y, layer_t * layer)
+ *****************************************************************************/
+int map_t2p_x(int x, int y, const layer_t * layer)
 {
 	int i;
 	int res;
@@ -285,10 +285,10 @@ int map_t2p_x(int x, int y, layer_t * layer)
 	return res;
 }
 
-/**********************************
+/******************************************************************************
  Convert tiles coordinates into pixels coordinates
- **********************************/
-int map_t2p_y(int x, int y, layer_t * layer)
+ *****************************************************************************/
+int map_t2p_y(int x, int y, const layer_t * layer)
 {
 	int i;
 	int res;
@@ -309,4 +309,3 @@ int map_t2p_y(int x, int y, layer_t * layer)
 
 	return res;
 }
-

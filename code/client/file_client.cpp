@@ -59,7 +59,7 @@ int file_add(const std::string & name, const std::string & data)
 	// Update the entry DB
 	entry_remove(name.c_str());
 	// Update the image DB
-	image_DB_remove(name.c_str());
+	image_DB_remove(name);
 	// Update options if needed
 	option_read_client_conf();
 	// Make sure the new file is drawn (if needed)
@@ -68,24 +68,22 @@ int file_add(const std::string & name, const std::string & data)
 	return 0;
 }
 
-/*********************************************************************************
+/******************************************************************************
  Remove character file to be sure they are always downloaded at start-up time
- **********************************************************************************/
+ *****************************************************************************/
 void file_clean(Context * context)
 {
 	file_delete(CHARACTER_TABLE, context->getId());
 }
 
-/***************************************************
- Request a file from network
- ****************************************************/
-void file_request_from_network(Connection & connection, const char * table, const char * file_name)
+/*****************************************************************************/
+void file_request_from_network(Connection & connection, const std::string & table, const std::string & file_name)
 {
-	const std::string table_path = std::string(table) + "/" + std::string(file_name);
+	const std::string tablePath = table + "/" + file_name;
 
-	file_lock(table_path.c_str());
-	file_update(&connection, table_path.c_str());
-	file_unlock(table_path.c_str());
+	file_lock(tablePath.c_str());
+	file_update(&connection, tablePath.c_str());
+	file_unlock(tablePath.c_str());
 
 	return;
 }

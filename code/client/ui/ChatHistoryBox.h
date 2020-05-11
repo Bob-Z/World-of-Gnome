@@ -1,6 +1,6 @@
 /*
  World of Gnome is a 2D multiplayer role playing game.
- Copyright (C) 2013-2020 carabobz@gmail.com
+ Copyright (C) 2020 carabobz@gmail.com
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -17,23 +17,23 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#include <SDL2/SDL.h>
+#ifndef CLIENT_UI_CHATHISTORYBOX_H_
+#define CLIENT_UI_CHATHISTORYBOX_H_
 
-SDL_mutex* context_list_mutex = nullptr;
-SDL_mutex* npc_mutex = nullptr;
-SDL_mutex* attribute_mutex = nullptr;
-SDL_mutex* map_mutex = nullptr;
-SDL_mutex* file_list_mutex = nullptr;
-SDL_mutex* characterSelectMutex = nullptr;
-SDL_mutex* character_dir_mutex = nullptr;
+#include <SDL_ttf.h>
+#include "SdlItem.h"
+#include <vector>
 
-void common_mutex_init()
+class ChatHistoryBox
 {
-	context_list_mutex = SDL_CreateMutex();
-	npc_mutex = SDL_CreateMutex();
-	attribute_mutex = SDL_CreateMutex();
-	map_mutex = SDL_CreateMutex();
-	file_list_mutex = SDL_CreateMutex();
-	characterSelectMutex = SDL_CreateMutex();
-	character_dir_mutex = SDL_CreateMutex();
-}
+public:
+	ChatHistoryBox(TTF_Font * const font);
+	virtual ~ChatHistoryBox();
+
+	void compose(std::vector<SdlItem *> & itemArray, const int upperBorderHeight, const int lowerBorderHeight);
+
+private:
+	TTF_Font * m_font;
+};
+
+#endif /* CLIENT_UI_CHATHISTORYBOX_H_ */

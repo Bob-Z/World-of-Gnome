@@ -25,6 +25,6 @@
 
 class Context;
 
-TTF_Font * font_get(Context* ctx, const std::string & filename, int size);
+TTF_Font * font_get(Context * ctx, const std::string & filename, int size);
 
 #endif

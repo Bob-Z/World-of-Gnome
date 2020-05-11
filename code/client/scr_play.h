@@ -17,11 +17,12 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#include "sdl_item.h"
+#include <vector>
 
 class Context;
+class SdlItem;
 
-item_t * scr_play_compose(Context * context);
+void scr_play_compose(Context * context, std::vector<SdlItem *> & itemArray);
 void scr_play_frame_start(Context * context);
 void scr_play_init();
 int scr_play_get_current_x();

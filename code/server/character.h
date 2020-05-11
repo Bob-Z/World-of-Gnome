@@ -36,7 +36,7 @@ int character_set_portrait(const char * id, const char * portrait);
 int character_set_ai_script(const char * id, const char * script_name);
 int character_wake_up(const char * id);
 int character_set_sprite(const char * id, int index, const char * filename);
-int character_set_sprite_dir(const char * id, const char * dir, int index, const char * filename);
+int character_set_sprite_dir(const std::string & id, const std::string & dir, int index, const std::string & filename);
 int character_set_sprite_move(const char * id, const char * dir, int index, const char * filename);
 void character_broadcast(const char * character);
 

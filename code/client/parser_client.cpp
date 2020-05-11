@@ -48,9 +48,9 @@ static int manage_login_ok(Connection & connection, const pb::LoginOk & login_ok
 		return false;
 	}
 	connection.setConnected(true);
-	wlog(LOGUSER, "Successfully connected");
+	LOG_USER("Successfully connected");
 	network_request_user_character_list(connection);
-	wlog(LOGDEVELOPER, "Character list requested");
+	LOG("Character list requested");
 
 	return true;
 }
@@ -73,13 +73,13 @@ static int manage_login_nok(Connection & connection, const pb::LoginNok & login_
  **************************************/
 static int manage_playable_character(const pb::PlayableCharacter & playable_character)
 {
-	std::vector<std::string> id_list;
+	std::vector<std::string> idList;
 	for (int i = 0; i < playable_character.id().size(); i++)
 	{
-		id_list.push_back(playable_character.id(i));
+		idList.push_back(playable_character.id(i));
 	}
 
-	scr_create_add_playable_character(id_list);
+	scr_create_add_playable_character(idList);
 	screen_compose();
 
 	return true;

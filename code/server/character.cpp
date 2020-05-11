@@ -762,15 +762,15 @@ int character_set_sprite(const char * id, int index, const char * filename)
 	return true;
 }
 
-/***********************************
+/******************************************************************************
  Write a new filename in a character's sprite direction list
  return false on error
- ***********************************/
-int character_set_sprite_dir(const char * id, const char * dir, int index, const char * filename)
+ *****************************************************************************/
+int character_set_sprite_dir(const std::string & id, const std::string & dir, int index, const std::string & filename)
 {
-	const char * key;
+	std::string key;
 
-	if (id == nullptr || filename == nullptr || dir == nullptr)
+	if (id.size() == 0 || filename.size() == 0 || dir.size() == 0)
 	{
 		return false;
 	}
@@ -798,7 +798,7 @@ int character_set_sprite_dir(const char * id, const char * dir, int index, const
 		break;
 	}
 
-	if (entry_write_list_index(CHARACTER_TABLE, id, filename, index, key, nullptr) == false)
+	if (entry_write_list_index(CHARACTER_TABLE, id.c_str(), filename.c_str(), index, key.c_str(), nullptr) == false)
 	{
 		return false;
 	}
@@ -812,7 +812,7 @@ int character_set_sprite_dir(const char * id, const char * dir, int index, const
  ***********************************/
 int character_set_sprite_move(const char * id, const char * dir, int index, const char * filename)
 {
-	const char * key;
+	std::string key;
 
 	if (id == nullptr || filename == nullptr || dir == nullptr)
 	{

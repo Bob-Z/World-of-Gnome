@@ -17,12 +17,13 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#include <sdl_item.h>
 #include <string>
+#include <vector>
 
 class Context;
+class SdlItem;
 
-item_t * scr_select_compose(Context * context);
+void scr_select_compose(Context * context, std::vector<SdlItem *> & itemArray);
 void scr_select_frame_start(Context * context);
 void scr_select_init();
 void scr_select_add_user_character(const std::string & id, const std::string & type, const std::string & name);

@@ -25,5 +25,5 @@ class Context;
 
 int file_add(const std::string & name, const std::string & data);
 void file_clean(Context *);
-void file_request_from_network(Connection & connection, const char * table, const char * filename);
+void file_request_from_network(Connection & connection, const std::string & table, const std::string & filename);
 int file_create_directory(const std::string & file_path);

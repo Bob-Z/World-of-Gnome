@@ -760,7 +760,7 @@ static int l_character_set_sprite_dir(lua_State* L)
 	index = luaL_checkint(L, -2);
 	sprite_name = luaL_checkstring(L, -1);
 
-	res = character_set_sprite_dir(id, dir, index, sprite_name);
+	res = character_set_sprite_dir(std::string(id), std::string(dir), index, std::string(sprite_name));
 	lua_pushnumber(L, res);
 	return 1;  // number of results
 }
@@ -2228,7 +2228,7 @@ int action_execute_script(Context * context, const char * script, const char ** 
 		return -1;
 	}
 
-	return lua_execute_script(context->getLuaVm(), script, parameters);
+	return lua_execute_script(context->getLuaVm(), context->getLuaVmMutex(), script, parameters);
 }
 
 /**************************************

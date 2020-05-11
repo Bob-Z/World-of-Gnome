@@ -31,11 +31,11 @@ static std::map<std::string, Mix_Chunk*> g_SoundList;
 /*****************************************************************************/
 int sfx_play(Connection & connection, const std::string & fileName, int channel, int loops)
 {
-	auto l_It = g_SoundList.find(fileName);
+	auto iter = g_SoundList.find(fileName);
 
-	if (l_It != g_SoundList.end())
+	if (iter != g_SoundList.end())
 	{
-		return Mix_PlayChannel(channel, l_It->second, loops);
+		return Mix_PlayChannel(channel, iter->second, loops);
 	}
 
 	const std::string tableFilename = SFX_TABLE + "/" + fileName;

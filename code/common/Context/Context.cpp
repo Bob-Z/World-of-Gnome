@@ -38,8 +38,8 @@ Context * context_list_start = nullptr;
 Context::Context() :
 		m_mutex(SDL_CreateMutex()), m_inGame(false), m_npc(true), m_characterName(), m_map(), m_previousMap(), m_mapChanged(false), m_tileX(0), m_tileY(0), m_previousTileX(
 				0), m_previousTileY(0), m_positionChanged(false), m_orientation(0), m_direction(0), m_animationTick(0), m_type(), m_id(), m_selection(), m_nextExecutionTick(
-				0), m_luaVm(nullptr), m_condition(SDL_CreateCond()), m_conditionMutex(SDL_CreateMutex()), m_connection(nullptr), m_npcThread(nullptr), m_actionRunning(), m_previous(
-				nullptr), m_next(nullptr)
+				0), m_luaVm(nullptr), m_luaVmMutex(SDL_CreateMutex()), m_condition(SDL_CreateCond()), m_conditionMutex(SDL_CreateMutex()), m_connection(
+				nullptr), m_npcThread(nullptr), m_actionRunning(), m_previous(nullptr), m_next(nullptr)
 {
 }
 
@@ -122,7 +122,7 @@ Context * context_new(void)
  *************************************/
 void context_free(Context * context)
 {
-	Context * ctx;
+	Context * ctx = nullptr;
 
 	context_lock_list();
 
@@ -186,8 +186,7 @@ void context_lock_list()
 	SDL_LockMutex(context_list_mutex);
 }
 
-/***********************
- ***********************/
+/*****************************************************************************/
 Context * context_get_player()
 {
 	return context_list_start;
@@ -807,4 +806,10 @@ void Context::stopRunningAction(const std::string & action)
 		it->second->stop();
 		m_actionRunning.erase(it);
 	}
+}
+
+/*****************************************************************************/
+SDL_mutex* Context::getLuaVmMutex() const
+{
+	return m_luaVmMutex;
 }

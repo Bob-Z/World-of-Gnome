@@ -164,16 +164,16 @@ char ** add_array(char ** array1, char ** array2)
  Convert a vector to an array
  Return pointer must be deep free
  ********************************/
-char ** to_array(const std::vector<std::string> & parameters)
+char ** to_array(const std::vector<std::string> & parameterArray)
 {
 	int array_index = 0;
 	char ** ret_array = nullptr;
 
-	for (auto l_Param : parameters)
+	for (auto && parameter : parameterArray)
 	{
 		array_index++;
 		ret_array = (char **) realloc(ret_array, array_index * sizeof(char*));
-		ret_array[array_index - 1] = strdup(l_Param.c_str());
+		ret_array[array_index - 1] = strdup(parameter.c_str());
 	}
 
 	// Terminal nullptr

@@ -17,10 +17,12 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#include "anim.h"
+#include <string>
+#include <vector>
 
+class Anim;
 class Context;
 
-anim_t * imageDB_get_anim(Context * context, const char * image_name);
-anim_t ** imageDB_get_anim_array(Context * context, const char ** image_name);
-void image_DB_remove(const char * filename);
+Anim * imageDB_get_anim(Context * context, const std::string & imageName);
+std::vector<Anim*> imageDB_get_anim_array(Context * context, const std::vector<std::string> & imageNameArray);
+void image_DB_remove(const std::string & fileName);

@@ -45,6 +45,7 @@ static void manage_login(Connection & connection, const pb::Login & login)
 	if (entry_read_string(PASSWD_TABLE, login.user().c_str(), &password,
 	PASSWD_KEY_PASSWORD, nullptr) == false)
 	{
+		ERR("Failed to read password");
 		return;
 	}
 

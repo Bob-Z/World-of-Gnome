@@ -18,8 +18,9 @@
  */
 
 #include "client_server.h"
-#include "lua_script.h"
 #include "log.h"
+#include "lua_script.h"
+#include "SdlLocking.h"
 #include "syntax.h"
 #include <iterator>
 #include <string>
@@ -41,8 +42,10 @@ extern "C"
  Execute the given script with its parameters
  return -1 on error or return value from execution
  *******************************************************************************/
-int lua_execute_script(lua_State* lua_vm, const char * script, const char ** parameters)
+int lua_execute_script(lua_State* lua_vm, SDL_mutex * mutex, const char * script, const char ** parameters)
 {
+	SdlLocking lock(mutex);
+
 	// Load script
 	const std::string file_path = base_directory + "/" + std::string(SCRIPT_TABLE) + "/" + std::string(script);
 
@@ -101,8 +104,10 @@ int lua_execute_script(lua_State* lua_vm, const char * script, const char ** par
  Execute the given script with its parameters
  return -1 on error or return value from execution
  *******************************************************************************/
-int lua_execute_script(lua_State* lua_vm, const std::string & script, const std::vector<std::string> & parameterss)
+int lua_execute_script(lua_State* lua_vm, SDL_mutex * mutex, const std::string & script, const std::vector<std::string> & parameterArray)
 {
+	SdlLocking lock(mutex);
+
 	// Load script
 	const std::string file_path = base_directory + "/" + std::string(SCRIPT_TABLE) + "/" + script;
 
@@ -120,16 +125,16 @@ int lua_execute_script(lua_State* lua_vm, const std::string & script, const std:
 	lua_getglobal(lua_vm, "f");
 
 	// push parameters on LUA VM stack (only strings parameters are supported)
-	int l_ParamNum = 0;
-	for (auto l_It = parameterss.begin(); l_It != parameterss.end(); ++l_It)
+	int paramQty = 0;
+	for (auto && parameter : parameterArray)
 	{
-		lua_pushstring(lua_vm, l_It->c_str());
-		l_ParamNum++;
+		lua_pushstring(lua_vm, parameter.c_str());
+		paramQty++;
 	}
 
 	// Ask LUA to call the f function with the given parameters
 	// number of argument = l_ParamNum, number of result = 1
-	if (lua_pcall(lua_vm, l_ParamNum, 1, 0) != 0)
+	if (lua_pcall(lua_vm, paramQty, 1, 0) != 0)
 	{
 		werr(LOGUSER, "Error running LUA script %s: %s\n", file_path.c_str(), lua_tostring(lua_vm, -1));
 		return -1;

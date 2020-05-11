@@ -20,21 +20,22 @@
 #ifndef UI_PLAY_H
 #define UI_PLAY_H
 
-#include "sdl_item.h"
 #include <string>
 #include <vector>
 
 class Context;
+class SdlItem;
 
-#define UI_MAIN         0
-#define UI_INVENTORY    1
-#define UI_SPEAK        2
+enum class UiType
+{
+	MAIN, INVENTORY, POPUP
+};
 
-void ui_play_set(int ui_type);
-int ui_play_get();
-char * ui_play_get_last_action();
-void ui_play_cb_action(void * arg);
-void ui_play_compose(Context * ctx, item_t * g_itemList);
+void ui_play_set(const UiType type);
+UiType ui_play_get();
+const std::string & ui_play_get_last_action();
+void ui_play_cb_action(const std::string & action);
+void ui_play_compose(Context * ctx, std::vector<SdlItem*> & itemArray);
 void ui_play_init();
 void ui_play_popup_add(const std::vector<std::string> & data);
 

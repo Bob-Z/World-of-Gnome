@@ -34,7 +34,10 @@ include_directories(${COMMON_PATH}/Context)
 include_directories(${COMMON_PATH}/Network)
 
 set(SDL_ITEM_PATH ../sdl_item/)
-include_directories(${SDL_ITEM_PATH})
+include_directories(${SDL_ITEM_PATH}/include)
+
+include_directories(.)
+include_directories(ui)
 
 add_executable(
 	${PROJECT_NAME}	
@@ -53,20 +56,26 @@ add_executable(
 	textview.cpp
 	ui_play.cpp
 	lua_client.cpp
+	CharacterMarquee.cpp
 	Camera.cpp
 	EffectManager.cpp
 	sfx.cpp
+	ui/ChatBox.cpp
+	ui/ChatEditBox.cpp
+	ui/ChatHistoryBox.cpp
 	${PROTO_SRCS} ${PROTO_HDRS}
 )
 
-target_link_libraries (${PROJECT_NAME}
-        ${LUA_LIBRARIES}
+target_link_libraries (
+	${PROJECT_NAME}
+	
+	${LUA_LIBRARIES}
 	common
-        ${SDL2_LIBRARIES}
-        ${SDL2NET_LIBRARIES}
-        ${SDL2MIXER_LIBRARIES}
-        ${SDL2TTF_LIBRARIES}
-        ${CONFIG_LIBRARIES}
+	${SDL2_LIBRARIES}
+	${SDL2NET_LIBRARIES}
+	${SDL2MIXER_LIBRARIES}
+	${SDL2TTF_LIBRARIES}
+	${CONFIG_LIBRARIES}
 	sdl_item
 	${Protobuf_LIBRARIES}
 )

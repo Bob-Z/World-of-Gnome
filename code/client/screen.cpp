@@ -35,34 +35,34 @@
 #include <limits.h>
 #include <pthread.h>
 
-static bool g_screenRunning = true;
-static item_t * g_itemList = nullptr;
-static bool g_Compose = true;
+static bool screenRunning = true;
+static std::vector<SdlItem*> itemArray;
+static bool compose = true;
 
 #define ITEM_FONT "Ubuntu-C.ttf"
 #define ITEM_FONT_SIZE 15
 
-static item_t * g_frameRateItem = nullptr;
+static SdlItem * frameRateItem = nullptr;
 static constexpr int FPS_DISPLAY_PERIOD = 1000;
-static Camera g_Camera;
+static Camera camera;
 
-/***********************************************
+/******************************************************************************
  Called by other thread to request compose update.
  Composing creates anim object.
  Anim object has to be in the thread that
  created the renderer (or maybe the window ?)
- ***********************************************/
+ *****************************************************************************/
 void screen_compose()
 {
-	g_Compose = true;
+	compose = true;
 }
 
-/******************************************************
+/******************************************************************************
  Called at start of each frame
- ******************************************************/
+ *****************************************************************************/
 static void frame_start(Context * context)
 {
-	switch (g_Camera.getScreen())
+	switch (camera.getScreen())
 	{
 	case Screen::SELECT:
 		scr_select_frame_start(context);
@@ -78,55 +78,52 @@ static void frame_start(Context * context)
 	}
 }
 
-/******************************************************
+/******************************************************************************
  create a list of item for the currently selected screen
  return true if composing succeed
- ******************************************************/
+ *****************************************************************************/
 static bool compose_scr(Context * context)
 {
+	for (auto item : itemArray)
+	{
+		delete (item);
+	}
+	itemArray.clear();
+
 	sdl_set_background_color(0, 0, 0, 255);
 
-	switch (g_Camera.getScreen())
+	switch (camera.getScreen())
 	{
 	case Screen::SELECT:
-		g_itemList = scr_select_compose(context);
+		scr_select_compose(context, itemArray);
 		break;
 	case Screen::CREATE:
-		g_itemList = scr_create_compose(context);
+		scr_create_compose(context, itemArray);
 		break;
 	case Screen::PLAY:
-		g_itemList = scr_play_compose(context);
+		scr_play_compose(context, itemArray);
 		break;
 	default:
 		break;
 	}
 
 	bool ret = false;
-	if (g_itemList != nullptr)
+	if (itemArray.size() != 0)
 	{
 		ret = true;
-	}
-
-	if (option_get().show_fps)
-	{
-		static TTF_Font * font = nullptr;
-
-		font = font_get(context, ITEM_FONT, ITEM_FONT_SIZE);
-		g_frameRateItem = item_list_add(&g_itemList);
-		item_set_font(g_frameRateItem, font);
-		item_set_anim_shape(g_frameRateItem, 100, 50, 20, 20);
-		item_set_overlay(g_frameRateItem, 1);
 	}
 
 	return ret;
 }
 
-/******************************************************
+/******************************************************************************
  Init screen for first display
- ******************************************************/
+ *****************************************************************************/
 static void init_scr()
 {
-	switch (g_Camera.getScreen())
+	sdl_init_screen();
+
+	switch (camera.getScreen())
 	{
 	case Screen::SELECT:
 		scr_select_init();
@@ -142,30 +139,45 @@ static void init_scr()
 	}
 }
 
-/************************************************
- ************************************************/
-static void display_fps()
+/*****************************************************************************/
+static void display_fps(Context * ctx)
 {
-	static Uint32 timer = 0;
-	Uint32 new_timer;
-	static char shown_fps[64];
-	double sample;
-	static int num_frame = 0;
-
-	if (g_frameRateItem != nullptr)
+	if (option_get().show_fps == true)
 	{
-		if (option_get().show_fps)
+		static TTF_Font * font = nullptr;
+		if (font == nullptr)
 		{
-			num_frame++;
-			new_timer = SDL_GetTicks();
-			if (timer + FPS_DISPLAY_PERIOD < new_timer)
+			font = font_get(ctx, ITEM_FONT, ITEM_FONT_SIZE);
+			return;
+		}
+
+		static Uint32 timer = 0;
+		static int frameQty = 0;
+
+		frameQty++;
+		Uint32 new_timer = SDL_GetTicks();
+		if (timer + FPS_DISPLAY_PERIOD < new_timer)
+		{
+			double sample = (double) frameQty / ((double) new_timer - (double) timer) * (double) FPS_DISPLAY_PERIOD;
+			frameQty = 0;
+			timer = new_timer;
+
+			if (frameRateItem != nullptr)
 			{
-				sample = (double) num_frame / ((double) new_timer - (double) timer) * (double) FPS_DISPLAY_PERIOD;
-				num_frame = 0;
-				timer = new_timer;
-				sprintf(shown_fps, "%f", sample);
+				delete frameRateItem;
 			}
-			item_set_string(g_frameRateItem, shown_fps);
+
+			frameRateItem = new SdlItem;
+			frameRateItem->setFont(font);
+			frameRateItem->setPos(100, 50);
+			frameRateItem->setShape(20, 20);
+			frameRateItem->setOverlay(true);
+			frameRateItem->setText(std::to_string(sample));
+		}
+
+		if (frameRateItem != nullptr)
+		{
+			sdl_blit_item(*frameRateItem);
 		}
 	}
 }
@@ -181,10 +193,10 @@ static void calculate_camera_position(Context * ctx)
 	}
 	else
 	{
-		lua_pushlightuserdata(getLuaVm(), (void *) &g_Camera);
+		lua_pushlightuserdata(getLuaVm(), (void *) &camera);
 		lua_setglobal(getLuaVm(), "current_camera");
 
-		if (lua_execute_script(getLuaVm(), cameraScript, nullptr) == -1)
+		if (lua_execute_script(getLuaVm(), getLuaVmMutex(), cameraScript, nullptr) == -1)
 		{
 			file_request_from_network(*(ctx->getConnection()), SCRIPT_TABLE, cameraScript);
 		}
@@ -195,12 +207,10 @@ static void calculate_camera_position(Context * ctx)
 	}
 }
 
-/************************************************
- ************************************************/
-static void execute_draw_script(Context * ctx, const char * scriptName, Context * ctxToDraw, item_t * p_pItem)
+/*****************************************************************************/
+static void execute_draw_script(Context * ctx, const std::string & scriptName, Context * ctxToDraw, const SdlItem & item)
 {
-	item_t tempItem;
-	memcpy(&tempItem, p_pItem, sizeof(item_t));
+	SdlItem tempItem = item;
 
 	lua_pushlightuserdata(getLuaVm(), &tempItem);
 	lua_setglobal(getLuaVm(), "current_item");
@@ -208,62 +218,56 @@ static void execute_draw_script(Context * ctx, const char * scriptName, Context 
 	lua_pushlightuserdata(getLuaVm(), ctxToDraw);
 	lua_setglobal(getLuaVm(), "current_context");
 
-	if (lua_execute_script(getLuaVm(), scriptName, nullptr) == -1)
+	if (lua_execute_script(getLuaVm(), getLuaVmMutex(), scriptName.c_str(), nullptr) == -1)
 	{
 		file_request_from_network(*(ctx->getConnection()), SCRIPT_TABLE, scriptName);
 	}
 
-	sdl_blit_item(&tempItem);
+	sdl_blit_item(tempItem);
 }
 
-/************************************************
+/******************************************************************************
  Render the currently selected item list to screen
- ************************************************/
+ *****************************************************************************/
 void screen_display(Context * ctx)
 {
-	SDL_Event event;
-
-	while (g_screenRunning == true)
+	while (screenRunning == true)
 	{
 		frame_start(ctx);
 
-		if (g_Compose == true)
+		if (compose == true)
 		{
 			if (compose_scr(ctx) == true)
 			{
-				g_Compose = false;
+				compose = false;
 			}
 		}
 
-		display_fps();
+		SDL_Event event;
 
-		while (SDL_PollEvent(&event))
+		while (SDL_PollEvent(&event) == 1)
 		{
-			g_Compose |= sdl_screen_manager(&event);
-			g_Compose |= sdl_mouse_manager(&event, g_itemList);
-			g_Compose |= sdl_keyboard_manager(&event);
+			compose |= sdl_screen_manager(&event);
+			compose |= sdl_mouse_manager(&event, itemArray);
+			compose |= sdl_keyboard_manager(&event);
 		}
 
-		sdl_mouse_position_manager(g_itemList);
+		sdl_mouse_position_manager(itemArray);
 
 		sdl_clear();
 
-//		sdl_blit_g_itemList(g_itemList);
-		item_t * item;
-
-		item = g_itemList;
-		while (item != nullptr)
+		for (auto && item : itemArray)
 		{
-			if (item->user_ptr != nullptr)
+			if (item->getUserPtr() != nullptr)
 			{
-				Context * ctx_drawn = (Context *) item->user_ptr;
+				Context * ctx_drawn = (Context *) item->getUserPtr();
 
 				char * draw_script = nullptr;
 
 				// Drawing script not directly attached to context (i.e. for cursor)
-				if (item->user1_ptr != nullptr)
+				if (item->getUser1Ptr() != nullptr)
 				{
-					draw_script = strdup((const char *) item->user1_ptr);
+					draw_script = strdup((const char *) item->getUser1Ptr());
 				}
 				else
 				{
@@ -272,18 +276,17 @@ void screen_display(Context * ctx)
 
 				if (draw_script != nullptr)
 				{
-					execute_draw_script(ctx, draw_script, ctx_drawn, item);
+					execute_draw_script(ctx, std::string(draw_script), ctx_drawn, *item);
 
 					free(draw_script);
-
-					item = item->next;
 					continue;
 				}
 			}
 
-			sdl_blit_item(item);
-			item = item->next;
+			sdl_blit_item(*item);
 		}
+
+		display_fps(ctx);
 
 		calculate_camera_position(ctx);
 
@@ -294,37 +297,31 @@ void screen_display(Context * ctx)
 
 	return;
 }
-/************************************************
- Select the screen to be rendered
- ************************************************/
+/*****************************************************************************/
 void screen_set_screen(Screen screen)
 {
-	if (screen != g_Camera.getScreen())
+	if (screen != camera.getScreen())
 	{
-		g_Camera.setScreen(screen);
+		camera.setScreen(screen);
 		init_scr();
 	}
 	screen_compose();
 }
 
-/************************************************
- End the rendering
- ************************************************/
+/*****************************************************************************/
 void screen_quit()
 {
-	g_screenRunning = false;
+	screenRunning = false;
 }
 
-/************************************************
- ************************************************/
+/*****************************************************************************/
 Screen screen_get_current_screen()
 {
-	return g_Camera.getScreen();
+	return camera.getScreen();
 }
 
-/************************************************
- ************************************************/
+/*****************************************************************************/
 Camera * screen_get_camera()
 {
-	return &g_Camera;
+	return &camera;
 }

@@ -17,7 +17,8 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#include "anim.h"
+#include "Anim.h"
+#include "ChatBox.h"
 #include "const.h"
 #include "entry.h"
 #include "font.h"
@@ -32,125 +33,120 @@
 #include "sdl.h"
 #include "syntax.h"
 #include "textview.h"
+#include "ui_play.h"
 #include "util.h"
 #include <stack>
 #include <string>
 #include <vector>
 
-#define UI_MAIN		0
-#define UI_INVENTORY	1
-#define UI_POPUP	2
-
-#define FONT "Ubuntu-C.ttf"
-#define FONT_SIZE 30
+static const std::string FONT = "Ubuntu-C.ttf";
+static constexpr int FONT_SIZE = 30;
 static const std::string TEXT_FONT = "Ubuntu-C.ttf";
-#define TEXT_FONT_SIZE 15
-#define TEXT_TIMEOUT 5000 // Text display timeout
-#define ITEM_FONT "Ubuntu-C.ttf"
-#define ITEM_FONT_SIZE 15
+static constexpr int TEXT_FONT_SIZE = 15;
+static const std::string ITEM_FONT = "Ubuntu-C.ttf";
+static constexpr int ITEM_FONT_SIZE = 15;
 static const std::string SPEAK_FONT = "Ubuntu-C.ttf";
-#define SPEAK_FONT_SIZE 32
+static constexpr int SPEAK_FONT_SIZE = 32;
 
-#define BACKGROUND_COLOR (0xFFFFFF40)
+static const std::string POPUP_TAG_IMAGE = "image";
+static const std::string POPUP_TAG_TEXT = "text";
+static const std::string POPUP_TAG_ACTION = "action";
+static const std::string POPUP_TAG_EOL = "eol";
+static const std::string POPUP_TAG_EOP = "eop";
+static const std::string POPUP_TAG_END = "popup_end";
 
-#define POPUP_TAG_IMAGE		"image"
-#define POPUP_TAG_TEXT		"text"
-#define POPUP_TAG_ACTION	"action"
-#define POPUP_TAG_EOL		"eol"
-#define POPUP_TAG_EOP		"eop"
-#define POPUP_TAG_END		"popup_end"
+static constexpr Uint32 BACKGROUND_COLOR = 0xFFFFFF40;
 
-static int current_ui = UI_MAIN;
-static char * last_action = nullptr;
-// main ui
-static char ** attribute_string = nullptr;
-static int action_bar_height;
-static int attribute_height;
-static constexpr size_t TEXT_BUFFER_SIZE = 2048;
-static char text_buffer[TEXT_BUFFER_SIZE];
-// inventory ui
-static char ** inventory_list = nullptr;
-// popup ui
-#define MOUSE_WHEEL_SCROLL (20)
-static std::stack<std::vector<std::string>> g_PopupFifo;
-typedef struct action_param_tag
+static UiType currentUi = UiType::MAIN;
+static std::string lastAction;
+
+// main UI
+static std::vector<std::string> attributeText;
+static std::string textBuffer;
+
+// inventory UI
+static std::vector<std::string> inventoryArray;
+
+// popup UI
+static constexpr int MOUSE_WHEEL_SCROLL = 20;
+static std::stack<std::vector<std::string>> popupFifo;
+
+struct ActionParam
 {
-	char * action;
-	char * param;
-} action_param_t;
-static int popup_offset = 0;
+	std::string action;
+	std::string param;
+};
 
-static int first_action = 0;
-static int num_action = 0;
+static int popupOffset = 0;
 
-/**********************************
- **********************************/
-static void draw_background(Context * ctx, item_t * g_itemList)
+static int firstAction = 0;
+static int numAction = 0;
+
+/*****************************************************************************/
+static void draw_background(Context * ctx, std::vector<SdlItem *> & itemArray)
 {
-	static anim_t * bg_anim = nullptr;
-	int sw;
-	int sh;
-	item_t * item;
-
-	if (bg_anim)
+	static Anim * bgAnim = nullptr;
+	if (bgAnim != nullptr)
 	{
-		si_anim_free(bg_anim);
+		delete bgAnim;
 	}
+
+	int sw = 0;
+	int sh = 0;
 	sdl_get_output_size(&sw, &sh);
-	bg_anim = anim_create_color(sw, sh, BACKGROUND_COLOR);
-	item = item_list_add(&g_itemList);
-	item_set_pos(item, 0, 0);
-	item_set_anim(item, bg_anim, 0);
-	item_set_overlay(item, 1);
+	bgAnim = anim_create_color(sw, sh, BACKGROUND_COLOR);
+
+	SdlItem * item = new SdlItem;
+	itemArray.push_back(item);
+
+	item->setPos(0, 0);
+	item->setAnim(bgAnim);
+	item->setOverlay(true);
 }
 
-/**********************************
- **********************************/
-void ui_play_set(int ui_type)
+/*****************************************************************************/
+void ui_play_set(const UiType type)
 {
-	current_ui = ui_type;
+	currentUi = type;
 	screen_compose();
 }
 
-/**********************************
- **********************************/
-int ui_play_get()
+/*****************************************************************************/
+UiType ui_play_get()
 {
-	return current_ui;
+	return currentUi;
 }
 
-/**********************************
- **********************************/
-char * ui_play_get_last_action()
+/*****************************************************************************/
+const std::string & ui_play_get_last_action()
 {
-	return last_action;
+	return lastAction;
 }
 
-/****************************
- ****************************/
-static void cb_main_quit(void * arg)
+/*****************************************************************************/
+static void cb_main_quit()
 {
-	item_t * item = static_cast<item_t*>(arg);
-
-	if (ui_play_get() == UI_MAIN)
+	if (ui_play_get() == UiType::MAIN)
 	{
 		context_get_player()->setInGame(false);
 		network_request_stop(*(context_get_player()->getConnection()));
-		Context * current_ctx = context_get_first();
-		while (current_ctx != nullptr)
+		Context * currentCtx = context_get_first();
+		while (currentCtx != nullptr)
 		{
-			Context * next_ctx = current_ctx->m_next;
-			if (current_ctx != context_get_player())
+			Context * nextCtx = currentCtx->m_next;
+			if (currentCtx != context_get_player())
 			{
-				current_ctx->setInGame(false);
+				currentCtx->setInGame(false);
 
-				LOG("Waiting for " + current_ctx->getId());
+				LOG("Waiting for " + currentCtx->getId());
 				int threadStatus = 0;
-				SDL_WaitThread(current_ctx->getNpcThread(), &threadStatus);
-				LOG(current_ctx->getId() + " exited");
+				SDL_WaitThread(currentCtx->getNpcThread(), &threadStatus);
+				LOG(currentCtx->getId() + " exited");
 
-				context_free(current_ctx);
+				context_free(currentCtx);
 
+				//TODO do this smarter
+#if 0
 				// Remove selection
 				while (item != nullptr)
 				{
@@ -161,8 +157,9 @@ static void cb_main_quit(void * arg)
 
 					item = item->next;
 				}
+#endif
 			}
-			current_ctx = next_ctx;
+			currentCtx = nextCtx;
 		}
 
 		screen_set_screen(Screen::SELECT);
@@ -170,7 +167,7 @@ static void cb_main_quit(void * arg)
 }
 
 /*****************************************************************************/
-static void key_up(void * arg)
+static void key_up()
 {
 	Context * ctx = context_get_player();
 
@@ -178,7 +175,7 @@ static void key_up(void * arg)
 }
 
 /*****************************************************************************/
-static void key_up_released(void * arg)
+static void key_up_released()
 {
 	Context * ctx = context_get_player();
 
@@ -186,7 +183,7 @@ static void key_up_released(void * arg)
 }
 
 /*****************************************************************************/
-static void key_down(void * arg)
+static void key_down()
 {
 	Context * ctx = context_get_player();
 
@@ -194,7 +191,7 @@ static void key_down(void * arg)
 }
 
 /*****************************************************************************/
-static void key_down_released(void * arg)
+static void key_down_released()
 {
 	Context * ctx = context_get_player();
 
@@ -202,7 +199,7 @@ static void key_down_released(void * arg)
 }
 
 /*****************************************************************************/
-static void key_left(void * arg)
+static void key_left()
 {
 	Context * ctx = context_get_player();
 
@@ -210,7 +207,7 @@ static void key_left(void * arg)
 }
 
 /*****************************************************************************/
-static void key_left_released(void * arg)
+static void key_left_released()
 {
 	Context * ctx = context_get_player();
 
@@ -218,7 +215,7 @@ static void key_left_released(void * arg)
 }
 
 /*****************************************************************************/
-static void key_right(void * arg)
+static void key_right()
 {
 	Context * ctx = context_get_player();
 
@@ -226,7 +223,7 @@ static void key_right(void * arg)
 }
 
 /*****************************************************************************/
-static void key_right_released(void * arg)
+static void key_right_released()
 {
 	Context * ctx = context_get_player();
 
@@ -234,7 +231,7 @@ static void key_right_released(void * arg)
 }
 
 /*****************************************************************************/
-static void key_up_left(void * arg)
+static void key_up_left()
 {
 	Context * ctx = context_get_player();
 
@@ -242,7 +239,7 @@ static void key_up_left(void * arg)
 }
 
 /*****************************************************************************/
-static void key_up_left_released(void * arg)
+static void key_up_left_released()
 {
 	Context * ctx = context_get_player();
 
@@ -250,7 +247,7 @@ static void key_up_left_released(void * arg)
 }
 
 /*****************************************************************************/
-static void key_up_right(void * arg)
+static void key_up_right()
 {
 	Context * ctx = context_get_player();
 
@@ -258,7 +255,7 @@ static void key_up_right(void * arg)
 }
 
 /*****************************************************************************/
-static void key_up_right_released(void * arg)
+static void key_up_right_released()
 {
 	Context * ctx = context_get_player();
 
@@ -266,7 +263,7 @@ static void key_up_right_released(void * arg)
 }
 
 /*****************************************************************************/
-static void key_down_left(void * arg)
+static void key_down_left()
 {
 	Context * ctx = context_get_player();
 
@@ -274,7 +271,7 @@ static void key_down_left(void * arg)
 }
 
 /*****************************************************************************/
-static void key_down_left_released(void * arg)
+static void key_down_left_released()
 {
 	Context * ctx = context_get_player();
 
@@ -282,7 +279,7 @@ static void key_down_left_released(void * arg)
 }
 
 /*****************************************************************************/
-static void key_down_right(void * arg)
+static void key_down_right()
 {
 	Context * ctx = context_get_player();
 
@@ -290,323 +287,303 @@ static void key_down_right(void * arg)
 }
 
 /*****************************************************************************/
-static void key_down_right_released(void * arg)
+static void key_down_right_released()
 {
 	Context * ctx = context_get_player();
 
 	network_send_action_stop(*(ctx->getConnection()), option_get().action_move_down_right);
 }
 
-/**********************************
- Compose attribute
- **********************************/
-static void compose_attribute(Context * ctx, item_t * g_itemList)
+/*****************************************************************************/
+static int compose_attribute(Context * ctx, std::vector<SdlItem *> & itemArray)
 {
-	item_t * item;
-	char ** name_list;
-	int index = 0;
-	int value;
-	int y = 0;
-	int num_attr = 0;
-	char buf[1024];
-	int w, h;
 	static TTF_Font * font = nullptr;
-
-	font = font_get(ctx, FONT, FONT_SIZE);
-
-	if (attribute_string)
+	if (font == nullptr)
 	{
-		index = 0;
-		while (attribute_string[index])
-		{
-			free(attribute_string[index]);
-			attribute_string[index] = nullptr;
-			index++;
-		}
-		free(attribute_string);
-		attribute_string = nullptr;
+		font = font_get(ctx, FONT, FONT_SIZE);
 	}
 
-	if (entry_get_group_list(CHARACTER_TABLE, ctx->getId().c_str(), &name_list,
+	attributeText.clear();
+
+	char ** nameArray;
+	if (entry_get_group_list(CHARACTER_TABLE, ctx->getId().c_str(), &nameArray,
 	ATTRIBUTE_GROUP, nullptr) == false)
 	{
-		return;
+		return 0;
 	}
 
-	index = 0;
-	while (name_list[index] != nullptr)
+	int attributeHeight = 0;
+	int attributeQty = 0;
+	int index = 0;
+	int y = 0;
+
+	while (nameArray[index] != nullptr)
 	{
-		if (entry_read_int(CHARACTER_TABLE, ctx->getId().c_str(), &value, ATTRIBUTE_GROUP, name_list[index], ATTRIBUTE_CURRENT, nullptr) == false)
+		int value;
+		if (entry_read_int(CHARACTER_TABLE, ctx->getId().c_str(), &value, ATTRIBUTE_GROUP, nameArray[index], ATTRIBUTE_CURRENT, nullptr) == false)
 		{
 			index++;
 			continue;
 		}
 
-		num_attr++;
-		attribute_string = (char**) realloc(attribute_string, (num_attr + 1) * sizeof(char*));
-		sprintf(buf, "%s: %d", name_list[index], value);
-		attribute_string[num_attr - 1] = strdup(buf);
-		attribute_string[num_attr] = nullptr;
+		attributeText.push_back(std::string(nameArray[index]) + ": " + std::to_string(value));
 
-		item = item_list_add(&g_itemList);
+		SdlItem * item = new SdlItem;
+		itemArray.push_back(item);
 
-		item_set_overlay(item, 1);
-		item_set_string(item, attribute_string[num_attr - 1]);
-		item_set_font(item, font);
-		sdl_get_string_size(item->font, item->string, &w, &h);
-		item_set_anim_shape(item, 0, y, w, h);
+		item->setOverlay(true);
+		item->setText(attributeText[attributeQty - 1]);
+		item->setFont(font);
+
+		int w = 0;
+		int h = 0;
+		sdl_get_string_size(item->getFont(), item->getText(), &w, &h);
+
+		item->setPos(0, y);
+		item->setShape(w, h);
+
 		y += h;
-		if (attribute_height < y)
+		if (attributeHeight < y)
 		{
-			attribute_height = y;
+			attributeHeight = y;
 		}
 
 		index++;
 	}
 
-	deep_free(name_list);
+	deep_free(nameArray);
+
+	return attributeHeight;
 }
 
-/**********************************
- **********************************/
-void ui_play_cb_action(void * arg)
+/*****************************************************************************/
+void ui_play_cb_action(const std::string & action)
 {
-	char * action = (char *) arg;
-
 	network_send_action(*(context_get_player()->getConnection()), action, nullptr);
 
-	if (last_action)
+	if (action.size() > 0)
 	{
-		free(last_action);
-		last_action = nullptr;
-	}
-
-	if (arg)
-	{
-		last_action = (char*) strdup(action);
+		lastAction = action;
 	}
 	else
 	{
-		last_action = nullptr;
+		lastAction.clear();
 	}
 }
 
-/**********************************
- **********************************/
-static void cb_wheel_up_action(void* not_used)
+/*****************************************************************************/
+static void cb_wheel_up_action()
 {
-	first_action--;
-	if (first_action < 0)
+	firstAction--;
+	if (firstAction < 0)
 	{
-		first_action = 0;
+		firstAction = 0;
 		return;
 	}
 	screen_compose();
 }
 
-/**********************************
- **********************************/
-static void cb_wheel_down_action(void* not_used)
+/*****************************************************************************/
+static void cb_wheel_down_action()
 {
-	first_action++;
+	firstAction++;
 	screen_compose();
 }
 
-/**********************************
- Compose action icon
- **********************************/
-static void compose_action(Context * ctx, item_t * g_itemList)
+/*****************************************************************************/
+static int compose_action(Context * ctx, std::vector<SdlItem *> & itemArray)
 {
-	char ** action_list = nullptr;
-	char * text = nullptr;
-	char ** icon = nullptr;
-	char * icon_array[2] =
-	{ nullptr, nullptr };
-	char ** icon_over = nullptr;
-	char ** icon_click = nullptr;
-	char * script = nullptr;
-	anim_t ** anim_array;
-	item_t * item;
+	int action_bar_height = 0;
+
 	int sw = 0;
 	int sh = 0;
-	int x = 0;
-	int i;
-
 	sdl_get_output_size(&sw, &sh);
 
-	action_bar_height = 0;
-
 	// Read action list for current user
-	if (entry_read_list(CHARACTER_TABLE, ctx->getId().c_str(), &action_list,
+	char ** actionArray = nullptr;
+	if (entry_read_list(CHARACTER_TABLE, ctx->getId().c_str(), &actionArray,
 	CHARACTER_KEY_ACTION, nullptr) == false)
 	{
-		return;
+		return 0;
 	}
 
-	i = 0;
-	while (action_list[i] != nullptr)
+	int x = 0;
+	int i = 0;
+	while (actionArray[i] != nullptr)
 	{
-		if (text)
+		if (i < firstAction)
 		{
-			free(text);
-			text = nullptr;
-		}
-		if (script)
-		{
-			free(script);
-			script = nullptr;
-		}
-
-		if (i < first_action)
-		{
-			if (action_list[i + 1] != nullptr)
+			if (actionArray[i + 1] != nullptr)
 			{
 				i++;
 				continue;
 			}
-			first_action = i;
+			firstAction = i;
 		}
 
-		if (entry_read_string(ACTION_TABLE, action_list[i], &text,
+#if 0
+		if (entry_read_string(ACTION_TABLE, actionArray[i], &text,
 		ACTION_KEY_TEXT, nullptr) == false)
 		{
 			i++;
 			continue;
 		}
-		if (entry_read_string(ACTION_TABLE, action_list[i], &icon_array[0],
+#endif
+
+		char * icon = nullptr;
+		char ** iconArray = nullptr;
+
+		if (entry_read_string(ACTION_TABLE, actionArray[i], &icon,
 		ACTION_KEY_ICON, nullptr) == true)
 		{
-			icon = icon_array;
+			iconArray = (char **) malloc(sizeof(char *) * 2);
+			iconArray[0] = icon;
+			iconArray[1] = nullptr;
 		}
-		else if (entry_read_list(ACTION_TABLE, action_list[i], &icon,
-		ACTION_KEY_ICON, nullptr) == false)
+		else
 		{
-			i++;
-			continue;
+			if (entry_read_list(ACTION_TABLE, actionArray[i], &iconArray,
+			ACTION_KEY_ICON, nullptr) == false)
+			{
+				i++;
+				continue;
+			}
 		}
 
-		SiLayout layout = SiLayout::TOP_LEFT;
-		entry_read_int(ACTION_TABLE, action_list[i], (int*) &layout,
-		ACTION_KEY_ICON_LAYOUT, nullptr);
+		SdlItem * item = new SdlItem;
 
-		item = item_list_add(&g_itemList);
-		item_set_layout(item, layout);
-		item_set_overlay(item, 1);
-		item_set_click_left(item, ui_play_cb_action, (void*) strdup(action_list[i]), free);
-		item_set_wheel_up(item, cb_wheel_up_action, nullptr, nullptr);
-		item_set_wheel_down(item, cb_wheel_down_action, nullptr, nullptr);
+		SdlItem::Layout layout = SdlItem::Layout::TOP_LEFT;
+		int layoutRead = 0;
+		entry_read_int(ACTION_TABLE, actionArray[i], &layoutRead,
+		ACTION_KEY_ICON_LAYOUT, nullptr);
+		layout = static_cast<SdlItem::Layout>(layoutRead);
+		item->setLayout(layout);
+
+		item->setOverlay(true);
+
+		std::string action = std::string(actionArray[i]);
+		item->setClickLeftCb([action]()
+		{	ui_play_cb_action(action);});
+
+		item->setWheelUpCb([]()
+		{	cb_wheel_up_action();});
+		item->setWheelDownCb([]()
+		{	cb_wheel_down_action();});
 
 		// load image
-		anim_array = imageDB_get_anim_array(ctx, (const char **) icon);
-		if (icon_array[0] == nullptr)
+		std::vector<std::string> iconArrayStd;
+		int k = 0;
+		while (iconArray[k] != nullptr)
 		{
-			deep_free(icon);
+			iconArrayStd.push_back(std::string(iconArray[k]));
+			k++;
 		}
+		deep_free(iconArray);
 
-		item_set_pos(item, x, sh - anim_array[0]->h);
-		item_set_anim_array(item, anim_array);
+		std::vector<Anim*> animArray = imageDB_get_anim_array(ctx, iconArrayStd);
+		item->setAnim(animArray);
+		item->setPos(x, sh - animArray[0]->getHeight());
 
 		// calculate next icon start X
-		x += anim_array[0]->w;
-		if (action_bar_height < anim_array[0]->h)
+		x += animArray[0]->getWidth();
+		if (action_bar_height < animArray[0]->getHeight())
 		{
-			action_bar_height = anim_array[0]->h;
+			action_bar_height = animArray[0]->getHeight();
 		}
 
-		free(anim_array);
-
-		if (entry_read_list(ACTION_TABLE, action_list[i], &icon_over,
+		char ** iconOver = nullptr;
+		if (entry_read_list(ACTION_TABLE, actionArray[i], &iconOver,
 		ACTION_KEY_ICON_OVER, nullptr) == true)
 		{
-			anim_array = imageDB_get_anim_array(ctx, (const char **) icon_over);
-			item_set_anim_over_array(item, anim_array);
-			free(anim_array);
-			deep_free(icon_over);
+			std::vector<std::string> iconOverStd;
+			int i = 0;
+			while (iconOver[i] != nullptr)
+			{
+				iconOverStd.push_back(std::string(iconOver[i]));
+			}
+			deep_free(iconOver);
+
+			animArray.clear();
+			animArray = imageDB_get_anim_array(ctx, iconOverStd);
+			item->setAnimOver(animArray);
 		}
 
-		if (entry_read_list(ACTION_TABLE, action_list[i], &icon_click,
+		char ** iconClick = nullptr;
+		if (entry_read_list(ACTION_TABLE, actionArray[i], &iconClick,
 		ACTION_KEY_ICON_CLICK, nullptr) == true)
 		{
-			anim_array = imageDB_get_anim_array(ctx, (const char **) icon_click);
-			item_set_anim_click_array(item, anim_array);
-			free(anim_array);
-			deep_free(icon_click);
+			std::vector<std::string> iconClickStd;
+			int j = 0;
+			while (iconClick[j] != nullptr)
+			{
+				iconClickStd.push_back(std::string(iconClick[j]));
+				j++;
+			}
+
+			deep_free(iconClick);
+
+			animArray.clear();
+			animArray = imageDB_get_anim_array(ctx, iconClickStd);
+			item->setAnimClick(animArray);
 		}
+
+		itemArray.push_back(item);
 
 		i++;
 	}
 
-	num_action = first_action + i;
+	numAction = firstAction + i;
 
-	deep_free(action_list);
-
-	if (text)
-	{
-		free(text);
-		text = nullptr;
-	}
-	if (script)
-	{
-		free(script);
-		script = nullptr;
-	}
+	return action_bar_height;
 }
 
-/**********************************
- **********************************/
-static void cb_select_slot(void * arg)
+/*****************************************************************************/
+static void cb_select_slot(const std::string & id)
 {
-	char * id = (char*) arg;
 	Context * ctx = context_get_player();
 
-	network_send_action(*(ctx->getConnection()), option_get().action_select_equipment, id, nullptr);
+	network_send_action(*(ctx->getConnection()), option_get().action_select_equipment, id.c_str(), nullptr);
 }
 
-/**************************************
- **************************************/
-static void show_inventory(void * arg)
+/*****************************************************************************/
+static void show_inventory()
 {
-	ui_play_set(UI_INVENTORY);
+	ui_play_set(UiType::INVENTORY);
 }
 
-/**********************************
- Compose equipment icon
- **********************************/
-static void compose_equipment(Context * ctx, item_t * g_itemList)
+/*****************************************************************************/
+static void compose_equipment(Context * ctx, std::vector<SdlItem*> & itemArray)
 {
-	char ** slot_list = nullptr;
-	anim_t * anim;
-	anim_t * anim2;
-	anim_t * anim3;
-	item_t * item;
-	int sw = 0;
-	int sh = 0;
-	int y = 0;
-	int x = 0;
-	int h1;
-	int index;
+	Anim * anim;
+	Anim * anim2;
+	Anim * anim3;
+
 	char * mytemplate = nullptr;
 #if 0
 	char * name;
 #endif
-	char * icon_name = nullptr;
-	char * equipped_name = nullptr;
+	char * iconName = nullptr;
+	char * equippedName = nullptr;
 #if 0
 	char * equipped_text = nullptr;
 #endif
-	char * equipped_icon_name = nullptr;
-	char * inventory_icon_name = nullptr;
-	static anim_t * inventory_icon = nullptr;
-	int max_h;
-	int max_w;
+	char * equippedIconName = nullptr;
+	char * inventoryIconName = nullptr;
+	Anim * inventoryIconAnim = nullptr;
 
+	int sw = 0;
+	int sh = 0;
 	sdl_get_output_size(&sw, &sh);
 
+	char ** slot_list = nullptr;
 	entry_get_group_list(CHARACTER_TABLE, ctx->getId().c_str(), &slot_list, EQUIPMENT_GROUP, nullptr);
 
-	max_w = 0;
-	max_h = 0;
-	index = 0;
+	int max_h = 0;
+	int max_w = 0;
+	int y = 0;
+	int x = 0;
+	int h1;
+	int index = 0;
 	while (slot_list && slot_list[index] != nullptr)
 	{
 #if 0
@@ -623,7 +600,7 @@ static void compose_equipment(Context * ctx, item_t * g_itemList)
 #endif
 		h1 = 0;
 		// Get the slot icon
-		if (entry_read_string(CHARACTER_TABLE, ctx->getId().c_str(), &icon_name,
+		if (entry_read_string(CHARACTER_TABLE, ctx->getId().c_str(), &iconName,
 		EQUIPMENT_GROUP, slot_list[index], EQUIPMENT_ICON, nullptr) == false)
 		{
 			continue;
@@ -631,77 +608,85 @@ static void compose_equipment(Context * ctx, item_t * g_itemList)
 		else
 		{
 			// load image
-			anim = imageDB_get_anim(ctx, icon_name);
-			free(icon_name);
+			anim = imageDB_get_anim(ctx, iconName);
+			free(iconName);
 
-			item = item_list_add(&g_itemList);
+			SdlItem * item = new SdlItem;
+			itemArray.push_back(item);
 
-			x = sw - anim->w;
-			h1 = anim->h;
-			item_set_overlay(item, 1);
-			item_set_pos(item, x, y);
-			item_set_anim(item, anim, 0);
+			x = sw - anim->getWidth();
+			h1 = anim->getHeight();
+			item->setOverlay(true);
+			item->setPos(x, y);
+			item->setAnim(anim);
 
-			item_set_click_left(item, cb_select_slot, strdup(slot_list[index]), nullptr);
+			std::string slot = std::string(slot_list[index]);
+			item->setClickLeftCb([slot]()
+			{	cb_select_slot(slot);});
 
-			if (anim->w > max_w)
+			if (anim->getWidth() > max_w)
 			{
-				max_w = anim->w;
+				max_w = anim->getWidth();
 			}
-			if (anim->h > max_h)
+			if (anim->getHeight() > max_h)
 			{
-				max_h = anim->h;
+				max_h = anim->getHeight();
 			}
 		}
 
 		// Is there an equipped object ?
-		if (entry_read_string(CHARACTER_TABLE, ctx->getId().c_str(), &equipped_name,
-		EQUIPMENT_GROUP, slot_list[index], EQUIPMENT_EQUIPPED, nullptr) == true && equipped_name[0] != 0)
+		if (entry_read_string(CHARACTER_TABLE, ctx->getId().c_str(), &equippedName,
+		EQUIPMENT_GROUP, slot_list[index], EQUIPMENT_EQUIPPED, nullptr) == true && equippedName[0] != 0)
 		{
 #if 0
 			// Get the equipped object name
-			if(entry_read_string(ITEM_TABLE,equipped_name,&equipped_text,ITEM_NAME,nullptr) == false )
+			if(entry_read_string(ITEM_TABLE,equippedName,&equipped_text,ITEM_NAME,nullptr) == false )
 			{
-				werr(LOGDESIGNER,"Can't read object %s name in equipment slot %s",equipped_name,slot_list[index]);
+				werr(LOGDESIGNER,"Can't read object %s name in equipment slot %s",equippedName,slot_list[index]);
 			}
 			free(equipped_text);
 #endif
 			// Get its icon
-			mytemplate = item_is_resource(std::string(equipped_name));
+			mytemplate = item_is_resource(std::string(equippedName));
 
 			if (mytemplate == nullptr)
 			{
-				if (entry_read_string(ITEM_TABLE, equipped_name, &equipped_icon_name, ITEM_ICON, nullptr) == false)
+				if (entry_read_string(ITEM_TABLE, equippedName, &equippedIconName, ITEM_ICON, nullptr) == false)
 				{
-					werr(LOGDESIGNER, "Can't read object %s icon in equipment slot %s", equipped_name, slot_list[index]);
+					werr(LOGDESIGNER, "Can't read object %s icon in equipment slot %s", equippedName, slot_list[index]);
 				}
 			}
 			else
 			{
-				if (entry_read_string(ITEM_TEMPLATE_TABLE, mytemplate, &equipped_icon_name, ITEM_ICON, nullptr) == false)
+				if (entry_read_string(ITEM_TEMPLATE_TABLE, mytemplate, &equippedIconName, ITEM_ICON, nullptr) == false)
 				{
-					werr(LOGDESIGNER, "Can't read item %s icon name (template: %s)", equipped_name, mytemplate);
+					werr(LOGDESIGNER, "Can't read item %s icon name (template: %s)", equippedName, mytemplate);
 				}
 				free(mytemplate);
 			}
 
-			if (equipped_icon_name)
+			if (equippedIconName)
 			{
-				item = item_list_add(&g_itemList);
+				SdlItem * item = new SdlItem;
+				itemArray.push_back(item);
 
-				anim2 = imageDB_get_anim(ctx, equipped_icon_name);
-				free(equipped_icon_name);
+				anim2 = imageDB_get_anim(ctx, equippedIconName);
+				free(equippedIconName);
 
-				item_set_overlay(item, 1);
-				item_set_pos(item, x - anim->w, y);
-				item_set_anim(item, anim2, 0);
-				item_set_click_left(item, cb_select_slot, strdup(slot_list[index]), nullptr);
-				if (h1 < anim->h)
+				item->setOverlay(true);
+				item->setPos(x - anim->getWidth(), y);
+				item->setAnim(anim2);
+
+				std::string slot = std::string(slot_list[index]);
+				item->setClickLeftCb([slot]()
+				{	cb_select_slot(slot);});
+
+				if (h1 < anim->getHeight())
 				{
-					h1 = anim->h;
+					h1 = anim->getHeight();
 				}
 			}
-			free(equipped_name);
+			free(equippedName);
 		}
 
 		// Draw selection cursor
@@ -711,22 +696,23 @@ static void compose_equipment(Context * ctx, item_t * g_itemList)
 			{
 				anim3 = imageDB_get_anim(ctx, option_get().cursor_equipment);
 
-				item = item_list_add(&g_itemList);
+				SdlItem * item = new SdlItem;
+				itemArray.push_back(item);
 
 				// Center on icon
-				item_set_overlay(item, 1);
-				item_set_pos(item, x - (anim3->w - anim->w) / 2, y - (anim3->h - anim->w) / 2);
-				item_set_anim(item, anim3, 0);
+				item->setOverlay(true);
+				item->setPos(x - (anim3->getWidth() - anim->getWidth()) / 2, y - (anim3->getHeight() - anim->getWidth()) / 2);
+				item->setAnim(anim3);
 			}
 		}
 
-		if (h1 > anim->h)
+		if (h1 > anim->getHeight())
 		{
 			y += h1;
 		}
 		else
 		{
-			y += anim->h;
+			y += anim->getHeight();
 		}
 
 		index++;
@@ -742,31 +728,34 @@ static void compose_equipment(Context * ctx, item_t * g_itemList)
 
 		if (mytemplate == nullptr)
 		{
-			if (entry_read_string(ITEM_TABLE, inventory.c_str(), &inventory_icon_name, ITEM_ICON, nullptr) == false)
+			if (entry_read_string(ITEM_TABLE, inventory.c_str(), &inventoryIconName, ITEM_ICON, nullptr) == false)
 			{
 				werr(LOGDESIGNER, "Can't read item %s icon name", inventory.c_str());
 			}
 		}
 		else
 		{
-			if (entry_read_string(ITEM_TEMPLATE_TABLE, mytemplate, &inventory_icon_name, ITEM_ICON, nullptr) == false)
+			if (entry_read_string(ITEM_TEMPLATE_TABLE, mytemplate, &inventoryIconName, ITEM_ICON, nullptr) == false)
 			{
 				werr(LOGDESIGNER, "Can't read item %s icon name (template: %s)", inventory.c_str(), mytemplate);
 			}
 			free(mytemplate);
 		}
 
-		if (inventory_icon_name)
+		if (inventoryIconName)
 		{
-			item = item_list_add(&g_itemList);
+			SdlItem * item = new SdlItem;
+			itemArray.push_back(item);
 
-			anim = imageDB_get_anim(ctx, inventory_icon_name);
-			free(inventory_icon_name);
+			anim = imageDB_get_anim(ctx, inventoryIconName);
+			free(inventoryIconName);
 
-			item_set_overlay(item, 1);
-			item_set_pos(item, sw - anim->w, y);
-			item_set_anim(item, anim, 0);
-			item_set_click_left(item, show_inventory, nullptr, nullptr);
+			item->setOverlay(true);
+			item->setPos(sw - anim->getWidth(), y);
+			item->setAnim(anim);
+
+			item->setClickLeftCb([]()
+			{	show_inventory();});
 		}
 	}
 	else
@@ -780,249 +769,176 @@ static void compose_equipment(Context * ctx, item_t * g_itemList)
 			max_h = 32;
 		}
 
-		if (inventory_icon == nullptr)
+		if (inventoryIconAnim == nullptr)
 		{
-			inventory_icon = anim_create_color(max_w, max_h, 0x7f7f7f7f);
+			inventoryIconAnim = anim_create_color(max_w, max_h, 0x7f7f7f7f);
 		}
 
-		item = item_list_add(&g_itemList);
+		SdlItem * item = new SdlItem;
+		itemArray.push_back(item);
 
-		item_set_overlay(item, 1);
-		item_set_pos(item, sw - inventory_icon->w, y);
-		item_set_anim(item, inventory_icon, 0);
-		item_set_click_left(item, show_inventory, nullptr, nullptr);
+		item->setOverlay(true);
+		item->setPos(sw - inventoryIconAnim->getWidth(), y);
+		item->setAnim(inventoryIconAnim);
+
+		item->setClickLeftCb([]()
+		{	show_inventory();});
 	}
 }
 
-/**************************************
- **************************************/
-static void keyboard_text(void * arg)
+/*****************************************************************************/
+static void keyboard_text(std::string text)
 {
-	const char * text = (const char*) arg;
-
 	network_send_action(*(context_get_player()->getConnection()), WOG_CHAT, text, nullptr);
-	text_buffer[0] = 0;
+	textBuffer.clear();
 	screen_compose();
-}
-
-/**********************************
- Compose text
- **********************************/
-static void compose_text(Context * ctx, item_t * g_itemList)
-{
-	const history_entry_t * history = nullptr;
-	history_entry_t * hist = nullptr;
-	Uint32 time = SDL_GetTicks();
-	int sw = 0;
-	int sh = 0;
-	int current_y = 0;
-	static TTF_Font * font = nullptr;
-	item_t * item = nullptr;
-	int w = 0;
-	int h = 0;
-	int x = 0;
-	int y = 0;
-
-	font = font_get(ctx, TEXT_FONT, TEXT_FONT_SIZE);
-
-	sdl_get_output_size(&sw, &sh);
-	current_y = sh - action_bar_height;
-
-	// Draw edit box
-	item = item_list_add(&g_itemList);
-
-	item_set_overlay(item, 1);
-	item_set_buffer(item, text_buffer, TEXT_BUFFER_SIZE);
-	item_set_string_bg(item, BACKGROUND_COLOR);
-	item_set_font(item, font);
-	item_set_editable(item, 1);
-	item_set_edit_cb(item, keyboard_text);
-	sdl_get_string_size(item->font, item->string, &w, &h);
-	x = w;
-	if (w < 100)
-	{
-		x = 100;
-	}
-	y = h;
-	if (y < TEXT_FONT_SIZE)
-	{
-		y = TEXT_FONT_SIZE;
-	}
-	item_set_anim_shape(item, 0, current_y - y, x, y);
-	current_y -= y;
-	if (attribute_height > current_y)
-	{
-		return;
-	}
-
-	/* Draw text history */
-	history = textview_get_history();
-
-	if (history == nullptr)
-	{
-		return;
-	}
-
-	hist = (history_entry_t*) history;
-
-	while (hist)
-	{
-		if (time > hist->time + TEXT_TIMEOUT)
-		{
-			return;
-		}
-
-		item = item_list_add(&g_itemList);
-
-		item_set_overlay(item, 1);
-		item_set_string(item, hist->text);
-		item_set_string_bg(item, BACKGROUND_COLOR);
-		item_set_font(item, font);
-		sdl_get_string_size(item->font, item->string, &w, &h);
-		item_set_anim_shape(item, 0, current_y - h, w, h);
-		current_y -= h;
-		if (attribute_height > current_y)
-		{
-			return;
-		}
-
-		hist = hist->next;
-	}
 }
 
 /****************************
  ****************************/
-static void cb_print_coord(void * arg)
+static void cb_print_coord()
 {
-	char buf[SMALL_BUF];
-	int map_w;
 	Context * ctx = context_get_player();
 
-	entry_read_int(MAP_TABLE, ctx->getMap().c_str(), &map_w, MAP_KEY_WIDTH, nullptr);
+	int mapWidth = 0;
+	entry_read_int(MAP_TABLE, ctx->getMap().c_str(), &mapWidth, MAP_KEY_WIDTH, nullptr);
 
 //TODO: take layer into account
 #if 0
-	entry_read_list_index(MAP_TABLE,ctx->m_map,&type,scr_play_get_current_x()+scr_play_get_current_y()*map_w,layer_name,MAP_KEY_TYPE,nullptr);
+	entry_read_list_index(MAP_TABLE,ctx->m_map,&type,scr_play_get_current_x()+scr_play_get_current_y()*mapWidth,layer_name,MAP_KEY_TYPE,nullptr);
 	sprintf(buf,"x=%d y=%d type=%s",scr_play_get_current_x(),scr_play_get_current_y(),type);
 	free(type);
 #endif
-	sprintf(buf, "x=%d y=%d", scr_play_get_current_x(), scr_play_get_current_y());
-	textview_add_line(std::string(buf));
+	std::string text = "x= " + std::to_string(scr_play_get_current_x()) + " y=" + std::to_string(scr_play_get_current_y());
+	textview_add_line(text);
 
 	screen_compose();
 }
 
-/**********************************
- **********************************/
-static void main_compose(Context * ctx, item_t * g_itemList)
+/*****************************************************************************/
+static void main_compose(Context * ctx, std::vector<SdlItem*> & itemArray)
 {
-	compose_attribute(ctx, g_itemList);
-	compose_action(ctx, g_itemList);
-	compose_equipment(ctx, g_itemList);
-	compose_text(ctx, g_itemList);
+	static TTF_Font * font = font_get(ctx, TEXT_FONT, TEXT_FONT_SIZE);
+	static ChatBox chatBox(font, keyboard_text);
 
-	sdl_add_keycb(SDL_SCANCODE_I, show_inventory, nullptr, nullptr);
-	sdl_add_keycb(SDL_SCANCODE_UP, key_up, key_up_released, nullptr);
-	sdl_add_keycb(SDL_SCANCODE_KP_8, key_up, key_up_released, nullptr);
-	sdl_add_keycb(SDL_SCANCODE_DOWN, key_down, key_down_released, nullptr);
-	sdl_add_keycb(SDL_SCANCODE_KP_2, key_down, key_down_released, nullptr);
-	sdl_add_keycb(SDL_SCANCODE_LEFT, key_left, key_left_released, nullptr);
-	sdl_add_keycb(SDL_SCANCODE_KP_4, key_left, key_left_released, nullptr);
-	sdl_add_keycb(SDL_SCANCODE_RIGHT, key_right, key_right_released, nullptr);
-	sdl_add_keycb(SDL_SCANCODE_KP_6, key_right, key_right_released, nullptr);
-	sdl_add_keycb(SDL_SCANCODE_KP_7, key_up_left, key_up_left_released, nullptr);
-	sdl_add_keycb(SDL_SCANCODE_KP_9, key_up_right, key_up_right_released, nullptr);
-	sdl_add_keycb(SDL_SCANCODE_KP_1, key_down_left, key_down_left_released, nullptr);
-	sdl_add_keycb(SDL_SCANCODE_KP_3, key_down_right, key_down_right_released, nullptr);
-	sdl_add_keycb(SDL_SCANCODE_ESCAPE, cb_main_quit, nullptr, g_itemList);
-	sdl_add_keycb(SDL_SCANCODE_SCROLLLOCK, cb_print_coord, nullptr, nullptr);
+	int attribute_height = compose_attribute(ctx, itemArray);
+	int action_bar_height = compose_action(ctx, itemArray);
+	chatBox.compose(itemArray, attribute_height, action_bar_height);
+
+	compose_equipment(ctx, itemArray);
+
+	sdl_add_down_key_cb(SDL_SCANCODE_I, show_inventory);
+	sdl_add_down_key_cb(SDL_SCANCODE_UP, key_up);
+	sdl_add_up_key_cb(SDL_SCANCODE_UP, key_up_released);
+	sdl_add_down_key_cb(SDL_SCANCODE_KP_8, key_up);
+	sdl_add_up_key_cb(SDL_SCANCODE_KP_8, key_up_released);
+	sdl_add_down_key_cb(SDL_SCANCODE_DOWN, key_down);
+	sdl_add_up_key_cb(SDL_SCANCODE_DOWN, key_down_released);
+	sdl_add_down_key_cb(SDL_SCANCODE_KP_2, key_down);
+	sdl_add_up_key_cb(SDL_SCANCODE_KP_2, key_down_released);
+	sdl_add_down_key_cb(SDL_SCANCODE_LEFT, key_left);
+	sdl_add_up_key_cb(SDL_SCANCODE_LEFT, key_left_released);
+	sdl_add_down_key_cb(SDL_SCANCODE_KP_4, key_left);
+	sdl_add_up_key_cb(SDL_SCANCODE_KP_4, key_left_released);
+	sdl_add_down_key_cb(SDL_SCANCODE_RIGHT, key_right);
+	sdl_add_up_key_cb(SDL_SCANCODE_RIGHT, key_right_released);
+	sdl_add_down_key_cb(SDL_SCANCODE_KP_6, key_right);
+	sdl_add_up_key_cb(SDL_SCANCODE_KP_6, key_right_released);
+	sdl_add_down_key_cb(SDL_SCANCODE_KP_7, key_up_left);
+	sdl_add_up_key_cb(SDL_SCANCODE_KP_7, key_up_left_released);
+	sdl_add_down_key_cb(SDL_SCANCODE_KP_9, key_up_right);
+	sdl_add_up_key_cb(SDL_SCANCODE_KP_9, key_up_right_released);
+	sdl_add_down_key_cb(SDL_SCANCODE_KP_1, key_down_left);
+	sdl_add_up_key_cb(SDL_SCANCODE_KP_1, key_down_left_released);
+	sdl_add_down_key_cb(SDL_SCANCODE_KP_3, key_down_right);
+	sdl_add_up_key_cb(SDL_SCANCODE_KP_3, key_down_right_released);
+	sdl_add_down_key_cb(SDL_SCANCODE_ESCAPE, cb_main_quit);
+	sdl_add_down_key_cb(SDL_SCANCODE_SCROLLLOCK, cb_print_coord);
 }
 
-/****************************
- ****************************/
-static void cb_inventory_quit(void * arg)
+/*****************************************************************************/
+static void cb_inventory_quit()
 {
-	ui_play_set(UI_MAIN);
+	ui_play_set(UiType::MAIN);
 }
 
-/****************************
- ****************************/
-void cb_inventory_select(void * arg)
+/*****************************************************************************/
+void cb_inventory_select(const std::string & itemId)
 {
-	char * item_id = (char *) arg;
 	Context * ctx = context_get_player();
 
-	network_send_action(*(ctx->getConnection()), option_get().action_select_inventory, item_id, nullptr);
+	network_send_action(*(ctx->getConnection()), option_get().action_select_inventory, itemId.c_str(), nullptr);
 }
 
-/**********************************
- Compose inventory
- **********************************/
-static void compose_inventory(Context * ctx, item_t * g_itemList)
+/*****************************************************************************/
+static void compose_inventory(Context * ctx, std::vector<SdlItem*> & itemArray)
 {
-	char * value = nullptr;
-	char * label;
-	char * description;
-	anim_t * anim;
-	item_t * item;
-	int x = 0;
-	int i = 0;
+	std::string description;
 	static TTF_Font * font = nullptr;
-	char * mytemplate;
-	int quantity;
-	char buf[1024];
-	int w;
-	int h;
 
-	font = font_get(ctx, ITEM_FONT, ITEM_FONT_SIZE);
+	if (font != nullptr)
+	{
+		font = font_get(ctx, ITEM_FONT, ITEM_FONT_SIZE);
+	}
 
-	deep_free(inventory_list);
+	inventoryArray.clear();
 
-	draw_background(ctx, g_itemList);
+	draw_background(ctx, itemArray);
 
 	// read data from file
-	if (entry_read_list(CHARACTER_TABLE, ctx->getId().c_str(), &inventory_list,
+	char ** inventoryList = nullptr;
+	if (entry_read_list(CHARACTER_TABLE, ctx->getId().c_str(), &inventoryList,
 	CHARACTER_KEY_INVENTORY, nullptr) == false)
 	{
 		return;
 	}
 
-	while (inventory_list[i] != nullptr)
+	int i = 0;
+	while (inventoryList[i] != nullptr)
 	{
-		mytemplate = item_is_resource(std::string(inventory_list[i]));
+		inventoryArray.push_back(std::string(inventoryList[i]));
+		i++;
+	}
 
+	std::string label;
+	int x = 0;
+
+	for (auto && inventoryId : inventoryArray)
+	{
+		char * mytemplate = item_is_resource(std::string(inventoryArray[i]));
+
+		Anim * anim = nullptr;
+		char * value = nullptr;
 		if (mytemplate == nullptr)
 		{
 			// Icon is mandatory for now
-			if (entry_read_string(ITEM_TABLE, inventory_list[i], &value,
+			if (entry_read_string(ITEM_TABLE, inventoryId.c_str(), &value,
 			ITEM_ICON, nullptr) == false)
 			{
-				i++;
 				continue;
 			}
 			// load image
 			anim = imageDB_get_anim(ctx, value);
 			free(value);
 
-			if (entry_read_string(ITEM_TABLE, inventory_list[i], &value,
+			if (entry_read_string(ITEM_TABLE, inventoryId.c_str(), &value,
 			ITEM_NAME, nullptr) == false)
 			{
-				label = strdup(inventory_list[i]);
+				label = inventoryId;
 			}
 			else
 			{
-				label = value;
+				label = std::string(value);
 			}
 
-			if (entry_read_string(ITEM_TABLE, inventory_list[i], &value,
+			if (entry_read_string(ITEM_TABLE, inventoryId.c_str(), &value,
 			ITEM_DESC, nullptr) == false)
 			{
-				description = strdup("");
-				;
+				description = "";
 			}
 			else
 			{
-				description = value;
+				description = std::string(value);
 			}
 		}
 		else
@@ -1031,7 +947,6 @@ static void compose_inventory(Context * ctx, item_t * g_itemList)
 			if (entry_read_string(ITEM_TEMPLATE_TABLE, mytemplate, &value,
 			ITEM_ICON, nullptr) == false)
 			{
-				i++;
 				free(mytemplate);
 				continue;
 			}
@@ -1042,18 +957,17 @@ static void compose_inventory(Context * ctx, item_t * g_itemList)
 			if (entry_read_string(ITEM_TEMPLATE_TABLE, mytemplate, &value,
 			ITEM_NAME, nullptr) == false)
 			{
-				label = strdup(inventory_list[i]);
+				label = inventoryId;
 			}
 			else
 			{
-				label = value;
+				label = std::string(value);
 			}
 
 			if (entry_read_string(ITEM_TEMPLATE_TABLE, mytemplate, &value,
 			ITEM_DESC, nullptr) == false)
 			{
-				description = strdup("");
-				;
+				description = "";
 			}
 			else
 			{
@@ -1063,61 +977,51 @@ static void compose_inventory(Context * ctx, item_t * g_itemList)
 
 		}
 
-		quantity = resource_get_quantity(std::string(inventory_list[i]));
+		int quantity = resource_get_quantity(inventoryId);
 
 		if (quantity > 0)
 		{
-			w = 0;
-			item = item_list_add(&g_itemList);
-			item_set_pos(item, x, 0);
-			item_set_anim(item, anim, 0);
+			int w = 0;
+			int h = 0;
+
+			SdlItem * item = new SdlItem;
+			itemArray.push_back(item);
+
+			item->setPos(x, 0);
+			item->setAnim(anim);
 			if (quantity > 1)
 			{
-				sprintf(buf, "%d", quantity);
-				item_set_string(item, buf);
-				item_set_string_bg(item, BACKGROUND_COLOR);
-				item_set_font(item, font);
-				sdl_get_string_size(item->font, item->string, &w, &h);
+				item->setText(std::to_string(quantity));
+
+				static constexpr Uint32 BACKGROUND_COLOR = 0xFFFFFF40;
+				item->setBackGroudColor(BACKGROUND_COLOR);
+				item->setFont(font);
+				sdl_get_string_size(item->getFont(), item->getText(), &w, &h);
 			}
-			item_set_overlay(item, 1);
-			if (w > anim->w)
+
+			item->setOverlay(true);
+			if (w > anim->getWidth())
 			{
 				x += w;
 			}
 			else
 			{
-				x += anim->w;
+				x += anim->getWidth();
 			}
-			item_set_click_left(item, cb_inventory_select, (void*) strdup(inventory_list[i]), free);
-		}
 
-		free(description);
-		free(label);
-		i++;
+			std::string itemId = std::string(inventoryArray[i]);
+			item->setClickLeftCb([itemId]()
+			{	cb_inventory_select(itemId);});
+		}
 	}
 }
 
-/**********************************
- Compose select cursor
- **********************************/
-static void compose_inventory_select(Context * ctx, item_t * g_itemList)
+/*****************************************************************************/
+static void compose_inventory_select(Context * ctx, std::vector<SdlItem*> & itemArray)
 {
-	item_t * item = nullptr;
-	int x = -1;
-	int i = 0;
-	char * icon_name = nullptr;
-	anim_t * anim = nullptr;
-	anim_t * icon_anim = nullptr;
-	char * mytemplate = nullptr;
+	const std::string & inventorySelected = ctx->getSelectionInventory();
 
-	const std::string & inventory = ctx->getSelectionInventory();
-
-	if (inventory == "")
-	{
-		return;
-	}
-
-	if (g_itemList == nullptr)
+	if (inventorySelected == "")
 	{
 		return;
 	}
@@ -1127,29 +1031,42 @@ static void compose_inventory_select(Context * ctx, item_t * g_itemList)
 		return;
 	}
 
-	anim = imageDB_get_anim(ctx, option_get().cursor_inventory);
+	Anim * animCursor = imageDB_get_anim(ctx, option_get().cursor_inventory);
 
-	deep_free(inventory_list);
+	inventoryArray.clear();
 
 	// read data from file
-	if (entry_read_list(CHARACTER_TABLE, ctx->getId().c_str(), &inventory_list,
+	char ** inventoryList = nullptr;
+	if (entry_read_list(CHARACTER_TABLE, ctx->getId().c_str(), &inventoryList,
 	CHARACTER_KEY_INVENTORY, nullptr) == false)
 	{
 		return;
 	}
 
-	i = 0;
-	x = 0;
-	while (inventory_list[i] && strcmp(inventory_list[i], inventory.c_str()))
+	int i = 0;
+	while (inventoryList[i] != nullptr)
 	{
-		mytemplate = item_is_resource(std::string(inventory_list[i]));
+		inventoryArray.push_back(std::string(inventoryList[i]));
+		i++;
+	}
+
+	int x = 0;
+	char * mytemplate = nullptr;
+	bool isItemFound = false;
+	Anim * iconAnim = nullptr;
+
+	for (auto && inventory : inventoryArray)
+	{
+		mytemplate = item_is_resource(inventory);
+
+		char * icon_name = nullptr;
 
 		if (mytemplate == nullptr)
 		{
-			if (entry_read_string(ITEM_TABLE, inventory_list[i], &icon_name,
+			if (entry_read_string(ITEM_TABLE, inventory.c_str(), &icon_name,
 			ITEM_ICON, nullptr) == false)
 			{
-				werr(LOGDESIGNER, "Can't read item %s icon name", inventory_list[i]);
+				ERR_DESIGN("Can't read item " + inventory + " icon name");
 			}
 		}
 		else
@@ -1157,239 +1074,240 @@ static void compose_inventory_select(Context * ctx, item_t * g_itemList)
 			if (entry_read_string(ITEM_TEMPLATE_TABLE, mytemplate, &icon_name,
 			ITEM_ICON, nullptr) == false)
 			{
-				werr(LOGDESIGNER, "Can't read item %s icon name (template: %s)", inventory_list[i], mytemplate);
+				ERR_DESIGN("Can't read item " + inventory + " icon name (template: " + std::string(mytemplate));
 			}
 			free(mytemplate);
 		}
 
-		icon_anim = imageDB_get_anim(ctx, icon_name);
+		iconAnim = imageDB_get_anim(ctx, icon_name);
 		free(icon_name);
 
-		x += icon_anim->w;
-		i++;
+		x += iconAnim->getWidth();
+
+		if (inventory == inventorySelected)
+		{
+			isItemFound = true;
+			break;
+		}
+
 	}
 
-	if (inventory_list[i])
+	if (isItemFound == true)
 	{
-		item = item_list_add(&g_itemList);
-		item_set_pos(item, x, 0);
-		item_set_anim(item, anim, 0);
-		item_set_overlay(item, 1);
+		SdlItem * item = new SdlItem;
+		itemArray.push_back(item);
+
+		item->setPos(x, 0);
+		item->setAnim(animCursor);
+		item->setOverlay(true);
 	}
 }
 
-/**********************************
- **********************************/
-static void inventory_compose(Context * ctx, item_t * g_itemList)
+/*****************************************************************************/
+static void inventory_compose(Context * ctx, std::vector<SdlItem*> & itemArray)
 {
-	compose_inventory(ctx, g_itemList);
-	compose_inventory_select(ctx, g_itemList);
+	compose_inventory(ctx, itemArray);
+	compose_inventory_select(ctx, itemArray);
 
-	sdl_add_keycb(SDL_SCANCODE_I, cb_inventory_quit, nullptr, nullptr);
-	sdl_add_keycb(SDL_SCANCODE_ESCAPE, cb_inventory_quit, nullptr, nullptr);
-	sdl_add_keycb(SDL_SCANCODE_SPACE, cb_inventory_quit, nullptr, nullptr);
+	sdl_add_down_key_cb(SDL_SCANCODE_I, cb_inventory_quit);
+	sdl_add_down_key_cb(SDL_SCANCODE_ESCAPE, cb_inventory_quit);
+	sdl_add_down_key_cb(SDL_SCANCODE_SPACE, cb_inventory_quit);
 }
 
-/****************************
- ****************************/
-static void cb_popup_quit(void * arg)
+/*****************************************************************************/
+static void cb_popup_quit()
 {
-	popup_offset = 0;
+	popupOffset = 0;
 
-	g_PopupFifo.pop();
+	popupFifo.pop();
 
-	if (g_PopupFifo.size() == 0)
+	if (popupFifo.size() == 0)
 	{
-		ui_play_set(UI_MAIN);
+		ui_play_set(UiType::MAIN);
 	}
 }
 
-/****************************
- ****************************/
-void cb_popup(void * arg)
+/*****************************************************************************/
+void cb_popup(const ActionParam & actionParam)
 {
 	Context * player = context_get_player();
-	action_param_t * action_param = (action_param_t *) arg;
 
-	cb_popup_quit(nullptr);
+	cb_popup_quit();
 
-	network_send_action(*(player->getConnection()), action_param->action, action_param->param, nullptr);
+	network_send_action(*(player->getConnection()), actionParam.action.c_str(), actionParam.param.c_str(), nullptr);
 
 	screen_compose();
 }
 
-/****************************
- ****************************/
-void cb_free_action_param(void * arg)
+/*****************************************************************************/
+static void cb_wheel_up()
 {
-	action_param_t * action_param = (action_param_t *) arg;
-
-	free(action_param->action);
-	free(action_param->param);
-	free(action_param);
-}
-
-/**********************************
- **********************************/
-static void cb_wheel_up(Uint32 y, Uint32 unused)
-{
-	popup_offset -= MOUSE_WHEEL_SCROLL;
-	if (popup_offset < 0)
+	popupOffset -= MOUSE_WHEEL_SCROLL;
+	if (popupOffset < 0)
 	{
-		popup_offset = 0;
+		popupOffset = 0;
 	}
 	screen_compose();
 }
 
-/**********************************
- **********************************/
-static void cb_wheel_down(Uint32 y, Uint32 unused)
+/*****************************************************************************/
+static void cb_wheel_down()
 {
-	popup_offset += MOUSE_WHEEL_SCROLL;
+	popupOffset += MOUSE_WHEEL_SCROLL;
 	screen_compose();
 }
 
-/**********************************
- Compose screen
- **********************************/
-static void compose_popup(Context * ctx, item_t * g_itemList)
+/*****************************************************************************/
+static void compose_popup(Context * ctx, std::vector<SdlItem*> & itemArray)
 {
-	if (g_PopupFifo.size() == 0)
+	if (popupFifo.size() == 0)
 	{
 		return;
 	}
 
-	draw_background(ctx, g_itemList);
+	draw_background(ctx, itemArray);
 
-	static TTF_Font *l_pFont = font_get(ctx, SPEAK_FONT, SPEAK_FONT_SIZE);
+	static TTF_Font *font = font_get(ctx, SPEAK_FONT, SPEAK_FONT_SIZE);
 
 	sdl_free_mousecb();
 	sdl_add_mousecb(MOUSE_WHEEL_UP, cb_wheel_up);
 	sdl_add_mousecb(MOUSE_WHEEL_DOWN, cb_wheel_down);
 
-	std::vector<std::string> l_PopupData = g_PopupFifo.top();
+	std::vector<std::string> popupData = popupFifo.top();
 
-	item_t * l_pItem = nullptr;
-	int l_X = 0;
-	int l_Y = 0;
-	int l_Width = 0;
-	int l_Height = 0;
-	int l_MaxHeight = 0;
-	action_param_t * l_pActionParam = nullptr;
+	int x = 0;
+	int y = 0;
+	int width = 0;
+	int height = 0;
+	int maxHeight = 0;
+	ActionParam * actionParams = nullptr;
 
-	for (auto l_It = l_PopupData.cbegin(); l_It != l_PopupData.cend(); ++l_It)
+	for (auto iter = popupData.cbegin(); iter != popupData.cend(); ++iter)
 	{
-		if (*l_It == POPUP_TAG_IMAGE)
+		if (*iter == POPUP_TAG_IMAGE)
 		{
-			++l_It;
-			anim_t * l_pAnim = imageDB_get_anim(ctx, l_It->c_str());
+			++iter;
+			Anim * anim = imageDB_get_anim(ctx, *iter);
 
-			l_pItem = item_list_add(&g_itemList);
-			item_set_pos(l_pItem, l_X, l_Y - popup_offset);
-			item_set_anim(l_pItem, l_pAnim, 0);
-			item_set_overlay(l_pItem, 1);
-			if (l_pActionParam != nullptr)
+			SdlItem * item = new SdlItem;
+			itemArray.push_back(item);
+
+			item->setPos(x, y - popupOffset);
+			item->setAnim(anim);
+			item->setOverlay(true);
+
+			if (actionParams != nullptr)
 			{
-				item_set_click_left(l_pItem, cb_popup, l_pActionParam, cb_free_action_param);
-				l_pActionParam = nullptr;
+				ActionParam params = *actionParams;
+				item->setClickLeftCb([params]()
+				{	cb_popup(params);});
+				delete actionParams;
+				actionParams = nullptr;
+
+				actionParams = nullptr;
 			}
-			l_X += l_pAnim->w;
-			if (l_MaxHeight < l_pAnim->h)
+			x += anim->getWidth();
+			if (maxHeight < anim->getHeight())
 			{
-				l_MaxHeight = l_pAnim->h;
-			}
-			continue;
-		}
-		if (*l_It == POPUP_TAG_TEXT)
-		{
-			++l_It;
-			l_pItem = item_list_add(&g_itemList);
-			item_set_string(l_pItem, l_It->c_str());
-			item_set_font(l_pItem, l_pFont);
-			sdl_get_string_size(l_pItem->font, l_pItem->string, &l_Width, &l_Height);
-			item_set_anim_shape(l_pItem, l_X, l_Y - popup_offset, l_Width, l_Height);
-			item_set_overlay(l_pItem, 1);
-			if (l_pActionParam != nullptr)
-			{
-				item_set_click_left(l_pItem, cb_popup, l_pActionParam, cb_free_action_param);
-				l_pActionParam = nullptr;
-			}
-			l_X += l_Width;
-			if (l_MaxHeight < l_Height)
-			{
-				l_MaxHeight = l_Height;
+				maxHeight = anim->getHeight();
 			}
 			continue;
 		}
-		if (*l_It == POPUP_TAG_ACTION)
+		if (*iter == POPUP_TAG_TEXT)
 		{
-			l_pActionParam = (action_param_t*) malloc(sizeof(action_param_t));
+			++iter;
+
+			SdlItem * item = new SdlItem;
+			itemArray.push_back(item);
+
+			item->setText(*iter);
+			item->setFont(font);
+			sdl_get_string_size(item->getFont(), item->getText(), &width, &height);
+			item->setPos(x, y - popupOffset);
+			item->setShape(width, height);
+			item->setOverlay(true);
+
+			if (actionParams != nullptr)
+			{
+				ActionParam params = *actionParams;
+				item->setClickLeftCb([params]()
+				{	cb_popup(params);});
+				delete actionParams;
+				actionParams = nullptr;
+			}
+			x += width;
+			if (maxHeight < height)
+			{
+				maxHeight = height;
+			}
+			continue;
+		}
+		if (*iter == POPUP_TAG_ACTION)
+		{
+			actionParams = new ActionParam;
 			// get action
-			++l_It;
-			l_pActionParam->action = strdup(l_It->c_str());
+			++iter;
+			actionParams->action = *iter;
 			// get param
-			++l_It;
-			l_pActionParam->param = strdup(l_It->c_str());
+			++iter;
+			actionParams->param = *iter;
 			continue;
 		}
-		if (*l_It == POPUP_TAG_EOL)
+		if (*iter == POPUP_TAG_EOL)
 		{
-			l_Y += l_MaxHeight;
-			l_MaxHeight = 0;
-			l_X = 0;
+			y += maxHeight;
+			maxHeight = 0;
+			x = 0;
 		}
-		if (*l_It == POPUP_TAG_EOP)
+		if (*iter == POPUP_TAG_EOP)
 		{
-			l_Y += l_MaxHeight;
-			l_MaxHeight = 0;
-			l_X = 0;
+			y += maxHeight;
+			maxHeight = 0;
+			x = 0;
 		}
 	}
 }
 
-/**********************************
- **********************************/
+/*****************************************************************************/
 void ui_play_popup_add(const std::vector<std::string> & data)
 {
-	g_PopupFifo.push(data);
+	popupFifo.push(data);
 
-	ui_play_set(UI_POPUP);
+	ui_play_set(UiType::POPUP);
 }
 
-/**********************************
- **********************************/
-static void popup_compose(Context * ctx, item_t * g_itemList)
+/*****************************************************************************/
+static void popup_compose(Context * ctx, std::vector<SdlItem*> & itemArray)
 {
-	compose_popup(ctx, g_itemList);
+	compose_popup(ctx, itemArray);
 
-	sdl_add_keycb(SDL_SCANCODE_ESCAPE, cb_popup_quit, nullptr, nullptr);
-	sdl_add_keycb(SDL_SCANCODE_SPACE, cb_popup_quit, nullptr, nullptr);
+	sdl_add_down_key_cb(SDL_SCANCODE_ESCAPE, cb_popup_quit);
+	sdl_add_down_key_cb(SDL_SCANCODE_SPACE, cb_popup_quit);
 }
-/**********************************
- **********************************/
-void ui_play_compose(Context * ctx, item_t * g_itemList)
+
+/*****************************************************************************/
+void ui_play_compose(Context * ctx, std::vector<SdlItem*> & itemArray)
 {
-	switch (current_ui)
+	switch (currentUi)
 	{
-	case UI_MAIN:
-		main_compose(ctx, g_itemList);
+	case UiType::MAIN:
+		main_compose(ctx, itemArray);
 		break;
-	case UI_INVENTORY:
-		inventory_compose(ctx, g_itemList);
+	case UiType::INVENTORY:
+		inventory_compose(ctx, itemArray);
 		break;
-	case UI_POPUP:
-		popup_compose(ctx, g_itemList);
+	case UiType::POPUP:
+		popup_compose(ctx, itemArray);
 		break;
 	default:
-		werr(LOGUSER, "Wrong UI type");
+		ERR_USER("Wrong UI type");
 		break;
 	}
 }
-/**********************************
+/******************************************************************************
  Called once
- **********************************/
+ *****************************************************************************/
 void ui_play_init()
 {
-	// Empty text buffer
-	text_buffer[0] = 0;
+	textBuffer.clear();
 }

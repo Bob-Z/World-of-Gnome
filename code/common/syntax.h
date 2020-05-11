@@ -78,14 +78,14 @@
 #define CHARACTER_KEY_DIR_W_FLIP	"flip_w"
 #define CHARACTER_KEY_DIR_E_FLIP	"flip_e"
 #define CHARACTER_KEY_FORCE_FLIP	"force_flip"
-#define CHARACTER_KEY_DIR_N_SPRITE	"sprite_n"
-#define CHARACTER_KEY_DIR_S_SPRITE	"sprite_s"
-#define CHARACTER_KEY_DIR_W_SPRITE	"sprite_w"
-#define CHARACTER_KEY_DIR_E_SPRITE	"sprite_e"
-#define CHARACTER_KEY_MOV_N_SPRITE	"sprite_move_n"
-#define CHARACTER_KEY_MOV_S_SPRITE	"sprite_move_s"
-#define CHARACTER_KEY_MOV_W_SPRITE	"sprite_move_w"
-#define CHARACTER_KEY_MOV_E_SPRITE	"sprite_move_e"
+static const std::string CHARACTER_KEY_DIR_N_SPRITE = "sprite_n";
+static const std::string CHARACTER_KEY_DIR_S_SPRITE = "sprite_s";
+static const std::string CHARACTER_KEY_DIR_W_SPRITE = "sprite_w";
+static const std::string CHARACTER_KEY_DIR_E_SPRITE = "sprite_e";
+static const std::string CHARACTER_KEY_MOV_N_SPRITE = "sprite_move_n";
+static const std::string CHARACTER_KEY_MOV_S_SPRITE = "sprite_move_s";
+static const std::string CHARACTER_KEY_MOV_W_SPRITE = "sprite_move_w";
+static const std::string CHARACTER_KEY_MOV_E_SPRITE = "sprite_move_e";
 #define CHARACTER_KEY_PLATFORM		"platform"
 #define CHARACTER_KEY_DRAW_SCRIPT	"draw_script"
 
@@ -161,7 +161,7 @@
 #define ITEM_TEMPLATE_TABLE	"item_template"
 
 // scripts
-#define SCRIPT_TABLE		"script"
+static const std::string SCRIPT_TABLE = "script";
 
 // character equipment
 #define EQUIPMENT_GROUP		"equipment"

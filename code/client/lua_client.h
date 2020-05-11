@@ -28,6 +28,10 @@ extern "C"
 }
 #endif
 
+#include "SDL_mutex.h"
+
 void lua_init();
 lua_State * getLuaVm();
+SDL_mutex * getLuaVmMutex();
 lua_State * getEffectLuaVm();
+SDL_mutex * getEffectLuaVmMutex();

@@ -35,8 +35,8 @@ void EffectManager::processEffectFrame(Connection & connection, const std::vecto
 	const std::vector<std::string> script_params(params.begin() + 1, params.end());
 
 	// TODO use the same LUA VM as the one in render screen
-	if (lua_execute_script(getEffectLuaVm(), script, script_params) == -1)
+	if (lua_execute_script(getEffectLuaVm(), getEffectLuaVmMutex(), script, script_params) == -1)
 	{
-		file_request_from_network(connection, SCRIPT_TABLE, script.c_str());
+		file_request_from_network(connection, SCRIPT_TABLE, script);
 	}
 }

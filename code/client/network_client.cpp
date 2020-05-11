@@ -75,23 +75,19 @@ void network_request_playable_character_list(Connection & connection)
 	network_send_command(connection, serialized_data, false);
 }
 
-/*********************************************************************
- request a specific user's characters list
- *********************************************************************/
+/*****************************************************************************/
 void network_request_user_character_list(Connection & connection)
 {
 	pb::ClientMessage message;
 	message.mutable_user_character_list()->set_user(connection.getUserName());
 	std::string serialized_data = message.SerializeAsString();
 
-	LOG("[network] Send USER_CHARACTER_LIST");
+	LOG("[network] request user's characters list");
 	network_send_command(connection, serialized_data, false);
 }
 
-/*********************************************************************
- request a character's creation
- *********************************************************************/
-void network_request_character_creation(Connection & connection, const char * id, const char * name)
+/*****************************************************************************/
+void network_request_character_creation(Connection & connection, const std::string & id, const std::string & name)
 {
 	pb::ClientMessage message;
 	message.mutable_create()->set_id(id);
@@ -102,14 +98,14 @@ void network_request_character_creation(Connection & connection, const char * id
 	network_send_command(connection, serialized_data, false);
 }
 
-/*********************************************************************
+/******************************************************************************
  Player sends an action to server
- *********************************************************************/
-void network_send_action(Connection & connection, const char * actionFile, ...)
+ *****************************************************************************/
+void network_send_action(Connection & connection, const std::string & actionFile, ...)
 {
-	if (actionFile == nullptr)
+	if (actionFile.size() == 0)
 	{
-		werr(LOGDESIGNER, "Cannot ask for null action");
+		ERR_DESIGN("Cannot ask for no action");
 		return;
 	}
 
@@ -130,13 +126,13 @@ void network_send_action(Connection & connection, const char * actionFile, ...)
 
 	std::string serialized_data = message.SerializeAsString();
 
-	wlog(LOGDEVELOPER, "[network] Send action %s", actionFile);
+	LOG_DESIGN("[network] Send action " + actionFile);
 	network_send_command(connection, serialized_data, false);
 }
 
-/*********************************************************************
+/******************************************************************************
  Player sends an action stop to server
- *********************************************************************/
+ *****************************************************************************/
 void network_send_action_stop(Connection & connection, const char * actionFile)
 {
 	if (actionFile == nullptr)

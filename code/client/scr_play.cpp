@@ -17,7 +17,7 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#include "anim.h"
+#include "Anim.h"
 #include "Camera.h"
 #include "const.h"
 #include "entry.h"
@@ -49,206 +49,185 @@ static const std::string ITEM_FONT = "Ubuntu-C.ttf";
 #define EAST (1<<2)
 #define WEST (1<<3)
 
-#define ALIGN_CENTER	(0)
-#define ALIGN_LOWER	(1)
+enum class Align
+{
+	CENTER, LOWER
+};
 
 #define MAX_LAYER	(100)
 
-static item_t * g_itemList = nullptr;
-static bool change_map = false;
-static int current_map_x = -1;
-static int current_map_y = -1;
-static layer_t * default_layer = nullptr;
+static bool isMapChanged = false;
+static int currentMapX = -1;
+static int currentMapY = -1;
+static layer_t * defaultLayer = nullptr;
 static char * sfx = nullptr;
-static bool g_IsMusicPlaying = false;
+static bool isMusicPlaying = false;
 
-/**********************************
- **********************************/
+/*****************************************************************************/
 int scr_play_get_current_x()
 {
-	return current_map_x;
+	return currentMapX;
 }
 
-/**********************************
- **********************************/
+/*****************************************************************************/
 int scr_play_get_current_y()
 {
-	return current_map_y;
+	return currentMapY;
 }
 
-/**********************************
- **********************************/
-static void cb_select_sprite(void *arg)
+/*****************************************************************************/
+static void cb_select_sprite(const std::string & id)
 {
-	char * id = (char*) arg;
-	Context * ctx = context_get_player();
-
-	network_send_action(*(ctx->getConnection()), option_get().action_select_character, id, nullptr);
+	network_send_action(*(context_get_player()->getConnection()), option_get().action_select_character, id.c_str(), nullptr);
 }
 
-/**********************************
- **********************************/
-static void cb_redo_sprite(void *arg)
+/*****************************************************************************/
+static void cb_redo_sprite(const std::string & id)
 {
-	char * script = nullptr;
-	char * last_action = nullptr;
+	cb_select_sprite(id);
 
-	cb_select_sprite(arg);
-
-	last_action = ui_play_get_last_action();
-	if (last_action)
+	const std::string & lastAction = ui_play_get_last_action();
+	if (lastAction.size() > 0)
 	{
-		script = strdup(last_action);
-		ui_play_cb_action(script);
-		free(script);
+		ui_play_cb_action(lastAction);
 	}
 }
 
-/**********************************
- **********************************/
-static void cb_zoom(Uint32 l_Unused1, Uint32 l_Unused2)
+/*****************************************************************************/
+static void cb_zoom()
 {
 	Camera * camera = screen_get_camera();
 
 	camera->setZoom(camera->getZoom() + 1);
 }
 
-/**********************************
- **********************************/
-static void cb_unzoom(Uint32 l_Unused1, Uint32 l_Unused2)
+/*****************************************************************************/
+static void cb_unzoom()
 {
 	Camera * camera = screen_get_camera();
 
 	camera->setZoom(camera->getZoom() - 1);
 }
 
-/**********************************
+/******************************************************************************
  Select sprite image to display
  Return nullptr if no sprite can be found
  Returned anim_t ** must be FREED
- **********************************/
-static anim_t ** select_sprite(Context * ctx)
+ *****************************************************************************/
+static std::vector<Anim *> select_sprite(Context * ctx)
 {
-	anim_t ** sprite;
-	char * sprite_name = nullptr;
-	char ** sprite_list = nullptr;
-	const char * sprite_name_array[2] =
-	{ nullptr, nullptr };
-	Context * player_context = context_get_player();
+	char ** spriteList = nullptr;
+	Context * playerContext = context_get_player();
 
 	// Try to find a sprite depending on the orientation
+	char * spriteName = nullptr;
 	if (ctx->getOrientation() & NORTH)
 	{
-		entry_read_string(CHARACTER_TABLE, ctx->getId().c_str(), &sprite_name,
-		CHARACTER_KEY_DIR_N_SPRITE, nullptr);
+		entry_read_string(CHARACTER_TABLE, ctx->getId().c_str(), &spriteName, CHARACTER_KEY_DIR_N_SPRITE, nullptr);
 	}
-	if ((ctx->getOrientation() & SOUTH) && sprite_name == nullptr)
+	if ((ctx->getOrientation() & SOUTH) && spriteName == nullptr)
 	{
-		entry_read_string(CHARACTER_TABLE, ctx->getId().c_str(), &sprite_name,
-		CHARACTER_KEY_DIR_S_SPRITE, nullptr);
+		entry_read_string(CHARACTER_TABLE, ctx->getId().c_str(), &spriteName, CHARACTER_KEY_DIR_S_SPRITE, nullptr);
 	}
-	if ((ctx->getOrientation() & EAST) && sprite_name == nullptr)
+	if ((ctx->getOrientation() & EAST) && spriteName == nullptr)
 	{
-		entry_read_string(CHARACTER_TABLE, ctx->getId().c_str(), &sprite_name,
-		CHARACTER_KEY_DIR_E_SPRITE, nullptr);
+		entry_read_string(CHARACTER_TABLE, ctx->getId().c_str(), &spriteName, CHARACTER_KEY_DIR_E_SPRITE, nullptr);
 	}
-	if ((ctx->getOrientation() & WEST) && sprite_name == nullptr)
+	if ((ctx->getOrientation() & WEST) && spriteName == nullptr)
 	{
-		entry_read_string(CHARACTER_TABLE, ctx->getId().c_str(), &sprite_name,
-		CHARACTER_KEY_DIR_W_SPRITE, nullptr);
+		entry_read_string(CHARACTER_TABLE, ctx->getId().c_str(), &spriteName, CHARACTER_KEY_DIR_W_SPRITE, nullptr);
 	}
 
-	if (sprite_name)
+	if (spriteName != nullptr)
 	{
-		if (sprite_name[0] != 0)
+		if (spriteName[0] != 0)
 		{
-			sprite_name_array[0] = sprite_name;
-			sprite = imageDB_get_anim_array(player_context, sprite_name_array);
-			free(sprite_name);
-			return sprite;
+			std::vector<std::string> spriteNameArray;
+			spriteNameArray.push_back(std::string(spriteName));
+			free(spriteName);
+			return imageDB_get_anim_array(playerContext, spriteNameArray);
 		}
-		free(sprite_name);
+		free(spriteName);
 	}
 
 	// Try sprite lists
 	if (ctx->getOrientation() & NORTH)
 	{
-		entry_read_list(CHARACTER_TABLE, ctx->getId().c_str(), &sprite_list,
-		CHARACTER_KEY_DIR_N_SPRITE, nullptr);
+		entry_read_list(CHARACTER_TABLE, ctx->getId().c_str(), &spriteList, CHARACTER_KEY_DIR_N_SPRITE, nullptr);
 	}
-	if ((ctx->getOrientation() & SOUTH) && sprite_list == nullptr)
+	if ((ctx->getOrientation() & SOUTH) && spriteList == nullptr)
 	{
-		entry_read_list(CHARACTER_TABLE, ctx->getId().c_str(), &sprite_list,
-		CHARACTER_KEY_DIR_S_SPRITE, nullptr);
+		entry_read_list(CHARACTER_TABLE, ctx->getId().c_str(), &spriteList, CHARACTER_KEY_DIR_S_SPRITE, nullptr);
 	}
-	if ((ctx->getOrientation() & EAST) && sprite_list == nullptr)
+	if ((ctx->getOrientation() & EAST) && spriteList == nullptr)
 	{
-		entry_read_list(CHARACTER_TABLE, ctx->getId().c_str(), &sprite_list,
-		CHARACTER_KEY_DIR_E_SPRITE, nullptr);
+		entry_read_list(CHARACTER_TABLE, ctx->getId().c_str(), &spriteList, CHARACTER_KEY_DIR_E_SPRITE, nullptr);
 	}
-	if ((ctx->getOrientation() & WEST) && sprite_list == nullptr)
+	if ((ctx->getOrientation() & WEST) && spriteList == nullptr)
 	{
-		entry_read_list(CHARACTER_TABLE, ctx->getId().c_str(), &sprite_list,
-		CHARACTER_KEY_DIR_W_SPRITE, nullptr);
+		entry_read_list(CHARACTER_TABLE, ctx->getId().c_str(), &spriteList, CHARACTER_KEY_DIR_W_SPRITE, nullptr);
 	}
 
-	if (sprite_list)
+	if (spriteList != nullptr)
 	{
-		sprite = imageDB_get_anim_array(player_context, (const char **) sprite_list);
-		deep_free(sprite_list);
-		return sprite;
+		std::vector<std::string> spriteNameArray;
+		int i = 0;
+		while (spriteList[i] != nullptr)
+		{
+			spriteNameArray.push_back(std::string(spriteList[i]));
+			i++;
+		}
+		deep_free(spriteList);
+
+		return imageDB_get_anim_array(playerContext, spriteNameArray);
 	}
 
 	// try default sprite file
-	if (entry_read_string(CHARACTER_TABLE, ctx->getId().c_str(), &sprite_name,
+	if (entry_read_string(CHARACTER_TABLE, ctx->getId().c_str(), &spriteName,
 	CHARACTER_KEY_SPRITE, nullptr) == true)
 	{
-		if (sprite_name[0] != 0)
+		if (spriteName != nullptr)
 		{
-			sprite_name_array[0] = sprite_name;
-			sprite = imageDB_get_anim_array(player_context, sprite_name_array);
-			free(sprite_name);
-			return sprite;
+			if (spriteName[0] != 0)
+			{
+				std::vector<std::string> spriteNameArray;
+				spriteNameArray.push_back(std::string(spriteName));
+				free(spriteName);
+				return imageDB_get_anim_array(playerContext, spriteNameArray);
+			}
+			free(spriteName);
 		}
-		free(sprite_name);
-	}
-	// try default sprite list
-	if (entry_read_list(CHARACTER_TABLE, ctx->getId().c_str(), &sprite_list,
-	CHARACTER_KEY_SPRITE, nullptr) == true)
-	{
-		sprite = imageDB_get_anim_array(player_context, (const char **) sprite_list);
-		deep_free(sprite_list);
-		return sprite;
 	}
 
-	werr(LOGDESIGNER, "Can't read sprite name for \"%s\"", ctx->getId().c_str());
-	return nullptr;
+	// try default sprite list
+	if (entry_read_list(CHARACTER_TABLE, ctx->getId().c_str(), &spriteList,
+	CHARACTER_KEY_SPRITE, nullptr) == true)
+	{
+		std::vector<std::string> spriteNameArray;
+		int i = 0;
+		while (spriteList[i] != nullptr)
+		{
+			spriteNameArray.push_back(std::string(spriteList[i]));
+			i++;
+		}
+		deep_free(spriteList);
+
+		return imageDB_get_anim_array(playerContext, spriteNameArray);
+	}
+
+	ERR_DESIGN("Can't read sprite name for \"" + ctx->getId() + "\"");
+
+	std::vector<Anim *> empty;
+	return empty;
 }
 
-/**********************************
+/******************************************************************************
  Draw a single sprite
  if image_file_name is not nullptr, this file is used as an image rather than the normal sprite image
- **********************************/
-static void set_up_sprite(Context * ctx)
+ *****************************************************************************/
+static void set_up_sprite(Context * ctx, std::vector<SdlItem *> & itemArray)
 {
-	anim_t ** sprite_list;
-	item_t * item;
-	int px;
-	int py;
-	Uint32 current_time;
-	int angle;
-	int flip;
-	int force_flip;
-	int move_status;
-	char * zoom_str = nullptr;
-	double zoom = 1.0;
-	int sprite_align = ALIGN_CENTER;
-	int sprite_offset_y = 0;
-	bool force_position = false;
-
-	Context * player_context = context_get_player();
-
-	if (ctx->getMap() == "")
+	if (ctx->getMap().size() == 0)
 	{
 		return;
 	}
@@ -256,36 +235,35 @@ static void set_up_sprite(Context * ctx)
 	{
 		return;
 	}
-	if (ctx->getMap() != player_context->getMap())
+	if (ctx->getMap() != context_get_player()->getMap())
 	{
 		return;
 	}
 
-	item = item_list_add(&g_itemList);
-
-	current_time = sdl_get_global_time();
+	Uint32 currentTime = sdl_get_global_time();
 
 	// Force position when the player has changed map
-	if (change_map == true)
+	bool forcePosition = false;
+	if (isMapChanged == true)
 	{
-		ctx->setAnimationTick(current_time);
-		force_position = true;
+		ctx->setAnimationTick(currentTime);
+		forcePosition = true;
 	}
 	// Force position when this context has changed map
 	if (ctx->isMapChanged() == true)
 	{
-		ctx->setAnimationTick(current_time);
+		ctx->setAnimationTick(currentTime);
 		ctx->setMapChanged(false);
-		force_position = true;
+		forcePosition = true;
 	}
 
 	if (ctx->getAnimationTick() == 0)
 	{
-		ctx->setAnimationTick(current_time);
+		ctx->setAnimationTick(currentTime);
 	}
 
 	// Detect sprite movement, initiate animation
-	if ((ctx->isPositionChanged() == true) && (force_position == false))
+	if ((ctx->isPositionChanged() == true) && (forcePosition == false))
 	{
 		ctx->setPositionChanged(false);
 
@@ -328,133 +306,138 @@ static void set_up_sprite(Context * ctx)
 	}
 
 	// Select sprite to display
-	sprite_list = select_sprite(ctx);
-	if (sprite_list == nullptr)
+	std::vector<Anim *> animArray;
+
+	animArray = select_sprite(ctx);
+	if (animArray.size() == 0)
 	{
-		return;
-	}
-	if (sprite_list[0] == nullptr)
-	{
-		free(sprite_list);
 		return;
 	}
 
 	// Get position in pixel
-	px = map_t2p_x(ctx->getTileX(), ctx->getTileY(), default_layer);
-	py = map_t2p_y(ctx->getTileX(), ctx->getTileY(), default_layer);
+	int px = map_t2p_x(ctx->getTileX(), ctx->getTileY(), defaultLayer);
+	int py = map_t2p_y(ctx->getTileX(), ctx->getTileY(), defaultLayer);
 
 	// Get per sprite zoom
-	if (entry_read_string(CHARACTER_TABLE, ctx->getId().c_str(), &zoom_str,
+	char * zoomStr = nullptr;
+	double zoom = 1.0;
+	if (entry_read_string(CHARACTER_TABLE, ctx->getId().c_str(), &zoomStr,
 	CHARACTER_KEY_ZOOM, nullptr) == true)
 	{
-		zoom = atof(zoom_str);
-		free(zoom_str);
+		zoom = atof(zoomStr);
+		free(zoomStr);
 	}
 
 	// Align sprite on tile
-	entry_read_int(CHARACTER_TABLE, ctx->getId().c_str(), &sprite_align, CHARACTER_KEY_ALIGN, nullptr);
-	if (sprite_align == ALIGN_CENTER)
+	int align = 0;
+	entry_read_int(CHARACTER_TABLE, ctx->getId().c_str(), &align, CHARACTER_KEY_ALIGN, nullptr);
+	Align spriteAlign = static_cast<Align>(align);
+	if (spriteAlign == Align::CENTER)
 	{
-		px -= ((sprite_list[0]->w * default_layer->map_zoom * zoom) - default_layer->tile_width) / 2;
-		py -= ((sprite_list[0]->h * default_layer->map_zoom * zoom) - default_layer->tile_height) / 2;
+		px -= ((animArray[0]->getWidth() * defaultLayer->map_zoom * zoom) - defaultLayer->tile_width) / 2;
+		py -= ((animArray[0]->getHeight() * defaultLayer->map_zoom * zoom) - defaultLayer->tile_height) / 2;
 	}
-	if (sprite_align == ALIGN_LOWER)
+	if (spriteAlign == Align::LOWER)
 	{
-		px -= ((sprite_list[0]->w * default_layer->map_zoom * zoom) - default_layer->tile_width) / 2;
-		py -= (sprite_list[0]->h * default_layer->map_zoom * zoom) - default_layer->tile_height;
+		px -= ((animArray[0]->getWidth() * defaultLayer->map_zoom * zoom) - defaultLayer->tile_width) / 2;
+		py -= (animArray[0]->getHeight() * defaultLayer->map_zoom * zoom) - defaultLayer->tile_height;
 	}
 
 	// Add Y offset
-	entry_read_int(CHARACTER_TABLE, ctx->getId().c_str(), &sprite_offset_y,
+	int spriteOffsetY = 0;
+	entry_read_int(CHARACTER_TABLE, ctx->getId().c_str(), &spriteOffsetY,
 	CHARACTER_KEY_OFFSET_Y, nullptr);
-	py += sprite_offset_y;
+	py += spriteOffsetY;
 
 	// Set sprite to item
-	item_set_pos(item, px, py);
-	item_set_anim_start_tick(item, ctx->getAnimationTick());
-	item_set_anim_array(item, sprite_list);
-	free(sprite_list);
+	SdlItem * item = new SdlItem;
+	itemArray.push_back(item);
+
+	item->setPos(px, py);
+	item->setAnimStartTick(ctx->getAnimationTick());
+	item->setAnim(animArray);
 
 	// Get rotation configuration
-	angle = 0;
+	int angle = 0;
 	if ((ctx->getOrientation() & NORTH) && (ctx->getOrientation() & EAST))
 	{
 		entry_read_int(CHARACTER_TABLE, ctx->getId().c_str(), &angle,
 		CHARACTER_KEY_DIR_NE_ROT, nullptr);
-		item_set_angle(item, (double) angle);
+		item->setAngle(static_cast<double>(angle));
 	}
 	else if ((ctx->getOrientation() & SOUTH) && (ctx->getOrientation() & EAST))
 	{
 		entry_read_int(CHARACTER_TABLE, ctx->getId().c_str(), &angle,
 		CHARACTER_KEY_DIR_SE_ROT, nullptr);
-		item_set_angle(item, (double) angle);
+		item->setAngle(static_cast<double>(angle));
 	}
 	else if ((ctx->getOrientation() & SOUTH) && (ctx->getOrientation() & WEST))
 	{
 		entry_read_int(CHARACTER_TABLE, ctx->getId().c_str(), &angle,
 		CHARACTER_KEY_DIR_SW_ROT, nullptr);
-		item_set_angle(item, (double) angle);
+		item->setAngle(static_cast<double>(angle));
 	}
 	else if ((ctx->getOrientation() & NORTH) && (ctx->getOrientation() & WEST))
 	{
 		entry_read_int(CHARACTER_TABLE, ctx->getId().c_str(), &angle,
 		CHARACTER_KEY_DIR_NW_ROT, nullptr);
-		item_set_angle(item, (double) angle);
+		item->setAngle(static_cast<double>(angle));
 	}
 	else if (ctx->getOrientation() & NORTH)
 	{
 		entry_read_int(CHARACTER_TABLE, ctx->getId().c_str(), &angle,
 		CHARACTER_KEY_DIR_N_ROT, nullptr);
-		item_set_angle(item, (double) angle);
+		item->setAngle(static_cast<double>(angle));
 	}
 	else if (ctx->getOrientation() & SOUTH)
 	{
 		entry_read_int(CHARACTER_TABLE, ctx->getId().c_str(), &angle,
 		CHARACTER_KEY_DIR_S_ROT, nullptr);
-		item_set_angle(item, (double) angle);
+		item->setAngle(static_cast<double>(angle));
 	}
 	else if (ctx->getOrientation() & WEST)
 	{
 		entry_read_int(CHARACTER_TABLE, ctx->getId().c_str(), &angle,
 		CHARACTER_KEY_DIR_W_ROT, nullptr);
-		item_set_angle(item, (double) angle);
+		item->setAngle(static_cast<double>(angle));
 	}
 	else if (ctx->getOrientation() & EAST)
 	{
 		entry_read_int(CHARACTER_TABLE, ctx->getId().c_str(), &angle,
 		CHARACTER_KEY_DIR_E_ROT, nullptr);
-		item_set_angle(item, (double) angle);
+		item->setAngle(static_cast<double>(angle));
 	}
 
 	// Get flip configuration
-	force_flip = 0;
-	entry_read_int(CHARACTER_TABLE, ctx->getId().c_str(), &force_flip,
+	int forceFlip = 0;
+	entry_read_int(CHARACTER_TABLE, ctx->getId().c_str(), &forceFlip,
 	CHARACTER_KEY_FORCE_FLIP, nullptr);
-	move_status = ctx->getDirection();
-	if (force_flip == true)
+
+	int moveStatus = ctx->getDirection();
+	if (forceFlip == true)
 	{
-		move_status = ctx->getOrientation();
+		moveStatus = ctx->getOrientation();
 	}
 
-	flip = 0;
+	int flip = 0;
 	if (angle == 0)
 	{
-		if (move_status & NORTH)
+		if (moveStatus & NORTH)
 		{
 			entry_read_int(CHARACTER_TABLE, ctx->getId().c_str(), &flip,
 			CHARACTER_KEY_DIR_N_FLIP, nullptr);
 		}
-		if (move_status & SOUTH)
+		if (moveStatus & SOUTH)
 		{
 			entry_read_int(CHARACTER_TABLE, ctx->getId().c_str(), &flip,
 			CHARACTER_KEY_DIR_S_FLIP, nullptr);
 		}
-		if (move_status & WEST)
+		if (moveStatus & WEST)
 		{
 			entry_read_int(CHARACTER_TABLE, ctx->getId().c_str(), &flip,
 			CHARACTER_KEY_DIR_W_FLIP, nullptr);
 		}
-		if (move_status & EAST)
+		if (moveStatus & EAST)
 		{
 			entry_read_int(CHARACTER_TABLE, ctx->getId().c_str(), &flip,
 			CHARACTER_KEY_DIR_E_FLIP, nullptr);
@@ -463,46 +446,45 @@ static void set_up_sprite(Context * ctx)
 		switch (flip)
 		{
 		case 1:
-			item_set_flip(item, SDL_FLIP_HORIZONTAL);
+			item->setFlip(SDL_FLIP_HORIZONTAL);
 			break;
 		case 2:
-			item_set_flip(item, SDL_FLIP_VERTICAL);
+			item->setFlip(SDL_FLIP_VERTICAL);
 			break;
 		case 3:
-			item_set_flip(item, SDL_FLIP_HORIZONTAL | SDL_FLIP_VERTICAL);
+			item->setFlip(static_cast<SDL_RendererFlip>(SDL_FLIP_HORIZONTAL | SDL_FLIP_VERTICAL));
 			break;
 		default:
-			item_set_flip(item, SDL_FLIP_NONE);
+			item->setFlip(SDL_FLIP_NONE);
 		}
 	}
 
-	item_set_click_left(item, cb_select_sprite, (void*) (ctx->getId().c_str()), nullptr);
-	item_set_click_right(item, cb_redo_sprite, item, nullptr);
+	item->setClickLeftCb([ctx]()
+	{	cb_select_sprite(ctx->getId());});
+	item->setClickRightCb([ctx]()
+	{	cb_redo_sprite(ctx->getId());});
 
-	item_set_zoom_x(item, zoom * default_layer->map_zoom);
-	item_set_zoom_y(item, zoom * default_layer->map_zoom);
+	item->setZoomX(zoom * defaultLayer->map_zoom);
+	item->setZoomY(zoom * defaultLayer->map_zoom);
 
-	item->user_ptr = ctx;
+	item->setUserPtr(ctx);
 }
 
-/**********************************
- Compose sprites
- **********************************/
-static void compose_sprite(int layer_index)
+/*****************************************************************************/
+static void compose_sprite(int layerIndex, std::vector<SdlItem *> & itemArray)
 {
-	int layer;
 	Context * ctx = context_get_player();
 
 	context_lock_list();
 
 	while (ctx != nullptr)
 	{
-		layer = 0;
+		int layer = 0;
 		entry_read_int(CHARACTER_TABLE, ctx->getId().c_str(), &layer, CHARACTER_LAYER, nullptr);
 
-		if (layer == layer_index)
+		if (layer == layerIndex)
 		{
-			set_up_sprite(ctx);
+			set_up_sprite(ctx, itemArray);
 		}
 		ctx = ctx->m_next;
 	}
@@ -510,240 +492,227 @@ static void compose_sprite(int layer_index)
 	context_unlock_list();
 }
 
-/**********************************
- Compose item on map
- **********************************/
-static void compose_item(int layer_index)
+/*****************************************************************************/
+static void compose_item(int layerIndex, std::vector<SdlItem *> & itemArray)
 {
-	char * sprite_name = nullptr;
-	int sprite_align = ALIGN_CENTER;
-	int sprite_offset_y = 0;
-	anim_t * anim;
-	item_t * item;
-	int x;
-	int y;
-	int temp_x;
-	int temp_y;
-	char ** item_id;
-	int i;
 	static TTF_Font * font = nullptr;
-	char * mytemplate;
-	int quantity;
-	char buf[SMALL_BUF];
-	char layer_name[SMALL_BUF];
+
 	Context * ctx = context_get_player();
 
-	sprintf(layer_name, "%s%d", MAP_KEY_LAYER, layer_index);
+	if (font == nullptr)
+	{
+		font = font_get(ctx, ITEM_FONT, ITEM_FONT_SIZE);
+	}
 
-	if (entry_get_group_list(MAP_TABLE, ctx->getMap().c_str(), &item_id, layer_name,
+	std::string layerName;
+	layerName = std::string(MAP_KEY_LAYER) + std::to_string(layerIndex);
+
+	char ** itemId;
+	if (entry_get_group_list(MAP_TABLE, ctx->getMap().c_str(), &itemId, layerName.c_str(),
 	MAP_ENTRY_ITEM_LIST, nullptr) == false)
 	{
 		return;
 	}
 
-	font = font_get(ctx, ITEM_FONT, ITEM_FONT_SIZE);
+	int i = 0;
+	int spriteOffsetY = 0;
+	Align spriteAlign = Align::CENTER;
 
-	i = 0;
-	while (item_id[i] != nullptr)
+	while (itemId[i] != nullptr)
 	{
-		sprite_align = ALIGN_CENTER;
+		spriteAlign = Align::CENTER;
 
-		if (entry_read_int(MAP_TABLE, ctx->getMap().c_str(), &x, layer_name,
-		MAP_ENTRY_ITEM_LIST, item_id[i], MAP_ITEM_TILE_X, nullptr) == false)
+		int x = 0;
+		if (entry_read_int(MAP_TABLE, ctx->getMap().c_str(), &x, layerName.c_str(),
+		MAP_ENTRY_ITEM_LIST, itemId[i], MAP_ITEM_TILE_X, nullptr) == false)
 		{
 			i++;
 			continue;
 		}
 
-		if (entry_read_int(MAP_TABLE, ctx->getMap().c_str(), &y, layer_name,
-		MAP_ENTRY_ITEM_LIST, item_id[i], MAP_ITEM_TILE_Y, nullptr) == false)
+		int y = 0;
+		if (entry_read_int(MAP_TABLE, ctx->getMap().c_str(), &y, layerName.c_str(),
+		MAP_ENTRY_ITEM_LIST, itemId[i], MAP_ITEM_TILE_Y, nullptr) == false)
 		{
 			i++;
 			continue;
 		}
 
-		mytemplate = item_is_resource(std::string(item_id[i]));
+		char * mytemplate = item_is_resource(std::string(itemId[i]));
 
+		char * spriteName = nullptr;
+		int align = 0;
 		if (mytemplate == nullptr)
 		{
-			if (entry_read_string(ITEM_TABLE, item_id[i], &sprite_name,
+			if (entry_read_string(ITEM_TABLE, itemId[i], &spriteName,
 			ITEM_SPRITE, nullptr) == false)
 			{
 				i++;
 				continue;
 			}
-			entry_read_int(ITEM_TABLE, item_id[i], &sprite_align, ITEM_ALIGN, nullptr);
-			entry_read_int(ITEM_TABLE, item_id[i], &sprite_offset_y,
+
+			entry_read_int(ITEM_TABLE, itemId[i], &align, ITEM_ALIGN, nullptr);
+			spriteAlign = static_cast<Align>(align);
+			entry_read_int(ITEM_TABLE, itemId[i], &spriteOffsetY,
 			ITEM_OFFSET_Y, nullptr);
 		}
 		else
 		{
-			if (entry_read_string(ITEM_TEMPLATE_TABLE, mytemplate, &sprite_name,
+			if (entry_read_string(ITEM_TEMPLATE_TABLE, mytemplate, &spriteName,
 			ITEM_SPRITE, nullptr) == false)
 			{
 				free(mytemplate);
 				i++;
 				continue;
 			}
-			entry_read_int(ITEM_TEMPLATE_TABLE, mytemplate, &sprite_align,
+			entry_read_int(ITEM_TEMPLATE_TABLE, mytemplate, &align,
 			ITEM_ALIGN, nullptr);
-			entry_read_int(ITEM_TEMPLATE_TABLE, mytemplate, &sprite_offset_y,
+			spriteAlign = static_cast<Align>(align);
+			entry_read_int(ITEM_TEMPLATE_TABLE, mytemplate, &spriteOffsetY,
 			ITEM_OFFSET_Y, nullptr);
 			free(mytemplate);
 		}
 
-		item = item_list_add(&g_itemList);
+		SdlItem * item = new SdlItem;
+		itemArray.push_back(item);
 
-		anim = imageDB_get_anim(ctx, sprite_name);
-		free(sprite_name);
+		Anim * anim = imageDB_get_anim(ctx, std::string(spriteName));
+		free(spriteName);
 
-		temp_x = map_t2p_x(x, y, default_layer);
-		temp_y = map_t2p_y(x, y, default_layer);
-		x = temp_x;
-		y = temp_y;
+		int tempX = map_t2p_x(x, y, defaultLayer);
+		int tempY = map_t2p_y(x, y, defaultLayer);
+		x = tempX;
+		y = tempY;
 		// Align on tile
-		if (sprite_align == ALIGN_CENTER)
+		if (spriteAlign == Align::CENTER)
 		{
-			x -= ((anim->w * default_layer->map_zoom) - default_layer->tile_width) / 2;
-			y -= ((anim->h * default_layer->map_zoom) - default_layer->tile_height) / 2;
+			x -= ((anim->getWidth() * defaultLayer->map_zoom) - defaultLayer->tile_width) / 2;
+			y -= ((anim->getHeight() * defaultLayer->map_zoom) - defaultLayer->tile_height) / 2;
 		}
-		if (sprite_align == ALIGN_LOWER)
+		if (spriteAlign == Align::LOWER)
 		{
-			x -= ((anim->w * default_layer->map_zoom) - default_layer->tile_width) / 2;
-			y -= (anim->h * default_layer->map_zoom) - default_layer->tile_height;
+			x -= ((anim->getWidth() * defaultLayer->map_zoom) - defaultLayer->tile_width) / 2;
+			y -= (anim->getHeight() * defaultLayer->map_zoom) - defaultLayer->tile_height;
 		}
 
-		y += sprite_offset_y;
+		y += spriteOffsetY;
 
-		item_set_pos(item, x, y);
-		item_set_anim(item, anim, 0);
-		item_set_zoom_x(item, default_layer->map_zoom);
-		item_set_zoom_y(item, default_layer->map_zoom);
-		if (font)
+		item->setPos(x, y);
+		item->setAnim(anim);
+		item->setZoomX(defaultLayer->map_zoom);
+		item->setZoomY(defaultLayer->map_zoom);
+
+		if (font != nullptr)
 		{
-			quantity = resource_get_quantity(std::string(item_id[i]));
-			sprintf(buf, "%d", quantity);
-			item_set_string(item, buf);
-			item_set_font(item, font);
+			int quantity = 0;
+			quantity = resource_get_quantity(std::string(itemId[i]));
+			item->setText(std::to_string(quantity));
+			item->setFont(font);
 		}
 
 		i++;
 	}
 
-	deep_free(item_id);
+	deep_free(itemId);
 }
 
-/**************************************
- **************************************/
-static void cb_select_map(void *arg)
+/*****************************************************************************/
+static void cb_select_map(SdlItem * item)
 {
-	item_t * item = (item_t*) arg;
 	Context * ctx = context_get_player();
-	char x[SMALL_BUF];
-	char y[SMALL_BUF];
 
-	sprintf(x, "%d", item->user1);
-	sprintf(y, "%d", item->user2);
+	std::string x = std::to_string(item->getUser1());
+	std::string y = std::to_string(item->getUser2());
 
-	network_send_action(*(ctx->getConnection()), option_get().action_select_tile, ctx->getMap().c_str(), x, y, nullptr);
+	network_send_action(*(ctx->getConnection()), option_get().action_select_tile, ctx->getMap().c_str(), x.c_str(), y.c_str(), nullptr);
 }
 
-/**************************************
- **************************************/
-static void cb_redo_map(void *arg)
+/*****************************************************************************/
+static void cb_redo_map(SdlItem *item)
 {
-	char * script = nullptr;
-	char * last_action = nullptr;
+	cb_select_map(item);
 
-	cb_select_map(arg);
-
-	last_action = ui_play_get_last_action();
-	if (last_action)
+	const std::string & lastAction = ui_play_get_last_action();
+	if (lastAction.size() > 0)
 	{
-		script = strdup(last_action);
-		ui_play_cb_action(script);
-		free(script);
+		ui_play_cb_action(lastAction);
 	}
 }
 
-/**************************************
- **************************************/
-static void cb_over(void *arg, int x, int y)
+/*****************************************************************************/
+static void cb_over(SdlItem * item)
 {
-	item_t * item = (item_t*) arg;
-
-	current_map_x = item->user1;
-	current_map_y = item->user2;
+	currentMapX = item->getUser1();
+	currentMapY = item->getUser2();
 }
 
-/**********************************
- Set sdl_item item for mouse button callback
- **********************************/
-static void compose_map_button()
+/*****************************************************************************/
+static void compose_map_button(std::vector<SdlItem *> & itemArray)
 {
-	int x = 0;
-	int y = 0;
-	item_t * item;
-	anim_t * anim = nullptr;
-
 	Context * ctx = context_get_player();
 
+	Anim * anim = nullptr;
 	if (option_get().cursor_over_tile)
 	{
 		anim = imageDB_get_anim(ctx, option_get().cursor_over_tile);
 	}
 
-	for (y = 0; y < default_layer->map_h; y++)
+	int x = 0;
+	int y = 0;
+	for (y = 0; y < defaultLayer->map_h; y++)
 	{
-		for (x = 0; x < default_layer->map_w; x++)
+		for (x = 0; x < defaultLayer->map_w; x++)
 		{
-			item = item_list_add(&g_itemList);
-			item_set_anim_shape(item, map_t2p_x(x, y, default_layer), map_t2p_y(x, y, default_layer), default_layer->tile_width, default_layer->tile_height);
-			item_set_user(item, x, y);
-			item_set_click_left(item, cb_select_map, item, nullptr);
-			item_set_click_right(item, cb_redo_map, item, nullptr);
-			item_set_over(item, cb_over, item, nullptr);
-			item_set_anim_over(item, anim, 0);
+			SdlItem * item = new SdlItem;
+			itemArray.push_back(item);
+
+			item->setPos(map_t2p_x(x, y, defaultLayer), map_t2p_y(x, y, defaultLayer));
+			item->setShape(defaultLayer->tile_width, defaultLayer->tile_height);
+			item->setUser1(x);
+			item->setUser2(y);
+			item->setClickLeftCb([item]()
+			{	cb_select_map(item);});
+			item->setClickRightCb([item]()
+			{	cb_redo_map(item);});
+			item->setOverCb([item](int x, int y)
+			{	cb_over(item);});
+			item->setAnimOver(anim);
 		}
 	}
 }
 
-/**********************************
- Draw the "set" keyword of a layer
- **********************************/
-static void compose_map_set(int layer_index)
+/*****************************************************************************/
+static void compose_map_set(int layerIndex, std::vector<SdlItem *> & itemArray)
 {
-	int i = 0;
-	int x = 0;
-	int y = 0;
-	anim_t * anim;
-	item_t * item;
-	char ** tile_set = nullptr;
-	char layer_name[SMALL_BUF];
-	layer_t * layer;
 	Context * ctx = context_get_player();
 
-	snprintf(layer_name, sizeof(layer_name), "%s%d", MAP_KEY_LAYER, layer_index);
-	if (entry_read_list(MAP_TABLE, ctx->getMap().c_str(), &tile_set, layer_name, MAP_KEY_SET, nullptr) == false)
+	std::string layerName = std::string(MAP_KEY_LAYER) + std::to_string(layerIndex);
+	char ** tileSet = nullptr;
+	if (entry_read_list(MAP_TABLE, ctx->getMap().c_str(), &tileSet, layerName.c_str(), MAP_KEY_SET, nullptr) == false)
 	{
 		return;
 	}
 
-	layer = map_layer_new(ctx->getMap(), layer_index, default_layer);
+	layer_t * layer = map_layer_new(ctx->getMap(), layerIndex, defaultLayer);
 	if (layer == nullptr)
 	{
 		return;
 	}
 
-	while (tile_set[i] != nullptr)
+	int i = 0;
+	int x = 0;
+	int y = 0;
+	while (tileSet[i] != nullptr)
 	{
 		// Skip empty tile
-		if (tile_set[i][0] != 0)
+		if (tileSet[i][0] != 0)
 		{
-			item = item_list_add(&g_itemList);
-			anim = imageDB_get_anim(ctx, tile_set[i]);
-			item_set_pos(item, map_t2p_x(x, y, layer), map_t2p_y(x, y, layer));
-			item_set_anim(item, anim, 0);
+			SdlItem * item = new SdlItem;
+			itemArray.push_back(item);
+
+			item->setPos(map_t2p_x(x, y, layer), map_t2p_y(x, y, layer));
+
+			item->setAnim(imageDB_get_anim(ctx, tileSet[i]));
 		}
 
 		x++;
@@ -755,98 +724,94 @@ static void compose_map_set(int layer_index)
 		i++;
 	}
 
-	deep_free(tile_set);
+	deep_free(tileSet);
 
 	map_layer_delete(layer);
 }
 
-/**********************************
- Draw the "list" keyword of a layer
- **********************************/
-static void compose_map_scenery(int layer_index)
+/*****************************************************************************/
+static void compose_map_scenery(int layerIndex, std::vector<SdlItem *> & itemArray)
 {
-	int i = 0;
-	int x = 0;
-	int y = 0;
-	char * image_name = nullptr;
-	anim_t * anim;
-	item_t * item;
-	char ** scenery_list = nullptr;
-	char layer_name[SMALL_BUF];
 	Context * ctx = context_get_player();
 
-	sprintf(layer_name, "%s%d", MAP_KEY_LAYER, layer_index);
-	if (entry_get_group_list(MAP_TABLE, ctx->getMap().c_str(), &scenery_list, layer_name,
+	std::string layerName = std::string(MAP_KEY_LAYER) + std::to_string(layerIndex);
+	char ** sceneryList = nullptr;
+	if (entry_get_group_list(MAP_TABLE, ctx->getMap().c_str(), &sceneryList, layerName.c_str(),
 	MAP_KEY_SCENERY, nullptr) == false)
 	{
 		return;
 	}
 
-	while (scenery_list[i] != nullptr)
+	int i = 0;
+	int x = 0;
+	int y = 0;
+	while (sceneryList[i] != nullptr)
 	{
-		if (entry_read_int(MAP_TABLE, ctx->getMap().c_str(), &x, layer_name, MAP_KEY_SCENERY, scenery_list[i], MAP_KEY_SCENERY_X, nullptr) == false)
+		if (entry_read_int(MAP_TABLE, ctx->getMap().c_str(), &x, layerName.c_str(), MAP_KEY_SCENERY, sceneryList[i], MAP_KEY_SCENERY_X, nullptr) == false)
 		{
 			i++;
 			continue;
 		}
-		if (entry_read_int(MAP_TABLE, ctx->getMap().c_str(), &y, layer_name, MAP_KEY_SCENERY, scenery_list[i], MAP_KEY_SCENERY_Y, nullptr) == false)
-		{
-			i++;
-			continue;
-		}
-		if (entry_read_string(MAP_TABLE, ctx->getMap().c_str(), &image_name, layer_name,
-		MAP_KEY_SCENERY, scenery_list[i], MAP_KEY_SCENERY_IMAGE, nullptr) == false)
+		if (entry_read_int(MAP_TABLE, ctx->getMap().c_str(), &y, layerName.c_str(), MAP_KEY_SCENERY, sceneryList[i], MAP_KEY_SCENERY_Y, nullptr) == false)
 		{
 			i++;
 			continue;
 		}
 
-		anim = imageDB_get_anim(ctx, image_name);
+		char * imageName = nullptr;
+		if (entry_read_string(MAP_TABLE, ctx->getMap().c_str(), &imageName, layerName.c_str(),
+		MAP_KEY_SCENERY, sceneryList[i], MAP_KEY_SCENERY_IMAGE, nullptr) == false)
+		{
+			i++;
+			continue;
+		}
 
-		item = item_list_add(&g_itemList);
-		item_set_pos(item, x, y);
-		item_set_anim(item, anim, 0);
-		//item_set_anim(item, x*ctx->tile_width, y*ctx->tile_height, anim,0);
+		SdlItem * item = new SdlItem;
+		itemArray.push_back(item);
+
+		item->setPos(x, y);
+		item->setAnim(imageDB_get_anim(ctx, std::string(imageName)));
+
+		free(imageName);
 
 		i++;
 	}
 
-	deep_free(scenery_list);
+	deep_free(sceneryList);
 }
 
-/**********************************
- Show tiles types
- **********************************/
-static void compose_type(int layer_index)
+/*****************************************************************************/
+static void compose_type(int layerIndex, std::vector<SdlItem *> & itemArray)
 {
-	int x = 0;
-	int y = 0;
-	item_t * item;
-	char * type;
 	static TTF_Font * font = nullptr;
-	int w;
-	int h;
-	char layer_name[SMALL_BUF];
-	Context * ctx = context_get_player();
 
 	if (option_get().show_tile_type == false)
 	{
 		return;
 	}
 
-	sprintf(layer_name, "%s%d", MAP_KEY_LAYER, layer_index);
-	if (entry_exist(MAP_TABLE, ctx->getMap().c_str(), layer_name, MAP_KEY_TYPE, nullptr) == false)
+	Context * ctx = context_get_player();
+
+	std::string layerName = std::string(MAP_KEY_LAYER) + std::to_string(layerIndex);
+	if (entry_exist(MAP_TABLE, ctx->getMap().c_str(), layerName.c_str(), MAP_KEY_TYPE, nullptr) == false)
 	{
 		return;
 	}
 
-	font = font_get(ctx, ITEM_FONT, ITEM_FONT_SIZE);
-
-	for (x = 0; x < default_layer->map_w; x++)
+	if (font == nullptr)
 	{
-		for (y = 0; y < default_layer->map_h; y++)
+		font_get(ctx, ITEM_FONT, ITEM_FONT_SIZE);
+
+	}
+
+	int x = 0;
+	int y = 0;
+	for (x = 0; x < defaultLayer->map_w; x++)
+	{
+		for (y = 0; y < defaultLayer->map_h; y++)
 		{
-			if (entry_read_list_index(MAP_TABLE, ctx->getMap().c_str(), &type, x + y * default_layer->map_w, layer_name, MAP_KEY_TYPE, nullptr) == false)
+			char * type = nullptr;
+			if (entry_read_list_index(MAP_TABLE, ctx->getMap().c_str(), &type, x + y * defaultLayer->map_w, layerName.c_str(), MAP_KEY_TYPE, nullptr) == false)
 			{
 				continue;
 			}
@@ -856,27 +821,25 @@ static void compose_type(int layer_index)
 				continue;
 			}
 
-			item = item_list_add(&g_itemList);
+			SdlItem * item = new SdlItem;
+			itemArray.push_back(item);
+			item->setText(std::string(type));
+			item->setFont(font);
 
-			item_set_string(item, type);
-			item_set_font(item, font);
-			sdl_get_string_size(item->font, item->string, &w, &h);
-			item_set_anim_shape(item, map_t2p_x(x, y, default_layer), map_t2p_y(x, y, default_layer), w, h);
+			int w = 0;
+			int h = 0;
+			sdl_get_string_size(item->getFont(), item->getText(), &w, &h);
+			item->setPos(map_t2p_x(x, y, defaultLayer), map_t2p_y(x, y, defaultLayer));
+			item->setShape(w, h);
 		}
 	}
 }
 
-/**********************************
+/******************************************************************************
  Compose select cursor
- **********************************/
-static void compose_select()
+ *****************************************************************************/
+static void compose_select(std::vector<SdlItem *> & itemArray)
 {
-	item_t * item = nullptr;
-	anim_t * anim = nullptr;
-	int pos_tx = -1;
-	int pos_ty = -1;
-	int x = -1;
-	int y = -1;
 	Context * ctx = context_get_player();
 
 	// Tile selection
@@ -884,21 +847,20 @@ static void compose_select()
 	{
 		if (ctx->getSelectionMap() == ctx->getMap())
 		{
-			pos_tx = ctx->getSelectionMapTx();
-			pos_ty = ctx->getSelectionMapTy();
+			int pos_tx = ctx->getSelectionMapTx();
+			int pos_ty = ctx->getSelectionMapTy();
 
 			if (pos_tx != -1 && pos_ty != -1)
 			{
-				anim = imageDB_get_anim(ctx, option_get().cursor_tile);
+				SdlItem * item = new SdlItem;
+				itemArray.push_back(item);
 
-				item = item_list_add(&g_itemList);
+				item->setAnim(imageDB_get_anim(ctx, option_get().cursor_tile));
 
 				// get pixel coordinate from tile coordinate
-				x = map_t2p_x(pos_tx, pos_ty, default_layer);
-				y = map_t2p_y(pos_tx, pos_ty, default_layer);
-
-				item_set_pos(item, x, y);
-				item_set_anim(item, anim, 0);
+				int x = map_t2p_x(pos_tx, pos_ty, defaultLayer);
+				int y = map_t2p_y(pos_tx, pos_ty, defaultLayer);
+				item->setPos(x, y);
 			}
 		}
 	}
@@ -913,20 +875,20 @@ static void compose_select()
 			return;
 		}
 
-		item = item_list_add(&g_itemList);
-		item->user_ptr = selected_context;
-		item->user1_ptr = option_get().cursor_character_draw_script;
+		SdlItem * item = new SdlItem;
+		itemArray.push_back(item);
+
+		item->setUserPtr(selected_context);
+		item->setUser1Ptr(option_get().cursor_character_draw_script);
 	}
 }
 
-/**********************************
- **********************************/
+/*****************************************************************************/
 void scr_play_frame_start(Context * context)
 {
 }
 
-/**********************************
- **********************************/
+/*****************************************************************************/
 void scr_play_init()
 {
 	// Register this character to receive server notifications
@@ -935,74 +897,65 @@ void scr_play_init()
 	ui_play_init();
 }
 
-/**********************************
- Compose main play screen
- **********************************/
-item_t * scr_play_compose(Context * ctx)
+/*****************************************************************************/
+void scr_play_compose(Context * context, std::vector<SdlItem *> & itemArray)
 {
-	if (g_itemList != nullptr)
+	if (context->getMap() == "")
 	{
-		item_list_free(g_itemList);
-		g_itemList = nullptr;
-	}
-
-	if (ctx->getMap() == "")
-	{
-		if (ctx->update_from_file() == false)
+		if (context->update_from_file() == false)
 		{
-			return nullptr;
+			return;
 		}
 	}
 
-	sdl_free_keycb();
+	sdl_clean_key_cb();
 	sdl_free_mousecb();
 	sdl_add_mousecb(MOUSE_WHEEL_UP, cb_zoom);
 	sdl_add_mousecb(MOUSE_WHEEL_DOWN, cb_unzoom);
 
-	change_map = ctx->isMapChanged();
+	isMapChanged = context->isMapChanged();
 
-	if (change_map == true)
+	if (isMapChanged == true)
 	{
-		const std::string map_file_path = std::string(MAP_TABLE) + "/" + ctx->getMap();
-		network_send_req_file(*(ctx->getConnection()), map_file_path);
+		const std::string map_file_path = std::string(MAP_TABLE) + "/" + context->getMap();
+		network_send_req_file(*(context->getConnection()), map_file_path);
 
-		if (default_layer != nullptr)
+		if (defaultLayer != nullptr)
 		{
-			map_layer_delete(default_layer);
+			map_layer_delete(defaultLayer);
 		}
-		default_layer = map_layer_new(ctx->getMap(), DEFAULT_LAYER, nullptr);
+		defaultLayer = map_layer_new(context->getMap(), DEFAULT_LAYER, nullptr);
 	}
 
-	if (default_layer && default_layer->active)
+	if ((defaultLayer != nullptr) && (defaultLayer->active != 0))
 	{ // Make sure map data are available
-		int layer_index = 0;
-		for (layer_index = 0; layer_index < MAX_LAYER; layer_index++)
+		for (int layerIndex = 0; layerIndex < MAX_LAYER; layerIndex++)
 		{
-			compose_map_set(layer_index);
-			compose_map_scenery(layer_index);
-			compose_item(layer_index);
-			compose_sprite(layer_index);
-			compose_type(layer_index);
+			compose_map_set(layerIndex, itemArray);
+			compose_map_scenery(layerIndex, itemArray);
+			compose_item(layerIndex, itemArray);
+			compose_sprite(layerIndex, itemArray);
+			compose_type(layerIndex, itemArray);
 		}
-		compose_map_button();
-		compose_select();
 
-		ui_play_compose(ctx, g_itemList);
+		compose_map_button(itemArray);
+		compose_select(itemArray);
+		ui_play_compose(context, itemArray);
 	}
 
 	int bg_red = 0;
 	int bg_blue = 0;
 	int bg_green = 0;
-	entry_read_int(MAP_TABLE, ctx->getMap().c_str(), &bg_red, MAP_KEY_BG_RED, nullptr);
-	entry_read_int(MAP_TABLE, ctx->getMap().c_str(), &bg_blue, MAP_KEY_BG_BLUE, nullptr);
-	entry_read_int(MAP_TABLE, ctx->getMap().c_str(), &bg_green, MAP_KEY_BG_GREEN, nullptr);
+	entry_read_int(MAP_TABLE, context->getMap().c_str(), &bg_red, MAP_KEY_BG_RED, nullptr);
+	entry_read_int(MAP_TABLE, context->getMap().c_str(), &bg_blue, MAP_KEY_BG_BLUE, nullptr);
+	entry_read_int(MAP_TABLE, context->getMap().c_str(), &bg_green, MAP_KEY_BG_GREEN, nullptr);
 	sdl_set_background_color(bg_red, bg_blue, bg_green, 255);
 
 	char * old_sfx = nullptr;
 	old_sfx = sfx;
 	sfx = nullptr;
 
-	entry_read_string(MAP_TABLE, ctx->getMap().c_str(), &sfx, MAP_SFX, nullptr);
+	entry_read_string(MAP_TABLE, context->getMap().c_str(), &sfx, MAP_SFX, nullptr);
 
 	if (old_sfx != nullptr)
 	{
@@ -1011,30 +964,28 @@ item_t * scr_play_compose(Context * ctx)
 			if (strcmp(old_sfx, sfx) != 0)
 			{
 				sfx_stop(MUSIC_CHANNEL);
-				g_IsMusicPlaying = false;
+				isMusicPlaying = false;
 			}
 		}
 		else
 		{ // sfx == nullptr
 			sfx_stop(MUSIC_CHANNEL);
-			g_IsMusicPlaying = false;
+			isMusicPlaying = false;
 		}
 		free(old_sfx);
 	}
 
 	if ((sfx != nullptr) && (sfx[0] != '\0'))
 	{
-		if (g_IsMusicPlaying == false)
+		if (isMusicPlaying == false)
 		{
-			if (sfx_play(*(ctx->getConnection()), std::string(sfx), MUSIC_CHANNEL, LOOP) != -1)
+			if (sfx_play(*(context->getConnection()), std::string(sfx), MUSIC_CHANNEL, LOOP) != -1)
 			{
-				g_IsMusicPlaying = true;
+				isMusicPlaying = true;
 			}
 			int sfx_volume = SFX_VOLUME_MAX;
-			entry_read_int(MAP_TABLE, ctx->getMap().c_str(), &sfx_volume, MAP_SFX_VOLUME, nullptr);
+			entry_read_int(MAP_TABLE, context->getMap().c_str(), &sfx_volume, MAP_SFX_VOLUME, nullptr);
 			sfx_set_volume(MUSIC_CHANNEL, sfx_volume);
 		}
 	}
-
-	return g_itemList;
 }

@@ -50,6 +50,6 @@ typedef struct layer
 
 layer_t * map_layer_new(const std::string & map, int layer_index, layer_t * default_layer);
 void map_layer_delete(layer_t * default_layer);
-int map_t2p_x(int x, int y, layer_t * layer);
-int map_t2p_y(int x, int y, layer_t * layer);
+int map_t2p_x(int x, int y, const layer_t * layer);
+int map_t2p_y(int x, int y, const layer_t * layer);
 #endif

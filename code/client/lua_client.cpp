@@ -25,6 +25,8 @@
 #include "item.h"
 #include "log.h"
 #include "sdl.h"
+#include "SdlItem.h"
+#include "SdlLocking.h"
 #include "sfx.h"
 #include "syntax.h"
 #include "util.h"
@@ -40,8 +42,10 @@ extern "C"
 }
 #endif
 
-static lua_State * g_pLuaVm = nullptr;
-static lua_State * g_pEffectLuaVm = nullptr;
+static lua_State * luaVm = nullptr;
+static SDL_mutex* luaVmMutex = SDL_CreateMutex();
+static lua_State * effectLuaVm = nullptr;
+static SDL_mutex* effectLuaVmMutex = SDL_CreateMutex();
 
 /***********************************
  player_get_id
@@ -115,15 +119,15 @@ static int l_context_get_map(lua_State* luaState)
  ***********************************/
 static int l_item_set_px(lua_State* luaState)
 {
-	item_t * l_pItem;
+	SdlItem * item;
 
 	lua_getglobal(luaState, "current_item");
-	l_pItem = (item_t*) lua_touserdata(luaState, -1);
+	item = (SdlItem*) lua_touserdata(luaState, -1);
 	lua_pop(luaState, 1);
 
-	int l_X;
-	l_X = luaL_checkint(luaState, -1);
-	l_pItem->rect.x = l_X;
+	int x;
+	x = luaL_checkint(luaState, -1);
+	item->setRectX(x);
 	return 0; // number of results
 }
 
@@ -134,32 +138,32 @@ static int l_item_set_px(lua_State* luaState)
  ***********************************/
 static int l_item_set_py(lua_State* luaState)
 {
-	item_t * l_pItem;
+	SdlItem * item;
 
 	lua_getglobal(luaState, "current_item");
-	l_pItem = (item_t*) lua_touserdata(luaState, -1);
+	item = (SdlItem*) lua_touserdata(luaState, -1);
 	lua_pop(luaState, 1);
 
-	int l_Y;
-	l_Y = luaL_checkint(luaState, -1);
-	l_pItem->rect.y = l_Y;
+	int y;
+	y = luaL_checkint(luaState, -1);
+	item->setRectY(y);
 	return 0; // number of results
 }
 
 /***********************************
  item_get_px
  Input:
- Output: X ccordinate in pixel
+ Output: X coordinate in pixel
  ***********************************/
 static int l_item_get_px(lua_State* luaState)
 {
-	item_t * l_pItem;
+	SdlItem * item;
 
 	lua_getglobal(luaState, "current_item");
-	l_pItem = (item_t*) lua_touserdata(luaState, -1);
+	item = (SdlItem*) lua_touserdata(luaState, -1);
 	lua_pop(luaState, 1);
 
-	lua_pushnumber(luaState, l_pItem->rect.x);
+	lua_pushnumber(luaState, item->getRect().x);
 	return 1; // number of results
 }
 
@@ -170,13 +174,13 @@ static int l_item_get_px(lua_State* luaState)
  ***********************************/
 static int l_item_get_py(lua_State* luaState)
 {
-	item_t * l_pItem;
+	SdlItem * item;
 
 	lua_getglobal(luaState, "current_item");
-	l_pItem = (item_t*) lua_touserdata(luaState, -1);
+	item = (SdlItem*) lua_touserdata(luaState, -1);
 	lua_pop(luaState, 1);
 
-	lua_pushnumber(luaState, l_pItem->rect.y);
+	lua_pushnumber(luaState, item->getRect().y);
 	return 1; // number of results
 }
 
@@ -187,13 +191,13 @@ static int l_item_get_py(lua_State* luaState)
  ***********************************/
 static int l_item_get_w(lua_State* luaState)
 {
-	item_t * l_pItem;
+	SdlItem * item;
 
 	lua_getglobal(luaState, "current_item");
-	l_pItem = (item_t*) lua_touserdata(luaState, -1);
+	item = (SdlItem*) lua_touserdata(luaState, -1);
 	lua_pop(luaState, 1);
 
-	lua_pushnumber(luaState, l_pItem->rect.w);
+	lua_pushnumber(luaState, item->getRect().w);
 	return 1; // number of results
 }
 
@@ -204,13 +208,13 @@ static int l_item_get_w(lua_State* luaState)
  ***********************************/
 static int l_item_get_h(lua_State* luaState)
 {
-	item_t * l_pItem;
+	SdlItem * item;
 
 	lua_getglobal(luaState, "current_item");
-	l_pItem = (item_t*) lua_touserdata(luaState, -1);
+	item = (SdlItem*) lua_touserdata(luaState, -1);
 	lua_pop(luaState, 1);
 
-	lua_pushnumber(luaState, l_pItem->rect.h);
+	lua_pushnumber(luaState, item->getRect().h);
 	return 1; // number of results
 }
 /***********************************
@@ -220,15 +224,15 @@ static int l_item_get_h(lua_State* luaState)
  ***********************************/
 static int l_item_set_anim_start_tick(lua_State* luaState)
 {
-	item_t * l_pItem;
+	SdlItem * item;
 
 	lua_getglobal(luaState, "current_item");
-	l_pItem = (item_t*) lua_touserdata(luaState, -1);
+	item = (SdlItem*) lua_touserdata(luaState, -1);
 	lua_pop(luaState, 1);
 
-	int l_Tick;
-	l_Tick = luaL_checkint(luaState, -1);
-	l_pItem->anim_start_tick = l_Tick;
+	int tick;
+	tick = luaL_checkint(luaState, -1);
+	item->setAnimStartTick(tick);
 
 	return 0; // number of results
 }
@@ -241,118 +245,116 @@ static int l_item_set_anim_start_tick(lua_State* luaState)
  ***********************************/
 static int l_item_set_anim(lua_State* luaState)
 {
-	item_t * l_pItem;
+	SdlItem * item;
 	lua_getglobal(luaState, "current_item");
-	l_pItem = (item_t*) lua_touserdata(luaState, -1);
+	item = (SdlItem*) lua_touserdata(luaState, -1);
 	lua_pop(luaState, 1);
 
-	const char * l_pFileName;
-	l_pFileName = luaL_checkstring(luaState, -1);
+	const char * fileName = luaL_checkstring(luaState, -1);
 
-	anim_t ** l_pAnimArray;
+	Anim * anim = imageDB_get_anim(context_get_player(), std::string(fileName));
+	item->setAnim(anim);
 
-	const char * l_pSpriteNameArray[2] =
-	{ l_pFileName, nullptr };
-	l_pAnimArray = imageDB_get_anim_array(context_get_player(), (const char **) l_pSpriteNameArray);
-	item_set_anim_array(l_pItem, l_pAnimArray);
 	return 0; // number of results
 }
 
-/***********************************
- ***********************************/
-static const char * getKey(int p_IsMoving, char p_Orientation)
+/*****************************************************************************/
+static const std::string & getKey(const bool isMoving, const char orientation)
 {
-	const char * l_pKey;
-
-	if (p_IsMoving == true)
+	if (isMoving == true)
 	{
-		switch (p_Orientation)
+		switch (orientation)
 		{
 		case 'N':
-			l_pKey = CHARACTER_KEY_MOV_N_SPRITE;
+			return CHARACTER_KEY_MOV_N_SPRITE;
 			break;
 		case 'S':
-			l_pKey = CHARACTER_KEY_MOV_S_SPRITE;
+			return CHARACTER_KEY_MOV_S_SPRITE;
 			break;
 		case 'W':
-			l_pKey = CHARACTER_KEY_MOV_W_SPRITE;
+			return CHARACTER_KEY_MOV_W_SPRITE;
 			break;
 		case 'E':
-			l_pKey = CHARACTER_KEY_MOV_E_SPRITE;
+			return CHARACTER_KEY_MOV_E_SPRITE;
 			break;
 		default:
-			werr(LOGDESIGNER, "l_item_set_anim_from_context: wrong main orientation");
-			l_pKey = CHARACTER_KEY_MOV_S_SPRITE;
+			ERR("l_item_set_anim_from_context: wrong main orientation");
+			return CHARACTER_KEY_MOV_S_SPRITE;
 			break;
 		}
 	}
 	else
 	{
-		switch (p_Orientation)
+		switch (orientation)
 		{
 		case 'N':
-			l_pKey = CHARACTER_KEY_DIR_N_SPRITE;
+			return CHARACTER_KEY_DIR_N_SPRITE;
 			break;
 		case 'S':
-			l_pKey = CHARACTER_KEY_DIR_S_SPRITE;
+			return CHARACTER_KEY_DIR_S_SPRITE;
 			break;
 		case 'W':
-			l_pKey = CHARACTER_KEY_DIR_W_SPRITE;
+			return CHARACTER_KEY_DIR_W_SPRITE;
 			break;
 		case 'E':
-			l_pKey = CHARACTER_KEY_DIR_E_SPRITE;
+			return CHARACTER_KEY_DIR_E_SPRITE;
 			break;
 		default:
-			werr(LOGDESIGNER, "l_item_set_anim_from_context: wrong main orientation");
-			l_pKey = CHARACTER_KEY_DIR_S_SPRITE;
+			ERR("l_item_set_anim_from_context: wrong main orientation");
+			return CHARACTER_KEY_DIR_S_SPRITE;
 			break;
 		}
 	}
-
-	return l_pKey;
 }
 
-/***********************************
- ***********************************/
-static anim_t ** getAnimArray(const char * p_pId, const char * p_pKey)
+/*****************************************************************************/
+static std::vector<Anim*> getAnimArray(const std::string & id, const std::string & key)
 {
-	anim_t ** l_pAnimArray;
+	std::vector<Anim*> animArray;
 
 	// Try single image anim
-	char * sprite_name = nullptr;
-	if (entry_read_string(CHARACTER_TABLE, p_pId, &sprite_name, p_pKey, nullptr) == true)
+	char * spriteName = nullptr;
+	if (entry_read_string(CHARACTER_TABLE, id.c_str(), &spriteName, key.c_str(), nullptr) == true)
 	{
-		if (sprite_name[0] != 0)
+		if ((spriteName != nullptr) && (spriteName[0] != 0))
 		{
-			char * l_pSpriteNameArray[2] =
-			{ nullptr, nullptr };
-			l_pSpriteNameArray[0] = sprite_name;
-			l_pAnimArray = imageDB_get_anim_array(context_get_player(), (const char **) l_pSpriteNameArray);
-			free(sprite_name);
-			return l_pAnimArray;
+			Anim * anim = imageDB_get_anim(context_get_player(), std::string(spriteName));
+			animArray.push_back(anim);
+
+			free(spriteName);
+			return animArray;
 		}
-		free(sprite_name);
+		free(spriteName);
 	}
 
 	// Try list of image
-	char ** sprite_list = nullptr;
-	if (entry_read_list(CHARACTER_TABLE, p_pId, &sprite_list, p_pKey, nullptr) == true)
+	char ** spriteList = nullptr;
+	if (entry_read_list(CHARACTER_TABLE, id.c_str(), &spriteList, key.c_str(), nullptr) == true)
 	{
-		l_pAnimArray = imageDB_get_anim_array(context_get_player(), (const char **) sprite_list);
-		deep_free(sprite_list);
-		return l_pAnimArray;
+		std::vector<std::string> spriteNameArray;
+
+		int i = 0;
+		char* spriteName = nullptr;
+		while ((spriteName = spriteList[i]) != nullptr)
+		{
+			spriteNameArray.push_back(std::string(spriteName));
+			i++;
+		}
+
+		animArray = imageDB_get_anim_array(context_get_player(), spriteNameArray);
+		deep_free(spriteList);
+		return animArray;
 	}
 
-	return nullptr;
+	return animArray;
 }
 
-/***********************************
- ***********************************/
-static char flip(char p_Orientation)
+/*****************************************************************************/
+static char flip(char orientation)
 {
 	char l_FlipOrientation = 'S';
 
-	switch (p_Orientation)
+	switch (orientation)
 	{
 	case 'N':
 		l_FlipOrientation = 'S';
@@ -373,87 +375,82 @@ static char flip(char p_Orientation)
 	return l_FlipOrientation;
 }
 
-/***********************************
+/******************************************************************************
  item_set_anim_from_context
  Input:
  - ID of context
  - entry name in context file
  Output:
- ***********************************/
+ *****************************************************************************/
 static int l_item_set_anim_from_context(lua_State* luaState)
 {
-	item_t * l_pItem;
+	SdlItem * item;
 	lua_getglobal(luaState, "current_item");
-	l_pItem = (item_t*) lua_touserdata(luaState, -1);
+	item = (SdlItem*) lua_touserdata(luaState, -1);
 	lua_pop(luaState, 1);
 
-	const char * l_pId = "";
-	l_pId = luaL_checkstring(luaState, -4);
-	int l_IsMoving = 0;
-	l_IsMoving = luaL_checkint(luaState, -3);
-	const char * l_pMainOrientation = "";
-	l_pMainOrientation = luaL_checkstring(luaState, -2);
-	const char * l_pSecondaryOrientation = "";
-	l_pSecondaryOrientation = luaL_checkstring(luaState, -1);
+	const char * id = luaL_checkstring(luaState, -4);
+	int isMoving = luaL_checkint(luaState, -3);
+	const char * mainOrientation = luaL_checkstring(luaState, -2);
+	const char * secondaryOrientation = luaL_checkstring(luaState, -1);
 
 	// reset previous anim
-	l_pItem->anim.list = nullptr;
-	l_pItem->anim.num = 0;
+	item->clearAnim();
 
 	// Try regular moving flag with main orientation
-	const char * l_pKey = getKey(l_IsMoving, l_pMainOrientation[0]);
-	anim_t ** l_pAnimArray = getAnimArray(l_pId, l_pKey);
+	std::string key = getKey(isMoving, mainOrientation[0]);
+	std::vector<Anim*> animArray = getAnimArray(id, key);
 
 	// Try secondary orientation
-	if (l_pAnimArray == nullptr)
+	if (animArray.size() == 0)
 	{
-		l_pKey = getKey(l_IsMoving, l_pSecondaryOrientation[0]);
-		l_pAnimArray = getAnimArray(l_pId, l_pKey);
+		key = getKey(isMoving, secondaryOrientation[0]);
+		animArray = getAnimArray(id, key);
 	}
 
 	// Auto-flip
-	if (l_pAnimArray == nullptr)
+	if (animArray.size() == 0)
 	{
-		char l_FlipOrientation = flip(l_pMainOrientation[0]);
-		const char * l_pKey = getKey(l_IsMoving, l_FlipOrientation);
-		l_pAnimArray = getAnimArray(l_pId, l_pKey);
+		char flipOrientation = flip(mainOrientation[0]);
+		key = getKey(isMoving, flipOrientation);
+		animArray = getAnimArray(id, key);
 	}
 
-	if (l_pAnimArray == nullptr)
+	if (animArray.size() == 0)
 	{
-		char l_FlipOrientation = flip(l_pSecondaryOrientation[0]);
-		l_pKey = getKey(l_IsMoving, l_FlipOrientation);
-		l_pAnimArray = getAnimArray(l_pId, l_pKey);
+		char flipOrientation = flip(secondaryOrientation[0]);
+		key = getKey(isMoving, flipOrientation);
+		animArray = getAnimArray(id, key);
 	}
 
 	// Try opposite moving flag
 	// main orientation
-	if (l_pAnimArray == nullptr)
+	if (animArray.size() == 0)
 	{
-		l_IsMoving = !l_IsMoving;
-		l_pKey = getKey(l_IsMoving, l_pMainOrientation[0]);
-		l_pAnimArray = getAnimArray(l_pId, l_pKey);
+		isMoving = !isMoving;
+		key = getKey(isMoving, mainOrientation[0]);
+		animArray = getAnimArray(id, key);
 	}
 	// secondary orientation
-	if (l_pAnimArray == nullptr)
+	if (animArray.size() == 0)
 	{
-		l_pKey = getKey(l_IsMoving, l_pSecondaryOrientation[0]);
-		l_pAnimArray = getAnimArray(l_pId, l_pKey);
+		key = getKey(isMoving, secondaryOrientation[0]);
+		animArray = getAnimArray(id, key);
 	}
 
 	// Try default sprite
-	if (l_pAnimArray == nullptr)
+	if (animArray.size() == 0)
 	{
-		l_pAnimArray = getAnimArray(l_pId, CHARACTER_KEY_SPRITE);
+		animArray = getAnimArray(id, CHARACTER_KEY_SPRITE);
 	}
 
-	if (l_pAnimArray == nullptr)
+	if (animArray.size() == 0)
 	{
-		werr(LOGDESIGNER, "LUA item_set_anim_from_context: Failed to find anim for %s", l_pId);
+		ERR_DESIGN("LUA item_set_anim_from_context: Failed to find anim for " + std::string(id));
 	}
 	else
 	{
-		item_set_anim_array(l_pItem, l_pAnimArray);
+		item->setAnim(animArray);
 	}
 
 	return 0; // number of results
@@ -692,33 +689,43 @@ static void register_lua_functions_client(lua_State * l_pLuaVm)
  ***********************************/
 void lua_init()
 {
-	g_pLuaVm = lua_open();
-	lua_baselibopen(g_pLuaVm);
-	lua_tablibopen(g_pLuaVm);
-	lua_iolibopen(g_pLuaVm);
-	lua_strlibopen(g_pLuaVm);
-	lua_mathlibopen(g_pLuaVm);
-	register_lua_functions_client(g_pLuaVm);
+	luaVm = lua_open();
+	lua_baselibopen(luaVm);
+	lua_tablibopen(luaVm);
+	lua_iolibopen(luaVm);
+	lua_strlibopen(luaVm);
+	lua_mathlibopen(luaVm);
+	register_lua_functions_client(luaVm);
 
-	g_pEffectLuaVm = lua_open();
-	lua_baselibopen(g_pEffectLuaVm);
-	lua_tablibopen(g_pEffectLuaVm);
-	lua_iolibopen(g_pEffectLuaVm);
-	lua_strlibopen(g_pEffectLuaVm);
-	lua_mathlibopen(g_pEffectLuaVm);
-	register_lua_functions_client(g_pEffectLuaVm);
+	effectLuaVm = lua_open();
+	lua_baselibopen(effectLuaVm);
+	lua_tablibopen(effectLuaVm);
+	lua_iolibopen(effectLuaVm);
+	lua_strlibopen(effectLuaVm);
+	lua_mathlibopen(effectLuaVm);
+	register_lua_functions_client(effectLuaVm);
 }
 
-/***********************************
- ***********************************/
+/*****************************************************************************/
 lua_State * getLuaVm()
 {
-	return g_pLuaVm;
+	return luaVm;
 }
 
-/***********************************
- ***********************************/
+/*****************************************************************************/
+SDL_mutex * getLuaVmMutex()
+{
+	return luaVmMutex;
+}
+
+/*****************************************************************************/
 lua_State * getEffectLuaVm()
 {
-	return g_pEffectLuaVm;
+	return effectLuaVm;
+}
+
+/*****************************************************************************/
+SDL_mutex * getEffectLuaVmMutex()
+{
+	return effectLuaVmMutex;
 }

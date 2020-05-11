@@ -1,6 +1,6 @@
 /*
  World of Gnome is a 2D multiplayer role playing game.
- Copyright (C) 2016-2020 carabobz@gmail.com
+ Copyright (C) 2019 carabobz@gmail.com
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -17,44 +17,22 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#include "Context.h"
-#include "font.h"
-
-#include "client_server.h"
-#include "file.h"
-#include "list.h"
-#include <string>
-
-static list_t * font_list = nullptr;
+#include "ChatBox.h"
 
 /*****************************************************************************/
-TTF_Font * font_get(Context * ctx, const std::string & filename, int size)
+ChatBox::ChatBox(TTF_Font * const font, std::function<void(std::string)> editCallBack) :
+		m_chatEditBox(font, editCallBack), m_chatHistoryBox(font)
 {
-	TTF_Font * font = nullptr;
+}
 
-	file_lock(filename.c_str());
+/*****************************************************************************/
+ChatBox::~ChatBox()
+{
+}
 
-	font = (TTF_Font*) list_find(font_list, filename.c_str());
-
-	if (font != nullptr)
-	{
-		file_unlock(filename.c_str());
-		return font;
-	}
-
-	const std::string file_path = base_directory + "/" + filename;
-	font = TTF_OpenFont(file_path.c_str(), size);
-
-	if (font != nullptr)
-	{
-		list_update(&font_list, filename.c_str(), font);
-		file_unlock(filename.c_str());
-		return font;
-	}
-
-	file_update(ctx->getConnection(), filename.c_str());
-
-	file_unlock(filename.c_str());
-
-	return nullptr;
+/*****************************************************************************/
+void ChatBox::compose(std::vector<SdlItem *> & itemArray, const int upperBorderHeight, const int lowerBorderHeight)
+{
+	int chatEditBoxHeight = m_chatEditBox.compose(itemArray, upperBorderHeight, lowerBorderHeight);
+	m_chatHistoryBox.compose(itemArray, upperBorderHeight, lowerBorderHeight + chatEditBoxHeight);
 }
