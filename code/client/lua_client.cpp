@@ -24,8 +24,7 @@
 #include "imageDB.h"
 #include "item.h"
 #include "log.h"
-#include "sdl.h"
-#include "SdlItem.h"
+#include "SdlItemCore.h"
 #include "SdlLocking.h"
 #include "sfx.h"
 #include "syntax.h"
@@ -252,7 +251,7 @@ static int l_item_set_anim(lua_State* luaState)
 
 	const char * fileName = luaL_checkstring(luaState, -1);
 
-	Anim * anim = imageDB_get_anim(context_get_player(), std::string(fileName));
+	SiAnim * anim = imageDB_get_anim(context_get_player(), std::string(fileName));
 	item->setAnim(anim);
 
 	return 0; // number of results
@@ -308,9 +307,9 @@ static const std::string & getKey(const bool isMoving, const char orientation)
 }
 
 /*****************************************************************************/
-static std::vector<Anim*> getAnimArray(const std::string & id, const std::string & key)
+static std::vector<SiAnim*> getAnimArray(const std::string & id, const std::string & key)
 {
-	std::vector<Anim*> animArray;
+	std::vector<SiAnim*> animArray;
 
 	// Try single image anim
 	char * spriteName = nullptr;
@@ -318,7 +317,7 @@ static std::vector<Anim*> getAnimArray(const std::string & id, const std::string
 	{
 		if ((spriteName != nullptr) && (spriteName[0] != 0))
 		{
-			Anim * anim = imageDB_get_anim(context_get_player(), std::string(spriteName));
+			SiAnim * anim = imageDB_get_anim(context_get_player(), std::string(spriteName));
 			animArray.push_back(anim);
 
 			free(spriteName);
@@ -399,7 +398,7 @@ static int l_item_set_anim_from_context(lua_State* luaState)
 
 	// Try regular moving flag with main orientation
 	std::string key = getKey(isMoving, mainOrientation[0]);
-	std::vector<Anim*> animArray = getAnimArray(id, key);
+	std::vector<SiAnim*> animArray = getAnimArray(id, key);
 
 	// Try secondary orientation
 	if (animArray.size() == 0)

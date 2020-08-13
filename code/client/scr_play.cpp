@@ -17,7 +17,6 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#include "Anim.h"
 #include "Camera.h"
 #include "client_conf.h"
 #include "const.h"
@@ -31,7 +30,7 @@
 #include "network_client.h"
 #include "network.h"
 #include "screen.h"
-#include "sdl.h"
+#include "SdlItemCore.h"
 #include "sfx.h"
 #include "syntax.h"
 #include "textview.h"
@@ -114,7 +113,7 @@ static void cb_unzoom()
  Return nullptr if no sprite can be found
  Returned anim_t ** must be FREED
  *****************************************************************************/
-static std::vector<Anim *> select_sprite(Context * ctx)
+static std::vector<SiAnim *> select_sprite(Context * ctx)
 {
 	char ** spriteList = nullptr;
 	Context * playerContext = context_get_player();
@@ -217,7 +216,7 @@ static std::vector<Anim *> select_sprite(Context * ctx)
 
 	ERR_DESIGN("Can't read sprite name for \"" + ctx->getId() + "\"");
 
-	std::vector<Anim *> empty;
+	std::vector<SiAnim *> empty;
 	return empty;
 }
 
@@ -306,7 +305,7 @@ static void set_up_sprite(Context * ctx, std::vector<SdlItem *> & itemArray)
 	}
 
 	// Select sprite to display
-	std::vector<Anim *> animArray;
+	std::vector<SiAnim *> animArray;
 
 	animArray = select_sprite(ctx);
 	if (animArray.size() == 0)
@@ -576,7 +575,7 @@ static void compose_item(int layerIndex, std::vector<SdlItem *> & itemArray)
 		SdlItem * item = new SdlItem;
 		itemArray.push_back(item);
 
-		Anim * anim = imageDB_get_anim(ctx, std::string(spriteName));
+		SiAnim * anim = imageDB_get_anim(ctx, std::string(spriteName));
 		free(spriteName);
 
 		int tempX = map_t2p_x(x, y, defaultLayer);
@@ -651,7 +650,7 @@ static void compose_map_button(std::vector<SdlItem *> & itemArray)
 {
 	Context * ctx = context_get_player();
 
-	Anim * anim = nullptr;
+	SiAnim * anim = nullptr;
 	if (client_conf_get().cursor_over_tile)
 	{
 		anim = imageDB_get_anim(ctx, client_conf_get().cursor_over_tile);

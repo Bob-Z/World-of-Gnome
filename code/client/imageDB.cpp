@@ -34,24 +34,24 @@
 
 static SDL_mutex* imageDbMutex = SDL_CreateMutex();
 
-static std::map<std::string, Anim*> imageArray;
+static std::map<std::string, SiAnim*> imageArray;
 
-static Anim * def_anim = sdl_get_minimal_anim();
+static SiAnim * def_anim = sdl_get_minimal_anim();
 
 /*****************************************************************************/
-static Anim * image_load(const std::string & fileName)
+static SiAnim * image_load(const std::string & fileName)
 {
 	const std::string filePath = base_directory + "/" + fileName;
 
-	Anim * anim = anim_load(filePath);
+	SiAnim * anim = anim_load(filePath);
 
 	return anim;
 }
 
 /*****************************************************************************/
-Anim * imageDB_get_anim(Context * context, const std::string & imageName)
+SiAnim * imageDB_get_anim(Context * context, const std::string & imageName)
 {
-	Anim * anim = nullptr;
+	SiAnim * anim = nullptr;
 
 	const std::string fileName = std::string(IMAGE_TABLE) + "/" + std::string(imageName);
 
@@ -88,9 +88,9 @@ Anim * imageDB_get_anim(Context * context, const std::string & imageName)
 }
 
 /*****************************************************************************/
-std::vector<Anim*> imageDB_get_anim_array(Context * context, const std::vector<std::string> & imageNameArray)
+std::vector<SiAnim*> imageDB_get_anim_array(Context * context, const std::vector<std::string> & imageNameArray)
 {
-	std::vector<Anim*> animArray;
+	std::vector<SiAnim*> animArray;
 
 	for (auto && imageName : imageNameArray)
 	{

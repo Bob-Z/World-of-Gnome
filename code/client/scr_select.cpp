@@ -17,7 +17,6 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#include "Anim.h"
 #include "Camera.h"
 #include "CharacterMarquee.h"
 #include "entry.h"
@@ -29,8 +28,7 @@
 #include "mutex.h"
 #include "network_client.h"
 #include "screen.h"
-#include "sdl.h"
-#include "SdlItem.h"
+#include "SdlItemCore.h"
 #include "sfx.h"
 #include "syntax.h"
 #include "util.h"
@@ -224,7 +222,7 @@ static void compose_add_icon(Context * context, std::vector<SdlItem *> &itemArra
 		SdlItem * item;
 		item = new SdlItem;
 
-		Anim *anim = imageDB_get_anim(context, std::string(iconAddImageName));
+		SiAnim *anim = imageDB_get_anim(context, std::string(iconAddImageName));
 		item->setAnim(anim);
 
 		int x = sw / 2 - (anim->getWidth() / 2);

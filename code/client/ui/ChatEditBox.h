@@ -20,7 +20,7 @@
 #ifndef CLIENT_UI_CHATEDITBOX_H_
 #define CLIENT_UI_CHATEDITBOX_H_
 
-#include "SdlItem.h"
+#include "SdlItemCore.h"
 #include <functional>
 #include <SDL_ttf.h>
 #include <vector>

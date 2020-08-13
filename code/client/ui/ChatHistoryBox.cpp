@@ -19,8 +19,7 @@
 
 #include "ChatHistoryBox.h"
 
-#include "sdl.h"
-#include "SdlItem.h"
+#include "SdlItemCore.h"
 #include "textview.h"
 
 static constexpr Uint32 BACKGROUND_COLOR = 0xFFFFFF40;

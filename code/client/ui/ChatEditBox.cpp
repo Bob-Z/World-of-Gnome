@@ -18,9 +18,7 @@
  */
 
 #include "ChatEditBox.h"
-
-#include "sdl.h"
-#include "SdlItem.h"
+#include "SdlItemCore.h"
 
 static constexpr Uint32 BACKGROUND_COLOR = 0xFFFFFF40;
 

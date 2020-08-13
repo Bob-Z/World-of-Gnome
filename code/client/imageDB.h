@@ -20,9 +20,9 @@
 #include <string>
 #include <vector>
 
-class Anim;
+class SiAnim;
 class Context;
 
-Anim * imageDB_get_anim(Context * context, const std::string & imageName);
-std::vector<Anim*> imageDB_get_anim_array(Context * context, const std::vector<std::string> & imageNameArray);
+SiAnim * imageDB_get_anim(Context * context, const std::string & imageName);
+std::vector<SiAnim*> imageDB_get_anim_array(Context * context, const std::vector<std::string> & imageNameArray);
 void image_DB_remove(const std::string & fileName);

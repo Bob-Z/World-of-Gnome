@@ -19,7 +19,7 @@
 
 #include "CharacterMarquee.h"
 #include "log.h"
-#include "SdlItem.h"
+#include "SdlItemCore.h"
 
 /*****************************************************************************/
 CharacterMarquee::CharacterMarquee() :
@@ -33,13 +33,13 @@ CharacterMarquee::~CharacterMarquee()
 }
 
 /*****************************************************************************/
-const std::vector<Anim*>& CharacterMarquee::getAnim() const
+const std::vector<SiAnim*>& CharacterMarquee::getAnim() const
 {
 	return m_anim;
 }
 
 /*****************************************************************************/
-void CharacterMarquee::setAnim(const std::vector<Anim*>& anim)
+void CharacterMarquee::setAnim(const std::vector<SiAnim*>& anim)
 {
 	m_anim = anim;
 }

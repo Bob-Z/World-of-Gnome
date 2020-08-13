@@ -24,7 +24,7 @@
 #include <string>
 #include <vector>
 
-class Anim;
+class SiAnim;
 class SdlItem;
 
 class CharacterMarquee
@@ -35,8 +35,8 @@ public:
 	CharacterMarquee();
 	virtual ~CharacterMarquee();
 
-	const std::vector<Anim*>& getAnim() const;
-	void setAnim(const std::vector<Anim*>& anim);
+	const std::vector<SiAnim*>& getAnim() const;
+	void setAnim(const std::vector<SiAnim*>& anim);
 
 	const std::string& getId() const;
 	void setId(const std::string& id);
@@ -66,7 +66,7 @@ private:
 	std::string m_id;
 	std::string m_name;
 	std::string m_type;
-	std::vector<Anim *> m_anim;
+	std::vector<SiAnim *> m_anim;
 	SdlItem * m_item;
 	int m_width;
 	int m_height;

@@ -17,7 +17,6 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#include "Anim.h"
 #include "ChatBox.h"
 #include "client_conf.h"
 #include "const.h"
@@ -30,7 +29,7 @@
 #include "protocol.h"
 #include "scr_play.h"
 #include "screen.h"
-#include "sdl.h"
+#include "SdlItemCore.h"
 #include "syntax.h"
 #include "textview.h"
 #include "ui_play.h"
@@ -85,7 +84,7 @@ static int numAction = 0;
 /*****************************************************************************/
 static void draw_background(Context * ctx, std::vector<SdlItem *> & itemArray)
 {
-	static Anim * bgAnim = nullptr;
+	static SiAnim * bgAnim = nullptr;
 	if (bgAnim != nullptr)
 	{
 		delete bgAnim;
@@ -480,7 +479,7 @@ static int compose_action(Context * ctx, std::vector<SdlItem *> & itemArray)
 		}
 		deep_free(iconArray);
 
-		std::vector<Anim*> animArray = imageDB_get_anim_array(ctx, iconArrayStd);
+		std::vector<SiAnim*> animArray = imageDB_get_anim_array(ctx, iconArrayStd);
 		item->setAnim(animArray);
 		item->setPos(x, sh - animArray[0]->getHeight());
 
@@ -554,9 +553,9 @@ static void show_inventory()
 /*****************************************************************************/
 static void compose_equipment(Context * ctx, std::vector<SdlItem*> & itemArray)
 {
-	Anim * anim;
-	Anim * anim2;
-	Anim * anim3;
+	SiAnim * anim;
+	SiAnim * anim2;
+	SiAnim * anim3;
 
 	char * mytemplate = nullptr;
 #if 0
@@ -569,7 +568,7 @@ static void compose_equipment(Context * ctx, std::vector<SdlItem*> & itemArray)
 #endif
 	char * equippedIconName = nullptr;
 	char * inventoryIconName = nullptr;
-	Anim * inventoryIconAnim = nullptr;
+	SiAnim * inventoryIconAnim = nullptr;
 
 	int sw = 0;
 	int sh = 0;
@@ -907,7 +906,7 @@ static void compose_inventory(Context * ctx, std::vector<SdlItem*> & itemArray)
 	{
 		char * mytemplate = item_is_resource(std::string(inventoryArray[i]));
 
-		Anim * anim = nullptr;
+		SiAnim * anim = nullptr;
 		char * value = nullptr;
 		if (mytemplate == nullptr)
 		{
@@ -1031,7 +1030,7 @@ static void compose_inventory_select(Context * ctx, std::vector<SdlItem*> & item
 		return;
 	}
 
-	Anim * animCursor = imageDB_get_anim(ctx, client_conf_get().cursor_inventory);
+	SiAnim * animCursor = imageDB_get_anim(ctx, client_conf_get().cursor_inventory);
 
 	inventoryArray.clear();
 
@@ -1053,7 +1052,7 @@ static void compose_inventory_select(Context * ctx, std::vector<SdlItem*> & item
 	int x = 0;
 	char * mytemplate = nullptr;
 	bool isItemFound = false;
-	Anim * iconAnim = nullptr;
+	SiAnim * iconAnim = nullptr;
 
 	for (auto && inventory : inventoryArray)
 	{
@@ -1187,7 +1186,7 @@ static void compose_popup(Context * ctx, std::vector<SdlItem*> & itemArray)
 		if (*iter == POPUP_TAG_IMAGE)
 		{
 			++iter;
-			Anim * anim = imageDB_get_anim(ctx, *iter);
+			SiAnim * anim = imageDB_get_anim(ctx, *iter);
 
 			SdlItem * item = new SdlItem;
 			itemArray.push_back(item);

@@ -17,9 +17,8 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#include <CharacterMarquee.h>
-#include "Anim.h"
 #include "Camera.h"
+#include "CharacterMarquee.h"
 #include "entry.h"
 #include "file.h"
 #include "font.h"
@@ -29,8 +28,7 @@
 #include "mutex.h"
 #include "network_client.h"
 #include "screen.h"
-#include "sdl.h"
-#include "SdlItem.h"
+#include "SdlItemCore.h"
 #include "sfx.h"
 #include "syntax.h"
 #include "util.h"

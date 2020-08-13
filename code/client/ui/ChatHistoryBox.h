@@ -20,8 +20,8 @@
 #ifndef CLIENT_UI_CHATHISTORYBOX_H_
 #define CLIENT_UI_CHATHISTORYBOX_H_
 
+#include "SdlItemCore.h"
 #include <SDL_ttf.h>
-#include "SdlItem.h"
 #include <vector>
 
 class ChatHistoryBox
