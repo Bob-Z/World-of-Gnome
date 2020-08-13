@@ -17,16 +17,16 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#include <Context/ContextContainer.h>
+#include "client_conf.h"
 #include "client_server.h"
 #include "const.h"
+#include "Context/ContextContainer.h"
 #include "file.h"
 #include "imageDB.h"
 #include "log.h"
 #include "lua_client.h"
 #include "mutex.h"
 #include "network_client.h"
-#include "option_client.h"
 #include "screen.h"
 #include "sdl.h"
 #include <getopt.h>
@@ -60,18 +60,18 @@ ContextContainer & getContextContainer()
 /*****************************************************************************/
 int main(int argc, char **argv)
 {
-	int opt_ret;
-	std::string ip;
-	char * user = nullptr;
-	char * pass = nullptr;
 	int maxfps = false;
 
 	base_directory = std::string(getenv("HOME")) + "/.config/wog/client";
 
 	lua_init();
 
-	option_init();
+	client_conf_init();
 
+	std::string ip;
+	std::string user;
+	std::string pass;
+	int opt_ret = 0;
 	while ((opt_ret = getopt_long(argc, argv, optstring, longopts, nullptr)) != -1)
 	{
 		switch (opt_ret)
@@ -80,10 +80,10 @@ int main(int argc, char **argv)
 			ip = std::string(optarg);
 			break;
 		case 'u':
-			user = strdup(optarg);
+			user = std::string(optarg);
 			break;
 		case 'p':
-			pass = strdup(optarg);
+			pass = std::string(optarg);
 			break;
 		case 'l':
 			log_set_level(optarg);
@@ -95,10 +95,10 @@ int main(int argc, char **argv)
 			log_add_func_filter(optarg);
 			break;
 		case 't':
-			option_get().show_tile_type = true;
+			client_conf_get().show_tile_type = true;
 			break;
 		case 'P':
-			option_get().show_fps = true;
+			client_conf_get().show_fps = true;
 			break;
 		case 'm':
 			maxfps = true;
@@ -135,14 +135,13 @@ int main(int argc, char **argv)
 	Context * context = context_new();
 
 	Connection connection;
-	connection.setUserName(std::string(user));
+	connection.setUserName(user);
 
 	context->setConnection(&connection);
 
-	// connect to server
 	if (network_connect(connection, ip) == true)
 	{
-		network_login(connection, std::string(user), std::string(pass));
+		network_login(connection, user, pass);
 	}
 	else
 	{
@@ -155,7 +154,7 @@ int main(int argc, char **argv)
 		usleep(100000);
 	}
 
-	option_read_client_conf();
+	client_conf_read();
 
 	//Run the main loop
 	screen_display(context);

@@ -19,6 +19,7 @@
 
 #include "Anim.h"
 #include "ChatBox.h"
+#include "client_conf.h"
 #include "const.h"
 #include "entry.h"
 #include "font.h"
@@ -26,7 +27,6 @@
 #include "item.h"
 #include "log.h"
 #include "network_client.h"
-#include "option_client.h"
 #include "protocol.h"
 #include "scr_play.h"
 #include "screen.h"
@@ -171,7 +171,7 @@ static void key_up()
 {
 	Context * ctx = context_get_player();
 
-	network_send_action(*(ctx->getConnection()), option_get().action_move_up, nullptr);
+	network_send_action(*(ctx->getConnection()), client_conf_get().action_move_up, nullptr);
 }
 
 /*****************************************************************************/
@@ -179,7 +179,7 @@ static void key_up_released()
 {
 	Context * ctx = context_get_player();
 
-	network_send_action_stop(*(ctx->getConnection()), option_get().action_move_up);
+	network_send_action_stop(*(ctx->getConnection()), client_conf_get().action_move_up);
 }
 
 /*****************************************************************************/
@@ -187,7 +187,7 @@ static void key_down()
 {
 	Context * ctx = context_get_player();
 
-	network_send_action(*(ctx->getConnection()), option_get().action_move_down, nullptr);
+	network_send_action(*(ctx->getConnection()), client_conf_get().action_move_down, nullptr);
 }
 
 /*****************************************************************************/
@@ -195,7 +195,7 @@ static void key_down_released()
 {
 	Context * ctx = context_get_player();
 
-	network_send_action_stop(*(ctx->getConnection()), option_get().action_move_down);
+	network_send_action_stop(*(ctx->getConnection()), client_conf_get().action_move_down);
 }
 
 /*****************************************************************************/
@@ -203,7 +203,7 @@ static void key_left()
 {
 	Context * ctx = context_get_player();
 
-	network_send_action(*(ctx->getConnection()), option_get().action_move_left, nullptr);
+	network_send_action(*(ctx->getConnection()), client_conf_get().action_move_left, nullptr);
 }
 
 /*****************************************************************************/
@@ -211,7 +211,7 @@ static void key_left_released()
 {
 	Context * ctx = context_get_player();
 
-	network_send_action_stop(*(ctx->getConnection()), option_get().action_move_left);
+	network_send_action_stop(*(ctx->getConnection()), client_conf_get().action_move_left);
 }
 
 /*****************************************************************************/
@@ -219,7 +219,7 @@ static void key_right()
 {
 	Context * ctx = context_get_player();
 
-	network_send_action(*(ctx->getConnection()), option_get().action_move_right, nullptr);
+	network_send_action(*(ctx->getConnection()), client_conf_get().action_move_right, nullptr);
 }
 
 /*****************************************************************************/
@@ -227,7 +227,7 @@ static void key_right_released()
 {
 	Context * ctx = context_get_player();
 
-	network_send_action_stop(*(ctx->getConnection()), option_get().action_move_right);
+	network_send_action_stop(*(ctx->getConnection()), client_conf_get().action_move_right);
 }
 
 /*****************************************************************************/
@@ -235,7 +235,7 @@ static void key_up_left()
 {
 	Context * ctx = context_get_player();
 
-	network_send_action(*(ctx->getConnection()), option_get().action_move_up_left, nullptr);
+	network_send_action(*(ctx->getConnection()), client_conf_get().action_move_up_left, nullptr);
 }
 
 /*****************************************************************************/
@@ -243,7 +243,7 @@ static void key_up_left_released()
 {
 	Context * ctx = context_get_player();
 
-	network_send_action_stop(*(ctx->getConnection()), option_get().action_move_up_left);
+	network_send_action_stop(*(ctx->getConnection()), client_conf_get().action_move_up_left);
 }
 
 /*****************************************************************************/
@@ -251,7 +251,7 @@ static void key_up_right()
 {
 	Context * ctx = context_get_player();
 
-	network_send_action(*(ctx->getConnection()), option_get().action_move_up_right, nullptr);
+	network_send_action(*(ctx->getConnection()), client_conf_get().action_move_up_right, nullptr);
 }
 
 /*****************************************************************************/
@@ -259,7 +259,7 @@ static void key_up_right_released()
 {
 	Context * ctx = context_get_player();
 
-	network_send_action_stop(*(ctx->getConnection()), option_get().action_move_up_right);
+	network_send_action_stop(*(ctx->getConnection()), client_conf_get().action_move_up_right);
 }
 
 /*****************************************************************************/
@@ -267,7 +267,7 @@ static void key_down_left()
 {
 	Context * ctx = context_get_player();
 
-	network_send_action(*(ctx->getConnection()), option_get().action_move_down_left, nullptr);
+	network_send_action(*(ctx->getConnection()), client_conf_get().action_move_down_left, nullptr);
 }
 
 /*****************************************************************************/
@@ -275,7 +275,7 @@ static void key_down_left_released()
 {
 	Context * ctx = context_get_player();
 
-	network_send_action_stop(*(ctx->getConnection()), option_get().action_move_down_left);
+	network_send_action_stop(*(ctx->getConnection()), client_conf_get().action_move_down_left);
 }
 
 /*****************************************************************************/
@@ -283,7 +283,7 @@ static void key_down_right()
 {
 	Context * ctx = context_get_player();
 
-	network_send_action(*(ctx->getConnection()), option_get().action_move_down_right, nullptr);
+	network_send_action(*(ctx->getConnection()), client_conf_get().action_move_down_right, nullptr);
 }
 
 /*****************************************************************************/
@@ -291,7 +291,7 @@ static void key_down_right_released()
 {
 	Context * ctx = context_get_player();
 
-	network_send_action_stop(*(ctx->getConnection()), option_get().action_move_down_right);
+	network_send_action_stop(*(ctx->getConnection()), client_conf_get().action_move_down_right);
 }
 
 /*****************************************************************************/
@@ -542,7 +542,7 @@ static void cb_select_slot(const std::string & id)
 {
 	Context * ctx = context_get_player();
 
-	network_send_action(*(ctx->getConnection()), option_get().action_select_equipment, id.c_str(), nullptr);
+	network_send_action(*(ctx->getConnection()), client_conf_get().action_select_equipment, id.c_str(), nullptr);
 }
 
 /*****************************************************************************/
@@ -690,11 +690,11 @@ static void compose_equipment(Context * ctx, std::vector<SdlItem*> & itemArray)
 		}
 
 		// Draw selection cursor
-		if (option_get().cursor_equipment)
+		if (client_conf_get().cursor_equipment)
 		{
 			if (ctx->getSelectionEquipment() == std::string(slot_list[index]))
 			{
-				anim3 = imageDB_get_anim(ctx, option_get().cursor_equipment);
+				anim3 = imageDB_get_anim(ctx, client_conf_get().cursor_equipment);
 
 				SdlItem * item = new SdlItem;
 				itemArray.push_back(item);
@@ -867,7 +867,7 @@ void cb_inventory_select(const std::string & itemId)
 {
 	Context * ctx = context_get_player();
 
-	network_send_action(*(ctx->getConnection()), option_get().action_select_inventory, itemId.c_str(), nullptr);
+	network_send_action(*(ctx->getConnection()), client_conf_get().action_select_inventory, itemId.c_str(), nullptr);
 }
 
 /*****************************************************************************/
@@ -1026,12 +1026,12 @@ static void compose_inventory_select(Context * ctx, std::vector<SdlItem*> & item
 		return;
 	}
 
-	if (option_get().cursor_inventory == nullptr)
+	if (client_conf_get().cursor_inventory == nullptr)
 	{
 		return;
 	}
 
-	Anim * animCursor = imageDB_get_anim(ctx, option_get().cursor_inventory);
+	Anim * animCursor = imageDB_get_anim(ctx, client_conf_get().cursor_inventory);
 
 	inventoryArray.clear();
 

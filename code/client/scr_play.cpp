@@ -19,6 +19,7 @@
 
 #include "Anim.h"
 #include "Camera.h"
+#include "client_conf.h"
 #include "const.h"
 #include "entry.h"
 #include "file.h"
@@ -29,7 +30,6 @@
 #include "map.h"
 #include "network_client.h"
 #include "network.h"
-#include "option_client.h"
 #include "screen.h"
 #include "sdl.h"
 #include "sfx.h"
@@ -78,7 +78,7 @@ int scr_play_get_current_y()
 /*****************************************************************************/
 static void cb_select_sprite(const std::string & id)
 {
-	network_send_action(*(context_get_player()->getConnection()), option_get().action_select_character, id.c_str(), nullptr);
+	network_send_action(*(context_get_player()->getConnection()), client_conf_get().action_select_character, id.c_str(), nullptr);
 }
 
 /*****************************************************************************/
@@ -624,7 +624,7 @@ static void cb_select_map(SdlItem * item)
 	std::string x = std::to_string(item->getUser1());
 	std::string y = std::to_string(item->getUser2());
 
-	network_send_action(*(ctx->getConnection()), option_get().action_select_tile, ctx->getMap().c_str(), x.c_str(), y.c_str(), nullptr);
+	network_send_action(*(ctx->getConnection()), client_conf_get().action_select_tile, ctx->getMap().c_str(), x.c_str(), y.c_str(), nullptr);
 }
 
 /*****************************************************************************/
@@ -652,9 +652,9 @@ static void compose_map_button(std::vector<SdlItem *> & itemArray)
 	Context * ctx = context_get_player();
 
 	Anim * anim = nullptr;
-	if (option_get().cursor_over_tile)
+	if (client_conf_get().cursor_over_tile)
 	{
-		anim = imageDB_get_anim(ctx, option_get().cursor_over_tile);
+		anim = imageDB_get_anim(ctx, client_conf_get().cursor_over_tile);
 	}
 
 	int x = 0;
@@ -785,7 +785,7 @@ static void compose_type(int layerIndex, std::vector<SdlItem *> & itemArray)
 {
 	static TTF_Font * font = nullptr;
 
-	if (option_get().show_tile_type == false)
+	if (client_conf_get().show_tile_type == false)
 	{
 		return;
 	}
@@ -843,7 +843,7 @@ static void compose_select(std::vector<SdlItem *> & itemArray)
 	Context * ctx = context_get_player();
 
 	// Tile selection
-	if (option_get().cursor_tile)
+	if (client_conf_get().cursor_tile)
 	{
 		if (ctx->getSelectionMap() == ctx->getMap())
 		{
@@ -855,7 +855,7 @@ static void compose_select(std::vector<SdlItem *> & itemArray)
 				SdlItem * item = new SdlItem;
 				itemArray.push_back(item);
 
-				item->setAnim(imageDB_get_anim(ctx, option_get().cursor_tile));
+				item->setAnim(imageDB_get_anim(ctx, client_conf_get().cursor_tile));
 
 				// get pixel coordinate from tile coordinate
 				int x = map_t2p_x(pos_tx, pos_ty, defaultLayer);
@@ -866,7 +866,7 @@ static void compose_select(std::vector<SdlItem *> & itemArray)
 	}
 
 	// Sprite selection
-	if (option_get().cursor_character_draw_script)
+	if (client_conf_get().cursor_character_draw_script)
 	{
 		Context * selected_context = nullptr;
 		selected_context = context_find(ctx->getSelectionContextId());
@@ -879,7 +879,7 @@ static void compose_select(std::vector<SdlItem *> & itemArray)
 		itemArray.push_back(item);
 
 		item->setUserPtr(selected_context);
-		item->setUser1Ptr(option_get().cursor_character_draw_script);
+		item->setUser1Ptr(client_conf_get().cursor_character_draw_script);
 	}
 }
 
@@ -967,8 +967,8 @@ void scr_play_compose(Context * context, std::vector<SdlItem *> & itemArray)
 				isMusicPlaying = false;
 			}
 		}
-		else
-		{ // sfx == nullptr
+		else // sfx == nullptr
+		{
 			sfx_stop(MUSIC_CHANNEL);
 			isMusicPlaying = false;
 		}

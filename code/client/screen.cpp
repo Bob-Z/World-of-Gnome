@@ -18,14 +18,14 @@
  */
 
 #include "Camera.h"
+#include "client_conf.h"
 #include "entry.h"
-#include "file.h"
 #include "file_client.h"
+#include "file.h"
 #include "font.h"
 #include "log.h"
-#include "lua_script.h"
 #include "lua_client.h"
-#include "option_client.h"
+#include "lua_script.h"
 #include "scr_create.h"
 #include "scr_play.h"
 #include "scr_select.h"
@@ -33,7 +33,6 @@
 #include "sdl.h"
 #include "syntax.h"
 #include <limits.h>
-#include <pthread.h>
 
 static bool screenRunning = true;
 static std::vector<SdlItem*> itemArray;
@@ -142,7 +141,7 @@ static void init_scr()
 /*****************************************************************************/
 static void display_fps(Context * ctx)
 {
-	if (option_get().show_fps == true)
+	if (client_conf_get().show_fps == true)
 	{
 		static TTF_Font * font = nullptr;
 		if (font == nullptr)

@@ -43,11 +43,11 @@ add_executable(
 	${PROJECT_NAME}	
 
 	client.cpp
+	client_conf.cpp
 	file_client.cpp
 	imageDB.cpp
 	main_client.cpp
 	network_client.cpp
-	option_client.cpp
 	parser_client.cpp
 	screen.cpp
 	scr_play.cpp

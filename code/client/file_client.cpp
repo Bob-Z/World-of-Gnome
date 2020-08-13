@@ -24,7 +24,7 @@
 #include "file.h"
 #include "imageDB.h"
 #include "log.h"
-#include "option_client.h"
+#include "client_conf.h"
 #include "screen.h"
 #include "syntax.h"
 #include <cstdio>
@@ -35,22 +35,22 @@
  **************************************/
 int file_add(const std::string & name, const std::string & data)
 {
-	const std::string temp_name = name + APP_NAME + "tmp";
-	const std::string temp_path = base_directory + "/" + temp_name;
+	const std::string tempName = name + APP_NAME + "tmp";
+	const std::string tempPath = base_directory + "/" + tempName;
 
-	file_create_directory(temp_path);
+	file_create_directory(tempPath);
 
-	if (file_set_contents(temp_name.c_str(), data.c_str(), data.size()) == false)
+	if (file_set_contents(tempName.c_str(), data.c_str(), data.size()) == false)
 	{
-		werr(LOGDESIGNER, "Error writing file %s with size %d", temp_name.c_str(), data.size());
+		werr(LOGDESIGNER, "Error writing file %s with size %d", tempName.c_str(), data.size());
 		return -1;
 	}
 
 	const std::string file_path = base_directory + "/" + name;
 
-	if (rename(temp_path.c_str(), file_path.c_str()) == -1)
+	if (rename(tempPath.c_str(), file_path.c_str()) == -1)
 	{
-		LOG("Error renaming file " + temp_path + " to " + file_path);
+		LOG("Error renaming file " + tempPath + " to " + file_path);
 		return false;
 	}
 
@@ -61,7 +61,7 @@ int file_add(const std::string & name, const std::string & data)
 	// Update the image DB
 	image_DB_remove(name);
 	// Update options if needed
-	option_read_client_conf();
+	client_conf_read();
 	// Make sure the new file is drawn (if needed)
 	screen_compose();
 

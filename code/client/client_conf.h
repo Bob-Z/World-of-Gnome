@@ -17,8 +17,8 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#ifndef WOG_OPTION_CLIENT
-#define WOG_OPTION_CLIENT
+#ifndef WOG_CLIENT_CONF
+#define WOG_CLIENT_CONF
 
 typedef struct
 {
@@ -43,10 +43,10 @@ typedef struct
 	char * action_move_up_left;
 	char * action_move_down_right;
 	char * action_move_down_left;
-} option_t;
+} client_conf_t;
 
-void option_init();
-option_t & option_get();
-void option_read_client_conf();
+void client_conf_init();
+client_conf_t & client_conf_get();
+void client_conf_read();
 
 #endif
