@@ -24,6 +24,7 @@
 #include "file.h"
 #include "font.h"
 #include "imageDB.h"
+#include "LockGuard.h"
 #include "log.h"
 #include "mutex.h"
 #include "network_client.h"
@@ -264,129 +265,93 @@ void scr_select_compose(Context * context, std::vector<SdlItem *> & itemArray)
 
 	compose_add_icon(context, itemArray);
 
-	SDL_LockMutex(characterSelectMutex);
-
-	int maxHeight = 0;
-	for (auto && characterMarquee : characterMarqueeArray)
 	{
-		// Compute the marquee file name
-		char * marqueeName = nullptr;
-		if (entry_read_string(CHARACTER_TABLE, characterMarquee.getId().c_str(), &marqueeName, CHARACTER_KEY_MARQUEE, nullptr) == true)
-		{
-			std::vector<std::string> nameArray;
-			nameArray.push_back(std::string(marqueeName));
-			free(marqueeName);
+		LockGuard guard(characterSelectLock);
 
-			characterMarquee.setAnim(imageDB_get_anim_array(context, nameArray));
-		}
-		else
+		int maxHeight = 0;
+		for (auto && characterMarquee : characterMarqueeArray)
 		{
-			char ** marqueeArray = nullptr;
-			if (entry_read_list(CHARACTER_TABLE, characterMarquee.getId().c_str(), &marqueeArray, CHARACTER_KEY_MARQUEE, nullptr) == false)
+			// Compute the marquee file name
+			char * marqueeName = nullptr;
+			if (entry_read_string(CHARACTER_TABLE, characterMarquee.getId().c_str(), &marqueeName, CHARACTER_KEY_MARQUEE, nullptr) == true)
 			{
-				LOG_DESIGN(characterMarquee.getId() + " has no marquee");
+				std::vector<std::string> nameArray;
+				nameArray.push_back(std::string(marqueeName));
+				free(marqueeName);
+
+				characterMarquee.setAnim(imageDB_get_anim_array(context, nameArray));
+			}
+			else
+			{
+				char ** marqueeArray = nullptr;
+				if (entry_read_list(CHARACTER_TABLE, characterMarquee.getId().c_str(), &marqueeArray, CHARACTER_KEY_MARQUEE, nullptr) == false)
+				{
+					LOG_DESIGN(characterMarquee.getId() + " has no marquee");
+					continue;
+				}
+
+				std::vector<std::string> nameArray;
+				int i = 0;
+				while (marqueeArray[i] != nullptr)
+				{
+					nameArray.push_back(std::string(marqueeArray[i]));
+				}
+
+				deep_free(marqueeArray);
+
+				characterMarquee.setAnim(imageDB_get_anim_array(context, nameArray));
+			}
+
+			if (characterMarquee.getAnim()[0]->getHeight() > maxHeight)
+			{
+				maxHeight = characterMarquee.getAnim()[0]->getHeight();
+			}
+
+			int w = 0;
+			int h = 0;
+
+			if (fontName != nullptr)
+			{
+				sdl_get_string_size(fontName, characterMarquee.getName(), &w, &h);
+				characterMarquee.setWidth(w);
+			}
+			if (fontType != nullptr)
+			{
+				sdl_get_string_size(fontType, characterMarquee.getType(), &w, &h);
+				if (w > characterMarquee.getWidth())
+				{
+					characterMarquee.setWidth(w);
+				}
+			}
+			if (characterMarquee.getAnim()[0]->getWidth() > characterMarquee.getWidth())
+			{
+				characterMarquee.setWidth(characterMarquee.getAnim()[0]->getWidth());
+			}
+		}
+
+		// Create item list
+		int index = -1;
+		int currentX = 0;
+
+		for (auto && characterMarquee : characterMarqueeArray)
+		{
+			index++;
+
+			if (characterMarquee.getAnim().empty() == true)
+			{
 				continue;
 			}
 
-			std::vector<std::string> nameArray;
-			int i = 0;
-			while (marqueeArray[i] != nullptr)
-			{
-				nameArray.push_back(std::string(marqueeArray[i]));
-			}
+			// Character picture
+			SdlItem * item = new SdlItem;
+			itemArray.push_back(item);
 
-			deep_free(marqueeArray);
+			characterMarquee.setItem(item);
 
-			characterMarquee.setAnim(imageDB_get_anim_array(context, nameArray));
-		}
+			int characterMarqueeMidX = currentX + (characterMarquee.getWidth() / 2);
 
-		if (characterMarquee.getAnim()[0]->getHeight() > maxHeight)
-		{
-			maxHeight = characterMarquee.getAnim()[0]->getHeight();
-		}
-
-		int w = 0;
-		int h = 0;
-
-		if (fontName != nullptr)
-		{
-			sdl_get_string_size(fontName, characterMarquee.getName(), &w, &h);
-			characterMarquee.setWidth(w);
-		}
-		if (fontType != nullptr)
-		{
-			sdl_get_string_size(fontType, characterMarquee.getType(), &w, &h);
-			if (w > characterMarquee.getWidth())
-			{
-				characterMarquee.setWidth(w);
-			}
-		}
-		if (characterMarquee.getAnim()[0]->getWidth() > characterMarquee.getWidth())
-		{
-			characterMarquee.setWidth(characterMarquee.getAnim()[0]->getWidth());
-		}
-	}
-
-	// Create item list
-	int index = -1;
-	int currentX = 0;
-
-	for (auto && characterMarquee : characterMarqueeArray)
-	{
-		index++;
-
-		if (characterMarquee.getAnim().empty() == true)
-		{
-			continue;
-		}
-
-		// Character picture
-		SdlItem * item = new SdlItem;
-		itemArray.push_back(item);
-
-		characterMarquee.setItem(item);
-
-		int characterMarqueeMidX = currentX + (characterMarquee.getWidth() / 2);
-
-		int x = characterMarqueeMidX - (characterMarquee.getAnim()[0]->getWidth() / 2);
-		int y = maxHeight / 2 - (characterMarquee.getAnim()[0]->getHeight() / 2);
-
-		if (x < characterMarquee.getX())
-		{
-			characterMarquee.setX(x);
-		}
-		if (y < characterMarquee.getY())
-		{
-			characterMarquee.setY(y);
-		}
-		characterMarquee.setHeight(maxHeight);
-
-		item->setPos(x, y);
-		item->setShape(characterMarquee.getAnim()[0]->getWidth(), characterMarquee.getAnim()[0]->getHeight());
-		item->setAnim(characterMarquee.getAnim());
-
-		item->setClickRightCb([context, index]()
-		{	cb_select(context, index);});
-		item->setDoubleClickLeftCb([context, index]()
-		{	cb_select(context, index);});
-
-		// character name
-		if (fontName != nullptr)
-		{
-			SdlItem * itemCharacterName;
-			itemCharacterName = new SdlItem;
-			itemArray.push_back(itemCharacterName);
-
-			itemCharacterName->setText(characterMarquee.getName());
-			itemCharacterName->setFont(fontName);
-
-			// display name above the picture
-			int w = 0;
-			int h = 0;
-			sdl_get_string_size(itemCharacterName->getFont(), itemCharacterName->getText(), &w, &h);
-
-			x = characterMarqueeMidX - (w / 2);
-			y = -h;
+			int x = characterMarqueeMidX - (characterMarquee.getAnim()[0]->getWidth() / 2);
+			int y = maxHeight / 2 - (characterMarquee.getAnim()[0]->getHeight() / 2);
 
 			if (x < characterMarquee.getX())
 			{
@@ -396,63 +361,99 @@ void scr_select_compose(Context * context, std::vector<SdlItem *> & itemArray)
 			{
 				characterMarquee.setY(y);
 			}
-			characterMarquee.setHeight(characterMarquee.getHeight() + h);
+			characterMarquee.setHeight(maxHeight);
 
-			itemCharacterName->setPos(x, y);
-			itemCharacterName->setShape(w, h);
-		}
-		else
-		{
-			ERR_DESIGN("Can't open TTF font " + FONT);
-		}
+			item->setPos(x, y);
+			item->setShape(characterMarquee.getAnim()[0]->getWidth(), characterMarquee.getAnim()[0]->getHeight());
+			item->setAnim(characterMarquee.getAnim());
 
-		// character type
-		if (fontType != nullptr)
-		{
-			SdlItem * itemCharacterType;
-			itemCharacterType = new SdlItem;
-			itemArray.push_back(itemCharacterType);
+			item->setClickRightCb([context, index]()
+			{	cb_select(context, index);});
+			item->setDoubleClickLeftCb([context, index]()
+			{	cb_select(context, index);});
 
-			itemCharacterType->setText(characterMarquee.getType());
-			itemCharacterType->setFont(fontType);
-
-			// display type below the picture
-			int w = 0;
-			int h = 0;
-			sdl_get_string_size(itemCharacterType->getFont(), itemCharacterType->getText(), &w, &h);
-
-			x = characterMarqueeMidX - (w / 2);
-			y = maxHeight;
-
-			if (x < characterMarquee.getX())
+			// character name
+			if (fontName != nullptr)
 			{
-				characterMarquee.setX(x);
+				SdlItem * itemCharacterName;
+				itemCharacterName = new SdlItem;
+				itemArray.push_back(itemCharacterName);
+
+				itemCharacterName->setText(characterMarquee.getName());
+				itemCharacterName->setFont(fontName);
+
+				// display name above the picture
+				int w = 0;
+				int h = 0;
+				sdl_get_string_size(itemCharacterName->getFont(), itemCharacterName->getText(), &w, &h);
+
+				x = characterMarqueeMidX - (w / 2);
+				y = -h;
+
+				if (x < characterMarquee.getX())
+				{
+					characterMarquee.setX(x);
+				}
+				if (y < characterMarquee.getY())
+				{
+					characterMarquee.setY(y);
+				}
+				characterMarquee.setHeight(characterMarquee.getHeight() + h);
+
+				itemCharacterName->setPos(x, y);
+				itemCharacterName->setShape(w, h);
 			}
-			if (y < characterMarquee.getY())
+			else
 			{
-				characterMarquee.setY(y);
+				ERR_DESIGN("Can't open TTF font " + FONT);
 			}
-			characterMarquee.setHeight(characterMarquee.getHeight() + h);
 
-			itemCharacterType->setPos(x, y);
-			itemCharacterType->setShape(w, h);
+			// character type
+			if (fontType != nullptr)
+			{
+				SdlItem * itemCharacterType;
+				itemCharacterType = new SdlItem;
+				itemArray.push_back(itemCharacterType);
+
+				itemCharacterType->setText(characterMarquee.getType());
+				itemCharacterType->setFont(fontType);
+
+				// display type below the picture
+				int w = 0;
+				int h = 0;
+				sdl_get_string_size(itemCharacterType->getFont(), itemCharacterType->getText(), &w, &h);
+
+				x = characterMarqueeMidX - (w / 2);
+				y = maxHeight;
+
+				if (x < characterMarquee.getX())
+				{
+					characterMarquee.setX(x);
+				}
+				if (y < characterMarquee.getY())
+				{
+					characterMarquee.setY(y);
+				}
+				characterMarquee.setHeight(characterMarquee.getHeight() + h);
+
+				itemCharacterType->setPos(x, y);
+				itemCharacterType->setShape(w, h);
+			}
+			else
+			{
+				ERR_DESIGN("Can't open TTF font " + FONT);
+			}
+
+			currentX += characterMarquee.getWidth() + BORDER;
 		}
-		else
+
+		if ((centeredCharacter == -1) && (characterMarqueeArray.size() > 0))
 		{
-			ERR_DESIGN("Can't open TTF font " + FONT);
+			centeredCharacter = 0;
+
+			center_item();
 		}
-
-		currentX += characterMarquee.getWidth() + BORDER;
 	}
-
-	if ((centeredCharacter == -1) && (characterMarqueeArray.size() > 0))
-	{
-		centeredCharacter = 0;
-
-		center_item();
-	}
-
-	SDL_UnlockMutex(characterSelectMutex);
 
 	sdl_clean_key_cb();
 	sdl_add_down_key_cb(SDL_SCANCODE_ESCAPE, []()
@@ -468,7 +469,7 @@ void scr_select_compose(Context * context, std::vector<SdlItem *> & itemArray)
 /*****************************************************************************/
 void scr_select_add_user_character(const std::string & id, const std::string & type, const std::string & name)
 {
-	SDL_LockMutex(characterSelectMutex);
+	LockGuard guard(characterSelectLock);
 
 	LOG("Add character");
 
@@ -482,6 +483,4 @@ void scr_select_add_user_character(const std::string & id, const std::string & t
 	characterMarqueeArray.push_back(characterMarquee);
 
 	LOG_DESIGN("Character " + id + " / " + type + " / " + name + " added");
-
-	SDL_UnlockMutex(characterSelectMutex);
 }

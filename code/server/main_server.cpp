@@ -96,8 +96,6 @@ int main(int argc, char **argv)
 	}
 	closedir(dir);
 
-	common_mutex_init();
-
 	//init non playing character
 	if (npc_allowed == true)
 	{

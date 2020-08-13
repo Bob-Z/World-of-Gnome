@@ -2228,7 +2228,7 @@ int action_execute_script(Context * context, const char * script, const char ** 
 		return -1;
 	}
 
-	return lua_execute_script(context->getLuaVm(), context->getLuaVmMutex(), script, parameters);
+	return lua_execute_script(context->getLuaVm(), context->getLuaVmLock(), script, parameters);
 }
 
 /**************************************

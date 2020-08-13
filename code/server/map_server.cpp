@@ -19,21 +19,20 @@
 
 #include "map_server.h"
 
-#include <const.h>
+#include "action.h"
+#include "context_server.h"
 #include "Context.h"
+#include "LockGuard.h"
+#include <const.h>
 #include <cstdio>
 #include <cstring>
 #include <entry.h>
 #include <file.h>
 #include <map.h>
 #include <mutex.h>
-#include <SDL_mutex.h>
 #include <stdlib.h>
 #include <syntax.h>
 #include <util.h>
-
-#include "action.h"
-#include "context_server.h"
 
 /***********************************
  return string MUST BE FREED
@@ -209,13 +208,13 @@ char * map_delete_item(const char * map, int layer, int x, int y)
 	}
 
 	sprintf(layer_name, "%s%d", MAP_KEY_LAYER, layer);
-	/* Manage concurrent acces to map files */
-	SDL_LockMutex(map_mutex);
-	/* Search the items on the specified tile */
+
+	LockGuard guard(map_lock);
+
+	// Search the items on the specified tile
 	if (entry_get_group_list(MAP_TABLE, map, &itemlist, layer_name,
 	MAP_ENTRY_ITEM_LIST, nullptr) == false)
 	{
-		SDL_UnlockMutex(map_mutex);
 		return nullptr;
 	}
 
@@ -224,7 +223,6 @@ char * map_delete_item(const char * map, int layer, int x, int y)
 		if (entry_read_int(MAP_TABLE, map, &mapx, layer_name,
 		MAP_ENTRY_ITEM_LIST, itemlist[i], MAP_ITEM_TILE_X, nullptr) == false)
 		{
-			SDL_UnlockMutex(map_mutex);
 			deep_free(itemlist);
 			return nullptr;
 		}
@@ -232,7 +230,6 @@ char * map_delete_item(const char * map, int layer, int x, int y)
 		if (entry_read_int(MAP_TABLE, map, &mapy, layer_name,
 		MAP_ENTRY_ITEM_LIST, itemlist[i], MAP_ITEM_TILE_Y, nullptr) == false)
 		{
-			SDL_UnlockMutex(map_mutex);
 			deep_free(itemlist);
 			return nullptr;
 		}
@@ -254,24 +251,20 @@ char * map_delete_item(const char * map, int layer, int x, int y)
 		{
 			free(saved_item);
 		}
-		SDL_UnlockMutex(map_mutex);
 		return nullptr;
 	}
 
-	/* remove the item from the item list of the map */
+	// remove the item from the item list of the map
 	if (entry_remove_group(MAP_TABLE, map, id, layer_name, MAP_ENTRY_ITEM_LIST, nullptr) == false)
 	{
 		deep_free(itemlist);
 		free(saved_item);
-		SDL_UnlockMutex(map_mutex);
 		return nullptr;
 	}
 
 	deep_free(itemlist);
 
-	SDL_UnlockMutex(map_mutex);
-
-	/* Send network notifications */
+	// Send network notifications
 	context_broadcast_map(map);
 
 	return saved_item;
@@ -292,24 +285,20 @@ int map_add_item(const char * map, int layer, const char * id, int x, int y)
 
 	sprintf(layer_name, "%s%d", MAP_KEY_LAYER, layer);
 
-	SDL_LockMutex(map_mutex);
+	LockGuard guard(map_lock);
 
 	if (entry_write_int(MAP_TABLE, map, x, layer_name, MAP_ENTRY_ITEM_LIST, id,
 	MAP_ITEM_TILE_X, nullptr) == false)
 	{
 		entry_remove_group(MAP_TABLE, map, id, layer_name, MAP_ENTRY_ITEM_LIST, nullptr);
-		SDL_UnlockMutex(map_mutex);
 		return false;
 	}
 	if (entry_write_int(MAP_TABLE, map, y, layer_name, MAP_ENTRY_ITEM_LIST, id,
 	MAP_ITEM_TILE_Y, nullptr) == false)
 	{
 		entry_remove_group(MAP_TABLE, map, id, layer_name, MAP_ENTRY_ITEM_LIST, nullptr);
-		SDL_UnlockMutex(map_mutex);
 		return false;
 	}
-
-	SDL_UnlockMutex(map_mutex);
 
 	// Send network notifications
 	context_broadcast_map(map);
@@ -340,26 +329,23 @@ int map_set_tile(const char * map, int layer, const char * tile, int x, int y, i
 
 	sprintf(layer_name, "%s%d", MAP_KEY_LAYER, layer);
 
-	/* Manage concurrent access to map files */
-	SDL_LockMutex(map_mutex);
+	LockGuard guard(map_lock);
 
-	/* read size of map grid */
+	// read size of map grid
 	if (entry_read_int(MAP_TABLE, map, &width, MAP_KEY_WIDTH, nullptr) == false)
 	{
-		SDL_UnlockMutex(map_mutex);
 		return false;
 	}
 
-	/* read layer's specific width */
+	// read layer's specific width
 	entry_read_int(MAP_TABLE, map, &width, layer_name, MAP_KEY_WIDTH, nullptr);
 
 	index = width * y + x;
 
-	/* read previous map set */
+	// read previous map set
 	if (entry_read_list_index(MAP_TABLE, map, &previous_tile, index, layer_name,
 	MAP_KEY_SET, nullptr) == false)
 	{
-		SDL_UnlockMutex(map_mutex);
 		return false;
 	}
 
@@ -368,7 +354,6 @@ int map_set_tile(const char * map, int layer, const char * tile, int x, int y, i
 	if (strcmp(previous_tile, tile) == 0)
 	{
 		free(previous_tile);
-		SDL_UnlockMutex(map_mutex);
 		return false;
 	}
 	free(previous_tile);
@@ -381,8 +366,6 @@ int map_set_tile(const char * map, int layer, const char * tile, int x, int y, i
 			context_broadcast_map(map);
 		}
 	}
-
-	SDL_UnlockMutex(map_mutex);
 
 	return true;
 }
@@ -405,13 +388,11 @@ int map_set_tile_array(const char * map, int layer, const char** tile_array)
 
 	sprintf(layer_name, "%s%d", MAP_KEY_LAYER, layer);
 
-	/* Manage concurrent access to map files */
-	SDL_LockMutex(map_mutex);
+	LockGuard guard(map_lock);
 
-	/* read previous map set */
+	// read previous map set
 	if (entry_read_list(MAP_TABLE, map, &previous_tile, layer_name, MAP_KEY_SET, nullptr) == false)
 	{
-		SDL_UnlockMutex(map_mutex);
 		return false;
 	}
 
@@ -430,8 +411,6 @@ int map_set_tile_array(const char * map, int layer, const char** tile_array)
 	}
 
 	deep_free(previous_tile);
-
-	SDL_UnlockMutex(map_mutex);
 
 	return true;
 }
@@ -459,13 +438,11 @@ int map_set_tile_type(const char * map, int layer, const char * type, int x, int
 
 	sprintf(layer_name, "%s%d", MAP_KEY_LAYER, layer);
 
-	// Manage concurrent access to map files
-	SDL_LockMutex(map_mutex);
+	LockGuard guard(map_lock);
 
 	// read size of map grid
 	if (entry_read_int(MAP_TABLE, map, &width, MAP_KEY_WIDTH, nullptr) == false)
 	{
-		SDL_UnlockMutex(map_mutex);
 		return false;
 	}
 
@@ -480,7 +457,6 @@ int map_set_tile_type(const char * map, int layer, const char * type, int x, int
 		if (strcmp(previous_type, type) == 0)
 		{
 			free(previous_type);
-			SDL_UnlockMutex(map_mutex);
 			return true;
 		}
 		free(previous_type);
@@ -494,8 +470,6 @@ int map_set_tile_type(const char * map, int layer, const char * type, int x, int
 			context_broadcast_map(map);
 		}
 	}
-
-	SDL_UnlockMutex(map_mutex);
 
 	return true;
 }
@@ -521,12 +495,9 @@ int map_set_offscreen(const char * map, const char * script)
 		return false;
 	}
 
-	/* Manage concurrent access to map files */
-	SDL_LockMutex(map_mutex);
+	LockGuard guard(map_lock);
 
 	res = entry_write_string(MAP_TABLE, map, script, MAP_OFFSCREEN, nullptr);
-
-	SDL_UnlockMutex(map_mutex);
 
 	return res;
 }
@@ -548,8 +519,7 @@ int map_set_custom_column(const char * map, int layer, int num, int width, int h
 		return false;
 	}
 
-	// Manage concurrent access to map files
-	SDL_LockMutex(map_mutex);
+	LockGuard guard(map_lock);
 
 	sprintf(width_name, "%s%d", MAP_KEY_COL_WIDTH, num);
 	sprintf(height_name, "%s%d", MAP_KEY_COL_HEIGHT, num);
@@ -574,8 +544,6 @@ int map_set_custom_column(const char * map, int layer, int num, int width, int h
 		}
 	}
 
-	SDL_UnlockMutex(map_mutex);
-
 	return res;
 }
 
@@ -596,8 +564,7 @@ int map_set_custom_row(const char * map, int layer, int num, int width, int heig
 		return false;
 	}
 
-	/* Manage concurrent access to map files */
-	SDL_LockMutex(map_mutex);
+	LockGuard guard(map_lock);
 
 	if (num == 0)
 	{
@@ -627,8 +594,6 @@ int map_set_custom_row(const char * map, int layer, int num, int width, int heig
 			res = entry_write_int(MAP_TABLE, map, height, layer_name, height_name, nullptr);
 		}
 	}
-
-	SDL_UnlockMutex(map_mutex);
 
 	return res;
 }
@@ -726,8 +691,8 @@ char ** map_get_event(const std::string & map, int layer, int x, int y)
 
 	sprintf(layer_name, "%s%d", MAP_KEY_LAYER, layer);
 
-	// Manage concurrent acces to map files
-	SDL_LockMutex(map_mutex);
+	LockGuard guard(map_lock);
+
 	// Search the items on the specified tile for a specific layer
 	if (entry_get_group_list(MAP_TABLE, map.c_str(), &eventlist, layer_name,
 	MAP_ENTRY_EVENT_LIST, nullptr) == true)
@@ -790,8 +755,6 @@ char ** map_get_event(const std::string & map, int layer, int x, int y)
 	}
 	deep_free(eventlist);
 
-	SDL_UnlockMutex(map_mutex);
-
 	return event_id;
 }
 
@@ -823,14 +786,13 @@ char * map_add_event(const char * map, int layer, const char * script, int x, in
 		return nullptr;
 	}
 
-	SDL_LockMutex(map_mutex);
+	LockGuard guard(map_lock);
 
 	if (entry_write_int(MAP_TABLE, map, x, layer_name, MAP_ENTRY_EVENT_LIST, id,
 	MAP_EVENT_TILE_X, nullptr) == false)
 	{
 		entry_remove_group(MAP_TABLE, map, id, layer_name, MAP_ENTRY_EVENT_LIST, nullptr);
 		free(id);
-		SDL_UnlockMutex(map_mutex);
 		return nullptr;
 	}
 	if (entry_write_int(MAP_TABLE, map, y, layer_name, MAP_ENTRY_EVENT_LIST, id,
@@ -838,7 +800,6 @@ char * map_add_event(const char * map, int layer, const char * script, int x, in
 	{
 		entry_remove_group(MAP_TABLE, map, id, layer_name, MAP_ENTRY_EVENT_LIST, nullptr);
 		free(id);
-		SDL_UnlockMutex(map_mutex);
 		return nullptr;
 	}
 
@@ -847,11 +808,8 @@ char * map_add_event(const char * map, int layer, const char * script, int x, in
 	{
 		entry_remove_group(MAP_TABLE, map, id, layer_name, MAP_ENTRY_EVENT_LIST, nullptr);
 		free(id);
-		SDL_UnlockMutex(map_mutex);
 		return nullptr;
 	}
-
-	SDL_UnlockMutex(map_mutex);
 
 	// Send network notifications
 	context_broadcast_map(map);
@@ -897,13 +855,12 @@ int map_delete_event(const char * map, int layer, const char * script, int x, in
 
 	sprintf(layer_name, "%s%d", MAP_KEY_LAYER, layer);
 
-	/* Manage concurrent acces to map files */
-	SDL_LockMutex(map_mutex);
-	/* Search events on the specified tile */
+	LockGuard guard(map_lock);
+
+	// Search events on the specified tile
 	if (entry_get_group_list(MAP_TABLE, map, &eventlist, layer_name,
 	MAP_ENTRY_EVENT_LIST, nullptr) == false)
 	{
-		SDL_UnlockMutex(map_mutex);
 		return false;
 	}
 
@@ -939,22 +896,18 @@ int map_delete_event(const char * map, int layer, const char * script, int x, in
 
 	if (id == nullptr)
 	{
-		SDL_UnlockMutex(map_mutex);
 		return false;
 	}
 
-	/* remove the event from the events list of the map */
+	// remove the event from the events list of the map
 	if (entry_remove_group(MAP_TABLE, map, id, layer_name, MAP_ENTRY_EVENT_LIST, nullptr) == false)
 	{
-		SDL_UnlockMutex(map_mutex);
 		return false;
 	}
 
 	deep_free(eventlist);
 
-	SDL_UnlockMutex(map_mutex);
-
-	/* Send network notifications */
+	// Send network notifications
 	context_broadcast_map(map);
 
 	return true;
@@ -1116,13 +1069,12 @@ char * map_add_scenery(const char * map, int layer, int x, int y, const char * i
 		return nullptr;
 	}
 
-	SDL_LockMutex(map_mutex);
+	LockGuard guard(map_lock);
 
 	if (entry_write_int(MAP_TABLE, map, x, layer_name, MAP_KEY_SCENERY, id,
 	MAP_KEY_SCENERY_X, nullptr) == false)
 	{
 		entry_remove_group(MAP_TABLE, map, id, layer_name, MAP_KEY_SCENERY, nullptr);
-		SDL_UnlockMutex(map_mutex);
 		free(id);
 		return nullptr;
 	}
@@ -1130,7 +1082,6 @@ char * map_add_scenery(const char * map, int layer, int x, int y, const char * i
 	MAP_KEY_SCENERY_Y, nullptr) == false)
 	{
 		entry_remove_group(MAP_TABLE, map, id, layer_name, MAP_KEY_SCENERY, nullptr);
-		SDL_UnlockMutex(map_mutex);
 		free(id);
 		return nullptr;
 	}
@@ -1138,12 +1089,9 @@ char * map_add_scenery(const char * map, int layer, int x, int y, const char * i
 	MAP_KEY_SCENERY, id, MAP_KEY_SCENERY_IMAGE, nullptr) == false)
 	{
 		entry_remove_group(MAP_TABLE, map, id, layer_name, MAP_KEY_SCENERY, nullptr);
-		SDL_UnlockMutex(map_mutex);
 		free(id);
 		return nullptr;
 	}
-
-	SDL_UnlockMutex(map_mutex);
 
 	// Send network notifications
 	context_broadcast_map(map);

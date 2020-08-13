@@ -22,14 +22,13 @@
 #include "DataSent.h"
 #include "file.h"
 #include "log.h"
-#include "SdlLocking.h"
 #include "syntax.h"
 #include "util.h"
 #include <bits/stdint-uintn.h>
+#include <LockGuard.h>
 #include <cstdint>
 #include <cstring>
 #include <netinet/in.h>
-#include <SDL_mutex.h>
 #include <SDL_net.h>
 #include <SDL_thread.h>
 #include <string>

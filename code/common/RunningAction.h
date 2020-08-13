@@ -20,7 +20,6 @@
 #ifndef COMMON_CONTEXT_RUNNINGACTION_H_
 #define COMMON_CONTEXT_RUNNINGACTION_H_
 
-#include "SDL_mutex.h"
 #include <string>
 #include <vector>
 
@@ -44,7 +43,7 @@ public:
 	const int getCoolDownMs() const;
 
 private:
-	SDL_mutex* m_mutex;
+	Lock m_lock;
 	bool m_running;
 	Context * const m_context;
 	const std::string m_action;

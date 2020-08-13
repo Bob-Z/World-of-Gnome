@@ -20,18 +20,15 @@
 #ifndef MUTEX_C
 #define MUTEX_C
 
-#include <SDL2/SDL.h>
+#include "Lock.h"
 
-extern SDL_mutex* context_list_mutex;
-extern SDL_mutex* npc_mutex;
-extern SDL_mutex* attribute_mutex;
-extern SDL_mutex* map_mutex;
-extern SDL_mutex* npc_start_mutex;
-extern SDL_mutex* file_list_mutex;
-extern SDL_mutex* entry_mutex;
-extern SDL_mutex* characterSelectMutex;
-extern SDL_mutex* character_dir_mutex;
-
-void common_mutex_init();
+extern Lock context_list_lock;
+extern Lock npc_lock;
+extern Lock attribute_lock;
+extern Lock map_lock;
+extern Lock npc_start_lock;
+extern Lock entry_lock;
+extern Lock characterSelectLock;
+extern Lock character_dir_lock;
 
 #endif

@@ -17,17 +17,19 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#include "SdlLocking.h"
+#ifndef COMMON_LOCKGUARD_H_
+#define COMMON_LOCKGUARD_H_
 
-/*****************************************************************************/
-SdlLocking::SdlLocking(SDL_mutex* mutex) :
-		m_mutex(mutex)
-{
-	SDL_LockMutex(m_mutex);
-}
+#include "Lock.h"
 
-/*****************************************************************************/
-SdlLocking::~SdlLocking()
+class LockGuard
 {
-	SDL_UnlockMutex(m_mutex);
-}
+public:
+	LockGuard(Lock & lock);
+	virtual ~LockGuard();
+
+private:
+	Lock & m_lock;
+};
+
+#endif /* COMMON_LOCKGUARD_H_ */

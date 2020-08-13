@@ -24,6 +24,7 @@
 #include "font.h"
 #include "imageDB.h"
 #include "item.h"
+#include "LockGuard.h"
 #include "log.h"
 #include "mutex.h"
 #include "network_client.h"
@@ -43,7 +44,7 @@ static int currentCharacter = -1;
 static int selectedCharacter = -1;
 static std::string sfxFileName;
 static std::string textBuffer;
-SDL_mutex* characterMarqueeArrayMutex = SDL_CreateMutex();
+Lock characterMarqueeArrayLock;
 
 /*****************************************************************************/
 static void cb_quit()
@@ -80,7 +81,7 @@ static void cb_next_character()
 {
 	if (currentCharacter != -1)
 	{
-		SDL_LockMutex(characterMarqueeArrayMutex);
+		LockGuard guard(characterMarqueeArrayLock);
 
 		currentCharacter++;
 		if (currentCharacter >= static_cast<int>(characterMarqueeArray.size()))
@@ -89,8 +90,6 @@ static void cb_next_character()
 		}
 
 		cb_show_item(*(characterMarqueeArray[currentCharacter].getItem()));
-
-		SDL_UnlockMutex(characterMarqueeArrayMutex);
 	}
 }
 
@@ -105,9 +104,8 @@ static void cb_previous_character()
 			currentCharacter = 0;
 		}
 
-		SDL_LockMutex(characterMarqueeArrayMutex);
+		LockGuard guard(characterMarqueeArrayLock);
 		cb_show_item(*(characterMarqueeArray[currentCharacter].getItem()));
-		SDL_UnlockMutex(characterMarqueeArrayMutex);
 	}
 }
 
@@ -138,9 +136,8 @@ static void cb_keyboard_text(const std::string & text)
 		return;
 	}
 
-	SDL_LockMutex(characterMarqueeArrayMutex);
+	LockGuard guard(characterMarqueeArrayLock);
 	network_request_character_creation(*(context_get_player()->getConnection()), characterMarqueeArray[selectedCharacter].getId(), text);
-	SDL_UnlockMutex(characterMarqueeArrayMutex);
 
 	if (sfxFileName.size() != 0)
 	{
@@ -163,9 +160,8 @@ void scr_create_init()
 {
 	currentCharacter = -1;
 
-	SDL_LockMutex(characterMarqueeArrayMutex);
+	LockGuard guard(characterMarqueeArrayLock);
 	characterMarqueeArray.clear();
-	SDL_UnlockMutex(characterMarqueeArrayMutex);
 
 	network_request_playable_character_list(*(context_get_player()->getConnection()));
 }
@@ -484,7 +480,7 @@ void scr_create_compose(Context * context, std::vector<SdlItem *> & itemArray)
 	itemNameBox->setPos(sw / 2 - w / 2, sh - FONT_SIZE);
 	itemNameBox->setShape(w, h);
 
-	SDL_LockMutex(characterMarqueeArrayMutex);
+	LockGuard guard(characterMarqueeArrayLock);
 
 	int maxHeight = 0;
 
@@ -499,8 +495,6 @@ void scr_create_compose(Context * context, std::vector<SdlItem *> & itemArray)
 		cb_show_item(*(characterMarqueeArray[0].getItem()));
 	}
 
-	SDL_UnlockMutex(characterMarqueeArrayMutex);
-
 	sdl_clean_key_cb();
 	sdl_add_down_key_cb(SDL_SCANCODE_ESCAPE, []()
 	{	cb_quit();});
@@ -514,7 +508,7 @@ void scr_create_compose(Context * context, std::vector<SdlItem *> & itemArray)
 /*****************************************************************************/
 void scr_create_add_playable_character(const std::vector<std::string> & idList)
 {
-	SDL_LockMutex(characterMarqueeArrayMutex);
+	LockGuard guard(characterMarqueeArrayLock);
 
 	for (auto && id : idList)
 	{
@@ -546,6 +540,4 @@ void scr_create_add_playable_character(const std::vector<std::string> & idList)
 	{
 		currentCharacter = 0;
 	}
-
-	SDL_UnlockMutex(characterMarqueeArrayMutex);
 }

@@ -17,31 +17,30 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
+#include "LockGuard.h"
 #include "RunningAction.h"
-#include "SdlLocking.h"
 
 /*****************************************************************************/
 RunningAction::RunningAction(Context * context, const std::string & action, const std::vector<std::string> params, int coolDownMs) :
-		m_mutex(SDL_CreateMutex()), m_running(true), m_context(context), m_action(action), m_params(params), m_coolDownMs(coolDownMs)
+		m_lock(), m_running(true), m_context(context), m_action(action), m_params(params), m_coolDownMs(coolDownMs)
 {
 }
 
 /*****************************************************************************/
 RunningAction::~RunningAction()
 {
-	SDL_DestroyMutex(m_mutex);
 }
 
 /*****************************************************************************/
 void RunningAction::beginAction()
 {
-	SDL_LockMutex(m_mutex);
+	m_lock.lock();
 }
 
 /*****************************************************************************/
 void RunningAction::endAction()
 {
-	SDL_UnlockMutex(m_mutex);
+	m_lock.unlock();
 }
 
 /*****************************************************************************/
@@ -53,7 +52,7 @@ bool RunningAction::isRunning() const
 /*****************************************************************************/
 void RunningAction::stop()
 {
-	SdlLocking lock(m_mutex);
+	LockGuard guard(m_lock);
 
 	m_running = false;
 }

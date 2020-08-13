@@ -17,10 +17,10 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
+#include "LockGuard.h"
 #include "client_server.h"
 #include "log.h"
 #include "lua_script.h"
-#include "SdlLocking.h"
 #include "syntax.h"
 #include <iterator>
 #include <string>
@@ -42,9 +42,9 @@ extern "C"
  Execute the given script with its parameters
  return -1 on error or return value from execution
  *******************************************************************************/
-int lua_execute_script(lua_State* lua_vm, SDL_mutex * mutex, const char * script, const char ** parameters)
+int lua_execute_script(lua_State* lua_vm, Lock & lock, const char * script, const char ** parameters)
 {
-	SdlLocking lock(mutex);
+	LockGuard guard(lock);
 
 	// Load script
 	const std::string file_path = base_directory + "/" + std::string(SCRIPT_TABLE) + "/" + std::string(script);
@@ -104,9 +104,9 @@ int lua_execute_script(lua_State* lua_vm, SDL_mutex * mutex, const char * script
  Execute the given script with its parameters
  return -1 on error or return value from execution
  *******************************************************************************/
-int lua_execute_script(lua_State* lua_vm, SDL_mutex * mutex, const std::string & script, const std::vector<std::string> & parameterArray)
+int lua_execute_script(lua_State* lua_vm, Lock & lock, const std::string & script, const std::vector<std::string> & parameterArray)
 {
-	SdlLocking lock(mutex);
+	LockGuard guard(lock);
 
 	// Load script
 	const std::string file_path = base_directory + "/" + std::string(SCRIPT_TABLE) + "/" + script;

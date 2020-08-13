@@ -100,10 +100,10 @@ public:
 	void addRunningAction(const std::string & action, RunningAction * runningAction);
 	void stopRunningAction(const std::string & action);
 
-	SDL_mutex* getLuaVmMutex() const;
+	Lock & getLuaVmLock();
 
 private:
-	mutable SDL_mutex* m_mutex;
+	mutable Lock m_lock;
 	bool m_inGame;
 	bool m_npc;
 	std::string m_characterName;
@@ -124,9 +124,9 @@ private:
 	Uint32 m_nextExecutionTick; // Time when an NPC will execute its AI script
 
 	lua_State* m_luaVm;	// LUA state
-	SDL_mutex * m_luaVmMutex;
+	Lock m_luaVmLock;
 	SDL_cond* m_condition;	// async condition for NPC
-	SDL_mutex* m_conditionMutex;	// mutex for async condition for NPC
+	Lock m_conditionLock;	// lock for async condition for NPC
 
 	Connection * m_connection;
 

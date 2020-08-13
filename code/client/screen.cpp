@@ -195,7 +195,7 @@ static void calculate_camera_position(Context * ctx)
 		lua_pushlightuserdata(getLuaVm(), (void *) &camera);
 		lua_setglobal(getLuaVm(), "current_camera");
 
-		if (lua_execute_script(getLuaVm(), getLuaVmMutex(), cameraScript, nullptr) == -1)
+		if (lua_execute_script(getLuaVm(), getLuaVmLock(), cameraScript, nullptr) == -1)
 		{
 			file_request_from_network(*(ctx->getConnection()), SCRIPT_TABLE, cameraScript);
 		}
@@ -217,7 +217,7 @@ static void execute_draw_script(Context * ctx, const std::string & scriptName, C
 	lua_pushlightuserdata(getLuaVm(), ctxToDraw);
 	lua_setglobal(getLuaVm(), "current_context");
 
-	if (lua_execute_script(getLuaVm(), getLuaVmMutex(), scriptName.c_str(), nullptr) == -1)
+	if (lua_execute_script(getLuaVm(), getLuaVmLock(), scriptName.c_str(), nullptr) == -1)
 	{
 		file_request_from_network(*(ctx->getConnection()), SCRIPT_TABLE, scriptName);
 	}

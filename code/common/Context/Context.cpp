@@ -17,13 +17,13 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
+#include "LockGuard.h"
 #include "Context.h"
 
 #include "../server/action.h"
 #include "entry.h"
 #include "log.h"
 #include "mutex.h"
-#include "SdlLocking.h"
 #include "syntax.h"
 
 extern "C"
@@ -36,18 +36,16 @@ Context * context_list_start = nullptr;
 
 /*****************************************************************************/
 Context::Context() :
-		m_mutex(SDL_CreateMutex()), m_inGame(false), m_npc(true), m_characterName(), m_map(), m_previousMap(), m_mapChanged(false), m_tileX(0), m_tileY(0), m_previousTileX(
-				0), m_previousTileY(0), m_positionChanged(false), m_orientation(0), m_direction(0), m_animationTick(0), m_type(), m_id(), m_selection(), m_nextExecutionTick(
-				0), m_luaVm(nullptr), m_luaVmMutex(SDL_CreateMutex()), m_condition(SDL_CreateCond()), m_conditionMutex(SDL_CreateMutex()), m_connection(
-				nullptr), m_npcThread(nullptr), m_actionRunning(), m_previous(nullptr), m_next(nullptr)
+		m_lock(), m_inGame(false), m_npc(true), m_characterName(), m_map(), m_previousMap(), m_mapChanged(false), m_tileX(0), m_tileY(0), m_previousTileX(0), m_previousTileY(
+				0), m_positionChanged(false), m_orientation(0), m_direction(0), m_animationTick(0), m_type(), m_id(), m_selection(), m_nextExecutionTick(0), m_luaVm(
+				nullptr), m_luaVmLock(), m_condition(SDL_CreateCond()), m_conditionLock(), m_connection(nullptr), m_npcThread(nullptr), m_actionRunning(), m_previous(
+				nullptr), m_next(nullptr)
 {
 }
 
 /*****************************************************************************/
 Context::~Context()
 {
-	SDL_DestroyMutex(m_mutex);
-
 	if (m_luaVm != nullptr)
 	{
 		lua_close(m_luaVm);
@@ -55,10 +53,6 @@ Context::~Context()
 	if (m_condition != nullptr)
 	{
 		SDL_DestroyCond(m_condition);
-	}
-	if (m_conditionMutex != nullptr)
-	{
-		SDL_DestroyMutex(m_conditionMutex);
 	}
 }
 
@@ -71,7 +65,7 @@ Context * context_get_list_start()
 /*****************************************************************************/
 void context_unlock_list()
 {
-	SDL_UnlockMutex(context_list_mutex);
+	context_list_lock.unlock();
 }
 
 /*****************************************************************************/
@@ -179,11 +173,10 @@ void context_free(Context * context)
 	delete (context);
 }
 
-/***********************
- ***********************/
+/*****************************************************************************/
 void context_lock_list()
 {
-	SDL_LockMutex(context_list_mutex);
+	context_list_lock.lock();
 }
 
 /*****************************************************************************/
@@ -308,7 +301,7 @@ int Context::tileDistance(const Context & ctx) const
 	int distx = 0;
 	int disty = 0;
 
-	SdlLocking lock(m_mutex);
+	LockGuard guard(m_lock);
 
 	distx = m_tileX - ctx.getTileX();
 	if (distx < 0)
@@ -351,7 +344,7 @@ void Context::setNpc(bool npc)
 /*****************************************************************************/
 bool Context::isNpcActive() const
 {
-	SdlLocking lock(m_mutex);
+	LockGuard guard(m_lock);
 
 	return ((m_npc == true) && (m_inGame == true));
 }
@@ -359,7 +352,7 @@ bool Context::isNpcActive() const
 /*****************************************************************************/
 const std::string& Context::getCharacterName() const
 {
-	SdlLocking lock(m_mutex);
+	LockGuard guard(m_lock);
 
 	return m_characterName;
 }
@@ -367,7 +360,7 @@ const std::string& Context::getCharacterName() const
 /*****************************************************************************/
 void Context::setCharacterName(const std::string& characterName)
 {
-	SdlLocking lock(m_mutex);
+	LockGuard guard(m_lock);
 
 	m_characterName = characterName;
 }
@@ -375,7 +368,7 @@ void Context::setCharacterName(const std::string& characterName)
 /*****************************************************************************/
 const std::string& Context::getMap() const
 {
-	SdlLocking lock(m_mutex);
+	LockGuard guard(m_lock);
 
 	return m_map;
 }
@@ -383,7 +376,7 @@ const std::string& Context::getMap() const
 /*****************************************************************************/
 void Context::setMap(const std::string& map)
 {
-	SdlLocking lock(m_mutex);
+	LockGuard guard(m_lock);
 
 	m_previousMap = m_map;
 
@@ -397,7 +390,7 @@ void Context::setMap(const std::string& map)
 /*****************************************************************************/
 const std::string& Context::getPreviousMap() const
 {
-	SdlLocking lock(m_mutex);
+	LockGuard guard(m_lock);
 
 	return m_previousMap;
 }
@@ -405,7 +398,7 @@ const std::string& Context::getPreviousMap() const
 /*****************************************************************************/
 void Context::setPreviousMap(const std::string& previousMap)
 {
-	SdlLocking lock(m_mutex);
+	LockGuard guard(m_lock);
 
 	m_previousMap = previousMap;
 }
@@ -413,7 +406,7 @@ void Context::setPreviousMap(const std::string& previousMap)
 /*****************************************************************************/
 bool Context::isMapChanged() const
 {
-	SdlLocking lock(m_mutex);
+	LockGuard guard(m_lock);
 
 	return m_mapChanged;
 }
@@ -421,7 +414,7 @@ bool Context::isMapChanged() const
 /*****************************************************************************/
 void Context::setMapChanged(bool mapChanged)
 {
-	SdlLocking lock(m_mutex);
+	LockGuard guard(m_lock);
 
 	m_mapChanged = mapChanged;
 }
@@ -429,7 +422,7 @@ void Context::setMapChanged(bool mapChanged)
 /*****************************************************************************/
 bool Context::isPositionChanged() const
 {
-	SdlLocking lock(m_mutex);
+	LockGuard guard(m_lock);
 
 	return m_positionChanged;
 }
@@ -437,7 +430,7 @@ bool Context::isPositionChanged() const
 /*****************************************************************************/
 void Context::setPositionChanged(bool positionChanged)
 {
-	SdlLocking lock(m_mutex);
+	LockGuard guard(m_lock);
 
 	m_positionChanged = positionChanged;
 }
@@ -445,7 +438,7 @@ void Context::setPositionChanged(bool positionChanged)
 /*****************************************************************************/
 int Context::getTileX() const
 {
-	SdlLocking lock(m_mutex);
+	LockGuard guard(m_lock);
 
 	return m_tileX;
 }
@@ -453,7 +446,7 @@ int Context::getTileX() const
 /*****************************************************************************/
 int Context::getTileY() const
 {
-	SdlLocking lock(m_mutex);
+	LockGuard guard(m_lock);
 
 	return m_tileY;
 }
@@ -461,7 +454,7 @@ int Context::getTileY() const
 /*****************************************************************************/
 void Context::setTile(const int tileX, const int tileY)
 {
-	SdlLocking lock(m_mutex);
+	LockGuard guard(m_lock);
 
 	if ((tileX != m_tileX) || (tileY != m_tileY))
 	{
@@ -524,7 +517,7 @@ void Context::setAnimationTick(Uint32 animationTick)
 /*****************************************************************************/
 const std::string& Context::getType() const
 {
-	SdlLocking lock(m_mutex);
+	LockGuard guard(m_lock);
 
 	return m_type;
 }
@@ -532,7 +525,7 @@ const std::string& Context::getType() const
 /*****************************************************************************/
 void Context::setType(const std::string& type)
 {
-	SdlLocking lock(m_mutex);
+	LockGuard guard(m_lock);
 
 	m_type = type;
 }
@@ -540,7 +533,7 @@ void Context::setType(const std::string& type)
 /*****************************************************************************/
 const std::string& Context::getId() const
 {
-	SdlLocking lock(m_mutex);
+	LockGuard guard(m_lock);
 
 	return m_id;
 }
@@ -548,7 +541,7 @@ const std::string& Context::getId() const
 /*****************************************************************************/
 void Context::setId(const std::string& id)
 {
-	SdlLocking lock(m_mutex);
+	LockGuard guard(m_lock);
 
 	m_id = id;
 }
@@ -556,7 +549,7 @@ void Context::setId(const std::string& id)
 /*****************************************************************************/
 const Selection& Context::getSelection() const
 {
-	SdlLocking lock(m_mutex);
+	LockGuard guard(m_lock);
 
 	return m_selection;
 }
@@ -564,7 +557,7 @@ const Selection& Context::getSelection() const
 /*****************************************************************************/
 void Context::setSelection(const Selection& selection)
 {
-	SdlLocking lock(m_mutex);
+	LockGuard guard(m_lock);
 
 	m_selection = selection;
 }
@@ -572,7 +565,7 @@ void Context::setSelection(const Selection& selection)
 /*****************************************************************************/
 void Context::setSelectionContextId(const std::string & id)
 {
-	SdlLocking lock(m_mutex);
+	LockGuard guard(m_lock);
 
 	m_selection.setContextId(id);
 }
@@ -580,7 +573,7 @@ void Context::setSelectionContextId(const std::string & id)
 /*****************************************************************************/
 const std::string& Context::getSelectionContextId() const
 {
-	SdlLocking lock(m_mutex);
+	LockGuard guard(m_lock);
 
 	return m_selection.getContextId();
 }
@@ -588,7 +581,7 @@ const std::string& Context::getSelectionContextId() const
 /*****************************************************************************/
 void Context::setSelectionTile(const std::string & map, int tx, int ty)
 {
-	SdlLocking lock(m_mutex);
+	LockGuard guard(m_lock);
 
 	m_selection.setMap(map);
 	m_selection.setMapTx(tx);
@@ -598,7 +591,7 @@ void Context::setSelectionTile(const std::string & map, int tx, int ty)
 /*****************************************************************************/
 const std::string& Context::getSelectionMap() const
 {
-	SdlLocking lock(m_mutex);
+	LockGuard guard(m_lock);
 
 	return m_selection.getMap();
 }
@@ -606,28 +599,28 @@ const std::string& Context::getSelectionMap() const
 /*****************************************************************************/
 int Context::getSelectionMapTx() const
 {
-	SdlLocking lock(m_mutex);
+	LockGuard guard(m_lock);
 	return m_selection.getMapTx();
 }
 
 /*****************************************************************************/
 int Context::getSelectionMapTy() const
 {
-	SdlLocking lock(m_mutex);
+	LockGuard guard(m_lock);
 	return m_selection.getMapTy();
 }
 
 /*****************************************************************************/
 void Context::setSelectionEquipment(const std::string & equipment)
 {
-	SdlLocking lock(m_mutex);
+	LockGuard guard(m_lock);
 	m_selection.setEquipment(equipment);
 }
 
 /*****************************************************************************/
 const std::string & Context::getSelectionEquipment() const
 {
-	SdlLocking lock(m_mutex);
+	LockGuard guard(m_lock);
 
 	return m_selection.getEquipment();
 }
@@ -635,7 +628,7 @@ const std::string & Context::getSelectionEquipment() const
 /*****************************************************************************/
 void Context::setSelectionInventory(const std::string & inventory)
 {
-	SdlLocking lock(m_mutex);
+	LockGuard guard(m_lock);
 
 	m_selection.setInventory(inventory);
 }
@@ -643,7 +636,7 @@ void Context::setSelectionInventory(const std::string & inventory)
 /*****************************************************************************/
 const std::string & Context::getSelectionInventory() const
 {
-	SdlLocking lock(m_mutex);
+	LockGuard guard(m_lock);
 
 	return m_selection.getInventory();
 }
@@ -681,25 +674,24 @@ lua_State* Context::getLuaVm()
 /*****************************************************************************/
 void Context::wakeUp()
 {
-	if (SDL_TryLockMutex(m_conditionMutex) == 0)
+	if (m_conditionLock.trylock() == 0)
 	{
 		SDL_CondSignal(m_condition);
-		SDL_UnlockMutex(m_conditionMutex);
+		m_conditionLock.unlock();
 	}
 }
 
 /*****************************************************************************/
 void Context::sleep(Uint32 timeOutMs)
 {
-	SDL_LockMutex(m_conditionMutex);
-	SDL_CondWaitTimeout(m_condition, m_conditionMutex, timeOutMs);
-	SDL_UnlockMutex(m_conditionMutex);
+	LockGuard guard(m_conditionLock);
+	SDL_CondWaitTimeout(m_condition, m_conditionLock.getLock(), timeOutMs);
 }
 
 /*****************************************************************************/
 bool Context::update_from_file()
 {
-	SdlLocking lock(m_mutex);
+	LockGuard guard(m_lock);
 
 	if (getId() == "")
 	{
@@ -809,7 +801,7 @@ void Context::stopRunningAction(const std::string & action)
 }
 
 /*****************************************************************************/
-SDL_mutex* Context::getLuaVmMutex() const
+Lock & Context::getLuaVmLock()
 {
-	return m_luaVmMutex;
+	return m_luaVmLock;
 }

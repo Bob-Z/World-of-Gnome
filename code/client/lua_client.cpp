@@ -23,9 +23,9 @@
 #include "entry.h"
 #include "imageDB.h"
 #include "item.h"
+#include "LockGuard.h"
 #include "log.h"
 #include "SdlItemCore.h"
-#include "SdlLocking.h"
 #include "sfx.h"
 #include "syntax.h"
 #include "util.h"
@@ -42,9 +42,9 @@ extern "C"
 #endif
 
 static lua_State * luaVm = nullptr;
-static SDL_mutex* luaVmMutex = SDL_CreateMutex();
+static Lock luaVmLock;
 static lua_State * effectLuaVm = nullptr;
-static SDL_mutex* effectLuaVmMutex = SDL_CreateMutex();
+static Lock effectLuaVmLock;
 
 /***********************************
  player_get_id
@@ -627,8 +627,7 @@ static int l_print_text_debug(lua_State* luaState)
 	return 0;  // number of results
 }
 
-/***********************************
- ***********************************/
+/*****************************************************************************/
 static void register_lua_functions_client(lua_State * l_pLuaVm)
 {
 	// player function
@@ -684,8 +683,7 @@ static void register_lua_functions_client(lua_State * l_pLuaVm)
 	lua_setglobal(l_pLuaVm, "print_text_debug");
 }
 
-/***********************************
- ***********************************/
+/*****************************************************************************/
 void lua_init()
 {
 	luaVm = lua_open();
@@ -712,9 +710,9 @@ lua_State * getLuaVm()
 }
 
 /*****************************************************************************/
-SDL_mutex * getLuaVmMutex()
+Lock & getLuaVmLock()
 {
-	return luaVmMutex;
+	return luaVmLock;
 }
 
 /*****************************************************************************/
@@ -724,7 +722,7 @@ lua_State * getEffectLuaVm()
 }
 
 /*****************************************************************************/
-SDL_mutex * getEffectLuaVmMutex()
+Lock & getEffectLuaVmLock()
 {
-	return effectLuaVmMutex;
+	return effectLuaVmLock;
 }

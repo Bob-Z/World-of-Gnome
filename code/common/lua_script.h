@@ -32,11 +32,11 @@ extern "C"
 }
 #endif
 
-#include "SdlLocking.h"
+#include "LockGuard.h"
 #include <string>
 #include <vector>
 
-int lua_execute_script(lua_State* lua_vm, SDL_mutex * mutex, const char * script, const char ** parameters);
-int lua_execute_script(lua_State* lua_vm, SDL_mutex * mutex, const std::string & script, const std::vector<std::string> & params);
+int lua_execute_script(lua_State* lua_vm, Lock & lock, const char * script, const char ** parameters);
+int lua_execute_script(lua_State* lua_vm, Lock & lock, const std::string & script, const std::vector<std::string> & params);
 
 #endif

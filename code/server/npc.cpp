@@ -21,6 +21,7 @@
 #include "client_server.h"
 #include "Context.h"
 #include "entry.h"
+#include "LockGuard.h"
 #include "log.h"
 #include "mutex.h"
 #include "npc.h"
@@ -70,9 +71,9 @@ static int npc_script(void * data)
 
 		if (context->getNextExecutionTick() < SDL_GetTicks())
 		{
-			SDL_LockMutex(npc_mutex);
+			LockGuard guard(npc_lock);
 			timeOutMs = action_execute_script(context, script, (const char **) parameters);
-			SDL_UnlockMutex(npc_mutex);
+
 			context->setNextExecutionTick(SDL_GetTicks() + timeOutMs);
 		}
 

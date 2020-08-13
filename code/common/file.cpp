@@ -21,6 +21,7 @@
 #include "const.h"
 #include "file.h"
 #include "list.h"
+#include "LockGuard.h"
 #include "log.h"
 #include "mutex.h"
 #include "network.h"
@@ -32,7 +33,6 @@
 #include <dirent.h>
 #include <fcntl.h>
 #include <features.h>
-#include <SDL_mutex.h>
 #include <SDL_stdinc.h>
 #include <SDL_timer.h>
 #include <stdlib.h>
@@ -42,10 +42,12 @@
 
 list_t * file_list = nullptr;
 
+Lock file_list_lock;
+
 typedef struct file_tag
 {
 	Uint32 timestamp;
-	SDL_mutex * mutex;
+	Lock lock;
 } file_t;
 
 /****************************************
@@ -55,19 +57,17 @@ void file_lock(const char * filename)
 {
 	file_t * file_data;
 
-	SDL_LockMutex(file_list_mutex);
+	LockGuard guard(file_list_lock);
 	file_data = (file_t *) list_find(file_list, filename);
 	if (file_data == nullptr)
 	{
-		file_data = (file_t*) malloc(sizeof(file_t));
+		file_data = new file_t;
 		file_data->timestamp = 0;
-		file_data->mutex = SDL_CreateMutex();
 
 		list_update(&file_list, filename, file_data);
 	}
-	SDL_UnlockMutex(file_list_mutex);
 
-	SDL_LockMutex(file_data->mutex);
+	file_data->lock.lock();
 }
 
 /****************************************
@@ -77,16 +77,15 @@ void file_unlock(const char * filename)
 {
 	file_t * file_data;
 
-	SDL_LockMutex(file_list_mutex);
+	LockGuard guard(file_list_lock);
 	file_data = (file_t *) list_find(file_list, filename);
-	SDL_UnlockMutex(file_list_mutex);
 
 	if (file_data == nullptr)
 	{
 		return;
 	}
 
-	SDL_UnlockMutex(file_data->mutex);
+	file_data->lock.unlock();
 }
 
 /****************************************
@@ -106,9 +105,8 @@ void file_update(Connection * connection, const char * filename)
 
 	file_t * file_data;
 
-	SDL_LockMutex(file_list_mutex);
+	LockGuard guard(file_list_lock);
 	file_data = (file_t *) list_find(file_list, filename);
-	SDL_UnlockMutex(file_list_mutex);
 
 	if (file_data == nullptr)
 	{
@@ -180,15 +178,13 @@ std::pair<bool, std::string> file_new(const std::string & table, const std::stri
 
 	std::string selected_name;
 
-	SDL_LockMutex(character_dir_mutex);
+	LockGuard guard(character_dir_lock);
 
 	if (suggested_name != NO_SUGGESTED_NAME)
 	{
 		const std::string file_path = dir_path + "/" + std::string(suggested_name);
 		if (stat(file_path.c_str(), &sts) != -1)
 		{
-			SDL_UnlockMutex(character_dir_mutex);
-
 			werr(LOGDEVELOPER, "Suggested file %s already exists", suggested_name.c_str());
 			return std::pair<bool, std::string>
 			{ false, NO_SUGGESTED_NAME };
@@ -244,8 +240,6 @@ std::pair<bool, std::string> file_new(const std::string & table, const std::stri
 	S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH);
 
 	close(fd);
-
-	SDL_UnlockMutex(character_dir_mutex);
 
 	return std::pair<bool, std::string>
 	{ true, selected_name };
@@ -456,13 +450,14 @@ Uint32 file_get_timestamp(const char * table, const char * file_name)
 	Uint32 time_stamp = 0;
 
 	const std::string table_path = std::string(table) + "/" + std::string(file_name);
-	SDL_LockMutex(file_list_mutex);
+
+	LockGuard guard(file_list_lock);
+
 	file_data = (file_t *) list_find(file_list, table_path.c_str());
 	if (file_data != nullptr)
 	{
 		time_stamp = file_data->timestamp;
 	}
-	SDL_UnlockMutex(file_list_mutex);
 
 	return time_stamp;
 }

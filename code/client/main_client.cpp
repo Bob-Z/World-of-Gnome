@@ -118,8 +118,6 @@ int main(int argc, char **argv)
 		}
 	}
 
-	common_mutex_init();
-
 	sdl_init(TITLE_NAME, !maxfps);
 
 	int Mix_flags = MIX_INIT_FLAC | MIX_INIT_MP3 | MIX_INIT_OGG;

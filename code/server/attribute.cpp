@@ -17,16 +17,15 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
+#include "action.h"
 #include "const.h"
 #include "entry.h"
+#include "LockGuard.h"
 #include "mutex.h"
-#include "syntax.h"
-#include <stdlib.h>
-#include <SDL_mutex.h>
-#include <cstdio>
-
-#include "action.h"
 #include "network_server.h"
+#include "syntax.h"
+#include <cstdio>
+#include <stdlib.h>
 
 /***************************************************************************
  Add the specified value to the specified attribute
@@ -52,99 +51,97 @@ int attribute_change(Context * context, const char * table, const char * id, con
 	char * max_action = nullptr;
 	char * up_action = nullptr;
 
-	SDL_LockMutex(attribute_mutex);
-
-	if (entry_read_int(table, id, &current, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_CURRENT, nullptr) == false)
 	{
-		SDL_UnlockMutex(attribute_mutex);
-		return -1;
-	}
+		LockGuard guard(attribute_lock);
 
-	if (entry_read_int(table, id, &min, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_MIN, nullptr) == false)
-	{
-		min = -1;
-	}
-
-	if (entry_read_int(table, id, &max, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_MAX, nullptr) == false)
-	{
-		max = -1;
-	}
-
-	old = current;
-	current = current + value;
-	if (min != -1)
-	{
-		if (current <= min)
+		if (entry_read_int(table, id, &current, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_CURRENT, nullptr) == false)
 		{
-			do_min_action = true;
-			current = min;
+			return -1;
 		}
-	}
 
-	if (max != -1)
-	{
-		if (current >= max)
+		if (entry_read_int(table, id, &min, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_MIN, nullptr) == false)
 		{
-			do_max_action = true;
-			current = max;
+			min = -1;
 		}
-	}
 
-	if (entry_write_int(table, id, current, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_CURRENT, nullptr) == false)
-	{
-		SDL_UnlockMutex(attribute_mutex);
-		return -1;
-	}
-	if (entry_write_int(table, id, old, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_PREVIOUS, nullptr) == false)
-	{
-		SDL_UnlockMutex(attribute_mutex);
-		return -1;
-	}
-
-	// Check automatic actions
-	if (value < 0)
-	{
-		if (do_min_action == true)
+		if (entry_read_int(table, id, &max, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_MAX, nullptr) == false)
 		{
-			if (entry_read_string(table, id, &action, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_ON_MIN, nullptr) == false)
+			max = -1;
+		}
+
+		old = current;
+		current = current + value;
+		if (min != -1)
+		{
+			if (current <= min)
 			{
-				do_min_action = false;
-			}
-			else
-			{
-				min_action = action;
+				do_min_action = true;
+				current = min;
 			}
 		}
 
-		if (entry_read_string(table, id, &action, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_ON_DOWN, nullptr) == true)
+		if (max != -1)
 		{
-			do_down_action = true;
-			down_action = action;
-		}
-	}
-
-	if (value > 0)
-	{
-		if (do_max_action == true)
-		{
-			if (entry_read_string(table, id, &action, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_ON_MAX, nullptr) == false)
+			if (current >= max)
 			{
-				do_max_action = false;
-			}
-			else
-			{
-				max_action = action;
+				do_max_action = true;
+				current = max;
 			}
 		}
 
-		if (entry_read_string(table, id, &action, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_ON_UP, nullptr) == true)
+		if (entry_write_int(table, id, current, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_CURRENT, nullptr) == false)
 		{
-			do_up_action = true;
-			up_action = action;
+			return -1;
 		}
-	}
+		if (entry_write_int(table, id, old, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_PREVIOUS, nullptr) == false)
+		{
+			return -1;
+		}
 
-	SDL_UnlockMutex(attribute_mutex);
+		// Check automatic actions
+		if (value < 0)
+		{
+			if (do_min_action == true)
+			{
+				if (entry_read_string(table, id, &action, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_ON_MIN, nullptr) == false)
+				{
+					do_min_action = false;
+				}
+				else
+				{
+					min_action = action;
+				}
+			}
+
+			if (entry_read_string(table, id, &action, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_ON_DOWN, nullptr) == true)
+			{
+				do_down_action = true;
+				down_action = action;
+			}
+		}
+
+		if (value > 0)
+		{
+			if (do_max_action == true)
+			{
+				if (entry_read_string(table, id, &action, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_ON_MAX, nullptr) == false)
+				{
+					do_max_action = false;
+				}
+				else
+				{
+					max_action = action;
+				}
+			}
+
+			if (entry_read_string(table, id, &action, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_ON_UP, nullptr) == true)
+			{
+				do_up_action = true;
+				up_action = action;
+			}
+		}
+
+	}
 
 	// do automatic actions
 	if (do_down_action == true && down_action != nullptr)
@@ -199,11 +196,9 @@ int attribute_get(const char * table, const char *id, const char * attribute)
 {
 	int current = -1;
 
-	SDL_LockMutex(attribute_mutex);
+	LockGuard guard(attribute_lock);
 
 	entry_read_int(table, id, &current, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_CURRENT, nullptr);
-
-	SDL_UnlockMutex(attribute_mutex);
 
 	return current;
 }
@@ -214,15 +209,12 @@ int attribute_get(const char * table, const char *id, const char * attribute)
  *********************************************************************/
 int attribute_set(const char * table, const char * id, const char * attribute, int value)
 {
-	SDL_LockMutex(attribute_mutex);
+	LockGuard guard(attribute_lock);
 
 	if (entry_write_int(table, id, value, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_CURRENT, nullptr) == false)
 	{
-		SDL_UnlockMutex(attribute_mutex);
 		return -1;
 	}
-
-	SDL_UnlockMutex(attribute_mutex);
 
 	return 0;
 }
@@ -236,11 +228,9 @@ char * attribute_tag_get(const char * table, const char *id, const char * attrib
 {
 	char * tag = nullptr;
 
-	SDL_LockMutex(attribute_mutex);
+	LockGuard guard(attribute_lock);
 
 	entry_read_string(table, id, &tag, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_CURRENT, nullptr);
-
-	SDL_UnlockMutex(attribute_mutex);
 
 	return tag;
 }
@@ -251,15 +241,12 @@ char * attribute_tag_get(const char * table, const char *id, const char * attrib
  *********************************************************************/
 int attribute_tag_set(const char * table, const char * id, const char * attribute, const char * value)
 {
-	SDL_LockMutex(attribute_mutex);
+	LockGuard guard(attribute_lock);
 
 	if (entry_write_string(table, id, value, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_CURRENT, nullptr) == false)
 	{
-		SDL_UnlockMutex(attribute_mutex);
 		return -1;
 	}
-
-	SDL_UnlockMutex(attribute_mutex);
 
 	return 0;
 }

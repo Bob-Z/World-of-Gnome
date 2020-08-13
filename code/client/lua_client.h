@@ -17,6 +17,9 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
+#ifndef LUA_CLIENT_H
+#define LUA_CLIENT_H
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -28,10 +31,12 @@ extern "C"
 }
 #endif
 
-#include "SDL_mutex.h"
+#include "Lock.h"
 
 void lua_init();
 lua_State * getLuaVm();
-SDL_mutex * getLuaVmMutex();
+Lock & getLuaVmLock();
 lua_State * getEffectLuaVm();
-SDL_mutex * getEffectLuaVmMutex();
+Lock & getEffectLuaVmLock();
+
+#endif

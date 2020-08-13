@@ -19,27 +19,25 @@
 
 #include "character.h"
 
-#include <client_server.h>
-#include <const.h>
+#include "action.h"
+#include "client_server.h"
+#include "const.h"
+#include "context_server.h"
 #include "Context.h"
+#include "log.h"
+#include "map_server.h"
+#include "network_server.h"
+#include "npc.h"
 #include <cstdio>
 #include <cstring>
 #include <dirent.h>
 #include <entry.h>
 #include <file.h>
-#include <log.h>
-#include <SDL_mutex.h>
 #include <stdlib.h>
 #include <string>
 #include <syntax.h>
 #include <util.h>
 #include <vector>
-
-#include "action.h"
-#include "context_server.h"
-#include "map_server.h"
-#include "network_server.h"
-#include "npc.h"
 
 /*********************************************
  Send playable character templates

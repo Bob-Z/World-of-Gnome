@@ -19,25 +19,20 @@
 
 #include "Connection.h"
 
+#include "LockGuard.h"
 #include "log.h"
-#include "SdlLocking.h"
 #include <arpa/inet.h>
 
 /*****************************************************************************/
 Connection::Connection() :
-		m_socket(0), m_mutexSend(nullptr), m_socketData(0), m_mutexSendData(nullptr), m_hostName(), m_userName(), m_connected(false)
+		m_socket(0), m_lockSend(), m_socketData(0), m_lockSendData(), m_hostName(), m_userName(), m_connected(false)
 {
-	m_mutexSend = SDL_CreateMutex();
-	m_mutexSendData = SDL_CreateMutex();
 }
 
 /*****************************************************************************/
 Connection::~Connection()
 {
 	disconnect();
-
-	SDL_DestroyMutex(m_mutexSend);
-	SDL_DestroyMutex(m_mutexSendData);
 }
 
 /*****************************************************************************/
@@ -109,7 +104,7 @@ void Connection::send(const std::string m_serializedData, const bool m_isData)
 	}
 
 	TCPsocket socket = 0;
-	SDL_mutex * mutex = nullptr;
+	Lock * lock = nullptr;
 
 	if (m_isData == true)
 	{
@@ -117,12 +112,12 @@ void Connection::send(const std::string m_serializedData, const bool m_isData)
 		//mutex = m_mutexSendData;
 
 		socket = getSocket();
-		mutex = m_mutexSend;
+		lock = &m_lockSend;
 	}
 	else
 	{
 		socket = getSocket();
-		mutex = m_mutexSend;
+		lock = &m_lockSend;
 	}
 
 	if (socket == 0)
@@ -131,7 +126,7 @@ void Connection::send(const std::string m_serializedData, const bool m_isData)
 		return;
 	}
 
-	SdlLocking lock(mutex);
+	LockGuard guard(*lock);
 
 	//send frame size
 	uint32_t length = htonl(static_cast<uint32_t>(m_serializedData.size()));

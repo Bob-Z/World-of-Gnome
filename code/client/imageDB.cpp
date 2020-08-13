@@ -25,6 +25,7 @@
 #include "Context.h"
 #include "file.h"
 #include "list.h"
+#include "LockGuard.h"
 #include "log.h"
 #include "mutex.h"
 #include "reader.h"
@@ -32,7 +33,7 @@
 #include "syntax.h"
 #include <string>
 
-static SDL_mutex* imageDbMutex = SDL_CreateMutex();
+static Lock imageDbLock;
 
 static std::map<std::string, SiAnim*> imageArray;
 
@@ -55,13 +56,12 @@ SiAnim * imageDB_get_anim(Context * context, const std::string & imageName)
 
 	const std::string fileName = std::string(IMAGE_TABLE) + "/" + std::string(imageName);
 
-	SDL_LockMutex(imageDbMutex);
+	LockGuard guard(imageDbLock);
 
 	// Search for a previously loaded anim
 	auto iter = imageArray.find(fileName);
 	if (iter != imageArray.end())
 	{
-		SDL_UnlockMutex(imageDbMutex);
 		return iter->second;
 	}
 
@@ -74,7 +74,6 @@ SiAnim * imageDB_get_anim(Context * context, const std::string & imageName)
 	{
 		imageArray[fileName] = anim;
 		file_unlock(fileName.c_str());
-		SDL_UnlockMutex(imageDbMutex);
 		return anim;
 	}
 
@@ -82,7 +81,6 @@ SiAnim * imageDB_get_anim(Context * context, const std::string & imageName)
 	file_update(context->getConnection(), fileName.c_str());
 
 	file_unlock(fileName.c_str());
-	SDL_UnlockMutex(imageDbMutex);
 
 	return def_anim;
 }
@@ -106,13 +104,11 @@ void image_DB_remove(const std::string & fileName)
 	LOG("Image remove: " + fileName);
 
 	// Clean-up old anim if any
-	SDL_LockMutex(imageDbMutex);
+	LockGuard guard(imageDbLock);
 
 	auto iter = imageArray.find(fileName);
 	if (iter != imageArray.end())
 	{
 		imageArray.erase(iter);
 	}
-
-	SDL_UnlockMutex(imageDbMutex);
 }

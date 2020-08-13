@@ -1,6 +1,6 @@
 /*
  World of Gnome is a 2D multiplayer role playing game.
- Copyright (C) 2013-2020 carabobz@gmail.com
+ Copyright (C) 2019 carabobz@gmail.com
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -19,9 +19,32 @@
 
 #include "Lock.h"
 
-Lock context_list_lock;
-Lock npc_lock;
-Lock attribute_lock;
-Lock map_lock;
-Lock characterSelectLock;
-Lock character_dir_lock;
+Lock::Lock() :
+		m_lock(SDL_CreateMutex())
+{
+}
+
+Lock::~Lock()
+{
+	SDL_DestroyMutex(m_lock);
+}
+
+int Lock::trylock()
+{
+	return SDL_TryLockMutex(m_lock);
+}
+
+void Lock::lock()
+{
+	SDL_LockMutex(m_lock);
+}
+
+void Lock::unlock()
+{
+	SDL_UnlockMutex(m_lock);
+}
+
+SDL_mutex* Lock::getLock() const
+{
+	return m_lock;
+}

@@ -20,6 +20,7 @@
 #ifndef COMMON_NETWORK_CONNECTION_H_
 #define COMMON_NETWORK_CONNECTION_H_
 
+#include "Lock.h"
 #include <SDL2/SDL_net.h>
 #include <string>
 
@@ -52,9 +53,9 @@ public:
 
 private:
 	TCPsocket m_socket;
-	SDL_mutex* m_mutexSend;
+	Lock m_lockSend;
 	TCPsocket m_socketData;
-	SDL_mutex* m_mutexSendData;
+	Lock m_lockSendData;
 
 	std::string m_hostName;
 	std::string m_userName;

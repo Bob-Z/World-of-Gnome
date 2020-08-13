@@ -46,18 +46,19 @@ add_library(
 	font.cpp
 	item.cpp
 	list.cpp
+	Lock.cpp
+	LockGuard.cpp
 	log.cpp
+	lua_script.cpp
 	map.cpp
 	mutex.cpp
 	Network/Connection.cpp
 	Network/DataSent.cpp
 	Network/network.cpp
-	util.cpp
-	lua_script.cpp
+	RunningAction.cpp
 	Serializer.cpp
 	Selection.cpp
-	SdlLocking.cpp
-	RunningAction.cpp
+	util.cpp
 )
 
 target_link_libraries (${PROJECT_NAME}
