@@ -17,8 +17,8 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#ifndef CONST_H
-#define CONST_H
+#ifndef COMMON_CONST_H
+#define COMMON_CONST_H
 
 #include <SDL_stdinc.h>
 #include <string>
