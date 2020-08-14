@@ -20,29 +20,31 @@
 #ifndef WOG_CLIENT_CONF
 #define WOG_CLIENT_CONF
 
+#include <string>
+
 typedef struct
 {
 	int show_tile_type;
 	int show_fps;
-	char * cursor_over_tile;
+	std::string cursor_over_tile;
 
-	char * cursor_character_draw_script;
-	char * action_select_character;
-	char * cursor_tile;
-	char * action_select_tile;
-	char * cursor_equipment;
-	char * action_select_equipment;
-	char * cursor_inventory;
-	char * action_select_inventory;
+	std::string cursor_character_draw_script;
+	std::string action_select_character;
+	std::string cursor_tile;
+	std::string action_select_tile;
+	std::string cursor_equipment;
+	std::string action_select_equipment;
+	std::string cursor_inventory;
+	std::string action_select_inventory;
 
-	char * action_move_up;
-	char * action_move_down;
-	char * action_move_left;
-	char * action_move_right;
-	char * action_move_up_right;
-	char * action_move_up_left;
-	char * action_move_down_right;
-	char * action_move_down_left;
+	std::string action_move_up;
+	std::string action_move_down;
+	std::string action_move_left;
+	std::string action_move_right;
+	std::string action_move_up_right;
+	std::string action_move_up_left;
+	std::string action_move_down_right;
+	std::string action_move_down_left;
 } client_conf_t;
 
 void client_conf_init();

@@ -18,10 +18,17 @@
  */
 
 #include "client_conf.h"
+#include "client_server.h"
 #include "entry.h"
 #include "log.h"
 #include "syntax.h"
+#include <fstream>
+#include <nlohmann/json.hpp>
 #include <unistd.h>
+
+#include <iostream>
+
+using json = nlohmann::json;
 
 client_conf_t clientConf;
 
@@ -30,11 +37,6 @@ void client_conf_init()
 {
 	clientConf.show_tile_type = false;
 	clientConf.show_fps = false;
-	clientConf.cursor_over_tile = nullptr;
-	clientConf.cursor_character_draw_script = nullptr;
-	clientConf.cursor_tile = nullptr;
-	clientConf.cursor_equipment = nullptr;
-	clientConf.cursor_inventory = nullptr;
 }
 
 /*****************************************************************************/
@@ -46,46 +48,41 @@ client_conf_t & client_conf_get()
 /*****************************************************************************/
 static void parse_client_conf()
 {
-	int version;
+	json json;
 
-	while (entry_read_int(nullptr, CLIENT_CONF_FILE, &version,
-	CLIENT_KEY_VERSION, nullptr) == false)
+	do
 	{
-		wlog(LOGUSER, "Waiting for client configuration");
-		usleep(100000);
-	}
+		try
+		{
+			std::ifstream stream(base_directory + "/" + CLIENT_CONF_FILE);
+			stream >> json;
+		} catch (...)
+		{
+			LOG_USER("Waiting for client configuration");
+			usleep(100000);
+		}
+	} while (json.is_null() == true);
 
-	entry_read_string(nullptr, CLIENT_CONF_FILE, &clientConf.cursor_over_tile,
-	CLIENT_KEY_CURSOR_OVER_TILE, nullptr);
-	entry_read_string(nullptr, CLIENT_CONF_FILE, &clientConf.cursor_character_draw_script,
-	CLIENT_KEY_CURSOR_CHARACTER_DRAW_SCRIPT, nullptr);
-	entry_read_string(nullptr, CLIENT_CONF_FILE, &clientConf.cursor_tile,
-	CLIENT_KEY_CURSOR_TILE, nullptr);
-	entry_read_string(nullptr, CLIENT_CONF_FILE, &clientConf.cursor_equipment,
-	CLIENT_KEY_CURSOR_EQUIPMENT, nullptr);
-	entry_read_string(nullptr, CLIENT_CONF_FILE, &clientConf.cursor_inventory,
-	CLIENT_KEY_CURSOR_INVENTORY, nullptr);
-	entry_read_string(nullptr, CLIENT_CONF_FILE, &clientConf.action_move_up,
-	CLIENT_KEY_ACTION_MOVE_UP, nullptr);
-	entry_read_string(nullptr, CLIENT_CONF_FILE, &clientConf.action_move_down,
-	CLIENT_KEY_ACTION_MOVE_DOWN, nullptr);
-	entry_read_string(nullptr, CLIENT_CONF_FILE, &clientConf.action_move_left,
-	CLIENT_KEY_ACTION_MOVE_LEFT, nullptr);
-	entry_read_string(nullptr, CLIENT_CONF_FILE, &clientConf.action_move_right,
-	CLIENT_KEY_ACTION_MOVE_RIGHT, nullptr);
-	entry_read_string(nullptr, CLIENT_CONF_FILE, &clientConf.action_move_up_left,
-	CLIENT_KEY_ACTION_MOVE_UP_LEFT, nullptr);
-	entry_read_string(nullptr, CLIENT_CONF_FILE, &clientConf.action_move_up_right,
-	CLIENT_KEY_ACTION_MOVE_UP_RIGHT, nullptr);
-	entry_read_string(nullptr, CLIENT_CONF_FILE, &clientConf.action_move_down_left,
-	CLIENT_KEY_ACTION_MOVE_DOWN_LEFT, nullptr);
-	entry_read_string(nullptr, CLIENT_CONF_FILE, &clientConf.action_move_down_right,
-	CLIENT_KEY_ACTION_MOVE_DOWN_RIGHT, nullptr);
-	entry_read_string(nullptr, CLIENT_CONF_FILE, &clientConf.action_select_character, CLIENT_KEY_ACTION_SELECT_CHARACTER, nullptr);
-	entry_read_string(nullptr, CLIENT_CONF_FILE, &clientConf.action_select_tile,
-	CLIENT_KEY_ACTION_SELECT_TILE, nullptr);
-	entry_read_string(nullptr, CLIENT_CONF_FILE, &clientConf.action_select_equipment, CLIENT_KEY_ACTION_SELECT_EQUIPMENT, nullptr);
-	entry_read_string(nullptr, CLIENT_CONF_FILE, &clientConf.action_select_inventory, CLIENT_KEY_ACTION_SELECT_INVENTORY, nullptr);
+	int version = json.at(CLIENT_KEY_VERSION).get<int>();
+	LOG_USER("version = " + std::to_string(version));
+
+	clientConf.cursor_over_tile = json.at(CLIENT_KEY_CURSOR_OVER_TILE).get<std::string>();
+	clientConf.cursor_character_draw_script = json.at(CLIENT_KEY_CURSOR_CHARACTER_DRAW_SCRIPT).get<std::string>();
+	clientConf.cursor_tile = json.at(CLIENT_KEY_CURSOR_TILE).get<std::string>();
+	clientConf.cursor_equipment = json.at(CLIENT_KEY_CURSOR_EQUIPMENT).get<std::string>();
+	clientConf.cursor_inventory = json.at(CLIENT_KEY_CURSOR_INVENTORY).get<std::string>();
+	clientConf.action_move_up = json.at(CLIENT_KEY_ACTION_MOVE_UP).get<std::string>();
+	clientConf.action_move_down = json.at(CLIENT_KEY_ACTION_MOVE_DOWN).get<std::string>();
+	clientConf.action_move_left = json.at(CLIENT_KEY_ACTION_MOVE_LEFT).get<std::string>();
+	clientConf.action_move_right = json.at(CLIENT_KEY_ACTION_MOVE_RIGHT).get<std::string>();
+	clientConf.action_move_up_left = json.at(CLIENT_KEY_ACTION_MOVE_UP_LEFT).get<std::string>();
+	clientConf.action_move_up_right = json.at(CLIENT_KEY_ACTION_MOVE_UP_RIGHT).get<std::string>();
+	clientConf.action_move_down_left = json.at(CLIENT_KEY_ACTION_MOVE_DOWN_LEFT).get<std::string>();
+	clientConf.action_move_down_right = json.at(CLIENT_KEY_ACTION_MOVE_DOWN_RIGHT).get<std::string>();
+	clientConf.action_select_character = json.at(CLIENT_KEY_ACTION_SELECT_CHARACTER).get<std::string>();
+	clientConf.action_select_tile = json.at(CLIENT_KEY_ACTION_SELECT_TILE).get<std::string>();
+	clientConf.action_select_equipment = json.at(CLIENT_KEY_ACTION_SELECT_EQUIPMENT).get<std::string>();
+	clientConf.action_select_inventory = json.at(CLIENT_KEY_ACTION_SELECT_INVENTORY).get<std::string>();
 }
 
 /*****************************************************************************/

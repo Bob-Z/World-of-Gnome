@@ -264,9 +264,9 @@ void screen_display(Context * ctx)
 				char * draw_script = nullptr;
 
 				// Drawing script not directly attached to context (i.e. for cursor)
-				if (item->getUser1Ptr() != nullptr)
+				if (item->getUserString().empty() == false)
 				{
-					draw_script = strdup((const char *) item->getUser1Ptr());
+					draw_script = strdup(item->getUserString().c_str());
 				}
 				else
 				{

@@ -689,7 +689,7 @@ static void compose_equipment(Context * ctx, std::vector<SdlItem*> & itemArray)
 		}
 
 		// Draw selection cursor
-		if (client_conf_get().cursor_equipment)
+		if (client_conf_get().cursor_equipment.empty() == false)
 		{
 			if (ctx->getSelectionEquipment() == std::string(slot_list[index]))
 			{
@@ -1025,7 +1025,7 @@ static void compose_inventory_select(Context * ctx, std::vector<SdlItem*> & item
 		return;
 	}
 
-	if (client_conf_get().cursor_inventory == nullptr)
+	if (client_conf_get().cursor_inventory.empty() == true)
 	{
 		return;
 	}

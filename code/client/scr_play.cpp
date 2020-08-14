@@ -651,7 +651,7 @@ static void compose_map_button(std::vector<SdlItem *> & itemArray)
 	Context * ctx = context_get_player();
 
 	SiAnim * anim = nullptr;
-	if (client_conf_get().cursor_over_tile)
+	if (client_conf_get().cursor_over_tile.empty() == false)
 	{
 		anim = imageDB_get_anim(ctx, client_conf_get().cursor_over_tile);
 	}
@@ -842,7 +842,7 @@ static void compose_select(std::vector<SdlItem *> & itemArray)
 	Context * ctx = context_get_player();
 
 	// Tile selection
-	if (client_conf_get().cursor_tile)
+	if (client_conf_get().cursor_tile.empty() == false)
 	{
 		if (ctx->getSelectionMap() == ctx->getMap())
 		{
@@ -865,7 +865,7 @@ static void compose_select(std::vector<SdlItem *> & itemArray)
 	}
 
 	// Sprite selection
-	if (client_conf_get().cursor_character_draw_script)
+	if (client_conf_get().cursor_character_draw_script.empty() == false)
 	{
 		Context * selected_context = nullptr;
 		selected_context = context_find(ctx->getSelectionContextId());
@@ -878,7 +878,7 @@ static void compose_select(std::vector<SdlItem *> & itemArray)
 		itemArray.push_back(item);
 
 		item->setUserPtr(selected_context);
-		item->setUser1Ptr(client_conf_get().cursor_character_draw_script);
+		item->setUserString(client_conf_get().cursor_character_draw_script);
 	}
 }
 

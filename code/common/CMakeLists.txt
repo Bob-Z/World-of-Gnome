@@ -27,6 +27,9 @@ find_package(Protobuf REQUIRED)
 # for generated protobuf
 include_directories(${CMAKE_BINARY_DIR}/common/proto)
 
+# for JSON
+find_package(nlohmann_json 3.2.0 REQUIRED)
+
 include_directories(.)
 include_directories(./Context)
 include_directories(./Network)
@@ -61,10 +64,11 @@ add_library(
 	util.cpp
 )
 
-target_link_libraries (${PROJECT_NAME}
+target_link_libraries (${PROJECT_NAME} PRIVATE
         ${LUA_LIBRARIES}
         proto
         ${PROTOBUF_LIBRARY}
 	${SDL2_LIBRARIES}
 	${SDL2NET_LIBRARIES}
+	nlohmann_json::nlohmann_json
 )

@@ -133,11 +133,11 @@ void network_send_action(Connection & connection, const std::string & actionFile
 /******************************************************************************
  Player sends an action stop to server
  *****************************************************************************/
-void network_send_action_stop(Connection & connection, const char * actionFile)
+void network_send_action_stop(Connection & connection, const std::string & actionFile)
 {
-	if (actionFile == nullptr)
+	if (actionFile.empty() == true)
 	{
-		werr(LOGDESIGNER, "Cannot ask for null action stop");
+		ERR_DESIGN("Cannot ask for no action, stop");
 		return;
 	}
 
@@ -146,7 +146,7 @@ void network_send_action_stop(Connection & connection, const char * actionFile)
 
 	std::string serialized_data = message.SerializeAsString();
 
-	wlog(LOGDEVELOPER, "[network] Send action stop %s", actionFile);
+	LOG("[network] Send action stop " + actionFile);
 	network_send_command(connection, serialized_data, false);
 }
 
