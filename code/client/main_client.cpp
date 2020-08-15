@@ -160,8 +160,6 @@ int main(int argc, char **argv)
 		usleep(100000);
 	}
 
-	client_conf_read();
-
 	//Run the main loop
 	screen_display(context);
 

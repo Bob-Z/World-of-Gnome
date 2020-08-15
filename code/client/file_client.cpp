@@ -60,8 +60,6 @@ int file_add(const std::string & name, const std::string & data)
 	entry_remove(name.c_str());
 	// Update the image DB
 	image_DB_remove(name);
-	// Update options if needed
-	client_conf_read();
 	// Make sure the new file is drawn (if needed)
 	screen_compose();
 
