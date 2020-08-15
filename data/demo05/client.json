@@ -1,13 +1,9 @@
-version = 1
-camera_script = "draw/camera.lua"
-#cursor_over_tile = "cursor.png"
-#cursor_sprite = "cursor.png"
-#cursor_tile = "cursor.png"
-#cursor_equipment = "cursor.png"
-#cursor_inventory = "cursor.png"
+{
+"version" : 1,
+"camera_script" : "draw/camera.lua",
 
-action_move_up = "move_up"
-action_move_down = "move_down"
-action_move_left = "move_left"
-action_move_right = "move_right"
-
+"action_move_up" : "move_up",
+"action_move_down" : "move_down",
+"action_move_left" : "move_left",
+"action_move_right" : "move_right"
+}
