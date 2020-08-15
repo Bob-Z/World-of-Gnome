@@ -1,6 +1,6 @@
 /*
  World of Gnome is a 2D multiplayer role playing game.
- Copyright (C) 2013-2020 carabobz@gmail.com
+ Copyright (C) 2019 carabobz@gmail.com
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -17,18 +17,27 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#ifndef COMMON_CONST_H
-#define COMMON_CONST_H
+#include <DataManager/FileStatus.h>
 
-#include <SDL_stdinc.h>
-#include <string>
+/*****************************************************************************/
+FileStatus::FileStatus() :
+		m_timeStamp(0)
+{
+}
 
-static constexpr Uint16 PORT = 42520U;
-static const std::string APP_NAME("wog");
-static const std::string TITLE_NAME("Worlds of Gnome");
-#define SMALL_BUF (1024)
+/*****************************************************************************/
+FileStatus::~FileStatus()
+{
+}
 
-// delay before two consecutive request of the same file (in milliseconds)
-static constexpr Uint32 FILE_REQUEST_TIMEOUT_MS = 5000U;
+/*****************************************************************************/
+Uint32 FileStatus::getTimeStamp() const
+{
+	return m_timeStamp;
+}
 
-#endif
+/*****************************************************************************/
+void FileStatus::setTimeStamp(Uint32 timeStamp)
+{
+	m_timeStamp = timeStamp;
+}

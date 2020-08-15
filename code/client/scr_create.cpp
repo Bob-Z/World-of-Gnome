@@ -22,6 +22,7 @@
 #include "entry.h"
 #include "file.h"
 #include "font.h"
+#include "global.h"
 #include "imageDB.h"
 #include "item.h"
 #include "LockGuard.h"
@@ -51,11 +52,8 @@ static void cb_quit()
 {
 	textBuffer.clear();
 
-	if (sfxFileName.size() != 0)
-	{
-		sfx_stop(MUSIC_CHANNEL);
-		isMusicPlaying = false;
-	}
+	sfx_stop(MUSIC_CHANNEL);
+	isMusicPlaying = false;
 
 	screen_set_screen(Screen::SELECT);
 }
@@ -168,31 +166,22 @@ void scr_create_init()
 /*****************************************************************************/
 static void init_sfx(Connection & connection)
 {
-	if (sfxFileName.size() == 0)
-	{
-		char * sfxName = nullptr;
-		entry_read_string(nullptr, CLIENT_CONF_FILE, &sfxName, CLIENT_KEY_CREATE_CHARACTER_SFX, nullptr);
-		if (sfxName != nullptr)
-		{
-			sfxFileName = std::string(sfxName);
-		}
-	}
-
-	if (sfxFileName.size() != 0)
+	try
 	{
 		if (isMusicPlaying == false)
 		{
-			if (sfx_play(connection, sfxFileName, MUSIC_CHANNEL, LOOP) != -1)
+			if (sfx_play(connection, getDataManager().get<std::string>("", CLIENT_CONF_FILE,
+			{ CLIENT_KEY_CREATE_CHARACTER_SFX }), MUSIC_CHANNEL, LOOP) != -1)
 			{
 				isMusicPlaying = true;
 			}
 
-			int sfx_volume = 100; // 100%
-			entry_read_int(nullptr, CLIENT_CONF_FILE, &sfx_volume, CLIENT_KEY_CREATE_CHARACTER_SFX_VOLUME, nullptr);
-			sfx_set_volume(MUSIC_CHANNEL, sfx_volume);
+			sfx_set_volume(MUSIC_CHANNEL, getDataManager().getNoExcept<int>("", CLIENT_CONF_FILE,
+			{ CLIENT_KEY_CREATE_CHARACTER_SFX_VOLUME }, 100));
 		}
+	} catch (...)
+	{
 	}
-
 }
 /*****************************************************************************/
 static void fill_character_marquee(Context * context, TTF_Font * fontName, TTF_Font * fontType, int & maxHeight)

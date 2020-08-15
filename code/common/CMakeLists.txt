@@ -44,6 +44,7 @@ add_library(
 	Context/Context.cpp
 	Context/ContextContainer.cpp
 	Context/ContextGetter.cpp
+	DataManager.cpp
 	entry.cpp
 	file.cpp
 	font.cpp

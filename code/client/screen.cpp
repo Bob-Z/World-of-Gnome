@@ -20,6 +20,7 @@
 #include "Camera.h"
 #include "client_conf.h"
 #include "entry.h"
+#include "global.h"
 #include "file_client.h"
 #include "file.h"
 #include "font.h"
@@ -184,25 +185,22 @@ static void display_fps(Context * ctx)
 /*****************************************************************************/
 static void calculate_camera_position(Context * ctx)
 {
-	char * cameraScript = nullptr;
-	entry_read_string(nullptr, CLIENT_CONF_FILE, &cameraScript, CLIENT_KEY_CAMERA_SCRIPT, nullptr);
-	if (cameraScript == nullptr || cameraScript[0] == '\0')
+	std::string cameraScript = getDataManager().getNoExcept<std::string>("", CLIENT_CONF_FILE,
+	{ CLIENT_KEY_CAMERA_SCRIPT }, "");
+
+	if (cameraScript.empty() == true)
 	{
-		werr(LOGDESIGNER, "No camera script defined. Camera won't move");
+		ERR_DESIGN("No camera script defined. Camera won't move");
 	}
 	else
 	{
 		lua_pushlightuserdata(getLuaVm(), (void *) &camera);
 		lua_setglobal(getLuaVm(), "current_camera");
 
-		if (lua_execute_script(getLuaVm(), getLuaVmLock(), cameraScript, nullptr) == -1)
+		if (lua_execute_script(getLuaVm(), getLuaVmLock(), cameraScript.c_str(), nullptr) == -1)
 		{
 			file_request_from_network(*(ctx->getConnection()), SCRIPT_TABLE, cameraScript);
 		}
-	}
-	if (cameraScript != nullptr)
-	{
-		free(cameraScript);
 	}
 }
 

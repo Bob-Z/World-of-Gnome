@@ -23,6 +23,7 @@
 #include "entry.h"
 #include "file.h"
 #include "font.h"
+#include "global.h"
 #include "imageDB.h"
 #include "item.h"
 #include "log.h"
@@ -77,7 +78,13 @@ int scr_play_get_current_y()
 /*****************************************************************************/
 static void cb_select_sprite(const std::string & id)
 {
-	network_send_action(*(context_get_player()->getConnection()), client_conf_get().action_select_character, id.c_str(), nullptr);
+	try
+	{
+		network_send_action(*(context_get_player()->getConnection()), getDataManager().get<std::string>("", CLIENT_CONF_FILE,
+		{ CLIENT_KEY_ACTION_SELECT_CHARACTER }), id.c_str(), nullptr);
+	} catch (...)
+	{
+	}
 }
 
 /*****************************************************************************/
@@ -623,7 +630,13 @@ static void cb_select_map(SdlItem * item)
 	std::string x = std::to_string(item->getUser1());
 	std::string y = std::to_string(item->getUser2());
 
-	network_send_action(*(ctx->getConnection()), client_conf_get().action_select_tile, ctx->getMap().c_str(), x.c_str(), y.c_str(), nullptr);
+	try
+	{
+		network_send_action(*(ctx->getConnection()), getDataManager().get<std::string>("", CLIENT_CONF_FILE,
+		{ CLIENT_KEY_ACTION_SELECT_TILE }), ctx->getMap().c_str(), x.c_str(), y.c_str(), nullptr);
+	} catch (...)
+	{
+	}
 }
 
 /*****************************************************************************/
@@ -651,9 +664,13 @@ static void compose_map_button(std::vector<SdlItem *> & itemArray)
 	Context * ctx = context_get_player();
 
 	SiAnim * anim = nullptr;
-	if (client_conf_get().cursor_over_tile.empty() == false)
+
+	try
 	{
-		anim = imageDB_get_anim(ctx, client_conf_get().cursor_over_tile);
+		anim = imageDB_get_anim(ctx, getDataManager().get<std::string>("", CLIENT_CONF_FILE,
+		{ CLIENT_KEY_CURSOR_OVER_TILE }));
+	} catch (...)
+	{
 	}
 
 	int x = 0;
@@ -842,7 +859,10 @@ static void compose_select(std::vector<SdlItem *> & itemArray)
 	Context * ctx = context_get_player();
 
 	// Tile selection
-	if (client_conf_get().cursor_tile.empty() == false)
+	std::string cursor_tile = getDataManager().getNoExcept<std::string>("", CLIENT_CONF_FILE,
+	{ CLIENT_KEY_CURSOR_TILE }, "");
+
+	if (cursor_tile.empty() == false)
 	{
 		if (ctx->getSelectionMap() == ctx->getMap())
 		{
@@ -854,7 +874,7 @@ static void compose_select(std::vector<SdlItem *> & itemArray)
 				SdlItem * item = new SdlItem;
 				itemArray.push_back(item);
 
-				item->setAnim(imageDB_get_anim(ctx, client_conf_get().cursor_tile));
+				item->setAnim(imageDB_get_anim(ctx, cursor_tile));
 
 				// get pixel coordinate from tile coordinate
 				int x = map_t2p_x(pos_tx, pos_ty, defaultLayer);
@@ -865,7 +885,11 @@ static void compose_select(std::vector<SdlItem *> & itemArray)
 	}
 
 	// Sprite selection
-	if (client_conf_get().cursor_character_draw_script.empty() == false)
+
+	std::string cursorCharacterDrawScript = getDataManager().getNoExcept<std::string>("", CLIENT_CONF_FILE,
+	{ CLIENT_KEY_CURSOR_CHARACTER_DRAW_SCRIPT }, "");
+
+	if (cursorCharacterDrawScript.empty() == false)
 	{
 		Context * selected_context = nullptr;
 		selected_context = context_find(ctx->getSelectionContextId());
@@ -878,7 +902,7 @@ static void compose_select(std::vector<SdlItem *> & itemArray)
 		itemArray.push_back(item);
 
 		item->setUserPtr(selected_context);
-		item->setUserString(client_conf_get().cursor_character_draw_script);
+		item->setUserString(cursorCharacterDrawScript);
 	}
 }
 

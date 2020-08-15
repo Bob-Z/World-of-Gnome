@@ -26,25 +26,6 @@ typedef struct
 {
 	int show_tile_type;
 	int show_fps;
-	std::string cursor_over_tile;
-
-	std::string cursor_character_draw_script;
-	std::string action_select_character;
-	std::string cursor_tile;
-	std::string action_select_tile;
-	std::string cursor_equipment;
-	std::string action_select_equipment;
-	std::string cursor_inventory;
-	std::string action_select_inventory;
-
-	std::string action_move_up;
-	std::string action_move_down;
-	std::string action_move_left;
-	std::string action_move_right;
-	std::string action_move_up_right;
-	std::string action_move_up_left;
-	std::string action_move_down_right;
-	std::string action_move_down_left;
 } client_conf_t;
 
 void client_conf_init();

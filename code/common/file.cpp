@@ -115,7 +115,7 @@ void file_update(Connection * connection, const char * filename)
 
 	// Avoid flooding the server
 	Uint32 current_time = SDL_GetTicks();
-	if (file_data->timestamp != 0 && file_data->timestamp + FILE_REQUEST_TIMEOUT > current_time)
+	if (file_data->timestamp != 0 && file_data->timestamp + FILE_REQUEST_TIMEOUT_MS > current_time)
 	{
 		//wlog(LOGDEBUG,"Previous request of file  %s has been %d ms ago",filename,current_time - file_data->timestamp );
 		return;

@@ -20,6 +20,7 @@
 #include "client_conf.h"
 #include "client_server.h"
 #include "entry.h"
+#include "global.h"
 #include "log.h"
 #include "syntax.h"
 #include <fstream>
@@ -48,41 +49,44 @@ client_conf_t & client_conf_get()
 /*****************************************************************************/
 static void parse_client_conf()
 {
-	json json;
+	int version = 0;
 
 	do
 	{
 		try
 		{
-			std::ifstream stream(base_directory + "/" + CLIENT_CONF_FILE);
-			stream >> json;
+			version = getDataManager().get<int>("", CLIENT_CONF_FILE,
+			{ CLIENT_KEY_VERSION });
+			LOG_USER("version = " + std::to_string(version));
 		} catch (...)
 		{
 			LOG_USER("Waiting for client configuration");
 			usleep(100000);
 		}
-	} while (json.is_null() == true);
+	} while (version == 0);
+	LOG_USER("Client configuration received");
 
-	int version = json.at(CLIENT_KEY_VERSION).get<int>();
-	LOG_USER("version = " + std::to_string(version));
+	/*
+	 json json;
 
-	clientConf.cursor_over_tile = json.at(CLIENT_KEY_CURSOR_OVER_TILE).get<std::string>();
-	clientConf.cursor_character_draw_script = json.at(CLIENT_KEY_CURSOR_CHARACTER_DRAW_SCRIPT).get<std::string>();
-	clientConf.cursor_tile = json.at(CLIENT_KEY_CURSOR_TILE).get<std::string>();
-	clientConf.cursor_equipment = json.at(CLIENT_KEY_CURSOR_EQUIPMENT).get<std::string>();
-	clientConf.cursor_inventory = json.at(CLIENT_KEY_CURSOR_INVENTORY).get<std::string>();
-	clientConf.action_move_up = json.at(CLIENT_KEY_ACTION_MOVE_UP).get<std::string>();
-	clientConf.action_move_down = json.at(CLIENT_KEY_ACTION_MOVE_DOWN).get<std::string>();
-	clientConf.action_move_left = json.at(CLIENT_KEY_ACTION_MOVE_LEFT).get<std::string>();
-	clientConf.action_move_right = json.at(CLIENT_KEY_ACTION_MOVE_RIGHT).get<std::string>();
-	clientConf.action_move_up_left = json.at(CLIENT_KEY_ACTION_MOVE_UP_LEFT).get<std::string>();
-	clientConf.action_move_up_right = json.at(CLIENT_KEY_ACTION_MOVE_UP_RIGHT).get<std::string>();
-	clientConf.action_move_down_left = json.at(CLIENT_KEY_ACTION_MOVE_DOWN_LEFT).get<std::string>();
-	clientConf.action_move_down_right = json.at(CLIENT_KEY_ACTION_MOVE_DOWN_RIGHT).get<std::string>();
-	clientConf.action_select_character = json.at(CLIENT_KEY_ACTION_SELECT_CHARACTER).get<std::string>();
-	clientConf.action_select_tile = json.at(CLIENT_KEY_ACTION_SELECT_TILE).get<std::string>();
-	clientConf.action_select_equipment = json.at(CLIENT_KEY_ACTION_SELECT_EQUIPMENT).get<std::string>();
-	clientConf.action_select_inventory = json.at(CLIENT_KEY_ACTION_SELECT_INVENTORY).get<std::string>();
+	 do
+	 {
+	 try
+	 {
+	 std::ifstream stream(base_directory + "/" + CLIENT_CONF_FILE);
+	 stream >> json;
+	 } catch (...)
+	 {
+	 LOG_USER("Waiting for client configuration");
+	 usleep(100000);
+	 }
+	 } while (json.is_null() == true);
+	 */
+
+	//int version = json.at(CLIENT_KEY_VERSION).get<int>();
+	//LOG_USER("version = " + std::to_string(version));
+	/*
+	 */
 }
 
 /*****************************************************************************/

@@ -170,31 +170,31 @@ static const std::string SCRIPT_TABLE = "script";
 #define EQUIPMENT_EQUIPPED	"equipped"
 
 // client configuration
-#define CLIENT_CONF_FILE			"client.conf"
-#define CLIENT_KEY_VERSION			"version"
-#define CLIENT_KEY_CAMERA_SCRIPT		"camera_script"
-#define CLIENT_KEY_CURSOR_OVER_TILE		"cursor_over_tile"
-#define CLIENT_KEY_CURSOR_CHARACTER_DRAW_SCRIPT	"cursor_character_draw_script"
-#define CLIENT_KEY_CURSOR_TILE	 		"cursor_tile"
-#define CLIENT_KEY_CURSOR_EQUIPMENT 		"cursor_equipment"
-#define CLIENT_KEY_CURSOR_INVENTORY 		"cursor_inventory"
-#define CLIENT_KEY_ACTION_MOVE_UP 		"action_move_up"
-#define CLIENT_KEY_ACTION_MOVE_DOWN 		"action_move_down"
-#define CLIENT_KEY_ACTION_MOVE_LEFT 		"action_move_left"
-#define CLIENT_KEY_ACTION_MOVE_RIGHT 		"action_move_right"
-#define CLIENT_KEY_ACTION_MOVE_UP_RIGHT		"action_move_up_right"
-#define CLIENT_KEY_ACTION_MOVE_UP_LEFT 		"action_move_up_left"
-#define CLIENT_KEY_ACTION_MOVE_DOWN_RIGHT 	"action_move_down_right"
-#define CLIENT_KEY_ACTION_MOVE_DOWN_LEFT 	"action_move_down_left"
-#define CLIENT_KEY_ACTION_SELECT_CHARACTER 	"action_select_character"
-#define CLIENT_KEY_ACTION_SELECT_TILE	 	"action_select_tile"
-#define CLIENT_KEY_ACTION_SELECT_EQUIPMENT 	"action_select_equipment"
-#define CLIENT_KEY_ACTION_SELECT_INVENTORY 	"action_select_inventory"
-#define CLIENT_KEY_SELECT_CHARACTER_SFX 	"select_character_sfx"
-#define CLIENT_KEY_SELECT_CHARACTER_SFX_VOLUME 	"select_character_sfx_volume"
-#define CLIENT_KEY_SELECT_CHARACTER_ADD_ICON	"select_character_add_icon"
-#define CLIENT_KEY_CREATE_CHARACTER_SFX 	"create_character_sfx"
-#define CLIENT_KEY_CREATE_CHARACTER_SFX_VOLUME 	"create_character_sfx_volume"
+static const std::string CLIENT_CONF_FILE = "client.conf";
+static const std::string CLIENT_KEY_VERSION = "version";
+static const std::string CLIENT_KEY_CAMERA_SCRIPT = "camera_script";
+static const std::string CLIENT_KEY_CURSOR_OVER_TILE = "cursor_over_tile";
+static const std::string CLIENT_KEY_CURSOR_CHARACTER_DRAW_SCRIPT = "cursor_character_draw_script";
+static const std::string CLIENT_KEY_CURSOR_TILE = "cursor_tile";
+static const std::string CLIENT_KEY_CURSOR_EQUIPMENT = "cursor_equipment";
+static const std::string CLIENT_KEY_CURSOR_INVENTORY = "cursor_inventory";
+static const std::string CLIENT_KEY_ACTION_MOVE_UP = "action_move_up";
+static const std::string CLIENT_KEY_ACTION_MOVE_DOWN = "action_move_down";
+static const std::string CLIENT_KEY_ACTION_MOVE_LEFT = "action_move_left";
+static const std::string CLIENT_KEY_ACTION_MOVE_RIGHT = "action_move_right";
+static const std::string CLIENT_KEY_ACTION_MOVE_UP_RIGHT = "action_move_up_right";
+static const std::string CLIENT_KEY_ACTION_MOVE_UP_LEFT = "action_move_up_left";
+static const std::string CLIENT_KEY_ACTION_MOVE_DOWN_RIGHT = "action_move_down_right";
+static const std::string CLIENT_KEY_ACTION_MOVE_DOWN_LEFT = "action_move_down_left";
+static const std::string CLIENT_KEY_ACTION_SELECT_CHARACTER = "action_select_character";
+static const std::string CLIENT_KEY_ACTION_SELECT_TILE = "action_select_tile";
+static const std::string CLIENT_KEY_ACTION_SELECT_EQUIPMENT = "action_select_equipment";
+static const std::string CLIENT_KEY_ACTION_SELECT_INVENTORY = "action_select_inventory";
+static const std::string CLIENT_KEY_SELECT_CHARACTER_SFX = "select_character_sfx";
+static const std::string CLIENT_KEY_SELECT_CHARACTER_SFX_VOLUME = "select_character_sfx_volume";
+static const std::string CLIENT_KEY_SELECT_CHARACTER_ADD_ICON = "select_character_add_icon";
+static const std::string CLIENT_KEY_CREATE_CHARACTER_SFX = "create_character_sfx";
+static const std::string CLIENT_KEY_CREATE_CHARACTER_SFX_VOLUME = "create_character_sfx_volume";
 
 const std::string SFX_TABLE("sfx");
 

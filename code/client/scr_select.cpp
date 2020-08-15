@@ -23,6 +23,7 @@
 #include "file_client.h"
 #include "file.h"
 #include "font.h"
+#include "global.h"
 #include "imageDB.h"
 #include "LockGuard.h"
 #include "log.h"
@@ -159,11 +160,8 @@ static void cb_wheel_down()
 /*****************************************************************************/
 static void cb_icon_add_clicked()
 {
-	if (sfxFileName.size() != 0)
-	{
-		sfx_stop(MUSIC_CHANNEL);
-		isMusicPlaying = false;
-	}
+	sfx_stop(MUSIC_CHANNEL);
+	isMusicPlaying = false;
 
 	screen_set_screen(Screen::CREATE);
 }
@@ -182,49 +180,40 @@ void scr_select_init()
 /*****************************************************************************/
 static void init_sfx(Connection & connection)
 {
-	if (sfxFileName.size() == 0)
-	{
-		char * sfx = nullptr;
-		entry_read_string(nullptr, CLIENT_CONF_FILE, &sfx, CLIENT_KEY_SELECT_CHARACTER_SFX, nullptr);
-		if (sfx != nullptr)
-		{
-			sfxFileName = std::string(sfx);
-		}
-	}
-
-	if (sfxFileName.size() != 0)
+	try
 	{
 		if (isMusicPlaying == false)
 		{
-			if (sfx_play(connection, sfxFileName, MUSIC_CHANNEL, LOOP) != -1)
+			if (sfx_play(connection, getDataManager().get<std::string>("", CLIENT_CONF_FILE,
+			{ CLIENT_KEY_SELECT_CHARACTER_SFX }), MUSIC_CHANNEL, LOOP) != -1)
 			{
 				isMusicPlaying = true;
 			}
 
-			int sfxVolume = 100; // 100%
-			entry_read_int(nullptr, CLIENT_CONF_FILE, &sfxVolume, CLIENT_KEY_SELECT_CHARACTER_SFX_VOLUME, nullptr);
-			sfx_set_volume(MUSIC_CHANNEL, sfxVolume);
+			sfx_set_volume(MUSIC_CHANNEL, getDataManager().getNoExcept<int>("", CLIENT_CONF_FILE,
+			{ CLIENT_KEY_SELECT_CHARACTER_SFX_VOLUME }, 100));
 		}
+	} catch (...)
+	{
+
 	}
 }
 
 /*****************************************************************************/
 static void compose_add_icon(Context * context, std::vector<SdlItem *> &itemArray)
 {
-	char * iconAddImageName = nullptr;
-	entry_read_string(nullptr, CLIENT_CONF_FILE, &iconAddImageName, CLIENT_KEY_SELECT_CHARACTER_ADD_ICON, nullptr);
-
-	if (iconAddImageName != nullptr)
+	try
 	{
-		int sw = 0;
-		int sh = 0;
-		sdl_get_output_size(&sw, &sh);
+		SiAnim *anim = imageDB_get_anim(context, getDataManager().get<std::string>("", CLIENT_CONF_FILE,
+		{ CLIENT_KEY_SELECT_CHARACTER_ADD_ICON }));
 
 		SdlItem * item;
 		item = new SdlItem;
-
-		SiAnim *anim = imageDB_get_anim(context, std::string(iconAddImageName));
 		item->setAnim(anim);
+
+		int sw = 0;
+		int sh = 0;
+		sdl_get_output_size(&sw, &sh);
 
 		int x = sw / 2 - (anim->getWidth() / 2);
 		int y = sh - anim->getHeight();
@@ -238,8 +227,9 @@ static void compose_add_icon(Context * context, std::vector<SdlItem *> &itemArra
 		{	cb_icon_add_clicked();});
 
 		itemArray.push_back(item);
+	} catch (...)
+	{
 	}
-
 }
 
 /*****************************************************************************/

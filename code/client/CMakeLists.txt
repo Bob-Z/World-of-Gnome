@@ -42,10 +42,16 @@ include_directories(ui)
 add_executable(
 	${PROJECT_NAME}	
 
+	Camera.cpp
+	CharacterMarquee.cpp
 	client.cpp
 	client_conf.cpp
+	DataManager/DataManagerClient.cpp
+	DataManager/FileStatus.cpp
+	EffectManager.cpp
 	file_client.cpp
 	imageDB.cpp
+	lua_client.cpp
 	main_client.cpp
 	network_client.cpp
 	parser_client.cpp
@@ -53,13 +59,9 @@ add_executable(
 	scr_play.cpp
 	scr_select.cpp
 	scr_create.cpp
+	sfx.cpp
 	textview.cpp
 	ui_play.cpp
-	lua_client.cpp
-	CharacterMarquee.cpp
-	Camera.cpp
-	EffectManager.cpp
-	sfx.cpp
 	ui/ChatBox.cpp
 	ui/ChatEditBox.cpp
 	ui/ChatHistoryBox.cpp

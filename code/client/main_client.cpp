@@ -21,6 +21,7 @@
 #include "client_server.h"
 #include "const.h"
 #include "Context/ContextContainer.h"
+#include "DataManager/DataManagerClient.h"
 #include "file.h"
 #include "imageDB.h"
 #include "log.h"
@@ -50,11 +51,18 @@ const struct option longopts[] =
 { nullptr, 0, nullptr, 0 } };
 
 ContextContainer contextContainer;
+static DataManagerClient dataManager;
 
 /*****************************************************************************/
 ContextContainer & getContextContainer()
 {
 	return contextContainer;
+}
+
+/*****************************************************************************/
+DataManagerClient & getDataManager()
+{
+	return dataManager;
 }
 
 /*****************************************************************************/
