@@ -170,7 +170,7 @@ static const std::string SCRIPT_TABLE = "script";
 #define EQUIPMENT_EQUIPPED	"equipped"
 
 // client configuration
-static const std::string CLIENT_CONF_FILE = "client.conf";
+static const std::string CLIENT_CONF_FILE = "client.json";
 static const std::string CLIENT_KEY_VERSION = "version";
 static const std::string CLIENT_KEY_CAMERA_SCRIPT = "camera_script";
 static const std::string CLIENT_KEY_CURSOR_OVER_TILE = "cursor_over_tile";
