@@ -21,13 +21,14 @@
 #define CLIENT_DATAMANAGERCLIENT_H_
 
 #include "DataManager.h"
+#include "FileReceivedObserver.h"
 #include "FileStatus.h"
 #include "log.h"
 #include <string>
 #include <unordered_map>
 #include <vector>
 
-class DataManagerClient: DataManager
+class DataManagerClient: DataManager, FileReceivedObserver
 {
 public:
 	DataManagerClient();
@@ -75,6 +76,8 @@ public:
 			return defaultValue;
 		}
 	}
+
+	void fileReceived(const std::string & filePath) override;
 
 private:
 	void requestFileFromServer(const std::string & filePath);

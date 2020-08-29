@@ -1,6 +1,6 @@
 /*
  World of Gnome is a 2D multiplayer role playing game.
- Copyright (C) 2013-2020 carabobz@gmail.com
+ Copyright (C) 2019 carabobz@gmail.com
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -17,14 +17,17 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#include "Connection.h"
+#ifndef CLIENT_FILEMANAGER_FILERECEIVEDOBSERVER_H_
+#define CLIENT_FILEMANAGER_FILERECEIVEDOBSERVER_H_
+
 #include <string>
 
-class Context;
-class FileReceivedObserver;
+class FileReceivedObserver
+{
+public:
+	virtual ~FileReceivedObserver() = default;
 
-void file_add_observer(FileReceivedObserver * observer);
-int file_add(const std::string & name, const std::string & data);
-void file_clean(Context *);
-void file_request_from_network(Connection & connection, const std::string & table, const std::string & filename);
-int file_create_directory(const std::string & file_path);
+	virtual void fileReceived(const std::string & filePath) = 0;
+};
+
+#endif /* CLIENT_FILEMANAGER_FILERECEIVEDOBSERVER_H_ */

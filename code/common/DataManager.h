@@ -35,8 +35,6 @@ public:
 	DataManager();
 	virtual ~DataManager();
 
-	int getInt(const std::string & table, const std::string & file, const std::vector<std::string> & resource);
-
 	/*************************************************************************/
 	template<typename T>
 	T get(const std::string & table, const std::string & file, const std::vector<std::string> & resource)
@@ -69,6 +67,8 @@ public:
 			return defaultValue;
 		}
 	}
+
+	void reset(const std::string & filePath);
 
 protected:
 	std::string getFilePath(const std::string & table, const std::string & file);

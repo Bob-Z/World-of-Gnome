@@ -21,6 +21,7 @@
 
 #include "const.h"
 #include "Context.h"
+#include "file_client.h"
 #include "log.h"
 #include "network.h"
 
@@ -28,6 +29,7 @@
 DataManagerClient::DataManagerClient() :
 		m_timeStampPool()
 {
+	file_add_observer(static_cast<FileReceivedObserver*>(this));
 }
 
 /*****************************************************************************/
@@ -65,4 +67,10 @@ void DataManagerClient::requestFileFromServer(const std::string & filePath)
 	network_send_req_file(*connection, filePath);
 
 	fileStatus.setTimeStamp(currentTime);
+}
+
+/*****************************************************************************/
+void DataManagerClient::fileReceived(const std::string & filePath)
+{
+	reset(filePath);
 }

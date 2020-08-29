@@ -17,36 +17,46 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#include "Context.h"
+#include "client_conf.h"
 #include "client_server.h"
 #include "const.h"
+#include "Context.h"
 #include "entry.h"
 #include "file.h"
+#include "FileReceivedObserver.h"
 #include "imageDB.h"
 #include "log.h"
-#include "client_conf.h"
 #include "screen.h"
 #include "syntax.h"
 #include <cstdio>
 #include <string>
+#include <vector>
+
+std::vector<FileReceivedObserver*> fileReceivedObserver;
+
+/*****************************************************************************/
+void file_add_observer(FileReceivedObserver * observer)
+{
+	fileReceivedObserver.push_back(observer);
+}
 
 /*************************************
  return 0 on success
  **************************************/
-int file_add(const std::string & name, const std::string & data)
+int file_add(const std::string & fileName, const std::string & data)
 {
-	const std::string tempName = name + APP_NAME + "tmp";
-	const std::string tempPath = base_directory + "/" + tempName;
+	const std::string tempFileName = fileName + APP_NAME + "tmp";
+	const std::string tempPath = base_directory + "/" + tempFileName;
 
 	file_create_directory(tempPath);
 
-	if (file_set_contents(tempName.c_str(), data.c_str(), data.size()) == false)
+	if (file_set_contents(tempFileName.c_str(), data.c_str(), data.size()) == false)
 	{
-		werr(LOGDESIGNER, "Error writing file %s with size %d", tempName.c_str(), data.size());
+		werr(LOGDESIGNER, "Error writing file %s with size %d", tempFileName.c_str(), data.size());
 		return -1;
 	}
 
-	const std::string file_path = base_directory + "/" + name;
+	const std::string file_path = base_directory + "/" + fileName;
 
 	if (rename(tempPath.c_str(), file_path.c_str()) == -1)
 	{
@@ -57,10 +67,16 @@ int file_add(const std::string & name, const std::string & data)
 	LOG("write file " + file_path);
 
 	// Update the entry DB
-	entry_remove(name.c_str());
+	entry_remove(fileName.c_str());
 	// Update the image DB
-	image_DB_remove(name);
+	image_DB_remove(fileName);
 	// Make sure the new file is drawn (if needed)
+
+	for (auto & observer : fileReceivedObserver)
+	{
+		observer->fileReceived(fileName);
+	}
+
 	screen_compose();
 
 	return 0;

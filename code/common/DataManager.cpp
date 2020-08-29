@@ -34,6 +34,21 @@ DataManager::~DataManager()
 }
 
 /*****************************************************************************/
+void DataManager::reset(const std::string & filePath)
+{
+	LockGuard guard(m_poolLock);
+
+	try
+	{
+		m_jsonPool.erase(filePath);
+		LOG("Remove JSON file " + filePath);
+	} catch (...)
+	{
+		// filePath is not in JSON pool
+	}
+}
+
+/*****************************************************************************/
 std::string DataManager::getFilePath(const std::string & table, const std::string & file)
 {
 	std::string filePath;

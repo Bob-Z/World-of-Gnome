@@ -38,6 +38,7 @@ include_directories(${SDL_ITEM_PATH}/include)
 
 include_directories(.)
 include_directories(ui)
+include_directories(FileManager)
 
 add_executable(
 	${PROJECT_NAME}	
