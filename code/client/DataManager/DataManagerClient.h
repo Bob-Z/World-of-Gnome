@@ -49,7 +49,7 @@ public:
 
 			FileStatus newFileStatus;
 			m_timeStampPool.insert(std::pair<std::string, FileStatus>(filePath, newFileStatus));
-			updateFile(filePath);
+			requestFileFromServer(filePath);
 		}
 
 		try
@@ -57,7 +57,7 @@ public:
 			return DataManager::get<T>(table, file, resource);
 		} catch (...)
 		{
-			updateFile(filePath);
+			requestFileFromServer(filePath);
 
 			throw;
 		}
@@ -77,7 +77,7 @@ public:
 	}
 
 private:
-	void updateFile(const std::string & filePath);
+	void requestFileFromServer(const std::string & filePath);
 
 	std::unordered_map<std::string, FileStatus> m_timeStampPool;
 };

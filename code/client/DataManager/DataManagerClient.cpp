@@ -36,7 +36,7 @@ DataManagerClient::~DataManagerClient()
 }
 
 /*****************************************************************************/
-void DataManagerClient::updateFile(const std::string & filePath)
+void DataManagerClient::requestFileFromServer(const std::string & filePath)
 {
 	auto & fileStatus = m_timeStampPool.at(filePath);
 
