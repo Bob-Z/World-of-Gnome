@@ -18,6 +18,7 @@
  */
 
 #include "client_server.h"
+#include "DataManager.h"
 #include "log.h"
 #include "mutex.h"
 #include "network_server.h"
@@ -40,15 +41,22 @@ const struct option longopts[] =
 { "input", required_argument, nullptr, 'i' },
 { nullptr, 0, nullptr, 0 } };
 
+static DataManager dataManager;
+
+/*****************************************************************************/
 void sigint_handler(int sig)
 {
 	printf("Exiting\n");
 	exit(0);
 }
 
-/**************************
- main
- **************************/
+/*****************************************************************************/
+DataManager & getDataManager()
+{
+	return dataManager;
+}
+
+/*****************************************************************************/
 int main(int argc, char **argv)
 {
 	int opt_ret;

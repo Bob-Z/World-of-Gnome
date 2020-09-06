@@ -20,9 +20,11 @@
 #include "action.h"
 #include "character.h"
 #include "context_server.h"
+#include "Context.h"
+#include "DataManager.h"
+#include "global.h"
 #include "network_server.h"
 #include <client_server.h>
-#include "Context.h"
 #include <cstdint>
 #include <cstring>
 #include <entry.h>
@@ -143,10 +145,13 @@ static void manage_create(Connection & connection, const pb::Create& create)
 		return;
 	}
 
-	if (entry_add_to_list(USERS_TABLE, connection.getUserName().c_str(), create.name().c_str(),
-	USERS_CHARACTER_LIST, nullptr) == false)
+	try
 	{
-		werr(LOGUSER, "Error adding character %s to user %s", create.name().c_str(), connection.getUserName().c_str());
+		getDataManager().add(USERS_TABLE, connection.getUserName(),
+		{ USERS_CHARACTER_LIST }, create.name());
+	} catch (...)
+	{
+		ERR_USER("Error adding character " + create.name() + " to user " + connection.getUserName());
 		file_delete(CHARACTER_TABLE, create.name());
 		return;
 	}
