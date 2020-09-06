@@ -52,7 +52,6 @@ public:
 
 			for (auto & res : resource)
 			{
-				LOG("resource " + res);
 				json = json.at(res);
 			}
 
