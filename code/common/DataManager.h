@@ -43,16 +43,16 @@ public:
 
 		LockGuard guard(m_poolLock);
 
-		auto ref = getJson(filePath);
+		auto json = getJson(filePath);
 
 		for (auto res : resource)
 		{
 
 			//LOG("[DataManager] searching for " + res);
-			ref = ref.at(res);
+			json = json.at(res);
 		}
 
-		return ref.get<T>();
+		return json.get<T>();
 	}
 
 	/*************************************************************************/
