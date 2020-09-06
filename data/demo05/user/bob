@@ -1,1 +1,4 @@
-character_list = [ "ant1" ];
+{
+"character_list" : [ "ant1" ]
+}
+

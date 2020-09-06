@@ -1,1 +1,3 @@
-character_list = [ "zed_char1", "zed_char2" ];
+{
+"character_list" : [ "zed_char1", "zed_char2" ]
+}
