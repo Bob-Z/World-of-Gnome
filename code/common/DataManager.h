@@ -22,6 +22,7 @@
 
 #include "Lock.h"
 #include "LockGuard.h"
+#include "log.h"
 #include <nlohmann/json.hpp>
 #include <string>
 #include <unordered_map>
@@ -41,18 +42,30 @@ public:
 	template<typename T>
 	T get(const std::string & table, const std::string & file, const std::vector<std::string> & resource)
 	{
-		std::string filePath = getFilePath(table, file);
-
-		LockGuard guard(m_poolLock);
-
-		auto json = getJson(filePath);
-
-		for (auto & res : resource)
+		try
 		{
-			json = json.at(res);
-		}
+			std::string filePath = getFilePath(table, file);
 
-		return json.get<T>();
+			LockGuard guard(m_poolLock);
+
+			auto json = getJson(filePath);
+
+			for (auto & res : resource)
+			{
+				LOG("resource " + res);
+				json = json.at(res);
+			}
+
+			return json.get<T>();
+		} catch (json::exception& e)
+		{
+			ERR("JSON : " + std::string(e.what()));
+			throw;
+		} catch (...)
+		{
+			ERR("JSON error");
+			throw;
+		}
 	}
 
 	/*************************************************************************/

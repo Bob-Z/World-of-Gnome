@@ -43,14 +43,26 @@ void DataManager::add(const std::string & table, const std::string & file, const
 	LockGuard guard(m_poolLock);
 
 	auto jsonFile = getJson(filePath);
-	auto reference = jsonFile;
 
-	for (auto & res : resource)
+	try
 	{
-		reference = reference.at(res);
-	}
+		auto reference = jsonFile;
 
-	reference.push_back(toAdd);
+		for (auto & res : resource)
+		{
+			reference = reference.at(res);
+		}
+
+		reference.push_back(toAdd);
+	} catch (json::exception& e)
+	{
+		ERR("JSON : " + std::string(e.what()));
+		throw;
+	} catch (...)
+	{
+		ERR("JSON error");
+		throw;
+	}
 
 	file_write(filePath, jsonFile.dump(2));
 }
@@ -107,9 +119,16 @@ json & DataManager::loadJsonFile(const std::string & filePath)
 	std::ifstream stream(base_directory + "/" + filePath);
 	stream >> object;
 
-	m_jsonPool.insert(std::pair<std::string, json>(filePath, object));
+	try
+	{
+		m_jsonPool.insert(std::pair<std::string, json>(filePath, object));
 
-	LOG("[DataManager] File " + filePath + " loaded");
+		LOG("[DataManager] File " + filePath + " loaded");
 
-	return m_jsonPool.at(filePath);
+		return m_jsonPool.at(filePath);
+	} catch (json::exception& e)
+	{
+		ERR("JSON : " + std::string(e.what()));
+		throw;
+	}
 }
