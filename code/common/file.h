@@ -38,5 +38,6 @@ bool file_copy(const char * src_table, const char * src_name, const char * dst_t
 int file_create_directory(const std::string & p_rFullName);
 int file_delete(const char * table, const std::string & filename);
 Uint32 file_get_timestamp(const char * p_pTable, const char * p_pFilename);
+void file_write(const std::string & filePath, const std::string & data);
 
 #endif

@@ -19,6 +19,7 @@
 
 #include "client_server.h"
 #include "DataManager.h"
+#include "file.h"
 #include "log.h"
 #include <fstream>
 #include <string>
@@ -41,7 +42,8 @@ void DataManager::add(const std::string & table, const std::string & file, const
 
 	LockGuard guard(m_poolLock);
 
-	auto reference = getJson(filePath);
+	auto jsonFile = getJson(filePath);
+	auto reference = jsonFile;
 
 	for (auto & res : resource)
 	{
@@ -49,6 +51,8 @@ void DataManager::add(const std::string & table, const std::string & file, const
 	}
 
 	reference.push_back(toAdd);
+
+	file_write(filePath, jsonFile.dump(2));
 }
 
 /*****************************************************************************/

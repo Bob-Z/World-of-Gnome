@@ -33,6 +33,7 @@
 #include <dirent.h>
 #include <fcntl.h>
 #include <features.h>
+#include <fstream>
 #include <SDL_stdinc.h>
 #include <SDL_timer.h>
 #include <stdlib.h>
@@ -460,4 +461,21 @@ Uint32 file_get_timestamp(const char * table, const char * file_name)
 	}
 
 	return time_stamp;
+}
+
+/*****************************************************************************/
+void file_write(const std::string & filePath, const std::string & data)
+{
+	file_lock(filePath.c_str());
+
+	try
+	{
+		std::ofstream stream(base_directory + "/" + filePath);
+		stream << data;
+
+	} catch (...)
+	{
+		file_unlock(filePath.c_str());
+	}
+	file_unlock(filePath.c_str());
 }
