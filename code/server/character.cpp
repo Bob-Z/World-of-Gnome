@@ -24,6 +24,7 @@
 #include "const.h"
 #include "context_server.h"
 #include "Context.h"
+#include "global.h"
 #include "log.h"
 #include "map_server.h"
 #include "network_server.h"
@@ -102,8 +103,7 @@ void character_playable_send_list(Connection & connection)
 	network_send_playable_character(connection, array);
 }
 
-/*********************************************
- *********************************************/
+/*****************************************************************************/
 void character_user_send(Connection & connection, const std::string & id)
 {
 	char * type = nullptr;
@@ -128,27 +128,25 @@ void character_user_send(Connection & connection, const std::string & id)
 	free(name);
 }
 
-/*********************************************
- *********************************************/
+/*****************************************************************************/
 void character_user_send_list(Connection & connection)
 {
-	char ** characterList = nullptr;
+	std::vector<std::string> characterList;
 
-	if (entry_read_list(USERS_TABLE, connection.getUserName().c_str(), &characterList,
-	USERS_CHARACTER_LIST, nullptr) == false)
+	try
 	{
+		characterList = getDataManager().get<std::vector<std::string>>(USERS_TABLE, connection.getUserName(),
+		{ USERS_CHARACTER_LIST });
+	} catch (...)
+	{
+		LOG_USER("No character available");
 		return;
 	}
 
-	int l_Index = 0;
-
-	while (characterList[l_Index] != nullptr)
+	for (auto & name : characterList)
 	{
-		character_user_send(connection, characterList[l_Index]);
-		l_Index++;
+		character_user_send(connection, name.c_str());
 	}
-
-	deep_free(characterList);
 }
 
 /*****************************
