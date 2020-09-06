@@ -1,6 +1,6 @@
 /*
  World of Gnome is a 2D multiplayer role playing game.
- Copyright (C) 2019 carabobz@gmail.com
+ Copyright (C) 2019-2020 carabobz@gmail.com
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@
 #include "DataManager.h"
 #include "log.h"
 #include <fstream>
+#include <string>
 
 /*****************************************************************************/
 DataManager::DataManager() :
@@ -31,6 +32,23 @@ DataManager::DataManager() :
 /*****************************************************************************/
 DataManager::~DataManager()
 {
+}
+
+/*****************************************************************************/
+void DataManager::add(const std::string & table, const std::string & file, const std::vector<std::string> & resource, const std::string & toAdd)
+{
+	std::string filePath = getFilePath(table, file);
+
+	LockGuard guard(m_poolLock);
+
+	auto reference = getJson(filePath);
+
+	for (auto & res : resource)
+	{
+		reference = reference.at(res);
+	}
+
+	reference.push_back(toAdd);
 }
 
 /*****************************************************************************/
@@ -66,7 +84,7 @@ std::string DataManager::getFilePath(const std::string & table, const std::strin
 }
 
 /*****************************************************************************/
-const json & DataManager::getJson(const std::string & filePath)
+json & DataManager::getJson(const std::string & filePath)
 {
 	try
 	{
@@ -79,7 +97,7 @@ const json & DataManager::getJson(const std::string & filePath)
 }
 
 /*****************************************************************************/
-const json & DataManager::loadJsonFile(const std::string & filePath)
+json & DataManager::loadJsonFile(const std::string & filePath)
 {
 	json object;
 	std::ifstream stream(base_directory + "/" + filePath);

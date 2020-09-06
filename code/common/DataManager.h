@@ -1,6 +1,6 @@
 /*
  World of Gnome is a 2D multiplayer role playing game.
- Copyright (C) 2019 carabobz@gmail.com
+ Copyright (C) 2019-2020 carabobz@gmail.com
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -35,6 +35,8 @@ public:
 	DataManager();
 	virtual ~DataManager();
 
+	void add(const std::string & table, const std::string & file, const std::vector<std::string> & resource, const std::string & toAdd);
+
 	/*************************************************************************/
 	template<typename T>
 	T get(const std::string & table, const std::string & file, const std::vector<std::string> & resource)
@@ -45,10 +47,8 @@ public:
 
 		auto json = getJson(filePath);
 
-		for (auto res : resource)
+		for (auto & res : resource)
 		{
-
-			//LOG("[DataManager] searching for " + res);
 			json = json.at(res);
 		}
 
@@ -74,8 +74,8 @@ protected:
 	std::string getFilePath(const std::string & table, const std::string & file);
 
 private:
-	const json & getJson(const std::string & filePath);
-	const json & loadJsonFile(const std::string & filePath);
+	json & getJson(const std::string & filePath);
+	json & loadJsonFile(const std::string & filePath);
 
 	std::unordered_map<std::string, json> m_jsonPool;
 
