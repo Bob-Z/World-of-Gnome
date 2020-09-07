@@ -46,6 +46,8 @@ static SdlItem * frameRateItem = nullptr;
 static constexpr int FPS_DISPLAY_PERIOD = 1000;
 static Camera camera;
 
+std::string cameraScriptName;
+
 /******************************************************************************
  Called by other thread to request compose update.
  Composing creates anim object.
@@ -185,22 +187,24 @@ static void display_fps(Context * ctx)
 /*****************************************************************************/
 static void calculate_camera_position(Context * ctx)
 {
-	std::string cameraScript = getDataManager().getNoExcept<std::string>("", CLIENT_CONF_FILE,
-	{ CLIENT_KEY_CAMERA_SCRIPT }, "");
-
-	if (cameraScript.empty() == true)
+	if (cameraScriptName.empty() == true)
 	{
-		ERR_DESIGN("No camera script defined. Camera won't move");
-	}
-	else
-	{
-		lua_pushlightuserdata(getLuaVm(), (void *) &camera);
-		lua_setglobal(getLuaVm(), "current_camera");
+		cameraScriptName = getDataManager().getNoExcept<std::string>("", CLIENT_CONF_FILE,
+		{ CLIENT_KEY_CAMERA_SCRIPT }, "");
 
-		if (lua_execute_script(getLuaVm(), getLuaVmLock(), cameraScript.c_str(), nullptr) == -1)
+		if (cameraScriptName.empty() == true)
 		{
-			file_request_from_network(*(ctx->getConnection()), SCRIPT_TABLE, cameraScript);
+			ERR_DESIGN("No camera script defined. Camera won't move");
+			return;
 		}
+	}
+
+	lua_pushlightuserdata(getLuaVm(), (void *) &camera);
+	lua_setglobal(getLuaVm(), "current_camera");
+
+	if (lua_execute_script(getLuaVm(), getLuaVmLock(), cameraScriptName.c_str(), nullptr) == -1)
+	{
+		file_request_from_network(*(ctx->getConnection()), SCRIPT_TABLE, cameraScriptName);
 	}
 }
 
