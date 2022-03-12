@@ -298,6 +298,9 @@ static int __read_string(const char *table, const char *file, char **res,
 	config = get_config(table, file);
 	if (config == nullptr)
 	{
+		ERR(
+				"Can't get conf file " + std::string(table) + "/"
+						+ std::string(file));
 		return false;
 	}
 
@@ -309,7 +312,9 @@ static int __read_string(const char *table, const char *file, char **res,
 
 	if (config_lookup_string(config, path, &result) == CONFIG_FALSE)
 	{
-//		g_warning("%s: Can't read %s/%s/%s",__func__,table,file,path);
+		ERR(
+				"Can't find " + std::string(path) + "in conf file "
+						+ std::string(table) + "/" + std::string(file));
 		free(path);
 		return false;
 	}

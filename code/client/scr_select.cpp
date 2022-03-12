@@ -461,8 +461,6 @@ void scr_select_add_user_character(const std::string & id, const std::string & t
 {
 	LockGuard guard(characterSelectLock);
 
-	LOG("Add character");
-
 	CharacterMarquee characterMarquee;
 
 	characterMarquee.setId(id);

@@ -34,6 +34,7 @@
 #include <SDL2/SDL_mixer.h>
 #include <stdlib.h>
 #include <string.h>
+#include <string>
 #include <unistd.h>
 
 const char optstring[] = "?i:u:p:l:f:F:tPm";
@@ -54,13 +55,13 @@ ContextContainer contextContainer;
 static DataManagerClient dataManager;
 
 /*****************************************************************************/
-ContextContainer & getContextContainer()
+ContextContainer& getContextContainer()
 {
 	return contextContainer;
 }
 
 /*****************************************************************************/
-DataManagerClient & getDataManager()
+DataManagerClient& getDataManager()
 {
 	return dataManager;
 }
@@ -80,7 +81,8 @@ int main(int argc, char **argv)
 	std::string user;
 	std::string pass;
 	int opt_ret = 0;
-	while ((opt_ret = getopt_long(argc, argv, optstring, longopts, nullptr)) != -1)
+	while ((opt_ret = getopt_long(argc, argv, optstring, longopts, nullptr))
+			!= -1)
 	{
 		switch (opt_ret)
 		{
@@ -132,34 +134,39 @@ int main(int argc, char **argv)
 	int result;
 	if (Mix_flags != (result = Mix_Init(Mix_flags)))
 	{
-		werr(LOGUSER, "Could not initialize mixer (result: %d).\n", result);
-		werr(LOGDESIGNER, "Mix_Init result: %s\n", Mix_GetError());
+		ERR_USER(
+				"Could not initialize mixer (result:" + std::to_string(result));
+		ERR("Mix_Init result: " + std::string(Mix_GetError()));
 	}
 
 	Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 1024);
 
-	Context * context = context_new();
+	Context *context = context_new();
 
 	Connection connection;
 	connection.setUserName(user);
 
 	context->setConnection(&connection);
 
+	LOG_USER("Trying to connect user " + user + " to IP " + ip);
 	if (network_connect(connection, ip) == true)
 	{
+		LOG_USER("Loging in...");
 		network_login(connection, user, pass);
 	}
 	else
 	{
-		werr(LOGUSER, "Can't connect to server. Check server IP address. This error may be due to a service outage on server side. Re-try in a few seconds.\n");
+		ERR_USER(
+				"Can't connect to server. Check server IP address. This error may be due to a service outage on server side. Re-try in a few seconds.");
 		return 0;
 	}
 
 	while (connection.isConnected() == false)
 	{
-		usleep(100000);
+		usleep(10000);
 	}
 
+	LOG_USER("Logged");
 	//Run the main loop
 	screen_display(context);
 

@@ -99,8 +99,6 @@ void network_send_req_file(Connection &connection, const std::string &file_name)
  *********************************************************************/
 bool network_read_bytes(TCPsocket socket, char *data, int size)
 {
-	//wlog(LOGDEVELOPER, "read %d bytes on socket %d", size, socket);
-
 	if (socket == 0)
 	{
 		return false;
@@ -114,7 +112,9 @@ bool network_read_bytes(TCPsocket socket, char *data, int size)
 		read = SDLNet_TCP_Recv(socket, data + total, 1);
 		if (read < 1)
 		{
-			werr(LOGDEVELOPER, "Read error %d on socket %d", read, socket);
+			ERR(
+					"Read error " + std::to_string(read) + " on socket "
+							+ std::to_string(reinterpret_cast<intptr_t>(socket)));
 			return false;
 		}
 		total += read;
