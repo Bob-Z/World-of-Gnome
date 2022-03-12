@@ -36,11 +36,14 @@ public:
 	DataManager();
 	virtual ~DataManager();
 
-	void add(const std::string & table, const std::string & file, const std::vector<std::string> & resource, const std::string & toAdd);
+	void add(const std::string &table, const std::string &file,
+			const std::vector<std::string> &resourcePath,
+			const std::string &toAdd);
 
 	/*************************************************************************/
 	template<typename T>
-	T get(const std::string & table, const std::string & file, const std::vector<std::string> & resource)
+	T get(const std::string &table, const std::string &file,
+			const std::vector<std::string> &resourcePath)
 	{
 		try
 		{
@@ -50,13 +53,13 @@ public:
 
 			auto json = getJson(filePath);
 
-			for (auto & res : resource)
+			for (auto &res : resourcePath)
 			{
 				json = json.at(res);
 			}
 
 			return json.get<T>();
-		} catch (json::exception& e)
+		} catch (json::exception &e)
 		{
 			ERR("JSON : " + std::string(e.what()));
 			throw;
@@ -69,25 +72,26 @@ public:
 
 	/*************************************************************************/
 	template<typename T>
-	T getNoExcept(const std::string & table, const std::string & file, const std::vector<std::string> & resource, const T & defaultValue)
+	T getNoExcept(const std::string &table, const std::string &file,
+			const std::vector<std::string> &resourcePath, const T &defaultValue)
 	{
 		try
 		{
-			return get<T>(table, file, resource);
+			return get<T>(table, file, resourcePath);
 		} catch (...)
 		{
 			return defaultValue;
 		}
 	}
 
-	void reset(const std::string & filePath);
+	void reset(const std::string &filePath);
 
 protected:
-	std::string getFilePath(const std::string & table, const std::string & file);
+	std::string getFilePath(const std::string &table, const std::string &file);
 
 private:
-	json & getJson(const std::string & filePath);
-	json & loadJsonFile(const std::string & filePath);
+	json& getJson(const std::string &filePath);
+	json& loadJsonFile(const std::string &filePath);
 
 	std::unordered_map<std::string, json> m_jsonPool;
 
