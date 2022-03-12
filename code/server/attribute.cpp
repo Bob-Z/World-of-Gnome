@@ -34,7 +34,8 @@
  id is the id of the target of the change
  return -1 if fails
  ***************************************************************************/
-int attribute_change(Context * context, const char * table, const char * id, const char * attribute, int value)
+int attribute_change(Context *context, const char *table, const char *id,
+		const char *attribute, int value)
 {
 	int current;
 	int old;
@@ -45,26 +46,29 @@ int attribute_change(Context * context, const char * table, const char * id, con
 	bool do_down_action = false;
 	bool do_max_action = false;
 	bool do_up_action = false;
-	char * action;
-	char * min_action = nullptr;
-	char * down_action = nullptr;
-	char * max_action = nullptr;
-	char * up_action = nullptr;
+	char *action;
+	char *min_action = nullptr;
+	char *down_action = nullptr;
+	char *max_action = nullptr;
+	char *up_action = nullptr;
 
 	{
 		LockGuard guard(attribute_lock);
 
-		if (entry_read_int(table, id, &current, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_CURRENT, nullptr) == false)
+		if (entry_read_int(table, id, &current, ATTRIBUTE_GROUP, attribute,
+				ATTRIBUTE_CURRENT, nullptr) == false)
 		{
 			return -1;
 		}
 
-		if (entry_read_int(table, id, &min, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_MIN, nullptr) == false)
+		if (entry_read_int(table, id, &min, ATTRIBUTE_GROUP, attribute,
+				ATTRIBUTE_MIN, nullptr) == false)
 		{
 			min = -1;
 		}
 
-		if (entry_read_int(table, id, &max, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_MAX, nullptr) == false)
+		if (entry_read_int(table, id, &max, ATTRIBUTE_GROUP, attribute,
+				ATTRIBUTE_MAX, nullptr) == false)
 		{
 			max = -1;
 		}
@@ -89,11 +93,13 @@ int attribute_change(Context * context, const char * table, const char * id, con
 			}
 		}
 
-		if (entry_write_int(table, id, current, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_CURRENT, nullptr) == false)
+		if (entry_write_int(table, id, current, ATTRIBUTE_GROUP, attribute,
+				ATTRIBUTE_CURRENT, nullptr) == false)
 		{
 			return -1;
 		}
-		if (entry_write_int(table, id, old, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_PREVIOUS, nullptr) == false)
+		if (entry_write_int(table, id, old, ATTRIBUTE_GROUP, attribute,
+				ATTRIBUTE_PREVIOUS, nullptr) == false)
 		{
 			return -1;
 		}
@@ -103,7 +109,8 @@ int attribute_change(Context * context, const char * table, const char * id, con
 		{
 			if (do_min_action == true)
 			{
-				if (entry_read_string(table, id, &action, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_ON_MIN, nullptr) == false)
+				if (entry_read_string(table, id, &action, ATTRIBUTE_GROUP,
+						attribute, ATTRIBUTE_ON_MIN, nullptr) == false)
 				{
 					do_min_action = false;
 				}
@@ -113,7 +120,8 @@ int attribute_change(Context * context, const char * table, const char * id, con
 				}
 			}
 
-			if (entry_read_string(table, id, &action, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_ON_DOWN, nullptr) == true)
+			if (entry_read_string(table, id, &action, ATTRIBUTE_GROUP,
+					attribute, ATTRIBUTE_ON_DOWN, nullptr) == true)
 			{
 				do_down_action = true;
 				down_action = action;
@@ -124,7 +132,8 @@ int attribute_change(Context * context, const char * table, const char * id, con
 		{
 			if (do_max_action == true)
 			{
-				if (entry_read_string(table, id, &action, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_ON_MAX, nullptr) == false)
+				if (entry_read_string(table, id, &action, ATTRIBUTE_GROUP,
+						attribute, ATTRIBUTE_ON_MAX, nullptr) == false)
 				{
 					do_max_action = false;
 				}
@@ -134,7 +143,8 @@ int attribute_change(Context * context, const char * table, const char * id, con
 				}
 			}
 
-			if (entry_read_string(table, id, &action, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_ON_UP, nullptr) == true)
+			if (entry_read_string(table, id, &action, ATTRIBUTE_GROUP,
+					attribute, ATTRIBUTE_ON_UP, nullptr) == true)
 			{
 				do_up_action = true;
 				up_action = action;
@@ -181,9 +191,11 @@ int attribute_change(Context * context, const char * table, const char * id, con
 		free(max_action);
 	}
 
-	sprintf(buf, "%s.%s.%s", ATTRIBUTE_GROUP, attribute, ATTRIBUTE_CURRENT);
+	sprintf(buf, "%s.%s.%s", ATTRIBUTE_GROUP.c_str(), attribute,
+			ATTRIBUTE_CURRENT.c_str());
 	network_broadcast_entry_int(table, id, buf, current, true);
-	sprintf(buf, "%s.%s.%s", ATTRIBUTE_GROUP, attribute, ATTRIBUTE_PREVIOUS);
+	sprintf(buf, "%s.%s.%s", ATTRIBUTE_GROUP.c_str(), attribute,
+			ATTRIBUTE_PREVIOUS.c_str());
 	network_broadcast_entry_int(table, id, buf, old, true);
 	return 0;
 }
@@ -192,13 +204,14 @@ int attribute_change(Context * context, const char * table, const char * id, con
  get the specified attribute's value
  return -1 if fails
  ****************************************/
-int attribute_get(const char * table, const char *id, const char * attribute)
+int attribute_get(const char *table, const char *id, const char *attribute)
 {
 	int current = -1;
 
 	LockGuard guard(attribute_lock);
 
-	entry_read_int(table, id, &current, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_CURRENT, nullptr);
+	entry_read_int(table, id, &current, ATTRIBUTE_GROUP, attribute,
+			ATTRIBUTE_CURRENT, nullptr);
 
 	return current;
 }
@@ -207,11 +220,13 @@ int attribute_get(const char * table, const char *id, const char * attribute)
  set the specified attribute's value without check of min and max
  return -1 if fails
  *********************************************************************/
-int attribute_set(const char * table, const char * id, const char * attribute, int value)
+int attribute_set(const char *table, const char *id, const char *attribute,
+		int value)
 {
 	LockGuard guard(attribute_lock);
 
-	if (entry_write_int(table, id, value, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_CURRENT, nullptr) == false)
+	if (entry_write_int(table, id, value, ATTRIBUTE_GROUP, attribute,
+			ATTRIBUTE_CURRENT, nullptr) == false)
 	{
 		return -1;
 	}
@@ -224,13 +239,15 @@ int attribute_set(const char * table, const char * id, const char * attribute, i
  return nullptr if fails
  returned value MUST be freed
  ****************************************/
-char * attribute_tag_get(const char * table, const char *id, const char * attribute)
+char* attribute_tag_get(const char *table, const char *id,
+		const char *attribute)
 {
-	char * tag = nullptr;
+	char *tag = nullptr;
 
 	LockGuard guard(attribute_lock);
 
-	entry_read_string(table, id, &tag, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_CURRENT, nullptr);
+	entry_read_string(table, id, &tag, ATTRIBUTE_GROUP, attribute,
+			ATTRIBUTE_CURRENT, nullptr);
 
 	return tag;
 }
@@ -239,11 +256,13 @@ char * attribute_tag_get(const char * table, const char *id, const char * attrib
  set the specified attribute tag's value
  return -1 if fails
  *********************************************************************/
-int attribute_tag_set(const char * table, const char * id, const char * attribute, const char * value)
+int attribute_tag_set(const char *table, const char *id, const char *attribute,
+		const char *value)
 {
 	LockGuard guard(attribute_lock);
 
-	if (entry_write_string(table, id, value, ATTRIBUTE_GROUP, attribute, ATTRIBUTE_CURRENT, nullptr) == false)
+	if (entry_write_string(table, id, value, ATTRIBUTE_GROUP, attribute,
+			ATTRIBUTE_CURRENT, nullptr) == false)
 	{
 		return -1;
 	}

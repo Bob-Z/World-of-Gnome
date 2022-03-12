@@ -32,13 +32,16 @@ extern "C"
 #include "lauxlib.h"
 }
 
-Context * context_list_start = nullptr;
+Context *context_list_start = nullptr;
 
 /*****************************************************************************/
 Context::Context() :
-		m_lock(), m_inGame(false), m_npc(true), m_characterName(), m_map(), m_previousMap(), m_mapChanged(false), m_tileX(0), m_tileY(0), m_previousTileX(0), m_previousTileY(
-				0), m_positionChanged(false), m_orientation(0), m_direction(0), m_animationTick(0), m_type(), m_id(), m_selection(), m_nextExecutionTick(0), m_luaVm(
-				nullptr), m_luaVmLock(), m_condition(SDL_CreateCond()), m_conditionLock(), m_connection(nullptr), m_npcThread(nullptr), m_actionRunning(), m_previous(
+		m_lock(), m_inGame(false), m_npc(true), m_characterName(), m_map(), m_previousMap(), m_mapChanged(
+				false), m_tileX(0), m_tileY(0), m_previousTileX(0), m_previousTileY(
+				0), m_positionChanged(false), m_orientation(0), m_direction(0), m_animationTick(
+				0), m_type(), m_id(), m_selection(), m_nextExecutionTick(0), m_luaVm(
+				nullptr), m_luaVmLock(), m_condition(SDL_CreateCond()), m_conditionLock(), m_connection(
+				nullptr), m_npcThread(nullptr), m_actionRunning(), m_previous(
 				nullptr), m_next(nullptr)
 {
 }
@@ -57,7 +60,7 @@ Context::~Context()
 }
 
 /*****************************************************************************/
-Context * context_get_list_start()
+Context* context_get_list_start()
 {
 	return context_list_start;
 }
@@ -69,13 +72,13 @@ void context_unlock_list()
 }
 
 /*****************************************************************************/
-Context * context_get_first()
+Context* context_get_first()
 {
 	return context_list_start;
 }
 
 /*****************************************************************************/
-static void context_init(Context * context)
+static void context_init(Context *context)
 {
 	context->m_previous = nullptr;
 	context->m_next = nullptr;
@@ -84,9 +87,9 @@ static void context_init(Context * context)
 /**************************************
  Add a new context to the list
  **************************************/
-Context * context_new(void)
+Context* context_new(void)
 {
-	Context * ctx;
+	Context *ctx;
 
 	context_lock_list();
 	if (context_list_start == nullptr)
@@ -114,9 +117,9 @@ Context * context_new(void)
  context_free
  Deep free of a context_t struct and remove it from context list
  *************************************/
-void context_free(Context * context)
+void context_free(Context *context)
 {
-	Context * ctx = nullptr;
+	Context *ctx = nullptr;
 
 	context_lock_list();
 
@@ -180,7 +183,7 @@ void context_lock_list()
 }
 
 /*****************************************************************************/
-Context * context_get_player()
+Context* context_get_player()
 {
 	return context_list_start;
 }
@@ -189,7 +192,7 @@ Context * context_get_player()
  Write a context to server's disk
  return false on error
  *******************************/
-int context_write_to_file(Context * context)
+int context_write_to_file(Context *context)
 {
 	context_lock_list();
 
@@ -199,16 +202,16 @@ int context_write_to_file(Context * context)
 		return false;
 	}
 
-	entry_write_string(CHARACTER_TABLE, context->getId().c_str(), context->getType().c_str(),
-	CHARACTER_KEY_TYPE, nullptr);
-	entry_write_string(CHARACTER_TABLE, context->getId().c_str(), context->getMap().c_str(),
-	CHARACTER_KEY_MAP, nullptr);
+	entry_write_string(CHARACTER_TABLE.c_str(), context->getId().c_str(),
+			context->getType().c_str(), CHARACTER_KEY_TYPE, nullptr);
+	entry_write_string(CHARACTER_TABLE.c_str(), context->getId().c_str(),
+			context->getMap().c_str(), CHARACTER_KEY_MAP, nullptr);
 
-	entry_write_int(CHARACTER_TABLE, context->getId().c_str(), context->getTileX(),
-	CHARACTER_KEY_TILE_X, nullptr);
+	entry_write_int(CHARACTER_TABLE.c_str(), context->getId().c_str(),
+			context->getTileX(), CHARACTER_KEY_TILE_X, nullptr);
 
-	entry_write_int(CHARACTER_TABLE, context->getId().c_str(), context->getTileY(),
-	CHARACTER_KEY_TILE_Y, nullptr);
+	entry_write_int(CHARACTER_TABLE.c_str(), context->getId().c_str(),
+			context->getTileY(), CHARACTER_KEY_TILE_Y, nullptr);
 
 	context_unlock_list();
 	return true;
@@ -217,9 +220,9 @@ int context_write_to_file(Context * context)
 /*******************************
  Find a context in memory from its id
  *******************************/
-Context * context_find(const std::string & id)
+Context* context_find(const std::string &id)
 {
-	Context * ctx;
+	Context *ctx;
 
 	ctx = context_list_start;
 
@@ -239,10 +242,10 @@ Context * context_find(const std::string & id)
 /**************************************
  Called from client
  **************************************/
-void context_add_or_update_from_network_frame(const Context & receivedCtx)
+void context_add_or_update_from_network_frame(const Context &receivedCtx)
 {
 	context_lock_list();
-	Context * ctx = context_list_start;
+	Context *ctx = context_list_start;
 
 	while (ctx != nullptr)
 	{
@@ -252,7 +255,8 @@ void context_add_or_update_from_network_frame(const Context & receivedCtx)
 
 			if (receivedCtx.isInGame() == true)
 			{
-				wlog(LOGDEVELOPER, "Updating context %s", receivedCtx.getCharacterName().c_str());
+				wlog(LOGDEVELOPER, "Updating context %s",
+						receivedCtx.getCharacterName().c_str());
 
 				ctx->setMap(receivedCtx.getMap());
 				ctx->setTile(receivedCtx.getTileX(), receivedCtx.getTileY());
@@ -266,7 +270,9 @@ void context_add_or_update_from_network_frame(const Context & receivedCtx)
 
 			if (receivedCtx.isInGame() == false)
 			{
-				wlog(LOGDEVELOPER, "Deleting context %s / %s", receivedCtx.getConnection()->getUserName().c_str(), receivedCtx.getCharacterName().c_str());
+				wlog(LOGDEVELOPER, "Deleting context %s / %s",
+						receivedCtx.getConnection()->getUserName().c_str(),
+						receivedCtx.getCharacterName().c_str());
 				context_free(ctx);
 			}
 			context_unlock_list();
@@ -278,7 +284,8 @@ void context_add_or_update_from_network_frame(const Context & receivedCtx)
 
 	context_unlock_list();
 
-	wlog(LOGDEVELOPER, "Creating context %s", receivedCtx.getCharacterName().c_str());
+	wlog(LOGDEVELOPER, "Creating context %s",
+			receivedCtx.getCharacterName().c_str());
 	ctx = context_new();
 	ctx->setCharacterName(receivedCtx.getCharacterName().c_str());
 	ctx->setNpc(receivedCtx.isNpc());
@@ -288,7 +295,9 @@ void context_add_or_update_from_network_frame(const Context & receivedCtx)
 	ctx->setId(receivedCtx.getId());
 	ctx->setInGame(receivedCtx.isInGame());
 	ctx->setSelectionContextId(receivedCtx.getSelection().getContextId());
-	ctx->setSelectionTile(receivedCtx.getSelection().getMap(), receivedCtx.getSelection().getMapTx(), receivedCtx.getSelection().getMapTy());
+	ctx->setSelectionTile(receivedCtx.getSelection().getMap(),
+			receivedCtx.getSelection().getMapTx(),
+			receivedCtx.getSelection().getMapTy());
 	ctx->setSelectionEquipment(receivedCtx.getSelection().getEquipment());
 	ctx->setSelectionInventory(receivedCtx.getSelection().getInventory());
 }
@@ -296,7 +305,7 @@ void context_add_or_update_from_network_frame(const Context & receivedCtx)
 /**************************************
  Return the distance between this context and the given context (in tile)
  **************************************/
-int Context::tileDistance(const Context & ctx) const
+int Context::tileDistance(const Context &ctx) const
 {
 	int distx = 0;
 	int disty = 0;
@@ -358,7 +367,7 @@ const std::string& Context::getCharacterName() const
 }
 
 /*****************************************************************************/
-void Context::setCharacterName(const std::string& characterName)
+void Context::setCharacterName(const std::string &characterName)
 {
 	LockGuard guard(m_lock);
 
@@ -374,7 +383,7 @@ const std::string& Context::getMap() const
 }
 
 /*****************************************************************************/
-void Context::setMap(const std::string& map)
+void Context::setMap(const std::string &map)
 {
 	LockGuard guard(m_lock);
 
@@ -396,7 +405,7 @@ const std::string& Context::getPreviousMap() const
 }
 
 /*****************************************************************************/
-void Context::setPreviousMap(const std::string& previousMap)
+void Context::setPreviousMap(const std::string &previousMap)
 {
 	LockGuard guard(m_lock);
 
@@ -523,7 +532,7 @@ const std::string& Context::getType() const
 }
 
 /*****************************************************************************/
-void Context::setType(const std::string& type)
+void Context::setType(const std::string &type)
 {
 	LockGuard guard(m_lock);
 
@@ -539,7 +548,7 @@ const std::string& Context::getId() const
 }
 
 /*****************************************************************************/
-void Context::setId(const std::string& id)
+void Context::setId(const std::string &id)
 {
 	LockGuard guard(m_lock);
 
@@ -555,7 +564,7 @@ const Selection& Context::getSelection() const
 }
 
 /*****************************************************************************/
-void Context::setSelection(const Selection& selection)
+void Context::setSelection(const Selection &selection)
 {
 	LockGuard guard(m_lock);
 
@@ -563,7 +572,7 @@ void Context::setSelection(const Selection& selection)
 }
 
 /*****************************************************************************/
-void Context::setSelectionContextId(const std::string & id)
+void Context::setSelectionContextId(const std::string &id)
 {
 	LockGuard guard(m_lock);
 
@@ -579,7 +588,7 @@ const std::string& Context::getSelectionContextId() const
 }
 
 /*****************************************************************************/
-void Context::setSelectionTile(const std::string & map, int tx, int ty)
+void Context::setSelectionTile(const std::string &map, int tx, int ty)
 {
 	LockGuard guard(m_lock);
 
@@ -611,14 +620,14 @@ int Context::getSelectionMapTy() const
 }
 
 /*****************************************************************************/
-void Context::setSelectionEquipment(const std::string & equipment)
+void Context::setSelectionEquipment(const std::string &equipment)
 {
 	LockGuard guard(m_lock);
 	m_selection.setEquipment(equipment);
 }
 
 /*****************************************************************************/
-const std::string & Context::getSelectionEquipment() const
+const std::string& Context::getSelectionEquipment() const
 {
 	LockGuard guard(m_lock);
 
@@ -626,7 +635,7 @@ const std::string & Context::getSelectionEquipment() const
 }
 
 /*****************************************************************************/
-void Context::setSelectionInventory(const std::string & inventory)
+void Context::setSelectionInventory(const std::string &inventory)
 {
 	LockGuard guard(m_lock);
 
@@ -634,7 +643,7 @@ void Context::setSelectionInventory(const std::string & inventory)
 }
 
 /*****************************************************************************/
-const std::string & Context::getSelectionInventory() const
+const std::string& Context::getSelectionInventory() const
 {
 	LockGuard guard(m_lock);
 
@@ -665,7 +674,7 @@ lua_State* Context::getLuaVm()
 		lua_strlibopen(m_luaVm);
 		lua_mathlibopen(m_luaVm);
 
-		register_lua_functions(static_cast<Context *>(this));
+		register_lua_functions(static_cast<Context*>(this));
 	}
 
 	return m_luaVm;
@@ -698,11 +707,11 @@ bool Context::update_from_file()
 		return false;
 	}
 
-	char * result = nullptr;
+	char *result = nullptr;
 	bool ret = false;
 
-	if (entry_read_string(CHARACTER_TABLE, getId().c_str(), &result,
-	CHARACTER_KEY_NAME, nullptr) == true)
+	if (entry_read_string(CHARACTER_TABLE.c_str(), getId().c_str(), &result,
+			CHARACTER_KEY_NAME, nullptr) == true)
 	{
 		setCharacterName(std::string(result));
 	}
@@ -712,14 +721,15 @@ bool Context::update_from_file()
 	}
 
 	int npc = 0;
-	if (entry_read_int(CHARACTER_TABLE, getId().c_str(), &npc, CHARACTER_KEY_NPC, nullptr) == false)
+	if (entry_read_int(CHARACTER_TABLE.c_str(), getId().c_str(), &npc,
+			CHARACTER_KEY_NPC, nullptr) == false)
 	{
 		ret = false;
 	}
 	setNpc(npc);
 
-	if (entry_read_string(CHARACTER_TABLE, getId().c_str(), &result,
-	CHARACTER_KEY_TYPE, nullptr) == true)
+	if (entry_read_string(CHARACTER_TABLE.c_str(), getId().c_str(), &result,
+			CHARACTER_KEY_TYPE, nullptr) == true)
 	{
 		setType(std::string(result));
 		free(result);
@@ -729,8 +739,8 @@ bool Context::update_from_file()
 		ret = false;
 	}
 
-	if (entry_read_string(CHARACTER_TABLE, getId().c_str(), &result,
-	CHARACTER_KEY_MAP, nullptr) == true)
+	if (entry_read_string(CHARACTER_TABLE.c_str(), getId().c_str(), &result,
+			CHARACTER_KEY_MAP, nullptr) == true)
 	{
 		setMap(std::string(result));
 		free(result);
@@ -741,14 +751,14 @@ bool Context::update_from_file()
 	}
 
 	int pos_tx = 0;
-	if (entry_read_int(CHARACTER_TABLE, getId().c_str(), &pos_tx,
-	CHARACTER_KEY_TILE_X, nullptr) == false)
+	if (entry_read_int(CHARACTER_TABLE.c_str(), getId().c_str(), &pos_tx,
+			CHARACTER_KEY_TILE_X, nullptr) == false)
 	{
 		ret = false;
 	}
 	int pos_ty = 0;
-	if (entry_read_int(CHARACTER_TABLE, getId().c_str(), &pos_ty,
-	CHARACTER_KEY_TILE_Y, nullptr) == false)
+	if (entry_read_int(CHARACTER_TABLE.c_str(), getId().c_str(), &pos_ty,
+			CHARACTER_KEY_TILE_Y, nullptr) == false)
 	{
 		ret = false;
 	}
@@ -766,7 +776,7 @@ Connection* Context::getConnection() const
 }
 
 /*****************************************************************************/
-void Context::setConnection(Connection* connection)
+void Context::setConnection(Connection *connection)
 {
 	m_connection = connection;
 }
@@ -778,19 +788,21 @@ SDL_Thread* Context::getNpcThread() const
 }
 
 /*****************************************************************************/
-void Context::setNpcThread(SDL_Thread* npcThread)
+void Context::setNpcThread(SDL_Thread *npcThread)
 {
 	m_npcThread = npcThread;
 }
 
 /*****************************************************************************/
-void Context::addRunningAction(const std::string & action, RunningAction * runningAction)
+void Context::addRunningAction(const std::string &action,
+		RunningAction *runningAction)
 {
-	m_actionRunning.insert(std::pair<std::string, RunningAction *>(action, runningAction));
+	m_actionRunning.insert(
+			std::pair<std::string, RunningAction*>(action, runningAction));
 }
 
 /*****************************************************************************/
-void Context::stopRunningAction(const std::string & action)
+void Context::stopRunningAction(const std::string &action)
 {
 	auto it = m_actionRunning.find(action);
 	if (it != m_actionRunning.end())
@@ -801,7 +813,7 @@ void Context::stopRunningAction(const std::string & action)
 }
 
 /*****************************************************************************/
-Lock & Context::getLuaVmLock()
+Lock& Context::getLuaVmLock()
 {
 	return m_luaVmLock;
 }

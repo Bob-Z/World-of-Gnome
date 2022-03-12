@@ -41,7 +41,7 @@
 #include <unistd.h>
 #include <utility>
 
-list_t * file_list = nullptr;
+list_t *file_list = nullptr;
 
 Lock file_list_lock;
 
@@ -54,12 +54,12 @@ typedef struct file_tag
 /****************************************
  filename is "table/dir/file"
  *****************************************/
-void file_lock(const char * filename)
+void file_lock(const char *filename)
 {
-	file_t * file_data;
+	file_t *file_data;
 
 	LockGuard guard(file_list_lock);
-	file_data = (file_t *) list_find(file_list, filename);
+	file_data = (file_t*) list_find(file_list, filename);
 	if (file_data == nullptr)
 	{
 		file_data = new file_t;
@@ -74,12 +74,12 @@ void file_lock(const char * filename)
 /****************************************
  filename is "table/dir/file"
  *****************************************/
-void file_unlock(const char * filename)
+void file_unlock(const char *filename)
 {
-	file_t * file_data;
+	file_t *file_data;
 
 	LockGuard guard(file_list_lock);
-	file_data = (file_t *) list_find(file_list, filename);
+	file_data = (file_t*) list_find(file_list, filename);
 
 	if (file_data == nullptr)
 	{
@@ -92,7 +92,7 @@ void file_unlock(const char * filename)
 /****************************************
  filename is "table/dir/file"
  *****************************************/
-void file_update(Connection * connection, const char * filename)
+void file_update(Connection *connection, const char *filename)
 {
 	if (connection == nullptr)
 	{
@@ -104,10 +104,10 @@ void file_update(Connection * connection, const char * filename)
 		return;
 	}
 
-	file_t * file_data;
+	file_t *file_data;
 
 	LockGuard guard(file_list_lock);
-	file_data = (file_t *) list_find(file_list, filename);
+	file_data = (file_t*) list_find(file_list, filename);
 
 	if (file_data == nullptr)
 	{
@@ -116,7 +116,8 @@ void file_update(Connection * connection, const char * filename)
 
 	// Avoid flooding the server
 	Uint32 current_time = SDL_GetTicks();
-	if (file_data->timestamp != 0 && file_data->timestamp + FILE_REQUEST_TIMEOUT_MS > current_time)
+	if (file_data->timestamp != 0
+			&& file_data->timestamp + FILE_REQUEST_TIMEOUT_MS > current_time)
 	{
 		//wlog(LOGDEBUG,"Previous request of file  %s has been %d ms ago",filename,current_time - file_data->timestamp );
 		return;
@@ -130,13 +131,13 @@ void file_update(Connection * connection, const char * filename)
 /***************************************************
  return 0 if directory was successfully created
  ****************************************************/
-static int mkdir_all(const std::string & path_name)
+static int mkdir_all(const std::string &path_name)
 {
-	char * token = nullptr;
-	char * source = nullptr;
+	char *token = nullptr;
+	char *source = nullptr;
 	int ret = -1;
-	char * directory = nullptr;
-	char * saveptr = nullptr;
+	char *directory = nullptr;
+	char *saveptr = nullptr;
 
 	source = strdup(path_name.c_str());
 
@@ -146,7 +147,8 @@ static int mkdir_all(const std::string & path_name)
 
 	while (token != nullptr)
 	{
-		const std::string new_directory = std::string(directory) + "/" + std::string(token);
+		const std::string new_directory = std::string(directory) + "/"
+				+ std::string(token);
 		free(directory);
 		directory = strdup(new_directory.c_str());
 		ret = mkdir(directory, 0775);
@@ -166,10 +168,11 @@ static int mkdir_all(const std::string & path_name)
  Return the name of an available empty file.
  On success the file is created on disk
  ****************************/
-std::pair<bool, std::string> file_new(const std::string & table, const std::string & suggested_name)
+std::pair<bool, std::string> file_new(const std::string &table,
+		const std::string &suggested_name)
 {
-	DIR * dir = nullptr;
-	struct dirent * ent = nullptr;
+	DIR *dir = nullptr;
+	struct dirent *ent = nullptr;
 	char tag[10];
 	int index = 0;
 	int fd = -1;
@@ -183,10 +186,12 @@ std::pair<bool, std::string> file_new(const std::string & table, const std::stri
 
 	if (suggested_name != NO_SUGGESTED_NAME)
 	{
-		const std::string file_path = dir_path + "/" + std::string(suggested_name);
+		const std::string file_path = dir_path + "/"
+				+ std::string(suggested_name);
 		if (stat(file_path.c_str(), &sts) != -1)
 		{
-			werr(LOGDEVELOPER, "Suggested file %s already exists", suggested_name.c_str());
+			werr(LOGDEVELOPER, "Suggested file %s already exists",
+					suggested_name.c_str());
 			return std::pair<bool, std::string>
 			{ false, NO_SUGGESTED_NAME };
 		}
@@ -252,13 +257,14 @@ std::pair<bool, std::string> file_new(const std::string & table, const std::stri
  contents MUST BE FREED by caller
  return false on error
  ****************************/
-int file_get_contents(const char *filename, void **contents, int_fast32_t *length)
+int file_get_contents(const char *filename, void **contents,
+		int_fast32_t *length)
 {
 	struct stat sts;
 	int fd;
 	ssize_t size;
 	char error_buf[SMALL_BUF];
-	char * error_str;
+	char *error_str;
 
 	*contents = nullptr;
 
@@ -275,7 +281,8 @@ int file_get_contents(const char *filename, void **contents, int_fast32_t *lengt
 		error_str = strerror_r(errno, error_buf, SMALL_BUF);
 #endif
 		file_unlock(filename);
-		werr(LOGDESIGNER, "Error stat on file %s: %s\n", file_path.c_str(), error_str);
+		werr(LOGDESIGNER, "Error stat on file %s: %s\n", file_path.c_str(),
+				error_str);
 		return false;
 	}
 
@@ -289,11 +296,12 @@ int file_get_contents(const char *filename, void **contents, int_fast32_t *lengt
 		error_str = strerror_r(errno, error_buf, SMALL_BUF);
 #endif
 		file_unlock(filename);
-		werr(LOGDESIGNER, "Error open on file %s: %s\n", file_path.c_str(), error_str);
+		werr(LOGDESIGNER, "Error open on file %s: %s\n", file_path.c_str(),
+				error_str);
 		return false;
 	}
 
-	void * buf;
+	void *buf;
 	buf = malloc(sts.st_size);
 	if (buf == nullptr)
 	{
@@ -314,7 +322,8 @@ int file_get_contents(const char *filename, void **contents, int_fast32_t *lengt
 		close(fd);
 		file_unlock(filename);
 		free(buf);
-		werr(LOGDESIGNER, "Error read on file %s: %s\n", file_path.c_str(), error_str);
+		werr(LOGDESIGNER, "Error read on file %s: %s\n", file_path.c_str(),
+				error_str);
 		return false;
 	}
 
@@ -337,7 +346,7 @@ int file_set_contents(const char *filename, const void *contents, int length)
 	int fd;
 	ssize_t size;
 	char error_buf[SMALL_BUF];
-	char * error_str;
+	char *error_str;
 
 	const std::string file_path = base_directory + "/" + std::string(filename);
 
@@ -354,7 +363,8 @@ int file_set_contents(const char *filename, const void *contents, int length)
 		error_str = strerror_r(errno, error_buf, SMALL_BUF);
 #endif
 		file_unlock(filename);
-		werr(LOGDESIGNER, "Error open on file %s: %s\n", file_path.c_str(), error_str);
+		werr(LOGDESIGNER, "Error open on file %s: %s\n", file_path.c_str(),
+				error_str);
 		return false;
 	}
 
@@ -369,7 +379,8 @@ int file_set_contents(const char *filename, const void *contents, int length)
 #endif
 		close(fd);
 		file_unlock(filename);
-		werr(LOGDESIGNER, "Error write on file %s: %s\n", file_path.c_str(), error_str);
+		werr(LOGDESIGNER, "Error write on file %s: %s\n", file_path.c_str(),
+				error_str);
 		return false;
 	}
 
@@ -383,12 +394,14 @@ int file_set_contents(const char *filename, const void *contents, int length)
 /******************************************************
  return true on success
  ******************************************************/
-bool file_copy(const char * src_table, const char * src_name, const char * dst_table, const char * dst_name)
+bool file_copy(const std::string &src_table, const std::string &src_name,
+		const std::string &dst_table, const std::string &dst_name)
 {
 	FILE *src;
 	FILE *dst;
 
-	const std::string src_full_path = base_directory + "/" + std::string(src_table) + "/" + std::string(src_name);
+	const std::string src_full_path = base_directory + "/"
+			+ std::string(src_table) + "/" + std::string(src_name);
 
 	src = fopen(src_full_path.c_str(), "rb");
 	if (src == nullptr)
@@ -397,12 +410,14 @@ bool file_copy(const char * src_table, const char * src_name, const char * dst_t
 		return false;
 	}
 
-	const std::string dst_full_path = base_directory + "/" + std::string(dst_table) + "/" + std::string(dst_name);
+	const std::string dst_full_path = base_directory + "/"
+			+ std::string(dst_table) + "/" + std::string(dst_name);
 
 	dst = fopen(dst_full_path.c_str(), "wb");
 	if (dst == nullptr)
 	{
-		werr(LOGDESIGNER, "Failed to open destination file %s\n", dst_full_path);
+		werr(LOGDESIGNER, "Failed to open destination file %s\n",
+				dst_full_path);
 		fclose(src);
 		return false;
 	}
@@ -424,9 +439,10 @@ bool file_copy(const char * src_table, const char * src_name, const char * dst_t
  created here, not the file itself.
  return 0 if directory was successfully created
  ****************************************************/
-int file_create_directory(const std::string & file_path)
+int file_create_directory(const std::string &file_path)
 {
-	const std::string path_without_file = file_path.substr(0, file_path.find_last_of("\\/"));
+	const std::string path_without_file = file_path.substr(0,
+			file_path.find_last_of("\\/"));
 	;
 
 	return mkdir_all(path_without_file);;
@@ -436,25 +452,26 @@ int file_create_directory(const std::string & file_path)
  Delete a file from file system
  return 0 if file was successfully deleted
  ****************************************************/
-int file_delete(const char * table, const std::string & filename)
+int file_delete(const std::string &table, const std::string &filename)
 {
-	const std::string file_path = base_directory + "/" + std::string(table) + "/" + filename;
+	const std::string file_path = base_directory + "/" + table + "/" + filename;
 	return unlink(file_path.c_str());
 }
 
 /***************************************************
  return time stamp of last update
  ****************************************************/
-Uint32 file_get_timestamp(const char * table, const char * file_name)
+Uint32 file_get_timestamp(const char *table, const char *file_name)
 {
-	file_t * file_data;
+	file_t *file_data;
 	Uint32 time_stamp = 0;
 
-	const std::string table_path = std::string(table) + "/" + std::string(file_name);
+	const std::string table_path = std::string(table) + "/"
+			+ std::string(file_name);
 
 	LockGuard guard(file_list_lock);
 
-	file_data = (file_t *) list_find(file_list, table_path.c_str());
+	file_data = (file_t*) list_find(file_list, table_path.c_str());
 	if (file_data != nullptr)
 	{
 		time_stamp = file_data->timestamp;
@@ -464,7 +481,7 @@ Uint32 file_get_timestamp(const char * table, const char * file_name)
 }
 
 /*****************************************************************************/
-void file_write(const std::string & filePath, const std::string & data)
+void file_write(const std::string &filePath, const std::string &data)
 {
 	file_lock(filePath.c_str());
 

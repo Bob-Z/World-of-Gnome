@@ -35,19 +35,21 @@
 #include <strings.h>
 #include <sys/stat.h>
 
-list_t * entry_list = nullptr;
+list_t *entry_list = nullptr;
 Lock entryListLock;
 
 /*********************
  *********************/
-static void config_print_error(const std::string & file, const config_t * config)
+static void config_print_error(const std::string &file, const config_t *config)
 {
-	werr(LOGUSER, "libconfig error %s@%d : %s\n", file.c_str(), config_error_line(config), config_error_text(config));
+	werr(LOGUSER, "libconfig error %s@%d : %s\n", file.c_str(),
+			config_error_line(config), config_error_text(config));
 }
 
 /*********************
  *********************/
-static void write_config(const config_t * config, const char * table, const char * file)
+static void write_config(const config_t *config, const char *table,
+		const char *file)
 {
 	const std::string file_name = std::string(table) + "/" + std::string(file);
 
@@ -59,17 +61,17 @@ static void write_config(const config_t * config, const char * table, const char
 }
 /*********************
  *********************/
-static void free_config(config_t * config)
+static void free_config(config_t *config)
 {
 	config_destroy(config);
 	free(config);
 }
 /*********************
  *********************/
-static const config_t * load_config(const char * filename)
+static const config_t* load_config(const char *filename)
 {
 	int ret;
-	config_t * config = nullptr;
+	config_t *config = nullptr;
 	struct stat sts;
 
 	const std::string file_path = base_directory + "/" + std::string(filename);
@@ -99,9 +101,9 @@ static const config_t * load_config(const char * filename)
 /****************************************************
  Remove an entry from the DB
  ******************************************************/
-void entry_remove(const char * filename)
+void entry_remove(const char *filename)
 {
-	config_t * old_config;
+	config_t *old_config;
 
 	wlog(LOGDEVELOPER, "Removing entry : %s", filename);
 	// Clean-up old anim if any
@@ -120,14 +122,14 @@ void entry_remove(const char * filename)
 /*********************
  returned config should not be freed
  *********************/
-static const config_t * get_config(const char * table, const char * file)
+static const config_t* get_config(const char *table, const char *file)
 {
 	if (file == nullptr)
 	{
 		return nullptr;
 	}
 
-	const config_t * config = nullptr;
+	const config_t *config = nullptr;
 	std::string fileName;
 
 	if (table == nullptr)
@@ -149,8 +151,8 @@ static const config_t * get_config(const char * table, const char * file)
 		return config;
 	}
 
-	Context * context = context_get_player();
-	Connection * connection = nullptr;
+	Context *context = context_get_player();
+	Connection *connection = nullptr;
 
 	if (context != nullptr)
 	{
@@ -177,7 +179,7 @@ static const config_t * get_config(const char * table, const char * file)
 /*********************
  returned string MUST BE FREED
  *********************/
-static std::string add_entry_to_path(char * path, char * entry)
+static std::string add_entry_to_path(char *path, char *entry)
 {
 	if (path == nullptr)
 	{
@@ -185,7 +187,8 @@ static std::string add_entry_to_path(char * path, char * entry)
 	}
 	else
 	{
-		const std::string new_path = std::string(path) + "." + std::string(entry);
+		const std::string new_path = std::string(path) + "."
+				+ std::string(entry);
 		return new_path;
 	}
 }
@@ -194,10 +197,10 @@ static std::string add_entry_to_path(char * path, char * entry)
  Create a libconfig path from a list of string
  the returned path MUST BE FREED
  *********************/
-static char * get_path(va_list ap)
+static char* get_path(va_list ap)
 {
-	char * path = nullptr;
-	char * entry = nullptr;
+	char *path = nullptr;
+	char *entry = nullptr;
 
 	entry = va_arg(ap, char*);
 	if (entry == nullptr)
@@ -229,10 +232,10 @@ static char * get_path(va_list ap)
 /*********************
  return false on error
  *********************/
-static int __read_int(const char * table, const char * file, int * res, va_list ap)
+static int __read_int(const char *table, const char *file, int *res, va_list ap)
 {
-	const config_t * config = nullptr;
-	char * path = nullptr;
+	const config_t *config = nullptr;
+	char *path = nullptr;
 	int result;
 
 	LockGuard guard(entryListLock);
@@ -264,13 +267,14 @@ static int __read_int(const char * table, const char * file, int * res, va_list 
 /*********************
  return false on error
  *********************/
-int entry_read_int(const char * table, const char * file, int * res, ...)
+int entry_read_int(const std::string &table, const std::string &file, int *res,
+		...)
 {
 	int ret;
 	va_list ap;
 
 	va_start(ap, res);
-	ret = __read_int(table, file, res, ap);
+	ret = __read_int(table.c_str(), file.c_str(), res, ap);
 	va_end(ap);
 
 	return ret;
@@ -280,11 +284,12 @@ int entry_read_int(const char * table, const char * file, int * res, ...)
  return false on error
  res MUST BE FREED by caller
  *********************/
-static int __read_string(const char * table, const char * file, char ** res, va_list ap)
+static int __read_string(const char *table, const char *file, char **res,
+		va_list ap)
 {
-	const config_t * config = nullptr;
-	char * path = nullptr;
-	const char * result = nullptr;
+	const config_t *config = nullptr;
+	char *path = nullptr;
+	const char *result = nullptr;
 
 	*res = nullptr;
 
@@ -320,13 +325,14 @@ static int __read_string(const char * table, const char * file, char ** res, va_
  This string MUST BE FREED by caller.
  return false on error
  *********************/
-int entry_read_string(const char * table, const char * file, char ** res, ...)
+int entry_read_string(const std::string &table, const std::string &file,
+		char **res, ...)
 {
 	int ret;
 	va_list ap;
 
 	va_start(ap, res);
-	ret = __read_string(table, file, res, ap);
+	ret = __read_string(table.c_str(), file.c_str(), res, ap);
 	va_end(ap);
 
 	return ret;
@@ -336,12 +342,13 @@ int entry_read_string(const char * table, const char * file, char ** res, ...)
  return false on error
  res MUST BE FREED by caller
  *********************/
-static int __read_list_index(const char * table, const char * file, char ** res, int index, va_list ap)
+static int __read_list_index(const char *table, const char *file, char **res,
+		int index, va_list ap)
 {
-	const config_t * config = nullptr;
-	config_setting_t * setting = nullptr;
-	char * path;
-	const char * result;
+	const config_t *config = nullptr;
+	config_setting_t *setting = nullptr;
+	char *path;
+	const char *result;
 
 	*res = nullptr;
 
@@ -380,13 +387,14 @@ static int __read_list_index(const char * table, const char * file, char ** res,
 /*********************
  return false on error
  *********************/
-int entry_read_list_index(const char * table, const char * file, char ** res, int index, ...)
+int entry_read_list_index(const std::string &table, const std::string &file,
+		char **res, int index, ...)
 {
 	int ret;
 	va_list ap;
 
 	va_start(ap, index);
-	ret = __read_list_index(table, file, res, index, ap);
+	ret = __read_list_index(table.c_str(), file.c_str(), res, index, ap);
 	va_end(ap);
 
 	return ret;
@@ -396,13 +404,14 @@ int entry_read_list_index(const char * table, const char * file, char ** res, in
  return false on error
  res must be freed with deep_free
  *********************/
-static int __read_list(const char * table, const char * file, char *** res, va_list ap)
+static int __read_list(const char *table, const char *file, char ***res,
+		va_list ap)
 {
-	const config_t * config = nullptr;
-	config_setting_t * setting = nullptr;
-	char * path;
+	const config_t *config = nullptr;
+	config_setting_t *setting = nullptr;
+	char *path;
 	int i = 0;
-	const char * elem;
+	const char *elem;
 
 	*res = nullptr;
 
@@ -431,7 +440,7 @@ static int __read_list(const char * table, const char * file, char *** res, va_l
 	while ((elem = config_setting_get_string_elem(setting, i)) != nullptr)
 	{
 		i++;
-		*res = (char**) realloc(*res, (i + 1) * sizeof(char *));
+		*res = (char**) realloc(*res, (i + 1) * sizeof(char*));
 		(*res)[i - 1] = strdup(elem);
 		(*res)[i] = nullptr;
 
@@ -449,13 +458,14 @@ static int __read_list(const char * table, const char * file, char *** res, va_l
  return false on error
  res must be freed with deep_free
  *********************/
-int entry_read_list(const char * table, const char * file, char *** res, ...)
+int entry_read_list(const std::string &table, const std::string &file,
+		char ***res, ...)
 {
 	int ret;
 	va_list ap;
 
 	va_start(ap, res);
-	ret = __read_list(table, file, res, ap);
+	ret = __read_list(table.c_str(), file.c_str(), res, ap);
 	va_end(ap);
 
 	return ret;
@@ -463,11 +473,13 @@ int entry_read_list(const char * table, const char * file, char *** res, ...)
 
 /*********************
  *********************/
-static config_setting_t * create_tree(const config_t * config, config_setting_t * prev_setting, char * prev_entry, const char * path, int type, va_list ap)
+static config_setting_t* create_tree(const config_t *config,
+		config_setting_t *prev_setting, char *prev_entry, const char *path,
+		int type, va_list ap)
 {
-	char * entry = nullptr;
-	config_setting_t * setting = nullptr;
-	config_setting_t * ret = nullptr;
+	char *entry = nullptr;
+	config_setting_t *setting = nullptr;
+	config_setting_t *ret = nullptr;
 
 	if (prev_setting == nullptr)
 	{
@@ -525,10 +537,11 @@ static config_setting_t * create_tree(const config_t * config, config_setting_t 
 /*********************
  return false on error
  *********************/
-static int __write_int(const char * table, const char * file, int data, va_list ap)
+static int __write_int(const char *table, const char *file, int data,
+		va_list ap)
 {
-	config_setting_t * setting;
-	const config_t * config;
+	config_setting_t *setting;
+	const config_t *config;
 
 	LockGuard guard(entryListLock);
 
@@ -538,7 +551,8 @@ static int __write_int(const char * table, const char * file, int data, va_list 
 		return false;
 	}
 
-	setting = create_tree(config, nullptr, nullptr, nullptr, CONFIG_TYPE_INT, ap);
+	setting = create_tree(config, nullptr, nullptr, nullptr, CONFIG_TYPE_INT,
+			ap);
 
 	// update int
 	if (config_setting_set_int(setting, data) == CONFIG_FALSE)
@@ -553,13 +567,14 @@ static int __write_int(const char * table, const char * file, int data, va_list 
 /*********************
  return false on error
  *********************/
-int entry_write_int(const char * table, const char * file, int data, ...)
+int entry_write_int(const std::string &table, const std::string &file, int data,
+		...)
 {
 	int ret;
 	va_list ap;
 
 	va_start(ap, data);
-	ret = __write_int(table, file, data, ap);
+	ret = __write_int(table.c_str(), file.c_str(), data, ap);
 	va_end(ap);
 
 	return ret;
@@ -568,10 +583,11 @@ int entry_write_int(const char * table, const char * file, int data, ...)
 /*********************
  return false on error
  *********************/
-static int __write_string(const char * table, const char * file, const char * data, va_list ap)
+static int __write_string(const char *table, const char *file, const char *data,
+		va_list ap)
 {
-	config_setting_t * setting;
-	const config_t * config;
+	config_setting_t *setting;
+	const config_t *config;
 
 	LockGuard guard(entryListLock);
 
@@ -581,7 +597,8 @@ static int __write_string(const char * table, const char * file, const char * da
 		return false;
 	}
 
-	setting = create_tree(config, nullptr, nullptr, nullptr, CONFIG_TYPE_STRING, ap);
+	setting = create_tree(config, nullptr, nullptr, nullptr, CONFIG_TYPE_STRING,
+			ap);
 
 	// update string
 	if (config_setting_set_string(setting, data) == CONFIG_FALSE)
@@ -596,13 +613,14 @@ static int __write_string(const char * table, const char * file, const char * da
 /*********************
  return false on error
  *********************/
-int entry_write_string(const char * table, const char * file, const char * data, ...)
+int entry_write_string(const std::string &table, const std::string &file,
+		const std::string &data, ...)
 {
 	int ret;
 	va_list ap;
 
 	va_start(ap, data);
-	ret = __write_string(table, file, data, ap);
+	ret = __write_string(table.c_str(), file.c_str(), data.c_str(), ap);
 	va_end(ap);
 
 	return ret;
@@ -611,10 +629,11 @@ int entry_write_string(const char * table, const char * file, const char * data,
 /*********************
  return false on error
  *********************/
-static int __write_list_index(const char * table, const char * file, const char * data, int index, va_list ap)
+static int __write_list_index(const char *table, const char *file,
+		const char *data, int index, va_list ap)
 {
-	config_setting_t * setting = nullptr;
-	const config_t * config;
+	config_setting_t *setting = nullptr;
+	const config_t *config;
 	int list_size;
 
 	LockGuard guard(entryListLock);
@@ -625,7 +644,8 @@ static int __write_list_index(const char * table, const char * file, const char 
 		return false;
 	}
 
-	setting = create_tree(config, nullptr, nullptr, nullptr, CONFIG_TYPE_ARRAY, ap);
+	setting = create_tree(config, nullptr, nullptr, nullptr, CONFIG_TYPE_ARRAY,
+			ap);
 	if (setting == nullptr)
 	{
 		return false;
@@ -654,13 +674,15 @@ static int __write_list_index(const char * table, const char * file, const char 
 /*********************
  return false on error
  *********************/
-int entry_write_list_index(const char * table, const char * file, const char * data, int index, ...)
+int entry_write_list_index(const std::string &table, const std::string &file,
+		const std::string &data, int index, ...)
 {
 	int ret;
 	va_list ap;
 
 	va_start(ap, index);
-	ret = __write_list_index(table, file, data, index, ap);
+	ret = __write_list_index(table.c_str(), file.c_str(), data.c_str(), index,
+			ap);
 	va_end(ap);
 
 	return ret;
@@ -669,10 +691,11 @@ int entry_write_list_index(const char * table, const char * file, const char * d
 /*********************
  return false on error
  *********************/
-static int __write_list(const char * table, const char * file, char ** data, va_list ap)
+static int __write_list(const char *table, const char *file, char **data,
+		va_list ap)
 {
-	config_setting_t * setting;
-	const config_t * config;
+	config_setting_t *setting;
+	const config_t *config;
 	int i = 0;
 
 	LockGuard guard(entryListLock);
@@ -683,7 +706,8 @@ static int __write_list(const char * table, const char * file, char ** data, va_
 		return false;
 	}
 
-	setting = create_tree(config, nullptr, nullptr, nullptr, CONFIG_TYPE_ARRAY, ap);
+	setting = create_tree(config, nullptr, nullptr, nullptr, CONFIG_TYPE_ARRAY,
+			ap);
 
 	while (data[i] != nullptr)
 	{
@@ -707,7 +731,7 @@ static int __write_list(const char * table, const char * file, char ** data, va_
 /*********************
  return false on error
  *********************/
-int entry_write_list(const char * table, const char * file, char ** data, ...)
+int entry_write_list(const char *table, const char *file, char **data, ...)
 {
 	int ret;
 	va_list ap;
@@ -722,11 +746,12 @@ int entry_write_list(const char * table, const char * file, char ** data, ...)
 /*********************
  return false on error
  *********************/
-static int __add_to_list(const char * table, const char * file, const char * to_be_added, va_list ap)
+static int __add_to_list(const char *table, const char *file,
+		const char *to_be_added, va_list ap)
 {
-	const config_t * config = nullptr;
-	config_setting_t * setting = nullptr;
-	char * path;
+	const config_t *config = nullptr;
+	config_setting_t *setting = nullptr;
+	char *path;
 
 	LockGuard guard(entryListLock);
 
@@ -763,7 +788,8 @@ static int __add_to_list(const char * table, const char * file, const char * to_
 /*********************
  return false on error
  *********************/
-int entry_add_to_list(const char * table, const char * file, const char * to_be_added, ...)
+int entry_add_to_list(const char *table, const char *file,
+		const char *to_be_added, ...)
 {
 	int ret;
 	va_list ap;
@@ -778,12 +804,13 @@ int entry_add_to_list(const char * table, const char * file, const char * to_be_
 /*********************
  return false on error
  *********************/
-static int __remove_group(const char * table, const char * file, const char * group, va_list ap)
+static int __remove_group(const char *table, const char *file,
+		const char *group, va_list ap)
 {
 
-	const config_t * config;
-	config_setting_t * setting = nullptr;
-	char * path;
+	const config_t *config;
+	config_setting_t *setting = nullptr;
+	char *path;
 
 	LockGuard guard(entryListLock);
 
@@ -822,7 +849,8 @@ static int __remove_group(const char * table, const char * file, const char * gr
 /*********************
  return false on error
  *********************/
-int entry_remove_group(const char * table, const char * file, const char * group, ...)
+int entry_remove_group(const char *table, const char *file, const char *group,
+		...)
 {
 	int ret;
 	va_list ap;
@@ -838,9 +866,9 @@ int entry_remove_group(const char * table, const char * file, const char * group
  find an unused tag in a list, add it to the list and return it.
  returned string must be freed
  **********************/
-char * entry_get_unused_list_entry(const char * table, const char * file, ...)
+char* entry_get_unused_list_entry(const char *table, const char *file, ...)
 {
-	char ** list;
+	char **list;
 	char tag[7];
 	int index = 0;
 	int i = 0;
@@ -880,13 +908,13 @@ char * entry_get_unused_list_entry(const char * table, const char * file, ...)
  find an unused group, create it and return its name
  returned string must be freed
  **********************/
-char * __get_unused_group(const char * table, const char * file, va_list ap)
+char* __get_unused_group(const char *table, const char *file, va_list ap)
 {
 	char tag[7];
 	int index = 0;
-	char * path;
-	config_setting_t * setting;
-	const config_t * config;
+	char *path;
+	config_setting_t *setting;
+	const config_t *config;
 
 	LockGuard guard(entryListLock);
 
@@ -924,9 +952,9 @@ char * __get_unused_group(const char * table, const char * file, va_list ap)
  find an unused group, create it and return its name
  returned string must be freed
  **********************/
-char * entry_get_unused_group(const char * table, const char * file, ...)
+char* entry_get_unused_group(const char *table, const char *file, ...)
 {
-	char * ret;
+	char *ret;
 	va_list ap;
 
 	va_start(ap, file);
@@ -942,12 +970,13 @@ char * entry_get_unused_group(const char * table, const char * file, ...)
  returned string must be freed
  return nullptr on error
  **********************/
-char * __get_unused_group_on_path(const char * table, const char * file, char * path)
+char* __get_unused_group_on_path(const char *table, const char *file,
+		char *path)
 {
 	char tag[7];
 	int index = 0;
-	config_setting_t * setting;
-	const config_t * config;
+	config_setting_t *setting;
+	const config_t *config;
 
 	LockGuard guard(entryListLock);
 
@@ -985,20 +1014,21 @@ char * __get_unused_group_on_path(const char * table, const char * file, char * 
  res must be freed  (deep_free)
  return false on error
  **********************/
-int entry_get_group_list(const char * table, const char * file, char *** res, ...)
+int entry_get_group_list(const std::string &table, const std::string &file,
+		char ***res, ...)
 {
-	char * path;
-	const config_t * config;
+	char *path;
+	const config_t *config;
 	va_list ap;
-	config_setting_t * setting;
-	config_setting_t * elem_setting;
+	config_setting_t *setting;
+	config_setting_t *elem_setting;
 	int index = 0;
 
 	*res = nullptr;
 
 	LockGuard guard(entryListLock);
 
-	config = get_config(table, file);
+	config = get_config(table.c_str(), file.c_str());
 	if (config == nullptr)
 	{
 		return false;
@@ -1027,7 +1057,7 @@ int entry_get_group_list(const char * table, const char * file, char *** res, ..
 	while ((elem_setting = config_setting_get_elem(setting, index)) != nullptr)
 	{
 		index++;
-		*res = (char **) realloc(*res, (index + 1) * sizeof(char *));
+		*res = (char**) realloc(*res, (index + 1) * sizeof(char*));
 		(*res)[index - 1] = strdup(config_setting_name(elem_setting));
 		(*res)[index] = nullptr;
 	}
@@ -1043,13 +1073,14 @@ int entry_get_group_list(const char * table, const char * file, char *** res, ..
 /*********************
  return false on failure
  *********************/
-static int __remove_from_list(const char * table, const char * file, const char * to_be_removed, va_list ap)
+static int __remove_from_list(const char *table, const char *file,
+		const char *to_be_removed, va_list ap)
 {
-	const config_t * config = nullptr;
-	config_setting_t * setting = nullptr;
-	char * path;
+	const config_t *config = nullptr;
+	config_setting_t *setting = nullptr;
+	char *path;
 	int i = 0;
-	const char * elem;
+	const char *elem;
 
 	LockGuard guard(entryListLock);
 
@@ -1094,7 +1125,8 @@ static int __remove_from_list(const char * table, const char * file, const char 
 /*********************
  return false on error
  *********************/
-int entry_remove_from_list(const char * table, const char * file, const char * to_be_removed, ...)
+int entry_remove_from_list(const char *table, const char *file,
+		const char *to_be_removed, ...)
 {
 	int ret;
 	va_list ap;
@@ -1108,11 +1140,12 @@ int entry_remove_from_list(const char * table, const char * file, const char * t
 /*********************
  return false on error
  *********************/
-int entry_copy_config(config_setting_t * source, config_setting_t * destination);
-int entry_copy_aggregate(config_setting_t * source, config_setting_t * dest, int type)
+int entry_copy_config(config_setting_t *source, config_setting_t *destination);
+int entry_copy_aggregate(config_setting_t *source, config_setting_t *dest,
+		int type)
 {
-	const char * setting_name;
-	config_setting_t * new_dest;
+	const char *setting_name;
+	config_setting_t *new_dest;
 	int index = 0;
 	char tag[7];
 
@@ -1128,7 +1161,8 @@ int entry_copy_aggregate(config_setting_t * source, config_setting_t * dest, int
 		// Try to find an available name
 		sprintf(tag, "A%05x", index);
 
-		while ((new_dest = config_setting_add(dest, setting_name, type)) == nullptr)
+		while ((new_dest = config_setting_add(dest, setting_name, type))
+				== nullptr)
 		{
 			index++;
 			sprintf(tag, "A%05x", index);
@@ -1146,15 +1180,15 @@ int entry_copy_aggregate(config_setting_t * source, config_setting_t * dest, int
 /*********************
  return false on error
  *********************/
-int entry_copy_config(config_setting_t * source, config_setting_t * dest)
+int entry_copy_config(config_setting_t *source, config_setting_t *dest)
 {
-	config_setting_t * new_source;
-	config_setting_t * new_dest;
+	config_setting_t *new_source;
+	config_setting_t *new_dest;
 	int index = -1;
 	int int_value;
 	long long long_value;
 	double double_value;
-	const char * string;
+	const char *string;
 
 	while ((new_source = config_setting_get_elem(source, index + 1)) != nullptr)
 	{
@@ -1189,27 +1223,32 @@ int entry_copy_config(config_setting_t * source, config_setting_t * dest)
 			{
 			case CONFIG_TYPE_INT:
 				int_value = config_setting_get_int(new_source);
-				new_dest = config_setting_add(dest, config_setting_name(new_source), CONFIG_TYPE_INT);
+				new_dest = config_setting_add(dest,
+						config_setting_name(new_source), CONFIG_TYPE_INT);
 				config_setting_set_int(new_dest, int_value);
 				continue;
 			case CONFIG_TYPE_INT64:
 				long_value = config_setting_get_int64(new_source);
-				new_dest = config_setting_add(dest, config_setting_name(new_source), CONFIG_TYPE_INT64);
+				new_dest = config_setting_add(dest,
+						config_setting_name(new_source), CONFIG_TYPE_INT64);
 				config_setting_set_int64(new_dest, long_value);
 				continue;
 			case CONFIG_TYPE_FLOAT:
 				double_value = config_setting_get_float(new_source);
-				new_dest = config_setting_add(dest, config_setting_name(new_source), CONFIG_TYPE_FLOAT);
+				new_dest = config_setting_add(dest,
+						config_setting_name(new_source), CONFIG_TYPE_FLOAT);
 				config_setting_set_float(new_dest, double_value);
 				continue;
 			case CONFIG_TYPE_BOOL:
 				int_value = config_setting_get_bool(new_source);
-				new_dest = config_setting_add(dest, config_setting_name(new_source), CONFIG_TYPE_BOOL);
+				new_dest = config_setting_add(dest,
+						config_setting_name(new_source), CONFIG_TYPE_BOOL);
 				config_setting_set_bool(new_dest, int_value);
 				continue;
 			case CONFIG_TYPE_STRING:
 				string = config_setting_get_string(new_source);
-				new_dest = config_setting_add(dest, config_setting_name(new_source), CONFIG_TYPE_STRING);
+				new_dest = config_setting_add(dest,
+						config_setting_name(new_source), CONFIG_TYPE_STRING);
 				config_setting_set_string(new_dest, string);
 				continue;
 			default:
@@ -1224,9 +1263,9 @@ int entry_copy_config(config_setting_t * source, config_setting_t * dest)
 /*********************
  returnRET_NOK on error
  *********************/
-static int __list_create(const char * table, const char * file, va_list ap)
+static int __list_create(const char *table, const char *file, va_list ap)
 {
-	const config_t * config;
+	const config_t *config;
 
 	LockGuard guard(entryListLock);
 
@@ -1245,7 +1284,7 @@ static int __list_create(const char * table, const char * file, va_list ap)
 /*********************
  return false on error
  *********************/
-int entry_list_create(const char * table, const char * file, ...)
+int entry_list_create(const char *table, const char *file, ...)
 {
 	int ret = false;
 	va_list ap;
@@ -1260,9 +1299,9 @@ int entry_list_create(const char * table, const char * file, ...)
 /*********************
  return false on error
  *********************/
-static int __group_create(const char * table, const char * file, va_list ap)
+static int __group_create(const char *table, const char *file, va_list ap)
 {
-	const config_t * config = nullptr;
+	const config_t *config = nullptr;
 
 	LockGuard guard(entryListLock);
 
@@ -1281,7 +1320,7 @@ static int __group_create(const char * table, const char * file, va_list ap)
 /*********************
  return false on error
  *********************/
-int entry_group_create(const char * table, const char * file, ...)
+int entry_group_create(const char *table, const char *file, ...)
 {
 	int ret;
 	va_list ap;
@@ -1296,18 +1335,20 @@ int entry_group_create(const char * table, const char * file, ...)
 /*********************
  return nullptr on error
  *********************/
-static char * __copy_group(const char * src_table, const char * src_file, const char * dst_table, const char * dst_file, const char * group_name, va_list ap)
+static char* __copy_group(const char *src_table, const char *src_file,
+		const char *dst_table, const char *dst_file, const char *group_name,
+		va_list ap)
 {
-	const config_t * src_config = nullptr;
-	const config_t * dst_config = nullptr;
-	config_setting_t * src_setting = nullptr;
-	config_setting_t * dst_setting = nullptr;
-	char * path = nullptr;
-	char * new_group_name = nullptr;
-	const char * group_name_used = nullptr;
+	const config_t *src_config = nullptr;
+	const config_t *dst_config = nullptr;
+	config_setting_t *src_setting = nullptr;
+	config_setting_t *dst_setting = nullptr;
+	char *path = nullptr;
+	char *new_group_name = nullptr;
+	const char *group_name_used = nullptr;
 
 	path = get_path(ap);
-	std::string full_path = add_entry_to_path(path, (char *) group_name);
+	std::string full_path = add_entry_to_path(path, (char*) group_name);
 
 	LockGuard guard(entryListLock);
 
@@ -1376,13 +1417,16 @@ static char * __copy_group(const char * src_table, const char * src_file, const 
  return a copy of the name used for the destination
  MUST BE FREED !
  ***************************************/
-char * entry_copy_group(const char * src_table, const char * src_file, const char * dst_table, const char * dst_file, const char * group_name, ...)
+char* entry_copy_group(const char *src_table, const char *src_file,
+		const char *dst_table, const char *dst_file, const char *group_name,
+		...)
 {
-	char * ret;
+	char *ret;
 	va_list ap;
 
 	va_start(ap, group_name);
-	ret = __copy_group(src_table, src_file, dst_table, dst_file, group_name, ap);
+	ret = __copy_group(src_table, src_file, dst_table, dst_file, group_name,
+			ap);
 	va_end(ap);
 	return ret;
 }
@@ -1391,17 +1435,19 @@ char * entry_copy_group(const char * src_table, const char * src_file, const cha
  Update an entry from a network frame
  return false on error
  *********************************************/
-int entry_update(const std::string & type, const std::string & table, const std::string & file, const std::string & path, const std::string & value)
+int entry_update(const std::string &type, const std::string &table,
+		const std::string &file, const std::string &path,
+		const std::string &value)
 {
 	LockGuard guard(entryListLock);
 
-	const config_t * config = get_config(table.c_str(), file.c_str());
+	const config_t *config = get_config(table.c_str(), file.c_str());
 	if (config == nullptr)
 	{
 		return false;
 	}
 
-	config_setting_t * setting = nullptr;
+	config_setting_t *setting = nullptr;
 
 	setting = config_lookup(config, path.c_str());
 	if (setting == nullptr)
@@ -1416,7 +1462,8 @@ int entry_update(const std::string & type, const std::string & table, const std:
 		intValue = atoll(value.c_str());
 		if (config_setting_set_int(setting, intValue) == CONFIG_FALSE)
 		{
-			werr(LOGUSER, "Error setting %s/%s/%s to %d", table.c_str(), file.c_str(), path.c_str(), intValue);
+			werr(LOGUSER, "Error setting %s/%s/%s to %d", table.c_str(),
+					file.c_str(), path.c_str(), intValue);
 		}
 		else
 		{
@@ -1427,7 +1474,8 @@ int entry_update(const std::string & type, const std::string & table, const std:
 	{
 		if (config_setting_set_string(setting, value.c_str()) == CONFIG_FALSE)
 		{
-			werr(LOGUSER, "Error setting %s/%s/%s to %s", table.c_str(), file.c_str(), path.c_str(), value.c_str());
+			werr(LOGUSER, "Error setting %s/%s/%s to %s", table.c_str(),
+					file.c_str(), path.c_str(), value.c_str());
 		}
 		else
 		{
@@ -1442,9 +1490,9 @@ int entry_update(const std::string & type, const std::string & table, const std:
  Delete a character's entry
  return false on error
  ***********************************************/
-int entry_destroy(const char * table, const char * file)
+int entry_destroy(const std::string &table, const std::string &file)
 {
-	const std::string file_path = std::string(table) + "/" + std::string(file);
+	const std::string file_path = table + "/" + file;
 
 	entry_remove(file_path.c_str());
 
@@ -1454,11 +1502,11 @@ int entry_destroy(const char * table, const char * file)
 /*********************
  return true if entry or group exists
  *********************/
-static bool __exist(const char * table, const char * file, va_list ap)
+static bool __exist(const char *table, const char *file, va_list ap)
 {
-	const config_t * config;
-	char * path;
-	config_setting_t * setting = nullptr;
+	const config_t *config;
+	char *path;
+	config_setting_t *setting = nullptr;
 
 	{
 		LockGuard guard(entryListLock);
@@ -1489,13 +1537,13 @@ static bool __exist(const char * table, const char * file, va_list ap)
 /*********************
  return true if entry or group exists
  *********************/
-bool entry_exist(const char * table, const char * file, ...)
+bool entry_exist(const std::string &table, const std::string &file, ...)
 {
 	bool ret;
 	va_list ap;
 
 	va_start(ap, file);
-	ret = __exist(table, file, ap);
+	ret = __exist(table.c_str(), file.c_str(), ap);
 	va_end(ap);
 
 	return ret;

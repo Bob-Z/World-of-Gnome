@@ -39,9 +39,9 @@
  return -1 on error
  return 0 on success
  *********************************************************************/
-static int async_frame_send(void * user_data)
+static int async_frame_send(void *user_data)
 {
-	DataSent * data = static_cast<DataSent*>(user_data);
+	DataSent *data = static_cast<DataSent*>(user_data);
 
 	data->send();
 
@@ -52,7 +52,8 @@ static int async_frame_send(void * user_data)
 
 /*******************************************************************************
  ******************************************************************************/
-void network_send_command(Connection & connection, const std::string & serialized_data, const bool is_data)
+void network_send_command(Connection &connection,
+		const std::string &serialized_data, const bool is_data)
 {
 	DataSent *data = new (DataSent);
 
@@ -68,9 +69,10 @@ void network_send_command(Connection & connection, const std::string & serialize
  It adds the local file checksum so that the server only send the file if it is different
  It make sure there are a minimum time between to consecutive request on the same file
  *********************************************************************/
-void network_send_req_file(Connection & connection, const std::string & file_name)
+void network_send_req_file(Connection &connection, const std::string &file_name)
 {
-	wlog(LOGDEVELOPER, "[network] Send request for file : %s", file_name.c_str());
+	wlog(LOGDEVELOPER, "[network] Send request for file : %s",
+			file_name.c_str());
 
 	// Compute checksum of local file
 	const std::string file_path = std::string(base_directory) + "/" + file_name;
@@ -86,7 +88,8 @@ void network_send_req_file(Connection & connection, const std::string & file_nam
 	message.mutable_file()->set_crc(crc.second);
 	std::string serialized_data = message.SerializeAsString();
 
-	wlog(LOGDEVELOPER, "[network] Send FILE request for file : %s", file_name.c_str());
+	wlog(LOGDEVELOPER, "[network] Send FILE request for file : %s",
+			file_name.c_str());
 
 	network_send_command(connection, serialized_data, true);
 }
@@ -94,7 +97,7 @@ void network_send_req_file(Connection & connection, const std::string & file_nam
 /*********************************************************************
  Return false on error, true on OK
  *********************************************************************/
-bool network_read_bytes(TCPsocket socket, char * data, int size)
+bool network_read_bytes(TCPsocket socket, char *data, int size)
 {
 	//wlog(LOGDEVELOPER, "read %d bytes on socket %d", size, socket);
 
@@ -121,7 +124,8 @@ bool network_read_bytes(TCPsocket socket, char * data, int size)
 }
 
 /*****************************************************************************/
-void network_send_file_data(Connection & connection, const std::string & name, const std::string & data)
+void network_send_file_data(Connection &connection, const std::string &name,
+		const std::string &data)
 {
 	pb::ServerMessage message;
 	message.mutable_file()->set_name(name);
@@ -138,17 +142,18 @@ void network_send_file_data(Connection & connection, const std::string & name, c
  send a file to a connection
  return 0 on success
  *********************************************************************/
-int network_send_file(Connection & connection, const char * file_name)
+int network_send_file(Connection &connection, const char *file_name)
 {
 	// Never send files with password
-	if (strstr(file_name, PASSWD_TABLE) != nullptr)
+	if (strstr(file_name, PASSWD_TABLE.c_str()) != nullptr)
 	{
-		werr(LOGUSER, "send_file : Do not serve personal file  \"%s\"", file_name);
+		werr(LOGUSER, "send_file : Do not serve personal file  \"%s\"",
+				file_name);
 		return -1;
 	}
 
 	// Read the file
-	void * file_data = nullptr;
+	void *file_data = nullptr;
 	int_fast32_t file_length = 0;
 	int res = 0;
 
@@ -170,7 +175,7 @@ int network_send_file(Connection & connection, const char * file_name)
  send table/file to a context
  return FALSE on success
  *********************************************************************/
-int network_send_table_file(Context * context, const char * table, const char * id)
+int network_send_table_file(Context *context, const char *table, const char *id)
 {
 	const std::string file_name = std::string(table) + "/" + std::string(id);
 

@@ -32,16 +32,18 @@
  Delete the requested item from the character's inventory
  return -1 if fails
  *************************************************************/
-int inventory_delete(const char * id, const char * item)
+int inventory_delete(const char *id, const char *item)
 {
-	Context * context = context_find(id);
+	Context *context = context_find(id);
 	if (context == nullptr)
 	{
 		werr(LOGDESIGNER, "Could not find context %s", id);
 		return -1;
 	}
 
-	if (entry_remove_from_list(CHARACTER_TABLE, context->getId().c_str(), item, CHARACTER_KEY_INVENTORY, nullptr) == true)
+	if (entry_remove_from_list(CHARACTER_TABLE.c_str(),
+			context->getId().c_str(), item, CHARACTER_KEY_INVENTORY.c_str(),
+			nullptr) == true)
 	{
 		/* update client */
 		network_send_character_file(context);
@@ -56,13 +58,13 @@ int inventory_delete(const char * id, const char * item)
  Add the requested item to the character's inventory
  return -1 if fails
  ********************************************************/
-int inventory_add(const char * ctx_id, const char * item_id)
+int inventory_add(const char *ctx_id, const char *item_id)
 {
-	Context * context = context_find(ctx_id);
-	char * mytemplate;
+	Context *context = context_find(ctx_id);
+	char *mytemplate;
 	int index;
-	char ** name_list;
-	char * current_template;
+	char **name_list;
+	char *current_template;
 	int add_count;
 	int current_count;
 
@@ -77,24 +79,28 @@ int inventory_add(const char * ctx_id, const char * item_id)
 		return -1;
 	}
 
-	// Make sure the CHARACTER_KEY_INVENTORY list exists
-	entry_list_create(CHARACTER_TABLE, context->getId().c_str(), CHARACTER_KEY_INVENTORY, nullptr);
+	// Make sure the CHARACTER_KEY_INVENTORY.c_str() list exists
+	entry_list_create(CHARACTER_TABLE.c_str(), context->getId().c_str(),
+			CHARACTER_KEY_INVENTORY.c_str(), nullptr);
 
 	mytemplate = item_is_resource(std::string(item_id));
 	if (mytemplate == nullptr)
 	{
-		if (entry_add_to_list(CHARACTER_TABLE, context->getId().c_str(), item_id, CHARACTER_KEY_INVENTORY, nullptr) == false)
+		if (entry_add_to_list(CHARACTER_TABLE.c_str(), context->getId().c_str(),
+				item_id, CHARACTER_KEY_INVENTORY.c_str(), nullptr) == false)
 		{
 			return -1;
 		}
 	}
 	else
 	{
-		if (entry_read_int(ITEM_TABLE, item_id, &add_count, ITEM_QUANTITY, nullptr) == false)
+		if (entry_read_int(ITEM_TABLE.c_str(), item_id, &add_count,
+				ITEM_QUANTITY, nullptr) == false)
 		{
 			return -1;
 		}
-		if (entry_read_list(CHARACTER_TABLE, context->getId().c_str(), &name_list, CHARACTER_KEY_INVENTORY, nullptr) == false)
+		if (entry_read_list(CHARACTER_TABLE.c_str(), context->getId().c_str(),
+				&name_list, CHARACTER_KEY_INVENTORY.c_str(), nullptr) == false)
 		{
 			return -1;
 		}
@@ -102,18 +108,22 @@ int inventory_add(const char * ctx_id, const char * item_id)
 		index = 0;
 		while (name_list[index] != nullptr)
 		{
-			if (entry_read_string(ITEM_TABLE, name_list[index], &current_template, ITEM_TEMPLATE, nullptr) == true)
+			if (entry_read_string(ITEM_TABLE.c_str(), name_list[index],
+					&current_template, ITEM_TEMPLATE, nullptr) == true)
 			{
 				if (strcmp(mytemplate, current_template) == 0)
 				{
-					if (entry_read_int(ITEM_TABLE, name_list[index], &current_count, ITEM_QUANTITY, nullptr) == true)
+					if (entry_read_int(ITEM_TABLE.c_str(), name_list[index],
+							&current_count, ITEM_QUANTITY, nullptr) == true)
 					{
 						free(current_template);
 						free(mytemplate);
 						add_count += current_count;
-						resource_set_quantity(context, std::string(name_list[index]), add_count);
+						resource_set_quantity(context,
+								std::string(name_list[index]), add_count);
 						item_destroy(std::string(item_id));
-						network_send_table_file(context, ITEM_TABLE, name_list[index]);
+						network_send_table_file(context, ITEM_TABLE.c_str(),
+								name_list[index]);
 						return 0;
 					}
 				}
@@ -126,7 +136,9 @@ int inventory_add(const char * ctx_id, const char * item_id)
 		// First time we add this type of resource to inventory
 		if (name_list[index] == nullptr)
 		{
-			if (entry_add_to_list(CHARACTER_TABLE, context->getId().c_str(), item_id, CHARACTER_KEY_INVENTORY, nullptr) == false)
+			if (entry_add_to_list(CHARACTER_TABLE.c_str(),
+					context->getId().c_str(), item_id,
+					CHARACTER_KEY_INVENTORY.c_str(), nullptr) == false)
 			{
 				return -1;
 			}
@@ -143,21 +155,22 @@ int inventory_add(const char * ctx_id, const char * item_id)
  return an item ID of an item in inventory with specified name
  the returned string must be freed
  ***************************************************************************/
-char * inventory_get_by_name(const char * id, const char * item_name)
+char* inventory_get_by_name(const char *id, const char *item_name)
 {
 	int index;
-	char ** name_list;
-	char * name;
-	char * res;
+	char **name_list;
+	char *name;
+	char *res;
 
-	Context * context = context_find(id);
+	Context *context = context_find(id);
 	if (context == nullptr)
 	{
 		werr(LOGDESIGNER, "Could not find context %s", id);
 		return nullptr;
 	}
 
-	if (entry_read_list(CHARACTER_TABLE, context->getId().c_str(), &name_list, CHARACTER_KEY_INVENTORY, nullptr) == false)
+	if (entry_read_list(CHARACTER_TABLE.c_str(), context->getId().c_str(),
+			&name_list, CHARACTER_KEY_INVENTORY.c_str(), nullptr) == false)
 	{
 		return nullptr;
 	}

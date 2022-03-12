@@ -35,7 +35,7 @@
 std::vector<FileReceivedObserver*> fileReceivedObserver;
 
 /*****************************************************************************/
-void file_add_observer(FileReceivedObserver * observer)
+void file_add_observer(FileReceivedObserver *observer)
 {
 	fileReceivedObserver.push_back(observer);
 }
@@ -43,16 +43,18 @@ void file_add_observer(FileReceivedObserver * observer)
 /*************************************
  return 0 on success
  **************************************/
-int file_add(const std::string & fileName, const std::string & data)
+int file_add(const std::string &fileName, const std::string &data)
 {
 	const std::string tempFileName = fileName + APP_NAME + "tmp";
 	const std::string tempPath = base_directory + "/" + tempFileName;
 
 	file_create_directory(tempPath);
 
-	if (file_set_contents(tempFileName.c_str(), data.c_str(), data.size()) == false)
+	if (file_set_contents(tempFileName.c_str(), data.c_str(),
+			data.size()) == false)
 	{
-		werr(LOGDESIGNER, "Error writing file %s with size %d", tempFileName.c_str(), data.size());
+		werr(LOGDESIGNER, "Error writing file %s with size %d",
+				tempFileName.c_str(), data.size());
 		return -1;
 	}
 
@@ -72,7 +74,7 @@ int file_add(const std::string & fileName, const std::string & data)
 	image_DB_remove(fileName);
 	// Make sure the new file is drawn (if needed)
 
-	for (auto & observer : fileReceivedObserver)
+	for (auto &observer : fileReceivedObserver)
 	{
 		observer->fileReceived(fileName);
 	}
@@ -85,13 +87,14 @@ int file_add(const std::string & fileName, const std::string & data)
 /******************************************************************************
  Remove character file to be sure they are always downloaded at start-up time
  *****************************************************************************/
-void file_clean(Context * context)
+void file_clean(Context *context)
 {
-	file_delete(CHARACTER_TABLE, context->getId());
+	file_delete(CHARACTER_TABLE.c_str(), context->getId());
 }
 
 /*****************************************************************************/
-void file_request_from_network(Connection & connection, const std::string & table, const std::string & file_name)
+void file_request_from_network(Connection &connection, const std::string &table,
+		const std::string &file_name)
 {
 	const std::string tablePath = table + "/" + file_name;
 

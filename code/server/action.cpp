@@ -63,9 +63,9 @@ extern "C"
  Input:
  Output: ID of the current context
  */
-static int l_player_get_id(lua_State* L)
+static int l_player_get_id(lua_State *L)
 {
-	Context * context;
+	Context *context;
 
 	lua_getglobal(L, LUAVM_CONTEXT);
 	context = (Context*) lua_touserdata(L, -1);
@@ -84,15 +84,15 @@ static int l_player_get_id(lua_State* L)
  Output:
  id of the new character or nil if cannot be created or placed
  */
-static int l_character_create_from_template(lua_State* L)
+static int l_character_create_from_template(lua_State *L)
 {
-	const char * mytemplate = nullptr;
-	const char * map = nullptr;
+	const char *mytemplate = nullptr;
+	const char *map = nullptr;
 	int layer = -1;
 	int x = -1;
 	int y = -1;
 
-	Context * ctx;
+	Context *ctx;
 
 	lua_getglobal(L, LUAVM_CONTEXT);
 	ctx = (Context*) lua_touserdata(L, -1);
@@ -103,7 +103,8 @@ static int l_character_create_from_template(lua_State* L)
 	layer = luaL_checkint(L, -3);
 	x = luaL_checkint(L, -2);
 	y = luaL_checkint(L, -1);
-	const std::pair<bool, std::string> res = character_create_from_template(ctx, mytemplate, map, layer, x, y);
+	const std::pair<bool, std::string> res = character_create_from_template(ctx,
+			mytemplate, map, layer, x, y);
 	lua_pushstring(L, res.second.c_str());
 
 	return 1;  // number of results
@@ -114,10 +115,10 @@ static int l_character_create_from_template(lua_State* L)
  - ID of a character
  Output: X coordinate if selected tile
  */
-static int l_character_get_selected_map_tile_x(lua_State* L)
+static int l_character_get_selected_map_tile_x(lua_State *L)
 {
-	Context * target;
-	const char * id;
+	Context *target;
+	const char *id;
 
 	id = luaL_checkstring(L, -1);
 	target = context_find(std::string(id));
@@ -135,10 +136,10 @@ static int l_character_get_selected_map_tile_x(lua_State* L)
  - ID of a character
  Output: Y coordinate if selected tile
  */
-static int l_character_get_selected_map_tile_y(lua_State* L)
+static int l_character_get_selected_map_tile_y(lua_State *L)
 {
-	Context * target;
-	const char * id;
+	Context *target;
+	const char *id;
 
 	id = luaL_checkstring(L, -1);
 	target = context_find(std::string(id));
@@ -156,10 +157,10 @@ static int l_character_get_selected_map_tile_y(lua_State* L)
  - ID of a character
  Output: ID of the selected map
  */
-static int l_character_get_selected_map(lua_State* L)
+static int l_character_get_selected_map(lua_State *L)
 {
-	Context * target;
-	const char * id;
+	Context *target;
+	const char *id;
 
 	id = luaL_checkstring(L, -1);
 	target = context_find(std::string(id));
@@ -180,11 +181,11 @@ static int l_character_get_selected_map(lua_State* L)
  - Y coord of the selected tile in this map
  Output:
  */
-static int l_character_set_selected_tile(lua_State* L)
+static int l_character_set_selected_tile(lua_State *L)
 {
-	Context * target;
-	const char * id;
-	const char * selected_map;
+	Context *target;
+	const char *id;
+	const char *selected_map;
 	int tx;
 	int ty;
 
@@ -212,10 +213,10 @@ static int l_character_set_selected_tile(lua_State* L)
  - ID of a character
  Output: ID of selected item in inventory
  */
-static int l_character_get_selected_inventory_id(lua_State* L)
+static int l_character_get_selected_inventory_id(lua_State *L)
 {
-	Context * target;
-	const char * id;
+	Context *target;
+	const char *id;
 
 	id = luaL_checkstring(L, -1);
 	target = context_find(std::string(id));
@@ -234,11 +235,11 @@ static int l_character_get_selected_inventory_id(lua_State* L)
  - ID of an item
  Output:
  */
-static int l_character_set_selected_inventory_id(lua_State* L)
+static int l_character_set_selected_inventory_id(lua_State *L)
 {
-	Context * target;
-	const char * id;
-	const char * selected_item;
+	Context *target;
+	const char *id;
+	const char *selected_item;
 
 	id = luaL_checkstring(L, -2);
 	selected_item = luaL_checkstring(L, -1);
@@ -262,10 +263,10 @@ static int l_character_set_selected_inventory_id(lua_State* L)
  - ID of a character
  Output: ID of selected item in equipment
  */
-static int l_character_get_selected_equipment_slot(lua_State* L)
+static int l_character_get_selected_equipment_slot(lua_State *L)
 {
-	Context * target;
-	const char * id;
+	Context *target;
+	const char *id;
 
 	id = luaL_checkstring(L, -1);
 	target = context_find(std::string(id));
@@ -284,11 +285,11 @@ static int l_character_get_selected_equipment_slot(lua_State* L)
  - ID of an equipment slot
  Output:
  */
-static int l_character_set_selected_equipment_slot(lua_State* L)
+static int l_character_set_selected_equipment_slot(lua_State *L)
 {
-	Context * target;
-	const char * id;
-	const char * selected_equipment;
+	Context *target;
+	const char *id;
+	const char *selected_equipment;
 
 	id = luaL_checkstring(L, -2);
 	selected_equipment = luaL_checkstring(L, -1);
@@ -312,10 +313,10 @@ static int l_character_set_selected_equipment_slot(lua_State* L)
  - ID of a character
  Output: ID of the selected character
  */
-static int l_character_get_selected_character_id(lua_State* L)
+static int l_character_get_selected_character_id(lua_State *L)
 {
-	Context * target;
-	const char * id;
+	Context *target;
+	const char *id;
 
 	id = luaL_checkstring(L, -1);
 	target = context_find(std::string(id));
@@ -334,11 +335,11 @@ static int l_character_get_selected_character_id(lua_State* L)
  - ID of selected character
  Output:
  */
-static int l_character_set_selected_character_id(lua_State* L)
+static int l_character_set_selected_character_id(lua_State *L)
 {
-	Context * target;
-	const char * id;
-	const char * selected_id;
+	Context *target;
+	const char *id;
+	const char *selected_id;
 
 	id = luaL_checkstring(L, -2);
 	selected_id = luaL_checkstring(L, -1);
@@ -362,10 +363,10 @@ static int l_character_set_selected_character_id(lua_State* L)
  - ID of a character
  Output: ID of the map where the character is
  */
-static int l_character_get_map(lua_State* L)
+static int l_character_get_map(lua_State *L)
 {
-	Context * target;
-	const char * id;
+	Context *target;
+	const char *id;
 
 	id = luaL_checkstring(L, -1);
 	target = context_find(std::string(id));
@@ -384,13 +385,13 @@ static int l_character_get_map(lua_State* L)
  Output: Width of the map
  -1 if map does not exists
  */
-static int l_character_get_map_w(lua_State* L)
+static int l_character_get_map_w(lua_State *L)
 {
-	const char * map;
+	const char *map;
 	int map_w = -1;
 
 	map = luaL_checkstring(L, -1);
-	entry_read_int(MAP_TABLE, map, &map_w, MAP_KEY_WIDTH, nullptr);
+	entry_read_int(MAP_TABLE.c_str(), map, &map_w, MAP_KEY_WIDTH, nullptr);
 
 	lua_pushnumber(L, map_w);
 	return 1;  // number of results
@@ -402,13 +403,13 @@ static int l_character_get_map_w(lua_State* L)
  Output: Height of the map
  -1 if map does not exists
  */
-static int l_character_get_map_h(lua_State* L)
+static int l_character_get_map_h(lua_State *L)
 {
-	const char * map;
+	const char *map;
 	int map_h = -1;
 
 	map = luaL_checkstring(L, -1);
-	entry_read_int(MAP_TABLE, map, &map_h, MAP_KEY_HEIGHT, nullptr);
+	entry_read_int(MAP_TABLE.c_str(), map, &map_h, MAP_KEY_HEIGHT, nullptr);
 
 	lua_pushnumber(L, map_h);
 	return 1;  // number of results
@@ -419,10 +420,10 @@ static int l_character_get_map_h(lua_State* L)
  - ID of a character
  Output: X coordinate of the character
  */
-static int l_character_get_x(lua_State* L)
+static int l_character_get_x(lua_State *L)
 {
-	Context * target;
-	const char * id;
+	Context *target;
+	const char *id;
 
 	id = luaL_checkstring(L, -1);
 	target = context_find(std::string(id));
@@ -440,10 +441,10 @@ static int l_character_get_x(lua_State* L)
  - ID of a character
  Output: Y coordinate of the character
  */
-static int l_character_get_y(lua_State* L)
+static int l_character_get_y(lua_State *L)
 {
-	Context * target;
-	const char * id;
+	Context *target;
+	const char *id;
 
 	id = luaL_checkstring(L, -1);
 	target = context_find(std::string(id));
@@ -461,10 +462,10 @@ static int l_character_get_y(lua_State* L)
  - ID of a character
  Output: Name of the character
  */
-static int l_character_get_name(lua_State* L)
+static int l_character_get_name(lua_State *L)
 {
-	Context * target;
-	const char * id;
+	Context *target;
+	const char *id;
 
 	id = luaL_checkstring(L, -1);
 	target = context_find(std::string(id));
@@ -482,10 +483,10 @@ static int l_character_get_name(lua_State* L)
  - ID of a character
  Output: Type of the character
  */
-static int l_character_get_type(lua_State* L)
+static int l_character_get_type(lua_State *L)
 {
-	Context * target;
-	const char * id;
+	Context *target;
+	const char *id;
 
 	id = luaL_checkstring(L, -1);
 	target = context_find(std::string(id));
@@ -507,9 +508,9 @@ static int l_character_get_type(lua_State* L)
  - ID of a character
  Output:
  */
-static int l_character_out_of_game(lua_State* L)
+static int l_character_out_of_game(lua_State *L)
 {
-	const char * id;
+	const char *id;
 	int res;
 
 	id = luaL_checkstring(L, -1);
@@ -526,9 +527,9 @@ static int l_character_out_of_game(lua_State* L)
  - ID of a character
  Output:
  */
-static int l_character_disconnect(lua_State* L)
+static int l_character_disconnect(lua_State *L)
 {
-	const char * id;
+	const char *id;
 	int res;
 
 	id = luaL_checkstring(L, -1);
@@ -546,16 +547,16 @@ static int l_character_disconnect(lua_State* L)
  Output:
  0 if success
  */
-static int l_character_delete(lua_State* L)
+static int l_character_delete(lua_State *L)
 {
-	const char * id;
+	const char *id;
 	int res;
 
 	id = luaL_checkstring(L, -1);
-	res = entry_destroy(CHARACTER_TABLE, id);
+	res = entry_destroy(CHARACTER_TABLE.c_str(), id);
 	if (res == 0)
 	{
-		res = file_delete(CHARACTER_TABLE, std::string(id));
+		res = file_delete(CHARACTER_TABLE.c_str(), std::string(id));
 	}
 	lua_pushnumber(L, res);
 	return 1;  // number of results
@@ -575,14 +576,14 @@ static int l_character_delete(lua_State* L)
  Output:
  return -1 if the position can not be set.
  */
-static int l_character_set_pos(lua_State* L)
+static int l_character_set_pos(lua_State *L)
 {
-	const char * id;
-	const char * map;
+	const char *id;
+	const char *map;
 	int x;
 	int y;
 	int res;
-	Context * ctx;
+	Context *ctx;
 
 	id = luaL_checkstring(L, -4);
 	map = luaL_checkstring(L, -3);
@@ -604,9 +605,9 @@ static int l_character_set_pos(lua_State* L)
  - Value of NPC (0 for player's character, 1 for NPC)
  Output:
  */
-static int l_character_set_npc(lua_State* L)
+static int l_character_set_npc(lua_State *L)
 {
-	const char * id;
+	const char *id;
 	int npc;
 	int res;
 
@@ -628,9 +629,9 @@ static int l_character_set_npc(lua_State* L)
  - 0 if not NPC
  - 1 if NPC
  */
-static int l_character_get_npc(lua_State* L)
+static int l_character_get_npc(lua_State *L)
 {
-	const char * id;
+	const char *id;
 	int res;
 
 	id = luaL_checkstring(L, -1);
@@ -648,10 +649,10 @@ static int l_character_get_npc(lua_State* L)
  - ID of a character
  Output: portrait file name
  */
-static int l_character_get_portrait(lua_State* L)
+static int l_character_get_portrait(lua_State *L)
 {
-	const char * id;
-	char * res;
+	const char *id;
+	char *res;
 
 	id = luaL_checkstring(L, -1);
 
@@ -673,10 +674,10 @@ static int l_character_get_portrait(lua_State* L)
  - filename of the portrait
  Output:
  */
-static int l_character_set_portrait(lua_State* L)
+static int l_character_set_portrait(lua_State *L)
 {
-	const char * id;
-	const char * portrait;
+	const char *id;
+	const char *portrait;
 	int res;
 
 	id = luaL_checkstring(L, -2);
@@ -696,10 +697,10 @@ static int l_character_set_portrait(lua_State* L)
  - name of the AI script
  Output:
  */
-static int l_character_set_ai_script(lua_State* L)
+static int l_character_set_ai_script(lua_State *L)
 {
-	const char * id;
-	const char * script_name;
+	const char *id;
+	const char *script_name;
 	int res;
 
 	id = luaL_checkstring(L, -2);
@@ -720,11 +721,11 @@ static int l_character_set_ai_script(lua_State* L)
  - name of the sprite file
  Output:
  */
-static int l_character_set_sprite(lua_State* L)
+static int l_character_set_sprite(lua_State *L)
 {
-	const char * id;
+	const char *id;
 	int index;
-	const char * sprite_name;
+	const char *sprite_name;
 	int res;
 
 	id = luaL_checkstring(L, -3);
@@ -747,12 +748,12 @@ static int l_character_set_sprite(lua_State* L)
  - name of the sprite file
  Output:
  */
-static int l_character_set_sprite_dir(lua_State* L)
+static int l_character_set_sprite_dir(lua_State *L)
 {
-	const char * id;
-	const char * dir;
+	const char *id;
+	const char *dir;
 	int index;
-	const char * sprite_name;
+	const char *sprite_name;
 	int res;
 
 	id = luaL_checkstring(L, -4);
@@ -760,7 +761,8 @@ static int l_character_set_sprite_dir(lua_State* L)
 	index = luaL_checkint(L, -2);
 	sprite_name = luaL_checkstring(L, -1);
 
-	res = character_set_sprite_dir(std::string(id), std::string(dir), index, std::string(sprite_name));
+	res = character_set_sprite_dir(std::string(id), std::string(dir), index,
+			std::string(sprite_name));
 	lua_pushnumber(L, res);
 	return 1;  // number of results
 }
@@ -776,12 +778,12 @@ static int l_character_set_sprite_dir(lua_State* L)
  - name of the sprite file
  Output:
  */
-static int l_character_set_sprite_move(lua_State* L)
+static int l_character_set_sprite_move(lua_State *L)
 {
-	const char * id;
-	const char * dir;
+	const char *id;
+	const char *dir;
 	int index;
-	const char * sprite_name;
+	const char *sprite_name;
 	int res;
 
 	id = luaL_checkstring(L, -4);
@@ -803,9 +805,9 @@ static int l_character_set_sprite_move(lua_State* L)
  - ID of a character
  Output:
  */
-static int l_character_broadcast(lua_State* L)
+static int l_character_broadcast(lua_State *L)
 {
-	const char * character;
+	const char *character;
 	int res = 0;
 
 	character = luaL_checkstring(L, -1);
@@ -823,7 +825,7 @@ static int l_character_broadcast(lua_State* L)
  - Array of string describing the effect
  Output: -1 on error, 0 otherwise
  */
-static int l_character_effect(lua_State* L)
+static int l_character_effect(lua_State *L)
 {
 	const int l_NumArg = lua_gettop(L);
 
@@ -835,7 +837,8 @@ static int l_character_effect(lua_State* L)
 		l_Param.push_back(luaL_checkstring(L, -l_NumArg + l_Idx));
 	}
 
-	network_broadcast_effect(EffectManager::EffectType::CONTEXT, target_id, l_Param);
+	network_broadcast_effect(EffectManager::EffectType::CONTEXT, target_id,
+			l_Param);
 
 	lua_pushnumber(L, 0);
 	return 1;  // number of results
@@ -849,9 +852,9 @@ static int l_character_effect(lua_State* L)
  - ID of a character
  Output:
  */
-static int l_character_wake_up(lua_State* L)
+static int l_character_wake_up(lua_State *L)
 {
-	const char * id;
+	const char *id;
 	int res;
 
 	id = luaL_checkstring(L, -1);
@@ -873,9 +876,9 @@ static int l_character_wake_up(lua_State* L)
  - Height of tile (in pixels)
  Output: New map ID
  */
-static int l_map_new(lua_State* L)
+static int l_map_new(lua_State *L)
 {
-	const char * name = nullptr;
+	const char *name = nullptr;
 	int x = -1;
 	int y = -1;
 	int tile_x = -1;
@@ -886,7 +889,8 @@ static int l_map_new(lua_State* L)
 	y = luaL_checkint(L, -3);
 	tile_x = luaL_checkint(L, -2);
 	tile_y = luaL_checkint(L, -1);
-	const std::pair<bool, std::string> map_name = map_new(name, x, y, tile_x, tile_y);
+	const std::pair<bool, std::string> map_name = map_new(name, x, y, tile_x,
+			tile_y);
 	lua_pushstring(L, map_name.second.c_str());
 
 	return 1;  // number of results
@@ -907,16 +911,16 @@ static int l_map_new(lua_State* L)
  - default type (new map is filled with)
  Output: New map ID
  */
-static int l_map_add_layer(lua_State* L)
+static int l_map_add_layer(lua_State *L)
 {
-	const char * map_name;
+	const char *map_name;
 	int layer;
 	int x;
 	int y;
 	int tile_x;
 	int tile_y;
-	const char * default_tile;
-	const char * default_type;
+	const char *default_tile;
+	const char *default_type;
 	int res;
 
 	map_name = luaL_checkstring(L, -8);
@@ -927,7 +931,8 @@ static int l_map_add_layer(lua_State* L)
 	tile_y = luaL_checkint(L, -3);
 	default_tile = luaL_checkstring(L, -2);
 	default_type = luaL_checkstring(L, -1);
-	res = map_add_layer(map_name, layer, x, y, tile_x, tile_y, default_tile, default_type);
+	res = map_add_layer(map_name, layer, x, y, tile_x, tile_y, default_tile,
+			default_type);
 	lua_pushnumber(L, res);
 	return 1;  // number of results
 }
@@ -941,9 +946,9 @@ static int l_map_add_layer(lua_State* L)
  - layer to be deleted
  Output:
  */
-static int l_map_delete_layer(lua_State* L)
+static int l_map_delete_layer(lua_State *L)
 {
-	const char * map_name;
+	const char *map_name;
 	int layer;
 	int res;
 
@@ -967,11 +972,11 @@ static int l_map_delete_layer(lua_State* L)
  - Map level
  Output:
  */
-static int l_map_set_tile(lua_State* L)
+static int l_map_set_tile(lua_State *L)
 {
-	const char * map;
+	const char *map;
 	int layer;
-	const char * tile;
+	const char *tile;
 	int x;
 	int y;
 	int res;
@@ -1000,11 +1005,11 @@ static int l_map_set_tile(lua_State* L)
  - Map level
  Output:
  */
-static int l_map_set_tile_no_update(lua_State* L)
+static int l_map_set_tile_no_update(lua_State *L)
 {
-	const char * map;
+	const char *map;
 	int layer;
-	const char * tile;
+	const char *tile;
 	int x;
 	int y;
 	int res;
@@ -1028,11 +1033,11 @@ static int l_map_set_tile_no_update(lua_State* L)
  - Array of tiles ID
  Output: -1 on error, 0 otherwise
  */
-static int l_map_set_tile_array(lua_State* L)
+static int l_map_set_tile_array(lua_State *L)
 {
 	const char **arg = nullptr;
 	int i;
-	const char * map;
+	const char *map;
 	int layer;
 
 	map = luaL_checkstring(L, -3);
@@ -1070,11 +1075,11 @@ static int l_map_set_tile_array(lua_State* L)
  - Y coordinate of the tile to set
  Output:
  */
-static int l_map_set_tile_type(lua_State* L)
+static int l_map_set_tile_type(lua_State *L)
 {
-	const char * map;
+	const char *map;
 	int layer;
-	const char * type;
+	const char *type;
 	int x;
 	int y;
 	int res;
@@ -1102,11 +1107,11 @@ static int l_map_set_tile_type(lua_State* L)
  - Y coordinate of the tile to set
  Output:
  */
-static int l_map_set_tile_type_no_update(lua_State* L)
+static int l_map_set_tile_type_no_update(lua_State *L)
 {
-	const char * map;
+	const char *map;
 	int layer;
-	const char * type;
+	const char *type;
 	int x;
 	int y;
 	int res;
@@ -1130,9 +1135,9 @@ static int l_map_set_tile_type_no_update(lua_State* L)
  - ID of a map
  Output:
  */
-static int l_map_broadcast(lua_State* L)
+static int l_map_broadcast(lua_State *L)
 {
-	const char * map;
+	const char *map;
 	int res = 0;
 
 	map = luaL_checkstring(L, -1);
@@ -1150,10 +1155,10 @@ static int l_map_broadcast(lua_State* L)
  - off-screen script
  Output:
  */
-static int l_map_set_offscreen(lua_State* L)
+static int l_map_set_offscreen(lua_State *L)
 {
-	const char * map;
-	const char * script;
+	const char *map;
+	const char *script;
 	int res;
 
 	map = luaL_checkstring(L, -2);
@@ -1175,9 +1180,9 @@ static int l_map_set_offscreen(lua_State* L)
  - height of column
  Output:
  */
-static int l_map_set_custom_column(lua_State* L)
+static int l_map_set_custom_column(lua_State *L)
 {
-	const char * map;
+	const char *map;
 	int layer;
 	int num;
 	int width;
@@ -1206,9 +1211,9 @@ static int l_map_set_custom_column(lua_State* L)
  - height of row
  Output:
  */
-static int l_map_set_custom_row(lua_State* L)
+static int l_map_set_custom_row(lua_State *L)
 {
-	const char * map;
+	const char *map;
 	int layer;
 	int num;
 	int width;
@@ -1234,10 +1239,10 @@ static int l_map_set_custom_row(lua_State* L)
  - message
  Output:
  */
-static int l_print_text_id(lua_State* L)
+static int l_print_text_id(lua_State *L)
 {
-	const char * id;
-	const char * text;
+	const char *id;
+	const char *text;
 
 	id = luaL_checkstring(L, -2);
 	text = luaL_checkstring(L, -1);
@@ -1255,10 +1260,10 @@ static int l_print_text_id(lua_State* L)
  - message
  Output:
  */
-static int l_print_text_map(lua_State* L)
+static int l_print_text_map(lua_State *L)
 {
-	const char * map;
-	const char * string;
+	const char *map;
+	const char *string;
 
 	map = luaL_checkstring(L, -2);
 	string = luaL_checkstring(L, -1);
@@ -1275,9 +1280,9 @@ static int l_print_text_map(lua_State* L)
  - message
  Output:
  */
-static int l_print_text_server(lua_State* L)
+static int l_print_text_server(lua_State *L)
 {
-	const char * string;
+	const char *string;
 
 	string = luaL_checkstring(L, -1);
 	// add a trailing \n
@@ -1293,9 +1298,9 @@ static int l_print_text_server(lua_State* L)
  - message
  Output:
  */
-static int l_print_text_debug(lua_State* L)
+static int l_print_text_debug(lua_State *L)
 {
-	const char * string;
+	const char *string;
 
 	string = luaL_checkstring(L, -1);
 	wlog(LOGDESIGNER, (char* ) string);
@@ -1314,11 +1319,11 @@ static int l_print_text_debug(lua_State* L)
  - Y coordinate in the map
  Output:
  */
-static int l_map_add_item(lua_State* L)
+static int l_map_add_item(lua_State *L)
 {
-	const char * map;
+	const char *map;
 	int layer;
-	const char * item;
+	const char *item;
 	int x;
 	int y;
 	int res;
@@ -1344,13 +1349,13 @@ static int l_map_add_item(lua_State* L)
  - Y coordinate in the map
  Output:
  */
-static int l_map_delete_item(lua_State* L)
+static int l_map_delete_item(lua_State *L)
 {
-	const char * map;
+	const char *map;
 	int layer;
 	int x;
 	int y;
-	char * res;
+	char *res;
 
 	map = luaL_checkstring(L, -4);
 	layer = luaL_checkint(L, -3);
@@ -1377,11 +1382,11 @@ static int l_map_delete_item(lua_State* L)
  - Y coordinate in the map
  Output: Event ID
  */
-static int l_map_add_event(lua_State* L)
+static int l_map_add_event(lua_State *L)
 {
-	const char * map;
+	const char *map;
 	int layer;
-	const char * script;
+	const char *script;
 	int x;
 	int y;
 	char *res;
@@ -1413,12 +1418,12 @@ static int l_map_add_event(lua_State* L)
  -1 on error
  0 on success
  */
-static int l_map_add_event_param(lua_State* L)
+static int l_map_add_event_param(lua_State *L)
 {
-	const char * map;
+	const char *map;
 	int layer;
-	const char * event_id;
-	const char * param;
+	const char *event_id;
+	const char *param;
 	int res;
 
 	map = luaL_checkstring(L, -4);
@@ -1442,11 +1447,11 @@ static int l_map_add_event_param(lua_State* L)
  - Y coordinate (in tiles)
  Output:
  */
-static int l_map_delete_event(lua_State* L)
+static int l_map_delete_event(lua_State *L)
 {
-	const char * map;
+	const char *map;
 	int layer;
-	const char * script;
+	const char *script;
 	int x;
 	int y;
 	int res;
@@ -1473,13 +1478,13 @@ static int l_map_delete_event(lua_State* L)
  - image file name
  Output: Event ID
  */
-static int l_map_add_scenery(lua_State* L)
+static int l_map_add_scenery(lua_State *L)
 {
-	const char * map;
+	const char *map;
 	int layer;
 	int x;
 	int y;
-	const char * image_name;
+	const char *image_name;
 	char *res;
 
 	map = luaL_checkstring(L, -5);
@@ -1505,7 +1510,7 @@ static int l_map_add_scenery(lua_State* L)
  - Array of string describing the effect
  Output: -1 on error, 0 otherwise
  */
-static int l_map_effect(lua_State* L)
+static int l_map_effect(lua_State *L)
 {
 	const int l_NumArg = lua_gettop(L);
 
@@ -1529,9 +1534,9 @@ static int l_map_effect(lua_State* L)
  - Y coordinate (in tiles)
  Output: X coordinate of the tile in pixels
  */
-static int l_tile_get_x(lua_State* L)
+static int l_tile_get_x(lua_State *L)
 {
-	const char * map;
+	const char *map;
 	int layer;
 	int x;
 	int y;
@@ -1552,9 +1557,9 @@ static int l_tile_get_x(lua_State* L)
  - Y coordinate (in tiles)
  Output: Y coordinate of the tile in pixels
  */
-static int l_tile_get_y(lua_State* L)
+static int l_tile_get_y(lua_State *L)
 {
-	const char * map;
+	const char *map;
 	int layer;
 	int x;
 	int y;
@@ -1577,10 +1582,10 @@ static int l_tile_get_y(lua_State* L)
  - ID of an item
  Output:
  */
-static int l_inventory_delete(lua_State* L)
+static int l_inventory_delete(lua_State *L)
 {
-	const char * id;
-	const char * item;
+	const char *id;
+	const char *item;
 	int res;
 
 	id = luaL_checkstring(L, -2);
@@ -1599,10 +1604,10 @@ static int l_inventory_delete(lua_State* L)
  - ID of an item
  Output:
  */
-static int l_inventory_add(lua_State* L)
+static int l_inventory_add(lua_State *L)
 {
-	const char * id;
-	const char * item;
+	const char *id;
+	const char *item;
 	int res;
 
 	id = luaL_checkstring(L, -2);
@@ -1621,11 +1626,11 @@ static int l_inventory_add(lua_State* L)
  - name of an item
  Output: ID of an item of that type
  */
-static int l_inventory_get_by_name(lua_State* L)
+static int l_inventory_get_by_name(lua_State *L)
 {
-	const char * id;
-	const char * item_name;
-	char * res;
+	const char *id;
+	const char *item_name;
+	char *res;
 
 	id = luaL_checkstring(L, -2);
 	item_name = luaL_checkstring(L, -1);
@@ -1645,7 +1650,7 @@ static int l_inventory_get_by_name(lua_State* L)
  Input:
  Output: ID of a new item
  */
-static int l_item_create_empty(lua_State* L)
+static int l_item_create_empty(lua_State *L)
 {
 	const std::pair<bool, std::string> res = item_create_empty();
 
@@ -1661,12 +1666,13 @@ static int l_item_create_empty(lua_State* L)
  Input: item template name
  Output: ID of a new item
  */
-static int l_item_create_from_template(lua_State* L)
+static int l_item_create_from_template(lua_State *L)
 {
-	const char * item;
+	const char *item;
 
 	item = luaL_checkstring(L, -1);
-	const std::pair<bool, std::string> res = item_create_from_template(std::string(item));
+	const std::pair<bool, std::string> res = item_create_from_template(
+			std::string(item));
 	lua_pushstring(L, res.second.c_str());
 
 	return 1;  // number of results
@@ -1681,12 +1687,13 @@ static int l_item_create_from_template(lua_State* L)
  - Quantity
  Output: ID of the new resource
  */
-static int l_resource_new(lua_State* L)
+static int l_resource_new(lua_State *L)
 {
 	const std::string mytemplate(luaL_checkstring(L, -2));
 	int quantity = luaL_checkint(L, -1);
 
-	const std::pair<bool, std::string> resource = resource_new(mytemplate, quantity);
+	const std::pair<bool, std::string> resource = resource_new(mytemplate,
+			quantity);
 	lua_pushstring(L, resource.second.c_str());
 
 	return 1;  // number of results
@@ -1700,9 +1707,9 @@ static int l_resource_new(lua_State* L)
  - ID of a resource
  Output: Quantity of that resource
  */
-static int l_resource_get_quantity(lua_State* L)
+static int l_resource_get_quantity(lua_State *L)
 {
-	const char * resource;
+	const char *resource;
 	int res;
 
 	resource = luaL_checkstring(L, -1);
@@ -1720,12 +1727,12 @@ static int l_resource_get_quantity(lua_State* L)
  - quantity to set
  Output: -1 on error
  */
-static int l_resource_set_quantity(lua_State* L)
+static int l_resource_set_quantity(lua_State *L)
 {
-	const char * resource;
+	const char *resource;
 	int quantity;
 	int res;
-	Context * context;
+	Context *context;
 
 	lua_getglobal(L, LUAVM_CONTEXT);
 	context = (Context*) lua_touserdata(L, -1);
@@ -1748,9 +1755,9 @@ static int l_resource_set_quantity(lua_State* L)
  -1 on error
  0 on success
  */
-static int l_item_destroy(lua_State* L)
+static int l_item_destroy(lua_State *L)
 {
-	const char * item;
+	const char *item;
 	int res;
 
 	item = luaL_checkstring(L, -1);
@@ -1771,13 +1778,13 @@ static int l_item_destroy(lua_State* L)
  - Map level
  Output: ID of the tile
  */
-static int l_map_get_tile(lua_State* L)
+static int l_map_get_tile(lua_State *L)
 {
-	const char * map;
+	const char *map;
 	int layer;
 	int x;
 	int y;
-	char * res;
+	char *res;
 
 	map = luaL_checkstring(L, -4);
 	layer = luaL_checkint(L, -3);
@@ -1803,13 +1810,13 @@ static int l_map_get_tile(lua_State* L)
  - Y coordinate (in tiles)
  Output: type of the tile
  */
-static int l_map_get_tile_type(lua_State* L)
+static int l_map_get_tile_type(lua_State *L)
 {
-	const char * map;
+	const char *map;
 	int layer;
 	int x;
 	int y;
-	char * res;
+	char *res;
 
 	map = luaL_checkstring(L, -4);
 	layer = luaL_checkint(L, -3);
@@ -1831,13 +1838,13 @@ static int l_map_get_tile_type(lua_State* L)
  - Y coordinate (in tiles)
  Output: Array of characters on that tile
  */
-static int l_map_get_character(lua_State* L)
+static int l_map_get_character(lua_State *L)
 {
-	const char * map;
+	const char *map;
 	int x;
 	int y;
-	char ** res;
-	char ** cur_res;
+	char **res;
+	char **cur_res;
 	int res_num = 0;
 
 	map = luaL_checkstring(L, -3);
@@ -1872,14 +1879,14 @@ static int l_map_get_character(lua_State* L)
  - Y coordinate (in tiles)
  Output: Array of item on that tile
  */
-static int l_map_get_item(lua_State* L)
+static int l_map_get_item(lua_State *L)
 {
-	const char * map;
+	const char *map;
 	int layer;
 	int x;
 	int y;
-	char ** res;
-	char ** cur_res;
+	char **res;
+	char **cur_res;
 	int res_num = 0;
 
 	map = luaL_checkstring(L, -4);
@@ -1914,13 +1921,13 @@ static int l_map_get_item(lua_State* L)
  - value to add (may be negative)
  Output:
  */
-static int l_character_attribute_change(lua_State* L)
+static int l_character_attribute_change(lua_State *L)
 {
-	const char * id;
-	const char * attribute;
+	const char *id;
+	const char *attribute;
 	int value;
 	int res;
-	Context * context;
+	Context *context;
 
 	id = luaL_checkstring(L, -3);
 	attribute = luaL_checkstring(L, -2);
@@ -1930,7 +1937,8 @@ static int l_character_attribute_change(lua_State* L)
 	context = (Context*) lua_touserdata(L, -1);
 	lua_pop(L, 1);
 
-	res = attribute_change(context, CHARACTER_TABLE, id, attribute, value);
+	res = attribute_change(context, CHARACTER_TABLE.c_str(), id, attribute,
+			value);
 	lua_pushnumber(L, res);
 	return 1;  // number of results
 }
@@ -1944,15 +1952,15 @@ static int l_character_attribute_change(lua_State* L)
  - ID of an attribute
  Output: Value of the given attribute or -1 if error
  */
-static int l_character_attribute_get(lua_State* L)
+static int l_character_attribute_get(lua_State *L)
 {
-	const char * id;
-	const char * attribute;
+	const char *id;
+	const char *attribute;
 	int res;
 
 	id = luaL_checkstring(L, -2);
 	attribute = luaL_checkstring(L, -1);
-	res = attribute_get(CHARACTER_TABLE, id, attribute);
+	res = attribute_get(CHARACTER_TABLE.c_str(), id, attribute);
 	lua_pushnumber(L, res);
 	return 1;  // number of results
 }
@@ -1967,17 +1975,17 @@ static int l_character_attribute_get(lua_State* L)
  - value
  Output:
  */
-static int l_character_attribute_set(lua_State* L)
+static int l_character_attribute_set(lua_State *L)
 {
-	const char * id;
-	const char * attribute;
+	const char *id;
+	const char *attribute;
 	int value;
 	int res;
 
 	id = luaL_checkstring(L, -3);
 	attribute = luaL_checkstring(L, -2);
 	value = luaL_checkint(L, -1);
-	res = attribute_set(CHARACTER_TABLE, id, attribute, value);
+	res = attribute_set(CHARACTER_TABLE.c_str(), id, attribute, value);
 	lua_pushnumber(L, res);
 	return 1;  // number of results
 }
@@ -1991,15 +1999,15 @@ static int l_character_attribute_set(lua_State* L)
  - ID of an attribute
  Output: Value of the given attribute or -1 if error
  */
-static int l_character_attribute_tag_get(lua_State* L)
+static int l_character_attribute_tag_get(lua_State *L)
 {
-	const char * id;
-	const char * attribute;
-	char * res;
+	const char *id;
+	const char *attribute;
+	char *res;
 
 	id = luaL_checkstring(L, -2);
 	attribute = luaL_checkstring(L, -1);
-	res = attribute_tag_get(CHARACTER_TABLE, id, attribute);
+	res = attribute_tag_get(CHARACTER_TABLE.c_str(), id, attribute);
 	lua_pushstring(L, res);
 	if (res)
 	{
@@ -2018,17 +2026,17 @@ static int l_character_attribute_tag_get(lua_State* L)
  - value
  Output:
  */
-static int l_character_attribute_tag_set(lua_State* L)
+static int l_character_attribute_tag_set(lua_State *L)
 {
-	const char * id;
-	const char * attribute;
-	const char * value;
+	const char *id;
+	const char *attribute;
+	const char *value;
 	int res;
 
 	id = luaL_checkstring(L, -3);
 	attribute = luaL_checkstring(L, -2);
 	value = luaL_checkstring(L, -1);
-	res = attribute_tag_set(CHARACTER_TABLE, id, attribute, value);
+	res = attribute_tag_set(CHARACTER_TABLE.c_str(), id, attribute, value);
 	lua_pushnumber(L, res);
 	return 1;  // number of results
 }
@@ -2043,13 +2051,13 @@ static int l_character_attribute_tag_set(lua_State* L)
  - value to add (may be negative)
  Output:
  */
-static int l_map_attribute_change(lua_State* L)
+static int l_map_attribute_change(lua_State *L)
 {
-	const char * id;
-	const char * attribute;
+	const char *id;
+	const char *attribute;
 	int value;
 	int res;
-	Context * context;
+	Context *context;
 
 	id = luaL_checkstring(L, -3);
 	attribute = luaL_checkstring(L, -2);
@@ -2059,7 +2067,7 @@ static int l_map_attribute_change(lua_State* L)
 	context = (Context*) lua_touserdata(L, -1);
 	lua_pop(L, 1);
 
-	res = attribute_change(context, MAP_TABLE, id, attribute, value);
+	res = attribute_change(context, MAP_TABLE.c_str(), id, attribute, value);
 	lua_pushnumber(L, res);
 	return 1;  // number of results
 }
@@ -2073,15 +2081,15 @@ static int l_map_attribute_change(lua_State* L)
  - ID of an attribute
  Output: Value of the given attribute
  */
-static int l_map_attribute_get(lua_State* L)
+static int l_map_attribute_get(lua_State *L)
 {
-	const char * id;
-	const char * attribute;
+	const char *id;
+	const char *attribute;
 	int res;
 
 	id = luaL_checkstring(L, -2);
 	attribute = luaL_checkstring(L, -1);
-	res = attribute_get(MAP_TABLE, id, attribute);
+	res = attribute_get(MAP_TABLE.c_str(), id, attribute);
 	lua_pushnumber(L, res);
 	return 1;  // number of results
 }
@@ -2096,17 +2104,17 @@ static int l_map_attribute_get(lua_State* L)
  - value
  Output:
  */
-static int l_map_attribute_set(lua_State* L)
+static int l_map_attribute_set(lua_State *L)
 {
-	const char * id;
-	const char * attribute;
+	const char *id;
+	const char *attribute;
 	int value;
 	int res;
 
 	id = luaL_checkstring(L, -3);
 	attribute = luaL_checkstring(L, -2);
 	value = luaL_checkint(L, -1);
-	res = attribute_set(MAP_TABLE, id, attribute, value);
+	res = attribute_set(MAP_TABLE.c_str(), id, attribute, value);
 	lua_pushnumber(L, res);
 	return 1;  // number of results
 }
@@ -2121,11 +2129,11 @@ static int l_map_attribute_set(lua_State* L)
  - ID of an item
  Output:
  */
-static int l_equipment_slot_set_item(lua_State* L)
+static int l_equipment_slot_set_item(lua_State *L)
 {
-	const char * id;
-	const char * slot;
-	const char * item;
+	const char *id;
+	const char *slot;
+	const char *item;
 	int res;
 
 	id = luaL_checkstring(L, -3);
@@ -2145,11 +2153,11 @@ static int l_equipment_slot_set_item(lua_State* L)
  - ID of an equipment slot
  Output: ID of an item
  */
-static int l_equipment_slot_get_item(lua_State* L)
+static int l_equipment_slot_get_item(lua_State *L)
 {
-	const char * id;
-	const char * slot;
-	char * item;
+	const char *id;
+	const char *slot;
+	char *item;
 
 	id = luaL_checkstring(L, -2);
 	slot = luaL_checkstring(L, -1);
@@ -2167,7 +2175,7 @@ static int l_equipment_slot_get_item(lua_State* L)
  Input:
  Output: input data base directory
  */
-static int l_get_base_directory(lua_State* L)
+static int l_get_base_directory(lua_State *L)
 {
 	lua_pushstring(L, base_directory.c_str());
 	return 1;  // number of results
@@ -2182,13 +2190,13 @@ static int l_get_base_directory(lua_State* L)
  - Array of string describing the pop-up
  Output: -1 on error, 0 otherwise
  */
-static int l_popup_send(lua_State* L)
+static int l_popup_send(lua_State *L)
 {
 	int l_NumArg = lua_gettop(L);
 
 	std::vector<std::string> l_PopupData;
 
-	const char * l_Id = luaL_checkstring(L, -l_NumArg + 0);
+	const char *l_Id = luaL_checkstring(L, -l_NumArg + 0);
 
 	for (int l_Index = 1; l_Index < l_NumArg; l_Index++)
 	{
@@ -2203,7 +2211,7 @@ static int l_popup_send(lua_State* L)
 
 /**************************************
  **************************************/
-static void action_chat(Context * context, const std::string & text)
+static void action_chat(Context *context, const std::string &text)
 {
 	const std::string new_text = context->getCharacterName() + ":" + text;
 
@@ -2214,7 +2222,8 @@ static void action_chat(Context * context, const std::string & text)
  Execute a LUA script file
  return -1 if the script do not return something
  **************************************/
-int action_execute_script(Context * context, const char * script, const char ** parameters)
+int action_execute_script(Context *context, const char *script,
+		const char **parameters)
 {
 	if (script == nullptr)
 	{
@@ -2228,32 +2237,34 @@ int action_execute_script(Context * context, const char * script, const char ** 
 		return -1;
 	}
 
-	return lua_execute_script(context->getLuaVm(), context->getLuaVmLock(), script, parameters);
+	return lua_execute_script(context->getLuaVm(), context->getLuaVmLock(),
+			script, parameters);
 }
 
 /**************************************
  Execute an action configuration file
  return -1 if the script do not return something
  **************************************/
-int action_execute(Context * context, const std::string & actionName, const std::vector<std::string> & parameters)
+int action_execute(Context *context, const std::string &actionName,
+		const std::vector<std::string> &parameters)
 {
-	char * script = nullptr;
+	char *script = nullptr;
 
-	if (entry_read_string(ACTION_TABLE, actionName.c_str(), &script,
-	ACTION_KEY_SCRIPT, nullptr) == false)
+	if (entry_read_string(ACTION_TABLE.c_str(), actionName.c_str(), &script,
+			ACTION_KEY_SCRIPT, nullptr) == false)
 	{
 		ERR_DESIGN("Cannot find script for action " + actionName);
 		return -1;
 	}
 
-	char ** params = nullptr;
+	char **params = nullptr;
 
-	entry_read_list(ACTION_TABLE, actionName.c_str(), &params,
-	ACTION_KEY_PARAM, nullptr);
+	entry_read_list(ACTION_TABLE.c_str(), actionName.c_str(), &params,
+			ACTION_KEY_PARAM, nullptr);
 
-	char ** passed_param = to_array(parameters);
+	char **passed_param = to_array(parameters);
 
-	char ** all_params = add_array(params, passed_param);
+	char **all_params = add_array(params, passed_param);
 
 	free(passed_param);
 	free(params);
@@ -2267,16 +2278,17 @@ int action_execute(Context * context, const std::string & actionName, const std:
 }
 
 /*****************************************************************************/
-static int async_action(void * data)
+static int async_action(void *data)
 {
-	RunningAction * runningAction = static_cast<RunningAction*>(data);
+	RunningAction *runningAction = static_cast<RunningAction*>(data);
 
 	while (true)
 	{
 		runningAction->beginAction();
 		if (runningAction->isRunning() == true)
 		{
-			action_execute(runningAction->getContext(), runningAction->getAction(), runningAction->getParams());
+			action_execute(runningAction->getContext(),
+					runningAction->getAction(), runningAction->getParams());
 		}
 		else
 		{
@@ -2293,10 +2305,12 @@ static int async_action(void * data)
 }
 
 /*****************************************************************************/
-void action_run(Context * context, const std::string & actionName, const std::vector<std::string> & parameters, int coolDownMs)
+void action_run(Context *context, const std::string &actionName,
+		const std::vector<std::string> &parameters, int coolDownMs)
 {
 // The thread using this RunningAction will free it when it ends
-	RunningAction * runningAction = new RunningAction(context, actionName, parameters, coolDownMs);
+	RunningAction *runningAction = new RunningAction(context, actionName,
+			parameters, coolDownMs);
 
 	context->addRunningAction(actionName, runningAction);
 
@@ -2304,16 +2318,18 @@ void action_run(Context * context, const std::string & actionName, const std::ve
 }
 
 /*****************************************************************************/
-void action_stop(Context * context, const std::string & actionName)
+void action_stop(Context *context, const std::string &actionName)
 {
 	context->stopRunningAction(actionName);
 }
 
 /*****************************************************************************/
-void action_run_or_execute(Context * context, const std::string & actionName, const std::vector<std::string> & parameters)
+void action_run_or_execute(Context *context, const std::string &actionName,
+		const std::vector<std::string> &parameters)
 {
 	int coolDownMs = 0;
-	entry_read_int(ACTION_TABLE, actionName.c_str(), &coolDownMs, ACTION_KEY_COOLDOWN, nullptr);
+	entry_read_int(ACTION_TABLE.c_str(), actionName.c_str(), &coolDownMs,
+			ACTION_KEY_COOLDOWN, nullptr);
 
 	if (coolDownMs == 0)
 	{
@@ -2333,14 +2349,14 @@ void action_run_or_execute(Context * context, const std::string & actionName, co
  - Array of parameters
  Output: -1 on script error, if no error script return value
  ***************************************************/
-static int l_call_script(lua_State* L)
+static int l_call_script(lua_State *L)
 {
-	const char * script;
+	const char *script;
 	int num_arg;
 	char **arg = nullptr;
 	int i;
 	int res;
-	Context * context;
+	Context *context;
 
 	lua_getglobal(L, LUAVM_CONTEXT);
 	context = (Context*) lua_touserdata(L, -1);
@@ -2353,7 +2369,7 @@ static int l_call_script(lua_State* L)
 		arg = (char**) malloc(sizeof(char*) * num_arg);
 		for (i = 0; i < num_arg - 1; i++)
 		{
-			arg[i] = (char *) luaL_checkstring(L, -num_arg + 1 + i); // FIXME wrong casting ?
+			arg[i] = (char*) luaL_checkstring(L, -num_arg + 1 + i); // FIXME wrong casting ?
 		}
 		arg[i] = nullptr; // End of list
 	}
@@ -2376,12 +2392,12 @@ static int l_call_script(lua_State* L)
  - Array of parameters
  Output: -1 on script error, if no error script return value
  ***************************************************/
-static int l_call_action(lua_State* L)
+static int l_call_action(lua_State *L)
 {
-	const char * action;
+	const char *action;
 
 	int res;
-	Context * context;
+	Context *context;
 
 	lua_getglobal(L, LUAVM_CONTEXT);
 	context = (Context*) lua_touserdata(L, -1);
@@ -2397,7 +2413,8 @@ static int l_call_action(lua_State* L)
 	{
 		for (int i = 0; i < num_arg - 1; i++)
 		{
-			params.push_back(std::string(luaL_checkstring(L, -num_arg + 1 + i)));
+			params.push_back(
+					std::string(luaL_checkstring(L, -num_arg + 1 + i)));
 		}
 	}
 
@@ -2409,11 +2426,11 @@ static int l_call_action(lua_State* L)
 
 /***************************************************
  ***************************************************/
-void register_lua_functions(Context * context)
+void register_lua_functions(Context *context)
 {
 	wlog(LOGDEVELOPER, "Registering LUA functions");
 
-	lua_State* L = context->getLuaVm();
+	lua_State *L = context->getLuaVm();
 
 // player functions
 	lua_pushcfunction(L, l_player_get_id);

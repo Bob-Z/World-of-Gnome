@@ -41,9 +41,9 @@ extern "C"
 }
 #endif
 
-static lua_State * luaVm = nullptr;
+static lua_State *luaVm = nullptr;
 static Lock luaVmLock;
-static lua_State * effectLuaVm = nullptr;
+static lua_State *effectLuaVm = nullptr;
 static Lock effectLuaVmLock;
 
 /***********************************
@@ -51,9 +51,9 @@ static Lock effectLuaVmLock;
  Input:
  Output: ID of the current context
  ***********************************/
-static int l_player_get_id(lua_State* luaState)
+static int l_player_get_id(lua_State *luaState)
 {
-	Context * context;
+	Context *context;
 
 	context = context_get_player();
 	lua_pushstring(luaState, context->getId().c_str());
@@ -65,9 +65,9 @@ static int l_player_get_id(lua_State* luaState)
  Input:
  Output: ID of current context
  ***********************************/
-static int l_context_get_id(lua_State* luaState)
+static int l_context_get_id(lua_State *luaState)
 {
-	Context * context;
+	Context *context;
 
 	lua_getglobal(luaState, "current_context");
 	context = (Context*) lua_touserdata(luaState, -1);
@@ -82,9 +82,9 @@ static int l_context_get_id(lua_State* luaState)
  Input:
  Output: 1 if context is an NPC
  ***********************************/
-static int l_context_get_npc(lua_State* luaState)
+static int l_context_get_npc(lua_State *luaState)
 {
-	Context * context;
+	Context *context;
 
 	lua_getglobal(luaState, "current_context");
 	context = (Context*) lua_touserdata(luaState, -1);
@@ -99,9 +99,9 @@ static int l_context_get_npc(lua_State* luaState)
  Input:
  Output: current map name
  ***********************************/
-static int l_context_get_map(lua_State* luaState)
+static int l_context_get_map(lua_State *luaState)
 {
-	Context * context;
+	Context *context;
 
 	lua_getglobal(luaState, "current_context");
 	context = (Context*) lua_touserdata(luaState, -1);
@@ -116,9 +116,9 @@ static int l_context_get_map(lua_State* luaState)
  Input: X ccordinate in pixel
  Output:
  ***********************************/
-static int l_item_set_px(lua_State* luaState)
+static int l_item_set_px(lua_State *luaState)
 {
-	SdlItem * item;
+	SdlItem *item;
 
 	lua_getglobal(luaState, "current_item");
 	item = (SdlItem*) lua_touserdata(luaState, -1);
@@ -135,9 +135,9 @@ static int l_item_set_px(lua_State* luaState)
  Input: Y ccordinate in pixel
  Output:
  ***********************************/
-static int l_item_set_py(lua_State* luaState)
+static int l_item_set_py(lua_State *luaState)
 {
-	SdlItem * item;
+	SdlItem *item;
 
 	lua_getglobal(luaState, "current_item");
 	item = (SdlItem*) lua_touserdata(luaState, -1);
@@ -154,9 +154,9 @@ static int l_item_set_py(lua_State* luaState)
  Input:
  Output: X coordinate in pixel
  ***********************************/
-static int l_item_get_px(lua_State* luaState)
+static int l_item_get_px(lua_State *luaState)
 {
-	SdlItem * item;
+	SdlItem *item;
 
 	lua_getglobal(luaState, "current_item");
 	item = (SdlItem*) lua_touserdata(luaState, -1);
@@ -171,9 +171,9 @@ static int l_item_get_px(lua_State* luaState)
  Input:
  Output: Y ccordinate in pixel
  ***********************************/
-static int l_item_get_py(lua_State* luaState)
+static int l_item_get_py(lua_State *luaState)
 {
-	SdlItem * item;
+	SdlItem *item;
 
 	lua_getglobal(luaState, "current_item");
 	item = (SdlItem*) lua_touserdata(luaState, -1);
@@ -188,9 +188,9 @@ static int l_item_get_py(lua_State* luaState)
  Input:
  Output: Width in pixel
  ***********************************/
-static int l_item_get_w(lua_State* luaState)
+static int l_item_get_w(lua_State *luaState)
 {
-	SdlItem * item;
+	SdlItem *item;
 
 	lua_getglobal(luaState, "current_item");
 	item = (SdlItem*) lua_touserdata(luaState, -1);
@@ -205,9 +205,9 @@ static int l_item_get_w(lua_State* luaState)
  Input:
  Output: Height in pixel
  ***********************************/
-static int l_item_get_h(lua_State* luaState)
+static int l_item_get_h(lua_State *luaState)
 {
-	SdlItem * item;
+	SdlItem *item;
 
 	lua_getglobal(luaState, "current_item");
 	item = (SdlItem*) lua_touserdata(luaState, -1);
@@ -221,9 +221,9 @@ static int l_item_get_h(lua_State* luaState)
  Input: Tick from when animation will be calculated
  Output:
  ***********************************/
-static int l_item_set_anim_start_tick(lua_State* luaState)
+static int l_item_set_anim_start_tick(lua_State *luaState)
 {
-	SdlItem * item;
+	SdlItem *item;
 
 	lua_getglobal(luaState, "current_item");
 	item = (SdlItem*) lua_touserdata(luaState, -1);
@@ -242,23 +242,24 @@ static int l_item_set_anim_start_tick(lua_State* luaState)
  - file name
  Output:
  ***********************************/
-static int l_item_set_anim(lua_State* luaState)
+static int l_item_set_anim(lua_State *luaState)
 {
-	SdlItem * item;
+	SdlItem *item;
 	lua_getglobal(luaState, "current_item");
 	item = (SdlItem*) lua_touserdata(luaState, -1);
 	lua_pop(luaState, 1);
 
-	const char * fileName = luaL_checkstring(luaState, -1);
+	const char *fileName = luaL_checkstring(luaState, -1);
 
-	SiAnim * anim = imageDB_get_anim(context_get_player(), std::string(fileName));
+	SiAnim *anim = imageDB_get_anim(context_get_player(),
+			std::string(fileName));
 	item->setAnim(anim);
 
 	return 0; // number of results
 }
 
 /*****************************************************************************/
-static const std::string & getKey(const bool isMoving, const char orientation)
+static const std::string& getKey(const bool isMoving, const char orientation)
 {
 	if (isMoving == true)
 	{
@@ -307,17 +308,20 @@ static const std::string & getKey(const bool isMoving, const char orientation)
 }
 
 /*****************************************************************************/
-static std::vector<SiAnim*> getAnimArray(const std::string & id, const std::string & key)
+static std::vector<SiAnim*> getAnimArray(const std::string &id,
+		const std::string &key)
 {
 	std::vector<SiAnim*> animArray;
 
 	// Try single image anim
-	char * spriteName = nullptr;
-	if (entry_read_string(CHARACTER_TABLE, id.c_str(), &spriteName, key.c_str(), nullptr) == true)
+	char *spriteName = nullptr;
+	if (entry_read_string(CHARACTER_TABLE.c_str(), id.c_str(), &spriteName,
+			key.c_str(), nullptr) == true)
 	{
 		if ((spriteName != nullptr) && (spriteName[0] != 0))
 		{
-			SiAnim * anim = imageDB_get_anim(context_get_player(), std::string(spriteName));
+			SiAnim *anim = imageDB_get_anim(context_get_player(),
+					std::string(spriteName));
 			animArray.push_back(anim);
 
 			free(spriteName);
@@ -327,20 +331,22 @@ static std::vector<SiAnim*> getAnimArray(const std::string & id, const std::stri
 	}
 
 	// Try list of image
-	char ** spriteList = nullptr;
-	if (entry_read_list(CHARACTER_TABLE, id.c_str(), &spriteList, key.c_str(), nullptr) == true)
+	char **spriteList = nullptr;
+	if (entry_read_list(CHARACTER_TABLE.c_str(), id.c_str(), &spriteList,
+			key.c_str(), nullptr) == true)
 	{
 		std::vector<std::string> spriteNameArray;
 
 		int i = 0;
-		char* spriteName = nullptr;
+		char *spriteName = nullptr;
 		while ((spriteName = spriteList[i]) != nullptr)
 		{
 			spriteNameArray.push_back(std::string(spriteName));
 			i++;
 		}
 
-		animArray = imageDB_get_anim_array(context_get_player(), spriteNameArray);
+		animArray = imageDB_get_anim_array(context_get_player(),
+				spriteNameArray);
 		deep_free(spriteList);
 		return animArray;
 	}
@@ -381,17 +387,17 @@ static char flip(char orientation)
  - entry name in context file
  Output:
  *****************************************************************************/
-static int l_item_set_anim_from_context(lua_State* luaState)
+static int l_item_set_anim_from_context(lua_State *luaState)
 {
-	SdlItem * item;
+	SdlItem *item;
 	lua_getglobal(luaState, "current_item");
 	item = (SdlItem*) lua_touserdata(luaState, -1);
 	lua_pop(luaState, 1);
 
-	const char * id = luaL_checkstring(luaState, -4);
+	const char *id = luaL_checkstring(luaState, -4);
 	int isMoving = luaL_checkint(luaState, -3);
-	const char * mainOrientation = luaL_checkstring(luaState, -2);
-	const char * secondaryOrientation = luaL_checkstring(luaState, -1);
+	const char *mainOrientation = luaL_checkstring(luaState, -2);
+	const char *secondaryOrientation = luaL_checkstring(luaState, -1);
 
 	// reset previous anim
 	item->clearAnim();
@@ -445,7 +451,9 @@ static int l_item_set_anim_from_context(lua_State* luaState)
 
 	if (animArray.size() == 0)
 	{
-		ERR_DESIGN("LUA item_set_anim_from_context: Failed to find anim for " + std::string(id));
+		ERR_DESIGN(
+				"LUA item_set_anim_from_context: Failed to find anim for "
+						+ std::string(id));
 	}
 	else
 	{
@@ -464,9 +472,9 @@ static int l_item_set_anim_from_context(lua_State* luaState)
  Output:
  - screen number
  ***********************************/
-static int l_camera_get_screen(lua_State* luaState)
+static int l_camera_get_screen(lua_State *luaState)
 {
-	Camera * camera;
+	Camera *camera;
 	lua_getglobal(luaState, "current_camera");
 	camera = (Camera*) lua_touserdata(luaState, -1);
 	lua_pop(luaState, 1);
@@ -484,9 +492,9 @@ static int l_camera_get_screen(lua_State* luaState)
  Output:
  - zoom factor ( +1 for one level of zoom, -1 for UNzoom)
  ***********************************/
-static int l_camera_get_zoom(lua_State* luaState)
+static int l_camera_get_zoom(lua_State *luaState)
 {
-	Camera * camera;
+	Camera *camera;
 	lua_getglobal(luaState, "current_camera");
 	camera = (Camera*) lua_touserdata(luaState, -1);
 	lua_pop(luaState, 1);
@@ -504,9 +512,9 @@ static int l_camera_get_zoom(lua_State* luaState)
  Output:
  - X position in pixel
  ***********************************/
-static int l_camera_get_X(lua_State* luaState)
+static int l_camera_get_X(lua_State *luaState)
 {
-	Camera * camera;
+	Camera *camera;
 	lua_getglobal(luaState, "current_camera");
 	camera = (Camera*) lua_touserdata(luaState, -1);
 	lua_pop(luaState, 1);
@@ -524,9 +532,9 @@ static int l_camera_get_X(lua_State* luaState)
  Output:
  - Y position in pixel
  ***********************************/
-static int l_camera_get_Y(lua_State* luaState)
+static int l_camera_get_Y(lua_State *luaState)
 {
-	Camera * camera;
+	Camera *camera;
 	lua_getglobal(luaState, "current_camera");
 	camera = (Camera*) lua_touserdata(luaState, -1);
 	lua_pop(luaState, 1);
@@ -545,7 +553,7 @@ static int l_camera_get_Y(lua_State* luaState)
  - Y
  Output:
  ***********************************/
-static int l_camera_set_coord(lua_State* luaState)
+static int l_camera_set_coord(lua_State *luaState)
 {
 	int x;
 	x = luaL_checknumber(luaState, -2);
@@ -567,7 +575,7 @@ static int l_camera_set_coord(lua_State* luaState)
  - Zoom level (1.0 = 100%)
  Output:
  ***********************************/
-static int l_camera_set_zoom(lua_State* luaState)
+static int l_camera_set_zoom(lua_State *luaState)
 {
 	double l_Zoom;
 	l_Zoom = luaL_checknumber(luaState, -1);
@@ -582,11 +590,12 @@ static int l_camera_set_zoom(lua_State* luaState)
  Input: sound filename
  Output:
  ***********************************/
-static int l_sound_play(lua_State* luaState)
+static int l_sound_play(lua_State *luaState)
 {
-	const char * l_FileName;
+	const char *l_FileName;
 	l_FileName = luaL_checkstring(luaState, -1);
-	sfx_play(*(context_get_player()->getConnection()), std::string(l_FileName), ANY_CHANNEL, NO_LOOP);
+	sfx_play(*(context_get_player()->getConnection()), std::string(l_FileName),
+			ANY_CHANNEL, NO_LOOP);
 
 	return 0; // number of results
 }
@@ -600,7 +609,7 @@ static int l_sound_play(lua_State* luaState)
  Output:
  - tick in milliseconds
  ***********************************/
-static int l_get_tick(lua_State* luaState)
+static int l_get_tick(lua_State *luaState)
 {
 	Uint32 l_CurrentTime;
 	l_CurrentTime = sdl_get_global_time();
@@ -618,9 +627,9 @@ static int l_get_tick(lua_State* luaState)
  - message
  Output:
  ***********************************/
-static int l_print_text_debug(lua_State* luaState)
+static int l_print_text_debug(lua_State *luaState)
 {
-	const char * l_pString;
+	const char *l_pString;
 
 	l_pString = luaL_checkstring(luaState, -1);
 	wlog(LOGDESIGNER, (char* ) l_pString);
@@ -628,7 +637,7 @@ static int l_print_text_debug(lua_State* luaState)
 }
 
 /*****************************************************************************/
-static void register_lua_functions_client(lua_State * l_pLuaVm)
+static void register_lua_functions_client(lua_State *l_pLuaVm)
 {
 	// player function
 	lua_pushcfunction(l_pLuaVm, l_player_get_id);
@@ -704,25 +713,25 @@ void lua_init()
 }
 
 /*****************************************************************************/
-lua_State * getLuaVm()
+lua_State* getLuaVm()
 {
 	return luaVm;
 }
 
 /*****************************************************************************/
-Lock & getLuaVmLock()
+Lock& getLuaVmLock()
 {
 	return luaVmLock;
 }
 
 /*****************************************************************************/
-lua_State * getEffectLuaVm()
+lua_State* getEffectLuaVm()
 {
 	return effectLuaVm;
 }
 
 /*****************************************************************************/
-Lock & getEffectLuaVmLock()
+Lock& getEffectLuaVmLock()
 {
 	return effectLuaVmLock;
 }
