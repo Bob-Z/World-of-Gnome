@@ -37,24 +37,24 @@ static Lock imageDbLock;
 
 static std::map<std::string, SiAnim*> imageArray;
 
-static SiAnim * def_anim = sdl_get_minimal_anim();
+static SiAnim *def_anim = sdl_get_minimal_anim();
 
 /*****************************************************************************/
-static SiAnim * image_load(const std::string & fileName)
+static SiAnim* image_load(const std::string &fileName)
 {
 	const std::string filePath = base_directory + "/" + fileName;
 
-	SiAnim * anim = anim_load(filePath);
+	SiAnim *anim = anim_load(filePath);
 
 	return anim;
 }
 
 /*****************************************************************************/
-SiAnim * imageDB_get_anim(Context * context, const std::string & imageName)
+SiAnim* imageDB_get_anim(Context *context, const std::string &imageName)
 {
-	SiAnim * anim = nullptr;
+	SiAnim *anim = nullptr;
 
-	const std::string fileName = std::string(IMAGE_TABLE) + "/" + std::string(imageName);
+	const std::string fileName = IMAGE_TABLE + "/" + imageName;
 
 	LockGuard guard(imageDbLock);
 
@@ -86,11 +86,12 @@ SiAnim * imageDB_get_anim(Context * context, const std::string & imageName)
 }
 
 /*****************************************************************************/
-std::vector<SiAnim*> imageDB_get_anim_array(Context * context, const std::vector<std::string> & imageNameArray)
+std::vector<SiAnim*> imageDB_get_anim_array(Context *context,
+		const std::vector<std::string> &imageNameArray)
 {
 	std::vector<SiAnim*> animArray;
 
-	for (auto && imageName : imageNameArray)
+	for (auto &&imageName : imageNameArray)
 	{
 		animArray.push_back(imageDB_get_anim(context, imageName));
 	}
@@ -99,7 +100,7 @@ std::vector<SiAnim*> imageDB_get_anim_array(Context * context, const std::vector
 }
 
 /*****************************************************************************/
-void image_DB_remove(const std::string & fileName)
+void image_DB_remove(const std::string &fileName)
 {
 	LOG("Image remove: " + fileName);
 
