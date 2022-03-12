@@ -20,6 +20,7 @@
 #include "ContextContainer.h"
 
 #include "Context.h"
+#include <stdexcept>
 
 /*****************************************************************************/
 ContextContainer::ContextContainer() :
@@ -28,7 +29,7 @@ ContextContainer::ContextContainer() :
 }
 
 /*****************************************************************************/
-std::shared_ptr<Context> ContextContainer::add(const std::string & id)
+std::shared_ptr<Context> ContextContainer::add(const std::string &id)
 {
 	std::shared_ptr<Context> context = std::make_shared<Context>();
 	m_list.insert(std::make_pair(id, context));
@@ -36,13 +37,13 @@ std::shared_ptr<Context> ContextContainer::add(const std::string & id)
 }
 
 /*****************************************************************************/
-void ContextContainer::remove(const std::string & id)
+void ContextContainer::remove(const std::string &id)
 {
 	m_list.erase(id);
 }
 
 /*****************************************************************************/
-std::shared_ptr<Context> ContextContainer::get(const std::string & id) const
+std::shared_ptr<Context> ContextContainer::get(const std::string &id) const
 {
 	auto iter = m_list.find(id);
 
