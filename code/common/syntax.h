@@ -23,8 +23,10 @@
 #include <string>
 
 // users data
-#define USERS_TABLE		"user"
-#define USERS_CHARACTER_LIST    "character_list"
+static const std::string USERS_TABLE
+{ "user" };
+static const std::string USERS_CHARACTER_LIST
+{ "character_list" };
 
 // password data
 #define PASSWD_TABLE		"passwd"
@@ -174,7 +176,8 @@ static const std::string CLIENT_CONF_FILE = "client.json";
 static const std::string CLIENT_KEY_VERSION = "version";
 static const std::string CLIENT_KEY_CAMERA_SCRIPT = "camera_script";
 static const std::string CLIENT_KEY_CURSOR_OVER_TILE = "cursor_over_tile";
-static const std::string CLIENT_KEY_CURSOR_CHARACTER_DRAW_SCRIPT = "cursor_character_draw_script";
+static const std::string CLIENT_KEY_CURSOR_CHARACTER_DRAW_SCRIPT =
+		"cursor_character_draw_script";
 static const std::string CLIENT_KEY_CURSOR_TILE = "cursor_tile";
 static const std::string CLIENT_KEY_CURSOR_EQUIPMENT = "cursor_equipment";
 static const std::string CLIENT_KEY_CURSOR_INVENTORY = "cursor_inventory";
@@ -182,19 +185,30 @@ static const std::string CLIENT_KEY_ACTION_MOVE_UP = "action_move_up";
 static const std::string CLIENT_KEY_ACTION_MOVE_DOWN = "action_move_down";
 static const std::string CLIENT_KEY_ACTION_MOVE_LEFT = "action_move_left";
 static const std::string CLIENT_KEY_ACTION_MOVE_RIGHT = "action_move_right";
-static const std::string CLIENT_KEY_ACTION_MOVE_UP_RIGHT = "action_move_up_right";
+static const std::string CLIENT_KEY_ACTION_MOVE_UP_RIGHT =
+		"action_move_up_right";
 static const std::string CLIENT_KEY_ACTION_MOVE_UP_LEFT = "action_move_up_left";
-static const std::string CLIENT_KEY_ACTION_MOVE_DOWN_RIGHT = "action_move_down_right";
-static const std::string CLIENT_KEY_ACTION_MOVE_DOWN_LEFT = "action_move_down_left";
-static const std::string CLIENT_KEY_ACTION_SELECT_CHARACTER = "action_select_character";
+static const std::string CLIENT_KEY_ACTION_MOVE_DOWN_RIGHT =
+		"action_move_down_right";
+static const std::string CLIENT_KEY_ACTION_MOVE_DOWN_LEFT =
+		"action_move_down_left";
+static const std::string CLIENT_KEY_ACTION_SELECT_CHARACTER =
+		"action_select_character";
 static const std::string CLIENT_KEY_ACTION_SELECT_TILE = "action_select_tile";
-static const std::string CLIENT_KEY_ACTION_SELECT_EQUIPMENT = "action_select_equipment";
-static const std::string CLIENT_KEY_ACTION_SELECT_INVENTORY = "action_select_inventory";
-static const std::string CLIENT_KEY_SELECT_CHARACTER_SFX = "select_character_sfx";
-static const std::string CLIENT_KEY_SELECT_CHARACTER_SFX_VOLUME = "select_character_sfx_volume";
-static const std::string CLIENT_KEY_SELECT_CHARACTER_ADD_ICON = "select_character_add_icon";
-static const std::string CLIENT_KEY_CREATE_CHARACTER_SFX = "create_character_sfx";
-static const std::string CLIENT_KEY_CREATE_CHARACTER_SFX_VOLUME = "create_character_sfx_volume";
+static const std::string CLIENT_KEY_ACTION_SELECT_EQUIPMENT =
+		"action_select_equipment";
+static const std::string CLIENT_KEY_ACTION_SELECT_INVENTORY =
+		"action_select_inventory";
+static const std::string CLIENT_KEY_SELECT_CHARACTER_SFX =
+		"select_character_sfx";
+static const std::string CLIENT_KEY_SELECT_CHARACTER_SFX_VOLUME =
+		"select_character_sfx_volume";
+static const std::string CLIENT_KEY_SELECT_CHARACTER_ADD_ICON =
+		"select_character_add_icon";
+static const std::string CLIENT_KEY_CREATE_CHARACTER_SFX =
+		"create_character_sfx";
+static const std::string CLIENT_KEY_CREATE_CHARACTER_SFX_VOLUME =
+		"create_character_sfx_volume";
 
 const std::string SFX_TABLE("sfx");
 

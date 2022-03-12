@@ -41,45 +41,49 @@
 #include <wog.pb.h>
 
 /*****************************************************************************/
-static void manage_login(Connection & connection, const pb::Login & login)
+static void manage_login(Connection &connection, const pb::Login &login)
 {
-	char * password = nullptr;
-	if (entry_read_string(PASSWD_TABLE, login.user().c_str(), &password,
-	PASSWD_KEY_PASSWORD, nullptr) == false)
+	try
 	{
-		ERR("Failed to read password");
-		return;
-	}
+		std::string passwd = getDataManager().get<std::string>(PASSWD_TABLE,
+				login.user(),
+				{ PASSWD_KEY_PASSWORD });
 
-	if (strcmp(password, login.password().c_str()) != 0)
+		if (passwd != login.password())
+		{
+			ERR_USER("[network] Wrong login for %s" + login.user());
+			network_send_login_nok(connection);
+			return;
+		}
+		else
+		{
+			connection.setUserName(login.user());
+
+			connection.setConnected(true);
+
+			network_send_login_ok(connection);
+
+			LOG_USER(
+					"[network] Login successful for user "
+							+ connection.getUserName());
+
+			return;
+		}
+
+	} catch (...)
 	{
-		free(password);
-		werr(LOGUSER, "[network] Wrong login for %s", login.user().c_str());
+		ERR_USER("[network] Password error for user " + login.user());
 		network_send_login_nok(connection);
-		// force client disconnection
-		return;
-	}
-	else
-	{
-		free(password);
-		connection.setUserName(login.user());
-
-		connection.setConnected(true);
-
-		network_send_login_ok(connection);
-
-		wlog(LOGUSER, "[network] Login successful for user %s", connection.getUserName().c_str());
-
 		return;
 	}
 }
 
 /*****************************************************************************/
-static void manage_start(Connection & connection, const pb::Start & start)
+static void manage_start(Connection &connection, const pb::Start &start)
 {
 	connection.setContextId(start.id());
 
-	Context * context = context_new();
+	Context *context = context_new();
 	context->setId(start.id());
 	context->setInGame(true);
 	context->setConnection(&connection);
@@ -88,13 +92,14 @@ static void manage_start(Connection & connection, const pb::Start & start)
 	context_spread(context);
 	context_request_other_context(context);
 
-	wlog(LOGDEVELOPER, "[network] received start request for ID %s and user %s", start.id().c_str(), connection.getUserName().c_str());
+	wlog(LOGDEVELOPER, "[network] received start request for ID %s and user %s",
+			start.id().c_str(), connection.getUserName().c_str());
 }
 
 /*****************************************************************************/
-static void manage_stop(Connection & connection, const pb::Stop & stop)
+static void manage_stop(Connection &connection, const pb::Stop &stop)
 {
-	Context * context = context_find(connection.getContextId());
+	Context *context = context_find(connection.getContextId());
 
 	if (context->isInGame() == true)
 	{
@@ -107,21 +112,22 @@ static void manage_stop(Connection & connection, const pb::Stop & stop)
 }
 
 /*****************************************************************************/
-static void manage_playable_character_list(Connection & connection)
+static void manage_playable_character_list(Connection &connection)
 {
 	character_playable_send_list(connection);
 }
 
 /*****************************************************************************/
-static void manage_user_character_list(Connection & connection)
+static void manage_user_character_list(Connection &connection)
 {
 	character_user_send_list(connection);
 }
 
 /*****************************************************************************/
-static void manage_create(Connection & connection, const pb::Create& create)
+static void manage_create(Connection &connection, const pb::Create &create)
 {
-	const std::pair<bool, std::string> file_name = file_new(CHARACTER_TABLE, create.name());
+	const std::pair<bool, std::string> file_name = file_new(CHARACTER_TABLE,
+			create.name());
 
 	if (file_name.first == false)
 	{
@@ -132,13 +138,16 @@ static void manage_create(Connection & connection, const pb::Create& create)
 	if (file_copy(CHARACTER_TEMPLATE_TABLE, create.id().c_str(),
 	CHARACTER_TABLE, create.name().c_str()) == false)
 	{
-		werr(LOGUSER, "Error copying character template %s to character %s (maybe template doesn't exists ?)", create.id(), create.name());
+		werr(LOGUSER,
+				"Error copying character template %s to character %s (maybe template doesn't exists ?)",
+				create.id(), create.name());
 		file_delete(CHARACTER_TABLE, create.name());
 		return;
 	}
 
-	if (entry_write_string(CHARACTER_TABLE, create.name().c_str(), create.name().c_str(),
-	CHARACTER_KEY_NAME, nullptr) == false)
+	if (entry_write_string(CHARACTER_TABLE, create.name().c_str(),
+			create.name().c_str(),
+			CHARACTER_KEY_NAME, nullptr) == false)
 	{
 		werr(LOGUSER, "Error setting character name %s", create.name().c_str());
 		file_delete(CHARACTER_TABLE, create.name());
@@ -151,18 +160,21 @@ static void manage_create(Connection & connection, const pb::Create& create)
 		{ USERS_CHARACTER_LIST }, create.name());
 	} catch (...)
 	{
-		ERR_USER("Error adding character " + create.name() + " to user " + connection.getUserName());
+		ERR_USER(
+				"Error adding character " + create.name() + " to user "
+						+ connection.getUserName());
 		file_delete(CHARACTER_TABLE, create.name());
 		return;
 	}
 
 	character_user_send(connection, create.name().c_str());
 
-	wlog(LOGDEVELOPER, "Successfully created: ID=%s, NAME=%s", create.id().c_str(), create.name().c_str());
+	wlog(LOGDEVELOPER, "Successfully created: ID=%s, NAME=%s",
+			create.id().c_str(), create.name().c_str());
 }
 
 /*****************************************************************************/
-static void manage_action(Connection & connection, const pb::Action& action)
+static void manage_action(Connection &connection, const pb::Action &action)
 {
 	std::vector<std::string> params;
 	for (int i = 0; i < action.params_size(); i++)
@@ -170,19 +182,20 @@ static void manage_action(Connection & connection, const pb::Action& action)
 		params.push_back(action.params(i));
 	}
 
-	Context * context = context_find(connection.getContextId());
+	Context *context = context_find(connection.getContextId());
 	action_run_or_execute(context, action.action(), params);
 }
 
 /*****************************************************************************/
-static void manage_action_stop(Connection & connection, const pb::ActionStop& action)
+static void manage_action_stop(Connection &connection,
+		const pb::ActionStop &action)
 {
-	Context * context = context_find(connection.getContextId());
+	Context *context = context_find(connection.getContextId());
 	action_stop(context, action.action());
 }
 
 /*****************************************************************************/
-static void manage_file(Connection & connection, const pb::File& file)
+static void manage_file(Connection &connection, const pb::File &file)
 {
 	const std::string file_path = base_directory + "/" + file.name();
 
@@ -196,7 +209,8 @@ static void manage_file(Connection & connection, const pb::File& file)
 
 	if (file.crc() == crc.second)
 	{
-		wlog(LOGDEVELOPER, "Client has already newest %s file", file.name().c_str());
+		wlog(LOGDEVELOPER, "Client has already newest %s file",
+				file.name().c_str());
 		return;
 	}
 
@@ -206,7 +220,8 @@ static void manage_file(Connection & connection, const pb::File& file)
 /**************************************
  Return false on error
  **************************************/
-int parse_incoming_data(Connection & connection, const std::string & serialized_data)
+int parse_incoming_data(Connection &connection,
+		const std::string &serialized_data)
 {
 	pb::ClientMessage message;
 	if (message.ParseFromString(serialized_data) == false)
@@ -217,17 +232,20 @@ int parse_incoming_data(Connection & connection, const std::string & serialized_
 	{
 		if (message.has_file())
 		{
-			wlog(LOGDEVELOPER, "[network] Received file request for %s", message.file().name().c_str());
+			wlog(LOGDEVELOPER, "[network] Received file request for %s",
+					message.file().name().c_str());
 			manage_file(connection, message.file());
 		}
 		else if (message.has_login())
 		{
-			wlog(LOGDEVELOPER, "[network] Received login request for user %s", message.login().user().c_str());
+			wlog(LOGDEVELOPER, "[network] Received login request for user %s",
+					message.login().user().c_str());
 			manage_login(connection, message.login());
 		}
 		else if (connection.isConnected() == false)
 		{
-			werr(LOGUSER, "Request from not authenticated client, close connection");
+			werr(LOGUSER,
+					"Request from not authenticated client, close connection");
 		}
 		else if (message.has_start())
 		{
@@ -236,33 +254,42 @@ int parse_incoming_data(Connection & connection, const std::string & serialized_
 		}
 		else if (message.has_stop())
 		{
-			wlog(LOGDEVELOPER, "[network] Received stop request for ID %s of user %s", connection.getUserName().c_str(),
+			wlog(LOGDEVELOPER,
+					"[network] Received stop request for ID %s of user %s",
+					connection.getUserName().c_str(),
 					context_find(connection.getContextId())->getId().c_str());
 			manage_stop(connection, message.stop());
 		}
 		else if (message.has_playable_character_list())
 		{
-			wlog(LOGDEVELOPER, "[network] Received playable character list request");
+			wlog(LOGDEVELOPER,
+					"[network] Received playable character list request");
 			manage_playable_character_list(connection);
 		}
 		else if (message.has_user_character_list())
 		{
-			wlog(LOGDEVELOPER, "[network] Received user character list request for user %s", message.user_character_list().user().c_str());
+			wlog(LOGDEVELOPER,
+					"[network] Received user character list request for user %s",
+					message.user_character_list().user().c_str());
 			manage_user_character_list(connection);
 		}
 		else if (message.has_create())
 		{
-			wlog(LOGDEVELOPER, "[network] Received create ID %s with name %s", message.create().id().c_str(), message.create().name().c_str());
+			wlog(LOGDEVELOPER, "[network] Received create ID %s with name %s",
+					message.create().id().c_str(),
+					message.create().name().c_str());
 			manage_create(connection, message.create());
 		}
 		else if (message.has_action())
 		{
-			wlog(LOGDEVELOPER, "[network] Received action %s", message.action().action().c_str());
+			wlog(LOGDEVELOPER, "[network] Received action %s",
+					message.action().action().c_str());
 			manage_action(connection, message.action());
 		}
 		else if (message.has_action_stop())
 		{
-			wlog(LOGDEVELOPER, "[network] Received action stop %s", message.action_stop().action().c_str());
+			wlog(LOGDEVELOPER, "[network] Received action stop %s",
+					message.action_stop().action().c_str());
 			manage_action_stop(connection, message.action_stop());
 		}
 		else

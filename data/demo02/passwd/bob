@@ -1,1 +1,3 @@
-password = "bob";
+{
+"password" : "bob"
+}
