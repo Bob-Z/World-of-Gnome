@@ -1,7 +1,8 @@
-text            = "Summon white dog";
-#layout 1 is center
-icon_layout     = 1
-icon            = [ "ui/button_up.png", "ui/dog_white.png" ];
-icon_click      = [ "ui/button_down.png", "ui/dog_white.png" ];
-script          = "action/summon.lua";
-param		= ( "dog_white" );
+{
+"text"            : "Summon white dog",
+"icon_layout"     : 1,
+"icon"            : [ "ui/button_up.png", "ui/dog_white.png" ],
+"icon_click"      : [ "ui/button_down.png", "ui/dog_white.png" ],
+"script"          : "action/summon.lua",
+"param"  : [ "dog_white" ]
+}

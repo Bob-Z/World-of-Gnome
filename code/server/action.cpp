@@ -26,6 +26,7 @@
 #include "entry.h"
 #include "equipment.h"
 #include "file.h"
+#include "global.h"
 #include "inventory.h"
 #include "item.h"
 #include "log.h"
@@ -2222,23 +2223,18 @@ static void action_chat(Context *context, const std::string &text)
  Execute a LUA script file
  return -1 if the script do not return something
  **************************************/
-int action_execute_script(Context *context, const char *script,
-		const char **parameters)
+int action_execute_script(Context *context, const std::string &scriptName,
+		const std::vector<std::string> &params)
 {
-	if (script == nullptr)
-	{
-		return -1;
-	}
-
 	// Special case for chat
-	if (strcmp(script, WOG_CHAT) == 0)
+	if (scriptName == WOG_CHAT)
 	{
-		action_chat(context, std::string(parameters[0]));
+		action_chat(context, (params[0]));
 		return -1;
 	}
 
 	return lua_execute_script(context->getLuaVm(), context->getLuaVmLock(),
-			script, parameters);
+			scriptName, params);
 }
 
 /**************************************
@@ -2250,31 +2246,30 @@ int action_execute(Context *context, const std::string &actionName,
 {
 	char *script = nullptr;
 
-	if (entry_read_string(ACTION_TABLE.c_str(), actionName.c_str(), &script,
-			ACTION_KEY_SCRIPT, nullptr) == false)
+	std::string scriptName;
+
+	try
+	{
+		scriptName = getDataManager().get<std::string>(ACTION_TABLE, actionName,
+		{ ACTION_KEY_SCRIPT });
+	} catch (...)
 	{
 		ERR_DESIGN("Cannot find script for action " + actionName);
 		return -1;
 	}
 
-	char **params = nullptr;
+	std::vector<std::string> params;
 
-	entry_read_list(ACTION_TABLE.c_str(), actionName.c_str(), &params,
-			ACTION_KEY_PARAM, nullptr);
-
-	char **passed_param = to_array(parameters);
-
-	char **all_params = add_array(params, passed_param);
-
-	free(passed_param);
-	free(params);
-
-	int ret = action_execute_script(context, script, (const char**) all_params);
-
-	free(script);
-	deep_free(all_params);
-
-	return ret;
+	try
+	{
+		params = getDataManager().get<std::vector<std::string>>(ACTION_TABLE,
+				actionName,
+				{ ACTION_KEY_PARAM });
+	} catch (...)
+	{
+		return -1;
+	}
+	return action_execute_script(context, script, params);
 }
 
 /*****************************************************************************/
@@ -2328,8 +2323,15 @@ void action_run_or_execute(Context *context, const std::string &actionName,
 		const std::vector<std::string> &parameters)
 {
 	int coolDownMs = 0;
-	entry_read_int(ACTION_TABLE.c_str(), actionName.c_str(), &coolDownMs,
-			ACTION_KEY_COOLDOWN, nullptr);
+
+	try
+	{
+		coolDownMs = getDataManager().get<int>(ACTION_TABLE, actionName,
+		{ ACTION_KEY_COOLDOWN });
+	} catch (...)
+	{
+		// No cool down
+	}
 
 	if (coolDownMs == 0)
 	{
@@ -2374,7 +2376,15 @@ static int l_call_script(lua_State *L)
 		arg[i] = nullptr; // End of list
 	}
 
-	res = action_execute_script(context, script, (const char**) arg);
+	std::vector<std::string> params;
+	int k = 0;
+	while (arg[k] != nullptr)
+	{
+		params.push_back(std::string(arg[k]));
+		k++;
+	}
+
+	res = action_execute_script(context, std::string(script), params);
 
 	if (arg)
 	{

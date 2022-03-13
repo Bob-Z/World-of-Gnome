@@ -1,7 +1,8 @@
-text            = "Summon black horse"
-icon            = [ "ui/button_up.png", "ui/horse_black.png"]
-#layout 1 is center
-icon_layout     = 1
-icon_click      = [ "ui/button_down.png", "ui/horse_black.png" ]
-script          = "action/summon.lua"
-param		= ( "horse_black" )
+{
+"text"            : "Summon black horse",
+"icon"            : [ "ui/button_up.png", "ui/horse_black.png"],
+"icon_layout"     : 1,
+"icon_click"      : [ "ui/button_down.png", "ui/horse_black.png" ],
+"script"          : "action/summon.lua",
+"param"  : [ "horse_black" ]
+}

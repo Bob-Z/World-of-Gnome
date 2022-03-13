@@ -156,7 +156,7 @@ int attribute_change(Context *context, const char *table, const char *id,
 	// do automatic actions
 	if (do_down_action == true && down_action != nullptr)
 	{
-		action_execute_script(context, down_action, nullptr);
+		action_execute_script(context, std::string(down_action), {});
 	}
 	if (down_action)
 	{
@@ -165,7 +165,7 @@ int attribute_change(Context *context, const char *table, const char *id,
 
 	if (do_min_action == true && min_action != nullptr)
 	{
-		action_execute_script(context, min_action, nullptr);
+		action_execute_script(context, std::string(min_action), {});
 	}
 	if (min_action)
 	{
@@ -174,7 +174,7 @@ int attribute_change(Context *context, const char *table, const char *id,
 
 	if (do_up_action == true && up_action != nullptr)
 	{
-		action_execute_script(context, up_action, nullptr);
+		action_execute_script(context, std::string(up_action), {});
 	}
 	if (min_action)
 	{
@@ -183,7 +183,7 @@ int attribute_change(Context *context, const char *table, const char *id,
 
 	if (do_max_action == true && max_action != nullptr)
 	{
-		action_execute_script(context, max_action, nullptr);
+		action_execute_script(context, std::string(max_action), {});
 		free(max_action);
 	}
 	if (max_action)

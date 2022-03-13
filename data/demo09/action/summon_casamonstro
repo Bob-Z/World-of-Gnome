@@ -1,7 +1,8 @@
-text            = "Summon Casa Monstro";
-icon            = [ "ui/button_up.png", "sprite/casamonstro/marquee.png" ];
-icon_click      = [ "ui/button_down.png", "sprite/casamonstro/marquee.png" ];
-# layout 1 = center
-icon_layout     = 1
-script          = "action/summon.lua";
-param		= ( "casamonstro" );
+{
+"text"            : "Summon Casa Monstro",
+"icon"            : [ "ui/button_up.png", "sprite/casamonstro/marquee.png" ],
+"icon_click"      : [ "ui/button_down.png", "sprite/casamonstro/marquee.png" ],
+"icon_layout"     : 1,
+"script"          : "action/summon.lua",
+"param"  : [ "casamonstro" ]
+}

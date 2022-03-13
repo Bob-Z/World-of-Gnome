@@ -1,3 +1,5 @@
-text		= "Select character";
-icon		= "none";
-script		= "select_character.lua";
+{
+"text"  : "Select character",
+"icon"  : "none",
+"script"  : "select_character.lua"
+}

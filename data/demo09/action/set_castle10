@@ -1,6 +1,7 @@
-text            = "Build a castle";
-icon            = [ "ui/button_up.png", "ui/castle10.png" ];
-#icon_over       = "icon/bat_over.png";
-icon_click      = [ "ui/button_down.png", "ui/castle10.png" ];
-script          = "action/add_scenery.lua";
-param		= ( "11", "scenery/castle10.png" );
+{
+"text"            : "Build a castle",
+"icon"            : [ "ui/button_up.png", "ui/castle10.png" ],
+"icon_click"      : [ "ui/button_down.png", "ui/castle10.png" ],
+"script"          : "action/add_scenery.lua",
+"param"  : [ "11", "scenery/castle10.png" ]
+}

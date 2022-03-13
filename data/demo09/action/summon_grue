@@ -1,6 +1,7 @@
-text            = "Summon grue";
-icon            = [ "ui/button_up.png", "ui/grue.png" ];
-#icon_over       = "icon/bat_over.png";
-icon_click      = [ "ui/button_down.png", "ui/grue.png" ];
-script          = "action/summon.lua";
-param		= ( "grue" );
+{
+"text"            : "Summon grue",
+"icon"            : [ "ui/button_up.png", "ui/grue.png" ],
+"icon_click"      : [ "ui/button_down.png", "ui/grue.png" ],
+"script"          : "action/summon.lua",
+"param"  : [ "grue" ]
+}

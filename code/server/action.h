@@ -25,12 +25,16 @@
 
 class Context;
 
-void action_parse_frame(Context * context, char * frame);
-void action_run_or_execute(Context * context, const std::string & actionName, const std::vector<std::string> & parameters);
-int action_execute(Context * context, const std::string & actionName, const std::vector<std::string> & parameters);
-void action_run(Context * context, const std::string & actionName, const std::vector<std::string> & parameters);
-void action_stop(Context * context, const std::string & actionName);
-int action_execute_script(Context * context, const char * script, const char ** parameters);
-void register_lua_functions(Context * context);
+void action_parse_frame(Context *context, char *frame);
+void action_run_or_execute(Context *context, const std::string &actionName,
+		const std::vector<std::string> &parameters);
+int action_execute(Context *context, const std::string &actionName,
+		const std::vector<std::string> &parameters);
+void action_run(Context *context, const std::string &actionName,
+		const std::vector<std::string> &parameters);
+void action_stop(Context *context, const std::string &actionName);
+int action_execute_script(Context *context, const std::string &scriptName,
+		const std::vector<std::string> &params);
+void register_lua_functions(Context *context);
 
 #endif

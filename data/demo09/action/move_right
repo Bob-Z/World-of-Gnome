@@ -1,5 +1,7 @@
-text		= "Go right";
-icon		= "none";
-script		= "move.lua";
-param		= ( "1" , "0" );
-cooldown        = 100;
+{
+"text"  : "Go right",
+"icon"  : "none",
+"script"  : "move.lua",
+"param"  : [ "1" , "0" ],
+"cooldown"        : 100
+}

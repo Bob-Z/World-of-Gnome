@@ -231,8 +231,6 @@ static const std::string ACTION_TABLE
 { "action" };
 static const std::string ACTION_KEY_SCRIPT
 { "script" };
-static const std::string ACTION_KEY_TEXT
-{ "text" };
 static const std::string ACTION_KEY_ICON
 { "icon" };
 static const std::string ACTION_KEY_ICON_OVER

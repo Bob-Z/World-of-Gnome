@@ -111,8 +111,8 @@ void character_user_send(Connection &connection, const std::string &id)
 	char *type = nullptr;
 	char *name = nullptr;
 
-	if (entry_read_string(CHARACTER_TABLE, id, &type, CHARACTER_KEY_TYPE.c_str(),
-			nullptr) == false)
+	if (entry_read_string(CHARACTER_TABLE, id, &type,
+			CHARACTER_KEY_TYPE.c_str(), nullptr) == false)
 	{
 		ERR("Cannot read CHARACTER_KEY_TYPE for character " + id);
 		return;
@@ -298,9 +298,18 @@ static void execute_aggro(Context *agressor, const Context &target,
 
 	param[0] = target.getId().c_str();
 	param[2] = nullptr;
-	action_execute_script(agressor, script, param);
 
+	std::vector<std::string> params;
+	int i = 0;
+	while (param[i] != nullptr)
+	{
+		params.push_back(std::string(param[i]));
+		i++;
+	}
+
+	action_execute_script(agressor, std::string(script), params);
 }
+
 /***********************************************************************
  Call aggro script for each context in every NPC context aggro dist
  ***********************************************************************/
@@ -333,7 +342,8 @@ void character_update_aggro(Context *agressor)
 				&aggro_dist, CHARACTER_KEY_AGGRO_DIST, nullptr) == true)
 		{
 			if (entry_read_string(CHARACTER_TABLE, agressor->getId(),
-					&aggro_script, CHARACTER_KEY_AGGRO_SCRIPT.c_str(), nullptr) == true)
+					&aggro_script, CHARACTER_KEY_AGGRO_SCRIPT.c_str(),
+					nullptr) == true)
 			{
 				target = context_get_first();
 
@@ -410,8 +420,8 @@ void character_update_aggro(Context *agressor)
 			npc = npc->m_next;
 			continue;
 		}
-		if (entry_read_string(CHARACTER_TABLE, npc->getId(),
-				&aggro_script, CHARACTER_KEY_AGGRO_SCRIPT.c_str(), nullptr) == false)
+		if (entry_read_string(CHARACTER_TABLE, npc->getId(), &aggro_script,
+				CHARACTER_KEY_AGGRO_SCRIPT.c_str(), nullptr) == false)
 		{
 			npc = npc->m_next;
 			continue;
@@ -537,7 +547,15 @@ int character_set_pos(Context *ctx, const std::string &map, int x, int y)
 		coord[1] = strdup(buf);
 		coord[2] = nullptr;
 
-		ret_value = action_execute_script(ctx, script, (const char**) coord);
+		std::vector<std::string> params;
+		int k = 0;
+		while (coord[k] != nullptr)
+		{
+			params.push_back(std::string(coord[k]));
+			k++;
+		}
+
+		ret_value = action_execute_script(ctx, std::string(script), params);
 
 		free(coord[0]);
 		free(coord[1]);
@@ -626,20 +644,20 @@ int character_set_pos(Context *ctx, const std::string &map, int x, int y)
 		{
 			script = nullptr;
 			if (entry_read_string(MAP_TABLE, map, &script, layer_name,
-					MAP_ENTRY_EVENT_LIST.c_str(), event_id[i], MAP_EVENT_SCRIPT.c_str(),
-					nullptr) == true)
+					MAP_ENTRY_EVENT_LIST.c_str(), event_id[i],
+					MAP_EVENT_SCRIPT.c_str(), nullptr) == true)
 			{
 				entry_read_list(MAP_TABLE, map, &param, layer_name,
-						MAP_ENTRY_EVENT_LIST.c_str(), event_id[i], MAP_EVENT_PARAM.c_str(),
-						nullptr);
+						MAP_ENTRY_EVENT_LIST.c_str(), event_id[i],
+						MAP_EVENT_PARAM.c_str(), nullptr);
 			}
 			else if (entry_read_string(MAP_TABLE, map, &script,
-					MAP_ENTRY_EVENT_LIST.c_str(), event_id[i], MAP_EVENT_SCRIPT.c_str(),
-					nullptr) == true)
+					MAP_ENTRY_EVENT_LIST.c_str(), event_id[i],
+					MAP_EVENT_SCRIPT.c_str(), nullptr) == true)
 			{
 				entry_read_list(MAP_TABLE, map, &param,
-						MAP_ENTRY_EVENT_LIST.c_str(), event_id[i], MAP_EVENT_PARAM.c_str(),
-						nullptr);
+						MAP_ENTRY_EVENT_LIST.c_str(), event_id[i],
+						MAP_EVENT_PARAM.c_str(), nullptr);
 			}
 
 			if (script == nullptr)
@@ -648,7 +666,14 @@ int character_set_pos(Context *ctx, const std::string &map, int x, int y)
 				continue;
 			}
 
-			action_execute_script(ctx, script, (const char**) param);
+			std::vector<std::string> params;
+			int k = 0;
+			while (param[k] != nullptr)
+			{
+				params.push_back(std::string(param[k]));
+				k++;
+			}
+			action_execute_script(ctx, std::string(script), params);
 
 			free(script);
 			deep_free(param);

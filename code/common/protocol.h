@@ -22,10 +22,13 @@
 
 #include <string>
 
-const std::string ENTRY_TYPE_INT("int");
-const std::string ENTRY_TYPE_STRING("string");
+const std::string ENTRY_TYPE_INT
+{ "int" };
+const std::string ENTRY_TYPE_STRING
+{ "string" };
 
 // Special action script name for chat
-#define WOG_CHAT	"__wog_chat__"
+static const std::string WOG_CHAT
+{ "__wog_chat__" };
 
 #endif

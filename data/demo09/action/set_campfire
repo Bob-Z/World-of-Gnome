@@ -1,6 +1,7 @@
-text            = "Set up camp fire";
-icon            = [ "ui/button_up.png", "ui/campfire.png" ];
-#icon_over       = "icon/bat_over.png";
-icon_click      = [ "ui/button_down.png", "ui/campfire.png" ];
-script          = "action/add_scenery.lua";
-param		= ( "11", "scenery/campfire.zip" );
+{
+"text"            : "Set up camp fire",
+"icon"            : [ "ui/button_up.png", "ui/campfire.png" ],
+"icon_click"      : [ "ui/button_down.png", "ui/campfire.png" ],
+"script"          : "action/add_scenery.lua",
+"param"  : [ "11", "scenery/campfire.zip" ]
+}

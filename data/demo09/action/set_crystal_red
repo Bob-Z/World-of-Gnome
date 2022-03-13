@@ -1,7 +1,8 @@
-text            = "Build a red crystal";
-icon            = [ "ui/button_up.png", "scenery/crystal_red.png" ];
-#icon_over       = "icon/bat_over.png";
-icon_click      = [ "ui/button_down.png", "scenery/crystal_red.png" ];
-icon_layout     = 1
-script          = "action/add_scenery.lua";
-param		= ( "11", "scenery/crystal_red.png" );
+{
+"text"            : "Build a red crystal",
+"icon"            : [ "ui/button_up.png", "scenery/crystal_red.png" ],
+"icon_click"      : [ "ui/button_down.png", "scenery/crystal_red.png" ],
+"icon_layout"     : 1,
+"script"          : "action/add_scenery.lua",
+"param"  : [ "11", "scenery/crystal_red.png" ]
+}

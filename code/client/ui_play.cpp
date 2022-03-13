@@ -83,9 +83,9 @@ static int firstAction = 0;
 static int numAction = 0;
 
 /*****************************************************************************/
-static void draw_background(Context * ctx, std::vector<SdlItem *> & itemArray)
+static void draw_background(Context *ctx, std::vector<SdlItem*> &itemArray)
 {
-	static SiAnim * bgAnim = nullptr;
+	static SiAnim *bgAnim = nullptr;
 	if (bgAnim != nullptr)
 	{
 		delete bgAnim;
@@ -96,7 +96,7 @@ static void draw_background(Context * ctx, std::vector<SdlItem *> & itemArray)
 	sdl_get_output_size(&sw, &sh);
 	bgAnim = anim_create_color(sw, sh, BACKGROUND_COLOR);
 
-	SdlItem * item = new SdlItem;
+	SdlItem *item = new SdlItem;
 	itemArray.push_back(item);
 
 	item->setPos(0, 0);
@@ -118,7 +118,7 @@ UiType ui_play_get()
 }
 
 /*****************************************************************************/
-const std::string & ui_play_get_last_action()
+const std::string& ui_play_get_last_action()
 {
 	return lastAction;
 }
@@ -130,10 +130,10 @@ static void cb_main_quit()
 	{
 		context_get_player()->setInGame(false);
 		network_request_stop(*(context_get_player()->getConnection()));
-		Context * currentCtx = context_get_first();
+		Context *currentCtx = context_get_first();
 		while (currentCtx != nullptr)
 		{
-			Context * nextCtx = currentCtx->m_next;
+			Context *nextCtx = currentCtx->m_next;
 			if (currentCtx != context_get_player())
 			{
 				currentCtx->setInGame(false);
@@ -169,12 +169,13 @@ static void cb_main_quit()
 /*****************************************************************************/
 static void key_up()
 {
-	Context * ctx = context_get_player();
+	Context *ctx = context_get_player();
 
 	try
 	{
-		network_send_action(*(ctx->getConnection()), getDataManager().get<std::string>("", CLIENT_CONF_FILE,
-		{ CLIENT_KEY_ACTION_MOVE_UP }), nullptr);
+		network_send_action(*(ctx->getConnection()),
+				getDataManager().get<std::string>("", CLIENT_CONF_FILE,
+				{ CLIENT_KEY_ACTION_MOVE_UP }), nullptr);
 	} catch (...)
 	{
 	}
@@ -183,12 +184,13 @@ static void key_up()
 /*****************************************************************************/
 static void key_up_released()
 {
-	Context * ctx = context_get_player();
+	Context *ctx = context_get_player();
 
 	try
 	{
-		network_send_action_stop(*(ctx->getConnection()), getDataManager().get<std::string>("", CLIENT_CONF_FILE,
-		{ CLIENT_KEY_ACTION_MOVE_UP }));
+		network_send_action_stop(*(ctx->getConnection()),
+				getDataManager().get<std::string>("", CLIENT_CONF_FILE,
+				{ CLIENT_KEY_ACTION_MOVE_UP }));
 	} catch (...)
 	{
 	}
@@ -197,12 +199,13 @@ static void key_up_released()
 /*****************************************************************************/
 static void key_down()
 {
-	Context * ctx = context_get_player();
+	Context *ctx = context_get_player();
 
 	try
 	{
-		network_send_action(*(ctx->getConnection()), getDataManager().get<std::string>("", CLIENT_CONF_FILE,
-		{ CLIENT_KEY_ACTION_MOVE_DOWN }), nullptr);
+		network_send_action(*(ctx->getConnection()),
+				getDataManager().get<std::string>("", CLIENT_CONF_FILE,
+				{ CLIENT_KEY_ACTION_MOVE_DOWN }), nullptr);
 	} catch (...)
 	{
 	}
@@ -211,12 +214,13 @@ static void key_down()
 /*****************************************************************************/
 static void key_down_released()
 {
-	Context * ctx = context_get_player();
+	Context *ctx = context_get_player();
 
 	try
 	{
-		network_send_action_stop(*(ctx->getConnection()), getDataManager().get<std::string>("", CLIENT_CONF_FILE,
-		{ CLIENT_KEY_ACTION_MOVE_DOWN }));
+		network_send_action_stop(*(ctx->getConnection()),
+				getDataManager().get<std::string>("", CLIENT_CONF_FILE,
+				{ CLIENT_KEY_ACTION_MOVE_DOWN }));
 	} catch (...)
 	{
 	}
@@ -225,12 +229,13 @@ static void key_down_released()
 /*****************************************************************************/
 static void key_left()
 {
-	Context * ctx = context_get_player();
+	Context *ctx = context_get_player();
 
 	try
 	{
-		network_send_action(*(ctx->getConnection()), getDataManager().get<std::string>("", CLIENT_CONF_FILE,
-		{ CLIENT_KEY_ACTION_MOVE_LEFT }), nullptr);
+		network_send_action(*(ctx->getConnection()),
+				getDataManager().get<std::string>("", CLIENT_CONF_FILE,
+				{ CLIENT_KEY_ACTION_MOVE_LEFT }), nullptr);
 	} catch (...)
 	{
 	}
@@ -239,12 +244,13 @@ static void key_left()
 /*****************************************************************************/
 static void key_left_released()
 {
-	Context * ctx = context_get_player();
+	Context *ctx = context_get_player();
 
 	try
 	{
-		network_send_action_stop(*(ctx->getConnection()), getDataManager().get<std::string>("", CLIENT_CONF_FILE,
-		{ CLIENT_KEY_ACTION_MOVE_LEFT }));
+		network_send_action_stop(*(ctx->getConnection()),
+				getDataManager().get<std::string>("", CLIENT_CONF_FILE,
+				{ CLIENT_KEY_ACTION_MOVE_LEFT }));
 	} catch (...)
 	{
 	}
@@ -253,12 +259,13 @@ static void key_left_released()
 /*****************************************************************************/
 static void key_right()
 {
-	Context * ctx = context_get_player();
+	Context *ctx = context_get_player();
 
 	try
 	{
-		network_send_action(*(ctx->getConnection()), getDataManager().get<std::string>("", CLIENT_CONF_FILE,
-		{ CLIENT_KEY_ACTION_MOVE_RIGHT }), nullptr);
+		network_send_action(*(ctx->getConnection()),
+				getDataManager().get<std::string>("", CLIENT_CONF_FILE,
+				{ CLIENT_KEY_ACTION_MOVE_RIGHT }), nullptr);
 	} catch (...)
 	{
 	}
@@ -267,12 +274,13 @@ static void key_right()
 /*****************************************************************************/
 static void key_right_released()
 {
-	Context * ctx = context_get_player();
+	Context *ctx = context_get_player();
 
 	try
 	{
-		network_send_action_stop(*(ctx->getConnection()), getDataManager().get<std::string>("", CLIENT_CONF_FILE,
-		{ CLIENT_KEY_ACTION_MOVE_RIGHT }));
+		network_send_action_stop(*(ctx->getConnection()),
+				getDataManager().get<std::string>("", CLIENT_CONF_FILE,
+				{ CLIENT_KEY_ACTION_MOVE_RIGHT }));
 	} catch (...)
 	{
 	}
@@ -281,12 +289,13 @@ static void key_right_released()
 /*****************************************************************************/
 static void key_up_left()
 {
-	Context * ctx = context_get_player();
+	Context *ctx = context_get_player();
 
 	try
 	{
-		network_send_action(*(ctx->getConnection()), getDataManager().get<std::string>("", CLIENT_CONF_FILE,
-		{ CLIENT_KEY_ACTION_MOVE_UP_LEFT }), nullptr);
+		network_send_action(*(ctx->getConnection()),
+				getDataManager().get<std::string>("", CLIENT_CONF_FILE,
+				{ CLIENT_KEY_ACTION_MOVE_UP_LEFT }), nullptr);
 	} catch (...)
 	{
 	}
@@ -295,12 +304,13 @@ static void key_up_left()
 /*****************************************************************************/
 static void key_up_left_released()
 {
-	Context * ctx = context_get_player();
+	Context *ctx = context_get_player();
 
 	try
 	{
-		network_send_action_stop(*(ctx->getConnection()), getDataManager().get<std::string>("", CLIENT_CONF_FILE,
-		{ CLIENT_KEY_ACTION_MOVE_UP_LEFT }));
+		network_send_action_stop(*(ctx->getConnection()),
+				getDataManager().get<std::string>("", CLIENT_CONF_FILE,
+				{ CLIENT_KEY_ACTION_MOVE_UP_LEFT }));
 	} catch (...)
 	{
 	}
@@ -309,12 +319,13 @@ static void key_up_left_released()
 /*****************************************************************************/
 static void key_up_right()
 {
-	Context * ctx = context_get_player();
+	Context *ctx = context_get_player();
 
 	try
 	{
-		network_send_action(*(ctx->getConnection()), getDataManager().get<std::string>("", CLIENT_CONF_FILE,
-		{ CLIENT_KEY_ACTION_MOVE_UP_RIGHT }), nullptr);
+		network_send_action(*(ctx->getConnection()),
+				getDataManager().get<std::string>("", CLIENT_CONF_FILE,
+				{ CLIENT_KEY_ACTION_MOVE_UP_RIGHT }), nullptr);
 	} catch (...)
 	{
 	}
@@ -323,12 +334,13 @@ static void key_up_right()
 /*****************************************************************************/
 static void key_up_right_released()
 {
-	Context * ctx = context_get_player();
+	Context *ctx = context_get_player();
 
 	try
 	{
-		network_send_action_stop(*(ctx->getConnection()), getDataManager().get<std::string>("", CLIENT_CONF_FILE,
-		{ CLIENT_KEY_ACTION_MOVE_UP_RIGHT }));
+		network_send_action_stop(*(ctx->getConnection()),
+				getDataManager().get<std::string>("", CLIENT_CONF_FILE,
+				{ CLIENT_KEY_ACTION_MOVE_UP_RIGHT }));
 	} catch (...)
 	{
 	}
@@ -337,12 +349,13 @@ static void key_up_right_released()
 /*****************************************************************************/
 static void key_down_left()
 {
-	Context * ctx = context_get_player();
+	Context *ctx = context_get_player();
 
 	try
 	{
-		network_send_action(*(ctx->getConnection()), getDataManager().get<std::string>("", CLIENT_CONF_FILE,
-		{ CLIENT_KEY_ACTION_MOVE_DOWN_LEFT }), nullptr);
+		network_send_action(*(ctx->getConnection()),
+				getDataManager().get<std::string>("", CLIENT_CONF_FILE,
+				{ CLIENT_KEY_ACTION_MOVE_DOWN_LEFT }), nullptr);
 	} catch (...)
 	{
 	}
@@ -351,12 +364,13 @@ static void key_down_left()
 /*****************************************************************************/
 static void key_down_left_released()
 {
-	Context * ctx = context_get_player();
+	Context *ctx = context_get_player();
 
 	try
 	{
-		network_send_action_stop(*(ctx->getConnection()), getDataManager().get<std::string>("", CLIENT_CONF_FILE,
-		{ CLIENT_KEY_ACTION_MOVE_DOWN_LEFT }));
+		network_send_action_stop(*(ctx->getConnection()),
+				getDataManager().get<std::string>("", CLIENT_CONF_FILE,
+				{ CLIENT_KEY_ACTION_MOVE_DOWN_LEFT }));
 	} catch (...)
 	{
 	}
@@ -365,12 +379,13 @@ static void key_down_left_released()
 /*****************************************************************************/
 static void key_down_right()
 {
-	Context * ctx = context_get_player();
+	Context *ctx = context_get_player();
 
 	try
 	{
-		network_send_action(*(ctx->getConnection()), getDataManager().get<std::string>("", CLIENT_CONF_FILE,
-		{ CLIENT_KEY_ACTION_MOVE_DOWN_RIGHT }), nullptr);
+		network_send_action(*(ctx->getConnection()),
+				getDataManager().get<std::string>("", CLIENT_CONF_FILE,
+				{ CLIENT_KEY_ACTION_MOVE_DOWN_RIGHT }), nullptr);
 	} catch (...)
 	{
 	}
@@ -379,21 +394,22 @@ static void key_down_right()
 /*****************************************************************************/
 static void key_down_right_released()
 {
-	Context * ctx = context_get_player();
+	Context *ctx = context_get_player();
 
 	try
 	{
-		network_send_action_stop(*(ctx->getConnection()), getDataManager().get<std::string>("", CLIENT_CONF_FILE,
-		{ CLIENT_KEY_ACTION_MOVE_DOWN_RIGHT }));
+		network_send_action_stop(*(ctx->getConnection()),
+				getDataManager().get<std::string>("", CLIENT_CONF_FILE,
+				{ CLIENT_KEY_ACTION_MOVE_DOWN_RIGHT }));
 	} catch (...)
 	{
 	}
 }
 
 /*****************************************************************************/
-static int compose_attribute(Context * ctx, std::vector<SdlItem *> & itemArray)
+static int compose_attribute(Context *ctx, std::vector<SdlItem*> &itemArray)
 {
-	static TTF_Font * font = nullptr;
+	static TTF_Font *font = nullptr;
 	if (font == nullptr)
 	{
 		font = font_get(ctx, FONT, FONT_SIZE);
@@ -401,9 +417,9 @@ static int compose_attribute(Context * ctx, std::vector<SdlItem *> & itemArray)
 
 	attributeText.clear();
 
-	char ** nameArray;
+	char **nameArray;
 	if (entry_get_group_list(CHARACTER_TABLE, ctx->getId().c_str(), &nameArray,
-	ATTRIBUTE_GROUP, nullptr) == false)
+			ATTRIBUTE_GROUP, nullptr) == false)
 	{
 		return 0;
 	}
@@ -416,15 +432,18 @@ static int compose_attribute(Context * ctx, std::vector<SdlItem *> & itemArray)
 	while (nameArray[index] != nullptr)
 	{
 		int value;
-		if (entry_read_int(CHARACTER_TABLE, ctx->getId().c_str(), &value, ATTRIBUTE_GROUP, nameArray[index], ATTRIBUTE_CURRENT, nullptr) == false)
+		if (entry_read_int(CHARACTER_TABLE, ctx->getId().c_str(), &value,
+				ATTRIBUTE_GROUP, nameArray[index], ATTRIBUTE_CURRENT,
+				nullptr) == false)
 		{
 			index++;
 			continue;
 		}
 
-		attributeText.push_back(std::string(nameArray[index]) + ": " + std::to_string(value));
+		attributeText.push_back(
+				std::string(nameArray[index]) + ": " + std::to_string(value));
 
-		SdlItem * item = new SdlItem;
+		SdlItem *item = new SdlItem;
 		itemArray.push_back(item);
 
 		item->setOverlay(true);
@@ -453,9 +472,10 @@ static int compose_attribute(Context * ctx, std::vector<SdlItem *> & itemArray)
 }
 
 /*****************************************************************************/
-void ui_play_cb_action(const std::string & action)
+void ui_play_cb_action(const std::string &action)
 {
-	network_send_action(*(context_get_player()->getConnection()), action, nullptr);
+	network_send_action(*(context_get_player()->getConnection()), action,
+			nullptr);
 
 	if (action.size() > 0)
 	{
@@ -487,7 +507,7 @@ static void cb_wheel_down_action()
 }
 
 /*****************************************************************************/
-static int compose_action(Context * ctx, std::vector<SdlItem *> & itemArray)
+static int compose_action(Context *ctx, std::vector<SdlItem*> &itemArray)
 {
 	int action_bar_height = 0;
 
@@ -496,9 +516,9 @@ static int compose_action(Context * ctx, std::vector<SdlItem *> & itemArray)
 	sdl_get_output_size(&sw, &sh);
 
 	// Read action list for current user
-	char ** actionArray = nullptr;
+	char **actionArray = nullptr;
 	if (entry_read_list(CHARACTER_TABLE, ctx->getId().c_str(), &actionArray,
-	CHARACTER_KEY_ACTION, nullptr) == false)
+			CHARACTER_KEY_ACTION, nullptr) == false)
 	{
 		return 0;
 	}
@@ -517,41 +537,34 @@ static int compose_action(Context * ctx, std::vector<SdlItem *> & itemArray)
 			firstAction = i;
 		}
 
-#if 0
-		if (entry_read_string(ACTION_TABLE, actionArray[i], &text,
-		ACTION_KEY_TEXT, nullptr) == false)
+		std::vector<std::string> iconArray;
+
+		try
+		{
+			iconArray = getDataManager().get<std::vector<std::string>>(
+					ACTION_TABLE, actionArray[i],
+					{ ACTION_KEY_ICON });
+		} catch (...)
 		{
 			i++;
 			continue;
 		}
-#endif
 
-		char * icon = nullptr;
-		char ** iconArray = nullptr;
-
-		if (entry_read_string(ACTION_TABLE, actionArray[i], &icon,
-		ACTION_KEY_ICON, nullptr) == true)
-		{
-			iconArray = (char **) malloc(sizeof(char *) * 2);
-			iconArray[0] = icon;
-			iconArray[1] = nullptr;
-		}
-		else
-		{
-			if (entry_read_list(ACTION_TABLE, actionArray[i], &iconArray,
-			ACTION_KEY_ICON, nullptr) == false)
-			{
-				i++;
-				continue;
-			}
-		}
-
-		SdlItem * item = new SdlItem;
+		SdlItem *item = new SdlItem;
 
 		SdlItem::Layout layout = SdlItem::Layout::TOP_LEFT;
-		int layoutRead = 0;
-		entry_read_int(ACTION_TABLE, actionArray[i], &layoutRead,
-		ACTION_KEY_ICON_LAYOUT, nullptr);
+		int layoutRead = -1;
+
+		try
+		{
+			layoutRead = getDataManager().get<int>(ACTION_TABLE, actionArray[i],
+			{ ACTION_KEY_ICON_LAYOUT });
+		} catch (...)
+		{
+			i++;
+			continue;
+		}
+
 		layout = static_cast<SdlItem::Layout>(layoutRead);
 		item->setLayout(layout);
 
@@ -568,15 +581,13 @@ static int compose_action(Context * ctx, std::vector<SdlItem *> & itemArray)
 
 		// load image
 		std::vector<std::string> iconArrayStd;
-		int k = 0;
-		while (iconArray[k] != nullptr)
+		for (std::string &icon : iconArray)
 		{
-			iconArrayStd.push_back(std::string(iconArray[k]));
-			k++;
+			iconArrayStd.push_back(icon);
 		}
-		deep_free(iconArray);
 
-		std::vector<SiAnim*> animArray = imageDB_get_anim_array(ctx, iconArrayStd);
+		std::vector<SiAnim*> animArray = imageDB_get_anim_array(ctx,
+				iconArrayStd);
 		item->setAnim(animArray);
 		item->setPos(x, sh - animArray[0]->getHeight());
 
@@ -587,40 +598,45 @@ static int compose_action(Context * ctx, std::vector<SdlItem *> & itemArray)
 			action_bar_height = animArray[0]->getHeight();
 		}
 
-		char ** iconOver = nullptr;
-		if (entry_read_list(ACTION_TABLE, actionArray[i], &iconOver,
-		ACTION_KEY_ICON_OVER, nullptr) == true)
+		std::vector<std::string> iconOver;
+		try
 		{
+			iconOver = getDataManager().get<std::vector<std::string>>(
+					ACTION_TABLE, actionArray[i],
+					{ ACTION_KEY_ICON_OVER });
+
 			std::vector<std::string> iconOverStd;
-			int i = 0;
-			while (iconOver[i] != nullptr)
+			for (std::string &icon : iconOver)
 			{
-				iconOverStd.push_back(std::string(iconOver[i]));
+				iconOverStd.push_back(icon);
 			}
-			deep_free(iconOver);
 
 			animArray.clear();
 			animArray = imageDB_get_anim_array(ctx, iconOverStd);
 			item->setAnimOver(animArray);
+		} catch (...)
+		{
 		}
 
-		char ** iconClick = nullptr;
-		if (entry_read_list(ACTION_TABLE, actionArray[i], &iconClick,
-		ACTION_KEY_ICON_CLICK, nullptr) == true)
+		std::vector<std::string> iconClick;
+		try
 		{
-			std::vector<std::string> iconClickStd;
-			int j = 0;
-			while (iconClick[j] != nullptr)
-			{
-				iconClickStd.push_back(std::string(iconClick[j]));
-				j++;
-			}
+			iconOver = getDataManager().get<std::vector<std::string>>(
+					ACTION_TABLE, actionArray[i],
+					{ ACTION_KEY_ICON_CLICK });
 
-			deep_free(iconClick);
+			std::vector<std::string> iconClickStd;
+			for (std::string &icon : iconClick)
+			{
+				iconClickStd.push_back(icon);
+			}
 
 			animArray.clear();
 			animArray = imageDB_get_anim_array(ctx, iconClickStd);
 			item->setAnimClick(animArray);
+
+		} catch (...)
+		{
 		}
 
 		itemArray.push_back(item);
@@ -634,14 +650,15 @@ static int compose_action(Context * ctx, std::vector<SdlItem *> & itemArray)
 }
 
 /*****************************************************************************/
-static void cb_select_slot(const std::string & id)
+static void cb_select_slot(const std::string &id)
 {
-	Context * ctx = context_get_player();
+	Context *ctx = context_get_player();
 
 	try
 	{
-		network_send_action(*(ctx->getConnection()), getDataManager().get<std::string>("", CLIENT_CONF_FILE,
-		{ CLIENT_KEY_ACTION_SELECT_EQUIPMENT }), id.c_str(), nullptr);
+		network_send_action(*(ctx->getConnection()),
+				getDataManager().get<std::string>("", CLIENT_CONF_FILE,
+				{ CLIENT_KEY_ACTION_SELECT_EQUIPMENT }), id.c_str(), nullptr);
 	} catch (...)
 	{
 	}
@@ -654,31 +671,32 @@ static void show_inventory()
 }
 
 /*****************************************************************************/
-static void compose_equipment(Context * ctx, std::vector<SdlItem*> & itemArray)
+static void compose_equipment(Context *ctx, std::vector<SdlItem*> &itemArray)
 {
-	SiAnim * anim;
-	SiAnim * anim2;
-	SiAnim * anim3;
+	SiAnim *anim;
+	SiAnim *anim2;
+	SiAnim *anim3;
 
-	char * mytemplate = nullptr;
+	char *mytemplate = nullptr;
 #if 0
 	char * name;
 #endif
-	char * iconName = nullptr;
-	char * equippedName = nullptr;
+	char *iconName = nullptr;
+	char *equippedName = nullptr;
 #if 0
 	char * equipped_text = nullptr;
 #endif
-	char * equippedIconName = nullptr;
-	char * inventoryIconName = nullptr;
-	SiAnim * inventoryIconAnim = nullptr;
+	char *equippedIconName = nullptr;
+	char *inventoryIconName = nullptr;
+	SiAnim *inventoryIconAnim = nullptr;
 
 	int sw = 0;
 	int sh = 0;
 	sdl_get_output_size(&sw, &sh);
 
-	char ** slot_list = nullptr;
-	entry_get_group_list(CHARACTER_TABLE, ctx->getId().c_str(), &slot_list, EQUIPMENT_GROUP, nullptr);
+	char **slot_list = nullptr;
+	entry_get_group_list(CHARACTER_TABLE, ctx->getId().c_str(), &slot_list,
+			EQUIPMENT_GROUP, nullptr);
 
 	int max_h = 0;
 	int max_w = 0;
@@ -703,7 +721,8 @@ static void compose_equipment(Context * ctx, std::vector<SdlItem*> & itemArray)
 		h1 = 0;
 		// Get the slot icon
 		if (entry_read_string(CHARACTER_TABLE, ctx->getId().c_str(), &iconName,
-		EQUIPMENT_GROUP, slot_list[index], EQUIPMENT_ICON, nullptr) == false)
+				EQUIPMENT_GROUP, slot_list[index], EQUIPMENT_ICON,
+				nullptr) == false)
 		{
 			continue;
 		}
@@ -713,7 +732,7 @@ static void compose_equipment(Context * ctx, std::vector<SdlItem*> & itemArray)
 			anim = imageDB_get_anim(ctx, iconName);
 			free(iconName);
 
-			SdlItem * item = new SdlItem;
+			SdlItem *item = new SdlItem;
 			itemArray.push_back(item);
 
 			x = sw - anim->getWidth();
@@ -737,8 +756,9 @@ static void compose_equipment(Context * ctx, std::vector<SdlItem*> & itemArray)
 		}
 
 		// Is there an equipped object ?
-		if (entry_read_string(CHARACTER_TABLE, ctx->getId().c_str(), &equippedName,
-		EQUIPMENT_GROUP, slot_list[index], EQUIPMENT_EQUIPPED, nullptr) == true && equippedName[0] != 0)
+		if (entry_read_string(CHARACTER_TABLE, ctx->getId().c_str(),
+				&equippedName, EQUIPMENT_GROUP, slot_list[index],
+				EQUIPMENT_EQUIPPED, nullptr) == true && equippedName[0] != 0)
 		{
 #if 0
 			// Get the equipped object name
@@ -753,23 +773,29 @@ static void compose_equipment(Context * ctx, std::vector<SdlItem*> & itemArray)
 
 			if (mytemplate == nullptr)
 			{
-				if (entry_read_string(ITEM_TABLE, equippedName, &equippedIconName, ITEM_ICON, nullptr) == false)
+				if (entry_read_string(ITEM_TABLE, equippedName,
+						&equippedIconName, ITEM_ICON, nullptr) == false)
 				{
-					werr(LOGDESIGNER, "Can't read object %s icon in equipment slot %s", equippedName, slot_list[index]);
+					werr(LOGDESIGNER,
+							"Can't read object %s icon in equipment slot %s",
+							equippedName, slot_list[index]);
 				}
 			}
 			else
 			{
-				if (entry_read_string(ITEM_TEMPLATE_TABLE, mytemplate, &equippedIconName, ITEM_ICON, nullptr) == false)
+				if (entry_read_string(ITEM_TEMPLATE_TABLE, mytemplate,
+						&equippedIconName, ITEM_ICON, nullptr) == false)
 				{
-					werr(LOGDESIGNER, "Can't read item %s icon name (template: %s)", equippedName, mytemplate);
+					werr(LOGDESIGNER,
+							"Can't read item %s icon name (template: %s)",
+							equippedName, mytemplate);
 				}
 				free(mytemplate);
 			}
 
 			if (equippedIconName)
 			{
-				SdlItem * item = new SdlItem;
+				SdlItem *item = new SdlItem;
 				itemArray.push_back(item);
 
 				anim2 = imageDB_get_anim(ctx, equippedIconName);
@@ -792,8 +818,9 @@ static void compose_equipment(Context * ctx, std::vector<SdlItem*> & itemArray)
 		}
 
 		// Draw selection cursor
-		std::string cursor_equipment = getDataManager().getNoExcept<std::string>("", CLIENT_CONF_FILE,
-		{ CLIENT_KEY_CURSOR_EQUIPMENT }, "");
+		std::string cursor_equipment =
+				getDataManager().getNoExcept<std::string>("", CLIENT_CONF_FILE,
+				{ CLIENT_KEY_CURSOR_EQUIPMENT }, "");
 
 		if (cursor_equipment.empty() == false)
 		{
@@ -801,12 +828,13 @@ static void compose_equipment(Context * ctx, std::vector<SdlItem*> & itemArray)
 			{
 				anim3 = imageDB_get_anim(ctx, cursor_equipment);
 
-				SdlItem * item = new SdlItem;
+				SdlItem *item = new SdlItem;
 				itemArray.push_back(item);
 
 				// Center on icon
 				item->setOverlay(true);
-				item->setPos(x - (anim3->getWidth() - anim->getWidth()) / 2, y - (anim3->getHeight() - anim->getWidth()) / 2);
+				item->setPos(x - (anim3->getWidth() - anim->getWidth()) / 2,
+						y - (anim3->getHeight() - anim->getWidth()) / 2);
 				item->setAnim(anim3);
 			}
 		}
@@ -825,7 +853,7 @@ static void compose_equipment(Context * ctx, std::vector<SdlItem*> & itemArray)
 	deep_free(slot_list);
 
 	// Draw selected item
-	const std::string & inventory = ctx->getSelectionInventory();
+	const std::string &inventory = ctx->getSelectionInventory();
 
 	if (inventory != "")
 	{
@@ -833,23 +861,27 @@ static void compose_equipment(Context * ctx, std::vector<SdlItem*> & itemArray)
 
 		if (mytemplate == nullptr)
 		{
-			if (entry_read_string(ITEM_TABLE, inventory.c_str(), &inventoryIconName, ITEM_ICON, nullptr) == false)
+			if (entry_read_string(ITEM_TABLE, inventory.c_str(),
+					&inventoryIconName, ITEM_ICON, nullptr) == false)
 			{
-				werr(LOGDESIGNER, "Can't read item %s icon name", inventory.c_str());
+				werr(LOGDESIGNER, "Can't read item %s icon name",
+						inventory.c_str());
 			}
 		}
 		else
 		{
-			if (entry_read_string(ITEM_TEMPLATE_TABLE, mytemplate, &inventoryIconName, ITEM_ICON, nullptr) == false)
+			if (entry_read_string(ITEM_TEMPLATE_TABLE, mytemplate,
+					&inventoryIconName, ITEM_ICON, nullptr) == false)
 			{
-				werr(LOGDESIGNER, "Can't read item %s icon name (template: %s)", inventory.c_str(), mytemplate);
+				werr(LOGDESIGNER, "Can't read item %s icon name (template: %s)",
+						inventory.c_str(), mytemplate);
 			}
 			free(mytemplate);
 		}
 
 		if (inventoryIconName)
 		{
-			SdlItem * item = new SdlItem;
+			SdlItem *item = new SdlItem;
 			itemArray.push_back(item);
 
 			anim = imageDB_get_anim(ctx, inventoryIconName);
@@ -879,7 +911,7 @@ static void compose_equipment(Context * ctx, std::vector<SdlItem*> & itemArray)
 			inventoryIconAnim = anim_create_color(max_w, max_h, 0x7f7f7f7f);
 		}
 
-		SdlItem * item = new SdlItem;
+		SdlItem *item = new SdlItem;
 		itemArray.push_back(item);
 
 		item->setOverlay(true);
@@ -894,7 +926,8 @@ static void compose_equipment(Context * ctx, std::vector<SdlItem*> & itemArray)
 /*****************************************************************************/
 static void keyboard_text(std::string text)
 {
-	network_send_action(*(context_get_player()->getConnection()), WOG_CHAT, text, nullptr);
+	network_send_action(*(context_get_player()->getConnection()), WOG_CHAT,
+			text, nullptr);
 	textBuffer.clear();
 	screen_compose();
 }
@@ -903,10 +936,11 @@ static void keyboard_text(std::string text)
  ****************************/
 static void cb_print_coord()
 {
-	Context * ctx = context_get_player();
+	Context *ctx = context_get_player();
 
 	int mapWidth = 0;
-	entry_read_int(MAP_TABLE, ctx->getMap().c_str(), &mapWidth, MAP_KEY_WIDTH, nullptr);
+	entry_read_int(MAP_TABLE, ctx->getMap().c_str(), &mapWidth, MAP_KEY_WIDTH,
+			nullptr);
 
 //TODO: take layer into account
 #if 0
@@ -914,16 +948,17 @@ static void cb_print_coord()
 	sprintf(buf,"x=%d y=%d type=%s",scr_play_get_current_x(),scr_play_get_current_y(),type);
 	free(type);
 #endif
-	std::string text = "x= " + std::to_string(scr_play_get_current_x()) + " y=" + std::to_string(scr_play_get_current_y());
+	std::string text = "x= " + std::to_string(scr_play_get_current_x()) + " y="
+			+ std::to_string(scr_play_get_current_y());
 	textview_add_line(text);
 
 	screen_compose();
 }
 
 /*****************************************************************************/
-static void main_compose(Context * ctx, std::vector<SdlItem*> & itemArray)
+static void main_compose(Context *ctx, std::vector<SdlItem*> &itemArray)
 {
-	static TTF_Font * font = font_get(ctx, TEXT_FONT, TEXT_FONT_SIZE);
+	static TTF_Font *font = font_get(ctx, TEXT_FONT, TEXT_FONT_SIZE);
 	static ChatBox chatBox(font, keyboard_text);
 
 	int attribute_height = compose_attribute(ctx, itemArray);
@@ -968,24 +1003,26 @@ static void cb_inventory_quit()
 }
 
 /*****************************************************************************/
-void cb_inventory_select(const std::string & itemId)
+void cb_inventory_select(const std::string &itemId)
 {
-	Context * ctx = context_get_player();
+	Context *ctx = context_get_player();
 
 	try
 	{
-		network_send_action(*(ctx->getConnection()), getDataManager().get<std::string>("", CLIENT_CONF_FILE,
-		{ CLIENT_KEY_ACTION_SELECT_INVENTORY }), itemId.c_str(), nullptr);
+		network_send_action(*(ctx->getConnection()),
+				getDataManager().get<std::string>("", CLIENT_CONF_FILE,
+				{ CLIENT_KEY_ACTION_SELECT_INVENTORY }), itemId.c_str(),
+				nullptr);
 	} catch (...)
 	{
 	}
 }
 
 /*****************************************************************************/
-static void compose_inventory(Context * ctx, std::vector<SdlItem*> & itemArray)
+static void compose_inventory(Context *ctx, std::vector<SdlItem*> &itemArray)
 {
 	std::string description;
-	static TTF_Font * font = nullptr;
+	static TTF_Font *font = nullptr;
 
 	if (font != nullptr)
 	{
@@ -997,9 +1034,9 @@ static void compose_inventory(Context * ctx, std::vector<SdlItem*> & itemArray)
 	draw_background(ctx, itemArray);
 
 	// read data from file
-	char ** inventoryList = nullptr;
+	char **inventoryList = nullptr;
 	if (entry_read_list(CHARACTER_TABLE, ctx->getId().c_str(), &inventoryList,
-	CHARACTER_KEY_INVENTORY, nullptr) == false)
+			CHARACTER_KEY_INVENTORY, nullptr) == false)
 	{
 		return;
 	}
@@ -1014,17 +1051,17 @@ static void compose_inventory(Context * ctx, std::vector<SdlItem*> & itemArray)
 	std::string label;
 	int x = 0;
 
-	for (auto && inventoryId : inventoryArray)
+	for (auto &&inventoryId : inventoryArray)
 	{
-		char * mytemplate = item_is_resource(std::string(inventoryArray[i]));
+		char *mytemplate = item_is_resource(std::string(inventoryArray[i]));
 
-		SiAnim * anim = nullptr;
-		char * value = nullptr;
+		SiAnim *anim = nullptr;
+		char *value = nullptr;
 		if (mytemplate == nullptr)
 		{
 			// Icon is mandatory for now
 			if (entry_read_string(ITEM_TABLE, inventoryId.c_str(), &value,
-			ITEM_ICON, nullptr) == false)
+					ITEM_ICON, nullptr) == false)
 			{
 				continue;
 			}
@@ -1033,7 +1070,7 @@ static void compose_inventory(Context * ctx, std::vector<SdlItem*> & itemArray)
 			free(value);
 
 			if (entry_read_string(ITEM_TABLE, inventoryId.c_str(), &value,
-			ITEM_NAME, nullptr) == false)
+					ITEM_NAME, nullptr) == false)
 			{
 				label = inventoryId;
 			}
@@ -1043,7 +1080,7 @@ static void compose_inventory(Context * ctx, std::vector<SdlItem*> & itemArray)
 			}
 
 			if (entry_read_string(ITEM_TABLE, inventoryId.c_str(), &value,
-			ITEM_DESC, nullptr) == false)
+					ITEM_DESC, nullptr) == false)
 			{
 				description = "";
 			}
@@ -1056,7 +1093,7 @@ static void compose_inventory(Context * ctx, std::vector<SdlItem*> & itemArray)
 		{
 			// Icon is mandatory for now
 			if (entry_read_string(ITEM_TEMPLATE_TABLE, mytemplate, &value,
-			ITEM_ICON, nullptr) == false)
+					ITEM_ICON, nullptr) == false)
 			{
 				free(mytemplate);
 				continue;
@@ -1066,7 +1103,7 @@ static void compose_inventory(Context * ctx, std::vector<SdlItem*> & itemArray)
 			free(value);
 
 			if (entry_read_string(ITEM_TEMPLATE_TABLE, mytemplate, &value,
-			ITEM_NAME, nullptr) == false)
+					ITEM_NAME, nullptr) == false)
 			{
 				label = inventoryId;
 			}
@@ -1076,7 +1113,7 @@ static void compose_inventory(Context * ctx, std::vector<SdlItem*> & itemArray)
 			}
 
 			if (entry_read_string(ITEM_TEMPLATE_TABLE, mytemplate, &value,
-			ITEM_DESC, nullptr) == false)
+					ITEM_DESC, nullptr) == false)
 			{
 				description = "";
 			}
@@ -1095,7 +1132,7 @@ static void compose_inventory(Context * ctx, std::vector<SdlItem*> & itemArray)
 			int w = 0;
 			int h = 0;
 
-			SdlItem * item = new SdlItem;
+			SdlItem *item = new SdlItem;
 			itemArray.push_back(item);
 
 			item->setPos(x, 0);
@@ -1128,31 +1165,33 @@ static void compose_inventory(Context * ctx, std::vector<SdlItem*> & itemArray)
 }
 
 /*****************************************************************************/
-static void compose_inventory_select(Context * ctx, std::vector<SdlItem*> & itemArray)
+static void compose_inventory_select(Context *ctx,
+		std::vector<SdlItem*> &itemArray)
 {
-	const std::string & inventorySelected = ctx->getSelectionInventory();
+	const std::string &inventorySelected = ctx->getSelectionInventory();
 
 	if (inventorySelected == "")
 	{
 		return;
 	}
 
-	std::string cursor_inventory = getDataManager().getNoExcept<std::string>("", CLIENT_CONF_FILE,
-	{ CLIENT_KEY_CURSOR_INVENTORY }, "");
+	std::string cursor_inventory = getDataManager().getNoExcept<std::string>("",
+			CLIENT_CONF_FILE,
+			{ CLIENT_KEY_CURSOR_INVENTORY }, "");
 
 	if (cursor_inventory.empty() == true)
 	{
 		return;
 	}
 
-	SiAnim * animCursor = imageDB_get_anim(ctx, cursor_inventory);
+	SiAnim *animCursor = imageDB_get_anim(ctx, cursor_inventory);
 
 	inventoryArray.clear();
 
 	// read data from file
-	char ** inventoryList = nullptr;
+	char **inventoryList = nullptr;
 	if (entry_read_list(CHARACTER_TABLE, ctx->getId().c_str(), &inventoryList,
-	CHARACTER_KEY_INVENTORY, nullptr) == false)
+			CHARACTER_KEY_INVENTORY, nullptr) == false)
 	{
 		return;
 	}
@@ -1165,20 +1204,20 @@ static void compose_inventory_select(Context * ctx, std::vector<SdlItem*> & item
 	}
 
 	int x = 0;
-	char * mytemplate = nullptr;
+	char *mytemplate = nullptr;
 	bool isItemFound = false;
-	SiAnim * iconAnim = nullptr;
+	SiAnim *iconAnim = nullptr;
 
-	for (auto && inventory : inventoryArray)
+	for (auto &&inventory : inventoryArray)
 	{
 		mytemplate = item_is_resource(inventory);
 
-		char * icon_name = nullptr;
+		char *icon_name = nullptr;
 
 		if (mytemplate == nullptr)
 		{
 			if (entry_read_string(ITEM_TABLE, inventory.c_str(), &icon_name,
-			ITEM_ICON, nullptr) == false)
+					ITEM_ICON, nullptr) == false)
 			{
 				ERR_DESIGN("Can't read item " + inventory + " icon name");
 			}
@@ -1186,9 +1225,12 @@ static void compose_inventory_select(Context * ctx, std::vector<SdlItem*> & item
 		else
 		{
 			if (entry_read_string(ITEM_TEMPLATE_TABLE, mytemplate, &icon_name,
-			ITEM_ICON, nullptr) == false)
+					ITEM_ICON, nullptr) == false)
 			{
-				ERR_DESIGN("Can't read item " + inventory + " icon name (template: " + std::string(mytemplate));
+				ERR_DESIGN(
+						"Can't read item " + inventory
+								+ " icon name (template: "
+								+ std::string(mytemplate));
 			}
 			free(mytemplate);
 		}
@@ -1208,7 +1250,7 @@ static void compose_inventory_select(Context * ctx, std::vector<SdlItem*> & item
 
 	if (isItemFound == true)
 	{
-		SdlItem * item = new SdlItem;
+		SdlItem *item = new SdlItem;
 		itemArray.push_back(item);
 
 		item->setPos(x, 0);
@@ -1218,7 +1260,7 @@ static void compose_inventory_select(Context * ctx, std::vector<SdlItem*> & item
 }
 
 /*****************************************************************************/
-static void inventory_compose(Context * ctx, std::vector<SdlItem*> & itemArray)
+static void inventory_compose(Context *ctx, std::vector<SdlItem*> &itemArray)
 {
 	compose_inventory(ctx, itemArray);
 	compose_inventory_select(ctx, itemArray);
@@ -1242,13 +1284,14 @@ static void cb_popup_quit()
 }
 
 /*****************************************************************************/
-void cb_popup(const ActionParam & actionParam)
+void cb_popup(const ActionParam &actionParam)
 {
-	Context * player = context_get_player();
+	Context *player = context_get_player();
 
 	cb_popup_quit();
 
-	network_send_action(*(player->getConnection()), actionParam.action.c_str(), actionParam.param.c_str(), nullptr);
+	network_send_action(*(player->getConnection()), actionParam.action.c_str(),
+			actionParam.param.c_str(), nullptr);
 
 	screen_compose();
 }
@@ -1272,7 +1315,7 @@ static void cb_wheel_down()
 }
 
 /*****************************************************************************/
-static void compose_popup(Context * ctx, std::vector<SdlItem*> & itemArray)
+static void compose_popup(Context *ctx, std::vector<SdlItem*> &itemArray)
 {
 	if (popupFifo.size() == 0)
 	{
@@ -1294,16 +1337,16 @@ static void compose_popup(Context * ctx, std::vector<SdlItem*> & itemArray)
 	int width = 0;
 	int height = 0;
 	int maxHeight = 0;
-	ActionParam * actionParams = nullptr;
+	ActionParam *actionParams = nullptr;
 
 	for (auto iter = popupData.cbegin(); iter != popupData.cend(); ++iter)
 	{
 		if (*iter == POPUP_TAG_IMAGE)
 		{
 			++iter;
-			SiAnim * anim = imageDB_get_anim(ctx, *iter);
+			SiAnim *anim = imageDB_get_anim(ctx, *iter);
 
-			SdlItem * item = new SdlItem;
+			SdlItem *item = new SdlItem;
 			itemArray.push_back(item);
 
 			item->setPos(x, y - popupOffset);
@@ -1331,12 +1374,13 @@ static void compose_popup(Context * ctx, std::vector<SdlItem*> & itemArray)
 		{
 			++iter;
 
-			SdlItem * item = new SdlItem;
+			SdlItem *item = new SdlItem;
 			itemArray.push_back(item);
 
 			item->setText(*iter);
 			item->setFont(font);
-			sdl_get_string_size(item->getFont(), item->getText(), &width, &height);
+			sdl_get_string_size(item->getFont(), item->getText(), &width,
+					&height);
 			item->setPos(x, y - popupOffset);
 			item->setShape(width, height);
 			item->setOverlay(true);
@@ -1383,7 +1427,7 @@ static void compose_popup(Context * ctx, std::vector<SdlItem*> & itemArray)
 }
 
 /*****************************************************************************/
-void ui_play_popup_add(const std::vector<std::string> & data)
+void ui_play_popup_add(const std::vector<std::string> &data)
 {
 	popupFifo.push(data);
 
@@ -1391,7 +1435,7 @@ void ui_play_popup_add(const std::vector<std::string> & data)
 }
 
 /*****************************************************************************/
-static void popup_compose(Context * ctx, std::vector<SdlItem*> & itemArray)
+static void popup_compose(Context *ctx, std::vector<SdlItem*> &itemArray)
 {
 	compose_popup(ctx, itemArray);
 
@@ -1400,7 +1444,7 @@ static void popup_compose(Context * ctx, std::vector<SdlItem*> & itemArray)
 }
 
 /*****************************************************************************/
-void ui_play_compose(Context * ctx, std::vector<SdlItem*> & itemArray)
+void ui_play_compose(Context *ctx, std::vector<SdlItem*> &itemArray)
 {
 	switch (currentUi)
 	{

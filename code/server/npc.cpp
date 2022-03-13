@@ -75,8 +75,17 @@ static int npc_script(void *data)
 		if (context->getNextExecutionTick() < SDL_GetTicks())
 		{
 			LockGuard guard(npc_lock);
-			timeOutMs = action_execute_script(context, script,
-					(const char**) parameters);
+
+			std::vector<std::string> params;
+			int i = 0;
+			while (parameters[i] != nullptr)
+			{
+				params.push_back(std::string(parameters[i]));
+				i++;
+			}
+
+			timeOutMs = action_execute_script(context, std::string(script),
+					params);
 
 			context->setNextExecutionTick(SDL_GetTicks() + timeOutMs);
 		}

@@ -1,6 +1,7 @@
-text            = "Horse make noise";
-icon            = [ "ui/button_up.png", "ui/horse_noise.png" ];
-#icon_over       = "icon/bat_over.png";
-icon_click      = [ "ui/button_down.png", "ui/horse_noise.png" ];
-script          = "action/noise.lua";
-param		= ( "effect/horse.ogg" );
+{
+"text"            : "Horse make noise",
+"icon"            : [ "ui/button_up.png", "ui/horse_noise.png" ],
+"icon_click"      : [ "ui/button_down.png", "ui/horse_noise.png" ],
+"script"          : "action/noise.lua",
+"param"  : [ "effect/horse.ogg" ]
+}

@@ -1,7 +1,8 @@
-text            = "Summon ghost";
-#layout 1 is center
-icon_layout     = 1
-icon            = [ "ui/button_up.png", "ui/ghost.png" ];
-icon_click      = [ "ui/button_down.png", "ui/ghost.png" ];
-script          = "action/summon.lua";
-param		= ( "ghost" );
+{
+"text"            : "Summon ghost",
+"icon_layout"     : 1,
+"icon"            : [ "ui/button_up.png", "ui/ghost.png" ],
+"icon_click"      : [ "ui/button_down.png", "ui/ghost.png" ],
+"script"          : "action/summon.lua",
+"param"  : [ "ghost" ]
+}

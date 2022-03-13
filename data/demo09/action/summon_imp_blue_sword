@@ -1,7 +1,8 @@
-text            = "Summon blue imp with sword";
-icon            = [ "ui/button_up.png", "ui/imp_blue_sword.png" ];
-#icon_over       = "icon/bat_over.png";
-icon_click      = [ "ui/button_down.png", "ui/imp_blue_sword.png" ];
-icon_layout     = 1
-script          = "action/summon.lua";
-param		= ( "imp_blue_sword" );
+{
+"text"            : "Summon blue imp with sword",
+"icon"            : [ "ui/button_up.png", "ui/imp_blue_sword.png" ],
+"icon_click"      : [ "ui/button_down.png", "ui/imp_blue_sword.png" ],
+"icon_layout"     : 1,
+"script"          : "action/summon.lua",
+"param"  : [ "imp_blue_sword" ]
+}
