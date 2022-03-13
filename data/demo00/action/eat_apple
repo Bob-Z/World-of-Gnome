@@ -1,3 +1,5 @@
-text            = "Eat an apple";
-icon            = [ "icon/eat_apple.jpg" ];
-script		= "eat_apple.lua";
+{
+"text           ": "Eat an apple",
+"icon           ": [ "icon/eat_apple.jpg" ],
+"script ": "eat_apple.lua"
+}

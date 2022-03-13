@@ -1,3 +1,5 @@
-text		= "Summon a black dragon";
-icon		= [ "icon/black_dragon.png" ];
-script		= "action/add_black_dragon.lua";
+{
+"text ": "Summon a black dragon",
+"icon ": [ "icon/black_dragon.png" ],
+"script ": "action/add_black_dragon.lua"
+}

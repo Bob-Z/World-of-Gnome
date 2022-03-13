@@ -1,3 +1,5 @@
-text            = "Get an apple on black tile";
-icon            = [ "action/black.jpg" ];
-script		= "get_apple.lua";
+{
+"text           ": "Get an apple on black tile",
+"icon           ": [ "action/black.jpg" ],
+"script ": "get_apple.lua"
+}

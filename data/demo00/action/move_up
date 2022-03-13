@@ -1,4 +1,6 @@
-text		= "Go up";
-icon		= "none";
-script		= "move.lua";
-param		= ( "0" , "-1" );
+{
+"text ": "Go up",
+"icon ": "none",
+"script ": "move.lua",
+"param ": [ "0" , "-1" ]
+}

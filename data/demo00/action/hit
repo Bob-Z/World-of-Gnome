@@ -1,3 +1,5 @@
-text            = "Try to punch";
-icon            = [ "icon/hit.jpg" ];
-script		= "hit.lua";
+{
+"text           ": "Try to punch",
+"icon           ": [ "icon/hit.jpg" ],
+"script ": "hit.lua"
+}

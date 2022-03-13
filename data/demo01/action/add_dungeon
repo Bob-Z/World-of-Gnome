@@ -1,3 +1,5 @@
-text		= "Add a new dungeon level";
-icon		= [ "icon/dungeon.jpg" ];
-script		= "action/add_dungeon.lua";
+{
+"text ": "Add a new dungeon level",
+"icon ": [ "icon/dungeon.jpg" ],
+"script ": "action/add_dungeon.lua"
+}

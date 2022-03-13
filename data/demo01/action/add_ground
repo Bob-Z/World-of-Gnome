@@ -1,3 +1,5 @@
-text		= "Turn into ground";
-icon		= [ "icon/ground.jpg" ];
-script		= "action/add_ground.lua";
+{
+"text ": "Turn into ground",
+"icon ": [ "icon/ground.jpg" ],
+"script ": "action/add_ground.lua"
+}

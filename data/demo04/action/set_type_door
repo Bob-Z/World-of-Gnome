@@ -1,4 +1,6 @@
-text		= "Set tile type to empty";
-icon		= [ "icon/set_type_door.gif" ];
-script		= "set_type.lua";
-param		= ( "d" );
+{
+"text ": "Set tile type to empty",
+"icon ": [ "icon/set_type_door.gif" ],
+"script ": "set_type.lua",
+"param ": [ "d" ]
+}

@@ -1,3 +1,5 @@
-text		= "Build your dungeon";
-icon		= [ "tile/dungeon.gif" ];
-script		= "action/add_dungeon_floor.lua";
+{
+"text ": "Build your dungeon",
+"icon ": [ "tile/dungeon.gif" ],
+"script ": "action/add_dungeon_floor.lua"
+}

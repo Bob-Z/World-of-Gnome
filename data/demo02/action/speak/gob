@@ -1,4 +1,5 @@
-text		= "";
-icon		= "";
-script		= "speak/goblin.lua";
-#param		= ( "0" , "-1" );
+{
+"text ": "",
+"icon ": "",
+"script ": "speak/goblin.lua"
+}

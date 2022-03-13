@@ -1,4 +1,5 @@
-text		= "";
-icon		= "none";
-script		= "set_map.lua";
-#param		= ( "0" , "-1" );
+{
+"text ": "",
+"icon ": "none",
+"script ": "set_map.lua"
+}

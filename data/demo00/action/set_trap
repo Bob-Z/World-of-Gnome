@@ -1,3 +1,5 @@
-text            = "Set a trap on the floor";
-icon            = [ "icon/gray.jpg" ];
-script		= "set_trap.lua";
+{
+"text           ": "Set a trap on the floor",
+"icon           ": [ "icon/gray.jpg" ],
+"script ": "set_trap.lua"
+}

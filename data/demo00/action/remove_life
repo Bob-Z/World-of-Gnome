@@ -1,3 +1,5 @@
-text            = "Hit for 1 HP";
-icon            = [ "icon/remove_life.jpg" ];
-script		= "remove_life.lua";
+{
+"text           ": "Hit for 1 HP",
+"icon           ": [ "icon/remove_life.jpg" ],
+"script ": "remove_life.lua"
+}

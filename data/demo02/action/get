@@ -1,3 +1,5 @@
-text            = "Get an item from the field";
-icon            = [ "action/gray.jpg" ];
-script		= "get.lua";
+{
+"text           ": "Get an item from the field",
+"icon           ": [ "action/gray.jpg" ],
+"script ": "get.lua"
+}

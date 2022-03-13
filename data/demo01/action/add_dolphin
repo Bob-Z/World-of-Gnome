@@ -1,3 +1,5 @@
-text		= "Create a dolphin";
-icon		= [ "icon/dolphin.png" ];
-script		= "action/add_dolphin.lua";
+{
+"text ": "Create a dolphin",
+"icon ": [ "icon/dolphin.png" ],
+"script ": "action/add_dolphin.lua"
+}

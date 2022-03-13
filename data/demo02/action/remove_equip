@@ -1,3 +1,5 @@
-text		= "Remove an equipment";
-icon		= [ "action/remove_equip.png" ];
-script		= "remove_equip.lua";
+{
+"text ": "Remove an equipment",
+"icon ": [ "action/remove_equip.png" ],
+"script ": "remove_equip.lua"
+}

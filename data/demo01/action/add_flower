@@ -1,3 +1,5 @@
-text		= "Create a flower";
-icon		= [ "icon/flower.jpg" ];
-script		= "action/add_flower.lua";
+{
+"text ": "Create a flower",
+"icon ": [ "icon/flower.jpg" ],
+"script ": "action/add_flower.lua"
+}

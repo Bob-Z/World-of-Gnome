@@ -1,3 +1,5 @@
-text		= "Raise a skeleton";
-icon		= [ "icon/skeleton.jpg" ];
-script		= "action/add_skeleton.lua";
+{
+"text ": "Raise a skeleton",
+"icon ": [ "icon/skeleton.jpg" ],
+"script ": "action/add_skeleton.lua"
+}

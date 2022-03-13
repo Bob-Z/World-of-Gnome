@@ -1,3 +1,5 @@
-text            = "Disarm a trap on the floor";
-icon            = [ "action/gray.jpg" ];
-script		= "disarm_trap.lua";
+{
+"text           ": "Disarm a trap on the floor",
+"icon           ": [ "action/gray.jpg" ],
+"script ": "disarm_trap.lua"
+}

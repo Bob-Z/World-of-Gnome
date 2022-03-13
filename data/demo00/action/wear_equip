@@ -1,3 +1,5 @@
-text		= "Wear an equipment";
-icon		= [ "icon/wear_equip.jpg" ];
-script		= "wear_equip.lua";
+{
+"text ": "Wear an equipment",
+"icon ": [ "icon/wear_equip.jpg" ],
+"script ": "wear_equip.lua"
+}

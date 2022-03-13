@@ -1,3 +1,5 @@
-text		= "Flood";
-icon		= [ "icon/sea.jpg" ];
-script		= "action/add_sea.lua";
+{
+"text ": "Flood",
+"icon ": [ "icon/sea.jpg" ],
+"script ": "action/add_sea.lua"
+}

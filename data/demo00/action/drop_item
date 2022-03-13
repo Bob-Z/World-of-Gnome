@@ -1,3 +1,5 @@
-text            = "Drop an object on the ground";
-icon            = [ "icon/drop.jpg" ];
-script		= "drop_item.lua";
+{
+"text           ": "Drop an object on the ground",
+"icon           ": [ "icon/drop.jpg" ],
+"script ": "drop_item.lua"
+}

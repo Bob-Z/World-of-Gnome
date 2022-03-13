@@ -1,3 +1,5 @@
-text            = "Try to hurt";
-icon            = [ "icon/crossed_sword.png" ];
-script		= "action/hit.lua";
+{
+"text           ": "Try to hurt",
+"icon           ": [ "icon/crossed_sword.png" ],
+"script ": "action/hit.lua"
+}

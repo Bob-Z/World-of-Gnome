@@ -1,3 +1,5 @@
-text		= "Talk";
-icon		= "action/speak.png";
-script		= "speak/speak.lua";
+{
+"text ": "Talk",
+"icon ": "action/speak.png",
+"script ": "speak/speak.lua"
+}

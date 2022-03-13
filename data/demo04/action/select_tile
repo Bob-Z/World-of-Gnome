@@ -1,3 +1,5 @@
-text		= "Select tile";
-icon		= "none";
-script		= "select_tile.lua";
+{
+"text ": "Select tile",
+"icon ": "none",
+"script ": "select_tile.lua"
+}

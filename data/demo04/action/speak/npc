@@ -1,4 +1,5 @@
-text		= "Speak to somebody";
-icon		= "icon/speak.png";
-script		= "speak/npc.lua";
-#param		= ( "0" , "-1" );
+{
+"text ": "Speak to somebody",
+"icon ": "icon/speak.png",
+"script ": "speak/npc.lua"
+}

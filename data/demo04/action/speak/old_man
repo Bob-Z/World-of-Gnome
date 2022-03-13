@@ -1,4 +1,5 @@
-text		= "Old man speaking";
-icon		= "icon/speak.png";
-script		= "speak/old_man.lua";
-#param		= ( "0" , "-1" );
+{
+"text ": "Old man speaking",
+"icon ": "icon/speak.png",
+"script ": "speak/old_man.lua"
+}

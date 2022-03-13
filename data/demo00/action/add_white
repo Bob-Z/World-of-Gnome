@@ -1,3 +1,5 @@
-text            = "Add a white tile";
-icon            = [ "icon/white.jpg" ];
-script          = "add_white.lua";
+{
+"text           ": "Add a white tile",
+"icon           ": [ "icon/white.jpg" ],
+"script         ": "add_white.lua"
+}

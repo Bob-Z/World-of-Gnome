@@ -1,6 +1,8 @@
-text            = "Summon a snail";
-icon            = [ "icon/snail.png" ];
-icon_over       = [ "icon/snail_over.png" ];
-icon_click      = [ "icon/snail_click.png" ];
-script          = "action/summon.lua";
-param		= ( "snail" );
+{
+"text           ": "Summon a snail",
+"icon           ": [ "icon/snail.png" ],
+"icon_over      ": [ "icon/snail_over.png" ],
+"icon_click     ": [ "icon/snail_click.png" ],
+"script         ": "action/summon.lua",
+"param ": [ "snail" ]
+}
