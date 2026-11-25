@@ -682,12 +682,12 @@ static void compose_equipment(Context *ctx, std::vector<SdlItem*> &itemArray)
 	char * name;
 #endif
 	char *iconName = nullptr;
-	char *equippedName = nullptr;
+	std::string equippedName;
 #if 0
 	char * equipped_text = nullptr;
 #endif
-	char *equippedIconName = nullptr;
-	char *inventoryIconName = nullptr;
+	std::string equippedIconName;
+	std::string inventoryIconName;
 	SiAnim *inventoryIconAnim = nullptr;
 
 	int sw = 0;
@@ -756,9 +756,16 @@ static void compose_equipment(Context *ctx, std::vector<SdlItem*> &itemArray)
 		}
 
 		// Is there an equipped object ?
+		char *tmpEquippedName = nullptr;
 		if (entry_read_string(CHARACTER_TABLE, ctx->getId().c_str(),
-				&equippedName, EQUIPMENT_GROUP, slot_list[index],
-				EQUIPMENT_EQUIPPED, nullptr) == true && equippedName[0] != 0)
+				&tmpEquippedName, EQUIPMENT_GROUP, slot_list[index],
+				EQUIPMENT_EQUIPPED, nullptr) == true)
+		{
+			equippedName = std::string(tmpEquippedName);
+			free(tmpEquippedName);
+		}
+
+		if (equippedName.empty() == false)
 		{
 #if 0
 			// Get the equipped object name
@@ -769,37 +776,45 @@ static void compose_equipment(Context *ctx, std::vector<SdlItem*> &itemArray)
 			free(equipped_text);
 #endif
 			// Get its icon
-			mytemplate = item_is_resource(std::string(equippedName));
+			mytemplate = item_is_resource(equippedName);
 
 			if (mytemplate == nullptr)
 			{
-				if (entry_read_string(ITEM_TABLE, equippedName,
-						&equippedIconName, ITEM_ICON, nullptr) == false)
+				try
 				{
-					werr(LOGDESIGNER,
-							"Can't read object %s icon in equipment slot %s",
-							equippedName, slot_list[index]);
+					equippedIconName = getDataManager().get<std::string>(
+							ITEM_TABLE, equippedName, ITEM_ICON);
+				} catch (...)
+				{
+					LOGDESIGNER(
+							"Can't read object " + equippedName
+									+ "'s icon in equipment slot "
+									+ std::string(slot_list[index]));
 				}
 			}
 			else
 			{
-				if (entry_read_string(ITEM_TEMPLATE_TABLE, mytemplate,
-						&equippedIconName, ITEM_ICON, nullptr) == false)
+				try
 				{
-					werr(LOGDESIGNER,
-							"Can't read item %s icon name (template: %s)",
-							equippedName, mytemplate);
+					equippedIconName = getDataManager().get<std::string>(
+							ITEM_TEMPLATE_TABLE, std::string(mytemplate),
+							ITEM_ICON);
+				} catch (...)
+				{
+					LOGDESIGNER(
+							"Can't read item " + equippedName
+									+ "'s icon in equipment slot "
+									+ std::string(mytemplate));
 				}
 				free(mytemplate);
 			}
 
-			if (equippedIconName)
+			if (equippedIconName.empty() == false)
 			{
 				SdlItem *item = new SdlItem;
 				itemArray.push_back(item);
 
 				anim2 = imageDB_get_anim(ctx, equippedIconName);
-				free(equippedIconName);
 
 				item->setOverlay(true);
 				item->setPos(x - anim->getWidth(), y);
@@ -814,7 +829,6 @@ static void compose_equipment(Context *ctx, std::vector<SdlItem*> &itemArray)
 					h1 = anim->getHeight();
 				}
 			}
-			free(equippedName);
 		}
 
 		// Draw selection cursor
@@ -861,21 +875,30 @@ static void compose_equipment(Context *ctx, std::vector<SdlItem*> &itemArray)
 
 		if (mytemplate == nullptr)
 		{
-			if (entry_read_string(ITEM_TABLE, inventory.c_str(),
-					&inventoryIconName, ITEM_ICON, nullptr) == false)
+			try
 			{
-				werr(LOGDESIGNER, "Can't read item %s icon name",
-						inventory.c_str());
+				inventoryIconName = getDataManager().get<std::string>(
+						ITEM_TABLE, inventory, ITEM_ICON);
+			} catch (...)
+			{
+				LOGDESIGNER("Can't read item " + inventory + "'s icon name");
 			}
 		}
 		else
 		{
-			if (entry_read_string(ITEM_TEMPLATE_TABLE, mytemplate,
-					&inventoryIconName, ITEM_ICON, nullptr) == false)
+			try
 			{
-				werr(LOGDESIGNER, "Can't read item %s icon name (template: %s)",
-						inventory.c_str(), mytemplate);
+				inventoryIconName = getDataManager().get<std::string>(
+						ITEM_TEMPLATE_TABLE, std::string(mytemplate),
+						ITEM_ICON);
+			} catch (...)
+			{
+				LOGDESIGNER(
+						"Can't read item " + inventory
+								+ "'s icon name (template: "
+								+ std::string(mytemplate) + ")");
 			}
+
 			free(mytemplate);
 		}
 
