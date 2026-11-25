@@ -4,7 +4,7 @@
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 3 of the License, or
+ the Free Software Foundation, either version 3 of the License, or
  (at your option) any later version.
 
  This program is distributed in the hope that it will be useful,
@@ -17,381 +17,317 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
-#include "client_server.h"
-#include "const.h"
-#include "Context.h"
-#include "file.h"
+#include <algorithm>
+#include <cstdarg>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <string>
+#include <vector>
+
+#include "DataManager.h"
 #include "list.h"
 #include "LockGuard.h"
 #include "log.h"
 #include "mutex.h"
 #include "protocol.h"
-#include <cstdarg>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <libconfig.h>
-#include <string>
-#include <strings.h>
-#include <sys/stat.h>
 
 list_t *entry_list = nullptr;
 Lock entryListLock;
 
-/*********************
- *********************/
-static void config_print_error(const std::string &file, const config_t *config)
+// Defined in main_server.cpp / main_client.cpp
+DataManager & getDataManager();
+
+/*****************************************************************************/
+static std::vector<std::string> getPath(va_list ap)
 {
-	werr(LOGUSER, "libconfig error %s@%d : %s\n", file.c_str(),
-			config_error_line(config), config_error_text(config));
-}
+	std::vector<std::string> path;
 
-/*********************
- *********************/
-static void write_config(const config_t *config, const char *table,
-		const char *file)
-{
-	const std::string file_name = std::string(table) + "/" + std::string(file);
-
-	const std::string file_path = base_directory + "/" + file_name;
-
-	file_lock(file_name.c_str());
-	config_write_file((config_t*) config, file_path.c_str());
-	file_unlock(file_name.c_str());
-}
-/*********************
- *********************/
-static void free_config(config_t *config)
-{
-	config_destroy(config);
-	free(config);
-}
-/*********************
- *********************/
-static const config_t* load_config(const char *filename)
-{
-	int ret;
-	config_t *config = nullptr;
-	struct stat sts;
-
-	const std::string file_path = base_directory + "/" + std::string(filename);
-
-	config = (config_t*) malloc(sizeof(config_t));
-	if (config == nullptr)
-	{
-		return nullptr;
-	}
-	bzero(config, sizeof(config_t));
-
-	ret = config_read_file(config, file_path.c_str());
-	if (ret == CONFIG_FALSE)
-	{
-		// For client, only print errors when file is present
-		// If file is not present, let get_config ask for a network update
-		if (stat(file_path.c_str(), &sts) != -1 || client_server == SERVER)
-		{
-			config_print_error(file_path, config);
-		}
-		return nullptr;
-	}
-
-	return config;
-}
-
-/****************************************************
- Remove an entry from the DB
- ******************************************************/
-void entry_remove(const char *filename)
-{
-	config_t *old_config;
-
-	wlog(LOGDEVELOPER, "Removing entry : %s", filename);
-	// Clean-up old anim if any
-
-	LockGuard guard(entryListLock);
-
-	old_config = (config_t*) list_find(entry_list, filename);
-	if (old_config)
-	{
-		free_config(old_config);
-	}
-
-	list_update(&entry_list, filename, nullptr);
-}
-
-/*********************
- returned config should not be freed
- *********************/
-static const config_t* get_config(const char *table, const char *file)
-{
-	if (file == nullptr)
-	{
-		return nullptr;
-	}
-
-	const config_t *config = nullptr;
-	std::string fileName;
-
-	if (table == nullptr)
-	{
-		fileName = std::string(file);
-	}
-	else
-	{
-		fileName = std::string(table) + "/" + std::string(file);
-	}
-
-//	wlog(LOGDEBUG,"Entry get : %s",filename);
-
-	config = (config_t*) list_find(entry_list, fileName.c_str());
-
-	if (config != nullptr)
-	{
-//		wlog(LOGDEBUG,"Entry found : %s",filename);
-		return config;
-	}
-
-	Context *context = context_get_player();
-	Connection *connection = nullptr;
-
-	if (context != nullptr)
-	{
-		connection = context->getConnection();
-	}
-
-	file_lock(fileName.c_str());
-
-	file_update(connection, fileName.c_str());
-
-	if ((config = load_config(fileName.c_str())) == nullptr)
-	{
-		file_unlock(fileName.c_str());
-		return nullptr;
-	}
-	file_unlock(fileName.c_str());
-
-//	wlog(LOGDEBUG,"Entry loaded : %s",filename);
-	list_update(&entry_list, fileName.c_str(), (config_t*) config);
-
-	return config;
-}
-
-/*********************
- returned string MUST BE FREED
- *********************/
-static std::string add_entry_to_path(char *path, char *entry)
-{
-	if (path == nullptr)
-	{
-		return std::string(entry);
-	}
-	else
-	{
-		const std::string new_path = std::string(path) + "."
-				+ std::string(entry);
-		return new_path;
-	}
-}
-
-/*********************
- Create a libconfig path from a list of string
- the returned path MUST BE FREED
- *********************/
-static char* get_path(va_list ap)
-{
-	char *path = nullptr;
-	char *entry = nullptr;
-
-	entry = va_arg(ap, char*);
-	if (entry == nullptr)
-	{
-		return nullptr;
-	}
-
+	char *entry = va_arg(ap, char*);
 	while (entry != nullptr)
 	{
-		const std::string new_path = add_entry_to_path(path, entry);
-
-		if (path != nullptr)
-		{
-			free(path);
-			path = nullptr;
-		}
-
-		path = strdup(new_path.c_str());
-		if (path == nullptr)
-		{
-			return nullptr;
-		}
+		path.push_back(entry);
 		entry = va_arg(ap, char*);
 	}
 
 	return path;
 }
 
-/*********************
- return false on error
- *********************/
-static int __read_int(const char *table, const char *file, int *res, va_list ap)
+/*****************************************************************************/
+static char** toCArray(const std::vector<std::string> &values)
 {
-	const config_t *config = nullptr;
-	char *path = nullptr;
-	int result;
-
-	LockGuard guard(entryListLock);
-
-	config = get_config(table, file);
-	if (config == nullptr)
+	if (values.empty())
 	{
-		return false;
+		return nullptr;
 	}
 
-	path = get_path(ap);
-	if (path == nullptr)
+	char **result = (char**) malloc((values.size() + 1) * sizeof(char*));
+	for (size_t i = 0; i < values.size(); i++)
 	{
-		return false;
+		result[i] = strdup(values[i].c_str());
 	}
+	result[values.size()] = nullptr;
 
-	if (config_lookup_int(config, path, &result) == CONFIG_FALSE)
-	{
-		free(path);
-		return false;
-	}
-	free(path);
-
-	*res = result;
-
-	return true;
+	return result;
 }
 
-/*********************
- return false on error
- *********************/
-int entry_read_int(const std::string &table, const std::string &file, int *res,
-		...)
+/*****************************************************************************/
+static std::vector<std::string> splitPath(const std::string &path)
 {
-	int ret;
+	std::vector<std::string> result;
+	size_t start = 0;
+
+	while (start < path.size())
+	{
+		size_t pos = path.find('.', start);
+		if (pos == std::string::npos)
+		{
+			result.push_back(path.substr(start));
+			break;
+		}
+		if (pos > start)
+		{
+			result.push_back(path.substr(start, pos - start));
+		}
+		start = pos + 1;
+	}
+
+	return result;
+}
+
+/*****************************************************************************/
+static bool containsKey(DataManager &dm, const char *table, const char *file,
+		const std::vector<std::string> &path, const std::string &key)
+{
+	try
+	{
+		for (auto &k : dm.getKeys(table, file, path))
+		{
+			if (k == key)
+			{
+				return true;
+			}
+		}
+	} catch (...)
+	{
+	}
+
+	return false;
+}
+
+/*****************************************************************************/
+static bool groupExists(DataManager &dm, const char *table, const char *file,
+		const std::vector<std::string> &path)
+{
+	try
+	{
+		dm.getKeys(table, file, path);
+		return true;
+	} catch (...)
+	{
+		return false;
+	}
+}
+
+/*****************************************************************************/
+static char* __get_unused_group_on_path(const char *table, const char *file,
+		const std::vector<std::string> &path)
+{
+	DataManager &dm = getDataManager();
+
+	for (int index = 0;; index++)
+	{
+		char tag[16];
+		sprintf(tag, "A%05x", index);
+
+		if (!containsKey(dm, table, file, path, tag))
+		{
+			return strdup(tag);
+		}
+	}
+}
+
+/*****************************************************************************/
+static char* __get_unused_group(const char *table, const char *file, va_list ap)
+{
+	DataManager &dm = getDataManager();
+	std::vector<std::string> path = getPath(ap);
+
+	for (int index = 0;; index++)
+	{
+		char tag[16];
+		sprintf(tag, "A%05x", index);
+
+		if (groupExists(dm, table, file, path)
+				&& containsKey(dm, table, file, path, tag))
+		{
+			continue;
+		}
+
+		std::vector<std::string> fullPath = path;
+		fullPath.push_back(tag);
+
+		if (dm.set(table, file, fullPath, json::object()))
+		{
+			return strdup(tag);
+		}
+	}
+}
+
+/*****************************************************************************/
+static char* __copy_group(const char *src_table, const char *src_file,
+		const char *dst_table, const char *dst_file, const char *group_name,
+		va_list ap)
+{
+	std::vector<std::string> path = getPath(ap);
+	std::vector<std::string> srcPath = path;
+	srcPath.push_back(group_name);
+
+	DataManager &dm = getDataManager();
+
+	json value;
+	try
+	{
+		value = dm.get<json>(src_table, src_file, srcPath);
+	} catch (...)
+	{
+		return nullptr;
+	}
+
+	std::string group_name_used = group_name;
+
+	if (groupExists(dm, dst_table, dst_file, srcPath))
+	{
+		char *new_group_name = __get_unused_group_on_path(dst_table, dst_file,
+				path);
+		if (new_group_name == nullptr)
+		{
+			return nullptr;
+		}
+		group_name_used = new_group_name;
+		free(new_group_name);
+	}
+
+	std::vector<std::string> dstPath = path;
+	dstPath.push_back(group_name_used);
+
+	if (!dm.set(dst_table, dst_file, dstPath, value))
+	{
+		return nullptr;
+	}
+
+	return strdup(group_name_used.c_str());
+}
+
+/*****************************************************************************/
+void entry_remove(const char *filename)
+{
+	wlog(LOGDEVELOPER, "Removing entry : %s", filename);
+
+	LockGuard guard(entryListLock);
+	list_update(&entry_list, filename, nullptr);
+}
+
+/*****************************************************************************/
+int entry_read_int(const std::string &table, const std::string &file, int *res, ...)
+{
+	int ret = false;
 	va_list ap;
 
 	va_start(ap, res);
-	ret = __read_int(table.c_str(), file.c_str(), res, ap);
+	std::vector<std::string> path = getPath(ap);
 	va_end(ap);
+
+	LockGuard guard(entryListLock);
+
+	DataManager &dm = getDataManager();
+
+	if (!dm.has(table, file, path))
+	{
+		return false;
+	}
+
+	try
+	{
+		*res = dm.get<int>(table, file, path);
+		ret = true;
+	} catch (...)
+	{
+	}
 
 	return ret;
 }
 
-/*********************
- return false on error
- res MUST BE FREED by caller
- *********************/
-static int __read_string(const char *table, const char *file, char **res,
-		va_list ap)
-{
-	const config_t *config = nullptr;
-	char *path = nullptr;
-	const char *result = nullptr;
-
-	*res = nullptr;
-
-	LockGuard guard(entryListLock);
-
-	config = get_config(table, file);
-	if (config == nullptr)
-	{
-		ERR(
-				"Can't get conf file " + std::string(table) + "/"
-						+ std::string(file));
-		return false;
-	}
-
-	path = get_path(ap);
-	if (path == nullptr)
-	{
-		return false;
-	}
-
-	if (config_lookup_string(config, path, &result) == CONFIG_FALSE)
-	{
-		ERR(
-				"Can't find " + std::string(path) + "in conf file "
-						+ std::string(table) + "/" + std::string(file));
-		free(path);
-		return false;
-	}
-	free(path);
-
-	*res = strdup(result);
-
-	return true;
-}
-
-/*********************
- Fill res with a pointer to a string.
- This string MUST BE FREED by caller.
- return false on error
- *********************/
+/*****************************************************************************/
 int entry_read_string(const std::string &table, const std::string &file,
 		char **res, ...)
 {
-	int ret;
+	int ret = false;
 	va_list ap;
 
 	va_start(ap, res);
-	ret = __read_string(table.c_str(), file.c_str(), res, ap);
+	std::vector<std::string> path = getPath(ap);
 	va_end(ap);
+
+	LockGuard guard(entryListLock);
+
+	*res = nullptr;
+
+	DataManager &dm = getDataManager();
+
+	if (!dm.has(table, file, path))
+	{
+		return false;
+	}
+
+	try
+	{
+		std::string value = dm.get<std::string>(table, file, path);
+		*res = strdup(value.c_str());
+		ret = true;
+	} catch (...)
+	{
+	}
 
 	return ret;
 }
 
-/*********************
- return false on error
- res MUST BE FREED by caller
- *********************/
-static int __read_list_index(const char *table, const char *file, char **res,
-		int index, va_list ap)
+/*****************************************************************************/
+static int __read_list_index(const std::string &table, const std::string &file,
+		char **res, int index, va_list ap)
 {
-	const config_t *config = nullptr;
-	config_setting_t *setting = nullptr;
-	char *path;
-	const char *result;
+	int ret = false;
 
 	*res = nullptr;
 
 	LockGuard guard(entryListLock);
 
-	config = get_config(table, file);
-	if (config == nullptr)
+	DataManager &dm = getDataManager();
+	std::vector<std::string> path = getPath(ap);
+
+	if (!dm.has(table, file, path))
 	{
 		return false;
 	}
 
-	path = get_path(ap);
-	if (path == nullptr)
+	try
 	{
-		return false;
+		std::vector<std::string> list = dm.get<
+				std::vector<std::string> >(table, file, path);
+
+		if (index >= 0 && (size_t) index < list.size())
+		{
+			*res = strdup(list[index].c_str());
+			ret = true;
+		}
+	} catch (...)
+	{
 	}
 
-	setting = config_lookup(config, path);
-	if (setting == nullptr)
-	{
-		free(path);
-		return false;
-	}
-	free(path);
-
-	result = config_setting_get_string_elem(setting, index);
-	if (result == nullptr)
-	{
-		return false;
-	}
-
-	*res = strdup(result);
-	return true;
+	return ret;
 }
 
-/*********************
- return false on error
- *********************/
+/*****************************************************************************/
 int entry_read_list_index(const std::string &table, const std::string &file,
 		char **res, int index, ...)
 {
@@ -399,70 +335,42 @@ int entry_read_list_index(const std::string &table, const std::string &file,
 	va_list ap;
 
 	va_start(ap, index);
-	ret = __read_list_index(table.c_str(), file.c_str(), res, index, ap);
+	ret = __read_list_index(table, file, res, index, ap);
 	va_end(ap);
 
 	return ret;
 }
 
-/*********************
- return false on error
- res must be freed with deep_free
- *********************/
-static int __read_list(const char *table, const char *file, char ***res,
-		va_list ap)
+/*****************************************************************************/
+static int __read_list(const std::string &table, const std::string &file,
+		char ***res, va_list ap)
 {
-	const config_t *config = nullptr;
-	config_setting_t *setting = nullptr;
-	char *path;
-	int i = 0;
-	const char *elem;
+	int ret = false;
 
 	*res = nullptr;
 
 	LockGuard guard(entryListLock);
 
-	config = get_config(table, file);
-	if (config == nullptr)
+	DataManager &dm = getDataManager();
+	std::vector<std::string> path = getPath(ap);
+
+	if (!dm.has(table, file, path))
 	{
 		return false;
 	}
 
-	path = get_path(ap);
-	if (path == nullptr)
+	try
 	{
-		return false;
+		*res = toCArray(dm.get<std::vector<std::string> >(table, file, path));
+		ret = (*res != nullptr);
+	} catch (...)
+	{
 	}
 
-	setting = config_lookup(config, path);
-	if (setting == nullptr)
-	{
-		free(path);
-		return false;
-	}
-	free(path);
-
-	while ((elem = config_setting_get_string_elem(setting, i)) != nullptr)
-	{
-		i++;
-		*res = (char**) realloc(*res, (i + 1) * sizeof(char*));
-		(*res)[i - 1] = strdup(elem);
-		(*res)[i] = nullptr;
-
-	}
-
-	if (*res == nullptr)
-	{
-		return false;
-	}
-
-	return true;
+	return ret;
 }
 
-/*********************
- return false on error
- res must be freed with deep_free
- *********************/
+/*****************************************************************************/
 int entry_read_list(const std::string &table, const std::string &file,
 		char ***res, ...)
 {
@@ -470,154 +378,26 @@ int entry_read_list(const std::string &table, const std::string &file,
 	va_list ap;
 
 	va_start(ap, res);
-	ret = __read_list(table.c_str(), file.c_str(), res, ap);
+	ret = __read_list(table, file, res, ap);
 	va_end(ap);
 
 	return ret;
 }
 
-/*********************
- *********************/
-static config_setting_t* create_tree(const config_t *config,
-		config_setting_t *prev_setting, char *prev_entry, const char *path,
-		int type, va_list ap)
-{
-	char *entry = nullptr;
-	config_setting_t *setting = nullptr;
-	config_setting_t *ret = nullptr;
-
-	if (prev_setting == nullptr)
-	{
-		prev_setting = config_root_setting(config);
-	}
-
-	entry = va_arg(ap, char*);
-
-	// no more leaf
-	if (entry == nullptr)
-	{
-		// check if leaf exists
-		setting = config_lookup(config, path);
-		if (setting == nullptr)
-		{
-			// create the leaf
-			setting = config_setting_add(prev_setting, prev_entry, type);
-		}
-		return setting;
-	}
-
-	// still not finished
-	// check if we need to create a group
-	if (path)
-	{
-		setting = config_lookup(config, path);
-		if (setting == nullptr)
-		{
-			// create a group with previous path
-			setting = config_setting_add(prev_setting, prev_entry,
-			CONFIG_TYPE_GROUP);
-			if (setting == nullptr)
-			{
-				return nullptr;
-			}
-		}
-	}
-
-	// update path
-	std::string new_path;
-	if (path != nullptr)
-	{
-		new_path = std::string(path) + "." + std::string(entry);
-	}
-	else
-	{
-		new_path = std::string(entry);
-	}
-
-	ret = create_tree(config, setting, entry, new_path.c_str(), type, ap);
-
-	return ret;
-}
-
-/*********************
- return false on error
- *********************/
-static int __write_int(const char *table, const char *file, int data,
-		va_list ap)
-{
-	config_setting_t *setting;
-	const config_t *config;
-
-	LockGuard guard(entryListLock);
-
-	config = get_config(table, file);
-	if (config == nullptr)
-	{
-		return false;
-	}
-
-	setting = create_tree(config, nullptr, nullptr, nullptr, CONFIG_TYPE_INT,
-			ap);
-
-	// update int
-	if (config_setting_set_int(setting, data) == CONFIG_FALSE)
-	{
-		return false;
-	}
-
-	write_config(config, table, file);
-	return true;
-}
-
-/*********************
- return false on error
- *********************/
-int entry_write_int(const std::string &table, const std::string &file, int data,
-		...)
+/*****************************************************************************/
+int entry_write_int(const std::string &table, const std::string &file, int data, ...)
 {
 	int ret;
 	va_list ap;
 
 	va_start(ap, data);
-	ret = __write_int(table.c_str(), file.c_str(), data, ap);
+	ret = getDataManager().set<int>(table, file, getPath(ap), data);
 	va_end(ap);
 
 	return ret;
 }
 
-/*********************
- return false on error
- *********************/
-static int __write_string(const char *table, const char *file, const char *data,
-		va_list ap)
-{
-	config_setting_t *setting;
-	const config_t *config;
-
-	LockGuard guard(entryListLock);
-
-	config = get_config(table, file);
-	if (config == nullptr)
-	{
-		return false;
-	}
-
-	setting = create_tree(config, nullptr, nullptr, nullptr, CONFIG_TYPE_STRING,
-			ap);
-
-	// update string
-	if (config_setting_set_string(setting, data) == CONFIG_FALSE)
-	{
-		return false;
-	}
-
-	write_config(config, table, file);
-	return true;
-}
-
-/*********************
- return false on error
- *********************/
+/*****************************************************************************/
 int entry_write_string(const std::string &table, const std::string &file,
 		const std::string &data, ...)
 {
@@ -625,338 +405,155 @@ int entry_write_string(const std::string &table, const std::string &file,
 	va_list ap;
 
 	va_start(ap, data);
-	ret = __write_string(table.c_str(), file.c_str(), data.c_str(), ap);
+	ret = getDataManager().set<std::string>(table, file, getPath(ap), data);
 	va_end(ap);
 
 	return ret;
 }
 
-/*********************
- return false on error
- *********************/
-static int __write_list_index(const char *table, const char *file,
-		const char *data, int index, va_list ap)
-{
-	config_setting_t *setting = nullptr;
-	const config_t *config;
-	int list_size;
-
-	LockGuard guard(entryListLock);
-
-	config = get_config(table, file);
-	if (config == nullptr)
-	{
-		return false;
-	}
-
-	setting = create_tree(config, nullptr, nullptr, nullptr, CONFIG_TYPE_ARRAY,
-			ap);
-	if (setting == nullptr)
-	{
-		return false;
-	}
-
-	// Create empty entry before index
-	list_size = config_setting_length(setting);
-	while (list_size <= index)
-	{
-		if (config_setting_set_string_elem(setting, -1, "") == nullptr)
-		{
-			return false;
-		}
-		list_size++;
-	}
-
-	if (config_setting_set_string_elem(setting, index, data) == nullptr)
-	{
-		return false;
-	}
-
-	write_config(config, table, file);
-	return true;
-}
-
-/*********************
- return false on error
- *********************/
+/*****************************************************************************/
 int entry_write_list_index(const std::string &table, const std::string &file,
 		const std::string &data, int index, ...)
 {
-	int ret;
+	int ret = false;
 	va_list ap;
 
 	va_start(ap, index);
-	ret = __write_list_index(table.c_str(), file.c_str(), data.c_str(), index,
-			ap);
+	std::vector<std::string> path = getPath(ap);
 	va_end(ap);
 
-	return ret;
-}
-
-/*********************
- return false on error
- *********************/
-static int __write_list(const char *table, const char *file, char **data,
-		va_list ap)
-{
-	config_setting_t *setting;
-	const config_t *config;
-	int i = 0;
-
-	LockGuard guard(entryListLock);
-
-	config = get_config(table, file);
-	if (config == nullptr)
+	if (index < 0)
 	{
 		return false;
 	}
 
-	setting = create_tree(config, nullptr, nullptr, nullptr, CONFIG_TYPE_ARRAY,
-			ap);
-
-	while (data[i] != nullptr)
+	try
 	{
-		// First try to update existing setting
-		if (config_setting_set_string_elem(setting, i, data[i]) == nullptr)
+		DataManager &dm = getDataManager();
+		std::vector<std::string> list = dm.get<std::vector<std::string> >(table,
+				file, path);
+
+		if ((int) list.size() <= index)
 		{
-			// If it down not exist, add a new setting at the end of the list
-			if (config_setting_set_string_elem(setting, -1, data[i]) == nullptr)
-			{
-				return false;
-			}
+			list.resize(index + 1);
 		}
-		i++;
+		list[index] = data;
+
+		ret = dm.set<std::vector<std::string> >(table, file, path, list);
+	} catch (...)
+	{
 	}
 
-	write_config(config, table, file);
-
-	return true;
+	return ret;
 }
 
-/*********************
- return false on error
- *********************/
+/*****************************************************************************/
 int entry_write_list(const char *table, const char *file, char **data, ...)
 {
-	int ret;
+	int ret = false;
 	va_list ap;
 
 	va_start(ap, data);
-	ret = __write_list(table, file, data, ap);
+	std::vector<std::string> path = getPath(ap);
 	va_end(ap);
+
+	std::vector<std::string> list;
+	for (int i = 0; data[i] != nullptr; i++)
+	{
+		list.push_back(data[i]);
+	}
+
+	ret = getDataManager().set<std::vector<std::string> >(table, file, path,
+			list);
 
 	return ret;
 }
 
-/*********************
- return false on error
- *********************/
-static int __add_to_list(const char *table, const char *file,
-		const char *to_be_added, va_list ap)
-{
-	const config_t *config = nullptr;
-	config_setting_t *setting = nullptr;
-	char *path;
-
-	LockGuard guard(entryListLock);
-
-	config = get_config(table, file);
-	if (config == nullptr)
-	{
-		return false;
-	}
-
-	path = get_path(ap);
-	if (path == nullptr)
-	{
-		return false;
-	}
-
-	setting = config_lookup(config, path);
-	if (setting == nullptr)
-	{
-		free(path);
-		return false;
-	}
-	free(path);
-
-	if (config_setting_set_string_elem(setting, -1, to_be_added) == nullptr)
-	{
-		return false;
-	}
-
-	write_config(config, table, file);
-
-	return true;
-}
-
-/*********************
- return false on error
- *********************/
+/*****************************************************************************/
 int entry_add_to_list(const char *table, const char *file,
 		const char *to_be_added, ...)
 {
-	int ret;
+	int ret = false;
 	va_list ap;
 
 	va_start(ap, to_be_added);
-	ret = __add_to_list(table, file, to_be_added, ap);
+	std::vector<std::string> path = getPath(ap);
 	va_end(ap);
+
+	try
+	{
+		DataManager &dm = getDataManager();
+		std::vector<std::string> list = dm.get<std::vector<std::string> >(table,
+				file, path);
+
+		list.push_back(to_be_added);
+
+		ret = dm.set<std::vector<std::string> >(table, file, path, list);
+	} catch (...)
+	{
+	}
 
 	return ret;
 }
 
-/*********************
- return false on error
- *********************/
-static int __remove_group(const char *table, const char *file,
-		const char *group, va_list ap)
-{
-
-	const config_t *config;
-	config_setting_t *setting = nullptr;
-	char *path;
-
-	LockGuard guard(entryListLock);
-
-	config = get_config(table, file);
-	if (config == nullptr)
-	{
-		return false;
-	}
-
-	path = get_path(ap);
-	if (path != nullptr)
-	{
-		setting = config_lookup(config, path);
-		free(path);
-	}
-	else
-	{
-		setting = config_root_setting(config);
-	}
-
-	if (setting == nullptr)
-	{
-		return false;
-	}
-
-	if (config_setting_remove(setting, group) == CONFIG_FALSE)
-	{
-		return false;
-	}
-
-	write_config(config, table, file);
-
-	return true;
-}
-
-/*********************
- return false on error
- *********************/
+/*****************************************************************************/
 int entry_remove_group(const char *table, const char *file, const char *group,
 		...)
 {
-	int ret;
 	va_list ap;
 
 	va_start(ap, group);
-	ret = __remove_group(table, file, group, ap);
+	std::vector<std::string> path = getPath(ap);
 	va_end(ap);
 
-	return ret;
+	path.push_back(group);
+
+	return getDataManager().erase(table, file, path);
 }
-/**********************
- get_unused_list_entry
- find an unused tag in a list, add it to the list and return it.
- returned string must be freed
- **********************/
+
+/*****************************************************************************/
 char* entry_get_unused_list_entry(const char *table, const char *file, ...)
 {
-	char **list;
-	char tag[7];
-	int index = 0;
-	int i = 0;
+	char tag[16];
+
+	DataManager &dm = getDataManager();
+
 	va_list ap;
-
-	sprintf(tag, "A%05x", index);
-
 	va_start(ap, file);
-	if (__read_list(table, file, &list, ap))
+	std::vector<std::string> path = getPath(ap);
+	va_end(ap);
+
+	std::vector<std::string> list;
+	try
 	{
-		while (list[i] != nullptr)
+		list = dm.get<std::vector<std::string> >(table, file, path);
+	} catch (...)
+	{
+	}
+
+	int index = 0;
+	for (;; index++)
+	{
+		sprintf(tag, "A%05x", index);
+		if (std::find(list.begin(), list.end(), std::string(tag)) == list.end())
 		{
-			if (strcmp(list[i], tag) == 0)
-			{
-				index++;
-				sprintf(tag, "A%05x", index);
-				i = 0;
-			}
-			i++;
+			break;
 		}
 	}
-	va_end(ap);
 
-	va_start(ap, file);
-	if (!__add_to_list(table, file, tag, ap))
+	try
 	{
-		va_end(ap);
-		return nullptr;
-	}
-	va_end(ap);
-
-	return strdup(tag);
-}
-
-/**********************
- __get_unused_group
- find an unused group, create it and return its name
- returned string must be freed
- **********************/
-char* __get_unused_group(const char *table, const char *file, va_list ap)
-{
-	char tag[7];
-	int index = 0;
-	char *path;
-	config_setting_t *setting;
-	const config_t *config;
-
-	LockGuard guard(entryListLock);
-
-	config = get_config(table, file);
-	if (config == nullptr)
+		list.push_back(tag);
+		dm.set<std::vector<std::string> >(table, file, path, list);
+	} catch (...)
 	{
 		return nullptr;
-	}
-
-	sprintf(tag, "A%05x", index);
-
-	path = get_path(ap);
-
-	if (path != nullptr)
-	{
-		setting = config_lookup(config, path);
-		free(path);
-	}
-	else
-	{
-		setting = config_root_setting(config);
-	}
-
-	while (config_setting_add(setting, tag, CONFIG_TYPE_GROUP) == nullptr)
-	{
-		index++;
-		sprintf(tag, "A%05x", index);
 	}
 
 	return strdup(tag);
 }
 
-/**********************
- get_unused_group
- find an unused group, create it and return its name
- returned string must be freed
- **********************/
+/*****************************************************************************/
 char* entry_get_unused_group(const char *table, const char *file, ...)
 {
 	char *ret;
@@ -969,459 +566,90 @@ char* entry_get_unused_group(const char *table, const char *file, ...)
 	return ret;
 }
 
-/**********************
- __get_unused_group_on_path
- find an unused group, DO NOT CREATE IT and return its name
- returned string must be freed
- return nullptr on error
- **********************/
-char* __get_unused_group_on_path(const char *table, const char *file,
-		char *path)
-{
-	char tag[7];
-	int index = 0;
-	config_setting_t *setting;
-	const config_t *config;
-
-	LockGuard guard(entryListLock);
-
-	config = get_config(table, file);
-	if (config == nullptr)
-	{
-		return nullptr;
-	}
-
-	sprintf(tag, "A%05x", index);
-
-	if (path != nullptr)
-	{
-		setting = config_lookup(config, path);
-		free(path);
-	}
-	else
-	{
-		setting = config_root_setting(config);
-	}
-
-	while (config_setting_add(setting, tag, CONFIG_TYPE_GROUP) == nullptr)
-	{
-		index++;
-		sprintf(tag, "A%05x", index);
-	}
-
-	config_setting_remove(setting, tag);
-
-	return strdup(tag);
-}
-
-/**********************
- Return a list of the name of the elements in the specified group
- res must be freed  (deep_free)
- return false on error
- **********************/
+/*****************************************************************************/
 int entry_get_group_list(const std::string &table, const std::string &file,
 		char ***res, ...)
-{
-	char *path;
-	const config_t *config;
-	va_list ap;
-	config_setting_t *setting;
-	config_setting_t *elem_setting;
-	int index = 0;
-
-	*res = nullptr;
-
-	LockGuard guard(entryListLock);
-
-	config = get_config(table.c_str(), file.c_str());
-	if (config == nullptr)
-	{
-		return false;
-	}
-
-	va_start(ap, res);
-	path = get_path(ap);
-	va_end(ap);
-
-	if (path != nullptr && path[0] != 0)
-	{
-		setting = config_lookup(config, path);
-		free(path);
-	}
-	else
-	{
-		setting = config_root_setting(config);
-	}
-
-	/* The path does not exist in the conf file */
-	if (setting == nullptr)
-	{
-		return false;
-	}
-
-	while ((elem_setting = config_setting_get_elem(setting, index)) != nullptr)
-	{
-		index++;
-		*res = (char**) realloc(*res, (index + 1) * sizeof(char*));
-		(*res)[index - 1] = strdup(config_setting_name(elem_setting));
-		(*res)[index] = nullptr;
-	}
-
-	if (*res == nullptr)
-	{
-		return false;
-	}
-
-	return true;
-}
-
-/*********************
- return false on failure
- *********************/
-static int __remove_from_list(const char *table, const char *file,
-		const char *to_be_removed, va_list ap)
-{
-	const config_t *config = nullptr;
-	config_setting_t *setting = nullptr;
-	char *path;
-	int i = 0;
-	const char *elem;
-
-	LockGuard guard(entryListLock);
-
-	config = get_config(table, file);
-	if (config == nullptr)
-	{
-		return false;
-	}
-
-	path = get_path(ap);
-	if (path == nullptr)
-	{
-		return false;
-	}
-
-	setting = config_lookup(config, path);
-	if (setting == nullptr)
-	{
-		free(path);
-		return false;
-	}
-	free(path);
-
-	while ((elem = config_setting_get_string_elem(setting, i)) != nullptr)
-	{
-		if (strcmp(elem, to_be_removed) == 0)
-		{
-			if (config_setting_remove_elem(setting, i) == CONFIG_FALSE)
-			{
-				return false;
-			}
-
-			write_config(config, table, file);
-			return true;
-		}
-		i++;
-	}
-
-	return false;
-}
-
-/*********************
- return false on error
- *********************/
-int entry_remove_from_list(const char *table, const char *file,
-		const char *to_be_removed, ...)
-{
-	int ret;
-	va_list ap;
-
-	va_start(ap, to_be_removed);
-	ret = __remove_from_list(table, file, to_be_removed, ap);
-	va_end(ap);
-	return ret;
-}
-
-/*********************
- return false on error
- *********************/
-int entry_copy_config(config_setting_t *source, config_setting_t *destination);
-int entry_copy_aggregate(config_setting_t *source, config_setting_t *dest,
-		int type)
-{
-	const char *setting_name;
-	config_setting_t *new_dest;
-	int index = 0;
-	char tag[7];
-
-	setting_name = config_setting_name(source);
-	if (setting_name == nullptr)
-	{
-		return false;
-	}
-
-	new_dest = config_setting_add(dest, setting_name, type);
-	if (new_dest == nullptr)
-	{
-		// Try to find an available name
-		sprintf(tag, "A%05x", index);
-
-		while ((new_dest = config_setting_add(dest, setting_name, type))
-				== nullptr)
-		{
-			index++;
-			sprintf(tag, "A%05x", index);
-		}
-	}
-
-	if (!entry_copy_config(source, new_dest))
-	{
-		config_setting_remove(dest, setting_name);
-		return false;
-	}
-	return true;
-}
-
-/*********************
- return false on error
- *********************/
-int entry_copy_config(config_setting_t *source, config_setting_t *dest)
-{
-	config_setting_t *new_source;
-	config_setting_t *new_dest;
-	int index = -1;
-	int int_value;
-	long long long_value;
-	double double_value;
-	const char *string;
-
-	while ((new_source = config_setting_get_elem(source, index + 1)) != nullptr)
-	{
-		index++;
-		if (config_setting_is_group(new_source))
-		{
-			if (!entry_copy_aggregate(new_source, dest, CONFIG_TYPE_GROUP))
-			{
-				return false;
-			}
-		}
-
-		else if (config_setting_is_array(new_source))
-		{
-			if (!entry_copy_aggregate(new_source, dest, CONFIG_TYPE_ARRAY))
-			{
-				return false;
-			}
-		}
-
-		else if (config_setting_is_list(new_source))
-		{
-			if (!entry_copy_aggregate(new_source, dest, CONFIG_TYPE_LIST))
-			{
-				return false;
-			}
-		}
-
-		else
-		{
-			switch (config_setting_type(new_source))
-			{
-			case CONFIG_TYPE_INT:
-				int_value = config_setting_get_int(new_source);
-				new_dest = config_setting_add(dest,
-						config_setting_name(new_source), CONFIG_TYPE_INT);
-				config_setting_set_int(new_dest, int_value);
-				continue;
-			case CONFIG_TYPE_INT64:
-				long_value = config_setting_get_int64(new_source);
-				new_dest = config_setting_add(dest,
-						config_setting_name(new_source), CONFIG_TYPE_INT64);
-				config_setting_set_int64(new_dest, long_value);
-				continue;
-			case CONFIG_TYPE_FLOAT:
-				double_value = config_setting_get_float(new_source);
-				new_dest = config_setting_add(dest,
-						config_setting_name(new_source), CONFIG_TYPE_FLOAT);
-				config_setting_set_float(new_dest, double_value);
-				continue;
-			case CONFIG_TYPE_BOOL:
-				int_value = config_setting_get_bool(new_source);
-				new_dest = config_setting_add(dest,
-						config_setting_name(new_source), CONFIG_TYPE_BOOL);
-				config_setting_set_bool(new_dest, int_value);
-				continue;
-			case CONFIG_TYPE_STRING:
-				string = config_setting_get_string(new_source);
-				new_dest = config_setting_add(dest,
-						config_setting_name(new_source), CONFIG_TYPE_STRING);
-				config_setting_set_string(new_dest, string);
-				continue;
-			default:
-				return false;
-			}
-		}
-	}
-
-	return true;
-}
-
-/*********************
- returnRET_NOK on error
- *********************/
-static int __list_create(const char *table, const char *file, va_list ap)
-{
-	const config_t *config;
-
-	LockGuard guard(entryListLock);
-
-	config = get_config(table, file);
-	if (config == nullptr)
-	{
-		return false;
-	}
-
-	create_tree(config, nullptr, nullptr, nullptr, CONFIG_TYPE_LIST, ap);
-
-	write_config(config, table, file);
-	return true;
-}
-
-/*********************
- return false on error
- *********************/
-int entry_list_create(const char *table, const char *file, ...)
 {
 	int ret = false;
 	va_list ap;
 
+	va_start(ap, res);
+	std::vector<std::string> path = getPath(ap);
+	va_end(ap);
+
+	try
+	{
+		*res = toCArray(getDataManager().getKeys(table, file, path));
+		ret = (*res != nullptr);
+	} catch (...)
+	{
+	}
+
+	return ret;
+}
+
+/*****************************************************************************/
+int entry_remove_from_list(const char *table, const char *file,
+		const char *to_be_removed, ...)
+{
+	int ret = false;
+	va_list ap;
+
+	va_start(ap, to_be_removed);
+	std::vector<std::string> path = getPath(ap);
+	va_end(ap);
+
+	try
+	{
+		DataManager &dm = getDataManager();
+		std::vector<std::string> list = dm.get<std::vector<std::string> >(table,
+				file, path);
+
+		for (size_t i = 0; i < list.size(); i++)
+		{
+			if (list[i] == to_be_removed)
+			{
+				list.erase(list.begin() + i);
+				ret = dm.set<std::vector<std::string> >(table, file, path,
+						list);
+				break;
+			}
+		}
+	} catch (...)
+	{
+	}
+
+	return ret;
+}
+
+/*****************************************************************************/
+int entry_list_create(const char *table, const char *file, ...)
+{
+	int ret;
+	va_list ap;
+
 	va_start(ap, file);
-	ret = __list_create(table, file, ap);
+	ret = getDataManager().set<std::vector<std::string> >(table, file,
+			getPath(ap), std::vector<std::string>());
 	va_end(ap);
 
 	return ret;
 }
 
-/*********************
- return false on error
- *********************/
-static int __group_create(const char *table, const char *file, va_list ap)
-{
-	const config_t *config = nullptr;
-
-	LockGuard guard(entryListLock);
-
-	config = get_config(table, file);
-	if (config == nullptr)
-	{
-		return false;
-	}
-
-	create_tree(config, nullptr, nullptr, nullptr, CONFIG_TYPE_GROUP, ap);
-
-	write_config(config, table, file);
-	return true;
-}
-
-/*********************
- return false on error
- *********************/
+/*****************************************************************************/
 int entry_group_create(const char *table, const char *file, ...)
 {
 	int ret;
 	va_list ap;
 
 	va_start(ap, file);
-	ret = __group_create(table, file, ap);
+	ret = getDataManager().set<json>(table, file, getPath(ap), json::object());
 	va_end(ap);
 
 	return ret;
 }
 
-/*********************
- return nullptr on error
- *********************/
-static char* __copy_group(const char *src_table, const char *src_file,
-		const char *dst_table, const char *dst_file, const char *group_name,
-		va_list ap)
-{
-	const config_t *src_config = nullptr;
-	const config_t *dst_config = nullptr;
-	config_setting_t *src_setting = nullptr;
-	config_setting_t *dst_setting = nullptr;
-	char *path = nullptr;
-	char *new_group_name = nullptr;
-	const char *group_name_used = nullptr;
-
-	path = get_path(ap);
-	std::string full_path = add_entry_to_path(path, (char*) group_name);
-
-	LockGuard guard(entryListLock);
-
-	src_config = get_config(src_table, src_file);
-	if (src_config == nullptr)
-	{
-		free(path);
-		return nullptr;
-	}
-
-	src_setting = config_lookup(src_config, full_path.c_str());
-	if (src_setting == nullptr)
-	{
-		free(path);
-		return nullptr;
-	}
-
-	dst_config = get_config(dst_table, dst_file);
-	if (dst_config == nullptr)
-	{
-		free(path);
-		return nullptr;
-	}
-
-	dst_setting = config_lookup(dst_config, full_path.c_str());
-
-	// if the setting does not exist, create it
-	if (dst_setting == nullptr)
-	{
-		group_name_used = group_name;
-	}
-	// else find a new name for it
-	else
-	{
-		new_group_name = __get_unused_group_on_path(dst_table, dst_file, path);
-		group_name_used = new_group_name;
-	}
-
-	if (path != nullptr)
-	{
-		dst_setting = config_lookup(dst_config, path);
-	}
-	else
-	{
-		dst_setting = config_root_setting(dst_config);
-	}
-	dst_setting = config_setting_add(dst_setting, group_name_used,
-	CONFIG_TYPE_GROUP);
-
-	free(path);
-
-	if (!entry_copy_config(src_setting, dst_setting))
-	{
-		return nullptr;
-	}
-
-	if (new_group_name != nullptr)
-	{
-		return new_group_name;
-	}
-
-	return strdup(group_name);
-
-}
-/**************************************
- return a copy of the name used for the destination
- MUST BE FREED !
- ***************************************/
+/*****************************************************************************/
 char* entry_copy_group(const char *src_table, const char *src_file,
 		const char *dst_table, const char *dst_file, const char *group_name,
 		...)
@@ -1433,115 +661,58 @@ char* entry_copy_group(const char *src_table, const char *src_file,
 	ret = __copy_group(src_table, src_file, dst_table, dst_file, group_name,
 			ap);
 	va_end(ap);
+
 	return ret;
 }
 
-/*********************************************
- Update an entry from a network frame
- return false on error
- *********************************************/
+/*****************************************************************************/
 int entry_update(const std::string &type, const std::string &table,
 		const std::string &file, const std::string &path,
 		const std::string &value)
 {
-	LockGuard guard(entryListLock);
-
-	const config_t *config = get_config(table.c_str(), file.c_str());
-	if (config == nullptr)
-	{
-		return false;
-	}
-
-	config_setting_t *setting = nullptr;
-
-	setting = config_lookup(config, path.c_str());
-	if (setting == nullptr)
-	{
-		return false;
-	}
+	DataManager &dm = getDataManager();
+	std::vector<std::string> pathVec = splitPath(path);
 
 	if (type == ENTRY_TYPE_INT)
 	{
-		int intValue;
-
-		intValue = atoll(value.c_str());
-		if (config_setting_set_int(setting, intValue) == CONFIG_FALSE)
-		{
-			werr(LOGUSER, "Error setting %s/%s/%s to %d", table.c_str(),
-					file.c_str(), path.c_str(), intValue);
-		}
-		else
-		{
-			write_config(config, table.c_str(), file.c_str());
-		}
+		return dm.set<int>(table, file, pathVec, atoi(value.c_str()));
 	}
 	else if (type == ENTRY_TYPE_STRING)
 	{
-		if (config_setting_set_string(setting, value.c_str()) == CONFIG_FALSE)
-		{
-			werr(LOGUSER, "Error setting %s/%s/%s to %s", table.c_str(),
-					file.c_str(), path.c_str(), value.c_str());
-		}
-		else
-		{
-			write_config(config, table.c_str(), file.c_str());
-		}
+		return dm.set<std::string>(table, file, pathVec, value);
 	}
 
 	return true;
 }
 
-/***********************************************
- Delete a character's entry
- return false on error
- ***********************************************/
+/*****************************************************************************/
 int entry_destroy(const std::string &table, const std::string &file)
 {
-	const std::string file_path = table + "/" + file;
+	const std::string filePath = table + "/" + file;
 
-	entry_remove(file_path.c_str());
+	getDataManager().reset(filePath);
+	entry_remove(filePath.c_str());
 
 	return true;
 }
 
-/*********************
- return true if entry or group exists
- *********************/
+/*****************************************************************************/
 static bool __exist(const char *table, const char *file, va_list ap)
 {
-	const config_t *config;
-	char *path;
-	config_setting_t *setting = nullptr;
+	DataManager &dm = getDataManager();
+	std::vector<std::string> path = getPath(ap);
 
+	try
 	{
-		LockGuard guard(entryListLock);
-		config = get_config(table, file);
-	}
-
-	if (config == nullptr)
+		dm.getKeys(table, file, path);
+		return true;
+	} catch (...)
 	{
 		return false;
 	}
-
-	path = get_path(ap);
-	if (path == nullptr)
-	{
-		return false;
-	}
-
-	setting = config_lookup(config, path);
-	free(path);
-	if (setting == nullptr)
-	{
-		return false;
-	}
-
-	return true;
 }
 
-/*********************
- return true if entry or group exists
- *********************/
+/*****************************************************************************/
 bool entry_exist(const std::string &table, const std::string &file, ...)
 {
 	bool ret;

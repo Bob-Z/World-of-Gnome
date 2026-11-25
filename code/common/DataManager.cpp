@@ -68,6 +68,86 @@ void DataManager::add(const std::string & table, const std::string & file, const
 }
 
 /*****************************************************************************/
+std::vector<std::string> DataManager::getKeys(const std::string & table,
+		const std::string & file, const std::vector<std::string> & resourcePath)
+{
+	const std::string filePath = getFilePath(table, file);
+
+	LockGuard guard(m_poolLock);
+
+	json &jsonFile = getJson(filePath);
+
+	json *reference = &jsonFile;
+	for (auto & res : resourcePath)
+	{
+		reference = &(reference->at(res));
+	}
+
+	std::vector<std::string> keys;
+	for (auto it = reference->begin(); it != reference->end(); ++it)
+	{
+		keys.push_back(it.key());
+	}
+
+	return keys;
+}
+
+/*****************************************************************************/
+bool DataManager::has(const std::string & table, const std::string & file,
+		const std::vector<std::string> & resourcePath)
+{
+	try
+	{
+		get<json>(table, file, resourcePath);
+		return true;
+	} catch (...)
+	{
+		return false;
+	}
+}
+
+/*****************************************************************************/
+bool DataManager::erase(const std::string & table, const std::string & file,
+		const std::vector<std::string> & resourcePath)
+{
+	const std::string filePath = getFilePath(table, file);
+
+	LockGuard guard(m_poolLock);
+
+	json &jsonFile = getJson(filePath);
+
+	try
+	{
+		if (resourcePath.empty())
+		{
+			return false;
+		}
+
+		json *reference = &jsonFile;
+		for (size_t i = 0; i + 1 < resourcePath.size(); i++)
+		{
+			reference = &(reference->at(resourcePath[i]));
+		}
+
+		const bool erased = reference->erase(resourcePath.back()) > 0;
+		if (erased)
+		{
+			file_write(filePath, jsonFile.dump(2));
+		}
+
+		return erased;
+	} catch (json::exception& e)
+	{
+		ERR("JSON : " + std::string(e.what()));
+	} catch (...)
+	{
+		ERR("JSON error");
+	}
+
+	return false;
+}
+
+/*****************************************************************************/
 void DataManager::reset(const std::string & filePath)
 {
 	LockGuard guard(m_poolLock);

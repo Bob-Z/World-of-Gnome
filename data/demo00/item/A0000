@@ -1,2 +1,4 @@
-template="apple";
-quantity=1;
+{
+  "template": "apple",
+  "quantity": 1
+}

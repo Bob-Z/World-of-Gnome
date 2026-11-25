@@ -28,10 +28,7 @@
 #include <string>
 #include <vector>
 
-extern "C"
-{
-#include <lua.h>
-}
+#include <lua.hpp>
 
 class Context
 {

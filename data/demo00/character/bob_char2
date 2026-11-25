@@ -1,10 +1,21 @@
-draw_script     = "draw/smooth.lua"
-marquee		= "marquee/black_ball.jpg";
-sprite		= "sprite/black_ball.png";
-name = "Blip";
-inventory : [ "A0006" ];
-type = "black_ball";
-map = "map2";
-tile_x = 0;
-tile_y = 2;
-action = [ "add_white", "add_black", "get", "drop_item", "get_apple", "eat_apple" ];
+{
+  "draw_script": "draw/smooth.lua",
+  "marquee": "marquee/black_ball.jpg",
+  "sprite": "sprite/black_ball.png",
+  "name": "Blip",
+  "inventory": [
+    "A0006"
+  ],
+  "type": "black_ball",
+  "map": "map2",
+  "tile_x": 0,
+  "tile_y": 2,
+  "action": [
+    "add_white",
+    "add_black",
+    "get",
+    "drop_item",
+    "get_apple",
+    "eat_apple"
+  ]
+}

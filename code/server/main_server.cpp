@@ -66,6 +66,8 @@ int main(int argc, char **argv)
 
 	base_directory = std::string(getenv("HOME")) + "/.config/wog/server";
 
+	wlog(LOGUSER, "Starting server");
+
 	while ((opt_ret = getopt_long(argc, argv, optstring, longopts, nullptr)) != -1)
 	{
 		switch (opt_ret)

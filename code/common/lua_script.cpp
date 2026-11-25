@@ -26,17 +26,7 @@
 #include <string>
 #include <vector>
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-#include <lua.h>
-#include <lualib.h>
-#include <lauxlib.h>
-
-#ifdef __cplusplus
-}
-#endif
+#include <lua.hpp>
 
 /*******************************************************************************
  Execute the given script with its parameters

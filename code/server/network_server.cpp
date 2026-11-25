@@ -292,6 +292,8 @@ void network_init(void)
 	server_set = SDLNet_AllocSocketSet(1);
 	SDLNet_TCP_AddSocket(server_set, socket);
 
+	wlog(LOGUSER, "Waiting for connections on port: %i", PORT);
+
 	// Wait for a connection
 	while (true)
 	{

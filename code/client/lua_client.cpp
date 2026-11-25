@@ -30,16 +30,7 @@
 #include "syntax.h"
 #include "util.h"
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-#include <lua.h>
-#include <lualib.h>
-#include <lauxlib.h>
-#ifdef __cplusplus
-}
-#endif
+#include <lua.hpp>
 
 static lua_State *luaVm = nullptr;
 static Lock luaVmLock;
@@ -125,7 +116,7 @@ static int l_item_set_px(lua_State *luaState)
 	lua_pop(luaState, 1);
 
 	int x;
-	x = luaL_checkint(luaState, -1);
+	x = luaL_checkinteger(luaState, -1);
 	item->setRectX(x);
 	return 0; // number of results
 }
@@ -144,7 +135,7 @@ static int l_item_set_py(lua_State *luaState)
 	lua_pop(luaState, 1);
 
 	int y;
-	y = luaL_checkint(luaState, -1);
+	y = luaL_checkinteger(luaState, -1);
 	item->setRectY(y);
 	return 0; // number of results
 }
@@ -230,7 +221,7 @@ static int l_item_set_anim_start_tick(lua_State *luaState)
 	lua_pop(luaState, 1);
 
 	int tick;
-	tick = luaL_checkint(luaState, -1);
+	tick = luaL_checkinteger(luaState, -1);
 	item->setAnimStartTick(tick);
 
 	return 0; // number of results
@@ -395,7 +386,7 @@ static int l_item_set_anim_from_context(lua_State *luaState)
 	lua_pop(luaState, 1);
 
 	const char *id = luaL_checkstring(luaState, -4);
-	int isMoving = luaL_checkint(luaState, -3);
+	int isMoving = luaL_checkinteger(luaState, -3);
 	const char *mainOrientation = luaL_checkstring(luaState, -2);
 	const char *secondaryOrientation = luaL_checkstring(luaState, -1);
 
@@ -695,20 +686,12 @@ static void register_lua_functions_client(lua_State *l_pLuaVm)
 /*****************************************************************************/
 void lua_init()
 {
-	luaVm = lua_open();
-	lua_baselibopen(luaVm);
-	lua_tablibopen(luaVm);
-	lua_iolibopen(luaVm);
-	lua_strlibopen(luaVm);
-	lua_mathlibopen(luaVm);
+	luaVm = luaL_newstate();
+	luaL_openlibs(luaVm);
 	register_lua_functions_client(luaVm);
 
-	effectLuaVm = lua_open();
-	lua_baselibopen(effectLuaVm);
-	lua_tablibopen(effectLuaVm);
-	lua_iolibopen(effectLuaVm);
-	lua_strlibopen(effectLuaVm);
-	lua_mathlibopen(effectLuaVm);
+	effectLuaVm = luaL_newstate();
+	luaL_openlibs(effectLuaVm);
 	register_lua_functions_client(effectLuaVm);
 }
 

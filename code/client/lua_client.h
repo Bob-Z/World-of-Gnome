@@ -20,16 +20,7 @@
 #ifndef LUA_CLIENT_H
 #define LUA_CLIENT_H
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-#include <lua.h>
-#include <lualib.h>
-#include <lauxlib.h>
-#ifdef __cplusplus
-}
-#endif
+#include <lua.hpp>
 
 #include "Lock.h"
 

@@ -573,7 +573,7 @@ static void compose_item(int layerIndex, std::vector<SdlItem*> &itemArray)
 			try
 			{
 				spriteName = getDataManager().get<std::string>(ITEM_TABLE,
-						std::string(itemId[i]), ITEM_SPRITE);
+						std::string(itemId[i]), { ITEM_SPRITE });
 			} catch (...)
 			{
 				i++;
@@ -581,11 +581,11 @@ static void compose_item(int layerIndex, std::vector<SdlItem*> &itemArray)
 			}
 
 			align = getDataManager().getNoExcept<int>(ITEM_TABLE,
-					std::string(itemId[i]), ITEM_ALIGN, 0);
+					std::string(itemId[i]), { ITEM_ALIGN }, 0);
 			spriteAlign = static_cast<Align>(align);
 
 			spriteOffsetY = getDataManager().getNoExcept<int>(ITEM_TABLE,
-					std::string(itemId[i]), ITEM_OFFSET_Y, 0);
+					std::string(itemId[i]), { ITEM_OFFSET_Y }, 0);
 		}
 		else
 		{
@@ -593,7 +593,7 @@ static void compose_item(int layerIndex, std::vector<SdlItem*> &itemArray)
 			{
 				spriteName = getDataManager().get<std::string>(
 						ITEM_TEMPLATE_TABLE, std::string(mytemplate),
-						ITEM_SPRITE);
+						{ ITEM_SPRITE });
 			} catch (...)
 			{
 				free(mytemplate);
@@ -602,12 +602,12 @@ static void compose_item(int layerIndex, std::vector<SdlItem*> &itemArray)
 			}
 
 			align = getDataManager().getNoExcept<int>(ITEM_TEMPLATE_TABLE,
-					std::string(mytemplate), ITEM_ALIGN, 0);
+					std::string(mytemplate), { ITEM_ALIGN }, 0);
 			spriteAlign = static_cast<Align>(align);
 
 			spriteOffsetY = getDataManager().getNoExcept<int>(
-					ITEM_TEMPLATE_TABLE, std::string(mytemplate), ITEM_OFFSET_Y,
-					0);
+					ITEM_TEMPLATE_TABLE, std::string(mytemplate),
+					{ ITEM_OFFSET_Y }, 0);
 			free(mytemplate);
 		}
 

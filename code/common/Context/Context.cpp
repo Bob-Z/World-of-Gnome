@@ -26,11 +26,7 @@
 #include "mutex.h"
 #include "syntax.h"
 
-extern "C"
-{
-#include "lualib.h"
-#include "lauxlib.h"
-}
+#include "lua.hpp"
 
 Context *context_list_start = nullptr;
 
@@ -667,12 +663,8 @@ lua_State* Context::getLuaVm()
 {
 	if (m_luaVm == nullptr)
 	{
-		m_luaVm = lua_open();
-		lua_baselibopen(m_luaVm);
-		lua_tablibopen(m_luaVm);
-		lua_iolibopen(m_luaVm);
-		lua_strlibopen(m_luaVm);
-		lua_mathlibopen(m_luaVm);
+		m_luaVm = luaL_newstate();
+		luaL_openlibs(m_luaVm);
 
 		register_lua_functions(static_cast<Context*>(this));
 	}

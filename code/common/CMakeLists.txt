@@ -17,7 +17,8 @@ include_directories(
 )
 
 # for LUA
-find_package(Lua50 REQUIRED)
+pkg_search_module(LUA REQUIRED lua5.5)
+set(LUA_INCLUDE_DIR ${LUA_INCLUDE_DIRS})
 include_directories(${LUA_INCLUDE_DIR})
 
 #for protobuf

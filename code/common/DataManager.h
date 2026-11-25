@@ -22,6 +22,7 @@
 
 #include "Lock.h"
 #include "LockGuard.h"
+#include "file.h"
 #include "log.h"
 #include <nlohmann/json.hpp>
 #include <string>
@@ -86,16 +87,69 @@ public:
 
 	void reset(const std::string &filePath);
 
+	template<typename T>
+	bool set(const std::string &table, const std::string &file,
+			const std::vector<std::string> &resourcePath, const T &value);
+
+	std::vector<std::string> getKeys(const std::string &table,
+			const std::string &file, const std::vector<std::string> &resourcePath);
+
+	bool erase(const std::string &table, const std::string &file,
+			const std::vector<std::string> &resourcePath);
+
+	bool has(const std::string &table, const std::string &file,
+			const std::vector<std::string> &resourcePath);
+
+	json& getJson(const std::string &filePath);
+
 protected:
 	std::string getFilePath(const std::string &table, const std::string &file);
 
 private:
-	json& getJson(const std::string &filePath);
 	json& loadJsonFile(const std::string &filePath);
 
 	std::unordered_map<std::string, json> m_jsonPool;
 
 	Lock m_poolLock;
 };
+
+/*****************************************************************************/
+template<typename T>
+inline bool DataManager::set(const std::string & table, const std::string & file,
+		const std::vector<std::string> & resourcePath, const T & value)
+{
+	const std::string filePath = getFilePath(table, file);
+
+	LockGuard guard(m_poolLock);
+
+	json &jsonFile = getJson(filePath);
+
+	try
+	{
+		json *reference = &jsonFile;
+
+		for (auto & res : resourcePath)
+		{
+			if (!reference->is_object() || !reference->contains(res))
+			{
+				(*reference)[res] = json::object();
+			}
+			reference = &((*reference)[res]);
+		}
+
+		*reference = value;
+
+		file_write(filePath, jsonFile.dump(2));
+		return true;
+	} catch (json::exception& e)
+	{
+		ERR("JSON : " + std::string(e.what()));
+	} catch (...)
+	{
+		ERR("JSON error");
+	}
+
+	return false;
+}
 
 #endif /* COMMON_DATAMANAGER_H_ */

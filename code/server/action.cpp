@@ -44,17 +44,7 @@
 #include <unistd.h>
 #include <vector>
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-
-#include <lualib.h>
-#include <lauxlib.h>
-
-#ifdef __cplusplus
-}
-#endif
+#include <lua.hpp>
 
 #define LUAVM_CONTEXT "wog_context"
 
@@ -101,9 +91,9 @@ static int l_character_create_from_template(lua_State *L)
 
 	mytemplate = luaL_checkstring(L, -5);
 	map = luaL_checkstring(L, -4);
-	layer = luaL_checkint(L, -3);
-	x = luaL_checkint(L, -2);
-	y = luaL_checkint(L, -1);
+	layer = luaL_checkinteger(L, -3);
+	x = luaL_checkinteger(L, -2);
+	y = luaL_checkinteger(L, -1);
 	const std::pair<bool, std::string> res = character_create_from_template(ctx,
 			mytemplate, map, layer, x, y);
 	lua_pushstring(L, res.second.c_str());
@@ -192,8 +182,8 @@ static int l_character_set_selected_tile(lua_State *L)
 
 	id = luaL_checkstring(L, -4);
 	selected_map = luaL_checkstring(L, -3);
-	tx = luaL_checkint(L, -2);
-	ty = luaL_checkint(L, -1);
+	tx = luaL_checkinteger(L, -2);
+	ty = luaL_checkinteger(L, -1);
 
 	target = context_find(std::string(id));
 	if (target == nullptr)
@@ -588,8 +578,8 @@ static int l_character_set_pos(lua_State *L)
 
 	id = luaL_checkstring(L, -4);
 	map = luaL_checkstring(L, -3);
-	x = luaL_checkint(L, -2);
-	y = luaL_checkint(L, -1);
+	x = luaL_checkinteger(L, -2);
+	y = luaL_checkinteger(L, -1);
 
 	ctx = context_find(id);
 	res = character_set_pos(ctx, std::string(map), x, y);
@@ -613,7 +603,7 @@ static int l_character_set_npc(lua_State *L)
 	int res;
 
 	id = luaL_checkstring(L, -2);
-	npc = luaL_checkint(L, -1);
+	npc = luaL_checkinteger(L, -1);
 
 	res = character_set_npc(id, npc);
 	lua_pushnumber(L, res);
@@ -730,7 +720,7 @@ static int l_character_set_sprite(lua_State *L)
 	int res;
 
 	id = luaL_checkstring(L, -3);
-	index = luaL_checkint(L, -2);
+	index = luaL_checkinteger(L, -2);
 	sprite_name = luaL_checkstring(L, -1);
 
 	res = character_set_sprite(id, index, sprite_name);
@@ -759,7 +749,7 @@ static int l_character_set_sprite_dir(lua_State *L)
 
 	id = luaL_checkstring(L, -4);
 	dir = luaL_checkstring(L, -3);
-	index = luaL_checkint(L, -2);
+	index = luaL_checkinteger(L, -2);
 	sprite_name = luaL_checkstring(L, -1);
 
 	res = character_set_sprite_dir(std::string(id), std::string(dir), index,
@@ -789,7 +779,7 @@ static int l_character_set_sprite_move(lua_State *L)
 
 	id = luaL_checkstring(L, -4);
 	dir = luaL_checkstring(L, -3);
-	index = luaL_checkint(L, -2);
+	index = luaL_checkinteger(L, -2);
 	sprite_name = luaL_checkstring(L, -1);
 
 	res = character_set_sprite_move(id, dir, index, sprite_name);
@@ -886,10 +876,10 @@ static int l_map_new(lua_State *L)
 	int tile_y = -1;
 
 	name = luaL_checkstring(L, -5);
-	x = luaL_checkint(L, -4);
-	y = luaL_checkint(L, -3);
-	tile_x = luaL_checkint(L, -2);
-	tile_y = luaL_checkint(L, -1);
+	x = luaL_checkinteger(L, -4);
+	y = luaL_checkinteger(L, -3);
+	tile_x = luaL_checkinteger(L, -2);
+	tile_y = luaL_checkinteger(L, -1);
 	const std::pair<bool, std::string> map_name = map_new(name, x, y, tile_x,
 			tile_y);
 	lua_pushstring(L, map_name.second.c_str());
@@ -925,11 +915,11 @@ static int l_map_add_layer(lua_State *L)
 	int res;
 
 	map_name = luaL_checkstring(L, -8);
-	layer = luaL_checkint(L, -7);
-	x = luaL_checkint(L, -6);
-	y = luaL_checkint(L, -5);
-	tile_x = luaL_checkint(L, -4);
-	tile_y = luaL_checkint(L, -3);
+	layer = luaL_checkinteger(L, -7);
+	x = luaL_checkinteger(L, -6);
+	y = luaL_checkinteger(L, -5);
+	tile_x = luaL_checkinteger(L, -4);
+	tile_y = luaL_checkinteger(L, -3);
 	default_tile = luaL_checkstring(L, -2);
 	default_type = luaL_checkstring(L, -1);
 	res = map_add_layer(map_name, layer, x, y, tile_x, tile_y, default_tile,
@@ -954,7 +944,7 @@ static int l_map_delete_layer(lua_State *L)
 	int res;
 
 	map_name = luaL_checkstring(L, -2);
-	layer = luaL_checkint(L, -1);
+	layer = luaL_checkinteger(L, -1);
 	res = map_delete_layer(map_name, layer);
 	lua_pushnumber(L, res);
 	return 1;  // number of results
@@ -983,10 +973,10 @@ static int l_map_set_tile(lua_State *L)
 	int res;
 
 	map = luaL_checkstring(L, -5);
-	layer = luaL_checkint(L, -4);
+	layer = luaL_checkinteger(L, -4);
 	tile = luaL_checkstring(L, -3);
-	x = luaL_checkint(L, -2);
-	y = luaL_checkint(L, -1);
+	x = luaL_checkinteger(L, -2);
+	y = luaL_checkinteger(L, -1);
 	res = map_set_tile(map, layer, tile, x, y, true);
 	lua_pushnumber(L, res);
 	return 1;  // number of results
@@ -1016,10 +1006,10 @@ static int l_map_set_tile_no_update(lua_State *L)
 	int res;
 
 	map = luaL_checkstring(L, -5);
-	layer = luaL_checkint(L, -4);
+	layer = luaL_checkinteger(L, -4);
 	tile = luaL_checkstring(L, -3);
-	x = luaL_checkint(L, -2);
-	y = luaL_checkint(L, -1);
+	x = luaL_checkinteger(L, -2);
+	y = luaL_checkinteger(L, -1);
 	res = map_set_tile(map, layer, tile, x, y, false);
 	lua_pushnumber(L, res);
 	return 1;  // number of results
@@ -1042,7 +1032,7 @@ static int l_map_set_tile_array(lua_State *L)
 	int layer;
 
 	map = luaL_checkstring(L, -3);
-	layer = luaL_checkint(L, -2);
+	layer = luaL_checkinteger(L, -2);
 
 	i = 0;
 	lua_pushnil(L);  // first key
@@ -1086,10 +1076,10 @@ static int l_map_set_tile_type(lua_State *L)
 	int res;
 
 	map = luaL_checkstring(L, -5);
-	layer = luaL_checkint(L, -4);
+	layer = luaL_checkinteger(L, -4);
 	type = luaL_checkstring(L, -3);
-	x = luaL_checkint(L, -2);
-	y = luaL_checkint(L, -1);
+	x = luaL_checkinteger(L, -2);
+	y = luaL_checkinteger(L, -1);
 	res = map_set_tile_type(map, layer, type, x, y, true);
 	lua_pushnumber(L, res);
 	return 1;  // number of results
@@ -1118,10 +1108,10 @@ static int l_map_set_tile_type_no_update(lua_State *L)
 	int res;
 
 	map = luaL_checkstring(L, -5);
-	layer = luaL_checkint(L, -4);
+	layer = luaL_checkinteger(L, -4);
 	type = luaL_checkstring(L, -3);
-	x = luaL_checkint(L, -2);
-	y = luaL_checkint(L, -1);
+	x = luaL_checkinteger(L, -2);
+	y = luaL_checkinteger(L, -1);
 	res = map_set_tile_type(map, layer, type, x, y, true);
 	lua_pushnumber(L, res);
 	return 1;  // number of results
@@ -1191,10 +1181,10 @@ static int l_map_set_custom_column(lua_State *L)
 	int res;
 
 	map = luaL_checkstring(L, -5);
-	layer = luaL_checkint(L, -4);
-	num = luaL_checkint(L, -3);
-	width = luaL_checkint(L, -2);
-	height = luaL_checkint(L, -1);
+	layer = luaL_checkinteger(L, -4);
+	num = luaL_checkinteger(L, -3);
+	width = luaL_checkinteger(L, -2);
+	height = luaL_checkinteger(L, -1);
 	res = map_set_custom_column(map, layer, num, width, height);
 	lua_pushnumber(L, res);
 	return 1;  // number of results
@@ -1222,10 +1212,10 @@ static int l_map_set_custom_row(lua_State *L)
 	int res;
 
 	map = luaL_checkstring(L, -5);
-	layer = luaL_checkint(L, -4);
-	num = luaL_checkint(L, -3);
-	width = luaL_checkint(L, -2);
-	height = luaL_checkint(L, -1);
+	layer = luaL_checkinteger(L, -4);
+	num = luaL_checkinteger(L, -3);
+	width = luaL_checkinteger(L, -2);
+	height = luaL_checkinteger(L, -1);
 	res = map_set_custom_row(map, layer, num, width, height);
 	lua_pushnumber(L, res);
 	return 1;  // number of results
@@ -1330,10 +1320,10 @@ static int l_map_add_item(lua_State *L)
 	int res;
 
 	map = luaL_checkstring(L, -5);
-	layer = luaL_checkint(L, -4);
+	layer = luaL_checkinteger(L, -4);
 	item = luaL_checkstring(L, -3);
-	x = luaL_checkint(L, -2);
-	y = luaL_checkint(L, -1);
+	x = luaL_checkinteger(L, -2);
+	y = luaL_checkinteger(L, -1);
 	res = map_add_item(map, layer, item, x, y);
 	lua_pushnumber(L, res);
 	return 1;  // number of results
@@ -1359,9 +1349,9 @@ static int l_map_delete_item(lua_State *L)
 	char *res;
 
 	map = luaL_checkstring(L, -4);
-	layer = luaL_checkint(L, -3);
-	x = luaL_checkint(L, -2);
-	y = luaL_checkint(L, -1);
+	layer = luaL_checkinteger(L, -3);
+	x = luaL_checkinteger(L, -2);
+	y = luaL_checkinteger(L, -1);
 	res = map_delete_item(map, layer, x, y);
 	lua_pushstring(L, res);
 	if (res)
@@ -1393,10 +1383,10 @@ static int l_map_add_event(lua_State *L)
 	char *res;
 
 	map = luaL_checkstring(L, -5);
-	layer = luaL_checkint(L, -4);
+	layer = luaL_checkinteger(L, -4);
 	script = luaL_checkstring(L, -3);
-	x = luaL_checkint(L, -2);
-	y = luaL_checkint(L, -1);
+	x = luaL_checkinteger(L, -2);
+	y = luaL_checkinteger(L, -1);
 	res = map_add_event(map, layer, script, x, y);
 	lua_pushstring(L, res);
 	if (res)
@@ -1428,7 +1418,7 @@ static int l_map_add_event_param(lua_State *L)
 	int res;
 
 	map = luaL_checkstring(L, -4);
-	layer = luaL_checkint(L, -3);
+	layer = luaL_checkinteger(L, -3);
 	event_id = luaL_checkstring(L, -2);
 	param = luaL_checkstring(L, -1);
 	res = map_add_event_param(map, layer, event_id, param);
@@ -1458,10 +1448,10 @@ static int l_map_delete_event(lua_State *L)
 	int res;
 
 	map = luaL_checkstring(L, -5);
-	layer = luaL_checkint(L, -4);
+	layer = luaL_checkinteger(L, -4);
 	script = luaL_checkstring(L, -3);
-	x = luaL_checkint(L, -2);
-	y = luaL_checkint(L, -1);
+	x = luaL_checkinteger(L, -2);
+	y = luaL_checkinteger(L, -1);
 	res = map_delete_event(map, layer, script, x, y);
 	lua_pushnumber(L, res);
 	return 1;  // number of results
@@ -1489,9 +1479,9 @@ static int l_map_add_scenery(lua_State *L)
 	char *res;
 
 	map = luaL_checkstring(L, -5);
-	layer = luaL_checkint(L, -4);
-	x = luaL_checkint(L, -3);
-	y = luaL_checkint(L, -2);
+	layer = luaL_checkinteger(L, -4);
+	x = luaL_checkinteger(L, -3);
+	y = luaL_checkinteger(L, -2);
 	image_name = luaL_checkstring(L, -1);
 	res = map_add_scenery(map, layer, x, y, image_name);
 	lua_pushstring(L, res);
@@ -1544,9 +1534,9 @@ static int l_tile_get_x(lua_State *L)
 	int res = -1;
 
 	map = luaL_checkstring(L, -4);
-	layer = luaL_checkint(L, -3);
-	x = luaL_checkint(L, -2);
-	y = luaL_checkint(L, -1);
+	layer = luaL_checkinteger(L, -3);
+	x = luaL_checkinteger(L, -2);
+	y = luaL_checkinteger(L, -1);
 	map_get_tile_coord(map, layer, x, y, &res, nullptr);
 	lua_pushnumber(L, res);
 	return 1;  // number of results
@@ -1567,9 +1557,9 @@ static int l_tile_get_y(lua_State *L)
 	int res = -1;
 
 	map = luaL_checkstring(L, -4);
-	layer = luaL_checkint(L, -3);
-	x = luaL_checkint(L, -2);
-	y = luaL_checkint(L, -1);
+	layer = luaL_checkinteger(L, -3);
+	x = luaL_checkinteger(L, -2);
+	y = luaL_checkinteger(L, -1);
 	map_get_tile_coord(map, layer, x, y, nullptr, &res);
 	lua_pushnumber(L, res);
 	return 1;  // number of results
@@ -1691,7 +1681,7 @@ static int l_item_create_from_template(lua_State *L)
 static int l_resource_new(lua_State *L)
 {
 	const std::string mytemplate(luaL_checkstring(L, -2));
-	int quantity = luaL_checkint(L, -1);
+	int quantity = luaL_checkinteger(L, -1);
 
 	const std::pair<bool, std::string> resource = resource_new(mytemplate,
 			quantity);
@@ -1740,7 +1730,7 @@ static int l_resource_set_quantity(lua_State *L)
 	lua_pop(L, 1);
 
 	resource = luaL_checkstring(L, -2);
-	quantity = luaL_checkint(L, -1);
+	quantity = luaL_checkinteger(L, -1);
 	res = resource_set_quantity(context, std::string(resource), quantity);
 	lua_pushnumber(L, res);
 	return 1;  // number of results
@@ -1788,9 +1778,9 @@ static int l_map_get_tile(lua_State *L)
 	char *res;
 
 	map = luaL_checkstring(L, -4);
-	layer = luaL_checkint(L, -3);
-	x = luaL_checkint(L, -2);
-	y = luaL_checkint(L, -1);
+	layer = luaL_checkinteger(L, -3);
+	x = luaL_checkinteger(L, -2);
+	y = luaL_checkinteger(L, -1);
 	res = map_get_tile(map, layer, x, y);
 	lua_pushstring(L, res);
 	if (res)
@@ -1820,9 +1810,9 @@ static int l_map_get_tile_type(lua_State *L)
 	char *res;
 
 	map = luaL_checkstring(L, -4);
-	layer = luaL_checkint(L, -3);
-	x = luaL_checkint(L, -2);
-	y = luaL_checkint(L, -1);
+	layer = luaL_checkinteger(L, -3);
+	x = luaL_checkinteger(L, -2);
+	y = luaL_checkinteger(L, -1);
 	res = map_get_tile_type(std::string(map), layer, x, y);
 	lua_pushstring(L, res);
 	free(res);
@@ -1849,8 +1839,8 @@ static int l_map_get_character(lua_State *L)
 	int res_num = 0;
 
 	map = luaL_checkstring(L, -3);
-	x = luaL_checkint(L, -2);
-	y = luaL_checkint(L, -1);
+	x = luaL_checkinteger(L, -2);
+	y = luaL_checkinteger(L, -1);
 
 	res = map_get_character(std::string(map), x, y);
 	if (res)
@@ -1891,9 +1881,9 @@ static int l_map_get_item(lua_State *L)
 	int res_num = 0;
 
 	map = luaL_checkstring(L, -4);
-	layer = luaL_checkint(L, -3);
-	x = luaL_checkint(L, -2);
-	y = luaL_checkint(L, -1);
+	layer = luaL_checkinteger(L, -3);
+	x = luaL_checkinteger(L, -2);
+	y = luaL_checkinteger(L, -1);
 
 	res = map_get_item(map, layer, x, y);
 	if (res)
@@ -1932,7 +1922,7 @@ static int l_character_attribute_change(lua_State *L)
 
 	id = luaL_checkstring(L, -3);
 	attribute = luaL_checkstring(L, -2);
-	value = luaL_checkint(L, -1);
+	value = luaL_checkinteger(L, -1);
 
 	lua_getglobal(L, LUAVM_CONTEXT);
 	context = (Context*) lua_touserdata(L, -1);
@@ -1985,7 +1975,7 @@ static int l_character_attribute_set(lua_State *L)
 
 	id = luaL_checkstring(L, -3);
 	attribute = luaL_checkstring(L, -2);
-	value = luaL_checkint(L, -1);
+	value = luaL_checkinteger(L, -1);
 	res = attribute_set(CHARACTER_TABLE.c_str(), id, attribute, value);
 	lua_pushnumber(L, res);
 	return 1;  // number of results
@@ -2062,7 +2052,7 @@ static int l_map_attribute_change(lua_State *L)
 
 	id = luaL_checkstring(L, -3);
 	attribute = luaL_checkstring(L, -2);
-	value = luaL_checkint(L, -1);
+	value = luaL_checkinteger(L, -1);
 
 	lua_getglobal(L, LUAVM_CONTEXT);
 	context = (Context*) lua_touserdata(L, -1);
@@ -2114,7 +2104,7 @@ static int l_map_attribute_set(lua_State *L)
 
 	id = luaL_checkstring(L, -3);
 	attribute = luaL_checkstring(L, -2);
-	value = luaL_checkint(L, -1);
+	value = luaL_checkinteger(L, -1);
 	res = attribute_set(MAP_TABLE.c_str(), id, attribute, value);
 	lua_pushnumber(L, res);
 	return 1;  // number of results

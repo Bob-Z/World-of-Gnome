@@ -1,9 +1,11 @@
-draw_script     = "draw/smooth.lua"
-marquee		= "marquee/gray_ball.jpg";
-sprite		= "sprite/gray_ball.png";
-map		= "map1";
-tile_x		= 0;
-tile_y		= 0;
-#default action for this kind of avatar
-action		= ["add_white"];
-#allowed_tile ground;
+{
+  "draw_script": "draw/smooth.lua",
+  "marquee": "marquee/gray_ball.jpg",
+  "sprite": "sprite/gray_ball.png",
+  "map": "map1",
+  "tile_x": 0,
+  "tile_y": 0,
+  "action": [
+    "add_white"
+  ]
+}

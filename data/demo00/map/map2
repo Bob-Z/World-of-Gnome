@@ -1,34 +1,50 @@
-bg_red = 192;
-bg_blue = 192;
-bg_green = 192;
-
-width = 3;
-height = 3;
-tile_width = 64;
-tile_height = 64;
-
-layer0: {
-	set = [ "tile/white.jpg", "tile/black.jpg", "tile/exit.gif", "tile/black.jpg", "tile/black.jpg", "tile/black.jpg", "tile/white.jpg", "tile/black.jpg", "tile/black.jpg" ];
-	type = [ "mud", "ground", "ground", "ground", "ground", "ground", "mud", "ground", "ground" ];
-	item_list : {
-		A0002 : 
-		{
-			tile_x = 1;
-			tile_y = 0;
-		};
-		A0003 : 
-		{
-			tile_x = 0;
-			tile_y = 2;
-		};
-	};
-
-	event_list: {
-		A0000 :
-		{
-			tile_x = 2;
-			tile_y = 0;
-			script = "goto_map1.lua";
-		};
-	};
-};
+{
+  "bg_red": 192,
+  "bg_blue": 192,
+  "bg_green": 192,
+  "width": 3,
+  "height": 3,
+  "tile_width": 64,
+  "tile_height": 64,
+  "layer0": {
+    "set": [
+      "tile/white.jpg",
+      "tile/black.jpg",
+      "tile/exit.gif",
+      "tile/black.jpg",
+      "tile/black.jpg",
+      "tile/black.jpg",
+      "tile/white.jpg",
+      "tile/black.jpg",
+      "tile/black.jpg"
+    ],
+    "type": [
+      "mud",
+      "ground",
+      "ground",
+      "ground",
+      "ground",
+      "ground",
+      "mud",
+      "ground",
+      "ground"
+    ],
+    "item_list": {
+      "A0002": {
+        "tile_x": 1,
+        "tile_y": 0
+      },
+      "A0003": {
+        "tile_x": 0,
+        "tile_y": 2
+      }
+    },
+    "event_list": {
+      "A0000": {
+        "tile_x": 2,
+        "tile_y": 0,
+        "script": "goto_map1.lua"
+      }
+    }
+  }
+}

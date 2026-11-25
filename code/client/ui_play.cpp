@@ -783,13 +783,12 @@ static void compose_equipment(Context *ctx, std::vector<SdlItem*> &itemArray)
 				try
 				{
 					equippedIconName = getDataManager().get<std::string>(
-							ITEM_TABLE, equippedName, ITEM_ICON);
+							ITEM_TABLE, equippedName, { ITEM_ICON });
 				} catch (...)
 				{
-					LOGDESIGNER(
-							"Can't read object " + equippedName
-									+ "'s icon in equipment slot "
-									+ std::string(slot_list[index]));
+					werr(LOGDESIGNER,
+							"Can't read object %s's icon in equipment slot %s",
+							equippedName.c_str(), slot_list[index]);
 				}
 			}
 			else
@@ -798,13 +797,12 @@ static void compose_equipment(Context *ctx, std::vector<SdlItem*> &itemArray)
 				{
 					equippedIconName = getDataManager().get<std::string>(
 							ITEM_TEMPLATE_TABLE, std::string(mytemplate),
-							ITEM_ICON);
+							{ ITEM_ICON });
 				} catch (...)
 				{
-					LOGDESIGNER(
-							"Can't read item " + equippedName
-									+ "'s icon in equipment slot "
-									+ std::string(mytemplate));
+					werr(LOGDESIGNER,
+							"Can't read item %s's icon in equipment slot %s",
+							equippedName.c_str(), mytemplate);
 				}
 				free(mytemplate);
 			}
@@ -878,10 +876,11 @@ static void compose_equipment(Context *ctx, std::vector<SdlItem*> &itemArray)
 			try
 			{
 				inventoryIconName = getDataManager().get<std::string>(
-						ITEM_TABLE, inventory, ITEM_ICON);
+						ITEM_TABLE, inventory, { ITEM_ICON });
 			} catch (...)
 			{
-				LOGDESIGNER("Can't read item " + inventory + "'s icon name");
+				werr(LOGDESIGNER, "Can't read item %s's icon name",
+						inventory.c_str());
 			}
 		}
 		else
@@ -890,25 +889,22 @@ static void compose_equipment(Context *ctx, std::vector<SdlItem*> &itemArray)
 			{
 				inventoryIconName = getDataManager().get<std::string>(
 						ITEM_TEMPLATE_TABLE, std::string(mytemplate),
-						ITEM_ICON);
+						{ ITEM_ICON });
 			} catch (...)
 			{
-				LOGDESIGNER(
-						"Can't read item " + inventory
-								+ "'s icon name (template: "
-								+ std::string(mytemplate) + ")");
+			werr(LOGDESIGNER, "Can't read item %s's icon name (template: %s)",
+					inventory.c_str(), mytemplate);
 			}
 
 			free(mytemplate);
 		}
 
-		if (inventoryIconName)
+		if (!inventoryIconName.empty())
 		{
 			SdlItem *item = new SdlItem;
 			itemArray.push_back(item);
 
 			anim = imageDB_get_anim(ctx, inventoryIconName);
-			free(inventoryIconName);
 
 			item->setOverlay(true);
 			item->setPos(sw - anim->getWidth(), y);
