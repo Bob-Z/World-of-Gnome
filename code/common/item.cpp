@@ -160,7 +160,7 @@ int resource_set_quantity(Context *context, const std::string &item_id,
 	free(my_template);
 
 	if (entry_write_int(ITEM_TABLE.c_str(), item_id.c_str(), quantity,
-			ITEM_QUANTITY, nullptr) == false)
+			ITEM_QUANTITY.c_str(), nullptr) == false)
 	{
 		return -1;
 	}

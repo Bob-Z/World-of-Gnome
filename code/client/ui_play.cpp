@@ -1110,7 +1110,7 @@ static void compose_inventory(Context *ctx, std::vector<SdlItem*> &itemArray)
 			free(value);
 
 			if (entry_read_string(ITEM_TEMPLATE_TABLE.c_str(), mytemplate, &value,
-					ITEM_NAME, nullptr) == false)
+					ITEM_NAME.c_str(), nullptr) == false)
 			{
 				label = inventoryId;
 			}
@@ -1224,7 +1224,7 @@ static void compose_inventory_select(Context *ctx,
 		if (mytemplate == nullptr)
 		{
 			if (entry_read_string(ITEM_TABLE.c_str(), inventory.c_str(), &icon_name,
-					ITEM_ICON, nullptr) == false)
+					ITEM_ICON.c_str(), nullptr) == false)
 			{
 				ERR_DESIGN("Can't read item " + inventory + " icon name");
 			}
@@ -1232,7 +1232,7 @@ static void compose_inventory_select(Context *ctx,
 		else
 		{
 			if (entry_read_string(ITEM_TEMPLATE_TABLE.c_str(), mytemplate, &icon_name,
-					ITEM_ICON, nullptr) == false)
+					ITEM_ICON.c_str(), nullptr) == false)
 			{
 				ERR_DESIGN(
 						"Can't read item " + inventory

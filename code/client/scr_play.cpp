@@ -336,7 +336,7 @@ static void set_up_sprite(Context *ctx, std::vector<SdlItem*> &itemArray)
 	// Get per sprite zoom
 	char *zoomStr = nullptr;
 	double zoom = 1.0;
-	if (entry_read_string(CHARACTER_TABLE, ctx->getId().c_str(), &zoomStr,
+	if (entry_read_string(CHARACTER_TABLE.c_str(), ctx->getId().c_str(), &zoomStr,
 			CHARACTER_KEY_ZOOM.c_str(), nullptr) == true)
 	{
 		zoom = atof(zoomStr);
@@ -345,7 +345,7 @@ static void set_up_sprite(Context *ctx, std::vector<SdlItem*> &itemArray)
 
 	// Align sprite on tile
 	int align = 0;
-	entry_read_int(CHARACTER_TABLE, ctx->getId().c_str(), &align,
+	entry_read_int(CHARACTER_TABLE.c_str(), ctx->getId().c_str(), &align,
 			CHARACTER_KEY_ALIGN.c_str(), nullptr);
 	Align spriteAlign = static_cast<Align>(align);
 	if (spriteAlign == Align::CENTER)
@@ -381,56 +381,56 @@ static void set_up_sprite(Context *ctx, std::vector<SdlItem*> &itemArray)
 	int angle = 0;
 	if ((ctx->getOrientation() & NORTH) && (ctx->getOrientation() & EAST))
 	{
-		entry_read_int(CHARACTER_TABLE, ctx->getId().c_str(), &angle,
+		entry_read_int(CHARACTER_TABLE.c_str(), ctx->getId().c_str(), &angle,
 				CHARACTER_KEY_DIR_NE_ROT.c_str(), nullptr);
 		item->setAngle(static_cast<double>(angle));
 	}
 	else if ((ctx->getOrientation() & SOUTH) && (ctx->getOrientation() & EAST))
 	{
-		entry_read_int(CHARACTER_TABLE, ctx->getId().c_str(), &angle,
+		entry_read_int(CHARACTER_TABLE.c_str(), ctx->getId().c_str(), &angle,
 				CHARACTER_KEY_DIR_SE_ROT.c_str(), nullptr);
 		item->setAngle(static_cast<double>(angle));
 	}
 	else if ((ctx->getOrientation() & SOUTH) && (ctx->getOrientation() & WEST))
 	{
-		entry_read_int(CHARACTER_TABLE, ctx->getId().c_str(), &angle,
+		entry_read_int(CHARACTER_TABLE.c_str(), ctx->getId().c_str(), &angle,
 				CHARACTER_KEY_DIR_SW_ROT.c_str(), nullptr);
 		item->setAngle(static_cast<double>(angle));
 	}
 	else if ((ctx->getOrientation() & NORTH) && (ctx->getOrientation() & WEST))
 	{
-		entry_read_int(CHARACTER_TABLE, ctx->getId().c_str(), &angle,
+		entry_read_int(CHARACTER_TABLE.c_str(), ctx->getId().c_str(), &angle,
 				CHARACTER_KEY_DIR_NW_ROT.c_str(), nullptr);
 		item->setAngle(static_cast<double>(angle));
 	}
 	else if (ctx->getOrientation() & NORTH)
 	{
-		entry_read_int(CHARACTER_TABLE, ctx->getId().c_str(), &angle,
+		entry_read_int(CHARACTER_TABLE.c_str(), ctx->getId().c_str(), &angle,
 				CHARACTER_KEY_DIR_N_ROT.c_str(), nullptr);
 		item->setAngle(static_cast<double>(angle));
 	}
 	else if (ctx->getOrientation() & SOUTH)
 	{
-		entry_read_int(CHARACTER_TABLE, ctx->getId().c_str(), &angle,
+		entry_read_int(CHARACTER_TABLE.c_str(), ctx->getId().c_str(), &angle,
 				CHARACTER_KEY_DIR_S_ROT.c_str(), nullptr);
 		item->setAngle(static_cast<double>(angle));
 	}
 	else if (ctx->getOrientation() & WEST)
 	{
-		entry_read_int(CHARACTER_TABLE, ctx->getId().c_str(), &angle,
+		entry_read_int(CHARACTER_TABLE.c_str(), ctx->getId().c_str(), &angle,
 				CHARACTER_KEY_DIR_W_ROT.c_str(), nullptr);
 		item->setAngle(static_cast<double>(angle));
 	}
 	else if (ctx->getOrientation() & EAST)
 	{
-		entry_read_int(CHARACTER_TABLE, ctx->getId().c_str(), &angle,
+		entry_read_int(CHARACTER_TABLE.c_str(), ctx->getId().c_str(), &angle,
 				CHARACTER_KEY_DIR_E_ROT.c_str(), nullptr);
 		item->setAngle(static_cast<double>(angle));
 	}
 
 	// Get flip configuration
 	int forceFlip = 0;
-	entry_read_int(CHARACTER_TABLE, ctx->getId().c_str(), &forceFlip,
+	entry_read_int(CHARACTER_TABLE.c_str(), ctx->getId().c_str(), &forceFlip,
 			CHARACTER_KEY_FORCE_FLIP.c_str(), nullptr);
 
 	int moveStatus = ctx->getDirection();
@@ -444,22 +444,22 @@ static void set_up_sprite(Context *ctx, std::vector<SdlItem*> &itemArray)
 	{
 		if (moveStatus & NORTH)
 		{
-			entry_read_int(CHARACTER_TABLE, ctx->getId().c_str(), &flip,
+			entry_read_int(CHARACTER_TABLE.c_str(), ctx->getId().c_str(), &flip,
 					CHARACTER_KEY_DIR_N_FLIP.c_str(), nullptr);
 		}
 		if (moveStatus & SOUTH)
 		{
-			entry_read_int(CHARACTER_TABLE, ctx->getId().c_str(), &flip,
+			entry_read_int(CHARACTER_TABLE.c_str(), ctx->getId().c_str(), &flip,
 					CHARACTER_KEY_DIR_S_FLIP.c_str(), nullptr);
 		}
 		if (moveStatus & WEST)
 		{
-			entry_read_int(CHARACTER_TABLE, ctx->getId().c_str(), &flip,
+			entry_read_int(CHARACTER_TABLE.c_str(), ctx->getId().c_str(), &flip,
 					CHARACTER_KEY_DIR_W_FLIP.c_str(), nullptr);
 		}
 		if (moveStatus & EAST)
 		{
-			entry_read_int(CHARACTER_TABLE, ctx->getId().c_str(), &flip,
+			entry_read_int(CHARACTER_TABLE.c_str(), ctx->getId().c_str(), &flip,
 					CHARACTER_KEY_DIR_E_FLIP.c_str(), nullptr);
 		}
 
@@ -502,7 +502,7 @@ static void compose_sprite(int layerIndex, std::vector<SdlItem*> &itemArray)
 	while (ctx != nullptr)
 	{
 		int layer = 0;
-		entry_read_int(CHARACTER_TABLE, ctx->getId().c_str(), &layer,
+		entry_read_int(CHARACTER_TABLE.c_str(), ctx->getId().c_str(), &layer,
 				CHARACTER_LAYER.c_str(), nullptr);
 
 		if (layer == layerIndex)
@@ -1025,11 +1025,11 @@ void scr_play_compose(Context *context, std::vector<SdlItem*> &itemArray)
 	int bg_red = 0;
 	int bg_blue = 0;
 	int bg_green = 0;
-	entry_read_int(MAP_TABLE, context->getMap().c_str(), &bg_red,
+	entry_read_int(MAP_TABLE.c_str(), context->getMap().c_str(), &bg_red,
 			MAP_KEY_BG_RED.c_str(), nullptr);
-	entry_read_int(MAP_TABLE, context->getMap().c_str(), &bg_blue,
+	entry_read_int(MAP_TABLE.c_str(), context->getMap().c_str(), &bg_blue,
 			MAP_KEY_BG_BLUE.c_str(), nullptr);
-	entry_read_int(MAP_TABLE, context->getMap().c_str(), &bg_green,
+	entry_read_int(MAP_TABLE.c_str(), context->getMap().c_str(), &bg_green,
 			MAP_KEY_BG_GREEN.c_str(), nullptr);
 	sdl_set_background_color(bg_red, bg_blue, bg_green, 255);
 
@@ -1037,7 +1037,7 @@ void scr_play_compose(Context *context, std::vector<SdlItem*> &itemArray)
 	old_sfx = sfx;
 	sfx = nullptr;
 
-	entry_read_string(MAP_TABLE, context->getMap().c_str(), &sfx, MAP_SFX.c_str(),
+	entry_read_string(MAP_TABLE.c_str(), context->getMap().c_str(), &sfx, MAP_SFX.c_str(),
 			nullptr);
 
 	if (old_sfx != nullptr)
@@ -1068,7 +1068,7 @@ void scr_play_compose(Context *context, std::vector<SdlItem*> &itemArray)
 				isMusicPlaying = true;
 			}
 			int sfx_volume = SFX_VOLUME_MAX;
-			entry_read_int(MAP_TABLE, context->getMap().c_str(), &sfx_volume,
+			entry_read_int(MAP_TABLE.c_str(), context->getMap().c_str(), &sfx_volume,
 					MAP_SFX_VOLUME.c_str(), nullptr);
 			sfx_set_volume(MUSIC_CHANNEL, sfx_volume);
 		}
