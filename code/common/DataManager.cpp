@@ -215,7 +215,16 @@ json & DataManager::loadJsonFile(const std::string & filePath)
 {
 	json object;
 	std::ifstream stream(base_directory + "/" + filePath);
-	stream >> object;
+	try
+	{
+		stream >> object;
+	} catch (const std::exception &e)
+	{
+		// Missing files / directory paths / unreadable files are treated as an
+		// empty JSON value instead of terminating the process.
+		ERR("JSON : cannot read " + filePath + " : " + e.what());
+		object = nullptr;
+	}
 
 	try
 	{

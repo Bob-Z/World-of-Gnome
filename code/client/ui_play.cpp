@@ -541,22 +541,37 @@ static int compose_action(Context *ctx, std::vector<SdlItem*> &itemArray)
 		if (getDataManager().tryGet<std::vector<std::string>>(ACTION_TABLE,
 				actionArray[i], { ACTION_KEY_ICON }, iconArray) == false)
 		{
+			// Some action files store a single icon name instead of a list
+			std::string iconName;
+			if (getDataManager().tryGet<std::string>(ACTION_TABLE,
+					actionArray[i], { ACTION_KEY_ICON }, iconName) == true
+					&& iconName.empty() == false && iconName != "none")
+			{
+				iconArray.push_back(iconName);
+			}
+		}
+
+		std::vector<std::string> iconArrayStd;
+		for (std::string &icon : iconArray)
+		{
+			if (icon.empty() == false && icon != "none")
+			{
+				iconArrayStd.push_back(icon);
+			}
+		}
+		if (iconArrayStd.empty())
+		{
 			i++;
 			continue;
 		}
 
 		SdlItem *item = new SdlItem;
 
+		// icon_layout is optional; default to TOP_LEFT
 		SdlItem::Layout layout = SdlItem::Layout::TOP_LEFT;
-		int layoutRead = -1;
-
-		if (getDataManager().tryGet<int>(ACTION_TABLE, actionArray[i],
-				{ ACTION_KEY_ICON_LAYOUT }, layoutRead) == false)
-		{
-			i++;
-			continue;
-		}
-
+		int layoutRead = 0;
+		getDataManager().tryGet<int>(ACTION_TABLE, actionArray[i],
+				{ ACTION_KEY_ICON_LAYOUT }, layoutRead);
 		layout = static_cast<SdlItem::Layout>(layoutRead);
 		item->setLayout(layout);
 
@@ -572,12 +587,6 @@ static int compose_action(Context *ctx, std::vector<SdlItem*> &itemArray)
 		{	cb_wheel_down_action();});
 
 		// load image
-		std::vector<std::string> iconArrayStd;
-		for (std::string &icon : iconArray)
-		{
-			iconArrayStd.push_back(icon);
-		}
-
 		std::vector<SiAnim*> animArray = imageDB_get_anim_array(ctx,
 				iconArrayStd);
 		item->setAnim(animArray);
