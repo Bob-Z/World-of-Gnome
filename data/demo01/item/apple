@@ -1,4 +1,6 @@
-text =  "p";
-sprite =  "apple.png";
-icon = "apple.png";
-description = "pomme";
+{
+  "text": "p",
+  "sprite": "apple.png",
+  "icon": "apple.png",
+  "description": "pomme"
+}

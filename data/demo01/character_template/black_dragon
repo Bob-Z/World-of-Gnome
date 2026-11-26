@@ -1,11 +1,11 @@
-draw_script     = "draw/smooth.lua"
-marquee		= "marquee/black_dragon.jpg";
-sprite		= "sprite/black_dragon.gif";
-type		= "black_dragon";
-map		= "map1";
-tile_x		= 16;
-tile_y		= 16;
-#action		= [ ];
-allowed_tile_script	= "allowed_tile/ground.lua";
-#inventory	= [ ];  
-ai		= "ai/ai_random.lua";
+{
+  "draw_script": "draw/smooth.lua",
+  "marquee": "marquee/black_dragon.jpg",
+  "sprite": "sprite/black_dragon.gif",
+  "type": "black_dragon",
+  "map": "map1",
+  "tile_x": 16,
+  "tile_y": 16,
+  "allowed_tile_script": "allowed_tile/ground.lua",
+  "ai": "ai/ai_random.lua"
+}

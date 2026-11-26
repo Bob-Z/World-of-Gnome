@@ -84,9 +84,12 @@ std::vector<std::string> DataManager::getKeys(const std::string & table,
 	}
 
 	std::vector<std::string> keys;
-	for (auto it = reference->begin(); it != reference->end(); ++it)
+	if (reference->is_object())
 	{
-		keys.push_back(it.key());
+		for (auto it = reference->begin(); it != reference->end(); ++it)
+		{
+			keys.push_back(it.key());
+		}
 	}
 
 	return keys;

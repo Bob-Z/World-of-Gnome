@@ -1006,6 +1006,13 @@ void scr_play_compose(Context *context, std::vector<SdlItem*> &itemArray)
 		defaultLayer = map_layer_new(context->getMap(), DEFAULT_LAYER, nullptr);
 	}
 
+	// The map file may still have been in flight on the first compose (async
+	// download). Retry until the data is available, otherwise no tiles are drawn.
+	if (defaultLayer == nullptr && context->getMap() != "")
+	{
+		defaultLayer = map_layer_new(context->getMap(), DEFAULT_LAYER, nullptr);
+	}
+
 	if ((defaultLayer != nullptr) && (defaultLayer->active != 0))
 	{ // Make sure map data are available
 		for (int layerIndex = 0; layerIndex < MAX_LAYER; layerIndex++)

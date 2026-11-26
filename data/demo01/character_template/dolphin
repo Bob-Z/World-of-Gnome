@@ -1,14 +1,16 @@
-draw_script     = "draw/smooth.lua"
-marquee		= "marquee/dolphin.jpg";
-sprite		= "sprite/dolphin.gif";
-type		= "dolphin";
-map		= "map1";
-tile_x		= 0;
-tile_y		= 0;
-flip_w		= 1;
-rot_n		= 270;
-rot_s		= 90;
-#action		= [ ];
-allowed_tile	= [ "sea" ];
-#inventory	= [ ];  
-ai		= "ai/ai_random.lua";
+{
+  "draw_script": "draw/smooth.lua",
+  "marquee": "marquee/dolphin.jpg",
+  "sprite": "sprite/dolphin.gif",
+  "type": "dolphin",
+  "map": "map1",
+  "tile_x": 0,
+  "tile_y": 0,
+  "flip_w": 1,
+  "rot_n": 270,
+  "rot_s": 90,
+  "allowed_tile": [
+    "sea"
+  ],
+  "ai": "ai/ai_random.lua"
+}

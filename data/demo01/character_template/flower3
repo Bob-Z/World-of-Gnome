@@ -1,11 +1,11 @@
-draw_script     = "draw/smooth.lua"
-marquee		= "marquee/flower.jpg";
-sprite		= "sprite/flower3.gif";
-type		= "flower3";
-map		= "map1";
-tile_x		= 0;
-tile_y		= 0;
-#action		= [ ];
-allowed_tile_script	= "allowed_tile/ground.lua";
-#inventory	= [ ];  
-ai		= "ai/ai_flower_spawn.lua";
+{
+  "draw_script": "draw/smooth.lua",
+  "marquee": "marquee/flower.jpg",
+  "sprite": "sprite/flower3.gif",
+  "type": "flower3",
+  "map": "map1",
+  "tile_x": 0,
+  "tile_y": 0,
+  "allowed_tile_script": "allowed_tile/ground.lua",
+  "ai": "ai/ai_flower_spawn.lua"
+}

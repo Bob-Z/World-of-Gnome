@@ -1,11 +1,18 @@
-draw_script     = "draw/smooth.lua"
-marquee         = "marquee/god.jpg";
-sprite          = "sprite/god.gif";
-name = "Chiriu";
-inventory = [ ];
-type = "god";
-map = "map1";
-tile_x = 16;
-tile_y = 16;
-flip_e = 1;
-action = [ "add_ground", "add_sea" , "add_dolphin", "add_flower" ];
+{
+  "draw_script": "draw/smooth.lua",
+  "marquee": "marquee/god.jpg",
+  "sprite": "sprite/god.gif",
+  "name": "Chiriu",
+  "inventory": [],
+  "type": "god",
+  "map": "map1",
+  "tile_x": 16,
+  "tile_y": 16,
+  "flip_e": 1,
+  "action": [
+    "add_ground",
+    "add_sea",
+    "add_dolphin",
+    "add_flower"
+  ]
+}
