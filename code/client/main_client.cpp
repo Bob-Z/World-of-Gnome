@@ -22,6 +22,7 @@
 #include "const.h"
 #include "Context/ContextContainer.h"
 #include "DataManager/DataManagerClient.h"
+#include "file_client.h"
 #include "file.h"
 #include "imageDB.h"
 #include "log.h"
@@ -30,6 +31,7 @@
 #include "network_client.h"
 #include "screen.h"
 #include "sdl.h"
+#include "syntax.h"
 #include <getopt.h>
 #include <SDL2/SDL_mixer.h>
 #include <stdlib.h>
@@ -37,7 +39,7 @@
 #include <string>
 #include <unistd.h>
 
-const char optstring[] = "?i:u:p:l:f:F:tPm";
+const char optstring[] = "?i:u:p:l:f:F:tPmc:";
 const struct option longopts[] =
 {
 { "ip", required_argument, nullptr, 'i' },
@@ -49,6 +51,7 @@ const struct option longopts[] =
 { "type", no_argument, nullptr, 't' },
 { "fps", no_argument, nullptr, 'P' },
 { "maxfps", no_argument, nullptr, 'm' },
+{ "character", required_argument, nullptr, 'c' },
 { nullptr, 0, nullptr, 0 } };
 
 ContextContainer contextContainer;
@@ -80,6 +83,7 @@ int main(int argc, char **argv)
 	std::string ip;
 	std::string user;
 	std::string pass;
+	std::string character;
 	int opt_ret = 0;
 	while ((opt_ret = getopt_long(argc, argv, optstring, longopts, nullptr))
 			!= -1)
@@ -113,6 +117,9 @@ int main(int argc, char **argv)
 		case 'm':
 			maxfps = true;
 			break;
+		case 'c':
+			character = std::string(optarg);
+			break;
 		default:
 			printf("HELP:\n\n");
 			printf("-i --ip : Set a server IP\n");
@@ -124,6 +131,7 @@ int main(int argc, char **argv)
 			printf("-t --type: Show tile type on map\n");
 			printf("-P --fps: Show FPS\n");
 			printf("-m --maxfps: Display at maximum FPS\n");
+			printf("-c --character: Start directly with this character ID\n");
 			exit(0);
 		}
 	}
@@ -167,6 +175,17 @@ int main(int argc, char **argv)
 	}
 
 	LOG_USER("Logged");
+
+	// --character: skip the selection screen and start the given character directly
+	if (character.empty() == false)
+	{
+		LOG_USER("Starting with character " + character);
+		context->setId(character);
+		context->setInGame(true);
+		file_request_from_network(connection, CHARACTER_TABLE, character);
+		screen_set_screen(Screen::PLAY);
+	}
+
 	//Run the main loop
 	screen_display(context);
 

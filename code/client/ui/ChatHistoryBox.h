@@ -30,6 +30,8 @@ public:
 	ChatHistoryBox(TTF_Font * const font);
 	virtual ~ChatHistoryBox();
 
+	void setFont(TTF_Font * font);
+
 	void compose(std::vector<SdlItem *> & itemArray, const int upperBorderHeight, const int lowerBorderHeight);
 
 private:

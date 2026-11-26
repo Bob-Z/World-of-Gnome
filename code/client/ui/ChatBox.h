@@ -31,6 +31,8 @@ public:
 	ChatBox(TTF_Font * const font, std::function<void(std::string)> editCallBack);
 	virtual ~ChatBox();
 
+	void setFont(TTF_Font * font);
+
 	void compose(std::vector<SdlItem *> & itemArray, const int upperBorderHeight, const int lowerBorderHeight);
 
 private:

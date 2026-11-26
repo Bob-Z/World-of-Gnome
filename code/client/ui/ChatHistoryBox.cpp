@@ -38,8 +38,19 @@ ChatHistoryBox::~ChatHistoryBox()
 }
 
 /*****************************************************************************/
+void ChatHistoryBox::setFont(TTF_Font * font)
+{
+	m_font = font;
+}
+
+/*****************************************************************************/
 void ChatHistoryBox::compose(std::vector<SdlItem *> & itemArray, const int upperBorderHeight, const int lowerBorderHeight)
 {
+	if (m_font == nullptr)
+	{
+		return;
+	}
+
 	const history_entry_t * history = nullptr;
 	history_entry_t * hist = nullptr;
 

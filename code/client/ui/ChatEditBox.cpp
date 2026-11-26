@@ -36,8 +36,19 @@ ChatEditBox::~ChatEditBox()
 }
 
 /*****************************************************************************/
+void ChatEditBox::setFont(TTF_Font * font)
+{
+	m_font = font;
+}
+
+/*****************************************************************************/
 int ChatEditBox::compose(std::vector<SdlItem *> & itemArray, const int upperBorderHeight, const int lowerBorderHeight)
 {
+	if (m_font == nullptr)
+	{
+		return 0;
+	}
+
 	SdlItem * item = new SdlItem;
 	itemArray.push_back(item);
 

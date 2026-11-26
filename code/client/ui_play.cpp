@@ -969,8 +969,10 @@ static void cb_print_coord()
 /*****************************************************************************/
 static void main_compose(Context *ctx, std::vector<SdlItem*> &itemArray)
 {
-	static TTF_Font *font = font_get(ctx, TEXT_FONT, TEXT_FONT_SIZE);
-	static ChatBox chatBox(font, keyboard_text);
+	static ChatBox chatBox(nullptr, keyboard_text);
+	// The font file may still be downloading when the PLAY screen opens
+	// (e.g. with --character); keep refreshing until it is available.
+	chatBox.setFont(font_get(ctx, TEXT_FONT, TEXT_FONT_SIZE));
 
 	int attribute_height = compose_attribute(ctx, itemArray);
 	int action_bar_height = compose_action(ctx, itemArray);
