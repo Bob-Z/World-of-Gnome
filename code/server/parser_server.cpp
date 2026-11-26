@@ -88,6 +88,19 @@ static void manage_start(Connection &connection, const pb::Start &start)
 	context->setInGame(true);
 	context->setConnection(&connection);
 
+	// A missing character file resolves to an empty JSON value; a real
+	// character file is an object (even when optional keys are absent).
+	if (getDataManager().getJson(CHARACTER_TABLE + "/" + start.id()).is_object()
+			== false)
+	{
+		werr(LOGUSER, "Cannot start with character %s: character not found",
+				start.id().c_str());
+		context_free(context);
+		connection.setContextId("");
+		connection.disconnect();
+		return;
+	}
+
 	context->update_from_file();
 	context_spread(context);
 	context_request_other_context(context);
