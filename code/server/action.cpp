@@ -2246,16 +2246,13 @@ int action_execute(Context *context, const std::string &actionName,
 		return -1;
 	}
 
-	std::vector<std::string> params;
-
-	try
+	// Parameters sent by the client (e.g. map/x/y for select_tile) take precedence.
+	// Fall back to the action file's static "param" list when the client sent none.
+	std::vector<std::string> params = parameters;
+	if (params.empty())
 	{
-		params = getDataManager().get<std::vector<std::string>>(ACTION_TABLE,
-				actionName,
-				{ ACTION_KEY_PARAM });
-	} catch (...)
-	{
-		return -1;
+		getDataManager().tryGet<std::vector<std::string>>(ACTION_TABLE,
+				actionName, { ACTION_KEY_PARAM }, params);
 	}
 	return action_execute_script(context, scriptName, params);
 }
@@ -2312,14 +2309,8 @@ void action_run_or_execute(Context *context, const std::string &actionName,
 {
 	int coolDownMs = 0;
 
-	try
-	{
-		coolDownMs = getDataManager().get<int>(ACTION_TABLE, actionName,
-		{ ACTION_KEY_COOLDOWN });
-	} catch (...)
-	{
-		// No cool down
-	}
+	getDataManager().tryGet<int>(ACTION_TABLE, actionName,
+			{ ACTION_KEY_COOLDOWN }, coolDownMs);
 
 	if (coolDownMs == 0)
 	{
