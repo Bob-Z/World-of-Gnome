@@ -1,110 +1,144 @@
-bg_red = 192
-bg_blue = 192
-bg_green = 192
-attribute = {
-  x = {
-        current = 16
-      }
-}
-width = 5
-height = 6
-tile_width = 64
-tile_height = 64
-warp_x = 0
-warp_y = 0
-layer0 = {
-        set = [
-"tile/fog.png",
-"",
-"",
-"",
-"tile/fog.png",
-"",
-"",
-"",
-"",
-"",
-"",
-"character/16/WC_bracelets_bracelet_marquee.zip",
-"",
-"character/16/WC_bracers_male_leather_bracers_male_marquee.zip",
-"",
-"tile/exit.gif",
-"character/16/WC_gloves_male_golden_gloves_male_marquee.zip",
-"",
-"character/16/WC_gloves_male_metal_gloves_male_marquee.zip",
-"tile/exit.gif",
-"",
-"",
-"",
-"",
-"",
-"tile/fog.png",
-"",
-"",
-"",
-"tile/fog.png"
-        ]
-}
-event_list: {
-E0 = {
-   tile_x = 1
-   tile_y = 2
-   script = "set_sprite.lua"
-   param = ( "16", "bracelets_bracelet" )
-}
-E1 = {
-   tile_x = 3
-   tile_y = 2
-   script = "set_sprite.lua"
-   param = ( "16", "bracers_male_leather_bracers_male" )
-}
-E2 = {
-   tile_x = 1
-   tile_y = 3
-   script = "set_sprite.lua"
-   param = ( "16", "gloves_male_golden_gloves_male" )
-}
-E3 = {
-   tile_x = 3
-   tile_y = 3
-   script = "set_sprite.lua"
-   param = ( "16", "gloves_male_metal_gloves_male" )
-}
-E4 = {
-   tile_x = 0
-   tile_y = 3
-   script = "goto_character_map.lua"
-   param = ( "15", "1", "1" )
-}
-E5 = {
-   tile_x = 4
-   tile_y = 3
-   script = "goto_character_map.lua"
-   param = ( "17", "1", "1" )
-}
-E6 = {
-   tile_x = 0
-   tile_y = 0
-   script = "set_sprite.lua"
-   param = ( "16", "" )
-}
-E7 = {
-   tile_x = 0
-   tile_y = 5
-   script = "set_sprite.lua"
-   param = ( "16", "" )
-}
-E8 = {
-   tile_x = 4
-   tile_y = 0
-   script = "set_sprite.lua"
-   param = ( "16", "" )
-}
-E9 = {
-   tile_x = 4
-   tile_y = 5
-   script = "set_sprite.lua"
-   param = ( "16", "" )
-}
+{
+  "bg_red": 192,
+  "bg_blue": 192,
+  "bg_green": 192,
+  "attribute": {
+    "x": {
+      "current": 16
+    }
+  },
+  "width": 5,
+  "height": 6,
+  "tile_width": 64,
+  "tile_height": 64,
+  "warp_x": 0,
+  "warp_y": 0,
+  "layer0": {
+    "set": [
+      "tile/fog.png",
+      "",
+      "",
+      "",
+      "tile/fog.png",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "character/16/WC_bracelets_bracelet_marquee.zip",
+      "",
+      "character/16/WC_bracers_male_leather_bracers_male_marquee.zip",
+      "",
+      "tile/exit.gif",
+      "character/16/WC_gloves_male_golden_gloves_male_marquee.zip",
+      "",
+      "character/16/WC_gloves_male_metal_gloves_male_marquee.zip",
+      "tile/exit.gif",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "tile/fog.png",
+      "",
+      "",
+      "",
+      "tile/fog.png"
+    ]
+  },
+  "event_list": {
+    "E0": {
+      "tile_x": 1,
+      "tile_y": 2,
+      "script": "set_sprite.lua",
+      "param": [
+        "16",
+        "bracelets_bracelet"
+      ]
+    },
+    "E1": {
+      "tile_x": 3,
+      "tile_y": 2,
+      "script": "set_sprite.lua",
+      "param": [
+        "16",
+        "bracers_male_leather_bracers_male"
+      ]
+    },
+    "E2": {
+      "tile_x": 1,
+      "tile_y": 3,
+      "script": "set_sprite.lua",
+      "param": [
+        "16",
+        "gloves_male_golden_gloves_male"
+      ]
+    },
+    "E3": {
+      "tile_x": 3,
+      "tile_y": 3,
+      "script": "set_sprite.lua",
+      "param": [
+        "16",
+        "gloves_male_metal_gloves_male"
+      ]
+    },
+    "E4": {
+      "tile_x": 0,
+      "tile_y": 3,
+      "script": "goto_character_map.lua",
+      "param": [
+        "15",
+        "1",
+        "1"
+      ]
+    },
+    "E5": {
+      "tile_x": 4,
+      "tile_y": 3,
+      "script": "goto_character_map.lua",
+      "param": [
+        "17",
+        "1",
+        "1"
+      ]
+    },
+    "E6": {
+      "tile_x": 0,
+      "tile_y": 0,
+      "script": "set_sprite.lua",
+      "param": [
+        "16",
+        ""
+      ]
+    },
+    "E7": {
+      "tile_x": 0,
+      "tile_y": 5,
+      "script": "set_sprite.lua",
+      "param": [
+        "16",
+        ""
+      ]
+    },
+    "E8": {
+      "tile_x": 4,
+      "tile_y": 0,
+      "script": "set_sprite.lua",
+      "param": [
+        "16",
+        ""
+      ]
+    },
+    "E9": {
+      "tile_x": 4,
+      "tile_y": 5,
+      "script": "set_sprite.lua",
+      "param": [
+        "16",
+        ""
+      ]
+    }
+  }
 }

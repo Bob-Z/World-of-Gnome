@@ -1,158 +1,204 @@
-bg_red = 192
-bg_blue = 192
-bg_green = 192
-attribute = {
-  x = {
-        current = 13
-      }
-}
-width = 9
-height = 6
-tile_width = 64
-tile_height = 64
-warp_x = 0
-warp_y = 0
-layer0 = {
-        set = [
-"tile/fog.png",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"tile/fog.png",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"character/13/WC_chain_mail_female_marquee.zip",
-"",
-"character/13/WC_Female_legionplate_bronze_marquee.zip",
-"",
-"character/13/WC_Female_legionplate_gold_marquee.zip",
-"",
-"character/13/WC_Female_legionplate_steel_marquee.zip",
-"",
-"tile/exit.gif",
-"character/13/WC_Female_plate_bronze(Matthew_Krohn)_marquee.zip",
-"",
-"character/13/WC_gold_chest_female_marquee.zip",
-"",
-"character/13/WC_leather_chest_female_marquee.zip",
-"",
-"character/13/WC_plate_chest_female_marquee.zip",
-"tile/exit.gif",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"tile/fog.png",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"tile/fog.png"
-        ]
-}
-event_list: {
-E0 = {
-   tile_x = 1
-   tile_y = 2
-   script = "set_sprite.lua"
-   param = ( "13", "chain_mail_female" )
-}
-E1 = {
-   tile_x = 3
-   tile_y = 2
-   script = "set_sprite.lua"
-   param = ( "13", "Female_legionplate_bronze" )
-}
-E2 = {
-   tile_x = 5
-   tile_y = 2
-   script = "set_sprite.lua"
-   param = ( "13", "Female_legionplate_gold" )
-}
-E3 = {
-   tile_x = 7
-   tile_y = 2
-   script = "set_sprite.lua"
-   param = ( "13", "Female_legionplate_steel" )
-}
-E4 = {
-   tile_x = 1
-   tile_y = 3
-   script = "set_sprite.lua"
-   param = ( "13", "Female_plate_bronze(Matthew_Krohn)" )
-}
-E5 = {
-   tile_x = 3
-   tile_y = 3
-   script = "set_sprite.lua"
-   param = ( "13", "gold_chest_female" )
-}
-E6 = {
-   tile_x = 5
-   tile_y = 3
-   script = "set_sprite.lua"
-   param = ( "13", "leather_chest_female" )
-}
-E7 = {
-   tile_x = 7
-   tile_y = 3
-   script = "set_sprite.lua"
-   param = ( "13", "plate_chest_female" )
-}
-E8 = {
-   tile_x = 0
-   tile_y = 3
-   script = "goto_character_map.lua"
-   param = ( "12", "1", "1" )
-}
-E9 = {
-   tile_x = 8
-   tile_y = 3
-   script = "goto_character_map.lua"
-   param = ( "14", "1", "1" )
-}
-E10 = {
-   tile_x = 0
-   tile_y = 0
-   script = "set_sprite.lua"
-   param = ( "13", "" )
-}
-E11 = {
-   tile_x = 0
-   tile_y = 5
-   script = "set_sprite.lua"
-   param = ( "13", "" )
-}
-E12 = {
-   tile_x = 8
-   tile_y = 0
-   script = "set_sprite.lua"
-   param = ( "13", "" )
-}
-E13 = {
-   tile_x = 8
-   tile_y = 5
-   script = "set_sprite.lua"
-   param = ( "13", "" )
-}
+{
+  "bg_red": 192,
+  "bg_blue": 192,
+  "bg_green": 192,
+  "attribute": {
+    "x": {
+      "current": 13
+    }
+  },
+  "width": 9,
+  "height": 6,
+  "tile_width": 64,
+  "tile_height": 64,
+  "warp_x": 0,
+  "warp_y": 0,
+  "layer0": {
+    "set": [
+      "tile/fog.png",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "tile/fog.png",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "character/13/WC_chain_mail_female_marquee.zip",
+      "",
+      "character/13/WC_Female_legionplate_bronze_marquee.zip",
+      "",
+      "character/13/WC_Female_legionplate_gold_marquee.zip",
+      "",
+      "character/13/WC_Female_legionplate_steel_marquee.zip",
+      "",
+      "tile/exit.gif",
+      "character/13/WC_Female_plate_bronze(Matthew_Krohn)_marquee.zip",
+      "",
+      "character/13/WC_gold_chest_female_marquee.zip",
+      "",
+      "character/13/WC_leather_chest_female_marquee.zip",
+      "",
+      "character/13/WC_plate_chest_female_marquee.zip",
+      "tile/exit.gif",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "tile/fog.png",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "tile/fog.png"
+    ]
+  },
+  "event_list": {
+    "E0": {
+      "tile_x": 1,
+      "tile_y": 2,
+      "script": "set_sprite.lua",
+      "param": [
+        "13",
+        "chain_mail_female"
+      ]
+    },
+    "E1": {
+      "tile_x": 3,
+      "tile_y": 2,
+      "script": "set_sprite.lua",
+      "param": [
+        "13",
+        "Female_legionplate_bronze"
+      ]
+    },
+    "E2": {
+      "tile_x": 5,
+      "tile_y": 2,
+      "script": "set_sprite.lua",
+      "param": [
+        "13",
+        "Female_legionplate_gold"
+      ]
+    },
+    "E3": {
+      "tile_x": 7,
+      "tile_y": 2,
+      "script": "set_sprite.lua",
+      "param": [
+        "13",
+        "Female_legionplate_steel"
+      ]
+    },
+    "E4": {
+      "tile_x": 1,
+      "tile_y": 3,
+      "script": "set_sprite.lua",
+      "param": [
+        "13",
+        "Female_plate_bronze(Matthew_Krohn)"
+      ]
+    },
+    "E5": {
+      "tile_x": 3,
+      "tile_y": 3,
+      "script": "set_sprite.lua",
+      "param": [
+        "13",
+        "gold_chest_female"
+      ]
+    },
+    "E6": {
+      "tile_x": 5,
+      "tile_y": 3,
+      "script": "set_sprite.lua",
+      "param": [
+        "13",
+        "leather_chest_female"
+      ]
+    },
+    "E7": {
+      "tile_x": 7,
+      "tile_y": 3,
+      "script": "set_sprite.lua",
+      "param": [
+        "13",
+        "plate_chest_female"
+      ]
+    },
+    "E8": {
+      "tile_x": 0,
+      "tile_y": 3,
+      "script": "goto_character_map.lua",
+      "param": [
+        "12",
+        "1",
+        "1"
+      ]
+    },
+    "E9": {
+      "tile_x": 8,
+      "tile_y": 3,
+      "script": "goto_character_map.lua",
+      "param": [
+        "14",
+        "1",
+        "1"
+      ]
+    },
+    "E10": {
+      "tile_x": 0,
+      "tile_y": 0,
+      "script": "set_sprite.lua",
+      "param": [
+        "13",
+        ""
+      ]
+    },
+    "E11": {
+      "tile_x": 0,
+      "tile_y": 5,
+      "script": "set_sprite.lua",
+      "param": [
+        "13",
+        ""
+      ]
+    },
+    "E12": {
+      "tile_x": 8,
+      "tile_y": 0,
+      "script": "set_sprite.lua",
+      "param": [
+        "13",
+        ""
+      ]
+    },
+    "E13": {
+      "tile_x": 8,
+      "tile_y": 5,
+      "script": "set_sprite.lua",
+      "param": [
+        "13",
+        ""
+      ]
+    }
+  }
 }

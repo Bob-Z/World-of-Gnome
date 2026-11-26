@@ -48,7 +48,7 @@ layer_t* map_layer_new(const std::string &map, int layer_index,
 	if (layer_index != DEFAULT_LAYER && default_layer != nullptr)
 	{
 		sprintf(layer_name, "%s%d", MAP_KEY_LAYER.c_str(), layer_index);
-		if (entry_exist(MAP_TABLE.c_str(), map.c_str(), layer_name, MAP_KEY_SET,
+		if (entry_exist(MAP_TABLE.c_str(), map.c_str(), layer_name, MAP_KEY_SET.c_str(),
 				nullptr) == false)
 		{
 			free(layer);
@@ -63,29 +63,29 @@ layer_t* map_layer_new(const std::string &map, int layer_index,
 
 		layer->map_w = default_layer->map_w;
 		entry_read_int(MAP_TABLE.c_str(), map.c_str(), &layer->map_w,
-				layer_name, MAP_KEY_WIDTH, nullptr);
+				layer_name, MAP_KEY_WIDTH.c_str(), nullptr);
 
 		layer->map_h = default_layer->map_h;
 		entry_read_int(MAP_TABLE.c_str(), map.c_str(), &layer->map_h,
-				layer_name, MAP_KEY_HEIGHT, nullptr);
+				layer_name, MAP_KEY_HEIGHT.c_str(), nullptr);
 
 		layer->tile_width = default_layer->tile_width;
 		if (entry_read_int(MAP_TABLE.c_str(), map.c_str(), &layer->tile_width,
-				layer_name, MAP_KEY_TILE_WIDTH, nullptr) == true)
+				layer_name, MAP_KEY_TILE_WIDTH.c_str(), nullptr) == true)
 		{
 			layer->col_width[0] = layer->tile_width;
 		}
 
 		layer->tile_height = default_layer->tile_height;
 		if (entry_read_int(MAP_TABLE.c_str(), map.c_str(), &layer->tile_height,
-				layer_name, MAP_KEY_TILE_HEIGHT, nullptr) == true)
+				layer_name, MAP_KEY_TILE_HEIGHT.c_str(), nullptr) == true)
 		{
 			layer->row_height[0] = layer->tile_height;
 		}
 
 		layer->map_zoom = default_layer->map_zoom;
 		if (entry_read_string(MAP_TABLE.c_str(), map.c_str(), &zoom_str,
-				layer_name, MAP_KEY_SPRITE_ZOOM, nullptr) == true)
+				layer_name, MAP_KEY_SPRITE_ZOOM.c_str(), nullptr) == true)
 		{
 			layer->map_zoom = atof(zoom_str);
 			free(zoom_str);
@@ -97,25 +97,25 @@ layer_t* map_layer_new(const std::string &map, int layer_index,
 	else
 	{
 		if (entry_read_int(MAP_TABLE.c_str(), map.c_str(), &layer->map_w,
-				MAP_KEY_WIDTH, nullptr) == false)
+				MAP_KEY_WIDTH.c_str(), nullptr) == false)
 		{
 			free(layer);
 			return nullptr;
 		}
 		if (entry_read_int(MAP_TABLE.c_str(), map.c_str(), &layer->map_h,
-				MAP_KEY_HEIGHT, nullptr) == false)
+				MAP_KEY_HEIGHT.c_str(), nullptr) == false)
 		{
 			free(layer);
 			return nullptr;
 		}
 		if (entry_read_int(MAP_TABLE.c_str(), map.c_str(), &layer->tile_width,
-				MAP_KEY_TILE_WIDTH, nullptr) == false)
+				MAP_KEY_TILE_WIDTH.c_str(), nullptr) == false)
 		{
 			free(layer);
 			return nullptr;
 		}
 		if (entry_read_int(MAP_TABLE.c_str(), map.c_str(), &layer->tile_height,
-				MAP_KEY_TILE_HEIGHT, nullptr) == false)
+				MAP_KEY_TILE_HEIGHT.c_str(), nullptr) == false)
 		{
 			free(layer);
 			return nullptr;
@@ -129,7 +129,7 @@ layer_t* map_layer_new(const std::string &map, int layer_index,
 
 		layer->map_zoom = 1.0;
 		if (entry_read_string(MAP_TABLE.c_str(), map.c_str(), &zoom_str,
-				MAP_KEY_SPRITE_ZOOM, nullptr) == true)
+				MAP_KEY_SPRITE_ZOOM.c_str(), nullptr) == true)
 		{
 			layer->map_zoom = atof(zoom_str);
 			free(zoom_str);

@@ -1,42 +1,59 @@
-width = 15
-height = 10
-tile_width = 32
-tile_height = 32
-warp_x = 0
-warp_y = 0
-layer0 = {
-	scenery = {
-		bg = {
-			x = 0
-			y = 0
-			image = "map/throne_east.png"
-		}
-	}
+{
+  "width": 15,
+  "height": 10,
+  "tile_width": 32,
+  "tile_height": 32,
+  "warp_x": 0,
+  "warp_y": 0,
+  "layer0": {
+    "scenery": {
+      "bg": {
+        "x": 0,
+        "y": 0,
+        "image": "map/throne_east.png"
+      }
+    }
+  },
+  "event_list": {
+    "exit_0": {
+      "tile_x": 10,
+      "tile_y": 9,
+      "script": "goto.lua",
+      "param": [
+        "M0_0",
+        "33",
+        "39"
+      ]
+    },
+    "exit_1": {
+      "tile_x": 11,
+      "tile_y": 9,
+      "script": "goto.lua",
+      "param": [
+        "M0_0",
+        "34",
+        "39"
+      ]
+    },
+    "to_throne1": {
+      "tile_x": 0,
+      "tile_y": 5,
+      "script": "goto.lua",
+      "param": [
+        "throne",
+        "16",
+        "10"
+      ]
+    },
+    "to_throne2": {
+      "tile_x": 0,
+      "tile_y": 4,
+      "script": "goto.lua",
+      "param": [
+        "throne",
+        "16",
+        "9"
+      ]
+    }
+  }
 }
-event_list = {
-	exit_0 = {
-		tile_x = 10
-		tile_y = 9
-		script = "goto.lua"
-		param = ( "M0_0", "33", "39" )
-	}
-	exit_1 = {
-		tile_x = 11
-		tile_y = 9
-		script = "goto.lua"
-		param = ( "M0_0", "34", "39" )
-	}
-	to_throne1 = {
-		tile_x = 0
-		tile_y = 5
-		script = "goto.lua"
-		param = ( "throne", "16", "10" )
-	}
-	to_throne2 = {
-		tile_x = 0
-		tile_y = 4
-		script = "goto.lua"
-		param = ( "throne", "16", "9" )
-	}
-}
-

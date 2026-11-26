@@ -1,154 +1,229 @@
-attribute = {
-	x = {
-		current = 0
-	}
-	y = {
-		current = 0
-	}
+{
+  "attribute": {
+    "x": {
+      "current": 0
+    },
+    "y": {
+      "current": 0
+    }
+  },
+  "offscreen": "offscreen.lua",
+  "width": 70,
+  "height": 70,
+  "tile_width": 32,
+  "tile_height": 32,
+  "warp_x": 0,
+  "warp_y": 0,
+  "sfx": "Woodland Fantasy.ogg",
+  "sfx_volume": 20,
+  "layer0": {
+    "scenery": {
+      "bg": {
+        "x": 0,
+        "y": 0,
+        "image": "map/castle.png"
+      }
+    }
+  },
+  "layer1": {
+    "scenery": {
+      "campfire": {
+        "x": 640,
+        "y": 2144,
+        "image": "scenery/campfire.zip"
+      }
+    }
+  },
+  "event_list": {
+    "to_inn": {
+      "tile_x": 11,
+      "tile_y": 68,
+      "script": "goto.lua",
+      "param": [
+        "inn",
+        "30",
+        "17"
+      ]
+    },
+    "to_throne1": {
+      "tile_x": 23,
+      "tile_y": 44,
+      "script": "goto.lua",
+      "param": [
+        "throne",
+        "8",
+        "10"
+      ]
+    },
+    "to_throne2": {
+      "tile_x": 24,
+      "tile_y": 44,
+      "script": "goto.lua",
+      "param": [
+        "throne",
+        "9",
+        "10"
+      ]
+    },
+    "to_throne3": {
+      "tile_x": 25,
+      "tile_y": 44,
+      "script": "goto.lua",
+      "param": [
+        "throne",
+        "10",
+        "10"
+      ]
+    },
+    "to_throne_west1": {
+      "tile_x": 14,
+      "tile_y": 38,
+      "script": "goto.lua",
+      "param": [
+        "throne_west",
+        "3",
+        "8"
+      ]
+    },
+    "to_throne_west2": {
+      "tile_x": 15,
+      "tile_y": 38,
+      "script": "goto.lua",
+      "param": [
+        "throne_west",
+        "4",
+        "8"
+      ]
+    },
+    "to_throne_east1": {
+      "tile_x": 33,
+      "tile_y": 38,
+      "script": "goto.lua",
+      "param": [
+        "throne_east",
+        "10",
+        "8"
+      ]
+    },
+    "to_throne_east2": {
+      "tile_x": 34,
+      "tile_y": 38,
+      "script": "goto.lua",
+      "param": [
+        "throne_east",
+        "11",
+        "8"
+      ]
+    },
+    "to_guardroom1": {
+      "tile_x": 23,
+      "tile_y": 56,
+      "script": "goto.lua",
+      "param": [
+        "guardroom",
+        "6",
+        "15"
+      ]
+    },
+    "to_guardroom2": {
+      "tile_x": 24,
+      "tile_y": 56,
+      "script": "goto.lua",
+      "param": [
+        "guardroom",
+        "6",
+        "15"
+      ]
+    },
+    "to_guardroom3": {
+      "tile_x": 25,
+      "tile_y": 56,
+      "script": "goto.lua",
+      "param": [
+        "guardroom",
+        "6",
+        "15"
+      ]
+    },
+    "to_tower_west1": {
+      "tile_x": 0,
+      "tile_y": 46,
+      "script": "goto.lua",
+      "param": [
+        "tower_west",
+        "8",
+        "9"
+      ]
+    },
+    "to_tower_west2": {
+      "tile_x": 1,
+      "tile_y": 46,
+      "script": "goto.lua",
+      "param": [
+        "tower_west",
+        "14",
+        "9"
+      ]
+    },
+    "to_tower_east1": {
+      "tile_x": 47,
+      "tile_y": 46,
+      "script": "goto.lua",
+      "param": [
+        "tower_east",
+        "28",
+        "13"
+      ]
+    },
+    "to_tower_east2": {
+      "tile_x": 48,
+      "tile_y": 46,
+      "script": "goto.lua",
+      "param": [
+        "tower_east",
+        "28",
+        "13"
+      ]
+    },
+    "to_stall1": {
+      "tile_x": 37,
+      "tile_y": 55,
+      "script": "goto.lua",
+      "param": [
+        "stall",
+        "3",
+        "8"
+      ]
+    },
+    "to_stall2": {
+      "tile_x": 38,
+      "tile_y": 55,
+      "script": "goto.lua",
+      "param": [
+        "stall",
+        "3",
+        "8"
+      ]
+    },
+    "to_prison1": {
+      "tile_x": 10,
+      "tile_y": 55,
+      "script": "goto.lua",
+      "param": [
+        "prison",
+        "6",
+        "7"
+      ]
+    },
+    "to_prison2": {
+      "tile_x": 11,
+      "tile_y": 55,
+      "script": "goto.lua",
+      "param": [
+        "prison",
+        "6",
+        "7"
+      ]
+    }
+  }
 }
-offscreen = "offscreen.lua"
-width = 70
-height = 70
-tile_width = 32
-tile_height = 32
-warp_x = 0
-warp_y = 0
-sfx = "Woodland Fantasy.ogg"
-sfx_volume = 20
-layer0 = {
-	scenery = {
-		bg = {
-			x = 0
-			y = 0
-			image = "map/castle.png"
-		}
-	}
-}
-
-layer1 = {
-	scenery = {
-		campfire = {
-			x = 640
-			y = 2144
-			image = "scenery/campfire.zip"
-		}
-	}
-}
-
-event_list : {
-        to_inn : {
-                tile_x = 11;
-                tile_y = 68;
-                script = "goto.lua";
-                param = ( "inn", "30", "17" );
-        };
-        to_throne1: {
-                tile_x = 23;
-                tile_y = 44;
-                script = "goto.lua";
-                param = ( "throne", "8", "10" );
-        };
-        to_throne2: {
-                tile_x = 24;
-                tile_y = 44;
-                script = "goto.lua";
-                param = ( "throne", "9", "10" );
-        };
-        to_throne3: {
-                tile_x = 25;
-                tile_y = 44;
-                script = "goto.lua";
-                param = ( "throne", "10", "10" );
-        };
-        to_throne_west1: {
-                tile_x = 14;
-                tile_y = 38;
-                script = "goto.lua";
-                param = ( "throne_west", "3", "8" );
-        };
-        to_throne_west2: {
-                tile_x = 15;
-                tile_y = 38;
-                script = "goto.lua";
-                param = ( "throne_west", "4", "8" );
-        };
-        to_throne_east1: {
-                tile_x = 33;
-                tile_y = 38;
-                script = "goto.lua";
-                param = ( "throne_east", "10", "8" );
-        };
-        to_throne_east2: {
-                tile_x = 34;
-                tile_y = 38;
-                script = "goto.lua";
-                param = ( "throne_east", "11", "8" );
-        };
-        to_guardroom1: {
-                tile_x = 23;
-                tile_y = 56;
-                script = "goto.lua";
-                param = ( "guardroom", "6", "15" );
-        };
-        to_guardroom2: {
-                tile_x = 24;
-                tile_y = 56;
-                script = "goto.lua";
-                param = ( "guardroom", "6", "15" );
-        };
-        to_guardroom3: {
-                tile_x = 25;
-                tile_y = 56;
-                script = "goto.lua";
-                param = ( "guardroom", "6", "15" );
-        };
-        to_tower_west1: {
-                tile_x = 0;
-                tile_y = 46;
-                script = "goto.lua";
-                param = ( "tower_west", "8", "9" );
-        };
-        to_tower_west2: {
-                tile_x = 1;
-                tile_y = 46;
-                script = "goto.lua";
-                param = ( "tower_west", "14", "9" );
-        };
-        to_tower_east1: {
-                tile_x = 47;
-                tile_y = 46;
-                script = "goto.lua";
-                param = ( "tower_east", "28", "13" );
-        };
-        to_tower_east2: {
-                tile_x = 48;
-                tile_y = 46;
-                script = "goto.lua";
-                param = ( "tower_east", "28", "13" );
-        };
-        to_stall1: {
-                tile_x = 37;
-                tile_y = 55;
-                script = "goto.lua";
-                param = ( "stall", "3", "8" );
-        };
-        to_stall2: {
-                tile_x = 38;
-                tile_y = 55;
-                script = "goto.lua";
-                param = ( "stall", "3", "8" );
-        };
-        to_prison1: {
-                tile_x = 10;
-                tile_y = 55;
-                script = "goto.lua";
-                param = ( "prison", "6", "7" );
-        };
-        to_prison2: {
-                tile_x = 11;
-                tile_y = 55;
-                script = "goto.lua";
-                param = ( "prison", "6", "7" );
-        };
-};
-

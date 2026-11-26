@@ -1,287 +1,375 @@
-bg_red = 192
-bg_blue = 192
-bg_green = 192
-attribute = {
-  x = {
-        current = 22
-      }
-}
-width = 11
-height = 9
-tile_width = 64
-tile_height = 64
-warp_x = 0
-warp_y = 0
-layer0 = {
-        set = [
-"tile/fog.png",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"tile/fog.png",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"character/22/WC_back_cape_normal_female_cape_black_marquee.zip",
-"",
-"character/22/WC_back_cape_normal_female_cape_blue_marquee.zip",
-"",
-"character/22/WC_back_cape_normal_female_cape_brown_marquee.zip",
-"",
-"character/22/WC_back_cape_normal_female_cape_gray_marquee.zip",
-"",
-"character/22/WC_back_cape_normal_female_cape_green_marquee.zip",
-"",
-"",
-"character/22/WC_back_cape_normal_female_cape_lavender_marquee.zip",
-"",
-"character/22/WC_back_cape_normal_female_cape_maroon_marquee.zip",
-"",
-"character/22/WC_back_cape_normal_female_cape_pink_marquee.zip",
-"",
-"character/22/WC_back_cape_normal_female_cape_red_marquee.zip",
-"",
-"character/22/WC_back_cape_normal_female_cape_white_marquee.zip",
-"",
-"tile/exit.gif",
-"character/22/WC_back_cape_normal_female_cape_yellow_marquee.zip",
-"",
-"character/22/WC_back_cape_tattered_female_tattercape_black_marquee.zip",
-"",
-"character/22/WC_back_cape_tattered_female_tattercape_blue_marquee.zip",
-"",
-"character/22/WC_back_cape_tattered_female_tattercape_brown_marquee.zip",
-"",
-"character/22/WC_back_cape_tattered_female_tattercape_gray_marquee.zip",
-"tile/exit.gif",
-"",
-"character/22/WC_back_cape_tattered_female_tattercape_green_marquee.zip",
-"",
-"character/22/WC_back_cape_tattered_female_tattercape_maroon_marquee.zip",
-"",
-"character/22/WC_back_cape_tattered_female_tattercape_pink_marquee.zip",
-"",
-"character/22/WC_back_cape_tattered_female_tattercape_red_marquee.zip",
-"",
-"character/22/WC_back_cape_tattered_female_tattercape_white_marquee.zip",
-"",
-"",
-"character/22/WC_back_cape_tattered_female_tattercape_yellow_marquee.zip",
-"",
-"character/22/WC_back_cape_trimmed_female_trimcape_whiteblue_marquee.zip",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"tile/fog.png",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"tile/fog.png"
-        ]
-}
-event_list: {
-E0 = {
-   tile_x = 1
-   tile_y = 2
-   script = "set_sprite.lua"
-   param = ( "22", "back_cape_normal_female_cape_black" )
-}
-E1 = {
-   tile_x = 3
-   tile_y = 2
-   script = "set_sprite.lua"
-   param = ( "22", "back_cape_normal_female_cape_blue" )
-}
-E2 = {
-   tile_x = 5
-   tile_y = 2
-   script = "set_sprite.lua"
-   param = ( "22", "back_cape_normal_female_cape_brown" )
-}
-E3 = {
-   tile_x = 7
-   tile_y = 2
-   script = "set_sprite.lua"
-   param = ( "22", "back_cape_normal_female_cape_gray" )
-}
-E4 = {
-   tile_x = 9
-   tile_y = 2
-   script = "set_sprite.lua"
-   param = ( "22", "back_cape_normal_female_cape_green" )
-}
-E5 = {
-   tile_x = 1
-   tile_y = 3
-   script = "set_sprite.lua"
-   param = ( "22", "back_cape_normal_female_cape_lavender" )
-}
-E6 = {
-   tile_x = 3
-   tile_y = 3
-   script = "set_sprite.lua"
-   param = ( "22", "back_cape_normal_female_cape_maroon" )
-}
-E7 = {
-   tile_x = 5
-   tile_y = 3
-   script = "set_sprite.lua"
-   param = ( "22", "back_cape_normal_female_cape_pink" )
-}
-E8 = {
-   tile_x = 7
-   tile_y = 3
-   script = "set_sprite.lua"
-   param = ( "22", "back_cape_normal_female_cape_red" )
-}
-E9 = {
-   tile_x = 9
-   tile_y = 3
-   script = "set_sprite.lua"
-   param = ( "22", "back_cape_normal_female_cape_white" )
-}
-E10 = {
-   tile_x = 1
-   tile_y = 4
-   script = "set_sprite.lua"
-   param = ( "22", "back_cape_normal_female_cape_yellow" )
-}
-E11 = {
-   tile_x = 3
-   tile_y = 4
-   script = "set_sprite.lua"
-   param = ( "22", "back_cape_tattered_female_tattercape_black" )
-}
-E12 = {
-   tile_x = 5
-   tile_y = 4
-   script = "set_sprite.lua"
-   param = ( "22", "back_cape_tattered_female_tattercape_blue" )
-}
-E13 = {
-   tile_x = 7
-   tile_y = 4
-   script = "set_sprite.lua"
-   param = ( "22", "back_cape_tattered_female_tattercape_brown" )
-}
-E14 = {
-   tile_x = 9
-   tile_y = 4
-   script = "set_sprite.lua"
-   param = ( "22", "back_cape_tattered_female_tattercape_gray" )
-}
-E15 = {
-   tile_x = 1
-   tile_y = 5
-   script = "set_sprite.lua"
-   param = ( "22", "back_cape_tattered_female_tattercape_green" )
-}
-E16 = {
-   tile_x = 3
-   tile_y = 5
-   script = "set_sprite.lua"
-   param = ( "22", "back_cape_tattered_female_tattercape_maroon" )
-}
-E17 = {
-   tile_x = 5
-   tile_y = 5
-   script = "set_sprite.lua"
-   param = ( "22", "back_cape_tattered_female_tattercape_pink" )
-}
-E18 = {
-   tile_x = 7
-   tile_y = 5
-   script = "set_sprite.lua"
-   param = ( "22", "back_cape_tattered_female_tattercape_red" )
-}
-E19 = {
-   tile_x = 9
-   tile_y = 5
-   script = "set_sprite.lua"
-   param = ( "22", "back_cape_tattered_female_tattercape_white" )
-}
-E20 = {
-   tile_x = 1
-   tile_y = 6
-   script = "set_sprite.lua"
-   param = ( "22", "back_cape_tattered_female_tattercape_yellow" )
-}
-E21 = {
-   tile_x = 3
-   tile_y = 6
-   script = "set_sprite.lua"
-   param = ( "22", "back_cape_trimmed_female_trimcape_whiteblue" )
-}
-E22 = {
-   tile_x = 0
-   tile_y = 4
-   script = "goto_character_map.lua"
-   param = ( "21", "1", "1" )
-}
-E23 = {
-   tile_x = 10
-   tile_y = 4
-   script = "goto_character_map.lua"
-   param = ( "23", "1", "1" )
-}
-E24 = {
-   tile_x = 0
-   tile_y = 0
-   script = "set_sprite.lua"
-   param = ( "22", "" )
-}
-E25 = {
-   tile_x = 0
-   tile_y = 8
-   script = "set_sprite.lua"
-   param = ( "22", "" )
-}
-E26 = {
-   tile_x = 10
-   tile_y = 0
-   script = "set_sprite.lua"
-   param = ( "22", "" )
-}
-E27 = {
-   tile_x = 10
-   tile_y = 8
-   script = "set_sprite.lua"
-   param = ( "22", "" )
-}
+{
+  "bg_red": 192,
+  "bg_blue": 192,
+  "bg_green": 192,
+  "attribute": {
+    "x": {
+      "current": 22
+    }
+  },
+  "width": 11,
+  "height": 9,
+  "tile_width": 64,
+  "tile_height": 64,
+  "warp_x": 0,
+  "warp_y": 0,
+  "layer0": {
+    "set": [
+      "tile/fog.png",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "tile/fog.png",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "character/22/WC_back_cape_normal_female_cape_black_marquee.zip",
+      "",
+      "character/22/WC_back_cape_normal_female_cape_blue_marquee.zip",
+      "",
+      "character/22/WC_back_cape_normal_female_cape_brown_marquee.zip",
+      "",
+      "character/22/WC_back_cape_normal_female_cape_gray_marquee.zip",
+      "",
+      "character/22/WC_back_cape_normal_female_cape_green_marquee.zip",
+      "",
+      "",
+      "character/22/WC_back_cape_normal_female_cape_lavender_marquee.zip",
+      "",
+      "character/22/WC_back_cape_normal_female_cape_maroon_marquee.zip",
+      "",
+      "character/22/WC_back_cape_normal_female_cape_pink_marquee.zip",
+      "",
+      "character/22/WC_back_cape_normal_female_cape_red_marquee.zip",
+      "",
+      "character/22/WC_back_cape_normal_female_cape_white_marquee.zip",
+      "",
+      "tile/exit.gif",
+      "character/22/WC_back_cape_normal_female_cape_yellow_marquee.zip",
+      "",
+      "character/22/WC_back_cape_tattered_female_tattercape_black_marquee.zip",
+      "",
+      "character/22/WC_back_cape_tattered_female_tattercape_blue_marquee.zip",
+      "",
+      "character/22/WC_back_cape_tattered_female_tattercape_brown_marquee.zip",
+      "",
+      "character/22/WC_back_cape_tattered_female_tattercape_gray_marquee.zip",
+      "tile/exit.gif",
+      "",
+      "character/22/WC_back_cape_tattered_female_tattercape_green_marquee.zip",
+      "",
+      "character/22/WC_back_cape_tattered_female_tattercape_maroon_marquee.zip",
+      "",
+      "character/22/WC_back_cape_tattered_female_tattercape_pink_marquee.zip",
+      "",
+      "character/22/WC_back_cape_tattered_female_tattercape_red_marquee.zip",
+      "",
+      "character/22/WC_back_cape_tattered_female_tattercape_white_marquee.zip",
+      "",
+      "",
+      "character/22/WC_back_cape_tattered_female_tattercape_yellow_marquee.zip",
+      "",
+      "character/22/WC_back_cape_trimmed_female_trimcape_whiteblue_marquee.zip",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "tile/fog.png",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "tile/fog.png"
+    ]
+  },
+  "event_list": {
+    "E0": {
+      "tile_x": 1,
+      "tile_y": 2,
+      "script": "set_sprite.lua",
+      "param": [
+        "22",
+        "back_cape_normal_female_cape_black"
+      ]
+    },
+    "E1": {
+      "tile_x": 3,
+      "tile_y": 2,
+      "script": "set_sprite.lua",
+      "param": [
+        "22",
+        "back_cape_normal_female_cape_blue"
+      ]
+    },
+    "E2": {
+      "tile_x": 5,
+      "tile_y": 2,
+      "script": "set_sprite.lua",
+      "param": [
+        "22",
+        "back_cape_normal_female_cape_brown"
+      ]
+    },
+    "E3": {
+      "tile_x": 7,
+      "tile_y": 2,
+      "script": "set_sprite.lua",
+      "param": [
+        "22",
+        "back_cape_normal_female_cape_gray"
+      ]
+    },
+    "E4": {
+      "tile_x": 9,
+      "tile_y": 2,
+      "script": "set_sprite.lua",
+      "param": [
+        "22",
+        "back_cape_normal_female_cape_green"
+      ]
+    },
+    "E5": {
+      "tile_x": 1,
+      "tile_y": 3,
+      "script": "set_sprite.lua",
+      "param": [
+        "22",
+        "back_cape_normal_female_cape_lavender"
+      ]
+    },
+    "E6": {
+      "tile_x": 3,
+      "tile_y": 3,
+      "script": "set_sprite.lua",
+      "param": [
+        "22",
+        "back_cape_normal_female_cape_maroon"
+      ]
+    },
+    "E7": {
+      "tile_x": 5,
+      "tile_y": 3,
+      "script": "set_sprite.lua",
+      "param": [
+        "22",
+        "back_cape_normal_female_cape_pink"
+      ]
+    },
+    "E8": {
+      "tile_x": 7,
+      "tile_y": 3,
+      "script": "set_sprite.lua",
+      "param": [
+        "22",
+        "back_cape_normal_female_cape_red"
+      ]
+    },
+    "E9": {
+      "tile_x": 9,
+      "tile_y": 3,
+      "script": "set_sprite.lua",
+      "param": [
+        "22",
+        "back_cape_normal_female_cape_white"
+      ]
+    },
+    "E10": {
+      "tile_x": 1,
+      "tile_y": 4,
+      "script": "set_sprite.lua",
+      "param": [
+        "22",
+        "back_cape_normal_female_cape_yellow"
+      ]
+    },
+    "E11": {
+      "tile_x": 3,
+      "tile_y": 4,
+      "script": "set_sprite.lua",
+      "param": [
+        "22",
+        "back_cape_tattered_female_tattercape_black"
+      ]
+    },
+    "E12": {
+      "tile_x": 5,
+      "tile_y": 4,
+      "script": "set_sprite.lua",
+      "param": [
+        "22",
+        "back_cape_tattered_female_tattercape_blue"
+      ]
+    },
+    "E13": {
+      "tile_x": 7,
+      "tile_y": 4,
+      "script": "set_sprite.lua",
+      "param": [
+        "22",
+        "back_cape_tattered_female_tattercape_brown"
+      ]
+    },
+    "E14": {
+      "tile_x": 9,
+      "tile_y": 4,
+      "script": "set_sprite.lua",
+      "param": [
+        "22",
+        "back_cape_tattered_female_tattercape_gray"
+      ]
+    },
+    "E15": {
+      "tile_x": 1,
+      "tile_y": 5,
+      "script": "set_sprite.lua",
+      "param": [
+        "22",
+        "back_cape_tattered_female_tattercape_green"
+      ]
+    },
+    "E16": {
+      "tile_x": 3,
+      "tile_y": 5,
+      "script": "set_sprite.lua",
+      "param": [
+        "22",
+        "back_cape_tattered_female_tattercape_maroon"
+      ]
+    },
+    "E17": {
+      "tile_x": 5,
+      "tile_y": 5,
+      "script": "set_sprite.lua",
+      "param": [
+        "22",
+        "back_cape_tattered_female_tattercape_pink"
+      ]
+    },
+    "E18": {
+      "tile_x": 7,
+      "tile_y": 5,
+      "script": "set_sprite.lua",
+      "param": [
+        "22",
+        "back_cape_tattered_female_tattercape_red"
+      ]
+    },
+    "E19": {
+      "tile_x": 9,
+      "tile_y": 5,
+      "script": "set_sprite.lua",
+      "param": [
+        "22",
+        "back_cape_tattered_female_tattercape_white"
+      ]
+    },
+    "E20": {
+      "tile_x": 1,
+      "tile_y": 6,
+      "script": "set_sprite.lua",
+      "param": [
+        "22",
+        "back_cape_tattered_female_tattercape_yellow"
+      ]
+    },
+    "E21": {
+      "tile_x": 3,
+      "tile_y": 6,
+      "script": "set_sprite.lua",
+      "param": [
+        "22",
+        "back_cape_trimmed_female_trimcape_whiteblue"
+      ]
+    },
+    "E22": {
+      "tile_x": 0,
+      "tile_y": 4,
+      "script": "goto_character_map.lua",
+      "param": [
+        "21",
+        "1",
+        "1"
+      ]
+    },
+    "E23": {
+      "tile_x": 10,
+      "tile_y": 4,
+      "script": "goto_character_map.lua",
+      "param": [
+        "23",
+        "1",
+        "1"
+      ]
+    },
+    "E24": {
+      "tile_x": 0,
+      "tile_y": 0,
+      "script": "set_sprite.lua",
+      "param": [
+        "22",
+        ""
+      ]
+    },
+    "E25": {
+      "tile_x": 0,
+      "tile_y": 8,
+      "script": "set_sprite.lua",
+      "param": [
+        "22",
+        ""
+      ]
+    },
+    "E26": {
+      "tile_x": 10,
+      "tile_y": 0,
+      "script": "set_sprite.lua",
+      "param": [
+        "22",
+        ""
+      ]
+    },
+    "E27": {
+      "tile_x": 10,
+      "tile_y": 8,
+      "script": "set_sprite.lua",
+      "param": [
+        "22",
+        ""
+      ]
+    }
+  }
 }

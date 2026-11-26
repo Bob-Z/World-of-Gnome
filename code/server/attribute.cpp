@@ -55,20 +55,20 @@ int attribute_change(Context *context, const char *table, const char *id,
 	{
 		LockGuard guard(attribute_lock);
 
-		if (entry_read_int(table, id, &current, ATTRIBUTE_GROUP, attribute,
-				ATTRIBUTE_CURRENT, nullptr) == false)
+		if (entry_read_int(table, id, &current, ATTRIBUTE_GROUP.c_str(), attribute,
+				ATTRIBUTE_CURRENT.c_str(), nullptr) == false)
 		{
 			return -1;
 		}
 
-		if (entry_read_int(table, id, &min, ATTRIBUTE_GROUP, attribute,
-				ATTRIBUTE_MIN, nullptr) == false)
+		if (entry_read_int(table, id, &min, ATTRIBUTE_GROUP.c_str(), attribute,
+				ATTRIBUTE_MIN.c_str(), nullptr) == false)
 		{
 			min = -1;
 		}
 
-		if (entry_read_int(table, id, &max, ATTRIBUTE_GROUP, attribute,
-				ATTRIBUTE_MAX, nullptr) == false)
+		if (entry_read_int(table, id, &max, ATTRIBUTE_GROUP.c_str(), attribute,
+				ATTRIBUTE_MAX.c_str(), nullptr) == false)
 		{
 			max = -1;
 		}
@@ -93,13 +93,13 @@ int attribute_change(Context *context, const char *table, const char *id,
 			}
 		}
 
-		if (entry_write_int(table, id, current, ATTRIBUTE_GROUP, attribute,
-				ATTRIBUTE_CURRENT, nullptr) == false)
+		if (entry_write_int(table, id, current, ATTRIBUTE_GROUP.c_str(), attribute,
+				ATTRIBUTE_CURRENT.c_str(), nullptr) == false)
 		{
 			return -1;
 		}
-		if (entry_write_int(table, id, old, ATTRIBUTE_GROUP, attribute,
-				ATTRIBUTE_PREVIOUS, nullptr) == false)
+		if (entry_write_int(table, id, old, ATTRIBUTE_GROUP.c_str(), attribute,
+				ATTRIBUTE_PREVIOUS.c_str(), nullptr) == false)
 		{
 			return -1;
 		}
@@ -109,8 +109,8 @@ int attribute_change(Context *context, const char *table, const char *id,
 		{
 			if (do_min_action == true)
 			{
-				if (entry_read_string(table, id, &action, ATTRIBUTE_GROUP,
-						attribute, ATTRIBUTE_ON_MIN, nullptr) == false)
+				if (entry_read_string(table, id, &action, ATTRIBUTE_GROUP.c_str(),
+						attribute, ATTRIBUTE_ON_MIN.c_str(), nullptr) == false)
 				{
 					do_min_action = false;
 				}
@@ -120,8 +120,8 @@ int attribute_change(Context *context, const char *table, const char *id,
 				}
 			}
 
-			if (entry_read_string(table, id, &action, ATTRIBUTE_GROUP,
-					attribute, ATTRIBUTE_ON_DOWN, nullptr) == true)
+			if (entry_read_string(table, id, &action, ATTRIBUTE_GROUP.c_str(),
+					attribute, ATTRIBUTE_ON_DOWN.c_str(), nullptr) == true)
 			{
 				do_down_action = true;
 				down_action = action;
@@ -133,7 +133,7 @@ int attribute_change(Context *context, const char *table, const char *id,
 			if (do_max_action == true)
 			{
 				if (entry_read_string(table, id, &action, ATTRIBUTE_GROUP,
-						attribute, ATTRIBUTE_ON_MAX, nullptr) == false)
+						attribute, ATTRIBUTE_ON_MAX.c_str(), nullptr) == false)
 				{
 					do_max_action = false;
 				}
@@ -144,7 +144,7 @@ int attribute_change(Context *context, const char *table, const char *id,
 			}
 
 			if (entry_read_string(table, id, &action, ATTRIBUTE_GROUP,
-					attribute, ATTRIBUTE_ON_UP, nullptr) == true)
+					attribute, ATTRIBUTE_ON_UP.c_str(), nullptr) == true)
 			{
 				do_up_action = true;
 				up_action = action;

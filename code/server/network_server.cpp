@@ -454,14 +454,15 @@ void network_send_playable_character(Connection & connection, const std::vector<
 {
 	pb::ServerMessage message;
 
+	auto *playable = message.mutable_playable_character();
 	for (auto && id : idArray)
 	{
-		message.mutable_playable_character()->add_id(id);
+		playable->add_id(id);
 	}
 
 	std::string serialized_data = message.SerializeAsString();
 
-	wlog(LOGDEVELOPER, "[network] Send playable character list");
+	wlog(LOGDEVELOPER, "[network] Send %d playable characters list", idArray.size());
 	network_send_command(connection, serialized_data, false);
 }
 

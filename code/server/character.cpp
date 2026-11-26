@@ -69,8 +69,8 @@ void character_playable_send_list(Connection &connection)
 			continue;
 		}
 
-		if (entry_read_string(CHARACTER_TEMPLATE_TABLE, ent->d_name, &marquee,
-				CHARACTER_KEY_MARQUEE, nullptr) == true)
+		if (entry_read_string(CHARACTER_TEMPLATE_TABLE.c_str(), ent->d_name, &marquee,
+				CHARACTER_KEY_MARQUEE.c_str(), nullptr) == true)
 		{
 			if (marquee[0] == '\0')
 			{
@@ -82,8 +82,8 @@ void character_playable_send_list(Connection &connection)
 		else
 		{
 			char **marquee_list = nullptr;
-			if (entry_read_list(CHARACTER_TEMPLATE_TABLE, ent->d_name,
-					&marquee_list, CHARACTER_KEY_MARQUEE, nullptr) == false)
+			if (entry_read_list(CHARACTER_TEMPLATE_TABLE.c_str(), ent->d_name,
+					&marquee_list, CHARACTER_KEY_MARQUEE.c_str(), nullptr) == false)
 			{
 				wlog(LOGDESIGNER, "%s has no marquee", ent->d_name);
 				continue;
@@ -111,14 +111,14 @@ void character_user_send(Connection &connection, const std::string &id)
 	char *type = nullptr;
 	char *name = nullptr;
 
-	if (entry_read_string(CHARACTER_TABLE, id, &type,
+	if (entry_read_string(CHARACTER_TABLE.c_str(), id, &type,
 			CHARACTER_KEY_TYPE.c_str(), nullptr) == false)
 	{
 		ERR("Cannot read CHARACTER_KEY_TYPE for character " + id);
 		return;
 	}
 
-	if (entry_read_string(CHARACTER_TABLE, id.c_str(), &name,
+	if (entry_read_string(CHARACTER_TABLE.c_str(), id.c_str(), &name,
 			CHARACTER_KEY_NAME.c_str(), nullptr) == false)
 	{
 		ERR("Cannot read CHARACTER_KEY_NAME for character " + id);
@@ -227,15 +227,15 @@ std::pair<bool, std::string> character_create_from_template(Context *ctx,
 // Check if new character is allowed to be created here
 	if (map_check_tile(ctx, new_id.second.c_str(), map, layer, x, y) == 0)
 	{
-		entry_destroy(CHARACTER_TABLE, new_id.second.c_str());
+		entry_destroy(CHARACTER_TABLE.c_str(), new_id.second.c_str());
 		file_delete(CHARACTER_TABLE, new_id.second);
 
 		return std::pair<bool, std::string>
 		{ false, "" };
 	}
 
-	if (entry_write_string(CHARACTER_TABLE, new_id.second.c_str(), map,
-			CHARACTER_KEY_MAP, nullptr) == false)
+	if (entry_write_string(CHARACTER_TABLE.c_str(), new_id.second.c_str(), map,
+			CHARACTER_KEY_MAP.c_str(), nullptr) == false)
 	{
 		entry_destroy(CHARACTER_TABLE, new_id.second.c_str());
 		file_delete(CHARACTER_TABLE, new_id.second);
@@ -243,8 +243,8 @@ std::pair<bool, std::string> character_create_from_template(Context *ctx,
 		{ false, "" };
 	}
 
-	if (entry_write_int(CHARACTER_TABLE, new_id.second.c_str(), x,
-			CHARACTER_KEY_TILE_X, nullptr) == false)
+	if (entry_write_int(CHARACTER_TABLE.c_str(), new_id.second.c_str(), x,
+			CHARACTER_KEY_TILE_X.c_str(), nullptr) == false)
 	{
 		entry_destroy(CHARACTER_TABLE, new_id.second.c_str());
 		file_delete(CHARACTER_TABLE, new_id.second);
@@ -252,8 +252,8 @@ std::pair<bool, std::string> character_create_from_template(Context *ctx,
 		{ false, "" };
 	}
 
-	if (entry_write_int(CHARACTER_TABLE, new_id.second.c_str(), y,
-			CHARACTER_KEY_TILE_Y, nullptr) == false)
+	if (entry_write_int(CHARACTER_TABLE.c_str(), new_id.second.c_str(), y,
+			CHARACTER_KEY_TILE_Y.c_str(), nullptr) == false)
 	{
 		entry_destroy(CHARACTER_TABLE, new_id.second.c_str());
 		file_delete(CHARACTER_TABLE, new_id.second);
@@ -263,8 +263,8 @@ std::pair<bool, std::string> character_create_from_template(Context *ctx,
 
 	if (layer != -1) // FIXME
 	{
-		if (entry_write_int(CHARACTER_TABLE, new_id.second.c_str(), layer,
-				CHARACTER_LAYER, nullptr) == false)
+		if (entry_write_int(CHARACTER_TABLE.c_str(), new_id.second.c_str(), layer,
+				CHARACTER_LAYER.c_str(), nullptr) == false)
 		{
 			entry_destroy(CHARACTER_TABLE, new_id.second.c_str());
 			file_delete(CHARACTER_TABLE, new_id.second);
@@ -338,10 +338,10 @@ void character_update_aggro(Context *agressor)
 // If the current context is an NPC it might be an aggressor: compute its aggro
 	if (character_get_npc(agressor->getId()))
 	{
-		if (entry_read_int(CHARACTER_TABLE, agressor->getId().c_str(),
-				&aggro_dist, CHARACTER_KEY_AGGRO_DIST, nullptr) == true)
+		if (entry_read_int(CHARACTER_TABLE.c_str(), agressor->getId().c_str(),
+				&aggro_dist, CHARACTER_KEY_AGGRO_DIST.c_str(), nullptr) == true)
 		{
-			if (entry_read_string(CHARACTER_TABLE, agressor->getId(),
+			if (entry_read_string(CHARACTER_TABLE.c_str(), agressor->getId(),
 					&aggro_script, CHARACTER_KEY_AGGRO_SCRIPT.c_str(),
 					nullptr) == true)
 			{
@@ -414,8 +414,8 @@ void character_update_aggro(Context *agressor)
 			continue;
 		}
 
-		if (entry_read_int(CHARACTER_TABLE, npc->getId().c_str(), &aggro_dist,
-				CHARACTER_KEY_AGGRO_DIST, nullptr) == false)
+		if (entry_read_int(CHARACTER_TABLE.c_str(), npc->getId().c_str(), &aggro_dist,
+				CHARACTER_KEY_AGGRO_DIST.c_str(), nullptr) == false)
 		{
 			npc = npc->m_next;
 			continue;
@@ -443,11 +443,11 @@ static void do_set_pos(Context *ctx, const std::string &map, int x, int y,
 	ctx->setTile(x, y);
 
 	entry_write_string(CHARACTER_TABLE, ctx->getId().c_str(), map.c_str(),
-			CHARACTER_KEY_MAP, nullptr);
+			CHARACTER_KEY_MAP.c_str(), nullptr);
 	entry_write_int(CHARACTER_TABLE, ctx->getId().c_str(), x,
-			CHARACTER_KEY_TILE_X, nullptr);
+			CHARACTER_KEY_TILE_X.c_str(), nullptr);
 	entry_write_int(CHARACTER_TABLE, ctx->getId().c_str(), y,
-			CHARACTER_KEY_TILE_Y, nullptr);
+			CHARACTER_KEY_TILE_Y.c_str(), nullptr);
 
 	context_spread(ctx);
 	if (change_map == true)
@@ -465,8 +465,8 @@ static void platform_move(Context *platform, const std::string &map, int x,
 	Context *current = context_get_first();
 	int is_platform;
 
-	if (entry_read_int(CHARACTER_TABLE, platform->getId().c_str(), &is_platform,
-			CHARACTER_KEY_PLATFORM, nullptr) == false)
+	if (entry_read_int(CHARACTER_TABLE.c_str(), platform->getId().c_str(), &is_platform,
+			CHARACTER_KEY_PLATFORM.c_str(), nullptr) == false)
 	{
 		return;
 	}
@@ -529,16 +529,16 @@ int character_set_pos(Context *ctx, const std::string &map, int x, int y)
 
 	ctx_layer = 0;
 	entry_read_int(CHARACTER_TABLE, ctx->getId().c_str(), &ctx_layer,
-			CHARACTER_LAYER, nullptr);
+			CHARACTER_LAYER.c_str(), nullptr);
 	sprintf(layer_name, "%s%d", MAP_KEY_LAYER.c_str(), ctx_layer);
 
-	entry_read_int(MAP_TABLE, map.c_str(), &width, MAP_KEY_WIDTH, nullptr);
-	entry_read_int(MAP_TABLE, map.c_str(), &height, MAP_KEY_HEIGHT, nullptr);
-	entry_read_int(MAP_TABLE, map.c_str(), &warpx, MAP_KEY_WARP_X, nullptr);
-	entry_read_int(MAP_TABLE, map.c_str(), &warpy, MAP_KEY_WARP_Y, nullptr);
+	entry_read_int(MAP_TABLE.c_str(), map.c_str(), &width, MAP_KEY_WIDTH.c_str(), nullptr);
+	entry_read_int(MAP_TABLE.c_str(), map.c_str(), &height, MAP_KEY_HEIGHT.c_str(), nullptr);
+	entry_read_int(MAP_TABLE.c_str(), map.c_str(), &warpx, MAP_KEY_WARP_X.c_str(), nullptr);
+	entry_read_int(MAP_TABLE.c_str(), map.c_str(), &warpy, MAP_KEY_WARP_Y.c_str(), nullptr);
 
 // Offscreen script
-	entry_read_string(MAP_TABLE, map, &script, MAP_OFFSCREEN.c_str(), nullptr);
+	entry_read_string(MAP_TABLE.c_str(), map, &script, MAP_OFFSCREEN.c_str(), nullptr);
 	if (script != nullptr && (x < 0 || y < 0 || x >= width || y >= height))
 	{
 		snprintf(buf, SMALL_BUF, "%d", x);
@@ -643,19 +643,19 @@ int character_set_pos(Context *ctx, const std::string &map, int x, int y)
 		while (event_id[i])
 		{
 			script = nullptr;
-			if (entry_read_string(MAP_TABLE, map, &script, layer_name,
+			if (entry_read_string(MAP_TABLE.c_str(), map, &script, layer_name,
 					MAP_ENTRY_EVENT_LIST.c_str(), event_id[i],
 					MAP_EVENT_SCRIPT.c_str(), nullptr) == true)
 			{
-				entry_read_list(MAP_TABLE, map, &param, layer_name,
+				entry_read_list(MAP_TABLE.c_str(), map, &param, layer_name,
 						MAP_ENTRY_EVENT_LIST.c_str(), event_id[i],
 						MAP_EVENT_PARAM.c_str(), nullptr);
 			}
-			else if (entry_read_string(MAP_TABLE, map, &script,
+			else if (entry_read_string(MAP_TABLE.c_str(), map, &script,
 					MAP_ENTRY_EVENT_LIST.c_str(), event_id[i],
 					MAP_EVENT_SCRIPT.c_str(), nullptr) == true)
 			{
-				entry_read_list(MAP_TABLE, map, &param,
+				entry_read_list(MAP_TABLE.c_str(), map, &param,
 						MAP_ENTRY_EVENT_LIST.c_str(), event_id[i],
 						MAP_EVENT_PARAM.c_str(), nullptr);
 			}
@@ -695,7 +695,7 @@ int character_set_pos(Context *ctx, const std::string &map, int x, int y)
  *********************************************************/
 int character_set_npc(const char *id, int npc)
 {
-	if (entry_write_int(CHARACTER_TABLE, id, npc, CHARACTER_KEY_NPC,
+	if (entry_write_int(CHARACTER_TABLE, id, npc, CHARACTER_KEY_NPC.c_str(),
 			nullptr) == false)
 	{
 		return -1;
@@ -718,7 +718,7 @@ int character_get_npc(const std::string &id)
 {
 	int npc;
 
-	if (entry_read_int(CHARACTER_TABLE, id.c_str(), &npc, CHARACTER_KEY_NPC,
+	if (entry_read_int(CHARACTER_TABLE, id.c_str(), &npc, CHARACTER_KEY_NPC.c_str(),
 			nullptr) == false)
 	{
 		return 0;
@@ -735,7 +735,7 @@ int character_set_portrait(const char *id, const char *portrait)
 	Context *ctx;
 
 	if (entry_write_string(CHARACTER_TABLE, id, portrait,
-			CHARACTER_KEY_PORTRAIT, nullptr) == false)
+			CHARACTER_KEY_PORTRAIT.c_str(), nullptr) == false)
 	{
 		return -1;
 	}
@@ -755,7 +755,7 @@ char* character_get_portrait(const char *id)
 	char *portrait;
 
 	if (entry_read_string(CHARACTER_TABLE, id, &portrait,
-			CHARACTER_KEY_PORTRAIT, nullptr) == false)
+			CHARACTER_KEY_PORTRAIT.c_str(), nullptr) == false)
 	{
 		return nullptr;
 	}
@@ -769,7 +769,7 @@ char* character_get_portrait(const char *id)
  *********************************************************/
 int character_set_ai_script(const char *id, const char *script_name)
 {
-	if (entry_write_string(CHARACTER_TABLE, id, script_name, CHARACTER_KEY_AI,
+	if (entry_write_string(CHARACTER_TABLE, id, script_name, CHARACTER_KEY_AI.c_str(),
 			nullptr) == false)
 	{
 		return -1;
@@ -807,7 +807,7 @@ int character_set_sprite(const char *id, int index, const char *filename)
 	}
 
 	if (entry_write_list_index(CHARACTER_TABLE, id, filename, index,
-			CHARACTER_KEY_SPRITE, nullptr) == false)
+			CHARACTER_KEY_SPRITE.c_str(), nullptr) == false)
 	{
 		return false;
 	}

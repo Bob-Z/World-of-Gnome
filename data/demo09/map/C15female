@@ -1,110 +1,144 @@
-bg_red = 192
-bg_blue = 192
-bg_green = 192
-attribute = {
-  x = {
-        current = 15
-      }
-}
-width = 5
-height = 6
-tile_width = 64
-tile_height = 64
-warp_x = 0
-warp_y = 0
-layer0 = {
-        set = [
-"tile/fog.png",
-"",
-"",
-"",
-"tile/fog.png",
-"",
-"",
-"",
-"",
-"",
-"",
-"character/15/WC_buckles_female_no_th-sh_bronze_marquee.zip",
-"",
-"character/15/WC_buckles_female_no_th-sh_gold_marquee.zip",
-"",
-"tile/exit.gif",
-"character/15/WC_buckles_female_no_th-sh_iron_marquee.zip",
-"",
-"character/15/WC_buckles_female_no_th-sh_silver_marquee.zip",
-"tile/exit.gif",
-"",
-"",
-"",
-"",
-"",
-"tile/fog.png",
-"",
-"",
-"",
-"tile/fog.png"
-        ]
-}
-event_list: {
-E0 = {
-   tile_x = 1
-   tile_y = 2
-   script = "set_sprite.lua"
-   param = ( "15", "buckles_female_no_th-sh_bronze" )
-}
-E1 = {
-   tile_x = 3
-   tile_y = 2
-   script = "set_sprite.lua"
-   param = ( "15", "buckles_female_no_th-sh_gold" )
-}
-E2 = {
-   tile_x = 1
-   tile_y = 3
-   script = "set_sprite.lua"
-   param = ( "15", "buckles_female_no_th-sh_iron" )
-}
-E3 = {
-   tile_x = 3
-   tile_y = 3
-   script = "set_sprite.lua"
-   param = ( "15", "buckles_female_no_th-sh_silver" )
-}
-E4 = {
-   tile_x = 0
-   tile_y = 3
-   script = "goto_character_map.lua"
-   param = ( "14", "1", "1" )
-}
-E5 = {
-   tile_x = 4
-   tile_y = 3
-   script = "goto_character_map.lua"
-   param = ( "16", "1", "1" )
-}
-E6 = {
-   tile_x = 0
-   tile_y = 0
-   script = "set_sprite.lua"
-   param = ( "15", "" )
-}
-E7 = {
-   tile_x = 0
-   tile_y = 5
-   script = "set_sprite.lua"
-   param = ( "15", "" )
-}
-E8 = {
-   tile_x = 4
-   tile_y = 0
-   script = "set_sprite.lua"
-   param = ( "15", "" )
-}
-E9 = {
-   tile_x = 4
-   tile_y = 5
-   script = "set_sprite.lua"
-   param = ( "15", "" )
-}
+{
+  "bg_red": 192,
+  "bg_blue": 192,
+  "bg_green": 192,
+  "attribute": {
+    "x": {
+      "current": 15
+    }
+  },
+  "width": 5,
+  "height": 6,
+  "tile_width": 64,
+  "tile_height": 64,
+  "warp_x": 0,
+  "warp_y": 0,
+  "layer0": {
+    "set": [
+      "tile/fog.png",
+      "",
+      "",
+      "",
+      "tile/fog.png",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "character/15/WC_buckles_female_no_th-sh_bronze_marquee.zip",
+      "",
+      "character/15/WC_buckles_female_no_th-sh_gold_marquee.zip",
+      "",
+      "tile/exit.gif",
+      "character/15/WC_buckles_female_no_th-sh_iron_marquee.zip",
+      "",
+      "character/15/WC_buckles_female_no_th-sh_silver_marquee.zip",
+      "tile/exit.gif",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "tile/fog.png",
+      "",
+      "",
+      "",
+      "tile/fog.png"
+    ]
+  },
+  "event_list": {
+    "E0": {
+      "tile_x": 1,
+      "tile_y": 2,
+      "script": "set_sprite.lua",
+      "param": [
+        "15",
+        "buckles_female_no_th-sh_bronze"
+      ]
+    },
+    "E1": {
+      "tile_x": 3,
+      "tile_y": 2,
+      "script": "set_sprite.lua",
+      "param": [
+        "15",
+        "buckles_female_no_th-sh_gold"
+      ]
+    },
+    "E2": {
+      "tile_x": 1,
+      "tile_y": 3,
+      "script": "set_sprite.lua",
+      "param": [
+        "15",
+        "buckles_female_no_th-sh_iron"
+      ]
+    },
+    "E3": {
+      "tile_x": 3,
+      "tile_y": 3,
+      "script": "set_sprite.lua",
+      "param": [
+        "15",
+        "buckles_female_no_th-sh_silver"
+      ]
+    },
+    "E4": {
+      "tile_x": 0,
+      "tile_y": 3,
+      "script": "goto_character_map.lua",
+      "param": [
+        "14",
+        "1",
+        "1"
+      ]
+    },
+    "E5": {
+      "tile_x": 4,
+      "tile_y": 3,
+      "script": "goto_character_map.lua",
+      "param": [
+        "16",
+        "1",
+        "1"
+      ]
+    },
+    "E6": {
+      "tile_x": 0,
+      "tile_y": 0,
+      "script": "set_sprite.lua",
+      "param": [
+        "15",
+        ""
+      ]
+    },
+    "E7": {
+      "tile_x": 0,
+      "tile_y": 5,
+      "script": "set_sprite.lua",
+      "param": [
+        "15",
+        ""
+      ]
+    },
+    "E8": {
+      "tile_x": 4,
+      "tile_y": 0,
+      "script": "set_sprite.lua",
+      "param": [
+        "15",
+        ""
+      ]
+    },
+    "E9": {
+      "tile_x": 4,
+      "tile_y": 5,
+      "script": "set_sprite.lua",
+      "param": [
+        "15",
+        ""
+      ]
+    }
+  }
 }

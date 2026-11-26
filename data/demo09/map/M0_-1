@@ -1,46 +1,48 @@
-attribute :
 {
-  x :
-  {
-    current = 0;
-  };
-  y :
-  {
-    current = -1;
-  };
-};
-
-offscreen = "offscreen.lua";
-
-width = 20;
-height = 20;
-tile_width = 32;
-tile_height = 32;
-warp_x = 0;
-warp_y = 0;
-
-layer0: {
-        scenery: {
-                bg: {
-                        x = 0;
-                        y = 0;
-                        image = "map/mountain.png";
-                };
-        };
-};
-
-event_list : {
-        to_mine01_1 : {
-                tile_x = 6;
-                tile_y = 3;
-                script = "goto.lua";
-                param = ( "mine01", "1", "14" );
-        };
-        to_mine01_2 : {
-                tile_x = 7;
-                tile_y = 3;
-                script = "goto.lua";
-                param = ( "mine01", "1", "15" );
-        };
-};
-
+  "attribute": {
+    "x": {
+      "current": 0
+    },
+    "y": {
+      "current": -1
+    }
+  },
+  "offscreen": "offscreen.lua",
+  "width": 20,
+  "height": 20,
+  "tile_width": 32,
+  "tile_height": 32,
+  "warp_x": 0,
+  "warp_y": 0,
+  "layer0": {
+    "scenery": {
+      "bg": {
+        "x": 0,
+        "y": 0,
+        "image": "map/mountain.png"
+      }
+    }
+  },
+  "event_list": {
+    "to_mine01_1": {
+      "tile_x": 6,
+      "tile_y": 3,
+      "script": "goto.lua",
+      "param": [
+        "mine01",
+        "1",
+        "14"
+      ]
+    },
+    "to_mine01_2": {
+      "tile_x": 7,
+      "tile_y": 3,
+      "script": "goto.lua",
+      "param": [
+        "mine01",
+        "1",
+        "15"
+      ]
+    }
+  }
+}

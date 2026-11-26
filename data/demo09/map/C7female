@@ -1,77 +1,102 @@
-bg_red = 192
-bg_blue = 192
-bg_green = 192
-attribute = {
-  x = {
-        current = 7
-      }
-}
-width = 3
-height = 5
-tile_width = 64
-tile_height = 64
-warp_x = 0
-warp_y = 0
-layer0 = {
-        set = [
-"tile/fog.png",
-"",
-"tile/fog.png",
-"",
-"",
-"",
-"tile/exit.gif",
-"character/7/WC_Female_mask_marquee.zip",
-"tile/exit.gif",
-"",
-"",
-"",
-"tile/fog.png",
-"",
-"tile/fog.png"
-        ]
-}
-event_list: {
-E0 = {
-   tile_x = 1
-   tile_y = 2
-   script = "set_sprite.lua"
-   param = ( "7", "Female_mask" )
-}
-E1 = {
-   tile_x = 0
-   tile_y = 2
-   script = "goto_character_map.lua"
-   param = ( "6", "1", "1" )
-}
-E2 = {
-   tile_x = 2
-   tile_y = 2
-   script = "goto_character_map.lua"
-   param = ( "8", "1", "1" )
-}
-E3 = {
-   tile_x = 0
-   tile_y = 0
-   script = "set_sprite.lua"
-   param = ( "7", "" )
-}
-E4 = {
-   tile_x = 0
-   tile_y = 4
-   script = "set_sprite.lua"
-   param = ( "7", "" )
-}
-E5 = {
-   tile_x = 2
-   tile_y = 0
-   script = "set_sprite.lua"
-   param = ( "7", "" )
-}
-E6 = {
-   tile_x = 2
-   tile_y = 4
-   script = "set_sprite.lua"
-   param = ( "7", "" )
-}
+{
+  "bg_red": 192,
+  "bg_blue": 192,
+  "bg_green": 192,
+  "attribute": {
+    "x": {
+      "current": 7
+    }
+  },
+  "width": 3,
+  "height": 5,
+  "tile_width": 64,
+  "tile_height": 64,
+  "warp_x": 0,
+  "warp_y": 0,
+  "layer0": {
+    "set": [
+      "tile/fog.png",
+      "",
+      "tile/fog.png",
+      "",
+      "",
+      "",
+      "tile/exit.gif",
+      "character/7/WC_Female_mask_marquee.zip",
+      "tile/exit.gif",
+      "",
+      "",
+      "",
+      "tile/fog.png",
+      "",
+      "tile/fog.png"
+    ]
+  },
+  "event_list": {
+    "E0": {
+      "tile_x": 1,
+      "tile_y": 2,
+      "script": "set_sprite.lua",
+      "param": [
+        "7",
+        "Female_mask"
+      ]
+    },
+    "E1": {
+      "tile_x": 0,
+      "tile_y": 2,
+      "script": "goto_character_map.lua",
+      "param": [
+        "6",
+        "1",
+        "1"
+      ]
+    },
+    "E2": {
+      "tile_x": 2,
+      "tile_y": 2,
+      "script": "goto_character_map.lua",
+      "param": [
+        "8",
+        "1",
+        "1"
+      ]
+    },
+    "E3": {
+      "tile_x": 0,
+      "tile_y": 0,
+      "script": "set_sprite.lua",
+      "param": [
+        "7",
+        ""
+      ]
+    },
+    "E4": {
+      "tile_x": 0,
+      "tile_y": 4,
+      "script": "set_sprite.lua",
+      "param": [
+        "7",
+        ""
+      ]
+    },
+    "E5": {
+      "tile_x": 2,
+      "tile_y": 0,
+      "script": "set_sprite.lua",
+      "param": [
+        "7",
+        ""
+      ]
+    },
+    "E6": {
+      "tile_x": 2,
+      "tile_y": 4,
+      "script": "set_sprite.lua",
+      "param": [
+        "7",
+        ""
+      ]
+    }
+  }
 }

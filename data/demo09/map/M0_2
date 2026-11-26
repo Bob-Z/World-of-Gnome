@@ -1,40 +1,38 @@
-attribute :
 {
-  x :
-  {
-    current = 0;
-  };
-  y :
-  {
-    current = 2;
-  };
-};
-
-offscreen = "offscreen.lua";
-
-width = 40;
-height = 40;
-tile_width = 32;
-tile_height = 32;
-warp_x = 0;
-warp_y = 0;
-
-layer0: {
-        scenery: {
-                bg: {
-                        x = 0;
-                        y = 0;
-                        image = "map/arcanos.png";
-                };
-        };
-};
-
-event_list : {
-	to_littleroom : {
-		tile_x = 3;
-		tile_y = 14;
-		script = "goto.lua";
-		param = ( "littleroom", "3", "5" );
-	};
-};
-
+  "attribute": {
+    "x": {
+      "current": 0
+    },
+    "y": {
+      "current": 2
+    }
+  },
+  "offscreen": "offscreen.lua",
+  "width": 40,
+  "height": 40,
+  "tile_width": 32,
+  "tile_height": 32,
+  "warp_x": 0,
+  "warp_y": 0,
+  "layer0": {
+    "scenery": {
+      "bg": {
+        "x": 0,
+        "y": 0,
+        "image": "map/arcanos.png"
+      }
+    }
+  },
+  "event_list": {
+    "to_littleroom": {
+      "tile_x": 3,
+      "tile_y": 14,
+      "script": "goto.lua",
+      "param": [
+        "littleroom",
+        "3",
+        "5"
+      ]
+    }
+  }
+}

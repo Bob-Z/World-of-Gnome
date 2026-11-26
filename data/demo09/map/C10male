@@ -1,239 +1,312 @@
-bg_red = 192
-bg_blue = 192
-bg_green = 192
-attribute = {
-  x = {
-        current = 10
-      }
-}
-width = 9
-height = 9
-tile_width = 64
-tile_height = 64
-warp_x = 0
-warp_y = 0
-layer0 = {
-        set = [
-"tile/fog.png",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"tile/fog.png",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"character/10/WC_male_pants_black_marquee.zip",
-"",
-"character/10/WC_male_Pants_black_marquee.zip",
-"",
-"character/10/WC_male_pants_blue_marquee.zip",
-"",
-"character/10/WC_male_Pants_blue_marquee.zip",
-"",
-"",
-"character/10/WC_male_pants_brown_marquee.zip",
-"",
-"character/10/WC_male_Pants_brown_marquee.zip",
-"",
-"character/10/WC_male_pants_green_marquee.zip",
-"",
-"character/10/WC_male_pants_purple_marquee.zip",
-"",
-"tile/exit.gif",
-"character/10/WC_male_pants_red_marquee.zip",
-"",
-"character/10/WC_male_pants_yellow_marquee.zip",
-"",
-"character/10/WC_male_robe_bottom_dark_marquee.zip",
-"",
-"character/10/WC_pants_male_magenta_pants_male_marquee.zip",
-"tile/exit.gif",
-"",
-"character/10/WC_pants_male_red_pants_male_marquee.zip",
-"",
-"character/10/WC_pants_male_teal_pants_male_marquee.zip",
-"",
-"character/10/WC_pants_male_white_pants_male_marquee.zip",
-"",
-"character/10/WC_pants_marquee.zip",
-"",
-"",
-"character/10/WC_skirt_male_robe_skirt_male_marquee.zip",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"tile/fog.png",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"tile/fog.png"
-        ]
-}
-event_list: {
-E0 = {
-   tile_x = 1
-   tile_y = 2
-   script = "set_sprite.lua"
-   param = ( "10", "male_pants_black" )
-}
-E1 = {
-   tile_x = 3
-   tile_y = 2
-   script = "set_sprite.lua"
-   param = ( "10", "male_Pants_black" )
-}
-E2 = {
-   tile_x = 5
-   tile_y = 2
-   script = "set_sprite.lua"
-   param = ( "10", "male_pants_blue" )
-}
-E3 = {
-   tile_x = 7
-   tile_y = 2
-   script = "set_sprite.lua"
-   param = ( "10", "male_Pants_blue" )
-}
-E4 = {
-   tile_x = 1
-   tile_y = 3
-   script = "set_sprite.lua"
-   param = ( "10", "male_pants_brown" )
-}
-E5 = {
-   tile_x = 3
-   tile_y = 3
-   script = "set_sprite.lua"
-   param = ( "10", "male_Pants_brown" )
-}
-E6 = {
-   tile_x = 5
-   tile_y = 3
-   script = "set_sprite.lua"
-   param = ( "10", "male_pants_green" )
-}
-E7 = {
-   tile_x = 7
-   tile_y = 3
-   script = "set_sprite.lua"
-   param = ( "10", "male_pants_purple" )
-}
-E8 = {
-   tile_x = 1
-   tile_y = 4
-   script = "set_sprite.lua"
-   param = ( "10", "male_pants_red" )
-}
-E9 = {
-   tile_x = 3
-   tile_y = 4
-   script = "set_sprite.lua"
-   param = ( "10", "male_pants_yellow" )
-}
-E10 = {
-   tile_x = 5
-   tile_y = 4
-   script = "set_sprite.lua"
-   param = ( "10", "male_robe_bottom_dark" )
-}
-E11 = {
-   tile_x = 7
-   tile_y = 4
-   script = "set_sprite.lua"
-   param = ( "10", "pants_male_magenta_pants_male" )
-}
-E12 = {
-   tile_x = 1
-   tile_y = 5
-   script = "set_sprite.lua"
-   param = ( "10", "pants_male_red_pants_male" )
-}
-E13 = {
-   tile_x = 3
-   tile_y = 5
-   script = "set_sprite.lua"
-   param = ( "10", "pants_male_teal_pants_male" )
-}
-E14 = {
-   tile_x = 5
-   tile_y = 5
-   script = "set_sprite.lua"
-   param = ( "10", "pants_male_white_pants_male" )
-}
-E15 = {
-   tile_x = 7
-   tile_y = 5
-   script = "set_sprite.lua"
-   param = ( "10", "pants" )
-}
-E16 = {
-   tile_x = 1
-   tile_y = 6
-   script = "set_sprite.lua"
-   param = ( "10", "skirt_male_robe_skirt_male" )
-}
-E17 = {
-   tile_x = 0
-   tile_y = 4
-   script = "goto_character_map.lua"
-   param = ( "9", "1", "1" )
-}
-E18 = {
-   tile_x = 8
-   tile_y = 4
-   script = "goto_character_map.lua"
-   param = ( "11", "1", "1" )
-}
-E19 = {
-   tile_x = 0
-   tile_y = 0
-   script = "set_sprite.lua"
-   param = ( "10", "" )
-}
-E20 = {
-   tile_x = 0
-   tile_y = 8
-   script = "set_sprite.lua"
-   param = ( "10", "" )
-}
-E21 = {
-   tile_x = 8
-   tile_y = 0
-   script = "set_sprite.lua"
-   param = ( "10", "" )
-}
-E22 = {
-   tile_x = 8
-   tile_y = 8
-   script = "set_sprite.lua"
-   param = ( "10", "" )
-}
+{
+  "bg_red": 192,
+  "bg_blue": 192,
+  "bg_green": 192,
+  "attribute": {
+    "x": {
+      "current": 10
+    }
+  },
+  "width": 9,
+  "height": 9,
+  "tile_width": 64,
+  "tile_height": 64,
+  "warp_x": 0,
+  "warp_y": 0,
+  "layer0": {
+    "set": [
+      "tile/fog.png",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "tile/fog.png",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "character/10/WC_male_pants_black_marquee.zip",
+      "",
+      "character/10/WC_male_Pants_black_marquee.zip",
+      "",
+      "character/10/WC_male_pants_blue_marquee.zip",
+      "",
+      "character/10/WC_male_Pants_blue_marquee.zip",
+      "",
+      "",
+      "character/10/WC_male_pants_brown_marquee.zip",
+      "",
+      "character/10/WC_male_Pants_brown_marquee.zip",
+      "",
+      "character/10/WC_male_pants_green_marquee.zip",
+      "",
+      "character/10/WC_male_pants_purple_marquee.zip",
+      "",
+      "tile/exit.gif",
+      "character/10/WC_male_pants_red_marquee.zip",
+      "",
+      "character/10/WC_male_pants_yellow_marquee.zip",
+      "",
+      "character/10/WC_male_robe_bottom_dark_marquee.zip",
+      "",
+      "character/10/WC_pants_male_magenta_pants_male_marquee.zip",
+      "tile/exit.gif",
+      "",
+      "character/10/WC_pants_male_red_pants_male_marquee.zip",
+      "",
+      "character/10/WC_pants_male_teal_pants_male_marquee.zip",
+      "",
+      "character/10/WC_pants_male_white_pants_male_marquee.zip",
+      "",
+      "character/10/WC_pants_marquee.zip",
+      "",
+      "",
+      "character/10/WC_skirt_male_robe_skirt_male_marquee.zip",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "tile/fog.png",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "tile/fog.png"
+    ]
+  },
+  "event_list": {
+    "E0": {
+      "tile_x": 1,
+      "tile_y": 2,
+      "script": "set_sprite.lua",
+      "param": [
+        "10",
+        "male_pants_black"
+      ]
+    },
+    "E1": {
+      "tile_x": 3,
+      "tile_y": 2,
+      "script": "set_sprite.lua",
+      "param": [
+        "10",
+        "male_Pants_black"
+      ]
+    },
+    "E2": {
+      "tile_x": 5,
+      "tile_y": 2,
+      "script": "set_sprite.lua",
+      "param": [
+        "10",
+        "male_pants_blue"
+      ]
+    },
+    "E3": {
+      "tile_x": 7,
+      "tile_y": 2,
+      "script": "set_sprite.lua",
+      "param": [
+        "10",
+        "male_Pants_blue"
+      ]
+    },
+    "E4": {
+      "tile_x": 1,
+      "tile_y": 3,
+      "script": "set_sprite.lua",
+      "param": [
+        "10",
+        "male_pants_brown"
+      ]
+    },
+    "E5": {
+      "tile_x": 3,
+      "tile_y": 3,
+      "script": "set_sprite.lua",
+      "param": [
+        "10",
+        "male_Pants_brown"
+      ]
+    },
+    "E6": {
+      "tile_x": 5,
+      "tile_y": 3,
+      "script": "set_sprite.lua",
+      "param": [
+        "10",
+        "male_pants_green"
+      ]
+    },
+    "E7": {
+      "tile_x": 7,
+      "tile_y": 3,
+      "script": "set_sprite.lua",
+      "param": [
+        "10",
+        "male_pants_purple"
+      ]
+    },
+    "E8": {
+      "tile_x": 1,
+      "tile_y": 4,
+      "script": "set_sprite.lua",
+      "param": [
+        "10",
+        "male_pants_red"
+      ]
+    },
+    "E9": {
+      "tile_x": 3,
+      "tile_y": 4,
+      "script": "set_sprite.lua",
+      "param": [
+        "10",
+        "male_pants_yellow"
+      ]
+    },
+    "E10": {
+      "tile_x": 5,
+      "tile_y": 4,
+      "script": "set_sprite.lua",
+      "param": [
+        "10",
+        "male_robe_bottom_dark"
+      ]
+    },
+    "E11": {
+      "tile_x": 7,
+      "tile_y": 4,
+      "script": "set_sprite.lua",
+      "param": [
+        "10",
+        "pants_male_magenta_pants_male"
+      ]
+    },
+    "E12": {
+      "tile_x": 1,
+      "tile_y": 5,
+      "script": "set_sprite.lua",
+      "param": [
+        "10",
+        "pants_male_red_pants_male"
+      ]
+    },
+    "E13": {
+      "tile_x": 3,
+      "tile_y": 5,
+      "script": "set_sprite.lua",
+      "param": [
+        "10",
+        "pants_male_teal_pants_male"
+      ]
+    },
+    "E14": {
+      "tile_x": 5,
+      "tile_y": 5,
+      "script": "set_sprite.lua",
+      "param": [
+        "10",
+        "pants_male_white_pants_male"
+      ]
+    },
+    "E15": {
+      "tile_x": 7,
+      "tile_y": 5,
+      "script": "set_sprite.lua",
+      "param": [
+        "10",
+        "pants"
+      ]
+    },
+    "E16": {
+      "tile_x": 1,
+      "tile_y": 6,
+      "script": "set_sprite.lua",
+      "param": [
+        "10",
+        "skirt_male_robe_skirt_male"
+      ]
+    },
+    "E17": {
+      "tile_x": 0,
+      "tile_y": 4,
+      "script": "goto_character_map.lua",
+      "param": [
+        "9",
+        "1",
+        "1"
+      ]
+    },
+    "E18": {
+      "tile_x": 8,
+      "tile_y": 4,
+      "script": "goto_character_map.lua",
+      "param": [
+        "11",
+        "1",
+        "1"
+      ]
+    },
+    "E19": {
+      "tile_x": 0,
+      "tile_y": 0,
+      "script": "set_sprite.lua",
+      "param": [
+        "10",
+        ""
+      ]
+    },
+    "E20": {
+      "tile_x": 0,
+      "tile_y": 8,
+      "script": "set_sprite.lua",
+      "param": [
+        "10",
+        ""
+      ]
+    },
+    "E21": {
+      "tile_x": 8,
+      "tile_y": 0,
+      "script": "set_sprite.lua",
+      "param": [
+        "10",
+        ""
+      ]
+    },
+    "E22": {
+      "tile_x": 8,
+      "tile_y": 8,
+      "script": "set_sprite.lua",
+      "param": [
+        "10",
+        ""
+      ]
+    }
+  }
 }

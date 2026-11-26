@@ -81,6 +81,7 @@ public:
 
 private:
 	void requestFileFromServer(const std::string & filePath);
+	void requestMissingFile(const std::string & filePath) override;
 
 	std::unordered_map<std::string, FileStatus> m_timeStampPool;
 };

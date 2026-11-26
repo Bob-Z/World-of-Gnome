@@ -63,14 +63,14 @@ static int npc_script(void *data)
 			deep_free(parameters);
 		}
 		if (entry_read_string(CHARACTER_TABLE.c_str(), context->getId().c_str(),
-				&script, CHARACTER_KEY_AI, nullptr) == false)
+				&script, CHARACTER_KEY_AI.c_str(), nullptr) == false)
 		{
 			werr(LOGUSER, "No AI script for %s", context->getId().c_str());
 			break;
 		}
 
 		entry_read_list(CHARACTER_TABLE.c_str(), context->getId().c_str(),
-				&parameters, CHARACTER_KEY_AI_PARAMS, nullptr);
+				&parameters, CHARACTER_KEY_AI_PARAMS.c_str(), nullptr);
 
 		if (context->getNextExecutionTick() < SDL_GetTicks())
 		{
@@ -116,7 +116,7 @@ void instantiate_npc(const std::string &id)
 {
 	int is_npc = 0;
 	if (entry_read_int(CHARACTER_TABLE.c_str(), id.c_str(), &is_npc,
-			CHARACTER_KEY_NPC, nullptr) == false)
+			CHARACTER_KEY_NPC.c_str(), nullptr) == false)
 	{
 		return;
 	}
@@ -128,35 +128,35 @@ void instantiate_npc(const std::string &id)
 
 	int x = 0;
 	if (entry_read_int(CHARACTER_TABLE.c_str(), id.c_str(), &x,
-			CHARACTER_KEY_TILE_X, nullptr) == false)
+			CHARACTER_KEY_TILE_X.c_str(), nullptr) == false)
 	{
 		return;
 	}
 
 	int y = 0;
 	if (entry_read_int(CHARACTER_TABLE.c_str(), id.c_str(), &y,
-			CHARACTER_KEY_TILE_Y, nullptr) == false)
+			CHARACTER_KEY_TILE_Y.c_str(), nullptr) == false)
 	{
 		return;
 	}
 
 	char *map = nullptr;
 	if (entry_read_string(CHARACTER_TABLE.c_str(), id.c_str(), &map,
-			CHARACTER_KEY_MAP, nullptr) == false)
+			CHARACTER_KEY_MAP.c_str(), nullptr) == false)
 	{
 		return;
 	}
 
 	char *name = nullptr;
 	if (entry_read_string(CHARACTER_TABLE.c_str(), id.c_str(), &name,
-			CHARACTER_KEY_NAME, nullptr) == false)
+			CHARACTER_KEY_NAME.c_str(), nullptr) == false)
 	{
 		name = strdup("");
 	}
 
 	char *type = nullptr;
 	if (entry_read_string(CHARACTER_TABLE.c_str(), id.c_str(), &type,
-			CHARACTER_KEY_TYPE, nullptr) == false)
+			CHARACTER_KEY_TYPE.c_str(), nullptr) == false)
 	{
 		free(map);
 		free(name);

@@ -86,7 +86,7 @@ std::pair<bool, std::string> resource_new(const std::string &my_template,
 	}
 
 	if (entry_write_string(ITEM_TABLE.c_str(), new_id.second.c_str(),
-			my_template.c_str(), ITEM_TEMPLATE, nullptr) == false)
+			my_template.c_str(), ITEM_TEMPLATE.c_str(), nullptr) == false)
 	{
 		entry_destroy(ITEM_TABLE.c_str(), new_id.second.c_str());
 		return std::pair<bool, std::string>
@@ -94,7 +94,7 @@ std::pair<bool, std::string> resource_new(const std::string &my_template,
 	}
 
 	if (entry_write_int(ITEM_TABLE.c_str(), new_id.second.c_str(), quantity,
-			ITEM_QUANTITY, nullptr) == false)
+			ITEM_QUANTITY.c_str(), nullptr) == false)
 	{
 		entry_destroy(ITEM_TABLE.c_str(), new_id.second.c_str());
 		return std::pair<bool, std::string>
@@ -114,7 +114,7 @@ char* item_is_resource(const std::string &inventory_id)
 	char *my_template = nullptr;
 
 	entry_read_string(ITEM_TABLE.c_str(), inventory_id.c_str(), &my_template,
-			ITEM_TEMPLATE, nullptr);
+			ITEM_TEMPLATE.c_str(), nullptr);
 
 	return my_template;
 }
@@ -135,7 +135,7 @@ int resource_get_quantity(const std::string &item_id)
 	free(my_template);
 
 	if (entry_read_int(ITEM_TABLE.c_str(), item_id.c_str(), &quantity,
-			ITEM_QUANTITY, nullptr) == false)
+			ITEM_QUANTITY.c_str(), nullptr) == false)
 	{
 		return -1;
 	}

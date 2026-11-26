@@ -105,6 +105,10 @@ public:
 protected:
 	std::string getFilePath(const std::string &table, const std::string &file);
 
+	// Called when a file is not yet in the pool; the client overrides this to
+	// ask the server for the missing file.
+	virtual void requestMissingFile(const std::string &filePath);
+
 private:
 	json& loadJsonFile(const std::string &filePath);
 

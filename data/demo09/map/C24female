@@ -1,223 +1,290 @@
-bg_red = 192
-bg_blue = 192
-bg_green = 192
-attribute = {
-  x = {
-        current = 24
-      }
-}
-width = 11
-height = 7
-tile_width = 64
-tile_height = 64
-warp_x = 0
-warp_y = 0
-layer0 = {
-        set = [
-"tile/fog.png",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"tile/fog.png",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"character/24/SL_axe_8_marquee.zip",
-"",
-"character/24/SL_both_hand_spear_marquee.zip",
-"",
-"character/24/SL_left_hand_either_arrow_marquee.zip",
-"",
-"character/24/SL_left_hand_either_arrow_skeleton_marquee.zip",
-"",
-"character/24/SL_long_knife_marquee.zip",
-"",
-"tile/exit.gif",
-"character/24/SL_pickaxe_0_marquee.zip",
-"",
-"character/24/SL_right_hand_either_bow_marquee.zip",
-"",
-"character/24/SL_right_hand_either_bow_skeleton_marquee.zip",
-"",
-"character/24/SL_right_hand_either_greatbow_marquee.zip",
-"",
-"character/24/SL_right_hand_either_recurvebow_marquee.zip",
-"tile/exit.gif",
-"",
-"character/24/SL_right_hand_female_dagger_female_marquee.zip",
-"",
-"character/24/SL_right_hand_female_spear_female_marquee.zip",
-"",
-"character/24/SL_right_hand_female_steelwand_female_marquee.zip",
-"",
-"character/24/SL_right_hand_female_woodwand_female_marquee.zip",
-"",
-"character/24/SL_warhammer_1_marquee.zip",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"tile/fog.png",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"tile/fog.png"
-        ]
-}
-event_list: {
-E0 = {
-   tile_x = 1
-   tile_y = 2
-   script = "set_sprite.lua"
-   param = ( "24", "axe_8" )
-}
-E1 = {
-   tile_x = 3
-   tile_y = 2
-   script = "set_sprite.lua"
-   param = ( "24", "both_hand_spear" )
-}
-E2 = {
-   tile_x = 5
-   tile_y = 2
-   script = "set_sprite.lua"
-   param = ( "24", "left_hand_either_arrow" )
-}
-E3 = {
-   tile_x = 7
-   tile_y = 2
-   script = "set_sprite.lua"
-   param = ( "24", "left_hand_either_arrow_skeleton" )
-}
-E4 = {
-   tile_x = 9
-   tile_y = 2
-   script = "set_sprite.lua"
-   param = ( "24", "long_knife" )
-}
-E5 = {
-   tile_x = 1
-   tile_y = 3
-   script = "set_sprite.lua"
-   param = ( "24", "pickaxe_0" )
-}
-E6 = {
-   tile_x = 3
-   tile_y = 3
-   script = "set_sprite.lua"
-   param = ( "24", "right_hand_either_bow" )
-}
-E7 = {
-   tile_x = 5
-   tile_y = 3
-   script = "set_sprite.lua"
-   param = ( "24", "right_hand_either_bow_skeleton" )
-}
-E8 = {
-   tile_x = 7
-   tile_y = 3
-   script = "set_sprite.lua"
-   param = ( "24", "right_hand_either_greatbow" )
-}
-E9 = {
-   tile_x = 9
-   tile_y = 3
-   script = "set_sprite.lua"
-   param = ( "24", "right_hand_either_recurvebow" )
-}
-E10 = {
-   tile_x = 1
-   tile_y = 4
-   script = "set_sprite.lua"
-   param = ( "24", "right_hand_female_dagger_female" )
-}
-E11 = {
-   tile_x = 3
-   tile_y = 4
-   script = "set_sprite.lua"
-   param = ( "24", "right_hand_female_spear_female" )
-}
-E12 = {
-   tile_x = 5
-   tile_y = 4
-   script = "set_sprite.lua"
-   param = ( "24", "right_hand_female_steelwand_female" )
-}
-E13 = {
-   tile_x = 7
-   tile_y = 4
-   script = "set_sprite.lua"
-   param = ( "24", "right_hand_female_woodwand_female" )
-}
-E14 = {
-   tile_x = 9
-   tile_y = 4
-   script = "set_sprite.lua"
-   param = ( "24", "warhammer_1" )
-}
-E15 = {
-   tile_x = 0
-   tile_y = 3
-   script = "goto_character_map.lua"
-   param = ( "23", "1", "1" )
-}
-E16 = {
-   tile_x = 10
-   tile_y = 3
-   script = "goto_character_map.lua"
-   param = ( "25", "1", "1" )
-}
-E17 = {
-   tile_x = 0
-   tile_y = 0
-   script = "set_sprite.lua"
-   param = ( "24", "" )
-}
-E18 = {
-   tile_x = 0
-   tile_y = 6
-   script = "set_sprite.lua"
-   param = ( "24", "" )
-}
-E19 = {
-   tile_x = 10
-   tile_y = 0
-   script = "set_sprite.lua"
-   param = ( "24", "" )
-}
-E20 = {
-   tile_x = 10
-   tile_y = 6
-   script = "set_sprite.lua"
-   param = ( "24", "" )
-}
+{
+  "bg_red": 192,
+  "bg_blue": 192,
+  "bg_green": 192,
+  "attribute": {
+    "x": {
+      "current": 24
+    }
+  },
+  "width": 11,
+  "height": 7,
+  "tile_width": 64,
+  "tile_height": 64,
+  "warp_x": 0,
+  "warp_y": 0,
+  "layer0": {
+    "set": [
+      "tile/fog.png",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "tile/fog.png",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "character/24/SL_axe_8_marquee.zip",
+      "",
+      "character/24/SL_both_hand_spear_marquee.zip",
+      "",
+      "character/24/SL_left_hand_either_arrow_marquee.zip",
+      "",
+      "character/24/SL_left_hand_either_arrow_skeleton_marquee.zip",
+      "",
+      "character/24/SL_long_knife_marquee.zip",
+      "",
+      "tile/exit.gif",
+      "character/24/SL_pickaxe_0_marquee.zip",
+      "",
+      "character/24/SL_right_hand_either_bow_marquee.zip",
+      "",
+      "character/24/SL_right_hand_either_bow_skeleton_marquee.zip",
+      "",
+      "character/24/SL_right_hand_either_greatbow_marquee.zip",
+      "",
+      "character/24/SL_right_hand_either_recurvebow_marquee.zip",
+      "tile/exit.gif",
+      "",
+      "character/24/SL_right_hand_female_dagger_female_marquee.zip",
+      "",
+      "character/24/SL_right_hand_female_spear_female_marquee.zip",
+      "",
+      "character/24/SL_right_hand_female_steelwand_female_marquee.zip",
+      "",
+      "character/24/SL_right_hand_female_woodwand_female_marquee.zip",
+      "",
+      "character/24/SL_warhammer_1_marquee.zip",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "tile/fog.png",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "tile/fog.png"
+    ]
+  },
+  "event_list": {
+    "E0": {
+      "tile_x": 1,
+      "tile_y": 2,
+      "script": "set_sprite.lua",
+      "param": [
+        "24",
+        "axe_8"
+      ]
+    },
+    "E1": {
+      "tile_x": 3,
+      "tile_y": 2,
+      "script": "set_sprite.lua",
+      "param": [
+        "24",
+        "both_hand_spear"
+      ]
+    },
+    "E2": {
+      "tile_x": 5,
+      "tile_y": 2,
+      "script": "set_sprite.lua",
+      "param": [
+        "24",
+        "left_hand_either_arrow"
+      ]
+    },
+    "E3": {
+      "tile_x": 7,
+      "tile_y": 2,
+      "script": "set_sprite.lua",
+      "param": [
+        "24",
+        "left_hand_either_arrow_skeleton"
+      ]
+    },
+    "E4": {
+      "tile_x": 9,
+      "tile_y": 2,
+      "script": "set_sprite.lua",
+      "param": [
+        "24",
+        "long_knife"
+      ]
+    },
+    "E5": {
+      "tile_x": 1,
+      "tile_y": 3,
+      "script": "set_sprite.lua",
+      "param": [
+        "24",
+        "pickaxe_0"
+      ]
+    },
+    "E6": {
+      "tile_x": 3,
+      "tile_y": 3,
+      "script": "set_sprite.lua",
+      "param": [
+        "24",
+        "right_hand_either_bow"
+      ]
+    },
+    "E7": {
+      "tile_x": 5,
+      "tile_y": 3,
+      "script": "set_sprite.lua",
+      "param": [
+        "24",
+        "right_hand_either_bow_skeleton"
+      ]
+    },
+    "E8": {
+      "tile_x": 7,
+      "tile_y": 3,
+      "script": "set_sprite.lua",
+      "param": [
+        "24",
+        "right_hand_either_greatbow"
+      ]
+    },
+    "E9": {
+      "tile_x": 9,
+      "tile_y": 3,
+      "script": "set_sprite.lua",
+      "param": [
+        "24",
+        "right_hand_either_recurvebow"
+      ]
+    },
+    "E10": {
+      "tile_x": 1,
+      "tile_y": 4,
+      "script": "set_sprite.lua",
+      "param": [
+        "24",
+        "right_hand_female_dagger_female"
+      ]
+    },
+    "E11": {
+      "tile_x": 3,
+      "tile_y": 4,
+      "script": "set_sprite.lua",
+      "param": [
+        "24",
+        "right_hand_female_spear_female"
+      ]
+    },
+    "E12": {
+      "tile_x": 5,
+      "tile_y": 4,
+      "script": "set_sprite.lua",
+      "param": [
+        "24",
+        "right_hand_female_steelwand_female"
+      ]
+    },
+    "E13": {
+      "tile_x": 7,
+      "tile_y": 4,
+      "script": "set_sprite.lua",
+      "param": [
+        "24",
+        "right_hand_female_woodwand_female"
+      ]
+    },
+    "E14": {
+      "tile_x": 9,
+      "tile_y": 4,
+      "script": "set_sprite.lua",
+      "param": [
+        "24",
+        "warhammer_1"
+      ]
+    },
+    "E15": {
+      "tile_x": 0,
+      "tile_y": 3,
+      "script": "goto_character_map.lua",
+      "param": [
+        "23",
+        "1",
+        "1"
+      ]
+    },
+    "E16": {
+      "tile_x": 10,
+      "tile_y": 3,
+      "script": "goto_character_map.lua",
+      "param": [
+        "25",
+        "1",
+        "1"
+      ]
+    },
+    "E17": {
+      "tile_x": 0,
+      "tile_y": 0,
+      "script": "set_sprite.lua",
+      "param": [
+        "24",
+        ""
+      ]
+    },
+    "E18": {
+      "tile_x": 0,
+      "tile_y": 6,
+      "script": "set_sprite.lua",
+      "param": [
+        "24",
+        ""
+      ]
+    },
+    "E19": {
+      "tile_x": 10,
+      "tile_y": 0,
+      "script": "set_sprite.lua",
+      "param": [
+        "24",
+        ""
+      ]
+    },
+    "E20": {
+      "tile_x": 10,
+      "tile_y": 6,
+      "script": "set_sprite.lua",
+      "param": [
+        "24",
+        ""
+      ]
+    }
+  }
 }

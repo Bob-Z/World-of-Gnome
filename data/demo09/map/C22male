@@ -1,178 +1,233 @@
-bg_red = 192
-bg_blue = 192
-bg_green = 192
-attribute = {
-  x = {
-        current = 22
-      }
-}
-width = 7
-height = 8
-tile_width = 64
-tile_height = 64
-warp_x = 0
-warp_y = 0
-layer0 = {
-        set = [
-"tile/fog.png",
-"",
-"",
-"",
-"",
-"",
-"tile/fog.png",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"character/22/WC_Male_cape_black(JaidynReiman)_marquee.zip",
-"",
-"character/22/WC_Male_cape_blue(JaidynReiman)_marquee.zip",
-"",
-"character/22/WC_Male_cape_brown(JaidynReiman)_marquee.zip",
-"",
-"",
-"character/22/WC_Male_cape_gray(JaidynReiman)_marquee.zip",
-"",
-"character/22/WC_Male_cape_green(JaidynReiman)_marquee.zip",
-"",
-"character/22/WC_Male_cape_lavender(JaidynReiman)_marquee.zip",
-"",
-"tile/exit.gif",
-"character/22/WC_Male_cape_maroon(JaidynReiman)_marquee.zip",
-"",
-"character/22/WC_Male_cape_pink(JaidynReiman)_marquee.zip",
-"",
-"character/22/WC_Male_cape_red(JaidynReiman)_marquee.zip",
-"tile/exit.gif",
-"",
-"character/22/WC_Male_cape_white(JaidynReiman)_marquee.zip",
-"",
-"character/22/WC_Male_cape_yellow(JaidynReiman)_marquee.zip",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"tile/fog.png",
-"",
-"",
-"",
-"",
-"",
-"tile/fog.png"
-        ]
-}
-event_list: {
-E0 = {
-   tile_x = 1
-   tile_y = 2
-   script = "set_sprite.lua"
-   param = ( "22", "Male_cape_black(JaidynReiman)" )
-}
-E1 = {
-   tile_x = 3
-   tile_y = 2
-   script = "set_sprite.lua"
-   param = ( "22", "Male_cape_blue(JaidynReiman)" )
-}
-E2 = {
-   tile_x = 5
-   tile_y = 2
-   script = "set_sprite.lua"
-   param = ( "22", "Male_cape_brown(JaidynReiman)" )
-}
-E3 = {
-   tile_x = 1
-   tile_y = 3
-   script = "set_sprite.lua"
-   param = ( "22", "Male_cape_gray(JaidynReiman)" )
-}
-E4 = {
-   tile_x = 3
-   tile_y = 3
-   script = "set_sprite.lua"
-   param = ( "22", "Male_cape_green(JaidynReiman)" )
-}
-E5 = {
-   tile_x = 5
-   tile_y = 3
-   script = "set_sprite.lua"
-   param = ( "22", "Male_cape_lavender(JaidynReiman)" )
-}
-E6 = {
-   tile_x = 1
-   tile_y = 4
-   script = "set_sprite.lua"
-   param = ( "22", "Male_cape_maroon(JaidynReiman)" )
-}
-E7 = {
-   tile_x = 3
-   tile_y = 4
-   script = "set_sprite.lua"
-   param = ( "22", "Male_cape_pink(JaidynReiman)" )
-}
-E8 = {
-   tile_x = 5
-   tile_y = 4
-   script = "set_sprite.lua"
-   param = ( "22", "Male_cape_red(JaidynReiman)" )
-}
-E9 = {
-   tile_x = 1
-   tile_y = 5
-   script = "set_sprite.lua"
-   param = ( "22", "Male_cape_white(JaidynReiman)" )
-}
-E10 = {
-   tile_x = 3
-   tile_y = 5
-   script = "set_sprite.lua"
-   param = ( "22", "Male_cape_yellow(JaidynReiman)" )
-}
-E11 = {
-   tile_x = 0
-   tile_y = 4
-   script = "goto_character_map.lua"
-   param = ( "21", "1", "1" )
-}
-E12 = {
-   tile_x = 6
-   tile_y = 4
-   script = "goto_character_map.lua"
-   param = ( "23", "1", "1" )
-}
-E13 = {
-   tile_x = 0
-   tile_y = 0
-   script = "set_sprite.lua"
-   param = ( "22", "" )
-}
-E14 = {
-   tile_x = 0
-   tile_y = 7
-   script = "set_sprite.lua"
-   param = ( "22", "" )
-}
-E15 = {
-   tile_x = 6
-   tile_y = 0
-   script = "set_sprite.lua"
-   param = ( "22", "" )
-}
-E16 = {
-   tile_x = 6
-   tile_y = 7
-   script = "set_sprite.lua"
-   param = ( "22", "" )
-}
+{
+  "bg_red": 192,
+  "bg_blue": 192,
+  "bg_green": 192,
+  "attribute": {
+    "x": {
+      "current": 22
+    }
+  },
+  "width": 7,
+  "height": 8,
+  "tile_width": 64,
+  "tile_height": 64,
+  "warp_x": 0,
+  "warp_y": 0,
+  "layer0": {
+    "set": [
+      "tile/fog.png",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "tile/fog.png",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "character/22/WC_Male_cape_black(JaidynReiman)_marquee.zip",
+      "",
+      "character/22/WC_Male_cape_blue(JaidynReiman)_marquee.zip",
+      "",
+      "character/22/WC_Male_cape_brown(JaidynReiman)_marquee.zip",
+      "",
+      "",
+      "character/22/WC_Male_cape_gray(JaidynReiman)_marquee.zip",
+      "",
+      "character/22/WC_Male_cape_green(JaidynReiman)_marquee.zip",
+      "",
+      "character/22/WC_Male_cape_lavender(JaidynReiman)_marquee.zip",
+      "",
+      "tile/exit.gif",
+      "character/22/WC_Male_cape_maroon(JaidynReiman)_marquee.zip",
+      "",
+      "character/22/WC_Male_cape_pink(JaidynReiman)_marquee.zip",
+      "",
+      "character/22/WC_Male_cape_red(JaidynReiman)_marquee.zip",
+      "tile/exit.gif",
+      "",
+      "character/22/WC_Male_cape_white(JaidynReiman)_marquee.zip",
+      "",
+      "character/22/WC_Male_cape_yellow(JaidynReiman)_marquee.zip",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "tile/fog.png",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "tile/fog.png"
+    ]
+  },
+  "event_list": {
+    "E0": {
+      "tile_x": 1,
+      "tile_y": 2,
+      "script": "set_sprite.lua",
+      "param": [
+        "22",
+        "Male_cape_black(JaidynReiman)"
+      ]
+    },
+    "E1": {
+      "tile_x": 3,
+      "tile_y": 2,
+      "script": "set_sprite.lua",
+      "param": [
+        "22",
+        "Male_cape_blue(JaidynReiman)"
+      ]
+    },
+    "E2": {
+      "tile_x": 5,
+      "tile_y": 2,
+      "script": "set_sprite.lua",
+      "param": [
+        "22",
+        "Male_cape_brown(JaidynReiman)"
+      ]
+    },
+    "E3": {
+      "tile_x": 1,
+      "tile_y": 3,
+      "script": "set_sprite.lua",
+      "param": [
+        "22",
+        "Male_cape_gray(JaidynReiman)"
+      ]
+    },
+    "E4": {
+      "tile_x": 3,
+      "tile_y": 3,
+      "script": "set_sprite.lua",
+      "param": [
+        "22",
+        "Male_cape_green(JaidynReiman)"
+      ]
+    },
+    "E5": {
+      "tile_x": 5,
+      "tile_y": 3,
+      "script": "set_sprite.lua",
+      "param": [
+        "22",
+        "Male_cape_lavender(JaidynReiman)"
+      ]
+    },
+    "E6": {
+      "tile_x": 1,
+      "tile_y": 4,
+      "script": "set_sprite.lua",
+      "param": [
+        "22",
+        "Male_cape_maroon(JaidynReiman)"
+      ]
+    },
+    "E7": {
+      "tile_x": 3,
+      "tile_y": 4,
+      "script": "set_sprite.lua",
+      "param": [
+        "22",
+        "Male_cape_pink(JaidynReiman)"
+      ]
+    },
+    "E8": {
+      "tile_x": 5,
+      "tile_y": 4,
+      "script": "set_sprite.lua",
+      "param": [
+        "22",
+        "Male_cape_red(JaidynReiman)"
+      ]
+    },
+    "E9": {
+      "tile_x": 1,
+      "tile_y": 5,
+      "script": "set_sprite.lua",
+      "param": [
+        "22",
+        "Male_cape_white(JaidynReiman)"
+      ]
+    },
+    "E10": {
+      "tile_x": 3,
+      "tile_y": 5,
+      "script": "set_sprite.lua",
+      "param": [
+        "22",
+        "Male_cape_yellow(JaidynReiman)"
+      ]
+    },
+    "E11": {
+      "tile_x": 0,
+      "tile_y": 4,
+      "script": "goto_character_map.lua",
+      "param": [
+        "21",
+        "1",
+        "1"
+      ]
+    },
+    "E12": {
+      "tile_x": 6,
+      "tile_y": 4,
+      "script": "goto_character_map.lua",
+      "param": [
+        "23",
+        "1",
+        "1"
+      ]
+    },
+    "E13": {
+      "tile_x": 0,
+      "tile_y": 0,
+      "script": "set_sprite.lua",
+      "param": [
+        "22",
+        ""
+      ]
+    },
+    "E14": {
+      "tile_x": 0,
+      "tile_y": 7,
+      "script": "set_sprite.lua",
+      "param": [
+        "22",
+        ""
+      ]
+    },
+    "E15": {
+      "tile_x": 6,
+      "tile_y": 0,
+      "script": "set_sprite.lua",
+      "param": [
+        "22",
+        ""
+      ]
+    },
+    "E16": {
+      "tile_x": 6,
+      "tile_y": 7,
+      "script": "set_sprite.lua",
+      "param": [
+        "22",
+        ""
+      ]
+    }
+  }
 }

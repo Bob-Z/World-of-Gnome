@@ -191,7 +191,7 @@ static void fill_character_marquee(Context * context, TTF_Font * fontName, TTF_F
 	{
 		// Compute the marquee file name
 		char * marqueeName = nullptr;
-		if (entry_read_string(CHARACTER_TEMPLATE_TABLE, characterMarquee.getId().c_str(), &marqueeName, CHARACTER_KEY_MARQUEE, nullptr) == true)
+		if (entry_read_string(CHARACTER_TEMPLATE_TABLE.c_str(), characterMarquee.getId().c_str(), &marqueeName, CHARACTER_KEY_MARQUEE.c_str(), nullptr) == true)
 		{
 			std::vector<std::string> nameArray;
 			nameArray.push_back(std::string(marqueeName));
@@ -202,7 +202,7 @@ static void fill_character_marquee(Context * context, TTF_Font * fontName, TTF_F
 		else
 		{
 			char ** marqueeList = nullptr;
-			if (entry_read_list(CHARACTER_TEMPLATE_TABLE, characterMarquee.getId().c_str(), &marqueeList, CHARACTER_KEY_MARQUEE, nullptr) == false)
+			if (entry_read_list(CHARACTER_TEMPLATE_TABLE.c_str(), characterMarquee.getId().c_str(), &marqueeList, CHARACTER_KEY_MARQUEE.c_str(), nullptr) == false)
 			{
 				LOG_DESIGN(characterMarquee.getId() + " has no marquee");
 				continue;
@@ -229,7 +229,7 @@ static void fill_character_marquee(Context * context, TTF_Font * fontName, TTF_F
 		characterMarquee.setHeight(characterMarquee.getAnim()[0]->getHeight());
 
 		char * name = nullptr;
-		entry_read_string(CHARACTER_TEMPLATE_TABLE, characterMarquee.getId().c_str(), &name, CHARACTER_KEY_NAME, nullptr);
+		entry_read_string(CHARACTER_TEMPLATE_TABLE.c_str(), characterMarquee.getId().c_str(), &name, CHARACTER_KEY_NAME.c_str(), nullptr);
 		if (name != nullptr)
 		{
 			characterMarquee.setName(std::string(name));
@@ -237,7 +237,7 @@ static void fill_character_marquee(Context * context, TTF_Font * fontName, TTF_F
 		}
 
 		char * type = nullptr;
-		entry_read_string(CHARACTER_TEMPLATE_TABLE, characterMarquee.getId().c_str(), &type, CHARACTER_KEY_TYPE, nullptr);
+		entry_read_string(CHARACTER_TEMPLATE_TABLE.c_str(), characterMarquee.getId().c_str(), &type, CHARACTER_KEY_TYPE.c_str(), nullptr);
 		if (type != nullptr)
 		{
 			characterMarquee.setType(std::string(type));
@@ -506,7 +506,7 @@ void scr_create_add_playable_character(const std::vector<std::string> & idList)
 		characterMarquee.setId(id);
 
 		char * name = nullptr;
-		entry_read_string(CHARACTER_TEMPLATE_TABLE, id.c_str(), &name, CHARACTER_KEY_NAME, nullptr);
+		entry_read_string(CHARACTER_TEMPLATE_TABLE.c_str(), id.c_str(), &name, CHARACTER_KEY_NAME.c_str(), nullptr);
 		if (name != nullptr)
 		{
 			characterMarquee.setName(std::string(name));
@@ -514,7 +514,7 @@ void scr_create_add_playable_character(const std::vector<std::string> & idList)
 		}
 
 		char * type = nullptr;
-		entry_read_string(CHARACTER_TEMPLATE_TABLE, id.c_str(), &type, CHARACTER_KEY_TYPE, nullptr);
+		entry_read_string(CHARACTER_TEMPLATE_TABLE.c_str(), id.c_str(), &type, CHARACTER_KEY_TYPE.c_str(), nullptr);
 		if (type != nullptr)
 		{
 			characterMarquee.setType(std::string(type));

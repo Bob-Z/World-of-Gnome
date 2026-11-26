@@ -1,353 +1,465 @@
-bg_red = 192
-bg_blue = 192
-bg_green = 192
-attribute = {
-  x = {
-        current = 6
-      }
-}
-width = 13
-height = 9
-tile_width = 64
-tile_height = 64
-warp_x = 0
-warp_y = 0
-layer0 = {
-        set = [
-"tile/fog.png",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"tile/fog.png",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"character/6/WC_female_fiveoclock_black_marquee.zip",
-"",
-"character/6/WC_female_fiveoclock_blonde2_marquee.zip",
-"",
-"character/6/WC_female_fiveoclock_blonde_marquee.zip",
-"",
-"character/6/WC_female_fiveoclock_blue2_marquee.zip",
-"",
-"character/6/WC_female_fiveoclock_blue_marquee.zip",
-"",
-"character/6/WC_female_fiveoclock_brown2_marquee.zip",
-"",
-"",
-"character/6/WC_female_fiveoclock_brown_marquee.zip",
-"",
-"character/6/WC_female_fiveoclock_brunette2_marquee.zip",
-"",
-"character/6/WC_female_fiveoclock_brunette_marquee.zip",
-"",
-"character/6/WC_female_fiveoclock_dark-blonde_marquee.zip",
-"",
-"character/6/WC_female_fiveoclock_gold_marquee.zip",
-"",
-"character/6/WC_female_fiveoclock_gray2_marquee.zip",
-"",
-"tile/exit.gif",
-"character/6/WC_female_fiveoclock_gray_marquee.zip",
-"",
-"character/6/WC_female_fiveoclock_green2_marquee.zip",
-"",
-"character/6/WC_female_fiveoclock_green_marquee.zip",
-"",
-"character/6/WC_female_fiveoclock_light-blonde2_marquee.zip",
-"",
-"character/6/WC_female_fiveoclock_light-blonde_marquee.zip",
-"",
-"character/6/WC_female_fiveoclock_marquee.zip",
-"tile/exit.gif",
-"",
-"character/6/WC_female_fiveoclock_pink2_marquee.zip",
-"",
-"character/6/WC_female_fiveoclock_pink_marquee.zip",
-"",
-"character/6/WC_female_fiveoclock_purple_marquee.zip",
-"",
-"character/6/WC_female_fiveoclock_raven2_marquee.zip",
-"",
-"character/6/WC_female_fiveoclock_raven_marquee.zip",
-"",
-"character/6/WC_female_fiveoclock_redhead2_marquee.zip",
-"",
-"",
-"character/6/WC_female_fiveoclock_redhead_marquee.zip",
-"",
-"character/6/WC_female_fiveoclock_ruby-red_marquee.zip",
-"",
-"character/6/WC_female_fiveoclock_white-blonde2_marquee.zip",
-"",
-"character/6/WC_female_fiveoclock_white-blonde_marquee.zip",
-"",
-"character/6/WC_female_fiveoclock_white-cyan_marquee.zip",
-"",
-"character/6/WC_female_fiveoclock_white_marquee.zip",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"tile/fog.png",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"tile/fog.png"
-        ]
-}
-event_list: {
-E0 = {
-   tile_x = 1
-   tile_y = 2
-   script = "set_sprite.lua"
-   param = ( "6", "female_fiveoclock_black" )
-}
-E1 = {
-   tile_x = 3
-   tile_y = 2
-   script = "set_sprite.lua"
-   param = ( "6", "female_fiveoclock_blonde2" )
-}
-E2 = {
-   tile_x = 5
-   tile_y = 2
-   script = "set_sprite.lua"
-   param = ( "6", "female_fiveoclock_blonde" )
-}
-E3 = {
-   tile_x = 7
-   tile_y = 2
-   script = "set_sprite.lua"
-   param = ( "6", "female_fiveoclock_blue2" )
-}
-E4 = {
-   tile_x = 9
-   tile_y = 2
-   script = "set_sprite.lua"
-   param = ( "6", "female_fiveoclock_blue" )
-}
-E5 = {
-   tile_x = 11
-   tile_y = 2
-   script = "set_sprite.lua"
-   param = ( "6", "female_fiveoclock_brown2" )
-}
-E6 = {
-   tile_x = 1
-   tile_y = 3
-   script = "set_sprite.lua"
-   param = ( "6", "female_fiveoclock_brown" )
-}
-E7 = {
-   tile_x = 3
-   tile_y = 3
-   script = "set_sprite.lua"
-   param = ( "6", "female_fiveoclock_brunette2" )
-}
-E8 = {
-   tile_x = 5
-   tile_y = 3
-   script = "set_sprite.lua"
-   param = ( "6", "female_fiveoclock_brunette" )
-}
-E9 = {
-   tile_x = 7
-   tile_y = 3
-   script = "set_sprite.lua"
-   param = ( "6", "female_fiveoclock_dark-blonde" )
-}
-E10 = {
-   tile_x = 9
-   tile_y = 3
-   script = "set_sprite.lua"
-   param = ( "6", "female_fiveoclock_gold" )
-}
-E11 = {
-   tile_x = 11
-   tile_y = 3
-   script = "set_sprite.lua"
-   param = ( "6", "female_fiveoclock_gray2" )
-}
-E12 = {
-   tile_x = 1
-   tile_y = 4
-   script = "set_sprite.lua"
-   param = ( "6", "female_fiveoclock_gray" )
-}
-E13 = {
-   tile_x = 3
-   tile_y = 4
-   script = "set_sprite.lua"
-   param = ( "6", "female_fiveoclock_green2" )
-}
-E14 = {
-   tile_x = 5
-   tile_y = 4
-   script = "set_sprite.lua"
-   param = ( "6", "female_fiveoclock_green" )
-}
-E15 = {
-   tile_x = 7
-   tile_y = 4
-   script = "set_sprite.lua"
-   param = ( "6", "female_fiveoclock_light-blonde2" )
-}
-E16 = {
-   tile_x = 9
-   tile_y = 4
-   script = "set_sprite.lua"
-   param = ( "6", "female_fiveoclock_light-blonde" )
-}
-E17 = {
-   tile_x = 11
-   tile_y = 4
-   script = "set_sprite.lua"
-   param = ( "6", "female_fiveoclock" )
-}
-E18 = {
-   tile_x = 1
-   tile_y = 5
-   script = "set_sprite.lua"
-   param = ( "6", "female_fiveoclock_pink2" )
-}
-E19 = {
-   tile_x = 3
-   tile_y = 5
-   script = "set_sprite.lua"
-   param = ( "6", "female_fiveoclock_pink" )
-}
-E20 = {
-   tile_x = 5
-   tile_y = 5
-   script = "set_sprite.lua"
-   param = ( "6", "female_fiveoclock_purple" )
-}
-E21 = {
-   tile_x = 7
-   tile_y = 5
-   script = "set_sprite.lua"
-   param = ( "6", "female_fiveoclock_raven2" )
-}
-E22 = {
-   tile_x = 9
-   tile_y = 5
-   script = "set_sprite.lua"
-   param = ( "6", "female_fiveoclock_raven" )
-}
-E23 = {
-   tile_x = 11
-   tile_y = 5
-   script = "set_sprite.lua"
-   param = ( "6", "female_fiveoclock_redhead2" )
-}
-E24 = {
-   tile_x = 1
-   tile_y = 6
-   script = "set_sprite.lua"
-   param = ( "6", "female_fiveoclock_redhead" )
-}
-E25 = {
-   tile_x = 3
-   tile_y = 6
-   script = "set_sprite.lua"
-   param = ( "6", "female_fiveoclock_ruby-red" )
-}
-E26 = {
-   tile_x = 5
-   tile_y = 6
-   script = "set_sprite.lua"
-   param = ( "6", "female_fiveoclock_white-blonde2" )
-}
-E27 = {
-   tile_x = 7
-   tile_y = 6
-   script = "set_sprite.lua"
-   param = ( "6", "female_fiveoclock_white-blonde" )
-}
-E28 = {
-   tile_x = 9
-   tile_y = 6
-   script = "set_sprite.lua"
-   param = ( "6", "female_fiveoclock_white-cyan" )
-}
-E29 = {
-   tile_x = 11
-   tile_y = 6
-   script = "set_sprite.lua"
-   param = ( "6", "female_fiveoclock_white" )
-}
-E30 = {
-   tile_x = 0
-   tile_y = 4
-   script = "goto_character_map.lua"
-   param = ( "5", "1", "1" )
-}
-E31 = {
-   tile_x = 12
-   tile_y = 4
-   script = "goto_character_map.lua"
-   param = ( "7", "1", "1" )
-}
-E32 = {
-   tile_x = 0
-   tile_y = 0
-   script = "set_sprite.lua"
-   param = ( "6", "" )
-}
-E33 = {
-   tile_x = 0
-   tile_y = 8
-   script = "set_sprite.lua"
-   param = ( "6", "" )
-}
-E34 = {
-   tile_x = 12
-   tile_y = 0
-   script = "set_sprite.lua"
-   param = ( "6", "" )
-}
-E35 = {
-   tile_x = 12
-   tile_y = 8
-   script = "set_sprite.lua"
-   param = ( "6", "" )
-}
+{
+  "bg_red": 192,
+  "bg_blue": 192,
+  "bg_green": 192,
+  "attribute": {
+    "x": {
+      "current": 6
+    }
+  },
+  "width": 13,
+  "height": 9,
+  "tile_width": 64,
+  "tile_height": 64,
+  "warp_x": 0,
+  "warp_y": 0,
+  "layer0": {
+    "set": [
+      "tile/fog.png",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "tile/fog.png",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "character/6/WC_female_fiveoclock_black_marquee.zip",
+      "",
+      "character/6/WC_female_fiveoclock_blonde2_marquee.zip",
+      "",
+      "character/6/WC_female_fiveoclock_blonde_marquee.zip",
+      "",
+      "character/6/WC_female_fiveoclock_blue2_marquee.zip",
+      "",
+      "character/6/WC_female_fiveoclock_blue_marquee.zip",
+      "",
+      "character/6/WC_female_fiveoclock_brown2_marquee.zip",
+      "",
+      "",
+      "character/6/WC_female_fiveoclock_brown_marquee.zip",
+      "",
+      "character/6/WC_female_fiveoclock_brunette2_marquee.zip",
+      "",
+      "character/6/WC_female_fiveoclock_brunette_marquee.zip",
+      "",
+      "character/6/WC_female_fiveoclock_dark-blonde_marquee.zip",
+      "",
+      "character/6/WC_female_fiveoclock_gold_marquee.zip",
+      "",
+      "character/6/WC_female_fiveoclock_gray2_marquee.zip",
+      "",
+      "tile/exit.gif",
+      "character/6/WC_female_fiveoclock_gray_marquee.zip",
+      "",
+      "character/6/WC_female_fiveoclock_green2_marquee.zip",
+      "",
+      "character/6/WC_female_fiveoclock_green_marquee.zip",
+      "",
+      "character/6/WC_female_fiveoclock_light-blonde2_marquee.zip",
+      "",
+      "character/6/WC_female_fiveoclock_light-blonde_marquee.zip",
+      "",
+      "character/6/WC_female_fiveoclock_marquee.zip",
+      "tile/exit.gif",
+      "",
+      "character/6/WC_female_fiveoclock_pink2_marquee.zip",
+      "",
+      "character/6/WC_female_fiveoclock_pink_marquee.zip",
+      "",
+      "character/6/WC_female_fiveoclock_purple_marquee.zip",
+      "",
+      "character/6/WC_female_fiveoclock_raven2_marquee.zip",
+      "",
+      "character/6/WC_female_fiveoclock_raven_marquee.zip",
+      "",
+      "character/6/WC_female_fiveoclock_redhead2_marquee.zip",
+      "",
+      "",
+      "character/6/WC_female_fiveoclock_redhead_marquee.zip",
+      "",
+      "character/6/WC_female_fiveoclock_ruby-red_marquee.zip",
+      "",
+      "character/6/WC_female_fiveoclock_white-blonde2_marquee.zip",
+      "",
+      "character/6/WC_female_fiveoclock_white-blonde_marquee.zip",
+      "",
+      "character/6/WC_female_fiveoclock_white-cyan_marquee.zip",
+      "",
+      "character/6/WC_female_fiveoclock_white_marquee.zip",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "tile/fog.png",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "tile/fog.png"
+    ]
+  },
+  "event_list": {
+    "E0": {
+      "tile_x": 1,
+      "tile_y": 2,
+      "script": "set_sprite.lua",
+      "param": [
+        "6",
+        "female_fiveoclock_black"
+      ]
+    },
+    "E1": {
+      "tile_x": 3,
+      "tile_y": 2,
+      "script": "set_sprite.lua",
+      "param": [
+        "6",
+        "female_fiveoclock_blonde2"
+      ]
+    },
+    "E2": {
+      "tile_x": 5,
+      "tile_y": 2,
+      "script": "set_sprite.lua",
+      "param": [
+        "6",
+        "female_fiveoclock_blonde"
+      ]
+    },
+    "E3": {
+      "tile_x": 7,
+      "tile_y": 2,
+      "script": "set_sprite.lua",
+      "param": [
+        "6",
+        "female_fiveoclock_blue2"
+      ]
+    },
+    "E4": {
+      "tile_x": 9,
+      "tile_y": 2,
+      "script": "set_sprite.lua",
+      "param": [
+        "6",
+        "female_fiveoclock_blue"
+      ]
+    },
+    "E5": {
+      "tile_x": 11,
+      "tile_y": 2,
+      "script": "set_sprite.lua",
+      "param": [
+        "6",
+        "female_fiveoclock_brown2"
+      ]
+    },
+    "E6": {
+      "tile_x": 1,
+      "tile_y": 3,
+      "script": "set_sprite.lua",
+      "param": [
+        "6",
+        "female_fiveoclock_brown"
+      ]
+    },
+    "E7": {
+      "tile_x": 3,
+      "tile_y": 3,
+      "script": "set_sprite.lua",
+      "param": [
+        "6",
+        "female_fiveoclock_brunette2"
+      ]
+    },
+    "E8": {
+      "tile_x": 5,
+      "tile_y": 3,
+      "script": "set_sprite.lua",
+      "param": [
+        "6",
+        "female_fiveoclock_brunette"
+      ]
+    },
+    "E9": {
+      "tile_x": 7,
+      "tile_y": 3,
+      "script": "set_sprite.lua",
+      "param": [
+        "6",
+        "female_fiveoclock_dark-blonde"
+      ]
+    },
+    "E10": {
+      "tile_x": 9,
+      "tile_y": 3,
+      "script": "set_sprite.lua",
+      "param": [
+        "6",
+        "female_fiveoclock_gold"
+      ]
+    },
+    "E11": {
+      "tile_x": 11,
+      "tile_y": 3,
+      "script": "set_sprite.lua",
+      "param": [
+        "6",
+        "female_fiveoclock_gray2"
+      ]
+    },
+    "E12": {
+      "tile_x": 1,
+      "tile_y": 4,
+      "script": "set_sprite.lua",
+      "param": [
+        "6",
+        "female_fiveoclock_gray"
+      ]
+    },
+    "E13": {
+      "tile_x": 3,
+      "tile_y": 4,
+      "script": "set_sprite.lua",
+      "param": [
+        "6",
+        "female_fiveoclock_green2"
+      ]
+    },
+    "E14": {
+      "tile_x": 5,
+      "tile_y": 4,
+      "script": "set_sprite.lua",
+      "param": [
+        "6",
+        "female_fiveoclock_green"
+      ]
+    },
+    "E15": {
+      "tile_x": 7,
+      "tile_y": 4,
+      "script": "set_sprite.lua",
+      "param": [
+        "6",
+        "female_fiveoclock_light-blonde2"
+      ]
+    },
+    "E16": {
+      "tile_x": 9,
+      "tile_y": 4,
+      "script": "set_sprite.lua",
+      "param": [
+        "6",
+        "female_fiveoclock_light-blonde"
+      ]
+    },
+    "E17": {
+      "tile_x": 11,
+      "tile_y": 4,
+      "script": "set_sprite.lua",
+      "param": [
+        "6",
+        "female_fiveoclock"
+      ]
+    },
+    "E18": {
+      "tile_x": 1,
+      "tile_y": 5,
+      "script": "set_sprite.lua",
+      "param": [
+        "6",
+        "female_fiveoclock_pink2"
+      ]
+    },
+    "E19": {
+      "tile_x": 3,
+      "tile_y": 5,
+      "script": "set_sprite.lua",
+      "param": [
+        "6",
+        "female_fiveoclock_pink"
+      ]
+    },
+    "E20": {
+      "tile_x": 5,
+      "tile_y": 5,
+      "script": "set_sprite.lua",
+      "param": [
+        "6",
+        "female_fiveoclock_purple"
+      ]
+    },
+    "E21": {
+      "tile_x": 7,
+      "tile_y": 5,
+      "script": "set_sprite.lua",
+      "param": [
+        "6",
+        "female_fiveoclock_raven2"
+      ]
+    },
+    "E22": {
+      "tile_x": 9,
+      "tile_y": 5,
+      "script": "set_sprite.lua",
+      "param": [
+        "6",
+        "female_fiveoclock_raven"
+      ]
+    },
+    "E23": {
+      "tile_x": 11,
+      "tile_y": 5,
+      "script": "set_sprite.lua",
+      "param": [
+        "6",
+        "female_fiveoclock_redhead2"
+      ]
+    },
+    "E24": {
+      "tile_x": 1,
+      "tile_y": 6,
+      "script": "set_sprite.lua",
+      "param": [
+        "6",
+        "female_fiveoclock_redhead"
+      ]
+    },
+    "E25": {
+      "tile_x": 3,
+      "tile_y": 6,
+      "script": "set_sprite.lua",
+      "param": [
+        "6",
+        "female_fiveoclock_ruby-red"
+      ]
+    },
+    "E26": {
+      "tile_x": 5,
+      "tile_y": 6,
+      "script": "set_sprite.lua",
+      "param": [
+        "6",
+        "female_fiveoclock_white-blonde2"
+      ]
+    },
+    "E27": {
+      "tile_x": 7,
+      "tile_y": 6,
+      "script": "set_sprite.lua",
+      "param": [
+        "6",
+        "female_fiveoclock_white-blonde"
+      ]
+    },
+    "E28": {
+      "tile_x": 9,
+      "tile_y": 6,
+      "script": "set_sprite.lua",
+      "param": [
+        "6",
+        "female_fiveoclock_white-cyan"
+      ]
+    },
+    "E29": {
+      "tile_x": 11,
+      "tile_y": 6,
+      "script": "set_sprite.lua",
+      "param": [
+        "6",
+        "female_fiveoclock_white"
+      ]
+    },
+    "E30": {
+      "tile_x": 0,
+      "tile_y": 4,
+      "script": "goto_character_map.lua",
+      "param": [
+        "5",
+        "1",
+        "1"
+      ]
+    },
+    "E31": {
+      "tile_x": 12,
+      "tile_y": 4,
+      "script": "goto_character_map.lua",
+      "param": [
+        "7",
+        "1",
+        "1"
+      ]
+    },
+    "E32": {
+      "tile_x": 0,
+      "tile_y": 0,
+      "script": "set_sprite.lua",
+      "param": [
+        "6",
+        ""
+      ]
+    },
+    "E33": {
+      "tile_x": 0,
+      "tile_y": 8,
+      "script": "set_sprite.lua",
+      "param": [
+        "6",
+        ""
+      ]
+    },
+    "E34": {
+      "tile_x": 12,
+      "tile_y": 0,
+      "script": "set_sprite.lua",
+      "param": [
+        "6",
+        ""
+      ]
+    },
+    "E35": {
+      "tile_x": 12,
+      "tile_y": 8,
+      "script": "set_sprite.lua",
+      "param": [
+        "6",
+        ""
+      ]
+    }
+  }
 }

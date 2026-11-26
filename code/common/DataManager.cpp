@@ -98,7 +98,14 @@ bool DataManager::has(const std::string & table, const std::string & file,
 {
 	try
 	{
-		get<json>(table, file, resourcePath);
+		json &jsonFile = getJson(getFilePath(table, file));
+
+		json *reference = &jsonFile;
+		for (auto & res : resourcePath)
+		{
+			reference = &(reference->at(res));
+		}
+
 		return true;
 	} catch (...)
 	{
@@ -189,7 +196,15 @@ json & DataManager::getJson(const std::string & filePath)
 	{
 	}
 
+	requestMissingFile(filePath);
+
 	return loadJsonFile(filePath);
+}
+
+/*****************************************************************************/
+void DataManager::requestMissingFile(const std::string & filePath)
+{
+	// No-op on the server: all data files are local there.
 }
 
 /*****************************************************************************/

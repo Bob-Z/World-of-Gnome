@@ -1,17 +1,18 @@
-draw_script     = "draw/smooth.lua"
-marquee		= "sprite/fish2.png";
-sprite		= "sprite/fish2.png";
-type		= "Fish2"
-map		= "M0_0";
-layer           = 5;
-tile_x		= 15;
-tile_y		= 15;
-flip_e          = 1;
-rot_n           = 90;
-rot_s           = 270;
-ai              = "ai/ai_random.lua";
-ai_params       = [ "1000" ];
-action		= [ ];
-#allowed_tile    = [ "water" ];
-#allowed_tile_script	= "allowed_tile/ground_stair.lua";
-#inventory	= [ ];  
+{
+  "draw_script": "draw/smooth.lua",
+  "marquee": "sprite/fish2.png",
+  "sprite": "sprite/fish2.png",
+  "type": "Fish2",
+  "map": "M0_0",
+  "layer": 5,
+  "tile_x": 15,
+  "tile_y": 15,
+  "flip_e": 1,
+  "rot_n": 90,
+  "rot_s": 270,
+  "ai": "ai/ai_random.lua",
+  "ai_params": [
+    "1000"
+  ],
+  "action": []
+}

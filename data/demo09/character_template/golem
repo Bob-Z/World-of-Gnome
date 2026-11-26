@@ -1,21 +1,51 @@
-draw_script     = "draw/smooth.lua"
-npc		= 1;
-marquee         = "marquee/golem.png";
-sprite          = [ "sprite/shadow/human.png","sprite/golem/S.png" ];
-type            = "Golem"
-map             = "M0_0";
-tile_x           = 15;
-tile_y           = 15;
-layer		= 15;
-#align on lower edge of tile
-align           = 1;
-sprite_move_n   = [ "sprite/shadow/human.png","sprite/golem/WC_N.zip" ];
-sprite_move_s   = [ "sprite/shadow/human.png","sprite/golem/WC_S.zip" ];
-sprite_move_w   = [ "sprite/shadow/human.png","sprite/golem/WC_W.zip" ];
-sprite_move_e   = [ "sprite/shadow/human.png","sprite/golem/WC_E.zip" ];
-sprite_n       = [ "sprite/shadow/human.png","sprite/golem/N.png" ];
-sprite_s       = [ "sprite/shadow/human.png","sprite/golem/S.png" ];
-sprite_w       = [ "sprite/shadow/human.png","sprite/golem/W.png" ];
-sprite_e       = [ "sprite/shadow/human.png","sprite/golem/E.png" ];
-ai              = "ai/ai_random.lua";
-ai_params       = [ "1029" ];
+{
+  "draw_script": "draw/smooth.lua",
+  "npc": 1,
+  "marquee": "marquee/golem.png",
+  "sprite": [
+    "sprite/shadow/human.png",
+    "sprite/golem/S.png"
+  ],
+  "type": "Golem",
+  "map": "M0_0",
+  "tile_x": 15,
+  "tile_y": 15,
+  "layer": 15,
+  "align": 1,
+  "sprite_move_n": [
+    "sprite/shadow/human.png",
+    "sprite/golem/WC_N.zip"
+  ],
+  "sprite_move_s": [
+    "sprite/shadow/human.png",
+    "sprite/golem/WC_S.zip"
+  ],
+  "sprite_move_w": [
+    "sprite/shadow/human.png",
+    "sprite/golem/WC_W.zip"
+  ],
+  "sprite_move_e": [
+    "sprite/shadow/human.png",
+    "sprite/golem/WC_E.zip"
+  ],
+  "sprite_n": [
+    "sprite/shadow/human.png",
+    "sprite/golem/N.png"
+  ],
+  "sprite_s": [
+    "sprite/shadow/human.png",
+    "sprite/golem/S.png"
+  ],
+  "sprite_w": [
+    "sprite/shadow/human.png",
+    "sprite/golem/W.png"
+  ],
+  "sprite_e": [
+    "sprite/shadow/human.png",
+    "sprite/golem/E.png"
+  ],
+  "ai": "ai/ai_random.lua",
+  "ai_params": [
+    "1029"
+  ]
+}

@@ -1,147 +1,190 @@
-bg_red = 192
-bg_blue = 192
-bg_green = 192
-attribute = {
-  x = {
-        current = 19
-      }
-}
-width = 7
-height = 7
-tile_width = 64
-tile_height = 64
-warp_x = 0
-warp_y = 0
-layer0 = {
-        set = [
-"tile/fog.png",
-"",
-"",
-"",
-"",
-"",
-"tile/fog.png",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"character/19/WC_chain_tabard_jacket_male_marquee.zip",
-"",
-"character/19/WC_male_tabard_black_marquee.zip",
-"",
-"character/19/WC_male_tabard_blue_marquee.zip",
-"",
-"tile/exit.gif",
-"character/19/WC_male_tabard_green_marquee.zip",
-"",
-"character/19/WC_male_tabard_purple_marquee.zip",
-"",
-"character/19/WC_male_tabard_red_marquee.zip",
-"tile/exit.gif",
-"",
-"character/19/WC_male_tabard_yellow_marquee.zip",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"tile/fog.png",
-"",
-"",
-"",
-"",
-"",
-"tile/fog.png"
-        ]
-}
-event_list: {
-E0 = {
-   tile_x = 1
-   tile_y = 2
-   script = "set_sprite.lua"
-   param = ( "19", "chain_tabard_jacket_male" )
-}
-E1 = {
-   tile_x = 3
-   tile_y = 2
-   script = "set_sprite.lua"
-   param = ( "19", "male_tabard_black" )
-}
-E2 = {
-   tile_x = 5
-   tile_y = 2
-   script = "set_sprite.lua"
-   param = ( "19", "male_tabard_blue" )
-}
-E3 = {
-   tile_x = 1
-   tile_y = 3
-   script = "set_sprite.lua"
-   param = ( "19", "male_tabard_green" )
-}
-E4 = {
-   tile_x = 3
-   tile_y = 3
-   script = "set_sprite.lua"
-   param = ( "19", "male_tabard_purple" )
-}
-E5 = {
-   tile_x = 5
-   tile_y = 3
-   script = "set_sprite.lua"
-   param = ( "19", "male_tabard_red" )
-}
-E6 = {
-   tile_x = 1
-   tile_y = 4
-   script = "set_sprite.lua"
-   param = ( "19", "male_tabard_yellow" )
-}
-E7 = {
-   tile_x = 0
-   tile_y = 3
-   script = "goto_character_map.lua"
-   param = ( "18", "1", "1" )
-}
-E8 = {
-   tile_x = 6
-   tile_y = 3
-   script = "goto_character_map.lua"
-   param = ( "20", "1", "1" )
-}
-E9 = {
-   tile_x = 0
-   tile_y = 0
-   script = "set_sprite.lua"
-   param = ( "19", "" )
-}
-E10 = {
-   tile_x = 0
-   tile_y = 6
-   script = "set_sprite.lua"
-   param = ( "19", "" )
-}
-E11 = {
-   tile_x = 6
-   tile_y = 0
-   script = "set_sprite.lua"
-   param = ( "19", "" )
-}
-E12 = {
-   tile_x = 6
-   tile_y = 6
-   script = "set_sprite.lua"
-   param = ( "19", "" )
-}
+{
+  "bg_red": 192,
+  "bg_blue": 192,
+  "bg_green": 192,
+  "attribute": {
+    "x": {
+      "current": 19
+    }
+  },
+  "width": 7,
+  "height": 7,
+  "tile_width": 64,
+  "tile_height": 64,
+  "warp_x": 0,
+  "warp_y": 0,
+  "layer0": {
+    "set": [
+      "tile/fog.png",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "tile/fog.png",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "character/19/WC_chain_tabard_jacket_male_marquee.zip",
+      "",
+      "character/19/WC_male_tabard_black_marquee.zip",
+      "",
+      "character/19/WC_male_tabard_blue_marquee.zip",
+      "",
+      "tile/exit.gif",
+      "character/19/WC_male_tabard_green_marquee.zip",
+      "",
+      "character/19/WC_male_tabard_purple_marquee.zip",
+      "",
+      "character/19/WC_male_tabard_red_marquee.zip",
+      "tile/exit.gif",
+      "",
+      "character/19/WC_male_tabard_yellow_marquee.zip",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "tile/fog.png",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "tile/fog.png"
+    ]
+  },
+  "event_list": {
+    "E0": {
+      "tile_x": 1,
+      "tile_y": 2,
+      "script": "set_sprite.lua",
+      "param": [
+        "19",
+        "chain_tabard_jacket_male"
+      ]
+    },
+    "E1": {
+      "tile_x": 3,
+      "tile_y": 2,
+      "script": "set_sprite.lua",
+      "param": [
+        "19",
+        "male_tabard_black"
+      ]
+    },
+    "E2": {
+      "tile_x": 5,
+      "tile_y": 2,
+      "script": "set_sprite.lua",
+      "param": [
+        "19",
+        "male_tabard_blue"
+      ]
+    },
+    "E3": {
+      "tile_x": 1,
+      "tile_y": 3,
+      "script": "set_sprite.lua",
+      "param": [
+        "19",
+        "male_tabard_green"
+      ]
+    },
+    "E4": {
+      "tile_x": 3,
+      "tile_y": 3,
+      "script": "set_sprite.lua",
+      "param": [
+        "19",
+        "male_tabard_purple"
+      ]
+    },
+    "E5": {
+      "tile_x": 5,
+      "tile_y": 3,
+      "script": "set_sprite.lua",
+      "param": [
+        "19",
+        "male_tabard_red"
+      ]
+    },
+    "E6": {
+      "tile_x": 1,
+      "tile_y": 4,
+      "script": "set_sprite.lua",
+      "param": [
+        "19",
+        "male_tabard_yellow"
+      ]
+    },
+    "E7": {
+      "tile_x": 0,
+      "tile_y": 3,
+      "script": "goto_character_map.lua",
+      "param": [
+        "18",
+        "1",
+        "1"
+      ]
+    },
+    "E8": {
+      "tile_x": 6,
+      "tile_y": 3,
+      "script": "goto_character_map.lua",
+      "param": [
+        "20",
+        "1",
+        "1"
+      ]
+    },
+    "E9": {
+      "tile_x": 0,
+      "tile_y": 0,
+      "script": "set_sprite.lua",
+      "param": [
+        "19",
+        ""
+      ]
+    },
+    "E10": {
+      "tile_x": 0,
+      "tile_y": 6,
+      "script": "set_sprite.lua",
+      "param": [
+        "19",
+        ""
+      ]
+    },
+    "E11": {
+      "tile_x": 6,
+      "tile_y": 0,
+      "script": "set_sprite.lua",
+      "param": [
+        "19",
+        ""
+      ]
+    },
+    "E12": {
+      "tile_x": 6,
+      "tile_y": 6,
+      "script": "set_sprite.lua",
+      "param": [
+        "19",
+        ""
+      ]
+    }
+  }
 }

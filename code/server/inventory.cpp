@@ -95,7 +95,7 @@ int inventory_add(const char *ctx_id, const char *item_id)
 	else
 	{
 		if (entry_read_int(ITEM_TABLE.c_str(), item_id, &add_count,
-				ITEM_QUANTITY, nullptr) == false)
+				ITEM_QUANTITY.c_str(), nullptr) == false)
 		{
 			return -1;
 		}
@@ -109,12 +109,12 @@ int inventory_add(const char *ctx_id, const char *item_id)
 		while (name_list[index] != nullptr)
 		{
 			if (entry_read_string(ITEM_TABLE.c_str(), name_list[index],
-					&current_template, ITEM_TEMPLATE, nullptr) == true)
+					&current_template, ITEM_TEMPLATE.c_str(), nullptr) == true)
 			{
 				if (strcmp(mytemplate, current_template) == 0)
 				{
 					if (entry_read_int(ITEM_TABLE.c_str(), name_list[index],
-							&current_count, ITEM_QUANTITY, nullptr) == true)
+							&current_count, ITEM_QUANTITY.c_str(), nullptr) == true)
 					{
 						free(current_template);
 						free(mytemplate);

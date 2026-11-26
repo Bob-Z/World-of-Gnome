@@ -1,147 +1,190 @@
-bg_red = 192
-bg_blue = 192
-bg_green = 192
-attribute = {
-  x = {
-        current = 17
-      }
-}
-width = 7
-height = 7
-tile_width = 64
-tile_height = 64
-warp_x = 0
-warp_y = 0
-layer0 = {
-        set = [
-"tile/fog.png",
-"",
-"",
-"",
-"",
-"",
-"tile/fog.png",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"character/17/WC_gold_arms_male_marquee.zip",
-"",
-"character/17/WC_leather_shoulders_male_marquee.zip",
-"",
-"character/17/WC_Male_legionbauldron_bronze_marquee.zip",
-"",
-"tile/exit.gif",
-"character/17/WC_Male_legionbauldron_gold_marquee.zip",
-"",
-"character/17/WC_Male_legionbauldron_steel_marquee.zip",
-"",
-"character/17/WC_male_SingleBauldron_marquee.zip",
-"tile/exit.gif",
-"",
-"character/17/WC_plate_arms_male_marquee.zip",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"tile/fog.png",
-"",
-"",
-"",
-"",
-"",
-"tile/fog.png"
-        ]
-}
-event_list: {
-E0 = {
-   tile_x = 1
-   tile_y = 2
-   script = "set_sprite.lua"
-   param = ( "17", "gold_arms_male" )
-}
-E1 = {
-   tile_x = 3
-   tile_y = 2
-   script = "set_sprite.lua"
-   param = ( "17", "leather_shoulders_male" )
-}
-E2 = {
-   tile_x = 5
-   tile_y = 2
-   script = "set_sprite.lua"
-   param = ( "17", "Male_legionbauldron_bronze" )
-}
-E3 = {
-   tile_x = 1
-   tile_y = 3
-   script = "set_sprite.lua"
-   param = ( "17", "Male_legionbauldron_gold" )
-}
-E4 = {
-   tile_x = 3
-   tile_y = 3
-   script = "set_sprite.lua"
-   param = ( "17", "Male_legionbauldron_steel" )
-}
-E5 = {
-   tile_x = 5
-   tile_y = 3
-   script = "set_sprite.lua"
-   param = ( "17", "male_SingleBauldron" )
-}
-E6 = {
-   tile_x = 1
-   tile_y = 4
-   script = "set_sprite.lua"
-   param = ( "17", "plate_arms_male" )
-}
-E7 = {
-   tile_x = 0
-   tile_y = 3
-   script = "goto_character_map.lua"
-   param = ( "16", "1", "1" )
-}
-E8 = {
-   tile_x = 6
-   tile_y = 3
-   script = "goto_character_map.lua"
-   param = ( "18", "1", "1" )
-}
-E9 = {
-   tile_x = 0
-   tile_y = 0
-   script = "set_sprite.lua"
-   param = ( "17", "" )
-}
-E10 = {
-   tile_x = 0
-   tile_y = 6
-   script = "set_sprite.lua"
-   param = ( "17", "" )
-}
-E11 = {
-   tile_x = 6
-   tile_y = 0
-   script = "set_sprite.lua"
-   param = ( "17", "" )
-}
-E12 = {
-   tile_x = 6
-   tile_y = 6
-   script = "set_sprite.lua"
-   param = ( "17", "" )
-}
+{
+  "bg_red": 192,
+  "bg_blue": 192,
+  "bg_green": 192,
+  "attribute": {
+    "x": {
+      "current": 17
+    }
+  },
+  "width": 7,
+  "height": 7,
+  "tile_width": 64,
+  "tile_height": 64,
+  "warp_x": 0,
+  "warp_y": 0,
+  "layer0": {
+    "set": [
+      "tile/fog.png",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "tile/fog.png",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "character/17/WC_gold_arms_male_marquee.zip",
+      "",
+      "character/17/WC_leather_shoulders_male_marquee.zip",
+      "",
+      "character/17/WC_Male_legionbauldron_bronze_marquee.zip",
+      "",
+      "tile/exit.gif",
+      "character/17/WC_Male_legionbauldron_gold_marquee.zip",
+      "",
+      "character/17/WC_Male_legionbauldron_steel_marquee.zip",
+      "",
+      "character/17/WC_male_SingleBauldron_marquee.zip",
+      "tile/exit.gif",
+      "",
+      "character/17/WC_plate_arms_male_marquee.zip",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "tile/fog.png",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "tile/fog.png"
+    ]
+  },
+  "event_list": {
+    "E0": {
+      "tile_x": 1,
+      "tile_y": 2,
+      "script": "set_sprite.lua",
+      "param": [
+        "17",
+        "gold_arms_male"
+      ]
+    },
+    "E1": {
+      "tile_x": 3,
+      "tile_y": 2,
+      "script": "set_sprite.lua",
+      "param": [
+        "17",
+        "leather_shoulders_male"
+      ]
+    },
+    "E2": {
+      "tile_x": 5,
+      "tile_y": 2,
+      "script": "set_sprite.lua",
+      "param": [
+        "17",
+        "Male_legionbauldron_bronze"
+      ]
+    },
+    "E3": {
+      "tile_x": 1,
+      "tile_y": 3,
+      "script": "set_sprite.lua",
+      "param": [
+        "17",
+        "Male_legionbauldron_gold"
+      ]
+    },
+    "E4": {
+      "tile_x": 3,
+      "tile_y": 3,
+      "script": "set_sprite.lua",
+      "param": [
+        "17",
+        "Male_legionbauldron_steel"
+      ]
+    },
+    "E5": {
+      "tile_x": 5,
+      "tile_y": 3,
+      "script": "set_sprite.lua",
+      "param": [
+        "17",
+        "male_SingleBauldron"
+      ]
+    },
+    "E6": {
+      "tile_x": 1,
+      "tile_y": 4,
+      "script": "set_sprite.lua",
+      "param": [
+        "17",
+        "plate_arms_male"
+      ]
+    },
+    "E7": {
+      "tile_x": 0,
+      "tile_y": 3,
+      "script": "goto_character_map.lua",
+      "param": [
+        "16",
+        "1",
+        "1"
+      ]
+    },
+    "E8": {
+      "tile_x": 6,
+      "tile_y": 3,
+      "script": "goto_character_map.lua",
+      "param": [
+        "18",
+        "1",
+        "1"
+      ]
+    },
+    "E9": {
+      "tile_x": 0,
+      "tile_y": 0,
+      "script": "set_sprite.lua",
+      "param": [
+        "17",
+        ""
+      ]
+    },
+    "E10": {
+      "tile_x": 0,
+      "tile_y": 6,
+      "script": "set_sprite.lua",
+      "param": [
+        "17",
+        ""
+      ]
+    },
+    "E11": {
+      "tile_x": 6,
+      "tile_y": 0,
+      "script": "set_sprite.lua",
+      "param": [
+        "17",
+        ""
+      ]
+    },
+    "E12": {
+      "tile_x": 6,
+      "tile_y": 6,
+      "script": "set_sprite.lua",
+      "param": [
+        "17",
+        ""
+      ]
+    }
+  }
 }

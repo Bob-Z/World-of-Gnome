@@ -418,8 +418,8 @@ static int compose_attribute(Context *ctx, std::vector<SdlItem*> &itemArray)
 	attributeText.clear();
 
 	char **nameArray;
-	if (entry_get_group_list(CHARACTER_TABLE, ctx->getId().c_str(), &nameArray,
-			ATTRIBUTE_GROUP, nullptr) == false)
+	if (entry_get_group_list(CHARACTER_TABLE.c_str(), ctx->getId().c_str(), &nameArray,
+			ATTRIBUTE_GROUP.c_str(), nullptr) == false)
 	{
 		return 0;
 	}
@@ -432,8 +432,8 @@ static int compose_attribute(Context *ctx, std::vector<SdlItem*> &itemArray)
 	while (nameArray[index] != nullptr)
 	{
 		int value;
-		if (entry_read_int(CHARACTER_TABLE, ctx->getId().c_str(), &value,
-				ATTRIBUTE_GROUP, nameArray[index], ATTRIBUTE_CURRENT,
+		if (entry_read_int(CHARACTER_TABLE.c_str(), ctx->getId().c_str(), &value,
+				ATTRIBUTE_GROUP.c_str(), nameArray[index], ATTRIBUTE_CURRENT.c_str(),
 				nullptr) == false)
 		{
 			index++;
@@ -517,8 +517,8 @@ static int compose_action(Context *ctx, std::vector<SdlItem*> &itemArray)
 
 	// Read action list for current user
 	char **actionArray = nullptr;
-	if (entry_read_list(CHARACTER_TABLE, ctx->getId().c_str(), &actionArray,
-			CHARACTER_KEY_ACTION, nullptr) == false)
+	if (entry_read_list(CHARACTER_TABLE.c_str(), ctx->getId().c_str(), &actionArray,
+			CHARACTER_KEY_ACTION.c_str(), nullptr) == false)
 	{
 		return 0;
 	}
@@ -695,8 +695,8 @@ static void compose_equipment(Context *ctx, std::vector<SdlItem*> &itemArray)
 	sdl_get_output_size(&sw, &sh);
 
 	char **slot_list = nullptr;
-	entry_get_group_list(CHARACTER_TABLE, ctx->getId().c_str(), &slot_list,
-			EQUIPMENT_GROUP, nullptr);
+	entry_get_group_list(CHARACTER_TABLE.c_str(), ctx->getId().c_str(), &slot_list,
+			EQUIPMENT_GROUP.c_str(), nullptr);
 
 	int max_h = 0;
 	int max_w = 0;
@@ -708,7 +708,7 @@ static void compose_equipment(Context *ctx, std::vector<SdlItem*> &itemArray)
 	{
 #if 0
 		// Get the slot name
-		if(entry_read_string(CHARACTER_TABLE,ctx->m_id,&item_name,EQUIPMENT_GROUP,slot_list[index],EQUIPMENT_NAME,nullptr) == false )
+		if(entry_read_string(CHARACTER_TABLE.c_str(),ctx->m_id,&item_name,EQUIPMENT_GROUP.c_str(),slot_list[index],EQUIPMENT_NAME.c_str(),nullptr) == false )
 		{
 			name = strdup(slot_list[index]);
 		}
@@ -720,8 +720,8 @@ static void compose_equipment(Context *ctx, std::vector<SdlItem*> &itemArray)
 #endif
 		h1 = 0;
 		// Get the slot icon
-		if (entry_read_string(CHARACTER_TABLE, ctx->getId().c_str(), &iconName,
-				EQUIPMENT_GROUP, slot_list[index], EQUIPMENT_ICON,
+		if (entry_read_string(CHARACTER_TABLE.c_str(), ctx->getId().c_str(), &iconName,
+				EQUIPMENT_GROUP.c_str(), slot_list[index], EQUIPMENT_ICON.c_str(),
 				nullptr) == false)
 		{
 			continue;
@@ -757,9 +757,9 @@ static void compose_equipment(Context *ctx, std::vector<SdlItem*> &itemArray)
 
 		// Is there an equipped object ?
 		char *tmpEquippedName = nullptr;
-		if (entry_read_string(CHARACTER_TABLE, ctx->getId().c_str(),
-				&tmpEquippedName, EQUIPMENT_GROUP, slot_list[index],
-				EQUIPMENT_EQUIPPED, nullptr) == true)
+		if (entry_read_string(CHARACTER_TABLE.c_str(), ctx->getId().c_str(),
+				&tmpEquippedName, EQUIPMENT_GROUP.c_str(), slot_list[index],
+				EQUIPMENT_EQUIPPED.c_str(), nullptr) == true)
 		{
 			equippedName = std::string(tmpEquippedName);
 			free(tmpEquippedName);
@@ -769,7 +769,7 @@ static void compose_equipment(Context *ctx, std::vector<SdlItem*> &itemArray)
 		{
 #if 0
 			// Get the equipped object name
-			if(entry_read_string(ITEM_TABLE,equippedName,&equipped_text,ITEM_NAME,nullptr) == false )
+			if(entry_read_string(ITEM_TABLE.c_str(),equippedName,&equipped_text,ITEM_NAME.c_str(),nullptr) == false )
 			{
 				werr(LOGDESIGNER,"Can't read object %s name in equipment slot %s",equippedName,slot_list[index]);
 			}
@@ -958,12 +958,12 @@ static void cb_print_coord()
 	Context *ctx = context_get_player();
 
 	int mapWidth = 0;
-	entry_read_int(MAP_TABLE, ctx->getMap().c_str(), &mapWidth, MAP_KEY_WIDTH,
+	entry_read_int(MAP_TABLE.c_str(), ctx->getMap().c_str(), &mapWidth, MAP_KEY_WIDTH.c_str(),
 			nullptr);
 
 //TODO: take layer into account
 #if 0
-	entry_read_list_index(MAP_TABLE,ctx->m_map,&type,scr_play_get_current_x()+scr_play_get_current_y()*mapWidth,layer_name,MAP_KEY_TYPE,nullptr);
+	entry_read_list_index(MAP_TABLE.c_str(),ctx->m_map,&type,scr_play_get_current_x()+scr_play_get_current_y()*mapWidth,layer_name,MAP_KEY_TYPE.c_str(),nullptr);
 	sprintf(buf,"x=%d y=%d type=%s",scr_play_get_current_x(),scr_play_get_current_y(),type);
 	free(type);
 #endif
@@ -1054,8 +1054,8 @@ static void compose_inventory(Context *ctx, std::vector<SdlItem*> &itemArray)
 
 	// read data from file
 	char **inventoryList = nullptr;
-	if (entry_read_list(CHARACTER_TABLE, ctx->getId().c_str(), &inventoryList,
-			CHARACTER_KEY_INVENTORY, nullptr) == false)
+	if (entry_read_list(CHARACTER_TABLE.c_str(), ctx->getId().c_str(), &inventoryList,
+			CHARACTER_KEY_INVENTORY.c_str(), nullptr) == false)
 	{
 		return;
 	}
@@ -1079,8 +1079,8 @@ static void compose_inventory(Context *ctx, std::vector<SdlItem*> &itemArray)
 		if (mytemplate == nullptr)
 		{
 			// Icon is mandatory for now
-			if (entry_read_string(ITEM_TABLE, inventoryId.c_str(), &value,
-					ITEM_ICON, nullptr) == false)
+			if (entry_read_string(ITEM_TABLE.c_str(), inventoryId.c_str(), &value,
+					ITEM_ICON.c_str(), nullptr) == false)
 			{
 				continue;
 			}
@@ -1088,8 +1088,8 @@ static void compose_inventory(Context *ctx, std::vector<SdlItem*> &itemArray)
 			anim = imageDB_get_anim(ctx, value);
 			free(value);
 
-			if (entry_read_string(ITEM_TABLE, inventoryId.c_str(), &value,
-					ITEM_NAME, nullptr) == false)
+			if (entry_read_string(ITEM_TABLE.c_str(), inventoryId.c_str(), &value,
+					ITEM_NAME.c_str(), nullptr) == false)
 			{
 				label = inventoryId;
 			}
@@ -1098,8 +1098,8 @@ static void compose_inventory(Context *ctx, std::vector<SdlItem*> &itemArray)
 				label = std::string(value);
 			}
 
-			if (entry_read_string(ITEM_TABLE, inventoryId.c_str(), &value,
-					ITEM_DESC, nullptr) == false)
+			if (entry_read_string(ITEM_TABLE.c_str(), inventoryId.c_str(), &value,
+					ITEM_DESC.c_str(), nullptr) == false)
 			{
 				description = "";
 			}
@@ -1111,8 +1111,8 @@ static void compose_inventory(Context *ctx, std::vector<SdlItem*> &itemArray)
 		else
 		{
 			// Icon is mandatory for now
-			if (entry_read_string(ITEM_TEMPLATE_TABLE, mytemplate, &value,
-					ITEM_ICON, nullptr) == false)
+			if (entry_read_string(ITEM_TEMPLATE_TABLE.c_str(), mytemplate, &value,
+					ITEM_ICON.c_str(), nullptr) == false)
 			{
 				free(mytemplate);
 				continue;
@@ -1121,7 +1121,7 @@ static void compose_inventory(Context *ctx, std::vector<SdlItem*> &itemArray)
 			anim = imageDB_get_anim(ctx, value);
 			free(value);
 
-			if (entry_read_string(ITEM_TEMPLATE_TABLE, mytemplate, &value,
+			if (entry_read_string(ITEM_TEMPLATE_TABLE.c_str(), mytemplate, &value,
 					ITEM_NAME, nullptr) == false)
 			{
 				label = inventoryId;
@@ -1131,8 +1131,8 @@ static void compose_inventory(Context *ctx, std::vector<SdlItem*> &itemArray)
 				label = std::string(value);
 			}
 
-			if (entry_read_string(ITEM_TEMPLATE_TABLE, mytemplate, &value,
-					ITEM_DESC, nullptr) == false)
+			if (entry_read_string(ITEM_TEMPLATE_TABLE.c_str(), mytemplate, &value,
+					ITEM_DESC.c_str(), nullptr) == false)
 			{
 				description = "";
 			}
@@ -1209,8 +1209,8 @@ static void compose_inventory_select(Context *ctx,
 
 	// read data from file
 	char **inventoryList = nullptr;
-	if (entry_read_list(CHARACTER_TABLE, ctx->getId().c_str(), &inventoryList,
-			CHARACTER_KEY_INVENTORY, nullptr) == false)
+	if (entry_read_list(CHARACTER_TABLE.c_str(), ctx->getId().c_str(), &inventoryList,
+			CHARACTER_KEY_INVENTORY.c_str(), nullptr) == false)
 	{
 		return;
 	}
@@ -1235,7 +1235,7 @@ static void compose_inventory_select(Context *ctx,
 
 		if (mytemplate == nullptr)
 		{
-			if (entry_read_string(ITEM_TABLE, inventory.c_str(), &icon_name,
+			if (entry_read_string(ITEM_TABLE.c_str(), inventory.c_str(), &icon_name,
 					ITEM_ICON, nullptr) == false)
 			{
 				ERR_DESIGN("Can't read item " + inventory + " icon name");
@@ -1243,7 +1243,7 @@ static void compose_inventory_select(Context *ctx,
 		}
 		else
 		{
-			if (entry_read_string(ITEM_TEMPLATE_TABLE, mytemplate, &icon_name,
+			if (entry_read_string(ITEM_TEMPLATE_TABLE.c_str(), mytemplate, &icon_name,
 					ITEM_ICON, nullptr) == false)
 			{
 				ERR_DESIGN(

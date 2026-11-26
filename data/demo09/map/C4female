@@ -1,869 +1,1161 @@
-bg_red = 192
-bg_blue = 192
-bg_green = 192
-attribute = {
-  x = {
-        current = 4
-      }
-}
-width = 21
-height = 13
-tile_width = 64
-tile_height = 64
-warp_x = 0
-warp_y = 0
-layer0 = {
-        set = [
-"tile/fog.png",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"tile/fog.png",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"character/4/WC_female_bigstache_black_marquee.zip",
-"",
-"character/4/WC_female_bigstache_blonde2_marquee.zip",
-"",
-"character/4/WC_female_bigstache_blonde_marquee.zip",
-"",
-"character/4/WC_female_bigstache_blue2_marquee.zip",
-"",
-"character/4/WC_female_bigstache_blue_marquee.zip",
-"",
-"character/4/WC_female_bigstache_brown2_marquee.zip",
-"",
-"character/4/WC_female_bigstache_brown_marquee.zip",
-"",
-"character/4/WC_female_bigstache_brunette2_marquee.zip",
-"",
-"character/4/WC_female_bigstache_brunette_marquee.zip",
-"",
-"character/4/WC_female_bigstache_dark-blonde_marquee.zip",
-"",
-"",
-"character/4/WC_female_bigstache_gold_marquee.zip",
-"",
-"character/4/WC_female_bigstache_gray2_marquee.zip",
-"",
-"character/4/WC_female_bigstache_gray_marquee.zip",
-"",
-"character/4/WC_female_bigstache_green2_marquee.zip",
-"",
-"character/4/WC_female_bigstache_green_marquee.zip",
-"",
-"character/4/WC_female_bigstache_light-blonde2_marquee.zip",
-"",
-"character/4/WC_female_bigstache_light-blonde_marquee.zip",
-"",
-"character/4/WC_female_bigstache_marquee.zip",
-"",
-"character/4/WC_female_bigstache_pink2_marquee.zip",
-"",
-"character/4/WC_female_bigstache_pink_marquee.zip",
-"",
-"",
-"character/4/WC_female_bigstache_purple_marquee.zip",
-"",
-"character/4/WC_female_bigstache_raven2_marquee.zip",
-"",
-"character/4/WC_female_bigstache_raven_marquee.zip",
-"",
-"character/4/WC_female_bigstache_redhead2_marquee.zip",
-"",
-"character/4/WC_female_bigstache_redhead_marquee.zip",
-"",
-"character/4/WC_female_bigstache_ruby-red_marquee.zip",
-"",
-"character/4/WC_female_bigstache_white-blonde2_marquee.zip",
-"",
-"character/4/WC_female_bigstache_white-blonde_marquee.zip",
-"",
-"character/4/WC_female_bigstache_white-cyan_marquee.zip",
-"",
-"character/4/WC_female_bigstache_white_marquee.zip",
-"",
-"",
-"character/4/WC_female_frenchstache_black_marquee.zip",
-"",
-"character/4/WC_female_frenchstache_blonde2_marquee.zip",
-"",
-"character/4/WC_female_frenchstache_blonde_marquee.zip",
-"",
-"character/4/WC_female_frenchstache_blue2_marquee.zip",
-"",
-"character/4/WC_female_frenchstache_blue_marquee.zip",
-"",
-"character/4/WC_female_frenchstache_brown2_marquee.zip",
-"",
-"character/4/WC_female_frenchstache_brown_marquee.zip",
-"",
-"character/4/WC_female_frenchstache_brunette2_marquee.zip",
-"",
-"character/4/WC_female_frenchstache_brunette_marquee.zip",
-"",
-"character/4/WC_female_frenchstache_dark-blonde_marquee.zip",
-"",
-"tile/exit.gif",
-"character/4/WC_female_frenchstache_gold_marquee.zip",
-"",
-"character/4/WC_female_frenchstache_gray2_marquee.zip",
-"",
-"character/4/WC_female_frenchstache_gray_marquee.zip",
-"",
-"character/4/WC_female_frenchstache_green2_marquee.zip",
-"",
-"character/4/WC_female_frenchstache_green_marquee.zip",
-"",
-"character/4/WC_female_frenchstache_light-blonde2_marquee.zip",
-"",
-"character/4/WC_female_frenchstache_light-blonde_marquee.zip",
-"",
-"character/4/WC_female_frenchstache_marquee.zip",
-"",
-"character/4/WC_female_frenchstache_pink2_marquee.zip",
-"",
-"character/4/WC_female_frenchstache_pink_marquee.zip",
-"tile/exit.gif",
-"",
-"character/4/WC_female_frenchstache_purple_marquee.zip",
-"",
-"character/4/WC_female_frenchstache_raven2_marquee.zip",
-"",
-"character/4/WC_female_frenchstache_raven_marquee.zip",
-"",
-"character/4/WC_female_frenchstache_redhead2_marquee.zip",
-"",
-"character/4/WC_female_frenchstache_redhead_marquee.zip",
-"",
-"character/4/WC_female_frenchstache_ruby-red_marquee.zip",
-"",
-"character/4/WC_female_frenchstache_white-blonde2_marquee.zip",
-"",
-"character/4/WC_female_frenchstache_white-blonde_marquee.zip",
-"",
-"character/4/WC_female_frenchstache_white-cyan_marquee.zip",
-"",
-"character/4/WC_female_frenchstache_white_marquee.zip",
-"",
-"",
-"character/4/WC_female_mustache_black_marquee.zip",
-"",
-"character/4/WC_female_mustache_blonde2_marquee.zip",
-"",
-"character/4/WC_female_mustache_blonde_marquee.zip",
-"",
-"character/4/WC_female_mustache_blue2_marquee.zip",
-"",
-"character/4/WC_female_mustache_blue_marquee.zip",
-"",
-"character/4/WC_female_mustache_brown2_marquee.zip",
-"",
-"character/4/WC_female_mustache_brown_marquee.zip",
-"",
-"character/4/WC_female_mustache_brunette2_marquee.zip",
-"",
-"character/4/WC_female_mustache_brunette_marquee.zip",
-"",
-"character/4/WC_female_mustache_dark-blonde_marquee.zip",
-"",
-"",
-"character/4/WC_female_mustache_gold_marquee.zip",
-"",
-"character/4/WC_female_mustache_gray2_marquee.zip",
-"",
-"character/4/WC_female_mustache_gray_marquee.zip",
-"",
-"character/4/WC_female_mustache_green2_marquee.zip",
-"",
-"character/4/WC_female_mustache_green_marquee.zip",
-"",
-"character/4/WC_female_mustache_light-blonde2_marquee.zip",
-"",
-"character/4/WC_female_mustache_light-blonde_marquee.zip",
-"",
-"character/4/WC_female_mustache_marquee.zip",
-"",
-"character/4/WC_female_mustache_pink2_marquee.zip",
-"",
-"character/4/WC_female_mustache_pink_marquee.zip",
-"",
-"",
-"character/4/WC_female_mustache_purple_marquee.zip",
-"",
-"character/4/WC_female_mustache_raven2_marquee.zip",
-"",
-"character/4/WC_female_mustache_raven_marquee.zip",
-"",
-"character/4/WC_female_mustache_redhead2_marquee.zip",
-"",
-"character/4/WC_female_mustache_redhead_marquee.zip",
-"",
-"character/4/WC_female_mustache_ruby-red_marquee.zip",
-"",
-"character/4/WC_female_mustache_white-blonde2_marquee.zip",
-"",
-"character/4/WC_female_mustache_white-blonde_marquee.zip",
-"",
-"character/4/WC_female_mustache_white-cyan_marquee.zip",
-"",
-"character/4/WC_female_mustache_white_marquee.zip",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"tile/fog.png",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"tile/fog.png"
-        ]
-}
-event_list: {
-E0 = {
-   tile_x = 1
-   tile_y = 2
-   script = "set_sprite.lua"
-   param = ( "4", "female_bigstache_black" )
-}
-E1 = {
-   tile_x = 3
-   tile_y = 2
-   script = "set_sprite.lua"
-   param = ( "4", "female_bigstache_blonde2" )
-}
-E2 = {
-   tile_x = 5
-   tile_y = 2
-   script = "set_sprite.lua"
-   param = ( "4", "female_bigstache_blonde" )
-}
-E3 = {
-   tile_x = 7
-   tile_y = 2
-   script = "set_sprite.lua"
-   param = ( "4", "female_bigstache_blue2" )
-}
-E4 = {
-   tile_x = 9
-   tile_y = 2
-   script = "set_sprite.lua"
-   param = ( "4", "female_bigstache_blue" )
-}
-E5 = {
-   tile_x = 11
-   tile_y = 2
-   script = "set_sprite.lua"
-   param = ( "4", "female_bigstache_brown2" )
-}
-E6 = {
-   tile_x = 13
-   tile_y = 2
-   script = "set_sprite.lua"
-   param = ( "4", "female_bigstache_brown" )
-}
-E7 = {
-   tile_x = 15
-   tile_y = 2
-   script = "set_sprite.lua"
-   param = ( "4", "female_bigstache_brunette2" )
-}
-E8 = {
-   tile_x = 17
-   tile_y = 2
-   script = "set_sprite.lua"
-   param = ( "4", "female_bigstache_brunette" )
-}
-E9 = {
-   tile_x = 19
-   tile_y = 2
-   script = "set_sprite.lua"
-   param = ( "4", "female_bigstache_dark-blonde" )
-}
-E10 = {
-   tile_x = 1
-   tile_y = 3
-   script = "set_sprite.lua"
-   param = ( "4", "female_bigstache_gold" )
-}
-E11 = {
-   tile_x = 3
-   tile_y = 3
-   script = "set_sprite.lua"
-   param = ( "4", "female_bigstache_gray2" )
-}
-E12 = {
-   tile_x = 5
-   tile_y = 3
-   script = "set_sprite.lua"
-   param = ( "4", "female_bigstache_gray" )
-}
-E13 = {
-   tile_x = 7
-   tile_y = 3
-   script = "set_sprite.lua"
-   param = ( "4", "female_bigstache_green2" )
-}
-E14 = {
-   tile_x = 9
-   tile_y = 3
-   script = "set_sprite.lua"
-   param = ( "4", "female_bigstache_green" )
-}
-E15 = {
-   tile_x = 11
-   tile_y = 3
-   script = "set_sprite.lua"
-   param = ( "4", "female_bigstache_light-blonde2" )
-}
-E16 = {
-   tile_x = 13
-   tile_y = 3
-   script = "set_sprite.lua"
-   param = ( "4", "female_bigstache_light-blonde" )
-}
-E17 = {
-   tile_x = 15
-   tile_y = 3
-   script = "set_sprite.lua"
-   param = ( "4", "female_bigstache" )
-}
-E18 = {
-   tile_x = 17
-   tile_y = 3
-   script = "set_sprite.lua"
-   param = ( "4", "female_bigstache_pink2" )
-}
-E19 = {
-   tile_x = 19
-   tile_y = 3
-   script = "set_sprite.lua"
-   param = ( "4", "female_bigstache_pink" )
-}
-E20 = {
-   tile_x = 1
-   tile_y = 4
-   script = "set_sprite.lua"
-   param = ( "4", "female_bigstache_purple" )
-}
-E21 = {
-   tile_x = 3
-   tile_y = 4
-   script = "set_sprite.lua"
-   param = ( "4", "female_bigstache_raven2" )
-}
-E22 = {
-   tile_x = 5
-   tile_y = 4
-   script = "set_sprite.lua"
-   param = ( "4", "female_bigstache_raven" )
-}
-E23 = {
-   tile_x = 7
-   tile_y = 4
-   script = "set_sprite.lua"
-   param = ( "4", "female_bigstache_redhead2" )
-}
-E24 = {
-   tile_x = 9
-   tile_y = 4
-   script = "set_sprite.lua"
-   param = ( "4", "female_bigstache_redhead" )
-}
-E25 = {
-   tile_x = 11
-   tile_y = 4
-   script = "set_sprite.lua"
-   param = ( "4", "female_bigstache_ruby-red" )
-}
-E26 = {
-   tile_x = 13
-   tile_y = 4
-   script = "set_sprite.lua"
-   param = ( "4", "female_bigstache_white-blonde2" )
-}
-E27 = {
-   tile_x = 15
-   tile_y = 4
-   script = "set_sprite.lua"
-   param = ( "4", "female_bigstache_white-blonde" )
-}
-E28 = {
-   tile_x = 17
-   tile_y = 4
-   script = "set_sprite.lua"
-   param = ( "4", "female_bigstache_white-cyan" )
-}
-E29 = {
-   tile_x = 19
-   tile_y = 4
-   script = "set_sprite.lua"
-   param = ( "4", "female_bigstache_white" )
-}
-E30 = {
-   tile_x = 1
-   tile_y = 5
-   script = "set_sprite.lua"
-   param = ( "4", "female_frenchstache_black" )
-}
-E31 = {
-   tile_x = 3
-   tile_y = 5
-   script = "set_sprite.lua"
-   param = ( "4", "female_frenchstache_blonde2" )
-}
-E32 = {
-   tile_x = 5
-   tile_y = 5
-   script = "set_sprite.lua"
-   param = ( "4", "female_frenchstache_blonde" )
-}
-E33 = {
-   tile_x = 7
-   tile_y = 5
-   script = "set_sprite.lua"
-   param = ( "4", "female_frenchstache_blue2" )
-}
-E34 = {
-   tile_x = 9
-   tile_y = 5
-   script = "set_sprite.lua"
-   param = ( "4", "female_frenchstache_blue" )
-}
-E35 = {
-   tile_x = 11
-   tile_y = 5
-   script = "set_sprite.lua"
-   param = ( "4", "female_frenchstache_brown2" )
-}
-E36 = {
-   tile_x = 13
-   tile_y = 5
-   script = "set_sprite.lua"
-   param = ( "4", "female_frenchstache_brown" )
-}
-E37 = {
-   tile_x = 15
-   tile_y = 5
-   script = "set_sprite.lua"
-   param = ( "4", "female_frenchstache_brunette2" )
-}
-E38 = {
-   tile_x = 17
-   tile_y = 5
-   script = "set_sprite.lua"
-   param = ( "4", "female_frenchstache_brunette" )
-}
-E39 = {
-   tile_x = 19
-   tile_y = 5
-   script = "set_sprite.lua"
-   param = ( "4", "female_frenchstache_dark-blonde" )
-}
-E40 = {
-   tile_x = 1
-   tile_y = 6
-   script = "set_sprite.lua"
-   param = ( "4", "female_frenchstache_gold" )
-}
-E41 = {
-   tile_x = 3
-   tile_y = 6
-   script = "set_sprite.lua"
-   param = ( "4", "female_frenchstache_gray2" )
-}
-E42 = {
-   tile_x = 5
-   tile_y = 6
-   script = "set_sprite.lua"
-   param = ( "4", "female_frenchstache_gray" )
-}
-E43 = {
-   tile_x = 7
-   tile_y = 6
-   script = "set_sprite.lua"
-   param = ( "4", "female_frenchstache_green2" )
-}
-E44 = {
-   tile_x = 9
-   tile_y = 6
-   script = "set_sprite.lua"
-   param = ( "4", "female_frenchstache_green" )
-}
-E45 = {
-   tile_x = 11
-   tile_y = 6
-   script = "set_sprite.lua"
-   param = ( "4", "female_frenchstache_light-blonde2" )
-}
-E46 = {
-   tile_x = 13
-   tile_y = 6
-   script = "set_sprite.lua"
-   param = ( "4", "female_frenchstache_light-blonde" )
-}
-E47 = {
-   tile_x = 15
-   tile_y = 6
-   script = "set_sprite.lua"
-   param = ( "4", "female_frenchstache" )
-}
-E48 = {
-   tile_x = 17
-   tile_y = 6
-   script = "set_sprite.lua"
-   param = ( "4", "female_frenchstache_pink2" )
-}
-E49 = {
-   tile_x = 19
-   tile_y = 6
-   script = "set_sprite.lua"
-   param = ( "4", "female_frenchstache_pink" )
-}
-E50 = {
-   tile_x = 1
-   tile_y = 7
-   script = "set_sprite.lua"
-   param = ( "4", "female_frenchstache_purple" )
-}
-E51 = {
-   tile_x = 3
-   tile_y = 7
-   script = "set_sprite.lua"
-   param = ( "4", "female_frenchstache_raven2" )
-}
-E52 = {
-   tile_x = 5
-   tile_y = 7
-   script = "set_sprite.lua"
-   param = ( "4", "female_frenchstache_raven" )
-}
-E53 = {
-   tile_x = 7
-   tile_y = 7
-   script = "set_sprite.lua"
-   param = ( "4", "female_frenchstache_redhead2" )
-}
-E54 = {
-   tile_x = 9
-   tile_y = 7
-   script = "set_sprite.lua"
-   param = ( "4", "female_frenchstache_redhead" )
-}
-E55 = {
-   tile_x = 11
-   tile_y = 7
-   script = "set_sprite.lua"
-   param = ( "4", "female_frenchstache_ruby-red" )
-}
-E56 = {
-   tile_x = 13
-   tile_y = 7
-   script = "set_sprite.lua"
-   param = ( "4", "female_frenchstache_white-blonde2" )
-}
-E57 = {
-   tile_x = 15
-   tile_y = 7
-   script = "set_sprite.lua"
-   param = ( "4", "female_frenchstache_white-blonde" )
-}
-E58 = {
-   tile_x = 17
-   tile_y = 7
-   script = "set_sprite.lua"
-   param = ( "4", "female_frenchstache_white-cyan" )
-}
-E59 = {
-   tile_x = 19
-   tile_y = 7
-   script = "set_sprite.lua"
-   param = ( "4", "female_frenchstache_white" )
-}
-E60 = {
-   tile_x = 1
-   tile_y = 8
-   script = "set_sprite.lua"
-   param = ( "4", "female_mustache_black" )
-}
-E61 = {
-   tile_x = 3
-   tile_y = 8
-   script = "set_sprite.lua"
-   param = ( "4", "female_mustache_blonde2" )
-}
-E62 = {
-   tile_x = 5
-   tile_y = 8
-   script = "set_sprite.lua"
-   param = ( "4", "female_mustache_blonde" )
-}
-E63 = {
-   tile_x = 7
-   tile_y = 8
-   script = "set_sprite.lua"
-   param = ( "4", "female_mustache_blue2" )
-}
-E64 = {
-   tile_x = 9
-   tile_y = 8
-   script = "set_sprite.lua"
-   param = ( "4", "female_mustache_blue" )
-}
-E65 = {
-   tile_x = 11
-   tile_y = 8
-   script = "set_sprite.lua"
-   param = ( "4", "female_mustache_brown2" )
-}
-E66 = {
-   tile_x = 13
-   tile_y = 8
-   script = "set_sprite.lua"
-   param = ( "4", "female_mustache_brown" )
-}
-E67 = {
-   tile_x = 15
-   tile_y = 8
-   script = "set_sprite.lua"
-   param = ( "4", "female_mustache_brunette2" )
-}
-E68 = {
-   tile_x = 17
-   tile_y = 8
-   script = "set_sprite.lua"
-   param = ( "4", "female_mustache_brunette" )
-}
-E69 = {
-   tile_x = 19
-   tile_y = 8
-   script = "set_sprite.lua"
-   param = ( "4", "female_mustache_dark-blonde" )
-}
-E70 = {
-   tile_x = 1
-   tile_y = 9
-   script = "set_sprite.lua"
-   param = ( "4", "female_mustache_gold" )
-}
-E71 = {
-   tile_x = 3
-   tile_y = 9
-   script = "set_sprite.lua"
-   param = ( "4", "female_mustache_gray2" )
-}
-E72 = {
-   tile_x = 5
-   tile_y = 9
-   script = "set_sprite.lua"
-   param = ( "4", "female_mustache_gray" )
-}
-E73 = {
-   tile_x = 7
-   tile_y = 9
-   script = "set_sprite.lua"
-   param = ( "4", "female_mustache_green2" )
-}
-E74 = {
-   tile_x = 9
-   tile_y = 9
-   script = "set_sprite.lua"
-   param = ( "4", "female_mustache_green" )
-}
-E75 = {
-   tile_x = 11
-   tile_y = 9
-   script = "set_sprite.lua"
-   param = ( "4", "female_mustache_light-blonde2" )
-}
-E76 = {
-   tile_x = 13
-   tile_y = 9
-   script = "set_sprite.lua"
-   param = ( "4", "female_mustache_light-blonde" )
-}
-E77 = {
-   tile_x = 15
-   tile_y = 9
-   script = "set_sprite.lua"
-   param = ( "4", "female_mustache" )
-}
-E78 = {
-   tile_x = 17
-   tile_y = 9
-   script = "set_sprite.lua"
-   param = ( "4", "female_mustache_pink2" )
-}
-E79 = {
-   tile_x = 19
-   tile_y = 9
-   script = "set_sprite.lua"
-   param = ( "4", "female_mustache_pink" )
-}
-E80 = {
-   tile_x = 1
-   tile_y = 10
-   script = "set_sprite.lua"
-   param = ( "4", "female_mustache_purple" )
-}
-E81 = {
-   tile_x = 3
-   tile_y = 10
-   script = "set_sprite.lua"
-   param = ( "4", "female_mustache_raven2" )
-}
-E82 = {
-   tile_x = 5
-   tile_y = 10
-   script = "set_sprite.lua"
-   param = ( "4", "female_mustache_raven" )
-}
-E83 = {
-   tile_x = 7
-   tile_y = 10
-   script = "set_sprite.lua"
-   param = ( "4", "female_mustache_redhead2" )
-}
-E84 = {
-   tile_x = 9
-   tile_y = 10
-   script = "set_sprite.lua"
-   param = ( "4", "female_mustache_redhead" )
-}
-E85 = {
-   tile_x = 11
-   tile_y = 10
-   script = "set_sprite.lua"
-   param = ( "4", "female_mustache_ruby-red" )
-}
-E86 = {
-   tile_x = 13
-   tile_y = 10
-   script = "set_sprite.lua"
-   param = ( "4", "female_mustache_white-blonde2" )
-}
-E87 = {
-   tile_x = 15
-   tile_y = 10
-   script = "set_sprite.lua"
-   param = ( "4", "female_mustache_white-blonde" )
-}
-E88 = {
-   tile_x = 17
-   tile_y = 10
-   script = "set_sprite.lua"
-   param = ( "4", "female_mustache_white-cyan" )
-}
-E89 = {
-   tile_x = 19
-   tile_y = 10
-   script = "set_sprite.lua"
-   param = ( "4", "female_mustache_white" )
-}
-E90 = {
-   tile_x = 0
-   tile_y = 6
-   script = "goto_character_map.lua"
-   param = ( "3", "1", "1" )
-}
-E91 = {
-   tile_x = 20
-   tile_y = 6
-   script = "goto_character_map.lua"
-   param = ( "5", "1", "1" )
-}
-E92 = {
-   tile_x = 0
-   tile_y = 0
-   script = "set_sprite.lua"
-   param = ( "4", "" )
-}
-E93 = {
-   tile_x = 0
-   tile_y = 12
-   script = "set_sprite.lua"
-   param = ( "4", "" )
-}
-E94 = {
-   tile_x = 20
-   tile_y = 0
-   script = "set_sprite.lua"
-   param = ( "4", "" )
-}
-E95 = {
-   tile_x = 20
-   tile_y = 12
-   script = "set_sprite.lua"
-   param = ( "4", "" )
-}
+{
+  "bg_red": 192,
+  "bg_blue": 192,
+  "bg_green": 192,
+  "attribute": {
+    "x": {
+      "current": 4
+    }
+  },
+  "width": 21,
+  "height": 13,
+  "tile_width": 64,
+  "tile_height": 64,
+  "warp_x": 0,
+  "warp_y": 0,
+  "layer0": {
+    "set": [
+      "tile/fog.png",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "tile/fog.png",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "character/4/WC_female_bigstache_black_marquee.zip",
+      "",
+      "character/4/WC_female_bigstache_blonde2_marquee.zip",
+      "",
+      "character/4/WC_female_bigstache_blonde_marquee.zip",
+      "",
+      "character/4/WC_female_bigstache_blue2_marquee.zip",
+      "",
+      "character/4/WC_female_bigstache_blue_marquee.zip",
+      "",
+      "character/4/WC_female_bigstache_brown2_marquee.zip",
+      "",
+      "character/4/WC_female_bigstache_brown_marquee.zip",
+      "",
+      "character/4/WC_female_bigstache_brunette2_marquee.zip",
+      "",
+      "character/4/WC_female_bigstache_brunette_marquee.zip",
+      "",
+      "character/4/WC_female_bigstache_dark-blonde_marquee.zip",
+      "",
+      "",
+      "character/4/WC_female_bigstache_gold_marquee.zip",
+      "",
+      "character/4/WC_female_bigstache_gray2_marquee.zip",
+      "",
+      "character/4/WC_female_bigstache_gray_marquee.zip",
+      "",
+      "character/4/WC_female_bigstache_green2_marquee.zip",
+      "",
+      "character/4/WC_female_bigstache_green_marquee.zip",
+      "",
+      "character/4/WC_female_bigstache_light-blonde2_marquee.zip",
+      "",
+      "character/4/WC_female_bigstache_light-blonde_marquee.zip",
+      "",
+      "character/4/WC_female_bigstache_marquee.zip",
+      "",
+      "character/4/WC_female_bigstache_pink2_marquee.zip",
+      "",
+      "character/4/WC_female_bigstache_pink_marquee.zip",
+      "",
+      "",
+      "character/4/WC_female_bigstache_purple_marquee.zip",
+      "",
+      "character/4/WC_female_bigstache_raven2_marquee.zip",
+      "",
+      "character/4/WC_female_bigstache_raven_marquee.zip",
+      "",
+      "character/4/WC_female_bigstache_redhead2_marquee.zip",
+      "",
+      "character/4/WC_female_bigstache_redhead_marquee.zip",
+      "",
+      "character/4/WC_female_bigstache_ruby-red_marquee.zip",
+      "",
+      "character/4/WC_female_bigstache_white-blonde2_marquee.zip",
+      "",
+      "character/4/WC_female_bigstache_white-blonde_marquee.zip",
+      "",
+      "character/4/WC_female_bigstache_white-cyan_marquee.zip",
+      "",
+      "character/4/WC_female_bigstache_white_marquee.zip",
+      "",
+      "",
+      "character/4/WC_female_frenchstache_black_marquee.zip",
+      "",
+      "character/4/WC_female_frenchstache_blonde2_marquee.zip",
+      "",
+      "character/4/WC_female_frenchstache_blonde_marquee.zip",
+      "",
+      "character/4/WC_female_frenchstache_blue2_marquee.zip",
+      "",
+      "character/4/WC_female_frenchstache_blue_marquee.zip",
+      "",
+      "character/4/WC_female_frenchstache_brown2_marquee.zip",
+      "",
+      "character/4/WC_female_frenchstache_brown_marquee.zip",
+      "",
+      "character/4/WC_female_frenchstache_brunette2_marquee.zip",
+      "",
+      "character/4/WC_female_frenchstache_brunette_marquee.zip",
+      "",
+      "character/4/WC_female_frenchstache_dark-blonde_marquee.zip",
+      "",
+      "tile/exit.gif",
+      "character/4/WC_female_frenchstache_gold_marquee.zip",
+      "",
+      "character/4/WC_female_frenchstache_gray2_marquee.zip",
+      "",
+      "character/4/WC_female_frenchstache_gray_marquee.zip",
+      "",
+      "character/4/WC_female_frenchstache_green2_marquee.zip",
+      "",
+      "character/4/WC_female_frenchstache_green_marquee.zip",
+      "",
+      "character/4/WC_female_frenchstache_light-blonde2_marquee.zip",
+      "",
+      "character/4/WC_female_frenchstache_light-blonde_marquee.zip",
+      "",
+      "character/4/WC_female_frenchstache_marquee.zip",
+      "",
+      "character/4/WC_female_frenchstache_pink2_marquee.zip",
+      "",
+      "character/4/WC_female_frenchstache_pink_marquee.zip",
+      "tile/exit.gif",
+      "",
+      "character/4/WC_female_frenchstache_purple_marquee.zip",
+      "",
+      "character/4/WC_female_frenchstache_raven2_marquee.zip",
+      "",
+      "character/4/WC_female_frenchstache_raven_marquee.zip",
+      "",
+      "character/4/WC_female_frenchstache_redhead2_marquee.zip",
+      "",
+      "character/4/WC_female_frenchstache_redhead_marquee.zip",
+      "",
+      "character/4/WC_female_frenchstache_ruby-red_marquee.zip",
+      "",
+      "character/4/WC_female_frenchstache_white-blonde2_marquee.zip",
+      "",
+      "character/4/WC_female_frenchstache_white-blonde_marquee.zip",
+      "",
+      "character/4/WC_female_frenchstache_white-cyan_marquee.zip",
+      "",
+      "character/4/WC_female_frenchstache_white_marquee.zip",
+      "",
+      "",
+      "character/4/WC_female_mustache_black_marquee.zip",
+      "",
+      "character/4/WC_female_mustache_blonde2_marquee.zip",
+      "",
+      "character/4/WC_female_mustache_blonde_marquee.zip",
+      "",
+      "character/4/WC_female_mustache_blue2_marquee.zip",
+      "",
+      "character/4/WC_female_mustache_blue_marquee.zip",
+      "",
+      "character/4/WC_female_mustache_brown2_marquee.zip",
+      "",
+      "character/4/WC_female_mustache_brown_marquee.zip",
+      "",
+      "character/4/WC_female_mustache_brunette2_marquee.zip",
+      "",
+      "character/4/WC_female_mustache_brunette_marquee.zip",
+      "",
+      "character/4/WC_female_mustache_dark-blonde_marquee.zip",
+      "",
+      "",
+      "character/4/WC_female_mustache_gold_marquee.zip",
+      "",
+      "character/4/WC_female_mustache_gray2_marquee.zip",
+      "",
+      "character/4/WC_female_mustache_gray_marquee.zip",
+      "",
+      "character/4/WC_female_mustache_green2_marquee.zip",
+      "",
+      "character/4/WC_female_mustache_green_marquee.zip",
+      "",
+      "character/4/WC_female_mustache_light-blonde2_marquee.zip",
+      "",
+      "character/4/WC_female_mustache_light-blonde_marquee.zip",
+      "",
+      "character/4/WC_female_mustache_marquee.zip",
+      "",
+      "character/4/WC_female_mustache_pink2_marquee.zip",
+      "",
+      "character/4/WC_female_mustache_pink_marquee.zip",
+      "",
+      "",
+      "character/4/WC_female_mustache_purple_marquee.zip",
+      "",
+      "character/4/WC_female_mustache_raven2_marquee.zip",
+      "",
+      "character/4/WC_female_mustache_raven_marquee.zip",
+      "",
+      "character/4/WC_female_mustache_redhead2_marquee.zip",
+      "",
+      "character/4/WC_female_mustache_redhead_marquee.zip",
+      "",
+      "character/4/WC_female_mustache_ruby-red_marquee.zip",
+      "",
+      "character/4/WC_female_mustache_white-blonde2_marquee.zip",
+      "",
+      "character/4/WC_female_mustache_white-blonde_marquee.zip",
+      "",
+      "character/4/WC_female_mustache_white-cyan_marquee.zip",
+      "",
+      "character/4/WC_female_mustache_white_marquee.zip",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "tile/fog.png",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "tile/fog.png"
+    ]
+  },
+  "event_list": {
+    "E0": {
+      "tile_x": 1,
+      "tile_y": 2,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_bigstache_black"
+      ]
+    },
+    "E1": {
+      "tile_x": 3,
+      "tile_y": 2,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_bigstache_blonde2"
+      ]
+    },
+    "E2": {
+      "tile_x": 5,
+      "tile_y": 2,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_bigstache_blonde"
+      ]
+    },
+    "E3": {
+      "tile_x": 7,
+      "tile_y": 2,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_bigstache_blue2"
+      ]
+    },
+    "E4": {
+      "tile_x": 9,
+      "tile_y": 2,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_bigstache_blue"
+      ]
+    },
+    "E5": {
+      "tile_x": 11,
+      "tile_y": 2,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_bigstache_brown2"
+      ]
+    },
+    "E6": {
+      "tile_x": 13,
+      "tile_y": 2,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_bigstache_brown"
+      ]
+    },
+    "E7": {
+      "tile_x": 15,
+      "tile_y": 2,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_bigstache_brunette2"
+      ]
+    },
+    "E8": {
+      "tile_x": 17,
+      "tile_y": 2,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_bigstache_brunette"
+      ]
+    },
+    "E9": {
+      "tile_x": 19,
+      "tile_y": 2,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_bigstache_dark-blonde"
+      ]
+    },
+    "E10": {
+      "tile_x": 1,
+      "tile_y": 3,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_bigstache_gold"
+      ]
+    },
+    "E11": {
+      "tile_x": 3,
+      "tile_y": 3,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_bigstache_gray2"
+      ]
+    },
+    "E12": {
+      "tile_x": 5,
+      "tile_y": 3,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_bigstache_gray"
+      ]
+    },
+    "E13": {
+      "tile_x": 7,
+      "tile_y": 3,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_bigstache_green2"
+      ]
+    },
+    "E14": {
+      "tile_x": 9,
+      "tile_y": 3,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_bigstache_green"
+      ]
+    },
+    "E15": {
+      "tile_x": 11,
+      "tile_y": 3,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_bigstache_light-blonde2"
+      ]
+    },
+    "E16": {
+      "tile_x": 13,
+      "tile_y": 3,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_bigstache_light-blonde"
+      ]
+    },
+    "E17": {
+      "tile_x": 15,
+      "tile_y": 3,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_bigstache"
+      ]
+    },
+    "E18": {
+      "tile_x": 17,
+      "tile_y": 3,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_bigstache_pink2"
+      ]
+    },
+    "E19": {
+      "tile_x": 19,
+      "tile_y": 3,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_bigstache_pink"
+      ]
+    },
+    "E20": {
+      "tile_x": 1,
+      "tile_y": 4,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_bigstache_purple"
+      ]
+    },
+    "E21": {
+      "tile_x": 3,
+      "tile_y": 4,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_bigstache_raven2"
+      ]
+    },
+    "E22": {
+      "tile_x": 5,
+      "tile_y": 4,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_bigstache_raven"
+      ]
+    },
+    "E23": {
+      "tile_x": 7,
+      "tile_y": 4,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_bigstache_redhead2"
+      ]
+    },
+    "E24": {
+      "tile_x": 9,
+      "tile_y": 4,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_bigstache_redhead"
+      ]
+    },
+    "E25": {
+      "tile_x": 11,
+      "tile_y": 4,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_bigstache_ruby-red"
+      ]
+    },
+    "E26": {
+      "tile_x": 13,
+      "tile_y": 4,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_bigstache_white-blonde2"
+      ]
+    },
+    "E27": {
+      "tile_x": 15,
+      "tile_y": 4,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_bigstache_white-blonde"
+      ]
+    },
+    "E28": {
+      "tile_x": 17,
+      "tile_y": 4,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_bigstache_white-cyan"
+      ]
+    },
+    "E29": {
+      "tile_x": 19,
+      "tile_y": 4,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_bigstache_white"
+      ]
+    },
+    "E30": {
+      "tile_x": 1,
+      "tile_y": 5,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_frenchstache_black"
+      ]
+    },
+    "E31": {
+      "tile_x": 3,
+      "tile_y": 5,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_frenchstache_blonde2"
+      ]
+    },
+    "E32": {
+      "tile_x": 5,
+      "tile_y": 5,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_frenchstache_blonde"
+      ]
+    },
+    "E33": {
+      "tile_x": 7,
+      "tile_y": 5,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_frenchstache_blue2"
+      ]
+    },
+    "E34": {
+      "tile_x": 9,
+      "tile_y": 5,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_frenchstache_blue"
+      ]
+    },
+    "E35": {
+      "tile_x": 11,
+      "tile_y": 5,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_frenchstache_brown2"
+      ]
+    },
+    "E36": {
+      "tile_x": 13,
+      "tile_y": 5,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_frenchstache_brown"
+      ]
+    },
+    "E37": {
+      "tile_x": 15,
+      "tile_y": 5,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_frenchstache_brunette2"
+      ]
+    },
+    "E38": {
+      "tile_x": 17,
+      "tile_y": 5,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_frenchstache_brunette"
+      ]
+    },
+    "E39": {
+      "tile_x": 19,
+      "tile_y": 5,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_frenchstache_dark-blonde"
+      ]
+    },
+    "E40": {
+      "tile_x": 1,
+      "tile_y": 6,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_frenchstache_gold"
+      ]
+    },
+    "E41": {
+      "tile_x": 3,
+      "tile_y": 6,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_frenchstache_gray2"
+      ]
+    },
+    "E42": {
+      "tile_x": 5,
+      "tile_y": 6,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_frenchstache_gray"
+      ]
+    },
+    "E43": {
+      "tile_x": 7,
+      "tile_y": 6,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_frenchstache_green2"
+      ]
+    },
+    "E44": {
+      "tile_x": 9,
+      "tile_y": 6,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_frenchstache_green"
+      ]
+    },
+    "E45": {
+      "tile_x": 11,
+      "tile_y": 6,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_frenchstache_light-blonde2"
+      ]
+    },
+    "E46": {
+      "tile_x": 13,
+      "tile_y": 6,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_frenchstache_light-blonde"
+      ]
+    },
+    "E47": {
+      "tile_x": 15,
+      "tile_y": 6,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_frenchstache"
+      ]
+    },
+    "E48": {
+      "tile_x": 17,
+      "tile_y": 6,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_frenchstache_pink2"
+      ]
+    },
+    "E49": {
+      "tile_x": 19,
+      "tile_y": 6,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_frenchstache_pink"
+      ]
+    },
+    "E50": {
+      "tile_x": 1,
+      "tile_y": 7,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_frenchstache_purple"
+      ]
+    },
+    "E51": {
+      "tile_x": 3,
+      "tile_y": 7,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_frenchstache_raven2"
+      ]
+    },
+    "E52": {
+      "tile_x": 5,
+      "tile_y": 7,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_frenchstache_raven"
+      ]
+    },
+    "E53": {
+      "tile_x": 7,
+      "tile_y": 7,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_frenchstache_redhead2"
+      ]
+    },
+    "E54": {
+      "tile_x": 9,
+      "tile_y": 7,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_frenchstache_redhead"
+      ]
+    },
+    "E55": {
+      "tile_x": 11,
+      "tile_y": 7,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_frenchstache_ruby-red"
+      ]
+    },
+    "E56": {
+      "tile_x": 13,
+      "tile_y": 7,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_frenchstache_white-blonde2"
+      ]
+    },
+    "E57": {
+      "tile_x": 15,
+      "tile_y": 7,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_frenchstache_white-blonde"
+      ]
+    },
+    "E58": {
+      "tile_x": 17,
+      "tile_y": 7,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_frenchstache_white-cyan"
+      ]
+    },
+    "E59": {
+      "tile_x": 19,
+      "tile_y": 7,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_frenchstache_white"
+      ]
+    },
+    "E60": {
+      "tile_x": 1,
+      "tile_y": 8,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_mustache_black"
+      ]
+    },
+    "E61": {
+      "tile_x": 3,
+      "tile_y": 8,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_mustache_blonde2"
+      ]
+    },
+    "E62": {
+      "tile_x": 5,
+      "tile_y": 8,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_mustache_blonde"
+      ]
+    },
+    "E63": {
+      "tile_x": 7,
+      "tile_y": 8,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_mustache_blue2"
+      ]
+    },
+    "E64": {
+      "tile_x": 9,
+      "tile_y": 8,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_mustache_blue"
+      ]
+    },
+    "E65": {
+      "tile_x": 11,
+      "tile_y": 8,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_mustache_brown2"
+      ]
+    },
+    "E66": {
+      "tile_x": 13,
+      "tile_y": 8,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_mustache_brown"
+      ]
+    },
+    "E67": {
+      "tile_x": 15,
+      "tile_y": 8,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_mustache_brunette2"
+      ]
+    },
+    "E68": {
+      "tile_x": 17,
+      "tile_y": 8,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_mustache_brunette"
+      ]
+    },
+    "E69": {
+      "tile_x": 19,
+      "tile_y": 8,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_mustache_dark-blonde"
+      ]
+    },
+    "E70": {
+      "tile_x": 1,
+      "tile_y": 9,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_mustache_gold"
+      ]
+    },
+    "E71": {
+      "tile_x": 3,
+      "tile_y": 9,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_mustache_gray2"
+      ]
+    },
+    "E72": {
+      "tile_x": 5,
+      "tile_y": 9,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_mustache_gray"
+      ]
+    },
+    "E73": {
+      "tile_x": 7,
+      "tile_y": 9,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_mustache_green2"
+      ]
+    },
+    "E74": {
+      "tile_x": 9,
+      "tile_y": 9,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_mustache_green"
+      ]
+    },
+    "E75": {
+      "tile_x": 11,
+      "tile_y": 9,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_mustache_light-blonde2"
+      ]
+    },
+    "E76": {
+      "tile_x": 13,
+      "tile_y": 9,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_mustache_light-blonde"
+      ]
+    },
+    "E77": {
+      "tile_x": 15,
+      "tile_y": 9,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_mustache"
+      ]
+    },
+    "E78": {
+      "tile_x": 17,
+      "tile_y": 9,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_mustache_pink2"
+      ]
+    },
+    "E79": {
+      "tile_x": 19,
+      "tile_y": 9,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_mustache_pink"
+      ]
+    },
+    "E80": {
+      "tile_x": 1,
+      "tile_y": 10,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_mustache_purple"
+      ]
+    },
+    "E81": {
+      "tile_x": 3,
+      "tile_y": 10,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_mustache_raven2"
+      ]
+    },
+    "E82": {
+      "tile_x": 5,
+      "tile_y": 10,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_mustache_raven"
+      ]
+    },
+    "E83": {
+      "tile_x": 7,
+      "tile_y": 10,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_mustache_redhead2"
+      ]
+    },
+    "E84": {
+      "tile_x": 9,
+      "tile_y": 10,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_mustache_redhead"
+      ]
+    },
+    "E85": {
+      "tile_x": 11,
+      "tile_y": 10,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_mustache_ruby-red"
+      ]
+    },
+    "E86": {
+      "tile_x": 13,
+      "tile_y": 10,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_mustache_white-blonde2"
+      ]
+    },
+    "E87": {
+      "tile_x": 15,
+      "tile_y": 10,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_mustache_white-blonde"
+      ]
+    },
+    "E88": {
+      "tile_x": 17,
+      "tile_y": 10,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_mustache_white-cyan"
+      ]
+    },
+    "E89": {
+      "tile_x": 19,
+      "tile_y": 10,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        "female_mustache_white"
+      ]
+    },
+    "E90": {
+      "tile_x": 0,
+      "tile_y": 6,
+      "script": "goto_character_map.lua",
+      "param": [
+        "3",
+        "1",
+        "1"
+      ]
+    },
+    "E91": {
+      "tile_x": 20,
+      "tile_y": 6,
+      "script": "goto_character_map.lua",
+      "param": [
+        "5",
+        "1",
+        "1"
+      ]
+    },
+    "E92": {
+      "tile_x": 0,
+      "tile_y": 0,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        ""
+      ]
+    },
+    "E93": {
+      "tile_x": 0,
+      "tile_y": 12,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        ""
+      ]
+    },
+    "E94": {
+      "tile_x": 20,
+      "tile_y": 0,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        ""
+      ]
+    },
+    "E95": {
+      "tile_x": 20,
+      "tile_y": 12,
+      "script": "set_sprite.lua",
+      "param": [
+        "4",
+        ""
+      ]
+    }
+  }
 }

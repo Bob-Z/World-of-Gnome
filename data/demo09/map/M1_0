@@ -1,30 +1,26 @@
-attribute :
 {
-  x :
-  {
-    current = 1;
-  };
-  y :
-  {
-    current = 0;
-  };
-};
-
-offscreen = "offscreen.lua";
-
-width = 28;
-height = 27;
-tile_width = 32;
-tile_height = 32;
-warp_x = 0;
-warp_y = 0;
-
-layer0: {
-        scenery: {
-                bg: {
-                        x = 0;
-                        y = 0;
-                        image = "map/forest.png";
-                };
-        };
-};
+  "attribute": {
+    "x": {
+      "current": 1
+    },
+    "y": {
+      "current": 0
+    }
+  },
+  "offscreen": "offscreen.lua",
+  "width": 28,
+  "height": 27,
+  "tile_width": 32,
+  "tile_height": 32,
+  "warp_x": 0,
+  "warp_y": 0,
+  "layer0": {
+    "scenery": {
+      "bg": {
+        "x": 0,
+        "y": 0,
+        "image": "map/forest.png"
+      }
+    }
+  }
+}

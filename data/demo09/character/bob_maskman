@@ -1,61 +1,87 @@
-name		= "Maskman";
-
-draw_script     = "draw/smooth.lua"
-marquee         = "marquee/maskman.png";
-sprite          = [ "sprite/shadow/human.png","sprite/maskman/S.png" ];
-type            = "human"
-map             = "M0_0";
-tile_x           = 15;
-tile_y           = 15;
-layer		= 15;
-#align on lower edge of tile
-align           = 1;
-sprite_move_n   = [ "sprite/shadow/human.png","sprite/maskman/WC_N.gif" ];
-sprite_move_s   = [ "sprite/shadow/human.png","sprite/maskman/WC_S.gif" ];
-sprite_move_w   = [ "sprite/shadow/human.png","sprite/maskman/WC_W.gif" ];
-sprite_move_e   = [ "sprite/shadow/human.png","sprite/maskman/WC_E.gif" ];
-sprite_n       = [ "sprite/shadow/human.png","sprite/maskman/N.png" ];
-sprite_s       = [ "sprite/shadow/human.png","sprite/maskman/S.png" ];
-sprite_w       = [ "sprite/shadow/human.png","sprite/maskman/W.png" ];
-sprite_e       = [ "sprite/shadow/human.png","sprite/maskman/E.png" ];
-ai              = "ai/ai_random.lua";
-ai_params       = [ "1000" ];
-action          = [ 
-        "summon_dragon"
-        ,"summon_red_dragon"
-	,"summon_casamonstro"
-	,"summon_grue"
-	,"summon_ghost"
-	,"summon_small_demon"
-        ,"summon_bee"
-        ,"summon_beetle"
-        ,"summon_imp_blue"
-        ,"summon_imp_blue_sword"
-        ,"summon_imp_blue_sword_shield"
-        ,"summon_imp_blue_pitchfork"
-        ,"summon_imp_blue_pitchfork_shield"
-        ,"summon_imp_green"
-        ,"summon_imp_green_sword"
-        ,"summon_imp_green_sword_shield"
-        ,"summon_imp_green_pitchfork"
-        ,"summon_imp_green_pitchfork_shield"
-        ,"summon_imp_red"
-        ,"summon_imp_red_sword"
-        ,"summon_imp_red_sword_shield"
-        ,"summon_imp_red_pitchfork"
-        ,"summon_imp_red_pitchfork_shield"
-        ,"summon_spider01"
-        ,"summon_spider02"
-        ,"summon_spider03"
-        ,"summon_spider04"
-        ,"summon_spider05"
-        ,"summon_spider06" 
-        ,"summon_spider07"
-        ,"summon_spider08"
-        ,"summon_spider09" 
-        ,"summon_spider10"
-        ,"summon_spider11"
-];
-
-#allowed_tile_script    = "allowed_tile/ground_stair.lua";
-#inventory      = [ ];
+{
+  "name": "Maskman",
+  "draw_script": "draw/smooth.lua",
+  "marquee": "marquee/maskman.png",
+  "sprite": [
+    "sprite/shadow/human.png",
+    "sprite/maskman/S.png"
+  ],
+  "type": "human",
+  "map": "M0_0",
+  "tile_x": 15,
+  "tile_y": 15,
+  "layer": 15,
+  "align": 1,
+  "sprite_move_n": [
+    "sprite/shadow/human.png",
+    "sprite/maskman/WC_N.gif"
+  ],
+  "sprite_move_s": [
+    "sprite/shadow/human.png",
+    "sprite/maskman/WC_S.gif"
+  ],
+  "sprite_move_w": [
+    "sprite/shadow/human.png",
+    "sprite/maskman/WC_W.gif"
+  ],
+  "sprite_move_e": [
+    "sprite/shadow/human.png",
+    "sprite/maskman/WC_E.gif"
+  ],
+  "sprite_n": [
+    "sprite/shadow/human.png",
+    "sprite/maskman/N.png"
+  ],
+  "sprite_s": [
+    "sprite/shadow/human.png",
+    "sprite/maskman/S.png"
+  ],
+  "sprite_w": [
+    "sprite/shadow/human.png",
+    "sprite/maskman/W.png"
+  ],
+  "sprite_e": [
+    "sprite/shadow/human.png",
+    "sprite/maskman/E.png"
+  ],
+  "ai": "ai/ai_random.lua",
+  "ai_params": [
+    "1000"
+  ],
+  "action": [
+    "summon_dragon",
+    "summon_red_dragon",
+    "summon_casamonstro",
+    "summon_grue",
+    "summon_ghost",
+    "summon_small_demon",
+    "summon_bee",
+    "summon_beetle",
+    "summon_imp_blue",
+    "summon_imp_blue_sword",
+    "summon_imp_blue_sword_shield",
+    "summon_imp_blue_pitchfork",
+    "summon_imp_blue_pitchfork_shield",
+    "summon_imp_green",
+    "summon_imp_green_sword",
+    "summon_imp_green_sword_shield",
+    "summon_imp_green_pitchfork",
+    "summon_imp_green_pitchfork_shield",
+    "summon_imp_red",
+    "summon_imp_red_sword",
+    "summon_imp_red_sword_shield",
+    "summon_imp_red_pitchfork",
+    "summon_imp_red_pitchfork_shield",
+    "summon_spider01",
+    "summon_spider02",
+    "summon_spider03",
+    "summon_spider04",
+    "summon_spider05",
+    "summon_spider06",
+    "summon_spider07",
+    "summon_spider08",
+    "summon_spider09",
+    "summon_spider10",
+    "summon_spider11"
+  ]
+}

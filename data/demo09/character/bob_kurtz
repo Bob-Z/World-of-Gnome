@@ -1,26 +1,70 @@
-name		= "General Kurtz";
-
-draw_script     = "draw/smooth.lua"
-npc		= 0;
-marquee         = "marquee/baldric.png";
-sprite          = [ "sprite/shadow/human.png","sprite/baldric_down.png" ];
-type            = "human"
-map             = "M0_0";
-tile_x           = 15;
-tile_y           = 15;
-layer		= 15;
-#align on lower edge of tile
-align           = 1;
-sprite_move_n   = [ "sprite/shadow/human.png","sprite/baldric_up.zip" ];
-sprite_move_s   = [ "sprite/shadow/human.png","sprite/baldric_down.zip" ];
-sprite_move_w   = [ "sprite/shadow/human.png","sprite/baldric_left.zip" ];
-sprite_move_e   = [ "sprite/shadow/human.png","sprite/baldric_right.zip" ];
-sprite_n       = [ "sprite/shadow/human.png","sprite/baldric_up.png" ];
-sprite_s       = [ "sprite/shadow/human.png","sprite/baldric_down.png" ];
-sprite_w       = [ "sprite/shadow/human.png","sprite/baldric_left.png" ];
-sprite_e       = [ "sprite/shadow/human.png","sprite/baldric_right.png" ];
-ai              = "ai/ai_random.lua";
-ai_params       = [ "1000" ];
-action          = [ "set_ship", "summon_royal_guard", "set_castle" , "set_castle1","set_castle2","set_castle3","set_castle4","set_castle7","set_castle8","set_castle9","set_castle10","set_castle11","set_castle12","set_castle13","set_castle14" ];
-allowed_tile_script    = "allowed_tile/human.lua";
-#inventory      = [ ];
+{
+  "name": "General Kurtz",
+  "draw_script": "draw/smooth.lua",
+  "npc": 0,
+  "marquee": "marquee/baldric.png",
+  "sprite": [
+    "sprite/shadow/human.png",
+    "sprite/baldric_down.png"
+  ],
+  "type": "human",
+  "map": "M0_0",
+  "tile_x": 15,
+  "tile_y": 15,
+  "layer": 15,
+  "align": 1,
+  "sprite_move_n": [
+    "sprite/shadow/human.png",
+    "sprite/baldric_up.zip"
+  ],
+  "sprite_move_s": [
+    "sprite/shadow/human.png",
+    "sprite/baldric_down.zip"
+  ],
+  "sprite_move_w": [
+    "sprite/shadow/human.png",
+    "sprite/baldric_left.zip"
+  ],
+  "sprite_move_e": [
+    "sprite/shadow/human.png",
+    "sprite/baldric_right.zip"
+  ],
+  "sprite_n": [
+    "sprite/shadow/human.png",
+    "sprite/baldric_up.png"
+  ],
+  "sprite_s": [
+    "sprite/shadow/human.png",
+    "sprite/baldric_down.png"
+  ],
+  "sprite_w": [
+    "sprite/shadow/human.png",
+    "sprite/baldric_left.png"
+  ],
+  "sprite_e": [
+    "sprite/shadow/human.png",
+    "sprite/baldric_right.png"
+  ],
+  "ai": "ai/ai_random.lua",
+  "ai_params": [
+    "1000"
+  ],
+  "action": [
+    "set_ship",
+    "summon_royal_guard",
+    "set_castle",
+    "set_castle1",
+    "set_castle2",
+    "set_castle3",
+    "set_castle4",
+    "set_castle7",
+    "set_castle8",
+    "set_castle9",
+    "set_castle10",
+    "set_castle11",
+    "set_castle12",
+    "set_castle13",
+    "set_castle14"
+  ],
+  "allowed_tile_script": "allowed_tile/human.lua"
+}

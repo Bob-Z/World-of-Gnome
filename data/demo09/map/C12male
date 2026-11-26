@@ -1,245 +1,321 @@
-bg_red = 192
-bg_blue = 192
-bg_green = 192
-attribute = {
-  x = {
-        current = 12
-      }
-}
-width = 9
-height = 9
-tile_width = 64
-tile_height = 64
-warp_x = 0
-warp_y = 0
-layer0 = {
-        set = [
-"tile/fog.png",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"tile/fog.png",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"character/12/WC_male_shirt_black_marquee.zip",
-"",
-"character/12/WC_male_shirt_blue_marquee.zip",
-"",
-"character/12/WC_male_shirt_green_marquee.zip",
-"",
-"character/12/WC_male_shirt_purple_marquee.zip",
-"",
-"",
-"character/12/WC_male_shirt_red_marquee.zip",
-"",
-"character/12/WC_male_shirt_yellow_marquee.zip",
-"",
-"character/12/WC_male_sleevless_black_marquee.zip",
-"",
-"character/12/WC_male_sleevless_blue_marquee.zip",
-"",
-"tile/exit.gif",
-"character/12/WC_male_sleevless_brown_marquee.zip",
-"",
-"character/12/WC_male_sleevless_red_marquee.zip",
-"",
-"character/12/WC_male_sleevless_white_marquee.zip",
-"",
-"character/12/WC_shirt_marquee.zip",
-"tile/exit.gif",
-"",
-"character/12/WC_shirts_longsleeve_male_brown_longsleeve_marquee.zip",
-"",
-"character/12/WC_shirts_longsleeve_male_maroon_longsleeve_marquee.zip",
-"",
-"character/12/WC_shirts_longsleeve_male_teal_longsleeve_marquee.zip",
-"",
-"character/12/WC_shirts_longsleeve_male_white_longsleeve_marquee.zip",
-"",
-"",
-"character/12/WC_vest_marquee.zip",
-"",
-"character/12/WC_vest_w_shirt_cutout_marquee.zip",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"tile/fog.png",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"tile/fog.png"
-        ]
-}
-event_list: {
-E0 = {
-   tile_x = 1
-   tile_y = 2
-   script = "set_sprite.lua"
-   param = ( "12", "male_shirt_black" )
-}
-E1 = {
-   tile_x = 3
-   tile_y = 2
-   script = "set_sprite.lua"
-   param = ( "12", "male_shirt_blue" )
-}
-E2 = {
-   tile_x = 5
-   tile_y = 2
-   script = "set_sprite.lua"
-   param = ( "12", "male_shirt_green" )
-}
-E3 = {
-   tile_x = 7
-   tile_y = 2
-   script = "set_sprite.lua"
-   param = ( "12", "male_shirt_purple" )
-}
-E4 = {
-   tile_x = 1
-   tile_y = 3
-   script = "set_sprite.lua"
-   param = ( "12", "male_shirt_red" )
-}
-E5 = {
-   tile_x = 3
-   tile_y = 3
-   script = "set_sprite.lua"
-   param = ( "12", "male_shirt_yellow" )
-}
-E6 = {
-   tile_x = 5
-   tile_y = 3
-   script = "set_sprite.lua"
-   param = ( "12", "male_sleevless_black" )
-}
-E7 = {
-   tile_x = 7
-   tile_y = 3
-   script = "set_sprite.lua"
-   param = ( "12", "male_sleevless_blue" )
-}
-E8 = {
-   tile_x = 1
-   tile_y = 4
-   script = "set_sprite.lua"
-   param = ( "12", "male_sleevless_brown" )
-}
-E9 = {
-   tile_x = 3
-   tile_y = 4
-   script = "set_sprite.lua"
-   param = ( "12", "male_sleevless_red" )
-}
-E10 = {
-   tile_x = 5
-   tile_y = 4
-   script = "set_sprite.lua"
-   param = ( "12", "male_sleevless_white" )
-}
-E11 = {
-   tile_x = 7
-   tile_y = 4
-   script = "set_sprite.lua"
-   param = ( "12", "shirt" )
-}
-E12 = {
-   tile_x = 1
-   tile_y = 5
-   script = "set_sprite.lua"
-   param = ( "12", "shirts_longsleeve_male_brown_longsleeve" )
-}
-E13 = {
-   tile_x = 3
-   tile_y = 5
-   script = "set_sprite.lua"
-   param = ( "12", "shirts_longsleeve_male_maroon_longsleeve" )
-}
-E14 = {
-   tile_x = 5
-   tile_y = 5
-   script = "set_sprite.lua"
-   param = ( "12", "shirts_longsleeve_male_teal_longsleeve" )
-}
-E15 = {
-   tile_x = 7
-   tile_y = 5
-   script = "set_sprite.lua"
-   param = ( "12", "shirts_longsleeve_male_white_longsleeve" )
-}
-E16 = {
-   tile_x = 1
-   tile_y = 6
-   script = "set_sprite.lua"
-   param = ( "12", "vest" )
-}
-E17 = {
-   tile_x = 3
-   tile_y = 6
-   script = "set_sprite.lua"
-   param = ( "12", "vest_w_shirt_cutout" )
-}
-E18 = {
-   tile_x = 0
-   tile_y = 4
-   script = "goto_character_map.lua"
-   param = ( "11", "1", "1" )
-}
-E19 = {
-   tile_x = 8
-   tile_y = 4
-   script = "goto_character_map.lua"
-   param = ( "13", "1", "1" )
-}
-E20 = {
-   tile_x = 0
-   tile_y = 0
-   script = "set_sprite.lua"
-   param = ( "12", "" )
-}
-E21 = {
-   tile_x = 0
-   tile_y = 8
-   script = "set_sprite.lua"
-   param = ( "12", "" )
-}
-E22 = {
-   tile_x = 8
-   tile_y = 0
-   script = "set_sprite.lua"
-   param = ( "12", "" )
-}
-E23 = {
-   tile_x = 8
-   tile_y = 8
-   script = "set_sprite.lua"
-   param = ( "12", "" )
-}
+{
+  "bg_red": 192,
+  "bg_blue": 192,
+  "bg_green": 192,
+  "attribute": {
+    "x": {
+      "current": 12
+    }
+  },
+  "width": 9,
+  "height": 9,
+  "tile_width": 64,
+  "tile_height": 64,
+  "warp_x": 0,
+  "warp_y": 0,
+  "layer0": {
+    "set": [
+      "tile/fog.png",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "tile/fog.png",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "character/12/WC_male_shirt_black_marquee.zip",
+      "",
+      "character/12/WC_male_shirt_blue_marquee.zip",
+      "",
+      "character/12/WC_male_shirt_green_marquee.zip",
+      "",
+      "character/12/WC_male_shirt_purple_marquee.zip",
+      "",
+      "",
+      "character/12/WC_male_shirt_red_marquee.zip",
+      "",
+      "character/12/WC_male_shirt_yellow_marquee.zip",
+      "",
+      "character/12/WC_male_sleevless_black_marquee.zip",
+      "",
+      "character/12/WC_male_sleevless_blue_marquee.zip",
+      "",
+      "tile/exit.gif",
+      "character/12/WC_male_sleevless_brown_marquee.zip",
+      "",
+      "character/12/WC_male_sleevless_red_marquee.zip",
+      "",
+      "character/12/WC_male_sleevless_white_marquee.zip",
+      "",
+      "character/12/WC_shirt_marquee.zip",
+      "tile/exit.gif",
+      "",
+      "character/12/WC_shirts_longsleeve_male_brown_longsleeve_marquee.zip",
+      "",
+      "character/12/WC_shirts_longsleeve_male_maroon_longsleeve_marquee.zip",
+      "",
+      "character/12/WC_shirts_longsleeve_male_teal_longsleeve_marquee.zip",
+      "",
+      "character/12/WC_shirts_longsleeve_male_white_longsleeve_marquee.zip",
+      "",
+      "",
+      "character/12/WC_vest_marquee.zip",
+      "",
+      "character/12/WC_vest_w_shirt_cutout_marquee.zip",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "tile/fog.png",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "tile/fog.png"
+    ]
+  },
+  "event_list": {
+    "E0": {
+      "tile_x": 1,
+      "tile_y": 2,
+      "script": "set_sprite.lua",
+      "param": [
+        "12",
+        "male_shirt_black"
+      ]
+    },
+    "E1": {
+      "tile_x": 3,
+      "tile_y": 2,
+      "script": "set_sprite.lua",
+      "param": [
+        "12",
+        "male_shirt_blue"
+      ]
+    },
+    "E2": {
+      "tile_x": 5,
+      "tile_y": 2,
+      "script": "set_sprite.lua",
+      "param": [
+        "12",
+        "male_shirt_green"
+      ]
+    },
+    "E3": {
+      "tile_x": 7,
+      "tile_y": 2,
+      "script": "set_sprite.lua",
+      "param": [
+        "12",
+        "male_shirt_purple"
+      ]
+    },
+    "E4": {
+      "tile_x": 1,
+      "tile_y": 3,
+      "script": "set_sprite.lua",
+      "param": [
+        "12",
+        "male_shirt_red"
+      ]
+    },
+    "E5": {
+      "tile_x": 3,
+      "tile_y": 3,
+      "script": "set_sprite.lua",
+      "param": [
+        "12",
+        "male_shirt_yellow"
+      ]
+    },
+    "E6": {
+      "tile_x": 5,
+      "tile_y": 3,
+      "script": "set_sprite.lua",
+      "param": [
+        "12",
+        "male_sleevless_black"
+      ]
+    },
+    "E7": {
+      "tile_x": 7,
+      "tile_y": 3,
+      "script": "set_sprite.lua",
+      "param": [
+        "12",
+        "male_sleevless_blue"
+      ]
+    },
+    "E8": {
+      "tile_x": 1,
+      "tile_y": 4,
+      "script": "set_sprite.lua",
+      "param": [
+        "12",
+        "male_sleevless_brown"
+      ]
+    },
+    "E9": {
+      "tile_x": 3,
+      "tile_y": 4,
+      "script": "set_sprite.lua",
+      "param": [
+        "12",
+        "male_sleevless_red"
+      ]
+    },
+    "E10": {
+      "tile_x": 5,
+      "tile_y": 4,
+      "script": "set_sprite.lua",
+      "param": [
+        "12",
+        "male_sleevless_white"
+      ]
+    },
+    "E11": {
+      "tile_x": 7,
+      "tile_y": 4,
+      "script": "set_sprite.lua",
+      "param": [
+        "12",
+        "shirt"
+      ]
+    },
+    "E12": {
+      "tile_x": 1,
+      "tile_y": 5,
+      "script": "set_sprite.lua",
+      "param": [
+        "12",
+        "shirts_longsleeve_male_brown_longsleeve"
+      ]
+    },
+    "E13": {
+      "tile_x": 3,
+      "tile_y": 5,
+      "script": "set_sprite.lua",
+      "param": [
+        "12",
+        "shirts_longsleeve_male_maroon_longsleeve"
+      ]
+    },
+    "E14": {
+      "tile_x": 5,
+      "tile_y": 5,
+      "script": "set_sprite.lua",
+      "param": [
+        "12",
+        "shirts_longsleeve_male_teal_longsleeve"
+      ]
+    },
+    "E15": {
+      "tile_x": 7,
+      "tile_y": 5,
+      "script": "set_sprite.lua",
+      "param": [
+        "12",
+        "shirts_longsleeve_male_white_longsleeve"
+      ]
+    },
+    "E16": {
+      "tile_x": 1,
+      "tile_y": 6,
+      "script": "set_sprite.lua",
+      "param": [
+        "12",
+        "vest"
+      ]
+    },
+    "E17": {
+      "tile_x": 3,
+      "tile_y": 6,
+      "script": "set_sprite.lua",
+      "param": [
+        "12",
+        "vest_w_shirt_cutout"
+      ]
+    },
+    "E18": {
+      "tile_x": 0,
+      "tile_y": 4,
+      "script": "goto_character_map.lua",
+      "param": [
+        "11",
+        "1",
+        "1"
+      ]
+    },
+    "E19": {
+      "tile_x": 8,
+      "tile_y": 4,
+      "script": "goto_character_map.lua",
+      "param": [
+        "13",
+        "1",
+        "1"
+      ]
+    },
+    "E20": {
+      "tile_x": 0,
+      "tile_y": 0,
+      "script": "set_sprite.lua",
+      "param": [
+        "12",
+        ""
+      ]
+    },
+    "E21": {
+      "tile_x": 0,
+      "tile_y": 8,
+      "script": "set_sprite.lua",
+      "param": [
+        "12",
+        ""
+      ]
+    },
+    "E22": {
+      "tile_x": 8,
+      "tile_y": 0,
+      "script": "set_sprite.lua",
+      "param": [
+        "12",
+        ""
+      ]
+    },
+    "E23": {
+      "tile_x": 8,
+      "tile_y": 8,
+      "script": "set_sprite.lua",
+      "param": [
+        "12",
+        ""
+      ]
+    }
+  }
 }

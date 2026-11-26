@@ -1,109 +1,140 @@
-bg_red = 192
-bg_blue = 192
-bg_green = 192
-attribute = {
-  x = {
-        current = 25
-      }
-}
-width = 7
-height = 5
-tile_width = 64
-tile_height = 64
-warp_x = 0
-warp_y = 0
-layer0 = {
-        set = [
-"tile/fog.png",
-"",
-"",
-"",
-"",
-"",
-"tile/fog.png",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"tile/exit.gif",
-"character/25/WC_kite_shield_0_marquee.zip",
-"",
-"character/25/WC_left_hand_male_shield_male_cutoutforbody_marquee.zip",
-"",
-"character/25/WC_left_hand_male_shield_male_cutoutforhat_marquee.zip",
-"tile/exit.gif",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"tile/fog.png",
-"",
-"",
-"",
-"",
-"",
-"tile/fog.png"
-        ]
-}
-event_list: {
-E0 = {
-   tile_x = 1
-   tile_y = 2
-   script = "set_sprite.lua"
-   param = ( "25", "kite_shield_0" )
-}
-E1 = {
-   tile_x = 3
-   tile_y = 2
-   script = "set_sprite.lua"
-   param = ( "25", "left_hand_male_shield_male_cutoutforbody" )
-}
-E2 = {
-   tile_x = 5
-   tile_y = 2
-   script = "set_sprite.lua"
-   param = ( "25", "left_hand_male_shield_male_cutoutforhat" )
-}
-E3 = {
-   tile_x = 0
-   tile_y = 2
-   script = "goto_character_map.lua"
-   param = ( "24", "1", "1" )
-}
-E4 = {
-   tile_x = 6
-   tile_y = 2
-   script = "goto_character_map.lua"
-   param = ( "26", "1", "1" )
-}
-E5 = {
-   tile_x = 0
-   tile_y = 0
-   script = "set_sprite.lua"
-   param = ( "25", "" )
-}
-E6 = {
-   tile_x = 0
-   tile_y = 4
-   script = "set_sprite.lua"
-   param = ( "25", "" )
-}
-E7 = {
-   tile_x = 6
-   tile_y = 0
-   script = "set_sprite.lua"
-   param = ( "25", "" )
-}
-E8 = {
-   tile_x = 6
-   tile_y = 4
-   script = "set_sprite.lua"
-   param = ( "25", "" )
-}
+{
+  "bg_red": 192,
+  "bg_blue": 192,
+  "bg_green": 192,
+  "attribute": {
+    "x": {
+      "current": 25
+    }
+  },
+  "width": 7,
+  "height": 5,
+  "tile_width": 64,
+  "tile_height": 64,
+  "warp_x": 0,
+  "warp_y": 0,
+  "layer0": {
+    "set": [
+      "tile/fog.png",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "tile/fog.png",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "tile/exit.gif",
+      "character/25/WC_kite_shield_0_marquee.zip",
+      "",
+      "character/25/WC_left_hand_male_shield_male_cutoutforbody_marquee.zip",
+      "",
+      "character/25/WC_left_hand_male_shield_male_cutoutforhat_marquee.zip",
+      "tile/exit.gif",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "tile/fog.png",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "tile/fog.png"
+    ]
+  },
+  "event_list": {
+    "E0": {
+      "tile_x": 1,
+      "tile_y": 2,
+      "script": "set_sprite.lua",
+      "param": [
+        "25",
+        "kite_shield_0"
+      ]
+    },
+    "E1": {
+      "tile_x": 3,
+      "tile_y": 2,
+      "script": "set_sprite.lua",
+      "param": [
+        "25",
+        "left_hand_male_shield_male_cutoutforbody"
+      ]
+    },
+    "E2": {
+      "tile_x": 5,
+      "tile_y": 2,
+      "script": "set_sprite.lua",
+      "param": [
+        "25",
+        "left_hand_male_shield_male_cutoutforhat"
+      ]
+    },
+    "E3": {
+      "tile_x": 0,
+      "tile_y": 2,
+      "script": "goto_character_map.lua",
+      "param": [
+        "24",
+        "1",
+        "1"
+      ]
+    },
+    "E4": {
+      "tile_x": 6,
+      "tile_y": 2,
+      "script": "goto_character_map.lua",
+      "param": [
+        "26",
+        "1",
+        "1"
+      ]
+    },
+    "E5": {
+      "tile_x": 0,
+      "tile_y": 0,
+      "script": "set_sprite.lua",
+      "param": [
+        "25",
+        ""
+      ]
+    },
+    "E6": {
+      "tile_x": 0,
+      "tile_y": 4,
+      "script": "set_sprite.lua",
+      "param": [
+        "25",
+        ""
+      ]
+    },
+    "E7": {
+      "tile_x": 6,
+      "tile_y": 0,
+      "script": "set_sprite.lua",
+      "param": [
+        "25",
+        ""
+      ]
+    },
+    "E8": {
+      "tile_x": 6,
+      "tile_y": 4,
+      "script": "set_sprite.lua",
+      "param": [
+        "25",
+        ""
+      ]
+    }
+  }
 }

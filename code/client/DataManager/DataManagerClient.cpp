@@ -40,7 +40,13 @@ DataManagerClient::~DataManagerClient()
 /*****************************************************************************/
 void DataManagerClient::requestFileFromServer(const std::string & filePath)
 {
-	auto & fileStatus = m_timeStampPool.at(filePath);
+	auto iter = m_timeStampPool.find(filePath);
+	if (iter == m_timeStampPool.end())
+	{
+		iter = m_timeStampPool.insert(
+				std::pair<std::string, FileStatus>(filePath, FileStatus())).first;
+	}
+	auto & fileStatus = iter->second;
 
 	// Avoid flooding the server
 	Uint32 currentTime = SDL_GetTicks();
@@ -67,6 +73,12 @@ void DataManagerClient::requestFileFromServer(const std::string & filePath)
 	network_send_req_file(*connection, filePath);
 
 	fileStatus.setTimeStamp(currentTime);
+}
+
+/*****************************************************************************/
+void DataManagerClient::requestMissingFile(const std::string & filePath)
+{
+	requestFileFromServer(filePath);
 }
 
 /*****************************************************************************/

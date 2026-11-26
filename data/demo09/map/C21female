@@ -1,134 +1,174 @@
-bg_red = 192
-bg_blue = 192
-bg_green = 192
-attribute = {
-  x = {
-        current = 21
-      }
-}
-width = 7
-height = 6
-tile_width = 64
-tile_height = 64
-warp_x = 0
-warp_y = 0
-layer0 = {
-        set = [
-"tile/fog.png",
-"",
-"",
-"",
-"",
-"",
-"tile/fog.png",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"character/21/WC_Female_Bandage_head_marquee.zip",
-"",
-"character/21/WC_Female_Bandage_leftarm_marquee.zip",
-"",
-"character/21/WC_Female_Bandage_leftleg_marquee.zip",
-"",
-"tile/exit.gif",
-"character/21/WC_Female_Bandage_rightarm_marquee.zip",
-"",
-"character/21/WC_Female_Bandage_rightleg_marquee.zip",
-"",
-"character/21/WC_Female_Bandage_torso_marquee.zip",
-"tile/exit.gif",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"tile/fog.png",
-"",
-"",
-"",
-"",
-"",
-"tile/fog.png"
-        ]
-}
-event_list: {
-E0 = {
-   tile_x = 1
-   tile_y = 2
-   script = "set_sprite.lua"
-   param = ( "21", "Female_Bandage_head" )
-}
-E1 = {
-   tile_x = 3
-   tile_y = 2
-   script = "set_sprite.lua"
-   param = ( "21", "Female_Bandage_leftarm" )
-}
-E2 = {
-   tile_x = 5
-   tile_y = 2
-   script = "set_sprite.lua"
-   param = ( "21", "Female_Bandage_leftleg" )
-}
-E3 = {
-   tile_x = 1
-   tile_y = 3
-   script = "set_sprite.lua"
-   param = ( "21", "Female_Bandage_rightarm" )
-}
-E4 = {
-   tile_x = 3
-   tile_y = 3
-   script = "set_sprite.lua"
-   param = ( "21", "Female_Bandage_rightleg" )
-}
-E5 = {
-   tile_x = 5
-   tile_y = 3
-   script = "set_sprite.lua"
-   param = ( "21", "Female_Bandage_torso" )
-}
-E6 = {
-   tile_x = 0
-   tile_y = 3
-   script = "goto_character_map.lua"
-   param = ( "20", "1", "1" )
-}
-E7 = {
-   tile_x = 6
-   tile_y = 3
-   script = "goto_character_map.lua"
-   param = ( "22", "1", "1" )
-}
-E8 = {
-   tile_x = 0
-   tile_y = 0
-   script = "set_sprite.lua"
-   param = ( "21", "" )
-}
-E9 = {
-   tile_x = 0
-   tile_y = 5
-   script = "set_sprite.lua"
-   param = ( "21", "" )
-}
-E10 = {
-   tile_x = 6
-   tile_y = 0
-   script = "set_sprite.lua"
-   param = ( "21", "" )
-}
-E11 = {
-   tile_x = 6
-   tile_y = 5
-   script = "set_sprite.lua"
-   param = ( "21", "" )
-}
+{
+  "bg_red": 192,
+  "bg_blue": 192,
+  "bg_green": 192,
+  "attribute": {
+    "x": {
+      "current": 21
+    }
+  },
+  "width": 7,
+  "height": 6,
+  "tile_width": 64,
+  "tile_height": 64,
+  "warp_x": 0,
+  "warp_y": 0,
+  "layer0": {
+    "set": [
+      "tile/fog.png",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "tile/fog.png",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "character/21/WC_Female_Bandage_head_marquee.zip",
+      "",
+      "character/21/WC_Female_Bandage_leftarm_marquee.zip",
+      "",
+      "character/21/WC_Female_Bandage_leftleg_marquee.zip",
+      "",
+      "tile/exit.gif",
+      "character/21/WC_Female_Bandage_rightarm_marquee.zip",
+      "",
+      "character/21/WC_Female_Bandage_rightleg_marquee.zip",
+      "",
+      "character/21/WC_Female_Bandage_torso_marquee.zip",
+      "tile/exit.gif",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "tile/fog.png",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "tile/fog.png"
+    ]
+  },
+  "event_list": {
+    "E0": {
+      "tile_x": 1,
+      "tile_y": 2,
+      "script": "set_sprite.lua",
+      "param": [
+        "21",
+        "Female_Bandage_head"
+      ]
+    },
+    "E1": {
+      "tile_x": 3,
+      "tile_y": 2,
+      "script": "set_sprite.lua",
+      "param": [
+        "21",
+        "Female_Bandage_leftarm"
+      ]
+    },
+    "E2": {
+      "tile_x": 5,
+      "tile_y": 2,
+      "script": "set_sprite.lua",
+      "param": [
+        "21",
+        "Female_Bandage_leftleg"
+      ]
+    },
+    "E3": {
+      "tile_x": 1,
+      "tile_y": 3,
+      "script": "set_sprite.lua",
+      "param": [
+        "21",
+        "Female_Bandage_rightarm"
+      ]
+    },
+    "E4": {
+      "tile_x": 3,
+      "tile_y": 3,
+      "script": "set_sprite.lua",
+      "param": [
+        "21",
+        "Female_Bandage_rightleg"
+      ]
+    },
+    "E5": {
+      "tile_x": 5,
+      "tile_y": 3,
+      "script": "set_sprite.lua",
+      "param": [
+        "21",
+        "Female_Bandage_torso"
+      ]
+    },
+    "E6": {
+      "tile_x": 0,
+      "tile_y": 3,
+      "script": "goto_character_map.lua",
+      "param": [
+        "20",
+        "1",
+        "1"
+      ]
+    },
+    "E7": {
+      "tile_x": 6,
+      "tile_y": 3,
+      "script": "goto_character_map.lua",
+      "param": [
+        "22",
+        "1",
+        "1"
+      ]
+    },
+    "E8": {
+      "tile_x": 0,
+      "tile_y": 0,
+      "script": "set_sprite.lua",
+      "param": [
+        "21",
+        ""
+      ]
+    },
+    "E9": {
+      "tile_x": 0,
+      "tile_y": 5,
+      "script": "set_sprite.lua",
+      "param": [
+        "21",
+        ""
+      ]
+    },
+    "E10": {
+      "tile_x": 6,
+      "tile_y": 0,
+      "script": "set_sprite.lua",
+      "param": [
+        "21",
+        ""
+      ]
+    },
+    "E11": {
+      "tile_x": 6,
+      "tile_y": 5,
+      "script": "set_sprite.lua",
+      "param": [
+        "21",
+        ""
+      ]
+    }
+  }
 }

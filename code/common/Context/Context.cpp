@@ -199,15 +199,15 @@ int context_write_to_file(Context *context)
 	}
 
 	entry_write_string(CHARACTER_TABLE.c_str(), context->getId().c_str(),
-			context->getType().c_str(), CHARACTER_KEY_TYPE, nullptr);
+			context->getType().c_str(), CHARACTER_KEY_TYPE.c_str(), nullptr);
 	entry_write_string(CHARACTER_TABLE.c_str(), context->getId().c_str(),
-			context->getMap().c_str(), CHARACTER_KEY_MAP, nullptr);
+			context->getMap().c_str(), CHARACTER_KEY_MAP.c_str(), nullptr);
 
 	entry_write_int(CHARACTER_TABLE.c_str(), context->getId().c_str(),
-			context->getTileX(), CHARACTER_KEY_TILE_X, nullptr);
+			context->getTileX(), CHARACTER_KEY_TILE_X.c_str(), nullptr);
 
 	entry_write_int(CHARACTER_TABLE.c_str(), context->getId().c_str(),
-			context->getTileY(), CHARACTER_KEY_TILE_Y, nullptr);
+			context->getTileY(), CHARACTER_KEY_TILE_Y.c_str(), nullptr);
 
 	context_unlock_list();
 	return true;
@@ -703,7 +703,7 @@ bool Context::update_from_file()
 	bool ret = false;
 
 	if (entry_read_string(CHARACTER_TABLE.c_str(), getId().c_str(), &result,
-			CHARACTER_KEY_NAME, nullptr) == true)
+			CHARACTER_KEY_NAME.c_str(), nullptr) == true)
 	{
 		setCharacterName(std::string(result));
 	}
@@ -714,14 +714,14 @@ bool Context::update_from_file()
 
 	int npc = 0;
 	if (entry_read_int(CHARACTER_TABLE.c_str(), getId().c_str(), &npc,
-			CHARACTER_KEY_NPC, nullptr) == false)
+			CHARACTER_KEY_NPC.c_str(), nullptr) == false)
 	{
 		ret = false;
 	}
 	setNpc(npc);
 
 	if (entry_read_string(CHARACTER_TABLE.c_str(), getId().c_str(), &result,
-			CHARACTER_KEY_TYPE, nullptr) == true)
+			CHARACTER_KEY_TYPE.c_str(), nullptr) == true)
 	{
 		setType(std::string(result));
 		free(result);
@@ -732,7 +732,7 @@ bool Context::update_from_file()
 	}
 
 	if (entry_read_string(CHARACTER_TABLE.c_str(), getId().c_str(), &result,
-			CHARACTER_KEY_MAP, nullptr) == true)
+			CHARACTER_KEY_MAP.c_str(), nullptr) == true)
 	{
 		setMap(std::string(result));
 		free(result);
@@ -744,13 +744,13 @@ bool Context::update_from_file()
 
 	int pos_tx = 0;
 	if (entry_read_int(CHARACTER_TABLE.c_str(), getId().c_str(), &pos_tx,
-			CHARACTER_KEY_TILE_X, nullptr) == false)
+			CHARACTER_KEY_TILE_X.c_str(), nullptr) == false)
 	{
 		ret = false;
 	}
 	int pos_ty = 0;
 	if (entry_read_int(CHARACTER_TABLE.c_str(), getId().c_str(), &pos_ty,
-			CHARACTER_KEY_TILE_Y, nullptr) == false)
+			CHARACTER_KEY_TILE_Y.c_str(), nullptr) == false)
 	{
 		ret = false;
 	}

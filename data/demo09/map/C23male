@@ -1,372 +1,487 @@
-bg_red = 192
-bg_blue = 192
-bg_green = 192
-attribute = {
-  x = {
-        current = 23
-      }
-}
-width = 13
-height = 10
-tile_width = 64
-tile_height = 64
-warp_x = 0
-warp_y = 0
-layer0 = {
-        set = [
-"tile/fog.png",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"tile/fog.png",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"character/23/WC_bandanas_male_red_marquee.zip",
-"",
-"character/23/WC_caps_male_leather_cap_male_marquee.zip",
-"",
-"character/23/WC_Crown_Fire_marquee.zip",
-"",
-"character/23/WC_Crown_Gold_marquee.zip",
-"",
-"character/23/WC_Crown_Iron_marquee.zip",
-"",
-"character/23/WC_Crown_Water_marquee.zip",
-"",
-"",
-"character/23/WC_helms_male_chainhat_male_marquee.zip",
-"",
-"character/23/WC_helms_male_golden_helm_male_marquee.zip",
-"",
-"character/23/WC_helms_male_metal_helm_male_marquee.zip",
-"",
-"character/23/WC_hoods_male_chain_hood_male_marquee.zip",
-"",
-"character/23/WC_hoods_male_cloth_hood_male_marquee.zip",
-"",
-"character/23/WC_lizardMale_banage_marquee.zip",
-"",
-"",
-"character/23/WC_lizardMale_fin_blue_marquee.zip",
-"",
-"character/23/WC_lizardMale_fin_dark_marquee.zip",
-"",
-"character/23/WC_lizardMale_fin_light_marquee.zip",
-"",
-"character/23/WC_lizardMale_hood_marquee.zip",
-"",
-"character/23/WC_lizardMale_horn1_marquee.zip",
-"",
-"character/23/WC_lizardMale_horn2_marquee.zip",
-"",
-"tile/exit.gif",
-"character/23/WC_lizardMale_shortfin_blue_marquee.zip",
-"",
-"character/23/WC_lizardMale_shortfin_dark_marquee.zip",
-"",
-"character/23/WC_lizardMale_shortfin_light_marquee.zip",
-"",
-"character/23/WC_male_hood_black_marquee.zip",
-"",
-"character/23/WC_Male_legion1helmet_bronze_marquee.zip",
-"",
-"character/23/WC_Male_legion1helmet_gold_marquee.zip",
-"tile/exit.gif",
-"",
-"character/23/WC_Male_legion1helmet_steel_marquee.zip",
-"",
-"character/23/WC_Male_legion2helmet_bronze_marquee.zip",
-"",
-"character/23/WC_Male_legion2helmet_gold_marquee.zip",
-"",
-"character/23/WC_Male_legion2helmet_steel_marquee.zip",
-"",
-"character/23/WC_Male_legion3helmet_bronze_marquee.zip",
-"",
-"character/23/WC_Male_legion3helmet_gold_marquee.zip",
-"",
-"",
-"character/23/WC_Male_legion3helmet_steel_marquee.zip",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"tile/fog.png",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"tile/fog.png"
-        ]
-}
-event_list: {
-E0 = {
-   tile_x = 1
-   tile_y = 2
-   script = "set_sprite.lua"
-   param = ( "23", "bandanas_male_red" )
-}
-E1 = {
-   tile_x = 3
-   tile_y = 2
-   script = "set_sprite.lua"
-   param = ( "23", "caps_male_leather_cap_male" )
-}
-E2 = {
-   tile_x = 5
-   tile_y = 2
-   script = "set_sprite.lua"
-   param = ( "23", "Crown_Fire" )
-}
-E3 = {
-   tile_x = 7
-   tile_y = 2
-   script = "set_sprite.lua"
-   param = ( "23", "Crown_Gold" )
-}
-E4 = {
-   tile_x = 9
-   tile_y = 2
-   script = "set_sprite.lua"
-   param = ( "23", "Crown_Iron" )
-}
-E5 = {
-   tile_x = 11
-   tile_y = 2
-   script = "set_sprite.lua"
-   param = ( "23", "Crown_Water" )
-}
-E6 = {
-   tile_x = 1
-   tile_y = 3
-   script = "set_sprite.lua"
-   param = ( "23", "helms_male_chainhat_male" )
-}
-E7 = {
-   tile_x = 3
-   tile_y = 3
-   script = "set_sprite.lua"
-   param = ( "23", "helms_male_golden_helm_male" )
-}
-E8 = {
-   tile_x = 5
-   tile_y = 3
-   script = "set_sprite.lua"
-   param = ( "23", "helms_male_metal_helm_male" )
-}
-E9 = {
-   tile_x = 7
-   tile_y = 3
-   script = "set_sprite.lua"
-   param = ( "23", "hoods_male_chain_hood_male" )
-}
-E10 = {
-   tile_x = 9
-   tile_y = 3
-   script = "set_sprite.lua"
-   param = ( "23", "hoods_male_cloth_hood_male" )
-}
-E11 = {
-   tile_x = 11
-   tile_y = 3
-   script = "set_sprite.lua"
-   param = ( "23", "lizardMale_banage" )
-}
-E12 = {
-   tile_x = 1
-   tile_y = 4
-   script = "set_sprite.lua"
-   param = ( "23", "lizardMale_fin_blue" )
-}
-E13 = {
-   tile_x = 3
-   tile_y = 4
-   script = "set_sprite.lua"
-   param = ( "23", "lizardMale_fin_dark" )
-}
-E14 = {
-   tile_x = 5
-   tile_y = 4
-   script = "set_sprite.lua"
-   param = ( "23", "lizardMale_fin_light" )
-}
-E15 = {
-   tile_x = 7
-   tile_y = 4
-   script = "set_sprite.lua"
-   param = ( "23", "lizardMale_hood" )
-}
-E16 = {
-   tile_x = 9
-   tile_y = 4
-   script = "set_sprite.lua"
-   param = ( "23", "lizardMale_horn1" )
-}
-E17 = {
-   tile_x = 11
-   tile_y = 4
-   script = "set_sprite.lua"
-   param = ( "23", "lizardMale_horn2" )
-}
-E18 = {
-   tile_x = 1
-   tile_y = 5
-   script = "set_sprite.lua"
-   param = ( "23", "lizardMale_shortfin_blue" )
-}
-E19 = {
-   tile_x = 3
-   tile_y = 5
-   script = "set_sprite.lua"
-   param = ( "23", "lizardMale_shortfin_dark" )
-}
-E20 = {
-   tile_x = 5
-   tile_y = 5
-   script = "set_sprite.lua"
-   param = ( "23", "lizardMale_shortfin_light" )
-}
-E21 = {
-   tile_x = 7
-   tile_y = 5
-   script = "set_sprite.lua"
-   param = ( "23", "male_hood_black" )
-}
-E22 = {
-   tile_x = 9
-   tile_y = 5
-   script = "set_sprite.lua"
-   param = ( "23", "Male_legion1helmet_bronze" )
-}
-E23 = {
-   tile_x = 11
-   tile_y = 5
-   script = "set_sprite.lua"
-   param = ( "23", "Male_legion1helmet_gold" )
-}
-E24 = {
-   tile_x = 1
-   tile_y = 6
-   script = "set_sprite.lua"
-   param = ( "23", "Male_legion1helmet_steel" )
-}
-E25 = {
-   tile_x = 3
-   tile_y = 6
-   script = "set_sprite.lua"
-   param = ( "23", "Male_legion2helmet_bronze" )
-}
-E26 = {
-   tile_x = 5
-   tile_y = 6
-   script = "set_sprite.lua"
-   param = ( "23", "Male_legion2helmet_gold" )
-}
-E27 = {
-   tile_x = 7
-   tile_y = 6
-   script = "set_sprite.lua"
-   param = ( "23", "Male_legion2helmet_steel" )
-}
-E28 = {
-   tile_x = 9
-   tile_y = 6
-   script = "set_sprite.lua"
-   param = ( "23", "Male_legion3helmet_bronze" )
-}
-E29 = {
-   tile_x = 11
-   tile_y = 6
-   script = "set_sprite.lua"
-   param = ( "23", "Male_legion3helmet_gold" )
-}
-E30 = {
-   tile_x = 1
-   tile_y = 7
-   script = "set_sprite.lua"
-   param = ( "23", "Male_legion3helmet_steel" )
-}
-E31 = {
-   tile_x = 0
-   tile_y = 5
-   script = "goto_character_map.lua"
-   param = ( "22", "1", "1" )
-}
-E32 = {
-   tile_x = 12
-   tile_y = 5
-   script = "goto_character_map.lua"
-   param = ( "24", "1", "1" )
-}
-E33 = {
-   tile_x = 0
-   tile_y = 0
-   script = "set_sprite.lua"
-   param = ( "23", "" )
-}
-E34 = {
-   tile_x = 0
-   tile_y = 9
-   script = "set_sprite.lua"
-   param = ( "23", "" )
-}
-E35 = {
-   tile_x = 12
-   tile_y = 0
-   script = "set_sprite.lua"
-   param = ( "23", "" )
-}
-E36 = {
-   tile_x = 12
-   tile_y = 9
-   script = "set_sprite.lua"
-   param = ( "23", "" )
-}
+{
+  "bg_red": 192,
+  "bg_blue": 192,
+  "bg_green": 192,
+  "attribute": {
+    "x": {
+      "current": 23
+    }
+  },
+  "width": 13,
+  "height": 10,
+  "tile_width": 64,
+  "tile_height": 64,
+  "warp_x": 0,
+  "warp_y": 0,
+  "layer0": {
+    "set": [
+      "tile/fog.png",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "tile/fog.png",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "character/23/WC_bandanas_male_red_marquee.zip",
+      "",
+      "character/23/WC_caps_male_leather_cap_male_marquee.zip",
+      "",
+      "character/23/WC_Crown_Fire_marquee.zip",
+      "",
+      "character/23/WC_Crown_Gold_marquee.zip",
+      "",
+      "character/23/WC_Crown_Iron_marquee.zip",
+      "",
+      "character/23/WC_Crown_Water_marquee.zip",
+      "",
+      "",
+      "character/23/WC_helms_male_chainhat_male_marquee.zip",
+      "",
+      "character/23/WC_helms_male_golden_helm_male_marquee.zip",
+      "",
+      "character/23/WC_helms_male_metal_helm_male_marquee.zip",
+      "",
+      "character/23/WC_hoods_male_chain_hood_male_marquee.zip",
+      "",
+      "character/23/WC_hoods_male_cloth_hood_male_marquee.zip",
+      "",
+      "character/23/WC_lizardMale_banage_marquee.zip",
+      "",
+      "",
+      "character/23/WC_lizardMale_fin_blue_marquee.zip",
+      "",
+      "character/23/WC_lizardMale_fin_dark_marquee.zip",
+      "",
+      "character/23/WC_lizardMale_fin_light_marquee.zip",
+      "",
+      "character/23/WC_lizardMale_hood_marquee.zip",
+      "",
+      "character/23/WC_lizardMale_horn1_marquee.zip",
+      "",
+      "character/23/WC_lizardMale_horn2_marquee.zip",
+      "",
+      "tile/exit.gif",
+      "character/23/WC_lizardMale_shortfin_blue_marquee.zip",
+      "",
+      "character/23/WC_lizardMale_shortfin_dark_marquee.zip",
+      "",
+      "character/23/WC_lizardMale_shortfin_light_marquee.zip",
+      "",
+      "character/23/WC_male_hood_black_marquee.zip",
+      "",
+      "character/23/WC_Male_legion1helmet_bronze_marquee.zip",
+      "",
+      "character/23/WC_Male_legion1helmet_gold_marquee.zip",
+      "tile/exit.gif",
+      "",
+      "character/23/WC_Male_legion1helmet_steel_marquee.zip",
+      "",
+      "character/23/WC_Male_legion2helmet_bronze_marquee.zip",
+      "",
+      "character/23/WC_Male_legion2helmet_gold_marquee.zip",
+      "",
+      "character/23/WC_Male_legion2helmet_steel_marquee.zip",
+      "",
+      "character/23/WC_Male_legion3helmet_bronze_marquee.zip",
+      "",
+      "character/23/WC_Male_legion3helmet_gold_marquee.zip",
+      "",
+      "",
+      "character/23/WC_Male_legion3helmet_steel_marquee.zip",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "tile/fog.png",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "tile/fog.png"
+    ]
+  },
+  "event_list": {
+    "E0": {
+      "tile_x": 1,
+      "tile_y": 2,
+      "script": "set_sprite.lua",
+      "param": [
+        "23",
+        "bandanas_male_red"
+      ]
+    },
+    "E1": {
+      "tile_x": 3,
+      "tile_y": 2,
+      "script": "set_sprite.lua",
+      "param": [
+        "23",
+        "caps_male_leather_cap_male"
+      ]
+    },
+    "E2": {
+      "tile_x": 5,
+      "tile_y": 2,
+      "script": "set_sprite.lua",
+      "param": [
+        "23",
+        "Crown_Fire"
+      ]
+    },
+    "E3": {
+      "tile_x": 7,
+      "tile_y": 2,
+      "script": "set_sprite.lua",
+      "param": [
+        "23",
+        "Crown_Gold"
+      ]
+    },
+    "E4": {
+      "tile_x": 9,
+      "tile_y": 2,
+      "script": "set_sprite.lua",
+      "param": [
+        "23",
+        "Crown_Iron"
+      ]
+    },
+    "E5": {
+      "tile_x": 11,
+      "tile_y": 2,
+      "script": "set_sprite.lua",
+      "param": [
+        "23",
+        "Crown_Water"
+      ]
+    },
+    "E6": {
+      "tile_x": 1,
+      "tile_y": 3,
+      "script": "set_sprite.lua",
+      "param": [
+        "23",
+        "helms_male_chainhat_male"
+      ]
+    },
+    "E7": {
+      "tile_x": 3,
+      "tile_y": 3,
+      "script": "set_sprite.lua",
+      "param": [
+        "23",
+        "helms_male_golden_helm_male"
+      ]
+    },
+    "E8": {
+      "tile_x": 5,
+      "tile_y": 3,
+      "script": "set_sprite.lua",
+      "param": [
+        "23",
+        "helms_male_metal_helm_male"
+      ]
+    },
+    "E9": {
+      "tile_x": 7,
+      "tile_y": 3,
+      "script": "set_sprite.lua",
+      "param": [
+        "23",
+        "hoods_male_chain_hood_male"
+      ]
+    },
+    "E10": {
+      "tile_x": 9,
+      "tile_y": 3,
+      "script": "set_sprite.lua",
+      "param": [
+        "23",
+        "hoods_male_cloth_hood_male"
+      ]
+    },
+    "E11": {
+      "tile_x": 11,
+      "tile_y": 3,
+      "script": "set_sprite.lua",
+      "param": [
+        "23",
+        "lizardMale_banage"
+      ]
+    },
+    "E12": {
+      "tile_x": 1,
+      "tile_y": 4,
+      "script": "set_sprite.lua",
+      "param": [
+        "23",
+        "lizardMale_fin_blue"
+      ]
+    },
+    "E13": {
+      "tile_x": 3,
+      "tile_y": 4,
+      "script": "set_sprite.lua",
+      "param": [
+        "23",
+        "lizardMale_fin_dark"
+      ]
+    },
+    "E14": {
+      "tile_x": 5,
+      "tile_y": 4,
+      "script": "set_sprite.lua",
+      "param": [
+        "23",
+        "lizardMale_fin_light"
+      ]
+    },
+    "E15": {
+      "tile_x": 7,
+      "tile_y": 4,
+      "script": "set_sprite.lua",
+      "param": [
+        "23",
+        "lizardMale_hood"
+      ]
+    },
+    "E16": {
+      "tile_x": 9,
+      "tile_y": 4,
+      "script": "set_sprite.lua",
+      "param": [
+        "23",
+        "lizardMale_horn1"
+      ]
+    },
+    "E17": {
+      "tile_x": 11,
+      "tile_y": 4,
+      "script": "set_sprite.lua",
+      "param": [
+        "23",
+        "lizardMale_horn2"
+      ]
+    },
+    "E18": {
+      "tile_x": 1,
+      "tile_y": 5,
+      "script": "set_sprite.lua",
+      "param": [
+        "23",
+        "lizardMale_shortfin_blue"
+      ]
+    },
+    "E19": {
+      "tile_x": 3,
+      "tile_y": 5,
+      "script": "set_sprite.lua",
+      "param": [
+        "23",
+        "lizardMale_shortfin_dark"
+      ]
+    },
+    "E20": {
+      "tile_x": 5,
+      "tile_y": 5,
+      "script": "set_sprite.lua",
+      "param": [
+        "23",
+        "lizardMale_shortfin_light"
+      ]
+    },
+    "E21": {
+      "tile_x": 7,
+      "tile_y": 5,
+      "script": "set_sprite.lua",
+      "param": [
+        "23",
+        "male_hood_black"
+      ]
+    },
+    "E22": {
+      "tile_x": 9,
+      "tile_y": 5,
+      "script": "set_sprite.lua",
+      "param": [
+        "23",
+        "Male_legion1helmet_bronze"
+      ]
+    },
+    "E23": {
+      "tile_x": 11,
+      "tile_y": 5,
+      "script": "set_sprite.lua",
+      "param": [
+        "23",
+        "Male_legion1helmet_gold"
+      ]
+    },
+    "E24": {
+      "tile_x": 1,
+      "tile_y": 6,
+      "script": "set_sprite.lua",
+      "param": [
+        "23",
+        "Male_legion1helmet_steel"
+      ]
+    },
+    "E25": {
+      "tile_x": 3,
+      "tile_y": 6,
+      "script": "set_sprite.lua",
+      "param": [
+        "23",
+        "Male_legion2helmet_bronze"
+      ]
+    },
+    "E26": {
+      "tile_x": 5,
+      "tile_y": 6,
+      "script": "set_sprite.lua",
+      "param": [
+        "23",
+        "Male_legion2helmet_gold"
+      ]
+    },
+    "E27": {
+      "tile_x": 7,
+      "tile_y": 6,
+      "script": "set_sprite.lua",
+      "param": [
+        "23",
+        "Male_legion2helmet_steel"
+      ]
+    },
+    "E28": {
+      "tile_x": 9,
+      "tile_y": 6,
+      "script": "set_sprite.lua",
+      "param": [
+        "23",
+        "Male_legion3helmet_bronze"
+      ]
+    },
+    "E29": {
+      "tile_x": 11,
+      "tile_y": 6,
+      "script": "set_sprite.lua",
+      "param": [
+        "23",
+        "Male_legion3helmet_gold"
+      ]
+    },
+    "E30": {
+      "tile_x": 1,
+      "tile_y": 7,
+      "script": "set_sprite.lua",
+      "param": [
+        "23",
+        "Male_legion3helmet_steel"
+      ]
+    },
+    "E31": {
+      "tile_x": 0,
+      "tile_y": 5,
+      "script": "goto_character_map.lua",
+      "param": [
+        "22",
+        "1",
+        "1"
+      ]
+    },
+    "E32": {
+      "tile_x": 12,
+      "tile_y": 5,
+      "script": "goto_character_map.lua",
+      "param": [
+        "24",
+        "1",
+        "1"
+      ]
+    },
+    "E33": {
+      "tile_x": 0,
+      "tile_y": 0,
+      "script": "set_sprite.lua",
+      "param": [
+        "23",
+        ""
+      ]
+    },
+    "E34": {
+      "tile_x": 0,
+      "tile_y": 9,
+      "script": "set_sprite.lua",
+      "param": [
+        "23",
+        ""
+      ]
+    },
+    "E35": {
+      "tile_x": 12,
+      "tile_y": 0,
+      "script": "set_sprite.lua",
+      "param": [
+        "23",
+        ""
+      ]
+    },
+    "E36": {
+      "tile_x": 12,
+      "tile_y": 9,
+      "script": "set_sprite.lua",
+      "param": [
+        "23",
+        ""
+      ]
+    }
+  }
 }
