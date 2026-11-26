@@ -21,12 +21,20 @@
 #define SCREEN_H
 
 #include "item.h"
+#include <unordered_map>
 
 class Camera;
 
 enum class Screen
 {
 	SELECT, CREATE, PLAY, LAST
+};
+
+const std::unordered_map<enum Screen,std::string> SCREEN_NAME = {
+	{Screen::SELECT,"SELECT"},
+	{Screen::CREATE,"CREATE"},
+	{Screen::PLAY,"PLAY"},
+	{Screen::LAST,"LAST"}
 };
 
 static constexpr int MUSIC_CHANNEL = 0;
