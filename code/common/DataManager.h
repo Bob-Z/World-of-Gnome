@@ -85,6 +85,33 @@ public:
 		}
 	}
 
+	/*************************************************************************/
+	// Quiet typed read: false on missing key or wrong type (no error log).
+	template<typename T>
+	bool tryGet(const std::string &table, const std::string &file,
+			const std::vector<std::string> &resourcePath, T &out)
+	{
+		try
+		{
+			std::string filePath = getFilePath(table, file);
+
+			LockGuard guard(m_poolLock);
+
+			auto json = getJson(filePath);
+
+			for (auto &res : resourcePath)
+			{
+				json = json.at(res);
+			}
+
+			out = json.get<T>();
+			return true;
+		} catch (...)
+		{
+			return false;
+		}
+	}
+
 	void reset(const std::string &filePath);
 
 	template<typename T>

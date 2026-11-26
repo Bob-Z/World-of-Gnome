@@ -231,7 +231,6 @@ void entry_remove(const char *filename)
 /*****************************************************************************/
 int entry_read_int(const std::string &table, const std::string &file, int *res, ...)
 {
-	int ret = false;
 	va_list ap;
 
 	va_start(ap, res);
@@ -240,29 +239,20 @@ int entry_read_int(const std::string &table, const std::string &file, int *res, 
 
 	LockGuard guard(entryListLock);
 
-	DataManager &dm = getDataManager();
-
-	if (!dm.has(table, file, path))
+	int value = 0;
+	if (getDataManager().tryGet<int>(table, file, path, value) == false)
 	{
 		return false;
 	}
 
-	try
-	{
-		*res = dm.get<int>(table, file, path);
-		ret = true;
-	} catch (...)
-	{
-	}
-
-	return ret;
+	*res = value;
+	return true;
 }
 
 /*****************************************************************************/
 int entry_read_string(const std::string &table, const std::string &file,
 		char **res, ...)
 {
-	int ret = false;
 	va_list ap;
 
 	va_start(ap, res);
@@ -273,58 +263,40 @@ int entry_read_string(const std::string &table, const std::string &file,
 
 	*res = nullptr;
 
-	DataManager &dm = getDataManager();
-
-	if (!dm.has(table, file, path))
+	std::string value;
+	if (getDataManager().tryGet<std::string>(table, file, path, value) == false)
 	{
 		return false;
 	}
 
-	try
-	{
-		std::string value = dm.get<std::string>(table, file, path);
-		*res = strdup(value.c_str());
-		ret = true;
-	} catch (...)
-	{
-	}
-
-	return ret;
+	*res = strdup(value.c_str());
+	return true;
 }
 
 /*****************************************************************************/
 static int __read_list_index(const std::string &table, const std::string &file,
 		char **res, int index, va_list ap)
 {
-	int ret = false;
-
 	*res = nullptr;
 
 	LockGuard guard(entryListLock);
 
-	DataManager &dm = getDataManager();
 	std::vector<std::string> path = getPath(ap);
 
-	if (!dm.has(table, file, path))
+	std::vector<std::string> list;
+	if (getDataManager().tryGet<std::vector<std::string> >(table, file, path,
+			list) == false)
 	{
 		return false;
 	}
 
-	try
+	if (index >= 0 && (size_t) index < list.size())
 	{
-		std::vector<std::string> list = dm.get<
-				std::vector<std::string> >(table, file, path);
-
-		if (index >= 0 && (size_t) index < list.size())
-		{
-			*res = strdup(list[index].c_str());
-			ret = true;
-		}
-	} catch (...)
-	{
+		*res = strdup(list[index].c_str());
+		return true;
 	}
 
-	return ret;
+	return false;
 }
 
 /*****************************************************************************/
@@ -345,29 +317,21 @@ int entry_read_list_index(const std::string &table, const std::string &file,
 static int __read_list(const std::string &table, const std::string &file,
 		char ***res, va_list ap)
 {
-	int ret = false;
-
 	*res = nullptr;
 
 	LockGuard guard(entryListLock);
 
-	DataManager &dm = getDataManager();
 	std::vector<std::string> path = getPath(ap);
 
-	if (!dm.has(table, file, path))
+	std::vector<std::string> list;
+	if (getDataManager().tryGet<std::vector<std::string> >(table, file, path,
+			list) == false)
 	{
 		return false;
 	}
 
-	try
-	{
-		*res = toCArray(dm.get<std::vector<std::string> >(table, file, path));
-		ret = (*res != nullptr);
-	} catch (...)
-	{
-	}
-
-	return ret;
+	*res = toCArray(list);
+	return (*res != nullptr);
 }
 
 /*****************************************************************************/
