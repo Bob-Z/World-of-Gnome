@@ -62,11 +62,11 @@ public:
 			return json.get<T>();
 		} catch (json::exception &e)
 		{
-			ERR("JSON : " + std::string(e.what()));
+			ERR("JSON error on table:" + table + ", file:" + file + " : " + std::string(e.what()));
 			throw;
 		} catch (...)
 		{
-			ERR("JSON error");
+			ERR("JSON error on table:" + table + ", file:" + file);
 			throw;
 		}
 	}
@@ -143,10 +143,10 @@ inline bool DataManager::set(const std::string & table, const std::string & file
 		return true;
 	} catch (json::exception& e)
 	{
-		ERR("JSON : " + std::string(e.what()));
+		ERR("JSON error on table:" + table + ", file:" + file + " : " + std::string(e.what()));
 	} catch (...)
 	{
-		ERR("JSON error");
+		ERR("JSON error on table:" + table + ", file:" + file);
 	}
 
 	return false;
