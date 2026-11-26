@@ -668,10 +668,13 @@ int character_set_pos(Context *ctx, const std::string &map, int x, int y)
 
 			std::vector<std::string> params;
 			int k = 0;
-			while (param[k] != nullptr)
+			if (param != nullptr)
 			{
-				params.push_back(std::string(param[k]));
-				k++;
+				while (param[k] != nullptr)
+				{
+					params.push_back(std::string(param[k]));
+					k++;
+				}
 			}
 			action_execute_script(ctx, std::string(script), params);
 

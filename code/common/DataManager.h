@@ -76,13 +76,9 @@ public:
 	T getNoExcept(const std::string &table, const std::string &file,
 			const std::vector<std::string> &resourcePath, const T &defaultValue)
 	{
-		try
-		{
-			return get<T>(table, file, resourcePath);
-		} catch (...)
-		{
-			return defaultValue;
-		}
+		T value = defaultValue;
+		tryGet<T>(table, file, resourcePath, value);
+		return value;
 	}
 
 	/*************************************************************************/

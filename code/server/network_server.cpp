@@ -44,7 +44,13 @@ void network_send_text(const std::string & id, const std::string & text)
 	Context * context = context_find(id);
 	if (context == nullptr)
 	{
-		werr(LOGDESIGNER, "Could not find context %s", id);
+		werr(LOGDESIGNER, "Could not find context %s", id.c_str());
+		return;
+	}
+
+	if (context->getConnection() == nullptr)
+	{
+		werr(LOGDEVELOPER, "No connection for context %s", id.c_str());
 		return;
 	}
 
@@ -52,7 +58,7 @@ void network_send_text(const std::string & id, const std::string & text)
 	message.mutable_text()->set_text(text);
 	std::string serialized_data = message.SerializeAsString();
 
-	wlog(LOGDEVELOPER, "[network] Send text to %s", id);
+	wlog(LOGDEVELOPER, "[network] Send text to %s", id.c_str());
 	network_send_command(*(context->getConnection()), serialized_data, false);
 }
 

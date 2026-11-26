@@ -425,7 +425,6 @@ static int compose_attribute(Context *ctx, std::vector<SdlItem*> &itemArray)
 	}
 
 	int attributeHeight = 0;
-	int attributeQty = 0;
 	int index = 0;
 	int y = 0;
 
@@ -447,7 +446,7 @@ static int compose_attribute(Context *ctx, std::vector<SdlItem*> &itemArray)
 		itemArray.push_back(item);
 
 		item->setOverlay(true);
-		item->setText(attributeText[attributeQty - 1]);
+		item->setText(attributeText.back());
 		item->setFont(font);
 
 		int w = 0;
@@ -539,12 +538,8 @@ static int compose_action(Context *ctx, std::vector<SdlItem*> &itemArray)
 
 		std::vector<std::string> iconArray;
 
-		try
-		{
-			iconArray = getDataManager().get<std::vector<std::string>>(
-					ACTION_TABLE, actionArray[i],
-					{ ACTION_KEY_ICON });
-		} catch (...)
+		if (getDataManager().tryGet<std::vector<std::string>>(ACTION_TABLE,
+				actionArray[i], { ACTION_KEY_ICON }, iconArray) == false)
 		{
 			i++;
 			continue;
@@ -1054,13 +1049,14 @@ static void compose_inventory(Context *ctx, std::vector<SdlItem*> &itemArray)
 		inventoryArray.push_back(std::string(inventoryList[i]));
 		i++;
 	}
+	deep_free(inventoryList);
 
 	std::string label;
 	int x = 0;
 
 	for (auto &&inventoryId : inventoryArray)
 	{
-		char *mytemplate = item_is_resource(std::string(inventoryArray[i]));
+		char *mytemplate = item_is_resource(std::string(inventoryId));
 
 		SiAnim *anim = nullptr;
 		char *value = nullptr;
@@ -1164,7 +1160,7 @@ static void compose_inventory(Context *ctx, std::vector<SdlItem*> &itemArray)
 				x += anim->getWidth();
 			}
 
-			std::string itemId = std::string(inventoryArray[i]);
+			std::string itemId = std::string(inventoryId);
 			item->setClickLeftCb([itemId]()
 			{	cb_inventory_select(itemId);});
 		}

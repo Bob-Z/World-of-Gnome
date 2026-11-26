@@ -78,10 +78,13 @@ static int npc_script(void *data)
 
 			std::vector<std::string> params;
 			int i = 0;
-			while (parameters[i] != nullptr)
+			if (parameters != nullptr)
 			{
-				params.push_back(std::string(parameters[i]));
-				i++;
+				while (parameters[i] != nullptr)
+				{
+					params.push_back(std::string(parameters[i]));
+					i++;
+				}
 			}
 
 			timeOutMs = action_execute_script(context, std::string(script),

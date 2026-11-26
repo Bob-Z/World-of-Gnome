@@ -34,6 +34,7 @@ void DataSent::send()
 	if (m_connection == nullptr)
 	{
 		werr(LOGDEVELOPER, "null connection");
+		return;
 	}
 
 	m_connection->send(m_serializedData, m_isData);

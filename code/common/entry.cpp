@@ -541,6 +541,8 @@ int entry_get_group_list(const std::string &table, const std::string &file,
 	std::vector<std::string> path = getPath(ap);
 	va_end(ap);
 
+	*res = nullptr;
+
 	try
 	{
 		*res = toCArray(getDataManager().getKeys(table, file, path));
