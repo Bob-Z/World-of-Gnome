@@ -116,7 +116,7 @@ static int l_item_set_px(lua_State *luaState)
 	lua_pop(luaState, 1);
 
 	int x;
-	x = luaL_checkinteger(luaState, -1);
+	x = luaL_checknumber(luaState, -1);
 	item->setRectX(x);
 	return 0; // number of results
 }
@@ -135,7 +135,7 @@ static int l_item_set_py(lua_State *luaState)
 	lua_pop(luaState, 1);
 
 	int y;
-	y = luaL_checkinteger(luaState, -1);
+	y = luaL_checknumber(luaState, -1);
 	item->setRectY(y);
 	return 0; // number of results
 }
@@ -221,7 +221,7 @@ static int l_item_set_anim_start_tick(lua_State *luaState)
 	lua_pop(luaState, 1);
 
 	int tick;
-	tick = luaL_checkinteger(luaState, -1);
+	tick = luaL_checknumber(luaState, -1);
 	item->setAnimStartTick(tick);
 
 	return 0; // number of results
@@ -386,7 +386,7 @@ static int l_item_set_anim_from_context(lua_State *luaState)
 	lua_pop(luaState, 1);
 
 	const char *id = luaL_checkstring(luaState, -4);
-	int isMoving = luaL_checkinteger(luaState, -3);
+	int isMoving = luaL_checknumber(luaState, -3);
 	const char *mainOrientation = luaL_checkstring(luaState, -2);
 	const char *secondaryOrientation = luaL_checkstring(luaState, -1);
 

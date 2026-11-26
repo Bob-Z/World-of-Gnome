@@ -555,11 +555,8 @@ static int compose_action(Context *ctx, std::vector<SdlItem*> &itemArray)
 		SdlItem::Layout layout = SdlItem::Layout::TOP_LEFT;
 		int layoutRead = -1;
 
-		try
-		{
-			layoutRead = getDataManager().get<int>(ACTION_TABLE, actionArray[i],
-			{ ACTION_KEY_ICON_LAYOUT });
-		} catch (...)
+		if (getDataManager().tryGet<int>(ACTION_TABLE, actionArray[i],
+				{ ACTION_KEY_ICON_LAYOUT }, layoutRead) == false)
 		{
 			i++;
 			continue;
@@ -599,12 +596,10 @@ static int compose_action(Context *ctx, std::vector<SdlItem*> &itemArray)
 		}
 
 		std::vector<std::string> iconOver;
-		try
+		if (getDataManager().tryGet<std::vector<std::string>>(
+				ACTION_TABLE, actionArray[i], { ACTION_KEY_ICON_OVER },
+				iconOver))
 		{
-			iconOver = getDataManager().get<std::vector<std::string>>(
-					ACTION_TABLE, actionArray[i],
-					{ ACTION_KEY_ICON_OVER });
-
 			std::vector<std::string> iconOverStd;
 			for (std::string &icon : iconOver)
 			{
@@ -614,17 +609,13 @@ static int compose_action(Context *ctx, std::vector<SdlItem*> &itemArray)
 			animArray.clear();
 			animArray = imageDB_get_anim_array(ctx, iconOverStd);
 			item->setAnimOver(animArray);
-		} catch (...)
-		{
 		}
 
 		std::vector<std::string> iconClick;
-		try
+		if (getDataManager().tryGet<std::vector<std::string>>(
+				ACTION_TABLE, actionArray[i], { ACTION_KEY_ICON_CLICK },
+				iconClick))
 		{
-			iconOver = getDataManager().get<std::vector<std::string>>(
-					ACTION_TABLE, actionArray[i],
-					{ ACTION_KEY_ICON_CLICK });
-
 			std::vector<std::string> iconClickStd;
 			for (std::string &icon : iconClick)
 			{
@@ -634,9 +625,6 @@ static int compose_action(Context *ctx, std::vector<SdlItem*> &itemArray)
 			animArray.clear();
 			animArray = imageDB_get_anim_array(ctx, iconClickStd);
 			item->setAnimClick(animArray);
-
-		} catch (...)
-		{
 		}
 
 		itemArray.push_back(item);

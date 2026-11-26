@@ -28,7 +28,7 @@
 #include <unordered_map>
 #include <vector>
 
-class DataManagerClient: DataManager, FileReceivedObserver
+class DataManagerClient: public DataManager, FileReceivedObserver
 {
 public:
 	DataManagerClient();

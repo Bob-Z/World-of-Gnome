@@ -156,13 +156,20 @@ void Connection::send(const std::string m_serializedData, const bool m_isData)
 /*****************************************************************************/
 void Connection::disconnect()
 {
+	LockGuard guard(m_lockSend);
+
+	if (m_socket == nullptr && m_socketData == nullptr)
+	{
+		return;
+	}
+
 	wlog(LOGDEVELOPER, "Disconnecting user %s", getUserName().c_str());
 
 	setConnected(false);
 	SDLNet_TCP_Close(m_socket);
 	SDLNet_TCP_Close(m_socketData);
-	setSocket(0);
-	setSocketData(0);
+	setSocket(nullptr);
+	setSocketData(nullptr);
 }
 
 /*****************************************************************************/
