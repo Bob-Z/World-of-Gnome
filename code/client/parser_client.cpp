@@ -202,32 +202,33 @@ int parse_incoming_data(Connection & connection, const std::string & serializedD
 	{
 		if (message.has_login_ok())
 		{
-			wlog(LOGDEVELOPER, "[network] Received login OK for user %s", connection.getUserName().c_str());
+			LOG("[network] Received login OK for user " + connection.getUserName());
 			manage_login_ok(connection, message.login_ok());
 		}
 		else if (message.has_login_nok())
 		{
-			wlog(LOGDEVELOPER, "[network] Received login NOK for user %s", connection.getUserName().c_str());
+			LOG("[network] Received login NOK for user " + connection.getUserName());
 			manage_login_nok(connection, message.login_nok());
 		}
 		else if (message.has_playable_character())
 		{
-			wlog(LOGDEVELOPER, "[network] Received playable character for user %s", connection.getUserName().c_str());
+			LOG("[network] Received playable character for user " + connection.getUserName());
 			manage_playable_character(message.playable_character());
 		}
 		else if (message.has_file())
 		{
-			wlog(LOGDEVELOPER, "[network] Received file %s", message.file().name().c_str());
+			LOG("[network] Received file " + message.file().name());
 			manage_file(message.file());
 		}
 		else if (message.has_user_character())
 		{
-			wlog(LOGDEVELOPER, "[network] Received user %s character", connection.getUserName().c_str(), message.user_character().name().c_str());
+			LOG("[network] Received user " + connection.getUserName() + " character "
+					+ message.user_character().name());
 			manage_user_character(message.user_character());
 		}
 		else if (message.has_context())
 		{
-			wlog(LOGDEVELOPER, "[network] Received context %s", message.context().id().c_str());
+			LOG("[network] Received context " + message.context().id());
 			manage_context(message.context());
 		}
 		else if (message.has_text())
