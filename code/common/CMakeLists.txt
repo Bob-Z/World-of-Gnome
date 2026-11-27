@@ -50,7 +50,6 @@ add_library(
 	file.cpp
 	font.cpp
 	item.cpp
-	list.cpp
 	Lock.cpp
 	LockGuard.cpp
 	log.cpp

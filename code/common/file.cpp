@@ -20,7 +20,7 @@
 #include "client_server.h"
 #include "const.h"
 #include "file.h"
-#include "list.h"
+
 #include "LockGuard.h"
 #include "log.h"
 #include "mutex.h"
@@ -37,19 +37,32 @@
 #include <SDL_stdinc.h>
 #include <SDL_timer.h>
 #include <stdlib.h>
+#include <string>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <unordered_map>
 #include <utility>
-
-list_t *file_list = nullptr;
-
-Lock file_list_lock;
 
 typedef struct file_tag
 {
 	Uint32 timestamp;
 	Lock lock;
 } file_t;
+
+std::unordered_map<std::string, file_t *> file_list;
+
+static file_t * find_file(const char *filename)
+{
+	auto iter = file_list.find(filename);
+	if (iter == file_list.end())
+	{
+		return nullptr;
+	}
+
+	return iter->second;
+}
+
+Lock file_list_lock;
 
 /****************************************
  filename is "table/dir/file"
@@ -59,13 +72,13 @@ void file_lock(const char *filename)
 	file_t *file_data;
 
 	LockGuard guard(file_list_lock);
-	file_data = (file_t*) list_find(file_list, filename);
+	file_data = find_file(filename);
 	if (file_data == nullptr)
 	{
 		file_data = new file_t;
 		file_data->timestamp = 0;
 
-		list_update(&file_list, filename, file_data);
+		file_list[filename] = file_data;
 	}
 
 	file_data->lock.lock();
@@ -79,7 +92,7 @@ void file_unlock(const char *filename)
 	file_t *file_data;
 
 	LockGuard guard(file_list_lock);
-	file_data = (file_t*) list_find(file_list, filename);
+	file_data = find_file(filename);
 
 	if (file_data == nullptr)
 	{
@@ -107,7 +120,7 @@ void file_update(Connection *connection, const char *filename)
 	file_t *file_data;
 
 	LockGuard guard(file_list_lock);
-	file_data = (file_t*) list_find(file_list, filename);
+	file_data = find_file(filename);
 
 	if (file_data == nullptr)
 	{
@@ -454,7 +467,7 @@ Uint32 file_get_timestamp(const char *table, const char *file_name)
 
 	LockGuard guard(file_list_lock);
 
-	file_data = (file_t*) list_find(file_list, table_path.c_str());
+	file_data = find_file(table_path.c_str());
 	if (file_data != nullptr)
 	{
 		time_stamp = file_data->timestamp;

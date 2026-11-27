@@ -22,10 +22,10 @@
 
 #include "client_server.h"
 #include "file.h"
-#include "list.h"
 #include <string>
+#include <unordered_map>
 
-static list_t * font_list = nullptr;
+static std::unordered_map<std::string, TTF_Font *> font_list;
 
 /*****************************************************************************/
 TTF_Font * font_get(Context * ctx, const std::string & filename, int size)
@@ -34,10 +34,10 @@ TTF_Font * font_get(Context * ctx, const std::string & filename, int size)
 
 	file_lock(filename.c_str());
 
-	font = (TTF_Font*) list_find(font_list, filename.c_str());
-
-	if (font != nullptr)
+	auto iter = font_list.find(filename);
+	if (iter != font_list.end())
 	{
+		font = iter->second;
 		file_unlock(filename.c_str());
 		return font;
 	}
@@ -47,7 +47,7 @@ TTF_Font * font_get(Context * ctx, const std::string & filename, int size)
 
 	if (font != nullptr)
 	{
-		list_update(&font_list, filename.c_str(), font);
+		font_list[filename] = font;
 		file_unlock(filename.c_str());
 		return font;
 	}

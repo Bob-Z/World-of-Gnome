@@ -26,13 +26,11 @@
 #include <vector>
 
 #include "DataManager.h"
-#include "list.h"
 #include "LockGuard.h"
 #include "log.h"
 #include "mutex.h"
 #include "protocol.h"
 
-list_t *entry_list = nullptr;
 Lock entryListLock;
 
 // Defined in main_server.cpp / main_client.cpp
@@ -205,9 +203,6 @@ static char* __copy_group(const char *src_table, const char *src_file,
 void entry_remove(const char *filename)
 {
 	wlog(LOGDEVELOPER, "Removing entry : %s", filename);
-
-	LockGuard guard(entryListLock);
-	list_update(&entry_list, filename, nullptr);
 }
 
 /*****************************************************************************/
