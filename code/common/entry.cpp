@@ -195,7 +195,7 @@ static std::string __copy_group(const char *src_table, const char *src_file,
 /*****************************************************************************/
 void entry_remove(const std::string &filename)
 {
-	wlog(LOGDEVELOPER, "Removing entry : %s", filename);
+	LOG("Removing entry : " + filename);
 }
 
 /*****************************************************************************/

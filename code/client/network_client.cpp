@@ -94,7 +94,7 @@ void network_request_character_creation(Connection & connection, const std::stri
 	message.mutable_create()->set_name(name);
 	std::string serialized_data = message.SerializeAsString();
 
-	wlog(LOGDEVELOPER, "[network] Send CREATE ID = %s, NAME = %s", id, name);
+	wlog(LOGDEVELOPER, "[network] Send CREATE ID = %s, NAME = %s", id.c_str(), name.c_str());
 	network_send_command(connection, serialized_data, false);
 }
 

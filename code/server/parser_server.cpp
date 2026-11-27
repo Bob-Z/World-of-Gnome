@@ -153,7 +153,7 @@ static void manage_create(Connection &connection, const pb::Create &create)
 	{
 		werr(LOGUSER,
 				"Error copying character template %s to character %s (maybe template doesn't exists ?)",
-				create.id(), create.name());
+				create.id().c_str(), create.name().c_str());
 		file_delete(CHARACTER_TABLE, create.name());
 		return;
 	}

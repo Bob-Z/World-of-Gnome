@@ -402,7 +402,7 @@ bool file_copy(const std::string &src_table, const std::string &src_name,
 	src = fopen(src_full_path.c_str(), "rb");
 	if (src == nullptr)
 	{
-		werr(LOGDESIGNER, "Failed to open source file %s\n", src_full_path);
+		werr(LOGDESIGNER, "Failed to open source file %s\n", src_full_path.c_str());
 		return false;
 	}
 
@@ -413,7 +413,7 @@ bool file_copy(const std::string &src_table, const std::string &src_name,
 	if (dst == nullptr)
 	{
 		werr(LOGDESIGNER, "Failed to open destination file %s\n",
-				dst_full_path);
+				dst_full_path.c_str());
 		fclose(src);
 		return false;
 	}
