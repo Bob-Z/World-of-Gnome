@@ -251,7 +251,7 @@ void context_add_or_update_from_network_frame(const Context &receivedCtx)
 
 			if (receivedCtx.isInGame() == true)
 			{
-				LOG("Updating context " + std::string(receivedCtx.getCharacterName()));
+				LOG("Updating context " + receivedCtx.getCharacterName());
 
 				ctx->setMap(receivedCtx.getMap());
 				ctx->setTile(receivedCtx.getTileX(), receivedCtx.getTileY());
@@ -265,7 +265,7 @@ void context_add_or_update_from_network_frame(const Context &receivedCtx)
 
 			if (receivedCtx.isInGame() == false)
 			{
-				LOG("Deleting context " + std::string(receivedCtx.getConnection()->getUserName()) + " / " + std::string(receivedCtx.getCharacterName()));
+				LOG("Deleting context " + receivedCtx.getConnection()->getUserName() + " / " + receivedCtx.getCharacterName());
 				context_free(ctx);
 			}
 			context_unlock_list();
@@ -277,7 +277,7 @@ void context_add_or_update_from_network_frame(const Context &receivedCtx)
 
 	context_unlock_list();
 
-	LOG("Creating context " + std::string(receivedCtx.getCharacterName()));
+	LOG("Creating context " + receivedCtx.getCharacterName());
 	ctx = context_new();
 	ctx->setCharacterName(receivedCtx.getCharacterName());
 	ctx->setNpc(receivedCtx.isNpc());
@@ -700,7 +700,7 @@ bool Context::update_from_file()
 
 	if (entry_read_string(CHARACTER_TABLE, getId(), result, { CHARACTER_KEY_NAME }) == true)
 	{
-		setCharacterName(std::string(result));
+		setCharacterName(result);
 	}
 	else
 	{
@@ -716,7 +716,7 @@ bool Context::update_from_file()
 
 	if (entry_read_string(CHARACTER_TABLE, getId(), result, { CHARACTER_KEY_TYPE }) == true)
 	{
-		setType(std::string(result));
+		setType(result);
 	}
 	else
 	{
@@ -725,7 +725,7 @@ bool Context::update_from_file()
 
 	if (entry_read_string(CHARACTER_TABLE, getId(), result, { CHARACTER_KEY_MAP }) == true)
 	{
-		setMap(std::string(result));
+		setMap(result);
 	}
 	else
 	{

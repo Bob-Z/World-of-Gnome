@@ -44,13 +44,13 @@ void network_send_text(const std::string & id, const std::string & text)
 	Context * context = context_find(id);
 	if (context == nullptr)
 	{
-		ERR_DESIGN("Could not find context " + std::string(id));
+		ERR_DESIGN("Could not find context " + id);
 		return;
 	}
 
 	if (context->getConnection() == nullptr)
 	{
-		ERR("No connection for context " + std::string(id));
+		ERR("No connection for context " + id);
 		return;
 	}
 
@@ -58,7 +58,7 @@ void network_send_text(const std::string & id, const std::string & text)
 	message.mutable_text()->set_text(text);
 	std::string serialized_data = message.SerializeAsString();
 
-	LOG("[network] Send text to " + std::string(id));
+	LOG("[network] Send text to " + id);
 	network_send_command(*(context->getConnection()), serialized_data, false);
 }
 
@@ -129,7 +129,7 @@ void network_send_user_character(Connection & connection, const std::string & id
 	message.mutable_user_character()->set_name(name);
 	std::string serialized_data = message.SerializeAsString();
 
-	LOG("[network] Send user " + std::string(connection.getUserName()) + " character " + std::string(name));
+	LOG("[network] Send user " + connection.getUserName() + " character " + name);
 	network_send_command(connection, serialized_data, false);
 }
 
@@ -138,7 +138,7 @@ void network_send_user_character(Connection & connection, const std::string & id
  ******************************************************************************/
 void network_send_character_file(Context * context)
 {
-	const std::string file_name = std::string(CHARACTER_TABLE) + "/" + context->getId();
+	const std::string file_name = CHARACTER_TABLE + "/" + context->getId();
 
 	network_send_file(*(context->getConnection()), file_name);
 }
@@ -342,7 +342,7 @@ void network_send_popup(const std::string & contextId, const std::vector<std::st
 	Context * context = context_find(contextId);
 	if (context == nullptr)
 	{
-		ERR("[network] No context with ID " + std::string(contextId));
+		ERR("[network] No context with ID " + contextId);
 		return;
 	}
 
@@ -425,7 +425,7 @@ void network_broadcast_effect(EffectManager::EffectType type, const std::string 
 			continue;
 		}
 
-		LOG("[network] Send effect to " + std::string(ctx->getId()));
+		LOG("[network] Send effect to " + ctx->getId());
 		network_send_command(*(ctx->getConnection()), serialized_data, false);
 	} while ((ctx = ctx->m_next) != nullptr);
 
@@ -505,6 +505,6 @@ void network_send_context_to_context(Context * dest_ctx, Context * src_ctx)
 
 	std::string serialized_data = message.SerializeAsString();
 
-	LOG("[network] Send context of " + std::string(src_ctx->getId()) + " to " + std::string(dest_ctx->getId()));
+	LOG("[network] Send context of " + src_ctx->getId() + " to " + dest_ctx->getId());
 	network_send_command(*(dest_ctx->getConnection()), serialized_data, false);
 }

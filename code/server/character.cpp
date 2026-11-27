@@ -51,7 +51,7 @@ void character_playable_send_list(Connection &connection)
 
 	// Read all files in character template directory
 	const std::string file_path = base_directory + "/"
-			+ std::string(CHARACTER_TEMPLATE_TABLE);
+			+ CHARACTER_TEMPLATE_TABLE;
 
 	dir = opendir(file_path.c_str());
 	if (dir == nullptr)
@@ -203,7 +203,7 @@ std::pair<bool, std::string> character_create_from_template(Context *ctx,
 		const char *my_template, const char *map, int layer, int x, int y)
 {
 	const std::pair<bool, std::string> new_id = file_new(
-			std::string(CHARACTER_TABLE));
+			CHARACTER_TABLE);
 
 	if (file_copy(CHARACTER_TEMPLATE_TABLE, my_template, CHARACTER_TABLE,
 			new_id.second) == false)
@@ -292,7 +292,7 @@ static void execute_aggro(Context *agressor, const Context &target,
 		i++;
 	}
 
-	action_execute_script(agressor, std::string(script), params);
+	action_execute_script(agressor, script, params);
 }
 
 /***********************************************************************
@@ -516,7 +516,7 @@ int character_set_pos(Context *ctx, const std::string &map, int x, int y)
 		params.push_back(std::to_string(x));
 		params.push_back(std::to_string(y));
 
-		ret_value = action_execute_script(ctx, std::string(script), params);
+		ret_value = action_execute_script(ctx, script, params);
 
 		return ret_value;
 	}
@@ -621,7 +621,7 @@ int character_set_pos(Context *ctx, const std::string &map, int x, int y)
 					k++;
 				}
 			}
-			action_execute_script(ctx, std::string(script), params);
+			action_execute_script(ctx, script, params);
 			param.clear();
 		}
 	}

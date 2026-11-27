@@ -193,10 +193,10 @@ std::pair<bool, std::string> file_new(const std::string &table,
 	if (suggested_name != NO_SUGGESTED_NAME)
 	{
 		const std::string file_path = dir_path + "/"
-				+ std::string(suggested_name);
+				+ suggested_name;
 		if (stat(file_path.c_str(), &sts) != -1)
 		{
-			ERR("Suggested file " + std::string(suggested_name) + " already exists");
+			ERR("Suggested file " + suggested_name + " already exists");
 			return std::pair<bool, std::string>
 			{ false, NO_SUGGESTED_NAME };
 		}
@@ -212,7 +212,7 @@ std::pair<bool, std::string> file_new(const std::string &table,
 			dir = opendir(dir_path.c_str());
 			if (dir == nullptr)
 			{
-				ERR("Cannot create path " + std::string(dir_path));
+				ERR("Cannot create path " + dir_path);
 
 				return std::pair<bool, std::string>
 				{ false, NO_SUGGESTED_NAME };
@@ -284,7 +284,7 @@ bool file_get_contents(const std::string &filename, std::string &contents)
 		error_str = strerror_r(errno, error_buf, SMALL_BUF);
 #endif
 		file_unlock(filename);
-		ERR_DESIGN("Error stat on file " + std::string(file_path) + ": " + std::string(error_str) + "\n");
+		ERR_DESIGN("Error stat on file " + file_path + ": " + std::string(error_str) + "\n");
 		return false;
 	}
 
@@ -298,7 +298,7 @@ bool file_get_contents(const std::string &filename, std::string &contents)
 		error_str = strerror_r(errno, error_buf, SMALL_BUF);
 #endif
 		file_unlock(filename);
-		ERR_DESIGN("Error open on file " + std::string(file_path) + ": " + std::string(error_str) + "\n");
+		ERR_DESIGN("Error open on file " + file_path + ": " + std::string(error_str) + "\n");
 		return false;
 	}
 
@@ -315,7 +315,7 @@ bool file_get_contents(const std::string &filename, std::string &contents)
 #endif
 		close(fd);
 		file_unlock(filename);
-		ERR_DESIGN("Error read on file " + std::string(file_path) + ": " + std::string(error_str) + "\n");
+		ERR_DESIGN("Error read on file " + file_path + ": " + std::string(error_str) + "\n");
 		return false;
 	}
 
@@ -354,7 +354,7 @@ int file_set_contents(const std::string &filename, const std::string &contents)
 		error_str = strerror_r(errno, error_buf, SMALL_BUF);
 #endif
 		file_unlock(filename);
-		ERR_DESIGN("Error open on file " + std::string(file_path) + ": " + std::string(error_str) + "\n");
+		ERR_DESIGN("Error open on file " + file_path + ": " + std::string(error_str) + "\n");
 		return false;
 	}
 
@@ -369,7 +369,7 @@ int file_set_contents(const std::string &filename, const std::string &contents)
 #endif
 		close(fd);
 		file_unlock(filename);
-		ERR_DESIGN("Error write on file " + std::string(file_path) + ": " + std::string(error_str) + "\n");
+		ERR_DESIGN("Error write on file " + file_path + ": " + std::string(error_str) + "\n");
 		return false;
 	}
 
@@ -390,22 +390,22 @@ bool file_copy(const std::string &src_table, const std::string &src_name,
 	FILE *dst;
 
 	const std::string src_full_path = base_directory + "/"
-			+ std::string(src_table) + "/" + std::string(src_name);
+			+ src_table + "/" + src_name;
 
 	src = fopen(src_full_path.c_str(), "rb");
 	if (src == nullptr)
 	{
-		ERR_DESIGN("Failed to open source file " + std::string(src_full_path) + "\n");
+		ERR_DESIGN("Failed to open source file " + src_full_path + "\n");
 		return false;
 	}
 
 	const std::string dst_full_path = base_directory + "/"
-			+ std::string(dst_table) + "/" + std::string(dst_name);
+			+ dst_table + "/" + dst_name;
 
 	dst = fopen(dst_full_path.c_str(), "wb");
 	if (dst == nullptr)
 	{
-		ERR_DESIGN("Failed to open destination file " + std::string(dst_full_path) + "\n");
+		ERR_DESIGN("Failed to open destination file " + dst_full_path + "\n");
 		fclose(src);
 		return false;
 	}

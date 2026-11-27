@@ -98,7 +98,7 @@ int map_check_tile(Context *ctx, const char *id, const std::string &map,
 		param[2] = sx;
 		param[3] = sy;
 		param[4] = nullptr;
-		res = action_execute_script(ctx, std::string(script),
+		res = action_execute_script(ctx, script,
 		{ std::string(param[0]), std::string(param[1]), std::string(param[2]),
 				std::string(param[3]) });
 		return res;

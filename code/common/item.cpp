@@ -34,7 +34,7 @@
  ********************************************/
 std::pair<bool, std::string> item_create_empty()
 {
-	return file_new(std::string(ITEM_TABLE));
+	return file_new(ITEM_TABLE);
 }
 
 /**************************************************

@@ -194,7 +194,7 @@ static void fill_character_marquee(Context * context, TTF_Font * fontName, TTF_F
 		if (entry_read_string(CHARACTER_TEMPLATE_TABLE, characterMarquee.getId(), marqueeName, { CHARACTER_KEY_MARQUEE }) == true)
 		{
 			std::vector<std::string> nameArray;
-			nameArray.push_back(std::string(marqueeName));
+			nameArray.push_back(marqueeName);
 
 			characterMarquee.setAnim(imageDB_get_anim_array(context, nameArray));
 		}
@@ -210,7 +210,7 @@ static void fill_character_marquee(Context * context, TTF_Font * fontName, TTF_F
 			std::vector<std::string> nameArray;
 			for (size_t i = 0; i < marqueeList.size(); i++)
 			{
-				nameArray.push_back(std::string(marqueeList[i]));
+				nameArray.push_back(marqueeList[i]);
 			}
 			characterMarquee.setAnim(imageDB_get_anim_array(context, nameArray));
 		}
@@ -228,14 +228,14 @@ static void fill_character_marquee(Context * context, TTF_Font * fontName, TTF_F
 		entry_read_string(CHARACTER_TEMPLATE_TABLE, characterMarquee.getId(), name, { CHARACTER_KEY_NAME });
 		if (!name.empty())
 		{
-			characterMarquee.setName(std::string(name));
+			characterMarquee.setName(name);
 		}
 
 		std::string type;
 		entry_read_string(CHARACTER_TEMPLATE_TABLE, characterMarquee.getId(), type, { CHARACTER_KEY_TYPE });
 		if (!type.empty())
 		{
-			characterMarquee.setType(std::string(type));
+			characterMarquee.setType(type);
 		}
 
 		if ((fontName != nullptr) && (characterMarquee.getName().size() != 0))
@@ -503,14 +503,14 @@ void scr_create_add_playable_character(const std::vector<std::string> & idList)
 		entry_read_string(CHARACTER_TEMPLATE_TABLE, id, name, { CHARACTER_KEY_NAME });
 		if (!name.empty())
 		{
-			characterMarquee.setName(std::string(name));
+			characterMarquee.setName(name);
 		}
 
 		std::string type;
 		entry_read_string(CHARACTER_TEMPLATE_TABLE, id, type, { CHARACTER_KEY_TYPE });
 		if (!type.empty())
 		{
-			characterMarquee.setType(std::string(type));
+			characterMarquee.setType(type);
 		}
 
 		characterMarqueeArray.push_back(characterMarquee);

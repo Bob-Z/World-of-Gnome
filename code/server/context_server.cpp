@@ -151,7 +151,7 @@ void context_broadcast_map(const char * map)
 		return;
 	}
 
-	const std::string file_name = std::string(MAP_TABLE) + "/" + std::string(map);
+	const std::string file_name = MAP_TABLE + "/" + std::string(map);
 
 	do
 	{
@@ -199,7 +199,7 @@ void context_broadcast_character(const char * character)
 		return;
 	}
 
-	const std::string file_name = std::string(CHARACTER_TABLE) + "/" + std::string(character);
+	const std::string file_name = CHARACTER_TABLE + "/" + std::string(character);
 
 	do
 	{

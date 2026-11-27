@@ -93,7 +93,7 @@ static void manage_start(Connection &connection, const pb::Start &start)
 	if (getDataManager().getJson(CHARACTER_TABLE + "/" + start.id()).is_object()
 			== false)
 	{
-		ERR_USER("Cannot start with character " + std::string(start.id()) + ": character not found");
+		ERR_USER("Cannot start with character " + start.id() + ": character not found");
 		context_free(context);
 		connection.setContextId("");
 		connection.disconnect();
@@ -104,7 +104,7 @@ static void manage_start(Connection &connection, const pb::Start &start)
 	context_spread(context);
 	context_request_other_context(context);
 
-	LOG("[network] received start request for ID " + std::string(start.id()) + " and user " + std::string(connection.getUserName()));
+	LOG("[network] received start request for ID " + start.id() + " and user " + connection.getUserName());
 }
 
 /*****************************************************************************/
@@ -142,14 +142,14 @@ static void manage_create(Connection &connection, const pb::Create &create)
 
 	if (file_name.first == false)
 	{
-		ERR_USER(std::string(create.name()) + " already exists");
+		ERR_USER(create.name() + " already exists");
 		return;
 	}
 
 	if (file_copy(CHARACTER_TEMPLATE_TABLE, create.id(),
 	CHARACTER_TABLE, create.name()) == false)
 	{
-		ERR_USER("Error copying character template " + std::string(create.id()) + " to character " + std::string(create.name()) + " (maybe template doesn't exists ?)");
+		ERR_USER("Error copying character template " + create.id() + " to character " + create.name() + " (maybe template doesn't exists ?)");
 		file_delete(CHARACTER_TABLE, create.name());
 		return;
 	}
@@ -157,7 +157,7 @@ static void manage_create(Connection &connection, const pb::Create &create)
 	if (entry_write_string(CHARACTER_TABLE, create.name(),
 			create.name(), { CHARACTER_KEY_NAME }) == false)
 	{
-		ERR_USER("Error setting character name " + std::string(create.name()));
+		ERR_USER("Error setting character name " + create.name());
 		file_delete(CHARACTER_TABLE, create.name());
 		return;
 	}
@@ -177,7 +177,7 @@ static void manage_create(Connection &connection, const pb::Create &create)
 
 	character_user_send(connection, create.name());
 
-	LOG("Successfully created: ID=" + std::string(create.id()) + ", NAME=" + std::string(create.name()));
+	LOG("Successfully created: ID=" + create.id() + ", NAME=" + create.name());
 }
 
 /*****************************************************************************/
@@ -210,13 +210,13 @@ static void manage_file(Connection &connection, const pb::File &file)
 
 	if (crc.first == false)
 	{
-		ERR_USER("Required file " + std::string(file_path) + " doesn't exists");
+		ERR_USER("Required file " + file_path + " doesn't exists");
 		return;
 	}
 
 	if (file.crc() == crc.second)
 	{
-		LOG("Client has already newest " + std::string(file.name()) + " file");
+		LOG("Client has already newest " + file.name() + " file");
 		return;
 	}
 
@@ -238,12 +238,12 @@ int parse_incoming_data(Connection &connection,
 	{
 		if (message.has_file())
 		{
-			LOG("[network] Received file request for " + std::string(message.file().name()));
+			LOG("[network] Received file request for " + message.file().name());
 			manage_file(connection, message.file());
 		}
 		else if (message.has_login())
 		{
-			LOG("[network] Received login request for user " + std::string(message.login().user()));
+			LOG("[network] Received login request for user " + message.login().user());
 			manage_login(connection, message.login());
 		}
 		else if (connection.isConnected() == false)
@@ -257,7 +257,7 @@ int parse_incoming_data(Connection &connection,
 		}
 		else if (message.has_stop())
 		{
-			LOG("[network] Received stop request for ID " + std::string(connection.getUserName()) + " of user " + std::string(context_find(connection.getContextId())->getId()));
+			LOG("[network] Received stop request for ID " + connection.getUserName() + " of user " + context_find(connection.getContextId())->getId());
 			manage_stop(connection, message.stop());
 		}
 		else if (message.has_playable_character_list())
@@ -267,22 +267,22 @@ int parse_incoming_data(Connection &connection,
 		}
 		else if (message.has_user_character_list())
 		{
-			LOG("[network] Received user character list request for user " + std::string(message.user_character_list().user()));
+			LOG("[network] Received user character list request for user " + message.user_character_list().user());
 			manage_user_character_list(connection);
 		}
 		else if (message.has_create())
 		{
-			LOG("[network] Received create ID " + std::string(message.create().id()) + " with name " + std::string(message.create().name()));
+			LOG("[network] Received create ID " + message.create().id() + " with name " + message.create().name());
 			manage_create(connection, message.create());
 		}
 		else if (message.has_action())
 		{
-			LOG("[network] Received action " + std::string(message.action().action()));
+			LOG("[network] Received action " + message.action().action());
 			manage_action(connection, message.action());
 		}
 		else if (message.has_action_stop())
 		{
-			LOG("[network] Received action stop " + std::string(message.action_stop().action()));
+			LOG("[network] Received action stop " + message.action_stop().action());
 			manage_action_stop(connection, message.action_stop());
 		}
 		else

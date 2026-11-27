@@ -304,7 +304,7 @@ void screen_set_screen(Screen screen)
 {
 	if (screen != camera.getScreen())
 	{
-		LOG("Set screen to " + std::string(SCREEN_NAME.at(screen)));
+		LOG("Set screen to " + SCREEN_NAME.at(screen));
 		camera.setScreen(screen);
 		init_scr();
 	}

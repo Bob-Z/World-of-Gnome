@@ -435,7 +435,7 @@ static int compose_attribute(Context *ctx, std::vector<SdlItem*> &itemArray)
 		}
 
 		attributeText.push_back(
-				std::string(nameArray[index]) + ": " + std::to_string(value));
+				nameArray[index] + ": " + std::to_string(value));
 
 		SdlItem *item = new SdlItem;
 		itemArray.push_back(item);
@@ -565,7 +565,7 @@ static int compose_action(Context *ctx, std::vector<SdlItem*> &itemArray)
 
 		item->setOverlay(true);
 
-		std::string action = std::string(actionArray[i]);
+		std::string action = actionArray[i];
 		item->setClickLeftCb([action]()
 		{	ui_play_cb_action(action);});
 
@@ -715,7 +715,7 @@ static void compose_equipment(Context *ctx, std::vector<SdlItem*> &itemArray)
 			item->setPos(x, y);
 			item->setAnim(anim);
 
-			std::string slot = std::string(slot_list[index]);
+			std::string slot = slot_list[index];
 			item->setClickLeftCb([slot]()
 			{	cb_select_slot(slot);});
 
@@ -734,7 +734,7 @@ static void compose_equipment(Context *ctx, std::vector<SdlItem*> &itemArray)
 		if (entry_read_string(CHARACTER_TABLE, ctx->getId(),
 				tmpEquippedName, { EQUIPMENT_GROUP, slot_list[index], EQUIPMENT_EQUIPPED }) == true)
 		{
-			equippedName = std::string(tmpEquippedName);
+			equippedName = tmpEquippedName;
 		}
 
 		if (equippedName.empty() == false)
@@ -743,7 +743,7 @@ static void compose_equipment(Context *ctx, std::vector<SdlItem*> &itemArray)
 			// Get the equipped object name
 			if(entry_read_string(ITEM_TABLE,equippedName,equipped_text, { ITEM_NAME }) == false )
 			{
-				ERR_DESIGN("Can't read object " + std::string(equippedName) + " name in equipment slot " + std::string(slot_list[index]));
+				ERR_DESIGN("Can't read object " + equippedName + " name in equipment slot " + slot_list[index]);
 			}
 #endif
 			// Get its icon
@@ -757,7 +757,7 @@ static void compose_equipment(Context *ctx, std::vector<SdlItem*> &itemArray)
 							ITEM_TABLE, equippedName, { ITEM_ICON });
 				} catch (...)
 				{
-					ERR_DESIGN("Can't read object " + std::string(equippedName) + "'s icon in equipment slot " + std::string(slot_list[index]));
+					ERR_DESIGN("Can't read object " + equippedName + "'s icon in equipment slot " + slot_list[index]);
 				}
 			}
 			else
@@ -765,11 +765,11 @@ static void compose_equipment(Context *ctx, std::vector<SdlItem*> &itemArray)
 				try
 				{
 					equippedIconName = getDataManager().get<std::string>(
-							ITEM_TEMPLATE_TABLE, std::string(mytemplate),
+							ITEM_TEMPLATE_TABLE, mytemplate,
 							{ ITEM_ICON });
 				} catch (...)
 				{
-					ERR_DESIGN("Can't read item " + std::string(equippedName) + "'s icon in equipment slot " + std::string(mytemplate));
+					ERR_DESIGN("Can't read item " + equippedName + "'s icon in equipment slot " + mytemplate);
 				}
 			}
 
@@ -784,7 +784,7 @@ static void compose_equipment(Context *ctx, std::vector<SdlItem*> &itemArray)
 				item->setPos(x - anim->getWidth(), y);
 				item->setAnim(anim2);
 
-				std::string slot = std::string(slot_list[index]);
+				std::string slot = slot_list[index];
 				item->setClickLeftCb([slot]()
 				{	cb_select_slot(slot);});
 
@@ -802,7 +802,7 @@ static void compose_equipment(Context *ctx, std::vector<SdlItem*> &itemArray)
 
 		if (cursor_equipment.empty() == false)
 		{
-			if (ctx->getSelectionEquipment() == std::string(slot_list[index]))
+			if (ctx->getSelectionEquipment() == slot_list[index])
 			{
 				anim3 = imageDB_get_anim(ctx, cursor_equipment);
 
@@ -844,7 +844,7 @@ static void compose_equipment(Context *ctx, std::vector<SdlItem*> &itemArray)
 						ITEM_TABLE, inventory, { ITEM_ICON });
 			} catch (...)
 			{
-				ERR_DESIGN("Can't read item " + std::string(inventory) + "'s icon name");
+				ERR_DESIGN("Can't read item " + inventory + "'s icon name");
 			}
 		}
 		else
@@ -852,11 +852,11 @@ static void compose_equipment(Context *ctx, std::vector<SdlItem*> &itemArray)
 			try
 			{
 				inventoryIconName = getDataManager().get<std::string>(
-						ITEM_TEMPLATE_TABLE, std::string(mytemplate),
+						ITEM_TEMPLATE_TABLE, mytemplate,
 						{ ITEM_ICON });
 			} catch (...)
 			{
-			ERR_DESIGN("Can't read item " + std::string(inventory) + "'s icon name (template: " + std::string(mytemplate) + ")");
+			ERR_DESIGN("Can't read item " + inventory + "'s icon name (template: " + mytemplate + ")");
 			}
 
 		}
@@ -1021,7 +1021,7 @@ static void compose_inventory(Context *ctx, std::vector<SdlItem*> &itemArray)
 
 	for (size_t i = 0; i < inventoryList.size(); i++)
 	{
-		inventoryArray.push_back(std::string(inventoryList[i]));
+		inventoryArray.push_back(inventoryList[i]);
 	}
 
 	std::string label;
@@ -1029,7 +1029,7 @@ static void compose_inventory(Context *ctx, std::vector<SdlItem*> &itemArray)
 
 	for (auto &&inventoryId : inventoryArray)
 	{
-		std::string mytemplate = item_is_resource(std::string(inventoryId));
+		std::string mytemplate = item_is_resource(inventoryId);
 
 		SiAnim *anim = nullptr;
 		std::string value;
@@ -1049,7 +1049,7 @@ static void compose_inventory(Context *ctx, std::vector<SdlItem*> &itemArray)
 			}
 			else
 			{
-				label = std::string(value);
+				label = value;
 			}
 
 			if (entry_read_string(ITEM_TABLE, inventoryId, value, { ITEM_DESC }) == false)
@@ -1058,7 +1058,7 @@ static void compose_inventory(Context *ctx, std::vector<SdlItem*> &itemArray)
 			}
 			else
 			{
-				description = std::string(value);
+				description = value;
 			}
 		}
 		else
@@ -1077,7 +1077,7 @@ static void compose_inventory(Context *ctx, std::vector<SdlItem*> &itemArray)
 			}
 			else
 			{
-				label = std::string(value);
+				label = value;
 			}
 
 			if (entry_read_string(ITEM_TEMPLATE_TABLE, mytemplate, value, { ITEM_DESC }) == false)
@@ -1123,7 +1123,7 @@ static void compose_inventory(Context *ctx, std::vector<SdlItem*> &itemArray)
 				x += anim->getWidth();
 			}
 
-			std::string itemId = std::string(inventoryId);
+			std::string itemId = inventoryId;
 			item->setClickLeftCb([itemId]()
 			{	cb_inventory_select(itemId);});
 		}
@@ -1163,7 +1163,7 @@ static void compose_inventory_select(Context *ctx,
 
 	for (size_t i = 0; i < inventoryList.size(); i++)
 	{
-		inventoryArray.push_back(std::string(inventoryList[i]));
+		inventoryArray.push_back(inventoryList[i]);
 	}
 
 	int x = 0;
@@ -1191,7 +1191,7 @@ static void compose_inventory_select(Context *ctx,
 				ERR_DESIGN(
 						"Can't read item " + inventory
 								+ " icon name (template: "
-								+ std::string(mytemplate));
+								+ mytemplate);
 			}
 		}
 

@@ -47,7 +47,7 @@ static int npc_script(void *data)
 	// Do not start every NPC at the same moment
 	usleep((random() % NPC_TIMEOUT) * 1000);
 
-	LOG_DESIGN("Start AI script for " + std::string(context->getId()) + "(" + std::string(context->getCharacterName()) + ")");
+	LOG_DESIGN("Start AI script for " + context->getId() + "(" + context->getCharacterName() + ")");
 
 	context->setInGame(true);
 
@@ -62,7 +62,7 @@ static int npc_script(void *data)
 		if (entry_read_string(CHARACTER_TABLE, context->getId(),
 				script, { CHARACTER_KEY_AI }) == false)
 		{
-			ERR_USER("No AI script for " + std::string(context->getId()));
+			ERR_USER("No AI script for " + context->getId());
 			break;
 		}
 
@@ -78,11 +78,11 @@ static int npc_script(void *data)
 			{
 				for (size_t i = 0; i < parameters.size(); i++)
 				{
-					params.push_back(std::string(parameters[i]));
+					params.push_back(parameters[i]);
 				}
 			}
 
-			timeOutMs = action_execute_script(context, std::string(script),
+			timeOutMs = action_execute_script(context, script,
 					params);
 
 			context->setNextExecutionTick(SDL_GetTicks() + timeOutMs);
@@ -97,7 +97,7 @@ static int npc_script(void *data)
 		}
 	}
 
-	LOG_DESIGN("End AI script for " + std::string(context->getId()) + "(" + std::string(context->getCharacterName()) + ")");
+	LOG_DESIGN("End AI script for " + context->getId() + "(" + context->getCharacterName() + ")");
 
 	// Send connected  = FALSE to other context
 	context_spread(context);
@@ -149,15 +149,15 @@ void instantiate_npc(const std::string &id)
 		return;
 	}
 
-	LOG_DESIGN("Creating NPC " + std::string(name) + " of type " + std::string(type) + " in map " + std::string(map) + " at " + std::to_string(x) + "," + std::to_string(y));
+	LOG_DESIGN("Creating NPC " + name + " of type " + type + " in map " + map + " at " + std::to_string(x) + "," + std::to_string(y));
 	Context *ctx = context_new();
 
 	ctx->setCharacterName(name);
 	ctx->setInGame(true);
 
-	ctx->setMap(std::string(map));
+	ctx->setMap(map);
 
-	ctx->setType(std::string(type));
+	ctx->setType(type);
 
 	ctx->setTile(x, y);
 
@@ -179,7 +179,7 @@ void init_npc(void)
 
 	// Read all files in NPC directory
 	const std::string file_path = base_directory + "/"
-			+ std::string(CHARACTER_TABLE);
+			+ CHARACTER_TABLE;
 
 	dir = opendir(file_path.c_str());
 	if (dir == nullptr)

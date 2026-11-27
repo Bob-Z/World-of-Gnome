@@ -134,7 +134,7 @@ void Connection::send(const std::string m_serializedData, const bool m_isData)
 	int l_BytesWritten = SDLNet_TCP_Send(socket, &length, sizeof(length));
 	if (l_BytesWritten != sizeof(length))
 	{
-		ERR_USER("Could not send command to " + std::string(getUserName()));
+		ERR_USER("Could not send command to " + getUserName());
 		setConnected(false);
 	}
 	else
@@ -145,7 +145,7 @@ void Connection::send(const std::string m_serializedData, const bool m_isData)
 		l_BytesWritten = SDLNet_TCP_Send(socket, m_serializedData.c_str(), m_serializedData.size());
 		if (l_BytesWritten != static_cast<int>(m_serializedData.size()))
 		{
-			ERR_USER("Could not send command to " + std::string(getUserName()));
+			ERR_USER("Could not send command to " + getUserName());
 			setConnected(false);
 		}
 	}
@@ -181,7 +181,7 @@ void Connection::closeSocket(bool isData)
 		return;
 	}
 
-	LOG("Disconnecting user " + std::string(getUserName()));
+	LOG("Disconnecting user " + getUserName());
 
 	setConnected(false);
 	SDLNet_TCP_Close(socket);
@@ -204,6 +204,6 @@ const std::string& Connection::getContextId() const
 /*****************************************************************************/
 void Connection::setContextId(const std::string& contextId)
 {
-	LOG("User " + std::string(getUserName()) + " select ID " + std::string(contextId));
+	LOG("User " + getUserName() + " select ID " + contextId);
 	m_contextId = contextId;
 }

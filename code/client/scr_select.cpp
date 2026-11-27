@@ -266,7 +266,7 @@ void scr_select_compose(Context * context, std::vector<SdlItem *> & itemArray)
 			if (entry_read_string(CHARACTER_TABLE, characterMarquee.getId(), marqueeName, { CHARACTER_KEY_MARQUEE }) == true)
 			{
 				std::vector<std::string> nameArray;
-				nameArray.push_back(std::string(marqueeName));
+				nameArray.push_back(marqueeName);
 
 				characterMarquee.setAnim(imageDB_get_anim_array(context, nameArray));
 			}
@@ -282,7 +282,7 @@ void scr_select_compose(Context * context, std::vector<SdlItem *> & itemArray)
 				std::vector<std::string> nameArray;
 				for (size_t i = 0; i < marqueeArray.size(); i++)
 				{
-					nameArray.push_back(std::string(marqueeArray[i]));
+					nameArray.push_back(marqueeArray[i]);
 				}
 
 				characterMarquee.setAnim(imageDB_get_anim_array(context, nameArray));

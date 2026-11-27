@@ -150,7 +150,7 @@ static std::vector<SiAnim*> select_sprite(Context *ctx)
 		if (!spriteName.empty())
 		{
 			std::vector<std::string> spriteNameArray;
-			spriteNameArray.push_back(std::string(spriteName));
+			spriteNameArray.push_back(spriteName);
 			return imageDB_get_anim_array(playerContext, spriteNameArray);
 		}
 	}
@@ -178,7 +178,7 @@ static std::vector<SiAnim*> select_sprite(Context *ctx)
 		std::vector<std::string> spriteNameArray;
 		for (size_t i = 0; i < spriteList.size(); i++)
 		{
-			spriteNameArray.push_back(std::string(spriteList[i]));
+			spriteNameArray.push_back(spriteList[i]);
 		}
 
 		return imageDB_get_anim_array(playerContext, spriteNameArray);
@@ -192,7 +192,7 @@ static std::vector<SiAnim*> select_sprite(Context *ctx)
 			if (!spriteName.empty())
 			{
 				std::vector<std::string> spriteNameArray;
-				spriteNameArray.push_back(std::string(spriteName));
+				spriteNameArray.push_back(spriteName);
 				return imageDB_get_anim_array(playerContext, spriteNameArray);
 			}
 		}
@@ -204,7 +204,7 @@ static std::vector<SiAnim*> select_sprite(Context *ctx)
 		std::vector<std::string> spriteNameArray;
 		for (size_t i = 0; i < spriteList.size(); i++)
 		{
-			spriteNameArray.push_back(std::string(spriteList[i]));
+			spriteNameArray.push_back(spriteList[i]);
 		}
 
 		return imageDB_get_anim_array(playerContext, spriteNameArray);
@@ -490,7 +490,7 @@ static void compose_item(int layerIndex, std::vector<SdlItem*> &itemArray)
 	}
 
 	std::string layerName;
-	layerName = std::string(MAP_KEY_LAYER) + std::to_string(layerIndex);
+	layerName = MAP_KEY_LAYER + std::to_string(layerIndex);
 
 	std::vector<std::string> itemId;
 	if (entry_get_group_list(MAP_TABLE, ctx->getMap(), itemId, { layerName, MAP_ENTRY_ITEM_LIST }) == false)
@@ -517,7 +517,7 @@ static void compose_item(int layerIndex, std::vector<SdlItem*> &itemArray)
 			continue;
 		}
 
-		std::string mytemplate = item_is_resource(std::string(itemId[i]));
+		std::string mytemplate = item_is_resource(itemId[i]);
 
 		std::string spriteName;
 		int align = 0;
@@ -527,25 +527,25 @@ static void compose_item(int layerIndex, std::vector<SdlItem*> &itemArray)
 			try
 			{
 				spriteName = getDataManager().get<std::string>(ITEM_TABLE,
-						std::string(itemId[i]), { ITEM_SPRITE });
+						itemId[i], { ITEM_SPRITE });
 			} catch (...)
 			{
 				continue;
 			}
 
 			align = getDataManager().getNoExcept<int>(ITEM_TABLE,
-					std::string(itemId[i]), { ITEM_ALIGN }, 0);
+					itemId[i], { ITEM_ALIGN }, 0);
 			spriteAlign = static_cast<Align>(align);
 
 			spriteOffsetY = getDataManager().getNoExcept<int>(ITEM_TABLE,
-					std::string(itemId[i]), { ITEM_OFFSET_Y }, 0);
+					itemId[i], { ITEM_OFFSET_Y }, 0);
 		}
 		else
 		{
 			try
 			{
 				spriteName = getDataManager().get<std::string>(
-						ITEM_TEMPLATE_TABLE, std::string(mytemplate),
+						ITEM_TEMPLATE_TABLE, mytemplate,
 						{ ITEM_SPRITE });
 			} catch (...)
 			{
@@ -553,11 +553,11 @@ static void compose_item(int layerIndex, std::vector<SdlItem*> &itemArray)
 			}
 
 			align = getDataManager().getNoExcept<int>(ITEM_TEMPLATE_TABLE,
-					std::string(mytemplate), { ITEM_ALIGN }, 0);
+					mytemplate, { ITEM_ALIGN }, 0);
 			spriteAlign = static_cast<Align>(align);
 
 			spriteOffsetY = getDataManager().getNoExcept<int>(
-					ITEM_TEMPLATE_TABLE, std::string(mytemplate),
+					ITEM_TEMPLATE_TABLE, mytemplate,
 					{ ITEM_OFFSET_Y }, 0);
 		}
 
@@ -596,7 +596,7 @@ static void compose_item(int layerIndex, std::vector<SdlItem*> &itemArray)
 		if (font != nullptr)
 		{
 			int quantity = 0;
-			quantity = resource_get_quantity(std::string(itemId[i]));
+			quantity = resource_get_quantity(itemId[i]);
 			item->setText(std::to_string(quantity));
 			item->setFont(font);
 		}
@@ -687,7 +687,7 @@ static void compose_map_set(int layerIndex, std::vector<SdlItem*> &itemArray)
 {
 	Context *ctx = context_get_player();
 
-	std::string layerName = std::string(MAP_KEY_LAYER)
+	std::string layerName = MAP_KEY_LAYER
 			+ std::to_string(layerIndex);
 	std::vector<std::string> tileSet;
 	if (entry_read_list(MAP_TABLE, ctx->getMap(), tileSet, { layerName, MAP_KEY_SET }) == false)
@@ -732,7 +732,7 @@ static void compose_map_scenery(int layerIndex,
 {
 	Context *ctx = context_get_player();
 
-	std::string layerName = std::string(MAP_KEY_LAYER)
+	std::string layerName = MAP_KEY_LAYER
 			+ std::to_string(layerIndex);
 	std::vector<std::string> sceneryList;
 	if (entry_get_group_list(MAP_TABLE, ctx->getMap(), sceneryList, { layerName, MAP_KEY_SCENERY }) == false)
@@ -763,7 +763,7 @@ static void compose_map_scenery(int layerIndex,
 		itemArray.push_back(item);
 
 		item->setPos(x, y);
-		item->setAnim(imageDB_get_anim(ctx, std::string(imageName)));
+		item->setAnim(imageDB_get_anim(ctx, imageName));
 
 	}
 }
@@ -780,7 +780,7 @@ static void compose_type(int layerIndex, std::vector<SdlItem*> &itemArray)
 
 	Context *ctx = context_get_player();
 
-	std::string layerName = std::string(MAP_KEY_LAYER)
+	std::string layerName = MAP_KEY_LAYER
 			+ std::to_string(layerIndex);
 	if (entry_exist(MAP_TABLE, ctx->getMap(), { layerName, MAP_KEY_TYPE }) == false)
 	{
@@ -813,7 +813,7 @@ static void compose_type(int layerIndex, std::vector<SdlItem*> &itemArray)
 
 			SdlItem *item = new SdlItem;
 			itemArray.push_back(item);
-			item->setText(std::string(type));
+			item->setText(type);
 			item->setFont(font);
 
 			int w = 0;
@@ -917,7 +917,7 @@ void scr_play_compose(Context *context, std::vector<SdlItem*> &itemArray)
 
 	if (isMapChanged == true)
 	{
-		const std::string map_file_path = std::string(MAP_TABLE) + "/"
+		const std::string map_file_path = MAP_TABLE + "/"
 				+ context->getMap();
 		network_send_req_file(*(context->getConnection()), map_file_path);
 
@@ -982,7 +982,7 @@ void scr_play_compose(Context *context, std::vector<SdlItem*> &itemArray)
 	{
 		if (isMusicPlaying == false)
 		{
-			if (sfx_play(*(context->getConnection()), std::string(sfx),
+			if (sfx_play(*(context->getConnection()), sfx,
 					MUSIC_CHANNEL, LOOP) != -1)
 			{
 				isMusicPlaying = true;

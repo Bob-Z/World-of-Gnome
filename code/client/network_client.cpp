@@ -94,7 +94,7 @@ void network_request_character_creation(Connection & connection, const std::stri
 	message.mutable_create()->set_name(name);
 	std::string serialized_data = message.SerializeAsString();
 
-	LOG("[network] Send CREATE ID = " + std::string(id) + ", NAME = " + std::string(name));
+	LOG("[network] Send CREATE ID = " + id + ", NAME = " + name);
 	network_send_command(connection, serialized_data, false);
 }
 
@@ -250,13 +250,13 @@ int network_connect(Connection & connection, const std::string & host_name)
 
 	if (SDLNet_ResolveHost(&ip, host_name.c_str(), PORT) < 0)
 	{
-		ERR_USER("Can't resolve " + std::string(host_name) + ":" + std::to_string(PORT) + " : " + std::string(SDLNet_GetError()) + "\n");
+		ERR_USER("Can't resolve " + host_name + ":" + std::to_string(PORT) + " : " + std::string(SDLNet_GetError()) + "\n");
 		return false;
 	}
 
 	if ((socket = SDLNet_TCP_Open(&ip)) == 0)
 	{
-		ERR_USER("Can't connect to " + std::string(host_name) + ":" + std::to_string(PORT) + " : " + std::string(SDLNet_GetError()) + "\n");
+		ERR_USER("Can't connect to " + host_name + ":" + std::to_string(PORT) + " : " + std::string(SDLNet_GetError()) + "\n");
 		return false;
 	}
 
