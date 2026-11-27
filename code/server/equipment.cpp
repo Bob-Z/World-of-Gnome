@@ -54,21 +54,21 @@ int equipment_set_item(const char *id, const char *slot, const char *item)
  Returned string MUST BE FREED
  return nullptr if fails
  ***********************************************************************/
-char* equipment_get_item(const char *id, const char *slot)
+std::string equipment_get_item(const char *id, const char *slot)
 {
-	char *item;
+	std::string item;
 	Context *context = context_find(id);
 	if (context == nullptr)
 	{
 		werr(LOGDESIGNER, "Could not find context %s", id);
-		return nullptr;
+		return std::string();
 	}
 
 	if (entry_read_string(CHARACTER_TABLE.c_str(), context->getId().c_str(),
-			&item, EQUIPMENT_GROUP.c_str(), slot, EQUIPMENT_EQUIPPED.c_str(),
+			item, EQUIPMENT_GROUP.c_str(), slot, EQUIPMENT_EQUIPPED.c_str(),
 			nullptr) == false)
 	{
-		return nullptr;
+		return std::string();
 	}
 
 	return item;

@@ -190,12 +190,11 @@ static void fill_character_marquee(Context * context, TTF_Font * fontName, TTF_F
 	for (auto && characterMarquee : characterMarqueeArray)
 	{
 		// Compute the marquee file name
-		char * marqueeName = nullptr;
-		if (entry_read_string(CHARACTER_TEMPLATE_TABLE.c_str(), characterMarquee.getId().c_str(), &marqueeName, CHARACTER_KEY_MARQUEE.c_str(), nullptr) == true)
+		std::string marqueeName;
+		if (entry_read_string(CHARACTER_TEMPLATE_TABLE.c_str(), characterMarquee.getId().c_str(), marqueeName, CHARACTER_KEY_MARQUEE.c_str(), nullptr) == true)
 		{
 			std::vector<std::string> nameArray;
 			nameArray.push_back(std::string(marqueeName));
-			free(marqueeName);
 
 			characterMarquee.setAnim(imageDB_get_anim_array(context, nameArray));
 		}
@@ -225,20 +224,18 @@ static void fill_character_marquee(Context * context, TTF_Font * fontName, TTF_F
 		characterMarquee.setWidth(characterMarquee.getAnim()[0]->getWidth());
 		characterMarquee.setHeight(characterMarquee.getAnim()[0]->getHeight());
 
-		char * name = nullptr;
-		entry_read_string(CHARACTER_TEMPLATE_TABLE.c_str(), characterMarquee.getId().c_str(), &name, CHARACTER_KEY_NAME.c_str(), nullptr);
-		if (name != nullptr)
+		std::string name;
+		entry_read_string(CHARACTER_TEMPLATE_TABLE.c_str(), characterMarquee.getId().c_str(), name, CHARACTER_KEY_NAME.c_str(), nullptr);
+		if (!name.empty())
 		{
 			characterMarquee.setName(std::string(name));
-			free(name);
 		}
 
-		char * type = nullptr;
-		entry_read_string(CHARACTER_TEMPLATE_TABLE.c_str(), characterMarquee.getId().c_str(), &type, CHARACTER_KEY_TYPE.c_str(), nullptr);
-		if (type != nullptr)
+		std::string type;
+		entry_read_string(CHARACTER_TEMPLATE_TABLE.c_str(), characterMarquee.getId().c_str(), type, CHARACTER_KEY_TYPE.c_str(), nullptr);
+		if (!type.empty())
 		{
 			characterMarquee.setType(std::string(type));
-			free(type);
 		}
 
 		if ((fontName != nullptr) && (characterMarquee.getName().size() != 0))
@@ -502,20 +499,18 @@ void scr_create_add_playable_character(const std::vector<std::string> & idList)
 
 		characterMarquee.setId(id);
 
-		char * name = nullptr;
-		entry_read_string(CHARACTER_TEMPLATE_TABLE.c_str(), id.c_str(), &name, CHARACTER_KEY_NAME.c_str(), nullptr);
-		if (name != nullptr)
+		std::string name;
+		entry_read_string(CHARACTER_TEMPLATE_TABLE.c_str(), id.c_str(), name, CHARACTER_KEY_NAME.c_str(), nullptr);
+		if (!name.empty())
 		{
 			characterMarquee.setName(std::string(name));
-			free(name);
 		}
 
-		char * type = nullptr;
-		entry_read_string(CHARACTER_TEMPLATE_TABLE.c_str(), id.c_str(), &type, CHARACTER_KEY_TYPE.c_str(), nullptr);
-		if (type != nullptr)
+		std::string type;
+		entry_read_string(CHARACTER_TEMPLATE_TABLE.c_str(), id.c_str(), type, CHARACTER_KEY_TYPE.c_str(), nullptr);
+		if (!type.empty())
 		{
 			characterMarquee.setType(std::string(type));
-			free(type);
 		}
 
 		characterMarqueeArray.push_back(characterMarquee);

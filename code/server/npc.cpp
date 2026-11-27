@@ -41,7 +41,7 @@ static int npc_script(void *data)
 {
 	Context *context = (Context*) data;
 	Uint32 timeOutMs = 0U;
-	char *script = nullptr;
+	std::string script;
 	std::vector<std::string> parameters;
 
 	// Do not start every NPC at the same moment
@@ -54,15 +54,14 @@ static int npc_script(void *data)
 
 	while (context->isInGame() == true)
 	{
-		if (script != nullptr)
+		if (!script.empty())
 		{
-			free(script);
 		}
 		if (!parameters.empty())
 		{
 		}
 		if (entry_read_string(CHARACTER_TABLE.c_str(), context->getId().c_str(),
-				&script, CHARACTER_KEY_AI.c_str(), nullptr) == false)
+				script, CHARACTER_KEY_AI.c_str(), nullptr) == false)
 		{
 			werr(LOGUSER, "No AI script for %s", context->getId().c_str());
 			break;
@@ -140,42 +139,34 @@ void instantiate_npc(const std::string &id)
 		return;
 	}
 
-	char *map = nullptr;
-	if (entry_read_string(CHARACTER_TABLE.c_str(), id.c_str(), &map,
+	std::string map;
+	if (entry_read_string(CHARACTER_TABLE.c_str(), id.c_str(), map,
 			CHARACTER_KEY_MAP.c_str(), nullptr) == false)
 	{
 		return;
 	}
 
-	char *name = nullptr;
-	if (entry_read_string(CHARACTER_TABLE.c_str(), id.c_str(), &name,
-			CHARACTER_KEY_NAME.c_str(), nullptr) == false)
-	{
-		name = strdup("");
-	}
+	std::string name;
+	entry_read_string(CHARACTER_TABLE.c_str(), id.c_str(), name,
+			CHARACTER_KEY_NAME.c_str(), nullptr);
 
-	char *type = nullptr;
-	if (entry_read_string(CHARACTER_TABLE.c_str(), id.c_str(), &type,
+	std::string type;
+	if (entry_read_string(CHARACTER_TABLE.c_str(), id.c_str(), type,
 			CHARACTER_KEY_TYPE.c_str(), nullptr) == false)
 	{
-		free(map);
-		free(name);
 		return;
 	}
 
-	wlog(LOGDESIGNER, "Creating NPC %s of type %s in map %s at %d,%d", name,
-			type, map, x, y);
+	wlog(LOGDESIGNER, "Creating NPC %s of type %s in map %s at %d,%d",
+			name.c_str(), type.c_str(), map.c_str(), x, y);
 	Context *ctx = context_new();
 
 	ctx->setCharacterName(name);
-	free(name);
 	ctx->setInGame(true);
 
 	ctx->setMap(std::string(map));
-	free(map);
 
 	ctx->setType(std::string(type));
-	free(type);
 
 	ctx->setTile(x, y);
 

@@ -661,14 +661,14 @@ static void compose_equipment(Context *ctx, std::vector<SdlItem*> &itemArray)
 	SiAnim *anim2;
 	SiAnim *anim3;
 
-	char *mytemplate = nullptr;
+	std::string mytemplate;
 #if 0
-	char * name;
+	std::string name;
 #endif
-	char *iconName = nullptr;
+	std::string iconName;
 	std::string equippedName;
 #if 0
-	char * equipped_text = nullptr;
+	std::string equipped_text;
 #endif
 	std::string equippedIconName;
 	std::string inventoryIconName;
@@ -692,19 +692,18 @@ static void compose_equipment(Context *ctx, std::vector<SdlItem*> &itemArray)
 	{
 #if 0
 		// Get the slot name
-		if(entry_read_string(CHARACTER_TABLE.c_str(),ctx->m_id,&item_name,EQUIPMENT_GROUP.c_str(),slot_list[index].c_str(),EQUIPMENT_NAME.c_str(),nullptr) == false )
+		if(entry_read_string(CHARACTER_TABLE.c_str(),ctx->m_id,item_name,EQUIPMENT_GROUP.c_str(),slot_list[index].c_str(),EQUIPMENT_NAME.c_str(),nullptr) == false )
 		{
-			name = strdup(slot_list[index].c_str());
+			name = slot_list[index];
 		}
 		else
 		{
 			name = item_name;
 		}
-		free(item_name);
 #endif
 		h1 = 0;
 		// Get the slot icon
-		if (entry_read_string(CHARACTER_TABLE.c_str(), ctx->getId().c_str(), &iconName,
+		if (entry_read_string(CHARACTER_TABLE.c_str(), ctx->getId().c_str(), iconName,
 				EQUIPMENT_GROUP.c_str(), slot_list[index].c_str(), EQUIPMENT_ICON.c_str(),
 				nullptr) == false)
 		{
@@ -714,7 +713,6 @@ static void compose_equipment(Context *ctx, std::vector<SdlItem*> &itemArray)
 		{
 			// load image
 			anim = imageDB_get_anim(ctx, iconName);
-			free(iconName);
 
 			SdlItem *item = new SdlItem;
 			itemArray.push_back(item);
@@ -740,29 +738,27 @@ static void compose_equipment(Context *ctx, std::vector<SdlItem*> &itemArray)
 		}
 
 		// Is there an equipped object ?
-		char *tmpEquippedName = nullptr;
+		std::string tmpEquippedName;
 		if (entry_read_string(CHARACTER_TABLE.c_str(), ctx->getId().c_str(),
-				&tmpEquippedName, EQUIPMENT_GROUP.c_str(), slot_list[index].c_str(),
+				tmpEquippedName, EQUIPMENT_GROUP.c_str(), slot_list[index].c_str(),
 				EQUIPMENT_EQUIPPED.c_str(), nullptr) == true)
 		{
 			equippedName = std::string(tmpEquippedName);
-			free(tmpEquippedName);
 		}
 
 		if (equippedName.empty() == false)
 		{
 #if 0
 			// Get the equipped object name
-			if(entry_read_string(ITEM_TABLE.c_str(),equippedName,&equipped_text,ITEM_NAME.c_str(),nullptr) == false )
+			if(entry_read_string(ITEM_TABLE.c_str(),equippedName,equipped_text,ITEM_NAME.c_str(),nullptr) == false )
 			{
 				werr(LOGDESIGNER,"Can't read object %s name in equipment slot %s",equippedName,slot_list[index].c_str());
 			}
-			free(equipped_text);
 #endif
 			// Get its icon
 			mytemplate = item_is_resource(equippedName);
 
-			if (mytemplate == nullptr)
+			if (mytemplate.empty())
 			{
 				try
 				{
@@ -786,9 +782,8 @@ static void compose_equipment(Context *ctx, std::vector<SdlItem*> &itemArray)
 				{
 					werr(LOGDESIGNER,
 							"Can't read item %s's icon in equipment slot %s",
-							equippedName.c_str(), mytemplate);
+							equippedName.c_str(), mytemplate.c_str());
 				}
-				free(mytemplate);
 			}
 
 			if (equippedIconName.empty() == false)
@@ -854,7 +849,7 @@ static void compose_equipment(Context *ctx, std::vector<SdlItem*> &itemArray)
 	{
 		mytemplate = item_is_resource(inventory);
 
-		if (mytemplate == nullptr)
+		if (mytemplate.empty())
 		{
 			try
 			{
@@ -876,10 +871,9 @@ static void compose_equipment(Context *ctx, std::vector<SdlItem*> &itemArray)
 			} catch (...)
 			{
 			werr(LOGDESIGNER, "Can't read item %s's icon name (template: %s)",
-					inventory.c_str(), mytemplate);
+					inventory.c_str(), mytemplate.c_str());
 			}
 
-			free(mytemplate);
 		}
 
 		if (!inventoryIconName.empty())
@@ -946,9 +940,8 @@ static void cb_print_coord()
 
 //TODO: take layer into account
 #if 0
-	entry_read_list_index(MAP_TABLE.c_str(),ctx->m_map,&type,scr_play_get_current_x()+scr_play_get_current_y()*mapWidth,layer_name,MAP_KEY_TYPE.c_str(),nullptr);
+	entry_read_list_index(MAP_TABLE.c_str(),ctx->m_map,type,scr_play_get_current_x()+scr_play_get_current_y()*mapWidth,layer_name,MAP_KEY_TYPE.c_str(),nullptr);
 	sprintf(buf,"x=%d y=%d type=%s",scr_play_get_current_x(),scr_play_get_current_y(),type);
-	free(type);
 #endif
 	std::string text = "x= " + std::to_string(scr_play_get_current_x()) + " y="
 			+ std::to_string(scr_play_get_current_y());
@@ -1055,23 +1048,22 @@ static void compose_inventory(Context *ctx, std::vector<SdlItem*> &itemArray)
 
 	for (auto &&inventoryId : inventoryArray)
 	{
-		char *mytemplate = item_is_resource(std::string(inventoryId));
+		std::string mytemplate = item_is_resource(std::string(inventoryId));
 
 		SiAnim *anim = nullptr;
-		char *value = nullptr;
-		if (mytemplate == nullptr)
+		std::string value;
+		if (mytemplate.empty())
 		{
 			// Icon is mandatory for now
-			if (entry_read_string(ITEM_TABLE.c_str(), inventoryId.c_str(), &value,
+			if (entry_read_string(ITEM_TABLE.c_str(), inventoryId.c_str(), value,
 					ITEM_ICON.c_str(), nullptr) == false)
 			{
 				continue;
 			}
 			// load image
 			anim = imageDB_get_anim(ctx, value);
-			free(value);
 
-			if (entry_read_string(ITEM_TABLE.c_str(), inventoryId.c_str(), &value,
+			if (entry_read_string(ITEM_TABLE.c_str(), inventoryId.c_str(), value,
 					ITEM_NAME.c_str(), nullptr) == false)
 			{
 				label = inventoryId;
@@ -1081,7 +1073,7 @@ static void compose_inventory(Context *ctx, std::vector<SdlItem*> &itemArray)
 				label = std::string(value);
 			}
 
-			if (entry_read_string(ITEM_TABLE.c_str(), inventoryId.c_str(), &value,
+			if (entry_read_string(ITEM_TABLE.c_str(), inventoryId.c_str(), value,
 					ITEM_DESC.c_str(), nullptr) == false)
 			{
 				description = "";
@@ -1094,17 +1086,15 @@ static void compose_inventory(Context *ctx, std::vector<SdlItem*> &itemArray)
 		else
 		{
 			// Icon is mandatory for now
-			if (entry_read_string(ITEM_TEMPLATE_TABLE.c_str(), mytemplate, &value,
+			if (entry_read_string(ITEM_TEMPLATE_TABLE.c_str(), mytemplate, value,
 					ITEM_ICON.c_str(), nullptr) == false)
 			{
-				free(mytemplate);
 				continue;
 			}
 			// load image
 			anim = imageDB_get_anim(ctx, value);
-			free(value);
 
-			if (entry_read_string(ITEM_TEMPLATE_TABLE.c_str(), mytemplate, &value,
+			if (entry_read_string(ITEM_TEMPLATE_TABLE.c_str(), mytemplate, value,
 					ITEM_NAME.c_str(), nullptr) == false)
 			{
 				label = inventoryId;
@@ -1114,7 +1104,7 @@ static void compose_inventory(Context *ctx, std::vector<SdlItem*> &itemArray)
 				label = std::string(value);
 			}
 
-			if (entry_read_string(ITEM_TEMPLATE_TABLE.c_str(), mytemplate, &value,
+			if (entry_read_string(ITEM_TEMPLATE_TABLE.c_str(), mytemplate, value,
 					ITEM_DESC.c_str(), nullptr) == false)
 			{
 				description = "";
@@ -1123,7 +1113,6 @@ static void compose_inventory(Context *ctx, std::vector<SdlItem*> &itemArray)
 			{
 				description = value;
 			}
-			free(mytemplate);
 
 		}
 
@@ -1204,7 +1193,7 @@ static void compose_inventory_select(Context *ctx,
 	}
 
 	int x = 0;
-	char *mytemplate = nullptr;
+	std::string mytemplate;
 	bool isItemFound = false;
 	SiAnim *iconAnim = nullptr;
 
@@ -1212,11 +1201,11 @@ static void compose_inventory_select(Context *ctx,
 	{
 		mytemplate = item_is_resource(inventory);
 
-		char *icon_name = nullptr;
+		std::string icon_name;
 
-		if (mytemplate == nullptr)
+		if (mytemplate.empty())
 		{
-			if (entry_read_string(ITEM_TABLE.c_str(), inventory.c_str(), &icon_name,
+			if (entry_read_string(ITEM_TABLE.c_str(), inventory.c_str(), icon_name,
 					ITEM_ICON.c_str(), nullptr) == false)
 			{
 				ERR_DESIGN("Can't read item " + inventory + " icon name");
@@ -1224,7 +1213,7 @@ static void compose_inventory_select(Context *ctx,
 		}
 		else
 		{
-			if (entry_read_string(ITEM_TEMPLATE_TABLE.c_str(), mytemplate, &icon_name,
+			if (entry_read_string(ITEM_TEMPLATE_TABLE.c_str(), mytemplate, icon_name,
 					ITEM_ICON.c_str(), nullptr) == false)
 			{
 				ERR_DESIGN(
@@ -1232,11 +1221,9 @@ static void compose_inventory_select(Context *ctx,
 								+ " icon name (template: "
 								+ std::string(mytemplate));
 			}
-			free(mytemplate);
 		}
 
 		iconAnim = imageDB_get_anim(ctx, icon_name);
-		free(icon_name);
 
 		x += iconAnim->getWidth();
 

@@ -18,5 +18,5 @@
 */
 
 int equipment_set_item(const char *id, const char * slot, const char * item);
-char * equipment_get_item(const char *id, const char * slot);
+std::string equipment_get_item(const char *id, const char * slot);
 

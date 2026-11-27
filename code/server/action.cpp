@@ -77,7 +77,7 @@ static int l_player_get_id(lua_State *L)
  */
 static int l_character_create_from_template(lua_State *L)
 {
-	const char *mytemplate = nullptr;
+	std::string mytemplate;
 	const char *map = nullptr;
 	int layer = -1;
 	int x = -1;
@@ -95,7 +95,7 @@ static int l_character_create_from_template(lua_State *L)
 	x = luaL_checknumber(L, -2);
 	y = luaL_checknumber(L, -1);
 	const std::pair<bool, std::string> res = character_create_from_template(ctx,
-			mytemplate, map, layer, x, y);
+			mytemplate.c_str(), map, layer, x, y);
 	lua_pushstring(L, res.second.c_str());
 
 	return 1;  // number of results
@@ -643,16 +643,12 @@ static int l_character_get_npc(lua_State *L)
 static int l_character_get_portrait(lua_State *L)
 {
 	const char *id;
-	char *res;
+	std::string res;
 
 	id = luaL_checkstring(L, -1);
 
 	res = character_get_portrait(id);
-	lua_pushstring(L, res);
-	if (res)
-	{
-		free(res);
-	}
+	lua_pushstring(L, res.c_str());
 	return 1;  // number of results
 }
 
@@ -869,7 +865,7 @@ static int l_character_wake_up(lua_State *L)
  */
 static int l_map_new(lua_State *L)
 {
-	const char *name = nullptr;
+	std::string name;
 	int x = -1;
 	int y = -1;
 	int tile_x = -1;
@@ -880,7 +876,7 @@ static int l_map_new(lua_State *L)
 	y = luaL_checknumber(L, -3);
 	tile_x = luaL_checknumber(L, -2);
 	tile_y = luaL_checknumber(L, -1);
-	const std::pair<bool, std::string> map_name = map_new(name, x, y, tile_x,
+	const std::pair<bool, std::string> map_name = map_new(name.c_str(), x, y, tile_x,
 			tile_y);
 	lua_pushstring(L, map_name.second.c_str());
 
@@ -1371,7 +1367,7 @@ static int l_map_add_event(lua_State *L)
 	const char *script;
 	int x;
 	int y;
-	char *res;
+	std::string res;
 
 	map = luaL_checkstring(L, -5);
 	layer = luaL_checknumber(L, -4);
@@ -1379,11 +1375,7 @@ static int l_map_add_event(lua_State *L)
 	x = luaL_checknumber(L, -2);
 	y = luaL_checknumber(L, -1);
 	res = map_add_event(map, layer, script, x, y);
-	lua_pushstring(L, res);
-	if (res)
-	{
-		free(res);
-	}
+	lua_pushstring(L, res.c_str());
 	return 1;  // number of results
 }
 
@@ -1467,7 +1459,7 @@ static int l_map_add_scenery(lua_State *L)
 	int x;
 	int y;
 	const char *image_name;
-	char *res;
+	std::string res;
 
 	map = luaL_checkstring(L, -5);
 	layer = luaL_checknumber(L, -4);
@@ -1475,11 +1467,7 @@ static int l_map_add_scenery(lua_State *L)
 	y = luaL_checknumber(L, -2);
 	image_name = luaL_checkstring(L, -1);
 	res = map_add_scenery(map, layer, x, y, image_name);
-	lua_pushstring(L, res);
-	if (res)
-	{
-		free(res);
-	}
+	lua_pushstring(L, res.c_str());
 	return 1;  // number of results
 }
 
@@ -1612,16 +1600,12 @@ static int l_inventory_get_by_name(lua_State *L)
 {
 	const char *id;
 	const char *item_name;
-	char *res;
+	std::string res;
 
 	id = luaL_checkstring(L, -2);
 	item_name = luaL_checkstring(L, -1);
 	res = inventory_get_by_name(id, item_name);
-	lua_pushstring(L, res);
-	if (res)
-	{
-		free(res);
-	}
+	lua_pushstring(L, res.c_str());
 	return 1;  // number of results
 }
 
@@ -1766,18 +1750,14 @@ static int l_map_get_tile(lua_State *L)
 	int layer;
 	int x;
 	int y;
-	char *res;
+	std::string res;
 
 	map = luaL_checkstring(L, -4);
 	layer = luaL_checknumber(L, -3);
 	x = luaL_checknumber(L, -2);
 	y = luaL_checknumber(L, -1);
 	res = map_get_tile(map, layer, x, y);
-	lua_pushstring(L, res);
-	if (res)
-	{
-		free(res);
-	}
+	lua_pushstring(L, res.c_str());
 	return 1;  // number of results
 }
 
@@ -1798,15 +1778,14 @@ static int l_map_get_tile_type(lua_State *L)
 	int layer;
 	int x;
 	int y;
-	char *res;
+	std::string res;
 
 	map = luaL_checkstring(L, -4);
 	layer = luaL_checknumber(L, -3);
 	x = luaL_checknumber(L, -2);
 	y = luaL_checknumber(L, -1);
 	res = map_get_tile_type(std::string(map), layer, x, y);
-	lua_pushstring(L, res);
-	free(res);
+	lua_pushstring(L, res.c_str());
 	return 1;  // number of results
 }
 
@@ -1965,16 +1944,12 @@ static int l_character_attribute_tag_get(lua_State *L)
 {
 	const char *id;
 	const char *attribute;
-	char *res;
+	std::string res;
 
 	id = luaL_checkstring(L, -2);
 	attribute = luaL_checkstring(L, -1);
 	res = attribute_tag_get(CHARACTER_TABLE.c_str(), id, attribute);
-	lua_pushstring(L, res);
-	if (res)
-	{
-		free(res);
-	}
+	lua_pushstring(L, res.c_str());
 	return 1;  // number of results
 }
 
@@ -2119,17 +2094,16 @@ static int l_equipment_slot_get_item(lua_State *L)
 {
 	const char *id;
 	const char *slot;
-	char *item;
+	std::string item;
 
 	id = luaL_checkstring(L, -2);
 	slot = luaL_checkstring(L, -1);
 	item = equipment_get_item(id, slot);
-	if (item == nullptr)
+	if (item.empty())
 	{
 		return 0;  // number of results
 	}
-	lua_pushstring(L, item);
-	free(item);
+	lua_pushstring(L, item.c_str());
 	return 1;  // number of results
 }
 

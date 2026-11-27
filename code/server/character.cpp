@@ -45,7 +45,7 @@
  *********************************************/
 void character_playable_send_list(Connection &connection)
 {
-	char *marquee;
+	std::string marquee;
 	DIR *dir;
 	struct dirent *ent;
 
@@ -69,15 +69,13 @@ void character_playable_send_list(Connection &connection)
 			continue;
 		}
 
-		if (entry_read_string(CHARACTER_TEMPLATE_TABLE.c_str(), ent->d_name, &marquee,
+		if (entry_read_string(CHARACTER_TEMPLATE_TABLE.c_str(), ent->d_name, marquee,
 				CHARACTER_KEY_MARQUEE.c_str(), nullptr) == true)
 		{
 			if (marquee[0] == '\0')
 			{
-				free(marquee);
 				continue;
 			}
-			free(marquee);
 		}
 		else
 		{
@@ -106,30 +104,26 @@ void character_playable_send_list(Connection &connection)
 /*****************************************************************************/
 void character_user_send(Connection &connection, const std::string &id)
 {
-	char *type = nullptr;
-	char *name = nullptr;
+	std::string type;
+	std::string name;
 
-	if (entry_read_string(CHARACTER_TABLE.c_str(), id, &type,
+	if (entry_read_string(CHARACTER_TABLE.c_str(), id, type,
 			CHARACTER_KEY_TYPE.c_str(), nullptr) == false)
 	{
 		ERR("Cannot read CHARACTER_KEY_TYPE for character " + id);
 		return;
 	}
 
-	if (entry_read_string(CHARACTER_TABLE.c_str(), id.c_str(), &name,
+	if (entry_read_string(CHARACTER_TABLE.c_str(), id.c_str(), name,
 			CHARACTER_KEY_NAME.c_str(), nullptr) == false)
 	{
 		ERR("Cannot read CHARACTER_KEY_NAME for character " + id);
-		free(type);
 		return;
 	}
 
 	LOG("Sending character " + id + " to user " + connection.getUserName());
 
 	network_send_user_character(connection, id, type, name);
-
-	free(type);
-	free(name);
 }
 
 /*****************************************************************************/
@@ -277,7 +271,7 @@ std::pair<bool, std::string> character_create_from_template(Context *ctx,
 /***********************************************************************
  ***********************************************************************/
 static void execute_aggro(Context *agressor, const Context &target,
-		char *script, int aggro_dist)
+		const std::string &script, int aggro_dist)
 {
 	int dist;
 	const char *param[] =
@@ -316,7 +310,7 @@ void character_update_aggro(Context *agressor)
 	Context *target = nullptr;
 	Context *npc = nullptr;
 	int aggro_dist;
-	char *aggro_script;
+	std::string aggro_script;
 
 	if (agressor == nullptr)
 	{
@@ -340,7 +334,7 @@ void character_update_aggro(Context *agressor)
 				&aggro_dist, CHARACTER_KEY_AGGRO_DIST.c_str(), nullptr) == true)
 		{
 			if (entry_read_string(CHARACTER_TABLE.c_str(), agressor->getId(),
-					&aggro_script, CHARACTER_KEY_AGGRO_SCRIPT.c_str(),
+					aggro_script, CHARACTER_KEY_AGGRO_SCRIPT.c_str(),
 					nullptr) == true)
 			{
 				target = context_get_first();
@@ -373,7 +367,6 @@ void character_update_aggro(Context *agressor)
 					execute_aggro(agressor, *target, aggro_script, aggro_dist);
 					target = target->m_next;
 				}
-				free(aggro_script);
 			}
 		}
 	}
@@ -418,7 +411,7 @@ void character_update_aggro(Context *agressor)
 			npc = npc->m_next;
 			continue;
 		}
-		if (entry_read_string(CHARACTER_TABLE.c_str(), npc->getId(), &aggro_script,
+		if (entry_read_string(CHARACTER_TABLE.c_str(), npc->getId(), aggro_script,
 				CHARACTER_KEY_AGGRO_SCRIPT.c_str(), nullptr) == false)
 		{
 			npc = npc->m_next;
@@ -426,8 +419,6 @@ void character_update_aggro(Context *agressor)
 		}
 
 		execute_aggro(npc, *target, aggro_script, aggro_dist);
-
-		free(aggro_script);
 
 		npc = npc->m_next;
 	}
@@ -498,7 +489,7 @@ static void platform_move(Context *platform, const std::string &map, int x,
 int character_set_pos(Context *ctx, const std::string &map, int x, int y)
 {
 	std::vector<std::string> event_id;
-	char *script;
+	std::string script;
 	std::vector<std::string> param;
 	bool change_map = false;
 	int width = x + 1;
@@ -508,7 +499,6 @@ int character_set_pos(Context *ctx, const std::string &map, int x, int y)
 	int ctx_layer = 0;
 	char layer_name[SMALL_BUF];
 	char buf[SMALL_BUF];
-	char *coord[3];
 	int ret_value;
 	int layer;
 
@@ -535,34 +525,19 @@ int character_set_pos(Context *ctx, const std::string &map, int x, int y)
 	entry_read_int(MAP_TABLE.c_str(), map.c_str(), &warpy, MAP_KEY_WARP_Y.c_str(), nullptr);
 
 // Offscreen script
-	entry_read_string(MAP_TABLE.c_str(), map, &script, MAP_OFFSCREEN.c_str(), nullptr);
-	if (script != nullptr && (x < 0 || y < 0 || x >= width || y >= height))
+	entry_read_string(MAP_TABLE.c_str(), map, script, MAP_OFFSCREEN.c_str(), nullptr);
+	if (!script.empty() && (x < 0 || y < 0 || x >= width || y >= height))
 	{
-		snprintf(buf, SMALL_BUF, "%d", x);
-		coord[0] = strdup(buf);
-		snprintf(buf, SMALL_BUF, "%d", y);
-		coord[1] = strdup(buf);
-		coord[2] = nullptr;
-
 		std::vector<std::string> params;
-		int k = 0;
-		while (coord[k] != nullptr)
-		{
-			params.push_back(std::string(coord[k]));
-			k++;
-		}
+		params.push_back(std::to_string(x));
+		params.push_back(std::to_string(y));
 
 		ret_value = action_execute_script(ctx, std::string(script), params);
 
-		free(coord[0]);
-		free(coord[1]);
-		free(script);
-
 		return ret_value;
 	}
-	if (script)
+	if (script.empty() == false)
 	{
-		free(script);
 	}
 
 // Coordinates warping
@@ -637,8 +612,8 @@ int character_set_pos(Context *ctx, const std::string &map, int x, int y)
 	{
 		for (size_t i = 0; i < event_id.size(); i++)
 		{
-			script = nullptr;
-			if (entry_read_string(MAP_TABLE.c_str(), map, &script, layer_name,
+			script.clear();
+			if (entry_read_string(MAP_TABLE.c_str(), map, script, layer_name,
 					MAP_ENTRY_EVENT_LIST.c_str(), event_id[i].c_str(),
 					MAP_EVENT_SCRIPT.c_str(), nullptr) == true)
 			{
@@ -646,7 +621,7 @@ int character_set_pos(Context *ctx, const std::string &map, int x, int y)
 						MAP_ENTRY_EVENT_LIST.c_str(), event_id[i].c_str(),
 						MAP_EVENT_PARAM.c_str(), nullptr);
 			}
-			else if (entry_read_string(MAP_TABLE.c_str(), map, &script,
+			else if (entry_read_string(MAP_TABLE.c_str(), map, script,
 					MAP_ENTRY_EVENT_LIST.c_str(), event_id[i].c_str(),
 					MAP_EVENT_SCRIPT.c_str(), nullptr) == true)
 			{
@@ -655,7 +630,7 @@ int character_set_pos(Context *ctx, const std::string &map, int x, int y)
 						MAP_EVENT_PARAM.c_str(), nullptr);
 			}
 
-			if (script == nullptr)
+			if (script.empty())
 			{
 				continue;
 			}
@@ -671,8 +646,6 @@ int character_set_pos(Context *ctx, const std::string &map, int x, int y)
 				}
 			}
 			action_execute_script(ctx, std::string(script), params);
-
-			free(script);
 			param.clear();
 		}
 	}
@@ -743,14 +716,14 @@ int character_set_portrait(const char *id, const char *portrait)
  Get character portrait.
  must be freed
  *********************************************************/
-char* character_get_portrait(const char *id)
+std::string character_get_portrait(const char *id)
 {
-	char *portrait;
+	std::string portrait;
 
-	if (entry_read_string(CHARACTER_TABLE.c_str(), id, &portrait,
+	if (entry_read_string(CHARACTER_TABLE.c_str(), id, portrait,
 			CHARACTER_KEY_PORTRAIT.c_str(), nullptr) == false)
 	{
-		return nullptr;
+		return std::string();
 	}
 
 	return portrait;

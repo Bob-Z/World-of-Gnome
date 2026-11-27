@@ -699,10 +699,10 @@ bool Context::update_from_file()
 		return false;
 	}
 
-	char *result = nullptr;
+	std::string result;
 	bool ret = false;
 
-	if (entry_read_string(CHARACTER_TABLE.c_str(), getId().c_str(), &result,
+	if (entry_read_string(CHARACTER_TABLE.c_str(), getId().c_str(), result,
 			CHARACTER_KEY_NAME.c_str(), nullptr) == true)
 	{
 		setCharacterName(std::string(result));
@@ -720,22 +720,20 @@ bool Context::update_from_file()
 	}
 	setNpc(npc);
 
-	if (entry_read_string(CHARACTER_TABLE.c_str(), getId().c_str(), &result,
+	if (entry_read_string(CHARACTER_TABLE.c_str(), getId().c_str(), result,
 			CHARACTER_KEY_TYPE.c_str(), nullptr) == true)
 	{
 		setType(std::string(result));
-		free(result);
 	}
 	else
 	{
 		ret = false;
 	}
 
-	if (entry_read_string(CHARACTER_TABLE.c_str(), getId().c_str(), &result,
+	if (entry_read_string(CHARACTER_TABLE.c_str(), getId().c_str(), result,
 			CHARACTER_KEY_MAP.c_str(), nullptr) == true)
 	{
 		setMap(std::string(result));
-		free(result);
 	}
 	else
 	{

@@ -19,5 +19,5 @@
 
 int inventory_delete(const char * id, const char * item);
 int inventory_add(const char * id, const char * item);
-char * inventory_get_by_name(const char * id, const char * item_name);
+std::string inventory_get_by_name(const char * id, const char * item_name);
 

@@ -27,10 +27,10 @@ void entry_remove(const char *filename);
 
 int entry_read_int(const std::string &table, const std::string &file, int *res,
 		...);
-int entry_read_string(const std::string &table, const std::string &file,
-		char **res, ...);
-int entry_read_list_index(const std::string &table, const std::string &file,
-		char **res, int index, ...);
+bool entry_read_string(const std::string &table, const std::string &file,
+		std::string &res, ...);
+bool entry_read_list_index(const std::string &table, const std::string &file,
+		std::string &res, int index, ...);
 int entry_read_list(const std::string &table, const std::string &file,
 		std::vector<std::string> &res, ...);
 
@@ -42,8 +42,8 @@ int entry_write_list_index(const std::string &table, const std::string &file,
 		const std::string &data, int index, ...);
 int entry_write_list(const char *table, const char *file, char **data, ...);
 
-char* entry_get_unused_list_entry(const char *table, const char *file, ...);
-char* entry_get_unused_group(const char *table, const char *file, ...);
+std::string entry_get_unused_list_entry(const char *table, const char *file, ...);
+std::string entry_get_unused_group(const char *table, const char *file, ...);
 int entry_get_group_list(const std::string &table, const std::string &file,
 		std::vector<std::string> &res, ...);
 int entry_add_to_list(const char *table, const char *file,
@@ -55,7 +55,7 @@ int entry_remove_from_list(const char *table, const char *file,
 		const char *to_be_removed, ...);
 int entry_list_create(const char *table, const char *file, ...);
 int entry_group_create(const char *table, const char *file, ...);
-char* entry_copy_group(const char *src_table, const char *src_file,
+std::string entry_copy_group(const char *src_table, const char *src_file,
 		const char *dst_table, const char *dst_file, const char *group_name,
 		...);
 int entry_update(const std::string &type, const std::string &table,

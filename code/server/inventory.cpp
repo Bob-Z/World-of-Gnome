@@ -61,9 +61,9 @@ int inventory_delete(const char *id, const char *item)
 int inventory_add(const char *ctx_id, const char *item_id)
 {
 	Context *context = context_find(ctx_id);
-	char *mytemplate;
+	std::string mytemplate;
 	std::vector<std::string> name_list;
-	char *current_template;
+	std::string current_template;
 	int add_count;
 	int current_count;
 
@@ -83,7 +83,7 @@ int inventory_add(const char *ctx_id, const char *item_id)
 			CHARACTER_KEY_INVENTORY.c_str(), nullptr);
 
 	mytemplate = item_is_resource(std::string(item_id));
-	if (mytemplate == nullptr)
+	if (mytemplate.empty())
 	{
 		if (entry_add_to_list(CHARACTER_TABLE.c_str(), context->getId().c_str(),
 				item_id, CHARACTER_KEY_INVENTORY.c_str(), nullptr) == false)
@@ -107,15 +107,13 @@ int inventory_add(const char *ctx_id, const char *item_id)
 		for (const auto &name : name_list)
 		{
 			if (entry_read_string(ITEM_TABLE.c_str(), name.c_str(),
-					&current_template, ITEM_TEMPLATE.c_str(), nullptr) == true)
+					current_template, ITEM_TEMPLATE.c_str(), nullptr) == true)
 			{
-				if (strcmp(mytemplate, current_template) == 0)
+				if (mytemplate == current_template)
 				{
 					if (entry_read_int(ITEM_TABLE.c_str(), name.c_str(),
 							&current_count, ITEM_QUANTITY.c_str(), nullptr) == true)
 					{
-						free(current_template);
-						free(mytemplate);
 						add_count += current_count;
 						resource_set_quantity(context, name, add_count);
 						item_destroy(std::string(item_id));
@@ -124,10 +122,8 @@ int inventory_add(const char *ctx_id, const char *item_id)
 						return 0;
 					}
 				}
-				free(current_template);
 			}
 		}
-		free(mytemplate);
 
 		// No matching template in the inventory: add it
 		{
@@ -148,37 +144,33 @@ int inventory_add(const char *ctx_id, const char *item_id)
  return an item ID of an item in inventory with specified name
  the returned string must be freed
  ***************************************************************************/
-char* inventory_get_by_name(const char *id, const char *item_name)
+std::string inventory_get_by_name(const char *id, const char *item_name)
 {
 	std::vector<std::string> name_list;
-	char *res;
 
 	Context *context = context_find(id);
 	if (context == nullptr)
 	{
 		werr(LOGDESIGNER, "Could not find context %s", id);
-		return nullptr;
+		return std::string();
 	}
 
 	if (entry_read_list(CHARACTER_TABLE.c_str(), context->getId().c_str(),
 			name_list, CHARACTER_KEY_INVENTORY.c_str(), nullptr) == false)
 	{
-		return nullptr;
+		return std::string();
 	}
 
 	for (const auto &itemId : name_list)
 	{
-		char *name = item_get_name(itemId.c_str());
-		if (name != nullptr)
+		std::string name = item_get_name(itemId.c_str());
+		if (name.empty() == false)
 		{
-			if (strcmp(item_name, name) == 0)
+			if (item_name == name)
 			{
-				res = strdup(itemId.c_str());
-				free(name);
-				return res;
+				return itemId;
 			}
-			free(name);
 		}
 	}
-	return nullptr;
+	return std::string();
 }

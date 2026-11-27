@@ -31,7 +31,7 @@ std::pair<bool, std::string> character_create_from_template(Context * ctx, const
 void character_update_aggro(Context * context);
 int character_set_npc(const char * ctx, int npc);
 int character_get_npc(const std::string & id);
-char * character_get_portrait(const char * id);
+std::string character_get_portrait(const char * id);
 int character_set_portrait(const char * id, const char * portrait);
 int character_set_ai_script(const char * id, const char * script_name);
 int character_wake_up(const char * id);

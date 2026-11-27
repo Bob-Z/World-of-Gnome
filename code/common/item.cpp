@@ -109,11 +109,11 @@ std::pair<bool, std::string> resource_new(const std::string &my_template,
  Returned string MUST BE FREED
  return nullptr  if item is unique (i.e. not a resource)
  *****************************************************/
-char* item_is_resource(const std::string &inventory_id)
+std::string item_is_resource(const std::string &inventory_id)
 {
-	char *my_template = nullptr;
+	std::string my_template;
 
-	entry_read_string(ITEM_TABLE.c_str(), inventory_id.c_str(), &my_template,
+	entry_read_string(ITEM_TABLE.c_str(), inventory_id.c_str(), my_template,
 			ITEM_TEMPLATE.c_str(), nullptr);
 
 	return my_template;
@@ -126,13 +126,12 @@ char* item_is_resource(const std::string &inventory_id)
 int resource_get_quantity(const std::string &item_id)
 {
 	int quantity;
-	char *my_template;
+	std::string my_template;
 
-	if ((my_template = item_is_resource(item_id)) == nullptr)
+	if ((my_template = item_is_resource(item_id)).empty())
 	{
 		return 1; /* unique item */
 	}
-	free(my_template);
 
 	if (entry_read_int(ITEM_TABLE.c_str(), item_id.c_str(), &quantity,
 			ITEM_QUANTITY.c_str(), nullptr) == false)
@@ -150,14 +149,13 @@ int resource_get_quantity(const std::string &item_id)
 int resource_set_quantity(Context *context, const std::string &item_id,
 		int quantity)
 {
-	char *my_template;
+	std::string my_template;
 
 	// unique item
-	if ((my_template = item_is_resource(item_id)) == nullptr)
+	if ((my_template = item_is_resource(item_id)).empty())
 	{
 		return -1;
 	}
-	free(my_template);
 
 	if (entry_write_int(ITEM_TABLE.c_str(), item_id.c_str(), quantity,
 			ITEM_QUANTITY.c_str(), nullptr) == false)
@@ -174,29 +172,27 @@ int resource_set_quantity(Context *context, const std::string &item_id,
  Return the name of an item
  return nullptr on error
  *****************************/
-char* item_get_name(const std::string &item_id)
+std::string item_get_name(const std::string &item_id)
 {
-	char *my_template;
-	char *name;
+	std::string my_template;
+	std::string name;
 
-	if ((my_template = item_is_resource(item_id)) != nullptr)
+	if ((my_template = item_is_resource(item_id)).empty() == false)
 	{
-		if (entry_read_string(ITEM_TEMPLATE_TABLE.c_str(), my_template, &name,
+		if (entry_read_string(ITEM_TEMPLATE_TABLE.c_str(), my_template, name,
 				ITEM_NAME.c_str(), nullptr) == true)
 		{
-			free(my_template);
 			return name;
 		}
-		free(my_template);
 	}
 	else
 	{
-		if (entry_read_string(ITEM_TABLE.c_str(), item_id.c_str(), &name,
+		if (entry_read_string(ITEM_TABLE.c_str(), item_id.c_str(), name,
 				ITEM_NAME.c_str(), nullptr) == true)
 		{
 			return name;
 		}
 	}
 
-	return nullptr;
+	return std::string();
 }

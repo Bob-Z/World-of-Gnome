@@ -46,11 +46,11 @@ int attribute_change(Context *context, const char *table, const char *id,
 	bool do_down_action = false;
 	bool do_max_action = false;
 	bool do_up_action = false;
-	char *action;
-	char *min_action = nullptr;
-	char *down_action = nullptr;
-	char *max_action = nullptr;
-	char *up_action = nullptr;
+	std::string action;
+	std::string min_action;
+	std::string down_action;
+	std::string max_action;
+	std::string up_action;
 
 	{
 		LockGuard guard(attribute_lock);
@@ -109,7 +109,7 @@ int attribute_change(Context *context, const char *table, const char *id,
 		{
 			if (do_min_action == true)
 			{
-				if (entry_read_string(table, id, &action, ATTRIBUTE_GROUP.c_str(),
+				if (entry_read_string(table, id, action, ATTRIBUTE_GROUP.c_str(),
 						attribute, ATTRIBUTE_ON_MIN.c_str(), nullptr) == false)
 				{
 					do_min_action = false;
@@ -120,7 +120,7 @@ int attribute_change(Context *context, const char *table, const char *id,
 				}
 			}
 
-			if (entry_read_string(table, id, &action, ATTRIBUTE_GROUP.c_str(),
+			if (entry_read_string(table, id, action, ATTRIBUTE_GROUP.c_str(),
 					attribute, ATTRIBUTE_ON_DOWN.c_str(), nullptr) == true)
 			{
 				do_down_action = true;
@@ -132,7 +132,7 @@ int attribute_change(Context *context, const char *table, const char *id,
 		{
 			if (do_max_action == true)
 			{
-				if (entry_read_string(table, id, &action, ATTRIBUTE_GROUP.c_str(),
+				if (entry_read_string(table, id, action, ATTRIBUTE_GROUP.c_str(),
 						attribute, ATTRIBUTE_ON_MAX.c_str(), nullptr) == false)
 				{
 					do_max_action = false;
@@ -143,7 +143,7 @@ int attribute_change(Context *context, const char *table, const char *id,
 				}
 			}
 
-			if (entry_read_string(table, id, &action, ATTRIBUTE_GROUP.c_str(),
+			if (entry_read_string(table, id, action, ATTRIBUTE_GROUP.c_str(),
 					attribute, ATTRIBUTE_ON_UP.c_str(), nullptr) == true)
 			{
 				do_up_action = true;
@@ -154,41 +154,36 @@ int attribute_change(Context *context, const char *table, const char *id,
 	}
 
 	// do automatic actions
-	if (do_down_action == true && down_action != nullptr)
+	if (do_down_action == true && !down_action.empty())
 	{
 		action_execute_script(context, std::string(down_action), {});
 	}
-	if (down_action)
+	if (!down_action.empty())
 	{
-		free(down_action);
 	}
 
-	if (do_min_action == true && min_action != nullptr)
+	if (do_min_action == true && !min_action.empty())
 	{
 		action_execute_script(context, std::string(min_action), {});
 	}
-	if (min_action)
+	if (!min_action.empty())
 	{
-		free(min_action);
 	}
 
-	if (do_up_action == true && up_action != nullptr)
+	if (do_up_action == true && !up_action.empty())
 	{
 		action_execute_script(context, std::string(up_action), {});
 	}
-	if (min_action)
+	if (!min_action.empty())
 	{
-		free(up_action);
 	}
 
-	if (do_max_action == true && max_action != nullptr)
+	if (do_max_action == true && !max_action.empty())
 	{
 		action_execute_script(context, std::string(max_action), {});
-		free(max_action);
 	}
-	if (max_action)
+	if (!max_action.empty())
 	{
-		free(max_action);
 	}
 
 	sprintf(buf, "%s.%s.%s", ATTRIBUTE_GROUP.c_str(), attribute,
@@ -239,14 +234,14 @@ int attribute_set(const char *table, const char *id, const char *attribute,
  return nullptr if fails
  returned value MUST be freed
  ****************************************/
-char* attribute_tag_get(const char *table, const char *id,
+std::string attribute_tag_get(const char *table, const char *id,
 		const char *attribute)
 {
-	char *tag = nullptr;
+	std::string tag;
 
 	LockGuard guard(attribute_lock);
 
-	entry_read_string(table, id, &tag, ATTRIBUTE_GROUP.c_str(), attribute,
+	entry_read_string(table, id, tag, ATTRIBUTE_GROUP.c_str(), attribute,
 			ATTRIBUTE_CURRENT.c_str(), nullptr);
 
 	return tag;

@@ -262,12 +262,11 @@ void scr_select_compose(Context * context, std::vector<SdlItem *> & itemArray)
 		for (auto && characterMarquee : characterMarqueeArray)
 		{
 			// Compute the marquee file name
-			char * marqueeName = nullptr;
-			if (entry_read_string(CHARACTER_TABLE.c_str(), characterMarquee.getId().c_str(), &marqueeName, CHARACTER_KEY_MARQUEE.c_str(), nullptr) == true)
+			std::string marqueeName;
+			if (entry_read_string(CHARACTER_TABLE.c_str(), characterMarquee.getId().c_str(), marqueeName, CHARACTER_KEY_MARQUEE.c_str(), nullptr) == true)
 			{
 				std::vector<std::string> nameArray;
 				nameArray.push_back(std::string(marqueeName));
-				free(marqueeName);
 
 				characterMarquee.setAnim(imageDB_get_anim_array(context, nameArray));
 			}

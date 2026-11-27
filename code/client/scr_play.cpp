@@ -60,7 +60,7 @@ static bool isMapChanged = false;
 static int currentMapX = -1;
 static int currentMapY = -1;
 static std::unique_ptr<layer_t> defaultLayer;
-static char *sfx = nullptr;
+static std::string sfx;
 static bool isMusicPlaying = false;
 
 /*****************************************************************************/
@@ -127,38 +127,36 @@ static std::vector<SiAnim*> select_sprite(Context *ctx)
 	Context *playerContext = context_get_player();
 
 	// Try to find a sprite depending on the orientation
-	char *spriteName = nullptr;
+	std::string spriteName;
 	if (ctx->getOrientation() & NORTH)
 	{
-		entry_read_string(CHARACTER_TABLE.c_str(), ctx->getId().c_str(), &spriteName,
+		entry_read_string(CHARACTER_TABLE.c_str(), ctx->getId().c_str(), spriteName,
 				CHARACTER_KEY_DIR_N_SPRITE.c_str(), nullptr);
 	}
-	if ((ctx->getOrientation() & SOUTH) && spriteName == nullptr)
+	if ((ctx->getOrientation() & SOUTH) && spriteName.empty())
 	{
-		entry_read_string(CHARACTER_TABLE.c_str(), ctx->getId().c_str(), &spriteName,
+		entry_read_string(CHARACTER_TABLE.c_str(), ctx->getId().c_str(), spriteName,
 				CHARACTER_KEY_DIR_S_SPRITE.c_str(), nullptr);
 	}
-	if ((ctx->getOrientation() & EAST) && spriteName == nullptr)
+	if ((ctx->getOrientation() & EAST) && spriteName.empty())
 	{
-		entry_read_string(CHARACTER_TABLE.c_str(), ctx->getId().c_str(), &spriteName,
+		entry_read_string(CHARACTER_TABLE.c_str(), ctx->getId().c_str(), spriteName,
 				CHARACTER_KEY_DIR_E_SPRITE.c_str(), nullptr);
 	}
-	if ((ctx->getOrientation() & WEST) && spriteName == nullptr)
+	if ((ctx->getOrientation() & WEST) && spriteName.empty())
 	{
-		entry_read_string(CHARACTER_TABLE.c_str(), ctx->getId().c_str(), &spriteName,
+		entry_read_string(CHARACTER_TABLE.c_str(), ctx->getId().c_str(), spriteName,
 				CHARACTER_KEY_DIR_W_SPRITE.c_str(), nullptr);
 	}
 
-	if (spriteName != nullptr)
+	if (!spriteName.empty())
 	{
-		if (spriteName[0] != 0)
+		if (!spriteName.empty())
 		{
 			std::vector<std::string> spriteNameArray;
 			spriteNameArray.push_back(std::string(spriteName));
-			free(spriteName);
 			return imageDB_get_anim_array(playerContext, spriteNameArray);
 		}
-		free(spriteName);
 	}
 
 	// Try sprite lists
@@ -195,19 +193,17 @@ static std::vector<SiAnim*> select_sprite(Context *ctx)
 	}
 
 	// try default sprite file
-	if (entry_read_string(CHARACTER_TABLE.c_str(), ctx->getId().c_str(), &spriteName,
+	if (entry_read_string(CHARACTER_TABLE.c_str(), ctx->getId().c_str(), spriteName,
 			CHARACTER_KEY_SPRITE.c_str(), nullptr) == true)
 	{
-		if (spriteName != nullptr)
+		if (!spriteName.empty())
 		{
-			if (spriteName[0] != 0)
+			if (!spriteName.empty())
 			{
 				std::vector<std::string> spriteNameArray;
 				spriteNameArray.push_back(std::string(spriteName));
-				free(spriteName);
 				return imageDB_get_anim_array(playerContext, spriteNameArray);
 			}
-			free(spriteName);
 		}
 	}
 
@@ -328,13 +324,12 @@ static void set_up_sprite(Context *ctx, std::vector<SdlItem*> &itemArray)
 	int py = map_t2p_y(ctx->getTileX(), ctx->getTileY(), defaultLayer.get());
 
 	// Get per sprite zoom
-	char *zoomStr = nullptr;
+	std::string zoomStr;
 	double zoom = 1.0;
-	if (entry_read_string(CHARACTER_TABLE.c_str(), ctx->getId().c_str(), &zoomStr,
+	if (entry_read_string(CHARACTER_TABLE.c_str(), ctx->getId().c_str(), zoomStr,
 			CHARACTER_KEY_ZOOM.c_str(), nullptr) == true)
 	{
-		zoom = atof(zoomStr);
-		free(zoomStr);
+		zoom = atof(zoomStr.c_str());
 	}
 
 	// Align sprite on tile
@@ -554,12 +549,12 @@ static void compose_item(int layerIndex, std::vector<SdlItem*> &itemArray)
 			continue;
 		}
 
-		char *mytemplate = item_is_resource(std::string(itemId[i].c_str()));
+		std::string mytemplate = item_is_resource(std::string(itemId[i].c_str()));
 
 		std::string spriteName;
 		int align = 0;
 
-		if (mytemplate == nullptr)
+		if (mytemplate.empty())
 		{
 			try
 			{
@@ -586,7 +581,6 @@ static void compose_item(int layerIndex, std::vector<SdlItem*> &itemArray)
 						{ ITEM_SPRITE });
 			} catch (...)
 			{
-				free(mytemplate);
 				continue;
 			}
 
@@ -597,7 +591,6 @@ static void compose_item(int layerIndex, std::vector<SdlItem*> &itemArray)
 			spriteOffsetY = getDataManager().getNoExcept<int>(
 					ITEM_TEMPLATE_TABLE, std::string(mytemplate),
 					{ ITEM_OFFSET_Y }, 0);
-			free(mytemplate);
 		}
 
 		SdlItem *item = new SdlItem;
@@ -799,8 +792,8 @@ static void compose_map_scenery(int layerIndex,
 			continue;
 		}
 
-		char *imageName = nullptr;
-		if (entry_read_string(MAP_TABLE.c_str(), ctx->getMap().c_str(), &imageName,
+		std::string imageName;
+		if (entry_read_string(MAP_TABLE.c_str(), ctx->getMap().c_str(), imageName,
 				layerName.c_str(), MAP_KEY_SCENERY.c_str(), sceneryList[i].c_str(),
 				MAP_KEY_SCENERY_IMAGE.c_str(), nullptr) == false)
 		{
@@ -812,8 +805,6 @@ static void compose_map_scenery(int layerIndex,
 
 		item->setPos(x, y);
 		item->setAnim(imageDB_get_anim(ctx, std::string(imageName)));
-
-		free(imageName);
 
 	}
 }
@@ -850,15 +841,15 @@ static void compose_type(int layerIndex, std::vector<SdlItem*> &itemArray)
 	{
 		for (y = 0; y < defaultLayer->map_h; y++)
 		{
-			char *type = nullptr;
-			if (entry_read_list_index(MAP_TABLE.c_str(), ctx->getMap().c_str(), &type,
+			std::string type;
+			if (entry_read_list_index(MAP_TABLE.c_str(), ctx->getMap().c_str(), type,
 					x + y * defaultLayer->map_w, layerName.c_str(),
 					MAP_KEY_TYPE.c_str(), nullptr) == false)
 			{
 				continue;
 			}
 
-			if (type[0] == 0)
+			if (type.empty())
 			{
 				continue;
 			}
@@ -1010,32 +1001,31 @@ void scr_play_compose(Context *context, std::vector<SdlItem*> &itemArray)
 			MAP_KEY_BG_GREEN.c_str(), nullptr);
 	sdl_set_background_color(bg_red, bg_blue, bg_green, 255);
 
-	char *old_sfx = nullptr;
+	std::string old_sfx;
 	old_sfx = sfx;
-	sfx = nullptr;
+	sfx.clear();
 
-	entry_read_string(MAP_TABLE.c_str(), context->getMap().c_str(), &sfx, MAP_SFX.c_str(),
+	entry_read_string(MAP_TABLE.c_str(), context->getMap().c_str(), sfx, MAP_SFX.c_str(),
 			nullptr);
 
-	if (old_sfx != nullptr)
+	if (old_sfx.empty() == false)
 	{
-		if (sfx != nullptr)
+		if (!sfx.empty())
 		{
-			if (strcmp(old_sfx, sfx) != 0)
+			if (old_sfx != sfx)
 			{
 				sfx_stop(MUSIC_CHANNEL);
 				isMusicPlaying = false;
 			}
 		}
-		else // sfx == nullptr
+		else // sfx.empty()
 		{
 			sfx_stop(MUSIC_CHANNEL);
 			isMusicPlaying = false;
 		}
-		free(old_sfx);
 	}
 
-	if ((sfx != nullptr) && (sfx[0] != '\0'))
+	if ((!sfx.empty()) && (sfx[0] != '\0'))
 	{
 		if (isMusicPlaying == false)
 		{

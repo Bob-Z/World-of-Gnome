@@ -110,7 +110,7 @@ static bool groupExists(DataManager &dm, const char *table, const char *file,
 }
 
 /*****************************************************************************/
-static char* __get_unused_group_on_path(const char *table, const char *file,
+static std::string __get_unused_group_on_path(const char *table, const char *file,
 		const std::vector<std::string> &path)
 {
 	DataManager &dm = getDataManager();
@@ -122,13 +122,13 @@ static char* __get_unused_group_on_path(const char *table, const char *file,
 
 		if (!containsKey(dm, table, file, path, tag))
 		{
-			return strdup(tag);
+			return std::string(tag);
 		}
 	}
 }
 
 /*****************************************************************************/
-static char* __get_unused_group(const char *table, const char *file, va_list ap)
+static std::string __get_unused_group(const char *table, const char *file, va_list ap)
 {
 	DataManager &dm = getDataManager();
 	std::vector<std::string> path = getPath(ap);
@@ -149,13 +149,13 @@ static char* __get_unused_group(const char *table, const char *file, va_list ap)
 
 		if (dm.set(table, file, fullPath, json::object()))
 		{
-			return strdup(tag);
+			return std::string(tag);
 		}
 	}
 }
 
 /*****************************************************************************/
-static char* __copy_group(const char *src_table, const char *src_file,
+static std::string __copy_group(const char *src_table, const char *src_file,
 		const char *dst_table, const char *dst_file, const char *group_name,
 		va_list ap)
 {
@@ -171,21 +171,14 @@ static char* __copy_group(const char *src_table, const char *src_file,
 		value = dm.get<json>(src_table, src_file, srcPath);
 	} catch (...)
 	{
-		return nullptr;
+		return std::string();
 	}
 
 	std::string group_name_used = group_name;
 
 	if (groupExists(dm, dst_table, dst_file, srcPath))
 	{
-		char *new_group_name = __get_unused_group_on_path(dst_table, dst_file,
-				path);
-		if (new_group_name == nullptr)
-		{
-			return nullptr;
-		}
-		group_name_used = new_group_name;
-		free(new_group_name);
+		group_name_used = __get_unused_group_on_path(dst_table, dst_file, path);
 	}
 
 	std::vector<std::string> dstPath = path;
@@ -193,10 +186,10 @@ static char* __copy_group(const char *src_table, const char *src_file,
 
 	if (!dm.set(dst_table, dst_file, dstPath, value))
 	{
-		return nullptr;
+		return std::string();
 	}
 
-	return strdup(group_name_used.c_str());
+	return group_name_used;
 }
 
 /*****************************************************************************/
@@ -227,8 +220,8 @@ int entry_read_int(const std::string &table, const std::string &file, int *res, 
 }
 
 /*****************************************************************************/
-int entry_read_string(const std::string &table, const std::string &file,
-		char **res, ...)
+bool entry_read_string(const std::string &table, const std::string &file,
+		std::string &res, ...)
 {
 	va_list ap;
 
@@ -238,23 +231,16 @@ int entry_read_string(const std::string &table, const std::string &file,
 
 	LockGuard guard(entryListLock);
 
-	*res = nullptr;
+	res.clear();
 
-	std::string value;
-	if (getDataManager().tryGet<std::string>(table, file, path, value) == false)
-	{
-		return false;
-	}
-
-	*res = strdup(value.c_str());
-	return true;
+	return getDataManager().tryGet<std::string>(table, file, path, res);
 }
 
 /*****************************************************************************/
-static int __read_list_index(const std::string &table, const std::string &file,
-		char **res, int index, va_list ap)
+static bool __read_list_index(const std::string &table, const std::string &file,
+		std::string &res, int index, va_list ap)
 {
-	*res = nullptr;
+	res.clear();
 
 	LockGuard guard(entryListLock);
 
@@ -269,7 +255,7 @@ static int __read_list_index(const std::string &table, const std::string &file,
 
 	if (index >= 0 && (size_t) index < list.size())
 	{
-		*res = strdup(list[index].c_str());
+		res = list[index];
 		return true;
 	}
 
@@ -277,10 +263,10 @@ static int __read_list_index(const std::string &table, const std::string &file,
 }
 
 /*****************************************************************************/
-int entry_read_list_index(const std::string &table, const std::string &file,
-		char **res, int index, ...)
+bool entry_read_list_index(const std::string &table, const std::string &file,
+		std::string &res, int index, ...)
 {
-	int ret;
+	bool ret;
 	va_list ap;
 
 	va_start(ap, index);
@@ -452,7 +438,7 @@ int entry_remove_group(const char *table, const char *file, const char *group,
 }
 
 /*****************************************************************************/
-char* entry_get_unused_list_entry(const char *table, const char *file, ...)
+std::string entry_get_unused_list_entry(const char *table, const char *file, ...)
 {
 	char tag[16];
 
@@ -487,16 +473,16 @@ char* entry_get_unused_list_entry(const char *table, const char *file, ...)
 		dm.set<std::vector<std::string> >(table, file, path, list);
 	} catch (...)
 	{
-		return nullptr;
+		return std::string();
 	}
 
-	return strdup(tag);
+	return std::string(tag);
 }
 
 /*****************************************************************************/
-char* entry_get_unused_group(const char *table, const char *file, ...)
+std::string entry_get_unused_group(const char *table, const char *file, ...)
 {
-	char *ret;
+	std::string ret;
 	va_list ap;
 
 	va_start(ap, file);
@@ -593,11 +579,11 @@ int entry_group_create(const char *table, const char *file, ...)
 }
 
 /*****************************************************************************/
-char* entry_copy_group(const char *src_table, const char *src_file,
+std::string entry_copy_group(const char *src_table, const char *src_file,
 		const char *dst_table, const char *dst_file, const char *group_name,
 		...)
 {
-	char *ret;
+	std::string ret;
 	va_list ap;
 
 	va_start(ap, group_name);
