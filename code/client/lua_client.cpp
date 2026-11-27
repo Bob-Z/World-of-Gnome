@@ -322,23 +322,19 @@ static std::vector<SiAnim*> getAnimArray(const std::string &id,
 	}
 
 	// Try list of image
-	char **spriteList = nullptr;
-	if (entry_read_list(CHARACTER_TABLE.c_str(), id.c_str(), &spriteList,
+	std::vector<std::string> spriteList;
+	if (entry_read_list(CHARACTER_TABLE.c_str(), id.c_str(), spriteList,
 			key.c_str(), nullptr) == true)
 	{
 		std::vector<std::string> spriteNameArray;
 
-		int i = 0;
-		char *spriteName = nullptr;
-		while ((spriteName = spriteList[i]) != nullptr)
+		for (const auto &spriteName : spriteList)
 		{
-			spriteNameArray.push_back(std::string(spriteName));
-			i++;
+			spriteNameArray.push_back(spriteName);
 		}
 
 		animArray = imageDB_get_anim_array(context_get_player(),
 				spriteNameArray);
-		deep_free(spriteList);
 		return animArray;
 	}
 

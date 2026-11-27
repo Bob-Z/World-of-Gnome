@@ -54,24 +54,6 @@ static std::vector<std::string> getPath(va_list ap)
 }
 
 /*****************************************************************************/
-static char** toCArray(const std::vector<std::string> &values)
-{
-	if (values.empty())
-	{
-		return nullptr;
-	}
-
-	char **result = (char**) malloc((values.size() + 1) * sizeof(char*));
-	for (size_t i = 0; i < values.size(); i++)
-	{
-		result[i] = strdup(values[i].c_str());
-	}
-	result[values.size()] = nullptr;
-
-	return result;
-}
-
-/*****************************************************************************/
 static std::vector<std::string> splitPath(const std::string &path)
 {
 	std::vector<std::string> result;
@@ -315,28 +297,27 @@ int entry_read_list_index(const std::string &table, const std::string &file,
 
 /*****************************************************************************/
 static int __read_list(const std::string &table, const std::string &file,
-		char ***res, va_list ap)
+		std::vector<std::string> &res, va_list ap)
 {
-	*res = nullptr;
+	res.clear();
 
 	LockGuard guard(entryListLock);
 
 	std::vector<std::string> path = getPath(ap);
 
-	std::vector<std::string> list;
 	if (getDataManager().tryGet<std::vector<std::string> >(table, file, path,
-			list) == false)
+			res) == false || res.empty())
 	{
+		res.clear();
 		return false;
 	}
 
-	*res = toCArray(list);
-	return (*res != nullptr);
+	return true;
 }
 
 /*****************************************************************************/
 int entry_read_list(const std::string &table, const std::string &file,
-		char ***res, ...)
+		std::vector<std::string> &res, ...)
 {
 	int ret;
 	va_list ap;
@@ -532,7 +513,7 @@ char* entry_get_unused_group(const char *table, const char *file, ...)
 
 /*****************************************************************************/
 int entry_get_group_list(const std::string &table, const std::string &file,
-		char ***res, ...)
+		std::vector<std::string> &res, ...)
 {
 	int ret = false;
 	va_list ap;
@@ -541,14 +522,15 @@ int entry_get_group_list(const std::string &table, const std::string &file,
 	std::vector<std::string> path = getPath(ap);
 	va_end(ap);
 
-	*res = nullptr;
+	res.clear();
 
 	try
 	{
-		*res = toCArray(getDataManager().getKeys(table, file, path));
-		ret = (*res != nullptr);
+		res = getDataManager().getKeys(table, file, path);
+		ret = (res.empty() == false);
 	} catch (...)
 	{
+		res.clear();
 	}
 
 	return ret;

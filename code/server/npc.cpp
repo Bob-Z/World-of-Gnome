@@ -42,7 +42,7 @@ static int npc_script(void *data)
 	Context *context = (Context*) data;
 	Uint32 timeOutMs = 0U;
 	char *script = nullptr;
-	char **parameters = nullptr;
+	std::vector<std::string> parameters;
 
 	// Do not start every NPC at the same moment
 	usleep((random() % NPC_TIMEOUT) * 1000);
@@ -58,9 +58,8 @@ static int npc_script(void *data)
 		{
 			free(script);
 		}
-		if (parameters != nullptr)
+		if (!parameters.empty())
 		{
-			deep_free(parameters);
 		}
 		if (entry_read_string(CHARACTER_TABLE.c_str(), context->getId().c_str(),
 				&script, CHARACTER_KEY_AI.c_str(), nullptr) == false)
@@ -70,20 +69,18 @@ static int npc_script(void *data)
 		}
 
 		entry_read_list(CHARACTER_TABLE.c_str(), context->getId().c_str(),
-				&parameters, CHARACTER_KEY_AI_PARAMS.c_str(), nullptr);
+				parameters, CHARACTER_KEY_AI_PARAMS.c_str(), nullptr);
 
 		if (context->getNextExecutionTick() < SDL_GetTicks())
 		{
 			LockGuard guard(npc_lock);
 
 			std::vector<std::string> params;
-			int i = 0;
-			if (parameters != nullptr)
+			if (!parameters.empty())
 			{
-				while (parameters[i] != nullptr)
+				for (size_t i = 0; i < parameters.size(); i++)
 				{
 					params.push_back(std::string(parameters[i]));
-					i++;
 				}
 			}
 

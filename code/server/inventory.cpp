@@ -62,8 +62,7 @@ int inventory_add(const char *ctx_id, const char *item_id)
 {
 	Context *context = context_find(ctx_id);
 	char *mytemplate;
-	int index;
-	char **name_list;
+	std::vector<std::string> name_list;
 	char *current_template;
 	int add_count;
 	int current_count;
@@ -100,41 +99,37 @@ int inventory_add(const char *ctx_id, const char *item_id)
 			return -1;
 		}
 		if (entry_read_list(CHARACTER_TABLE.c_str(), context->getId().c_str(),
-				&name_list, CHARACTER_KEY_INVENTORY.c_str(), nullptr) == false)
+				name_list, CHARACTER_KEY_INVENTORY.c_str(), nullptr) == false)
 		{
 			return -1;
 		}
 
-		index = 0;
-		while (name_list[index] != nullptr)
+		for (const auto &name : name_list)
 		{
-			if (entry_read_string(ITEM_TABLE.c_str(), name_list[index],
+			if (entry_read_string(ITEM_TABLE.c_str(), name.c_str(),
 					&current_template, ITEM_TEMPLATE.c_str(), nullptr) == true)
 			{
 				if (strcmp(mytemplate, current_template) == 0)
 				{
-					if (entry_read_int(ITEM_TABLE.c_str(), name_list[index],
+					if (entry_read_int(ITEM_TABLE.c_str(), name.c_str(),
 							&current_count, ITEM_QUANTITY.c_str(), nullptr) == true)
 					{
 						free(current_template);
 						free(mytemplate);
 						add_count += current_count;
-						resource_set_quantity(context,
-								std::string(name_list[index]), add_count);
+						resource_set_quantity(context, name, add_count);
 						item_destroy(std::string(item_id));
 						network_send_table_file(context, ITEM_TABLE.c_str(),
-								name_list[index]);
+								name.c_str());
 						return 0;
 					}
 				}
 				free(current_template);
 			}
-			index++;
 		}
 		free(mytemplate);
 
-		// First time we add this type of resource to inventory
-		if (name_list[index] == nullptr)
+		// No matching template in the inventory: add it
 		{
 			if (entry_add_to_list(CHARACTER_TABLE.c_str(),
 					context->getId().c_str(), item_id,
@@ -143,8 +138,6 @@ int inventory_add(const char *ctx_id, const char *item_id)
 				return -1;
 			}
 		}
-
-		deep_free(name_list);
 	}
 
 	network_send_character_file(context);
@@ -157,9 +150,7 @@ int inventory_add(const char *ctx_id, const char *item_id)
  ***************************************************************************/
 char* inventory_get_by_name(const char *id, const char *item_name)
 {
-	int index;
-	char **name_list;
-	char *name;
+	std::vector<std::string> name_list;
 	char *res;
 
 	Context *context = context_find(id);
@@ -170,28 +161,24 @@ char* inventory_get_by_name(const char *id, const char *item_name)
 	}
 
 	if (entry_read_list(CHARACTER_TABLE.c_str(), context->getId().c_str(),
-			&name_list, CHARACTER_KEY_INVENTORY.c_str(), nullptr) == false)
+			name_list, CHARACTER_KEY_INVENTORY.c_str(), nullptr) == false)
 	{
 		return nullptr;
 	}
 
-	index = 0;
-	while (name_list[index] != nullptr)
+	for (const auto &itemId : name_list)
 	{
-		if ((name = item_get_name(name_list[index])) != nullptr)
+		char *name = item_get_name(itemId.c_str());
+		if (name != nullptr)
 		{
 			if (strcmp(item_name, name) == 0)
 			{
-				res = strdup(name_list[index]);
-				deep_free(name_list);
+				res = strdup(itemId.c_str());
 				free(name);
 				return res;
 			}
 			free(name);
 		}
-		index++;
 	}
-
-	deep_free(name_list);
 	return nullptr;
 }

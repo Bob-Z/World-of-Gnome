@@ -417,30 +417,28 @@ static int compose_attribute(Context *ctx, std::vector<SdlItem*> &itemArray)
 
 	attributeText.clear();
 
-	char **nameArray;
-	if (entry_get_group_list(CHARACTER_TABLE.c_str(), ctx->getId().c_str(), &nameArray,
+	std::vector<std::string> nameArray;
+	if (entry_get_group_list(CHARACTER_TABLE.c_str(), ctx->getId().c_str(), nameArray,
 			ATTRIBUTE_GROUP.c_str(), nullptr) == false)
 	{
 		return 0;
 	}
 
 	int attributeHeight = 0;
-	int index = 0;
 	int y = 0;
 
-	while (nameArray[index] != nullptr)
+	for (size_t index = 0; index < nameArray.size(); index++)
 	{
 		int value;
 		if (entry_read_int(CHARACTER_TABLE.c_str(), ctx->getId().c_str(), &value,
-				ATTRIBUTE_GROUP.c_str(), nameArray[index], ATTRIBUTE_CURRENT.c_str(),
+				ATTRIBUTE_GROUP.c_str(), nameArray[index].c_str(), ATTRIBUTE_CURRENT.c_str(),
 				nullptr) == false)
 		{
-			index++;
 			continue;
 		}
 
 		attributeText.push_back(
-				std::string(nameArray[index]) + ": " + std::to_string(value));
+				std::string(nameArray[index].c_str()) + ": " + std::to_string(value));
 
 		SdlItem *item = new SdlItem;
 		itemArray.push_back(item);
@@ -462,10 +460,7 @@ static int compose_attribute(Context *ctx, std::vector<SdlItem*> &itemArray)
 			attributeHeight = y;
 		}
 
-		index++;
 	}
-
-	deep_free(nameArray);
 
 	return attributeHeight;
 }
@@ -515,8 +510,8 @@ static int compose_action(Context *ctx, std::vector<SdlItem*> &itemArray)
 	sdl_get_output_size(&sw, &sh);
 
 	// Read action list for current user
-	char **actionArray = nullptr;
-	if (entry_read_list(CHARACTER_TABLE.c_str(), ctx->getId().c_str(), &actionArray,
+	std::vector<std::string> actionArray;
+	if (entry_read_list(CHARACTER_TABLE.c_str(), ctx->getId().c_str(), actionArray,
 			CHARACTER_KEY_ACTION.c_str(), nullptr) == false)
 	{
 		return 0;
@@ -524,13 +519,12 @@ static int compose_action(Context *ctx, std::vector<SdlItem*> &itemArray)
 
 	int x = 0;
 	int i = 0;
-	while (actionArray[i] != nullptr)
+	for (i = 0; i < (int)actionArray.size(); i++)
 	{
 		if (i < firstAction)
 		{
-			if (actionArray[i + 1] != nullptr)
+			if (i + 1 < (int)actionArray.size())
 			{
-				i++;
 				continue;
 			}
 			firstAction = i;
@@ -561,7 +555,6 @@ static int compose_action(Context *ctx, std::vector<SdlItem*> &itemArray)
 		}
 		if (iconArrayStd.empty())
 		{
-			i++;
 			continue;
 		}
 
@@ -633,7 +626,6 @@ static int compose_action(Context *ctx, std::vector<SdlItem*> &itemArray)
 
 		itemArray.push_back(item);
 
-		i++;
 	}
 
 	numAction = firstAction + i;
@@ -686,8 +678,8 @@ static void compose_equipment(Context *ctx, std::vector<SdlItem*> &itemArray)
 	int sh = 0;
 	sdl_get_output_size(&sw, &sh);
 
-	char **slot_list = nullptr;
-	entry_get_group_list(CHARACTER_TABLE.c_str(), ctx->getId().c_str(), &slot_list,
+	std::vector<std::string> slot_list;
+	entry_get_group_list(CHARACTER_TABLE.c_str(), ctx->getId().c_str(), slot_list,
 			EQUIPMENT_GROUP.c_str(), nullptr);
 
 	int max_h = 0;
@@ -696,13 +688,13 @@ static void compose_equipment(Context *ctx, std::vector<SdlItem*> &itemArray)
 	int x = 0;
 	int h1;
 	int index = 0;
-	while (slot_list && slot_list[index] != nullptr)
+	while (index < (int)slot_list.size())
 	{
 #if 0
 		// Get the slot name
-		if(entry_read_string(CHARACTER_TABLE.c_str(),ctx->m_id,&item_name,EQUIPMENT_GROUP.c_str(),slot_list[index],EQUIPMENT_NAME.c_str(),nullptr) == false )
+		if(entry_read_string(CHARACTER_TABLE.c_str(),ctx->m_id,&item_name,EQUIPMENT_GROUP.c_str(),slot_list[index].c_str(),EQUIPMENT_NAME.c_str(),nullptr) == false )
 		{
-			name = strdup(slot_list[index]);
+			name = strdup(slot_list[index].c_str());
 		}
 		else
 		{
@@ -713,7 +705,7 @@ static void compose_equipment(Context *ctx, std::vector<SdlItem*> &itemArray)
 		h1 = 0;
 		// Get the slot icon
 		if (entry_read_string(CHARACTER_TABLE.c_str(), ctx->getId().c_str(), &iconName,
-				EQUIPMENT_GROUP.c_str(), slot_list[index], EQUIPMENT_ICON.c_str(),
+				EQUIPMENT_GROUP.c_str(), slot_list[index].c_str(), EQUIPMENT_ICON.c_str(),
 				nullptr) == false)
 		{
 			continue;
@@ -733,7 +725,7 @@ static void compose_equipment(Context *ctx, std::vector<SdlItem*> &itemArray)
 			item->setPos(x, y);
 			item->setAnim(anim);
 
-			std::string slot = std::string(slot_list[index]);
+			std::string slot = std::string(slot_list[index].c_str());
 			item->setClickLeftCb([slot]()
 			{	cb_select_slot(slot);});
 
@@ -750,7 +742,7 @@ static void compose_equipment(Context *ctx, std::vector<SdlItem*> &itemArray)
 		// Is there an equipped object ?
 		char *tmpEquippedName = nullptr;
 		if (entry_read_string(CHARACTER_TABLE.c_str(), ctx->getId().c_str(),
-				&tmpEquippedName, EQUIPMENT_GROUP.c_str(), slot_list[index],
+				&tmpEquippedName, EQUIPMENT_GROUP.c_str(), slot_list[index].c_str(),
 				EQUIPMENT_EQUIPPED.c_str(), nullptr) == true)
 		{
 			equippedName = std::string(tmpEquippedName);
@@ -763,7 +755,7 @@ static void compose_equipment(Context *ctx, std::vector<SdlItem*> &itemArray)
 			// Get the equipped object name
 			if(entry_read_string(ITEM_TABLE.c_str(),equippedName,&equipped_text,ITEM_NAME.c_str(),nullptr) == false )
 			{
-				werr(LOGDESIGNER,"Can't read object %s name in equipment slot %s",equippedName,slot_list[index]);
+				werr(LOGDESIGNER,"Can't read object %s name in equipment slot %s",equippedName,slot_list[index].c_str());
 			}
 			free(equipped_text);
 #endif
@@ -780,7 +772,7 @@ static void compose_equipment(Context *ctx, std::vector<SdlItem*> &itemArray)
 				{
 					werr(LOGDESIGNER,
 							"Can't read object %s's icon in equipment slot %s",
-							equippedName.c_str(), slot_list[index]);
+							equippedName.c_str(), slot_list[index].c_str());
 				}
 			}
 			else
@@ -810,7 +802,7 @@ static void compose_equipment(Context *ctx, std::vector<SdlItem*> &itemArray)
 				item->setPos(x - anim->getWidth(), y);
 				item->setAnim(anim2);
 
-				std::string slot = std::string(slot_list[index]);
+				std::string slot = std::string(slot_list[index].c_str());
 				item->setClickLeftCb([slot]()
 				{	cb_select_slot(slot);});
 
@@ -828,7 +820,7 @@ static void compose_equipment(Context *ctx, std::vector<SdlItem*> &itemArray)
 
 		if (cursor_equipment.empty() == false)
 		{
-			if (ctx->getSelectionEquipment() == std::string(slot_list[index]))
+			if (ctx->getSelectionEquipment() == std::string(slot_list[index].c_str()))
 			{
 				anim3 = imageDB_get_anim(ctx, cursor_equipment);
 
@@ -854,7 +846,6 @@ static void compose_equipment(Context *ctx, std::vector<SdlItem*> &itemArray)
 
 		index++;
 	}
-	deep_free(slot_list);
 
 	// Draw selected item
 	const std::string &inventory = ctx->getSelectionInventory();
@@ -1047,20 +1038,17 @@ static void compose_inventory(Context *ctx, std::vector<SdlItem*> &itemArray)
 	draw_background(ctx, itemArray);
 
 	// read data from file
-	char **inventoryList = nullptr;
-	if (entry_read_list(CHARACTER_TABLE.c_str(), ctx->getId().c_str(), &inventoryList,
+	std::vector<std::string> inventoryList;
+	if (entry_read_list(CHARACTER_TABLE.c_str(), ctx->getId().c_str(), inventoryList,
 			CHARACTER_KEY_INVENTORY.c_str(), nullptr) == false)
 	{
 		return;
 	}
 
-	int i = 0;
-	while (inventoryList[i] != nullptr)
+	for (size_t i = 0; i < inventoryList.size(); i++)
 	{
 		inventoryArray.push_back(std::string(inventoryList[i]));
-		i++;
 	}
-	deep_free(inventoryList);
 
 	std::string label;
 	int x = 0;
@@ -1203,18 +1191,16 @@ static void compose_inventory_select(Context *ctx,
 	inventoryArray.clear();
 
 	// read data from file
-	char **inventoryList = nullptr;
-	if (entry_read_list(CHARACTER_TABLE.c_str(), ctx->getId().c_str(), &inventoryList,
+	std::vector<std::string> inventoryList;
+	if (entry_read_list(CHARACTER_TABLE.c_str(), ctx->getId().c_str(), inventoryList,
 			CHARACTER_KEY_INVENTORY.c_str(), nullptr) == false)
 	{
 		return;
 	}
 
-	int i = 0;
-	while (inventoryList[i] != nullptr)
+	for (size_t i = 0; i < inventoryList.size(); i++)
 	{
 		inventoryArray.push_back(std::string(inventoryList[i]));
-		i++;
 	}
 
 	int x = 0;

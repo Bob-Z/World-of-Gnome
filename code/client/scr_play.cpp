@@ -123,7 +123,7 @@ static void cb_unzoom()
  *****************************************************************************/
 static std::vector<SiAnim*> select_sprite(Context *ctx)
 {
-	char **spriteList = nullptr;
+	std::vector<std::string> spriteList;
 	Context *playerContext = context_get_player();
 
 	// Try to find a sprite depending on the orientation
@@ -164,35 +164,32 @@ static std::vector<SiAnim*> select_sprite(Context *ctx)
 	// Try sprite lists
 	if (ctx->getOrientation() & NORTH)
 	{
-		entry_read_list(CHARACTER_TABLE.c_str(), ctx->getId().c_str(), &spriteList,
+		entry_read_list(CHARACTER_TABLE.c_str(), ctx->getId().c_str(), spriteList,
 				CHARACTER_KEY_DIR_N_SPRITE.c_str(), nullptr);
 	}
-	if ((ctx->getOrientation() & SOUTH) && spriteList == nullptr)
+	if ((ctx->getOrientation() & SOUTH) && spriteList.empty())
 	{
-		entry_read_list(CHARACTER_TABLE.c_str(), ctx->getId().c_str(), &spriteList,
+		entry_read_list(CHARACTER_TABLE.c_str(), ctx->getId().c_str(), spriteList,
 				CHARACTER_KEY_DIR_S_SPRITE.c_str(), nullptr);
 	}
-	if ((ctx->getOrientation() & EAST) && spriteList == nullptr)
+	if ((ctx->getOrientation() & EAST) && spriteList.empty())
 	{
-		entry_read_list(CHARACTER_TABLE.c_str(), ctx->getId().c_str(), &spriteList,
+		entry_read_list(CHARACTER_TABLE.c_str(), ctx->getId().c_str(), spriteList,
 				CHARACTER_KEY_DIR_E_SPRITE.c_str(), nullptr);
 	}
-	if ((ctx->getOrientation() & WEST) && spriteList == nullptr)
+	if ((ctx->getOrientation() & WEST) && spriteList.empty())
 	{
-		entry_read_list(CHARACTER_TABLE.c_str(), ctx->getId().c_str(), &spriteList,
+		entry_read_list(CHARACTER_TABLE.c_str(), ctx->getId().c_str(), spriteList,
 				CHARACTER_KEY_DIR_W_SPRITE.c_str(), nullptr);
 	}
 
-	if (spriteList != nullptr)
+	if (!spriteList.empty())
 	{
 		std::vector<std::string> spriteNameArray;
-		int i = 0;
-		while (spriteList[i] != nullptr)
+		for (size_t i = 0; i < spriteList.size(); i++)
 		{
 			spriteNameArray.push_back(std::string(spriteList[i]));
-			i++;
 		}
-		deep_free(spriteList);
 
 		return imageDB_get_anim_array(playerContext, spriteNameArray);
 	}
@@ -215,17 +212,14 @@ static std::vector<SiAnim*> select_sprite(Context *ctx)
 	}
 
 	// try default sprite list
-	if (entry_read_list(CHARACTER_TABLE.c_str(), ctx->getId().c_str(), &spriteList,
+	if (entry_read_list(CHARACTER_TABLE.c_str(), ctx->getId().c_str(), spriteList,
 			CHARACTER_KEY_SPRITE.c_str(), nullptr) == true)
 	{
 		std::vector<std::string> spriteNameArray;
-		int i = 0;
-		while (spriteList[i] != nullptr)
+		for (size_t i = 0; i < spriteList.size(); i++)
 		{
 			spriteNameArray.push_back(std::string(spriteList[i]));
-			i++;
 		}
-		deep_free(spriteList);
 
 		return imageDB_get_anim_array(playerContext, spriteNameArray);
 	}
@@ -530,40 +524,37 @@ static void compose_item(int layerIndex, std::vector<SdlItem*> &itemArray)
 	std::string layerName;
 	layerName = std::string(MAP_KEY_LAYER) + std::to_string(layerIndex);
 
-	char **itemId;
-	if (entry_get_group_list(MAP_TABLE.c_str(), ctx->getMap().c_str(), &itemId,
+	std::vector<std::string> itemId;
+	if (entry_get_group_list(MAP_TABLE.c_str(), ctx->getMap().c_str(), itemId,
 			layerName.c_str(), MAP_ENTRY_ITEM_LIST.c_str(), nullptr) == false)
 	{
 		return;
 	}
 
-	int i = 0;
 	int spriteOffsetY = 0;
 	Align spriteAlign = Align::CENTER;
 
-	while (itemId[i] != nullptr)
+	for (size_t i = 0; i < itemId.size(); i++)
 	{
 		spriteAlign = Align::CENTER;
 
 		int x = 0;
 		if (entry_read_int(MAP_TABLE.c_str(), ctx->getMap().c_str(), &x,
-				layerName.c_str(), MAP_ENTRY_ITEM_LIST.c_str(), itemId[i],
+				layerName.c_str(), MAP_ENTRY_ITEM_LIST.c_str(), itemId[i].c_str(),
 				MAP_ITEM_TILE_X.c_str(), nullptr) == false)
 		{
-			i++;
 			continue;
 		}
 
 		int y = 0;
 		if (entry_read_int(MAP_TABLE.c_str(), ctx->getMap().c_str(), &y,
-				layerName.c_str(), MAP_ENTRY_ITEM_LIST.c_str(), itemId[i],
+				layerName.c_str(), MAP_ENTRY_ITEM_LIST.c_str(), itemId[i].c_str(),
 				MAP_ITEM_TILE_Y.c_str(), nullptr) == false)
 		{
-			i++;
 			continue;
 		}
 
-		char *mytemplate = item_is_resource(std::string(itemId[i]));
+		char *mytemplate = item_is_resource(std::string(itemId[i].c_str()));
 
 		std::string spriteName;
 		int align = 0;
@@ -573,19 +564,18 @@ static void compose_item(int layerIndex, std::vector<SdlItem*> &itemArray)
 			try
 			{
 				spriteName = getDataManager().get<std::string>(ITEM_TABLE,
-						std::string(itemId[i]), { ITEM_SPRITE });
+						std::string(itemId[i].c_str()), { ITEM_SPRITE });
 			} catch (...)
 			{
-				i++;
 				continue;
 			}
 
 			align = getDataManager().getNoExcept<int>(ITEM_TABLE,
-					std::string(itemId[i]), { ITEM_ALIGN }, 0);
+					std::string(itemId[i].c_str()), { ITEM_ALIGN }, 0);
 			spriteAlign = static_cast<Align>(align);
 
 			spriteOffsetY = getDataManager().getNoExcept<int>(ITEM_TABLE,
-					std::string(itemId[i]), { ITEM_OFFSET_Y }, 0);
+					std::string(itemId[i].c_str()), { ITEM_OFFSET_Y }, 0);
 		}
 		else
 		{
@@ -597,7 +587,6 @@ static void compose_item(int layerIndex, std::vector<SdlItem*> &itemArray)
 			} catch (...)
 			{
 				free(mytemplate);
-				i++;
 				continue;
 			}
 
@@ -646,15 +635,12 @@ static void compose_item(int layerIndex, std::vector<SdlItem*> &itemArray)
 		if (font != nullptr)
 		{
 			int quantity = 0;
-			quantity = resource_get_quantity(std::string(itemId[i]));
+			quantity = resource_get_quantity(std::string(itemId[i].c_str()));
 			item->setText(std::to_string(quantity));
 			item->setFont(font);
 		}
 
-		i++;
 	}
-
-	deep_free(itemId);
 }
 
 /*****************************************************************************/
@@ -743,8 +729,8 @@ static void compose_map_set(int layerIndex, std::vector<SdlItem*> &itemArray)
 
 	std::string layerName = std::string(MAP_KEY_LAYER)
 			+ std::to_string(layerIndex);
-	char **tileSet = nullptr;
-	if (entry_read_list(MAP_TABLE.c_str(), ctx->getMap().c_str(), &tileSet,
+	std::vector<std::string> tileSet;
+	if (entry_read_list(MAP_TABLE.c_str(), ctx->getMap().c_str(), tileSet,
 			layerName.c_str(), MAP_KEY_SET.c_str(), nullptr) == false)
 	{
 		return;
@@ -756,10 +742,9 @@ static void compose_map_set(int layerIndex, std::vector<SdlItem*> &itemArray)
 		return;
 	}
 
-	int i = 0;
 	int x = 0;
 	int y = 0;
-	while (tileSet[i] != nullptr)
+	for (size_t i = 0; i < tileSet.size(); i++)
 	{
 		// Skip empty tile
 		if (tileSet[i][0] != 0)
@@ -778,10 +763,7 @@ static void compose_map_set(int layerIndex, std::vector<SdlItem*> &itemArray)
 			x = 0;
 			y++;
 		}
-		i++;
 	}
-
-	deep_free(tileSet);
 
 	map_layer_delete(layer);
 }
@@ -794,39 +776,35 @@ static void compose_map_scenery(int layerIndex,
 
 	std::string layerName = std::string(MAP_KEY_LAYER)
 			+ std::to_string(layerIndex);
-	char **sceneryList = nullptr;
-	if (entry_get_group_list(MAP_TABLE.c_str(), ctx->getMap().c_str(), &sceneryList,
+	std::vector<std::string> sceneryList;
+	if (entry_get_group_list(MAP_TABLE.c_str(), ctx->getMap().c_str(), sceneryList,
 			layerName.c_str(), MAP_KEY_SCENERY.c_str(), nullptr) == false)
 	{
 		return;
 	}
 
-	int i = 0;
 	int x = 0;
 	int y = 0;
-	while (sceneryList[i] != nullptr)
+	for (size_t i = 0; i < sceneryList.size(); i++)
 	{
 		if (entry_read_int(MAP_TABLE.c_str(), ctx->getMap().c_str(), &x,
-				layerName.c_str(), MAP_KEY_SCENERY.c_str(), sceneryList[i],
+				layerName.c_str(), MAP_KEY_SCENERY.c_str(), sceneryList[i].c_str(),
 				MAP_KEY_SCENERY_X.c_str(), nullptr) == false)
 		{
-			i++;
 			continue;
 		}
 		if (entry_read_int(MAP_TABLE.c_str(), ctx->getMap().c_str(), &y,
-				layerName.c_str(), MAP_KEY_SCENERY.c_str(), sceneryList[i],
+				layerName.c_str(), MAP_KEY_SCENERY.c_str(), sceneryList[i].c_str(),
 				MAP_KEY_SCENERY_Y.c_str(), nullptr) == false)
 		{
-			i++;
 			continue;
 		}
 
 		char *imageName = nullptr;
 		if (entry_read_string(MAP_TABLE.c_str(), ctx->getMap().c_str(), &imageName,
-				layerName.c_str(), MAP_KEY_SCENERY.c_str(), sceneryList[i],
+				layerName.c_str(), MAP_KEY_SCENERY.c_str(), sceneryList[i].c_str(),
 				MAP_KEY_SCENERY_IMAGE.c_str(), nullptr) == false)
 		{
-			i++;
 			continue;
 		}
 
@@ -838,10 +816,7 @@ static void compose_map_scenery(int layerIndex,
 
 		free(imageName);
 
-		i++;
 	}
-
-	deep_free(sceneryList);
 }
 
 /*****************************************************************************/

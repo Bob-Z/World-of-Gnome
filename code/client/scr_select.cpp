@@ -273,21 +273,18 @@ void scr_select_compose(Context * context, std::vector<SdlItem *> & itemArray)
 			}
 			else
 			{
-				char ** marqueeArray = nullptr;
-				if (entry_read_list(CHARACTER_TABLE.c_str(), characterMarquee.getId().c_str(), &marqueeArray, CHARACTER_KEY_MARQUEE.c_str(), nullptr) == false)
+				std::vector<std::string> marqueeArray;
+				if (entry_read_list(CHARACTER_TABLE.c_str(), characterMarquee.getId().c_str(), marqueeArray, CHARACTER_KEY_MARQUEE.c_str(), nullptr) == false)
 				{
 					LOG_DESIGN(characterMarquee.getId() + " has no marquee");
 					continue;
 				}
 
 				std::vector<std::string> nameArray;
-				int i = 0;
-				while (marqueeArray[i] != nullptr)
+				for (size_t i = 0; i < marqueeArray.size(); i++)
 				{
 					nameArray.push_back(std::string(marqueeArray[i]));
 				}
-
-				deep_free(marqueeArray);
 
 				characterMarquee.setAnim(imageDB_get_anim_array(context, nameArray));
 			}

@@ -21,6 +21,7 @@
 #define ENTRY_H
 
 #include <string>
+#include <vector>
 
 void entry_remove(const char *filename);
 
@@ -31,7 +32,7 @@ int entry_read_string(const std::string &table, const std::string &file,
 int entry_read_list_index(const std::string &table, const std::string &file,
 		char **res, int index, ...);
 int entry_read_list(const std::string &table, const std::string &file,
-		char ***res, ...);
+		std::vector<std::string> &res, ...);
 
 int entry_write_int(const std::string &table, const std::string &file, int data,
 		...);
@@ -44,7 +45,7 @@ int entry_write_list(const char *table, const char *file, char **data, ...);
 char* entry_get_unused_list_entry(const char *table, const char *file, ...);
 char* entry_get_unused_group(const char *table, const char *file, ...);
 int entry_get_group_list(const std::string &table, const std::string &file,
-		char ***res, ...);
+		std::vector<std::string> &res, ...);
 int entry_add_to_list(const char *table, const char *file,
 		const char *to_be_added, ...);
 int entry_remove_group(const char *table, const char *file, const char *group,

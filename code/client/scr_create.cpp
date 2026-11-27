@@ -201,22 +201,19 @@ static void fill_character_marquee(Context * context, TTF_Font * fontName, TTF_F
 		}
 		else
 		{
-			char ** marqueeList = nullptr;
-			if (entry_read_list(CHARACTER_TEMPLATE_TABLE.c_str(), characterMarquee.getId().c_str(), &marqueeList, CHARACTER_KEY_MARQUEE.c_str(), nullptr) == false)
+			std::vector<std::string> marqueeList;
+			if (entry_read_list(CHARACTER_TEMPLATE_TABLE.c_str(), characterMarquee.getId().c_str(), marqueeList, CHARACTER_KEY_MARQUEE.c_str(), nullptr) == false)
 			{
 				LOG_DESIGN(characterMarquee.getId() + " has no marquee");
 				continue;
 			}
 
 			std::vector<std::string> nameArray;
-			int i = 0;
-			while (marqueeList[i] != nullptr)
+			for (size_t i = 0; i < marqueeList.size(); i++)
 			{
 				nameArray.push_back(std::string(marqueeList[i]));
-				i++;
 			}
 			characterMarquee.setAnim(imageDB_get_anim_array(context, nameArray));
-			deep_free(marqueeList);
 		}
 
 		if (characterMarquee.getAnim().empty() == true)

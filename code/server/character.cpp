@@ -81,19 +81,17 @@ void character_playable_send_list(Connection &connection)
 		}
 		else
 		{
-			char **marquee_list = nullptr;
+			std::vector<std::string> marquee_list;
 			if (entry_read_list(CHARACTER_TEMPLATE_TABLE.c_str(), ent->d_name,
-					&marquee_list, CHARACTER_KEY_MARQUEE.c_str(), nullptr) == false)
+					marquee_list, CHARACTER_KEY_MARQUEE.c_str(), nullptr) == false)
 			{
 				wlog(LOGDESIGNER, "%s has no marquee", ent->d_name);
 				continue;
 			}
 			if (marquee_list[0][0] == '\0')
 			{
-				deep_free(marquee_list);
 				continue;
 			}
-			deep_free(marquee_list);
 		}
 
 		// add file name to network frame
@@ -501,7 +499,7 @@ int character_set_pos(Context *ctx, const std::string &map, int x, int y)
 {
 	char **event_id;
 	char *script;
-	char **param = nullptr;
+	std::vector<std::string> param;
 	int i;
 	bool change_map = false;
 	int width = x + 1;
@@ -647,7 +645,7 @@ int character_set_pos(Context *ctx, const std::string &map, int x, int y)
 					MAP_ENTRY_EVENT_LIST.c_str(), event_id[i],
 					MAP_EVENT_SCRIPT.c_str(), nullptr) == true)
 			{
-				entry_read_list(MAP_TABLE.c_str(), map, &param, layer_name,
+				entry_read_list(MAP_TABLE.c_str(), map, param, layer_name,
 						MAP_ENTRY_EVENT_LIST.c_str(), event_id[i],
 						MAP_EVENT_PARAM.c_str(), nullptr);
 			}
@@ -655,7 +653,7 @@ int character_set_pos(Context *ctx, const std::string &map, int x, int y)
 					MAP_ENTRY_EVENT_LIST.c_str(), event_id[i],
 					MAP_EVENT_SCRIPT.c_str(), nullptr) == true)
 			{
-				entry_read_list(MAP_TABLE.c_str(), map, &param,
+				entry_read_list(MAP_TABLE.c_str(), map, param,
 						MAP_ENTRY_EVENT_LIST.c_str(), event_id[i],
 						MAP_EVENT_PARAM.c_str(), nullptr);
 			}
@@ -668,19 +666,18 @@ int character_set_pos(Context *ctx, const std::string &map, int x, int y)
 
 			std::vector<std::string> params;
 			int k = 0;
-			if (param != nullptr)
+			if (!param.empty())
 			{
-				while (param[k] != nullptr)
+				while (k < (int)param.size())
 				{
-					params.push_back(std::string(param[k]));
+					params.push_back(param[k]);
 					k++;
 				}
 			}
 			action_execute_script(ctx, std::string(script), params);
 
 			free(script);
-			deep_free(param);
-			param = nullptr;
+			param.clear();
 
 			i++;
 		}
