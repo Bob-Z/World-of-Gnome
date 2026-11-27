@@ -1026,7 +1026,7 @@ static int l_map_set_tile_no_update(lua_State *L)
  */
 static int l_map_set_tile_array(lua_State *L)
 {
-	const char **arg = nullptr;
+	std::vector<const char *> arg;
 	int i;
 	const char *map;
 	int layer;
@@ -1039,17 +1039,15 @@ static int l_map_set_tile_array(lua_State *L)
 	while (lua_next(L, -2) != 0)
 	{
 		// uses 'key' (at index -2) and 'value' (at index -1)
-		arg = (const char**) realloc(arg, sizeof(char*) * (i + 2));
-		arg[i] = luaL_checkstring(L, -1);
+		arg.push_back(luaL_checkstring(L, -1));
 		i++;
 		// removes 'value'; keeps 'key' for next iteration
 		lua_pop(L, 1);
 	}
-	arg[i] = nullptr;
+	arg.push_back(nullptr);
 
-	map_set_tile_array(map, layer, arg);
+	map_set_tile_array(map, layer, arg.data());
 
-	free(arg);
 	lua_pushnumber(L, 0);
 	return 1;  // number of results
 }
@@ -2334,8 +2332,6 @@ static int l_call_script(lua_State *L)
 {
 	const char *script;
 	int num_arg;
-	char **arg = nullptr;
-	int i;
 	int res;
 	Context *context;
 
@@ -2345,30 +2341,15 @@ static int l_call_script(lua_State *L)
 
 	num_arg = lua_gettop(L);
 	script = luaL_checkstring(L, -num_arg);
-	if (num_arg > 1)
-	{
-		arg = (char**) malloc(sizeof(char*) * num_arg);
-		for (i = 0; i < num_arg - 1; i++)
-		{
-			arg[i] = (char*) luaL_checkstring(L, -num_arg + 1 + i); // FIXME wrong casting ?
-		}
-		arg[i] = nullptr; // End of list
-	}
 
 	std::vector<std::string> params;
-	int k = 0;
-	while (arg[k] != nullptr)
+	for (int i = 1; i < num_arg; i++)
 	{
-		params.push_back(std::string(arg[k]));
-		k++;
+		params.push_back(luaL_checkstring(L, -num_arg + i));
 	}
 
 	res = action_execute_script(context, std::string(script), params);
 
-	if (arg)
-	{
-		free(arg);
-	}
 	lua_pushnumber(L, res);
 	return 1;  // number of results
 }
