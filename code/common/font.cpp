@@ -32,13 +32,13 @@ TTF_Font * font_get(Context * ctx, const std::string & filename, int size)
 {
 	TTF_Font * font = nullptr;
 
-	file_lock(filename.c_str());
+	file_lock(filename);
 
 	auto iter = font_list.find(filename);
 	if (iter != font_list.end())
 	{
 		font = iter->second;
-		file_unlock(filename.c_str());
+		file_unlock(filename);
 		return font;
 	}
 
@@ -48,13 +48,13 @@ TTF_Font * font_get(Context * ctx, const std::string & filename, int size)
 	if (font != nullptr)
 	{
 		font_list[filename] = font;
-		file_unlock(filename.c_str());
+		file_unlock(filename);
 		return font;
 	}
 
-	file_update(ctx->getConnection(), filename.c_str());
+	file_update(ctx->getConnection(), filename);
 
-	file_unlock(filename.c_str());
+	file_unlock(filename);
 
 	return nullptr;
 }

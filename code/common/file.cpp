@@ -51,7 +51,7 @@ typedef struct file_tag
 
 std::unordered_map<std::string, file_t *> file_list;
 
-static file_t * find_file(const char *filename)
+static file_t * find_file(const std::string &filename)
 {
 	auto iter = file_list.find(filename);
 	if (iter == file_list.end())
@@ -67,7 +67,7 @@ Lock file_list_lock;
 /****************************************
  filename is "table/dir/file"
  *****************************************/
-void file_lock(const char *filename)
+void file_lock(const std::string &filename)
 {
 	file_t *file_data;
 
@@ -87,7 +87,7 @@ void file_lock(const char *filename)
 /****************************************
  filename is "table/dir/file"
  *****************************************/
-void file_unlock(const char *filename)
+void file_unlock(const std::string &filename)
 {
 	file_t *file_data;
 
@@ -105,7 +105,7 @@ void file_unlock(const char *filename)
 /****************************************
  filename is "table/dir/file"
  *****************************************/
-void file_update(Connection *connection, const char *filename)
+void file_update(Connection *connection, const std::string &filename)
 {
 	if (connection == nullptr)
 	{
@@ -136,7 +136,7 @@ void file_update(Connection *connection, const char *filename)
 		return;
 	}
 
-	network_send_req_file(*connection, std::string(filename));
+	network_send_req_file(*connection, filename);
 
 	file_data->timestamp = current_time;
 }
@@ -263,7 +263,7 @@ std::pair<bool, std::string> file_new(const std::string &table,
  Fill contents with data from filename file.
  return false on error
  ****************************/
-bool file_get_contents(const char *filename, std::string &contents)
+bool file_get_contents(const std::string &filename, std::string &contents)
 {
 	struct stat sts;
 	int fd;
@@ -273,7 +273,7 @@ bool file_get_contents(const char *filename, std::string &contents)
 
 	contents.clear();
 
-	const std::string file_path = base_directory + "/" + std::string(filename);
+	const std::string file_path = base_directory + "/" + filename;
 
 	file_lock(filename);
 
@@ -337,14 +337,14 @@ bool file_get_contents(const char *filename, std::string &contents)
  filename is "table/dir/file"
  return false on error
  ****************************/
-int file_set_contents(const char *filename, const void *contents, int length)
+int file_set_contents(const std::string &filename, const std::string &contents)
 {
 	int fd;
 	ssize_t size;
 	char error_buf[SMALL_BUF];
 	char *error_str;
 
-	const std::string file_path = base_directory + "/" + std::string(filename);
+	const std::string file_path = base_directory + "/" + filename;
 
 	file_lock(filename);
 
@@ -364,7 +364,7 @@ int file_set_contents(const char *filename, const void *contents, int length)
 		return false;
 	}
 
-	size = write(fd, contents, length);
+	size = write(fd, contents.data(), contents.size());
 	if (size == -1)
 	{
 #if (_POSIX_C_SOURCE >= 200112L || _XOPEN_SOURCE >= 600) && ! _GNU_SOURCE
@@ -467,7 +467,7 @@ Uint32 file_get_timestamp(const char *table, const char *file_name)
 
 	LockGuard guard(file_list_lock);
 
-	file_data = find_file(table_path.c_str());
+	file_data = find_file(table_path);
 	if (file_data != nullptr)
 	{
 		time_stamp = file_data->timestamp;
@@ -479,7 +479,7 @@ Uint32 file_get_timestamp(const char *table, const char *file_name)
 /*****************************************************************************/
 void file_write(const std::string &filePath, const std::string &data)
 {
-	file_lock(filePath.c_str());
+	file_lock(filePath);
 
 	try
 	{
@@ -488,7 +488,7 @@ void file_write(const std::string &filePath, const std::string &data)
 
 	} catch (...)
 	{
-		file_unlock(filePath.c_str());
+		file_unlock(filePath);
 	}
-	file_unlock(filePath.c_str());
+	file_unlock(filePath);
 }

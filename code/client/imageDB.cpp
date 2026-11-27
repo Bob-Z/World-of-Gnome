@@ -66,21 +66,21 @@ SiAnim* imageDB_get_anim(Context *context, const std::string &imageName)
 	}
 
 	// Try to load from a file
-	file_lock(fileName.c_str());
+	file_lock(fileName);
 
 	anim = image_load(fileName);
 
 	if (anim != nullptr)
 	{
 		imageArray[fileName] = anim;
-		file_unlock(fileName.c_str());
+		file_unlock(fileName);
 		return anim;
 	}
 
 	// Request an update to the server
-	file_update(context->getConnection(), fileName.c_str());
+	file_update(context->getConnection(), fileName);
 
-	file_unlock(fileName.c_str());
+	file_unlock(fileName);
 
 	return def_anim;
 }

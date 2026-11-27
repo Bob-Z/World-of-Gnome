@@ -23,7 +23,7 @@
 #include <string>
 #include <vector>
 
-void entry_remove(const char *filename);
+void entry_remove(const std::string &filename);
 
 int entry_read_int(const std::string &table, const std::string &file, int *res,
 		...);

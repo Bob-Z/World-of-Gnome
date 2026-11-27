@@ -193,7 +193,7 @@ static std::string __copy_group(const char *src_table, const char *src_file,
 }
 
 /*****************************************************************************/
-void entry_remove(const char *filename)
+void entry_remove(const std::string &filename)
 {
 	wlog(LOGDEVELOPER, "Removing entry : %s", filename);
 }
@@ -620,7 +620,7 @@ int entry_destroy(const std::string &table, const std::string &file)
 	const std::string filePath = table + "/" + file;
 
 	getDataManager().reset(filePath);
-	entry_remove(filePath.c_str());
+	entry_remove(filePath);
 
 	return true;
 }

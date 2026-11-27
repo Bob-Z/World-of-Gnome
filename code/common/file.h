@@ -28,13 +28,13 @@ class Context;
 
 const std::string NO_SUGGESTED_NAME = "";
 
-void file_lock(const char *filename);
-void file_unlock(const char *filename);
-void file_update(Connection *connection, const char *filename);
+void file_lock(const std::string &filename);
+void file_unlock(const std::string &filename);
+void file_update(Connection *connection, const std::string &filename);
 std::pair<bool, std::string> file_new(const std::string &table,
 		const std::string &suggested_name = NO_SUGGESTED_NAME);
-bool file_get_contents(const char *filename, std::string &contents);
-int file_set_contents(const char *filename, const void *contents, int length);
+bool file_get_contents(const std::string &filename, std::string &contents);
+int file_set_contents(const std::string &filename, const std::string &contents);
 bool file_copy(const std::string &src_table, const std::string &src_name,
 		const std::string &dst_table, const std::string &dst_name);
 int file_create_directory(const std::string &p_rFullName);

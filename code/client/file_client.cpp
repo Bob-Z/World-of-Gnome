@@ -29,6 +29,7 @@
 #include "screen.h"
 #include "syntax.h"
 #include <cstdio>
+#include <filesystem>
 #include <string>
 #include <vector>
 
@@ -50,26 +51,28 @@ int file_add(const std::string &fileName, const std::string &data)
 
 	file_create_directory(tempPath);
 
-	if (file_set_contents(tempFileName.c_str(), data.c_str(),
-			data.size()) == false)
+	if (file_set_contents(tempFileName, data) == false)
 	{
-		werr(LOGDESIGNER, "Error writing file %s with size %d",
-				tempFileName.c_str(), data.size());
+		ERR_DESIGN("Error writing file " + tempFileName + " with size "
+				+ std::to_string(data.size()));
 		return -1;
 	}
 
 	const std::string file_path = base_directory + "/" + fileName;
 
-	if (rename(tempPath.c_str(), file_path.c_str()) == -1)
+	std::error_code renameError;
+	std::filesystem::rename(tempPath, file_path, renameError);
+	if (renameError)
 	{
-		LOG("Error renaming file " + tempPath + " to " + file_path);
+		LOG("Error renaming file " + tempPath + " to " + file_path + ": "
+				+ renameError.message());
 		return false;
 	}
 
 	LOG("write file " + file_path);
 
 	// Update the entry DB
-	entry_remove(fileName.c_str());
+	entry_remove(fileName);
 	// Update the image DB
 	image_DB_remove(fileName);
 	// Make sure the new file is drawn (if needed)
@@ -89,7 +92,7 @@ int file_add(const std::string &fileName, const std::string &data)
  *****************************************************************************/
 void file_clean(Context *context)
 {
-	file_delete(CHARACTER_TABLE.c_str(), context->getId());
+	file_delete(CHARACTER_TABLE, context->getId());
 }
 
 /*****************************************************************************/
@@ -98,9 +101,9 @@ void file_request_from_network(Connection &connection, const std::string &table,
 {
 	const std::string tablePath = table + "/" + file_name;
 
-	file_lock(tablePath.c_str());
-	file_update(&connection, tablePath.c_str());
-	file_unlock(tablePath.c_str());
+	file_lock(tablePath);
+	file_update(&connection, tablePath);
+	file_unlock(tablePath);
 
 	return;
 }

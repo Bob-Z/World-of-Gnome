@@ -41,15 +41,15 @@ int sfx_play(Connection & connection, const std::string & fileName, int channel,
 	const std::string tableFilename = SFX_TABLE + "/" + fileName;
 	const std::string fullName = base_directory + "/" + tableFilename;
 
-	file_lock(tableFilename.c_str());
+	file_lock(tableFilename);
 
 	SDL_RWops * fileDesc = SDL_RWFromFile(fullName.c_str(), "r");
 	if (fileDesc == nullptr)
 	{
 		std::string errorText = std::string("sfx_play: cannot open ") + fullName.c_str();
 		werr(LOGDESIGNER, errorText.c_str());
-		file_update(&connection, tableFilename.c_str());
-		file_unlock(tableFilename.c_str());
+		file_update(&connection, tableFilename);
+		file_unlock(tableFilename);
 		return -1;
 	}
 
@@ -58,14 +58,14 @@ int sfx_play(Connection & connection, const std::string & fileName, int channel,
 	{
 		std::string l_Err = std::string("sfx_play: cannot read ") + fullName.c_str();
 		werr(LOGDESIGNER, l_Err.c_str());
-		file_update(&connection, tableFilename.c_str());
-		file_unlock(tableFilename.c_str());
+		file_update(&connection, tableFilename);
+		file_unlock(tableFilename);
 		return -1;
 	}
 
 	g_SoundList[fileName] = chunk;
 
-	file_unlock(tableFilename.c_str());
+	file_unlock(tableFilename);
 
 	return Mix_PlayChannel(channel, chunk, loops);
 }
