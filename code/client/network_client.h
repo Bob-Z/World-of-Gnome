@@ -21,6 +21,7 @@
 #define NETWORK_CLIENT
 
 #include <string>
+#include <vector>
 
 class Connection;
 
@@ -31,7 +32,8 @@ void network_request_character_creation(Connection & connection, const std::stri
 void network_login(Connection & connection, const std::string & user_name, const std::string & password);
 void network_request_playable_character_list(Connection & connection);
 void network_request_user_character_list(Connection & connection);
-void network_send_action(Connection & connection, const std::string & actionFile, ...);
+void network_send_action(Connection & connection, const std::string & actionFile,
+		const std::vector<std::string> &parameters);
 void network_send_action_stop(Connection & connection, const std::string & actionFile);
 int network_connect(Connection & connection, const std::string & host_name);
 int network_open_data_connection(Connection & connection);

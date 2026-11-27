@@ -82,7 +82,7 @@ static void cb_select_sprite(const std::string &id)
 	{
 		network_send_action(*(context_get_player()->getConnection()),
 				getDataManager().get<std::string>("", CLIENT_CONF_FILE,
-				{ CLIENT_KEY_ACTION_SELECT_CHARACTER }), id.c_str(), nullptr);
+				{ CLIENT_KEY_ACTION_SELECT_CHARACTER }), { id.c_str() });
 	} catch (...)
 	{
 	}
@@ -616,8 +616,7 @@ static void cb_select_map(SdlItem *item)
 	{
 		network_send_action(*(ctx->getConnection()),
 				getDataManager().get<std::string>("", CLIENT_CONF_FILE,
-				{ CLIENT_KEY_ACTION_SELECT_TILE }), ctx->getMap().c_str(),
-				x.c_str(), y.c_str(), nullptr);
+				{ CLIENT_KEY_ACTION_SELECT_TILE }), { ctx->getMap().c_str(), x.c_str(), y.c_str() });
 	} catch (...)
 	{
 	}

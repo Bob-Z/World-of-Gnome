@@ -175,7 +175,7 @@ static void key_up()
 	{
 		network_send_action(*(ctx->getConnection()),
 				getDataManager().get<std::string>("", CLIENT_CONF_FILE,
-				{ CLIENT_KEY_ACTION_MOVE_UP }), nullptr);
+				{ CLIENT_KEY_ACTION_MOVE_UP }), {});
 	} catch (...)
 	{
 	}
@@ -205,7 +205,7 @@ static void key_down()
 	{
 		network_send_action(*(ctx->getConnection()),
 				getDataManager().get<std::string>("", CLIENT_CONF_FILE,
-				{ CLIENT_KEY_ACTION_MOVE_DOWN }), nullptr);
+				{ CLIENT_KEY_ACTION_MOVE_DOWN }), {});
 	} catch (...)
 	{
 	}
@@ -235,7 +235,7 @@ static void key_left()
 	{
 		network_send_action(*(ctx->getConnection()),
 				getDataManager().get<std::string>("", CLIENT_CONF_FILE,
-				{ CLIENT_KEY_ACTION_MOVE_LEFT }), nullptr);
+				{ CLIENT_KEY_ACTION_MOVE_LEFT }), {});
 	} catch (...)
 	{
 	}
@@ -265,7 +265,7 @@ static void key_right()
 	{
 		network_send_action(*(ctx->getConnection()),
 				getDataManager().get<std::string>("", CLIENT_CONF_FILE,
-				{ CLIENT_KEY_ACTION_MOVE_RIGHT }), nullptr);
+				{ CLIENT_KEY_ACTION_MOVE_RIGHT }), {});
 	} catch (...)
 	{
 	}
@@ -295,7 +295,7 @@ static void key_up_left()
 	{
 		network_send_action(*(ctx->getConnection()),
 				getDataManager().get<std::string>("", CLIENT_CONF_FILE,
-				{ CLIENT_KEY_ACTION_MOVE_UP_LEFT }), nullptr);
+				{ CLIENT_KEY_ACTION_MOVE_UP_LEFT }), {});
 	} catch (...)
 	{
 	}
@@ -325,7 +325,7 @@ static void key_up_right()
 	{
 		network_send_action(*(ctx->getConnection()),
 				getDataManager().get<std::string>("", CLIENT_CONF_FILE,
-				{ CLIENT_KEY_ACTION_MOVE_UP_RIGHT }), nullptr);
+				{ CLIENT_KEY_ACTION_MOVE_UP_RIGHT }), {});
 	} catch (...)
 	{
 	}
@@ -355,7 +355,7 @@ static void key_down_left()
 	{
 		network_send_action(*(ctx->getConnection()),
 				getDataManager().get<std::string>("", CLIENT_CONF_FILE,
-				{ CLIENT_KEY_ACTION_MOVE_DOWN_LEFT }), nullptr);
+				{ CLIENT_KEY_ACTION_MOVE_DOWN_LEFT }), {});
 	} catch (...)
 	{
 	}
@@ -385,7 +385,7 @@ static void key_down_right()
 	{
 		network_send_action(*(ctx->getConnection()),
 				getDataManager().get<std::string>("", CLIENT_CONF_FILE,
-				{ CLIENT_KEY_ACTION_MOVE_DOWN_RIGHT }), nullptr);
+				{ CLIENT_KEY_ACTION_MOVE_DOWN_RIGHT }), {});
 	} catch (...)
 	{
 	}
@@ -465,8 +465,7 @@ static int compose_attribute(Context *ctx, std::vector<SdlItem*> &itemArray)
 /*****************************************************************************/
 void ui_play_cb_action(const std::string &action)
 {
-	network_send_action(*(context_get_player()->getConnection()), action,
-			nullptr);
+	network_send_action(*(context_get_player()->getConnection()), action, {});
 
 	if (action.size() > 0)
 	{
@@ -638,7 +637,7 @@ static void cb_select_slot(const std::string &id)
 	{
 		network_send_action(*(ctx->getConnection()),
 				getDataManager().get<std::string>("", CLIENT_CONF_FILE,
-				{ CLIENT_KEY_ACTION_SELECT_EQUIPMENT }), id.c_str(), nullptr);
+				{ CLIENT_KEY_ACTION_SELECT_EQUIPMENT }), { id.c_str() });
 	} catch (...)
 	{
 	}
@@ -908,8 +907,7 @@ static void compose_equipment(Context *ctx, std::vector<SdlItem*> &itemArray)
 /*****************************************************************************/
 static void keyboard_text(std::string text)
 {
-	network_send_action(*(context_get_player()->getConnection()), WOG_CHAT,
-			text, nullptr);
+	network_send_action(*(context_get_player()->getConnection()), WOG_CHAT, { text });
 	textBuffer.clear();
 	screen_compose();
 }
@@ -993,8 +991,7 @@ void cb_inventory_select(const std::string &itemId)
 	{
 		network_send_action(*(ctx->getConnection()),
 				getDataManager().get<std::string>("", CLIENT_CONF_FILE,
-				{ CLIENT_KEY_ACTION_SELECT_INVENTORY }), itemId.c_str(),
-				nullptr);
+				{ CLIENT_KEY_ACTION_SELECT_INVENTORY }), { itemId.c_str() });
 	} catch (...)
 	{
 	}
@@ -1252,8 +1249,7 @@ void cb_popup(const ActionParam &actionParam)
 
 	cb_popup_quit();
 
-	network_send_action(*(player->getConnection()), actionParam.action.c_str(),
-			actionParam.param.c_str(), nullptr);
+	network_send_action(*(player->getConnection()), actionParam.action.c_str(), { actionParam.param.c_str() });
 
 	screen_compose();
 }

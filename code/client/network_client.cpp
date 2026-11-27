@@ -101,7 +101,8 @@ void network_request_character_creation(Connection & connection, const std::stri
 /******************************************************************************
  Player sends an action to server
  *****************************************************************************/
-void network_send_action(Connection & connection, const std::string & actionFile, ...)
+void network_send_action(Connection & connection, const std::string & actionFile,
+		const std::vector<std::string> &parameters)
 {
 	if (actionFile.size() == 0)
 	{
@@ -112,17 +113,10 @@ void network_send_action(Connection & connection, const std::string & actionFile
 	pb::ClientMessage message;
 	message.mutable_action()->set_action(actionFile);
 
-	va_list ap;
-	char * parameter = nullptr;
-
-	va_start(ap, actionFile);
-
-	while ((parameter = va_arg(ap, char*)) != nullptr)
+	for (const auto &parameter : parameters)
 	{
 		message.mutable_action()->add_params(parameter);
 	}
-
-	va_end(ap);
 
 	std::string serialized_data = message.SerializeAsString();
 
