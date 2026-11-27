@@ -186,7 +186,9 @@ static int async_recv(void * data)
 
 	werr(LOGUSER, "Socket closed on server side.");
 
-	connection->disconnect();
+	/* Close only the socket this thread reads; the other one may still be in
+	 * use by the data receive thread. */
+	connection->closeSocket(false);
 
 	screen_quit();
 
@@ -229,7 +231,7 @@ static int async_data_recv(void * data)
 
 	werr(LOGUSER, "Socket closed on server side.");
 
-	connection->disconnect();
+	connection->closeSocket(true);
 
 	screen_quit();
 
@@ -270,7 +272,8 @@ int network_connect(Connection & connection, const std::string & host_name)
 	connection.setSocket(socket);
 	connection.setConnected(true);
 
-	SDL_CreateThread(async_recv, "async_recv", (void*) &connection);
+	SDL_Thread *thread = SDL_CreateThread(async_recv, "async_recv", (void*) &connection);
+	connection.setSocketReader(false, SDL_GetThreadID(thread));
 
 	return true;
 }
@@ -295,7 +298,8 @@ int network_open_data_connection(Connection & connection)
 
 	connection.setSocketData(socket);
 
-	SDL_CreateThread(async_data_recv, "async_data_recv", (void*) &connection);
+	SDL_Thread *thread = SDL_CreateThread(async_data_recv, "async_data_recv", (void*) &connection);
+	connection.setSocketReader(true, SDL_GetThreadID(thread));
 
 	return true;
 }

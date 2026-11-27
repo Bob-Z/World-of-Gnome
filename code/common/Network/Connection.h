@@ -22,6 +22,7 @@
 
 #include "Lock.h"
 #include <SDL2/SDL_net.h>
+#include <SDL2/SDL_thread.h>
 #include <string>
 
 class Connection
@@ -32,6 +33,12 @@ public:
 
 	void send(const std::string m_serializedData, const bool m_isData);
 	void disconnect();
+
+	/* Close a single socket. Only the thread that reads a socket may close it:
+	 * SDLNet_TCP_Recv() keeps using the TCPsocket while blocking, so closing it
+	 * from another thread frees memory still in use by the reader. */
+	void closeSocket(bool isData);
+	void setSocketReader(bool isData, SDL_threadID readerThread);
 
 	const std::string& getHostName() const;
 	void setHostName(const std::string& hostName);
@@ -61,6 +68,9 @@ private:
 	std::string m_userName;
 
 	bool m_connected; // User logged with the correct password, or NPC activated
+
+	SDL_threadID m_socketReader;
+	SDL_threadID m_socketDataReader;
 
 	std::string m_contextId;
 };

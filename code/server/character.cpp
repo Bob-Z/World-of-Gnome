@@ -498,7 +498,6 @@ int character_set_pos(Context *ctx, const std::string &map, int x, int y)
 	int warpy = 0;
 	int ctx_layer = 0;
 	char layer_name[SMALL_BUF];
-	char buf[SMALL_BUF];
 	int ret_value;
 	int layer;
 

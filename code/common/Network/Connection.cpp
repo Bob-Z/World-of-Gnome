@@ -25,7 +25,7 @@
 
 /*****************************************************************************/
 Connection::Connection() :
-		m_socket(0), m_lockSend(), m_socketData(0), m_lockSendData(), m_hostName(), m_userName(), m_connected(false)
+		m_socket(0), m_lockSend(), m_socketData(0), m_lockSendData(), m_hostName(), m_userName(), m_connected(false), m_socketReader(0), m_socketDataReader(0)
 {
 }
 
@@ -154,11 +154,29 @@ void Connection::send(const std::string m_serializedData, const bool m_isData)
 }
 
 /*****************************************************************************/
-void Connection::disconnect()
+void Connection::setSocketReader(bool isData, SDL_threadID readerThread)
 {
-	LockGuard guard(m_lockSend);
+	if (isData)
+	{
+		m_socketDataReader = readerThread;
+	}
+	else
+	{
+		m_socketReader = readerThread;
+	}
+}
 
-	if (m_socket == nullptr && m_socketData == nullptr)
+/*****************************************************************************/
+void Connection::closeSocket(bool isData)
+{
+	LockGuard guard(isData ? m_lockSendData : m_lockSend);
+
+	TCPsocket &socket = isData ? m_socketData : m_socket;
+	SDL_threadID reader = isData ? m_socketDataReader : m_socketReader;
+
+	/* A reader thread is still inside SDLNet_TCP_Recv() on this socket; only
+	 * that thread may close it, otherwise we free memory it is using. */
+	if (socket == nullptr || (reader != 0 && reader != SDL_ThreadID()))
 	{
 		return;
 	}
@@ -166,10 +184,15 @@ void Connection::disconnect()
 	wlog(LOGDEVELOPER, "Disconnecting user %s", getUserName().c_str());
 
 	setConnected(false);
-	SDLNet_TCP_Close(m_socket);
-	SDLNet_TCP_Close(m_socketData);
-	setSocket(nullptr);
-	setSocketData(nullptr);
+	SDLNet_TCP_Close(socket);
+	socket = nullptr;
+}
+
+/*****************************************************************************/
+void Connection::disconnect()
+{
+	closeSocket(false);
+	closeSocket(true);
 }
 
 /*****************************************************************************/

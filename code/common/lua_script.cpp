@@ -43,13 +43,15 @@ int lua_execute_script(lua_State* lua_vm, Lock & lock, const char * script, cons
 	{
 		// If something went wrong, error message is at the top of the stack
 		werr(LOGUSER, "Couldn't load LUA script %s: %s\n", file_path.c_str(), lua_tostring(lua_vm, -1));
+		lua_pop(lua_vm, 1);
 		return -1;
 	}
 
 	// Fake call to read global variable from the script file (i.e. the f function
 	if (lua_pcall(lua_vm, 0, 0, 0) != 0)
 	{
-		werr(LOGDEVELOPER, "Error calling lua_pcall");
+		werr(LOGDEVELOPER, "Error calling lua_pcall: %s", lua_tostring(lua_vm, -1));
+		lua_pop(lua_vm, 1);
 	}
 
 	// push f function on LUA VM stack
@@ -71,6 +73,7 @@ int lua_execute_script(lua_State* lua_vm, Lock & lock, const char * script, cons
 	if (lua_pcall(lua_vm, param_qty, 1, 0) != 0)
 	{
 		werr(LOGUSER, "Error running LUA script %s: %s\n", file_path.c_str(), lua_tostring(lua_vm, -1));
+		lua_pop(lua_vm, 1);
 		return -1;
 	}
 
@@ -105,11 +108,16 @@ int lua_execute_script(lua_State* lua_vm, Lock & lock, const std::string & scrip
 	{
 		// If something went wrong, error message is at the top of the stack
 		werr(LOGUSER, "Couldn't load LUA script %s: %s\n", file_path.c_str(), lua_tostring(lua_vm, -1));
+		lua_pop(lua_vm, 1);
 		return -1;
 	}
 
 	// Fake call to read global variable from the script file (i.e. the f function
-	lua_pcall(lua_vm, 0, 0, 0);
+	if (lua_pcall(lua_vm, 0, 0, 0) != 0)
+	{
+		werr(LOGDEVELOPER, "Error calling lua_pcall: %s", lua_tostring(lua_vm, -1));
+		lua_pop(lua_vm, 1);
+	}
 
 	// push f function on LUA VM stack
 	lua_getglobal(lua_vm, "f");
@@ -127,6 +135,7 @@ int lua_execute_script(lua_State* lua_vm, Lock & lock, const std::string & scrip
 	if (lua_pcall(lua_vm, paramQty, 1, 0) != 0)
 	{
 		werr(LOGUSER, "Error running LUA script %s: %s\n", file_path.c_str(), lua_tostring(lua_vm, -1));
+		lua_pop(lua_vm, 1);
 		return -1;
 	}
 
