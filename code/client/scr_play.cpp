@@ -318,7 +318,7 @@ static void set_up_sprite(Context *ctx, std::vector<SdlItem*> &itemArray)
 	double zoom = 1.0;
 	if (entry_read_string(CHARACTER_TABLE, ctx->getId(), zoomStr, { CHARACTER_KEY_ZOOM }) == true)
 	{
-		zoom = atof(zoomStr.c_str());
+		zoom = std::stod(zoomStr);
 	}
 
 	// Align sprite on tile

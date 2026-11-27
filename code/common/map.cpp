@@ -83,7 +83,7 @@ std::unique_ptr<layer_t> map_layer_new(const std::string &map, int layer_index,
 			if (getDataManager().tryGet<std::string>(MAP_TABLE, map,
 					{ layer_name, MAP_KEY_SPRITE_ZOOM }, zoom))
 			{
-				layer->map_zoom = atof(zoom.c_str());
+				layer->map_zoom = std::stod(zoom);
 			}
 		}
 
@@ -121,7 +121,7 @@ std::unique_ptr<layer_t> map_layer_new(const std::string &map, int layer_index,
 			if (getDataManager().tryGet<std::string>(MAP_TABLE, map,
 					{ MAP_KEY_SPRITE_ZOOM }, zoom))
 			{
-				layer->map_zoom = atof(zoom.c_str());
+				layer->map_zoom = std::stod(zoom);
 			}
 		}
 
