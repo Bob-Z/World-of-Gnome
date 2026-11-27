@@ -19,7 +19,6 @@
 
 #include <algorithm>
 #include <cstdio>
-#include <cstdlib>
 #include <cstring>
 #include <string>
 #include <vector>
@@ -487,7 +486,7 @@ int entry_update(const std::string &type, const std::string &table,
 
 	if (type == ENTRY_TYPE_INT)
 	{
-		return dm.set<int>(table, file, pathVec, atoi(value.c_str()));
+		return dm.set<int>(table, file, pathVec, std::stoi(value));
 	}
 	else if (type == ENTRY_TYPE_STRING)
 	{
