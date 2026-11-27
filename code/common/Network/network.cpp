@@ -27,7 +27,6 @@
 #include <bits/stdint-uintn.h>
 #include <LockGuard.h>
 #include <cstdint>
-#include <cstring>
 #include <netinet/in.h>
 #include <SDL_net.h>
 #include <SDL_thread.h>
@@ -140,12 +139,12 @@ void network_send_file_data(Connection &connection, const std::string &name,
  send a file to a connection
  return 0 on success
  *********************************************************************/
-int network_send_file(Connection &connection, const char *file_name)
+int network_send_file(Connection &connection, const std::string &file_name)
 {
 	// Never send files with password
-	if (strstr(file_name, PASSWD_TABLE.c_str()) != nullptr)
+	if (file_name.find(PASSWD_TABLE) != std::string::npos)
 	{
-		ERR_USER("send_file : Do not serve personal file  \"" + std::string(file_name) + "\"");
+		ERR_USER("send_file : Do not serve personal file  \"" + file_name + "\"");
 		return -1;
 	}
 
@@ -154,7 +153,7 @@ int network_send_file(Connection &connection, const char *file_name)
 
 	if (file_get_contents(file_name, data) == false)
 	{
-		ERR_USER("send_file : Error reading file \"" + std::string(file_name) + "\"");
+		ERR_USER("send_file : Error reading file \"" + file_name + "\"");
 		return -1;
 	}
 
@@ -167,9 +166,9 @@ int network_send_file(Connection &connection, const char *file_name)
  send table/file to a context
  return FALSE on success
  *********************************************************************/
-int network_send_table_file(Context *context, const char *table, const char *id)
+int network_send_table_file(Context *context, const std::string &table, const std::string &id)
 {
-	const std::string file_name = std::string(table) + "/" + std::string(id);
+	const std::string file_name = table + "/" + id;
 
-	return network_send_file(*(context->getConnection()), file_name.c_str());
+	return network_send_file(*(context->getConnection()), file_name);
 }

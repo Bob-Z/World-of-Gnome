@@ -140,7 +140,7 @@ void network_send_character_file(Context * context)
 {
 	const std::string file_name = std::string(CHARACTER_TABLE) + "/" + context->getId();
 
-	network_send_file(*(context->getConnection()), file_name.c_str());
+	network_send_file(*(context->getConnection()), file_name);
 }
 
 /*******************************************************************************

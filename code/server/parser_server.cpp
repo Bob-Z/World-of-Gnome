@@ -220,7 +220,7 @@ static void manage_file(Connection &connection, const pb::File &file)
 		return;
 	}
 
-	network_send_file(connection, file.name().c_str());
+	network_send_file(connection, file.name());
 }
 
 /**************************************

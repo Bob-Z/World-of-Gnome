@@ -159,7 +159,7 @@ int resource_set_quantity(Context *context, const std::string &item_id,
 		return -1;
 	}
 
-	network_send_table_file(context, ITEM_TABLE.c_str(), item_id.c_str());
+	network_send_table_file(context, ITEM_TABLE, item_id);
 
 	return 0;
 }

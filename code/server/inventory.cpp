@@ -114,8 +114,8 @@ int inventory_add(const char *ctx_id, const char *item_id)
 						add_count += current_count;
 						resource_set_quantity(context, name, add_count);
 						item_destroy(std::string(item_id));
-						network_send_table_file(context, ITEM_TABLE.c_str(),
-								name.c_str());
+						network_send_table_file(context, ITEM_TABLE,
+								name);
 						return 0;
 					}
 				}

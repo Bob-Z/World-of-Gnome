@@ -27,9 +27,9 @@
 
 bool network_read_bytes(TCPsocket socket, char * data, int size);
 void network_send_command(Connection & connection, const std::string & serialized_data, const bool p_IsData);
-int network_send_file(Connection & connection, const char * filename);
+int network_send_file(Connection & connection, const std::string & filename);
 void network_send_file_data(Connection & connection, const std::string & name, const std::string & data);
-int network_send_table_file(Context * context, const char * table, const char * filename);
+int network_send_table_file(Context * context, const std::string & table, const std::string & filename);
 void network_send_req_file(Connection & connection, const std::string & file_name);
 
 // The code of this function is in parser_client.c and parser_server.c
