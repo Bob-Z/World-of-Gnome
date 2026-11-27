@@ -1344,18 +1344,11 @@ static int l_map_delete_item(lua_State *L)
 	int layer;
 	int x;
 	int y;
-	char *res;
-
 	map = luaL_checkstring(L, -4);
 	layer = luaL_checknumber(L, -3);
 	x = luaL_checknumber(L, -2);
 	y = luaL_checknumber(L, -1);
-	res = map_delete_item(map, layer, x, y);
-	lua_pushstring(L, res);
-	if (res)
-	{
-		free(res);
-	}
+	lua_pushstring(L, map_delete_item(map, layer, x, y).c_str());
 	return 1;  // number of results
 }
 
@@ -1832,26 +1825,16 @@ static int l_map_get_character(lua_State *L)
 	const char *map;
 	int x;
 	int y;
-	char **res;
-	char **cur_res;
 	int res_num = 0;
 
 	map = luaL_checkstring(L, -3);
 	x = luaL_checknumber(L, -2);
 	y = luaL_checknumber(L, -1);
 
-	res = map_get_character(std::string(map), x, y);
-	if (res)
+	for (const auto &id : map_get_character(std::string(map), x, y))
 	{
-		cur_res = res;
-		while (*cur_res != nullptr)
-		{
-			lua_pushstring(L, *cur_res);
-			free(*cur_res);
-			res_num++;
-			cur_res++;
-		}
-		free(res);
+		lua_pushstring(L, id.c_str());
+		res_num++;
 	}
 
 	return res_num;  // number of results
@@ -1874,8 +1857,6 @@ static int l_map_get_item(lua_State *L)
 	int layer;
 	int x;
 	int y;
-	char **res;
-	char **cur_res;
 	int res_num = 0;
 
 	map = luaL_checkstring(L, -4);
@@ -1883,18 +1864,10 @@ static int l_map_get_item(lua_State *L)
 	x = luaL_checknumber(L, -2);
 	y = luaL_checknumber(L, -1);
 
-	res = map_get_item(map, layer, x, y);
-	if (res)
+	for (const auto &id : map_get_item(map, layer, x, y))
 	{
-		cur_res = res;
-		while (*cur_res != nullptr)
-		{
-			lua_pushstring(L, *cur_res);
-			free(*cur_res);
-			res_num++;
-			cur_res++;
-		}
-		free(res);
+		lua_pushstring(L, id.c_str());
+		res_num++;
 	}
 
 	return res_num;  // number of results

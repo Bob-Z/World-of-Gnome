@@ -497,10 +497,9 @@ static void platform_move(Context *platform, const std::string &map, int x,
  ******************************************************/
 int character_set_pos(Context *ctx, const std::string &map, int x, int y)
 {
-	char **event_id;
+	std::vector<std::string> event_id;
 	char *script;
 	std::vector<std::string> param;
-	int i;
 	bool change_map = false;
 	int width = x + 1;
 	int height = y + 1;
@@ -635,32 +634,29 @@ int character_set_pos(Context *ctx, const std::string &map, int x, int y)
 
 	event_id = map_get_event(map, ctx_layer, x, y);
 
-	if (event_id)
 	{
-		i = 0;
-		while (event_id[i])
+		for (size_t i = 0; i < event_id.size(); i++)
 		{
 			script = nullptr;
 			if (entry_read_string(MAP_TABLE.c_str(), map, &script, layer_name,
-					MAP_ENTRY_EVENT_LIST.c_str(), event_id[i],
+					MAP_ENTRY_EVENT_LIST.c_str(), event_id[i].c_str(),
 					MAP_EVENT_SCRIPT.c_str(), nullptr) == true)
 			{
 				entry_read_list(MAP_TABLE.c_str(), map, param, layer_name,
-						MAP_ENTRY_EVENT_LIST.c_str(), event_id[i],
+						MAP_ENTRY_EVENT_LIST.c_str(), event_id[i].c_str(),
 						MAP_EVENT_PARAM.c_str(), nullptr);
 			}
 			else if (entry_read_string(MAP_TABLE.c_str(), map, &script,
-					MAP_ENTRY_EVENT_LIST.c_str(), event_id[i],
+					MAP_ENTRY_EVENT_LIST.c_str(), event_id[i].c_str(),
 					MAP_EVENT_SCRIPT.c_str(), nullptr) == true)
 			{
 				entry_read_list(MAP_TABLE.c_str(), map, param,
-						MAP_ENTRY_EVENT_LIST.c_str(), event_id[i],
+						MAP_ENTRY_EVENT_LIST.c_str(), event_id[i].c_str(),
 						MAP_EVENT_PARAM.c_str(), nullptr);
 			}
 
 			if (script == nullptr)
 			{
-				i++;
 				continue;
 			}
 
@@ -678,10 +674,7 @@ int character_set_pos(Context *ctx, const std::string &map, int x, int y)
 
 			free(script);
 			param.clear();
-
-			i++;
 		}
-		deep_free(event_id);
 	}
 
 	character_update_aggro(ctx);

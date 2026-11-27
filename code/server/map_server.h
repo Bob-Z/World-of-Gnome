@@ -22,10 +22,11 @@
 
 #include "Context.h"
 #include <string>
+#include <vector>
 #include <utility>
 
 std::pair<bool, std::string> map_new(const char *name, int w, int h, int tile_w, int tile_h);
-char * map_delete_item(const char * map, int layer, int x, int y);
+std::string map_delete_item(const char * map, int layer, int x, int y);
 int map_add_item(const char * map, int layer, const char * item, int x, int y);
 int map_check_tile(Context * ctx, const char * id, const std::string & map, int layer, int x, int y);
 int map_set_tile(const char * map, int layer, const char * tile, int x, int y, int network_broadcast);
@@ -37,9 +38,9 @@ int map_set_custom_column(const char * map, int layer, int num, int width, int h
 int map_set_custom_row(const char * map, int layer, int num, int width, int height);
 char * map_get_tile(const char * map, int layer, int x, int y);
 char * map_get_tile_type(const std::string & map, int layer, int x, int y);
-char ** map_get_event(const std::string & map, int layer, int x, int y);
-char ** map_get_character(const std::string & map, int x, int y);
-char ** map_get_item(const char * map, int layer, int x, int y);
+std::vector<std::string> map_get_event(const std::string & map, int layer, int x, int y);
+std::vector<std::string> map_get_character(const std::string & map, int x, int y);
+std::vector<std::string> map_get_item(const char * map, int layer, int x, int y);
 char * map_add_event(const char * map, int layer, const char * script, int x, int y);
 int map_add_event_param(const char * map, int layer, const char * event_id, const char * param);
 int map_delete_event(const char * map, int layer, const char * script, int x, int y);

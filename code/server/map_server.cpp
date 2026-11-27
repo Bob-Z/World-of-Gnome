@@ -199,13 +199,13 @@ std::pair<bool, std::string> map_new(const char *name, int w, int h, int tile_w,
 /**************************************
  delete an item on context's map
  **************************************/
-char* map_delete_item(const char *map, int layer, int x, int y)
+std::string map_delete_item(const char *map, int layer, int x, int y)
 {
 	std::vector<std::string> itemlist;
 	int mapx;
 	int mapy;
 	const char *id = nullptr;
-	char *saved_item = nullptr;
+	std::string saved_item;
 	char layer_name[SMALL_BUF];
 
 	if (x < 0 || y < 0)
@@ -243,7 +243,7 @@ char* map_delete_item(const char *map, int layer, int x, int y)
 		if (x == mapx && y == mapy)
 		{
 			id = itemlist[i].c_str();
-			saved_item = strdup(itemlist[i].c_str());
+			saved_item = itemlist[i];
 			break;
 		}
 
@@ -251,19 +251,14 @@ char* map_delete_item(const char *map, int layer, int x, int y)
 
 	if (id == nullptr)
 	{
-		if (saved_item)
-		{
-			free(saved_item);
-		}
-		return nullptr;
+		return saved_item;
 	}
 
 	// remove the item from the item list of the map
 	if (entry_remove_group(MAP_TABLE.c_str(), map, id, layer_name,
 			MAP_ENTRY_ITEM_LIST.c_str(), nullptr) == false)
 	{
-		free(saved_item);
-		return nullptr;
+		return saved_item;
 	}
 
 	// Send network notifications
@@ -713,18 +708,17 @@ char* map_get_tile_type(const std::string &map, int layer, int x, int y)
  return an array of event id on given map at x,y
  This array MUST be freed by caller
  ************************************************/
-char** map_get_event(const std::string &map, int layer, int x, int y)
+std::vector<std::string> map_get_event(const std::string &map, int layer, int x, int y)
 {
 	std::vector<std::string> eventlist;
-	char **event_id = nullptr;
+	std::vector<std::string> event_id;
 	int mapx;
 	int mapy;
-	int event_id_num = 0;
 	char layer_name[SMALL_BUF];
 
 	if (x < 0 || y < 0)
 	{
-		return nullptr;
+		return event_id;
 	}
 
 	sprintf(layer_name, "%s%d", MAP_KEY_LAYER.c_str(), layer);
@@ -753,11 +747,7 @@ char** map_get_event(const std::string &map, int layer, int x, int y)
 
 			if (x == mapx && y == mapy)
 			{
-				event_id_num++;
-				event_id = (char**) realloc(event_id,
-						sizeof(char*) * (event_id_num + 1));
-				event_id[event_id_num - 1] = strdup(eventlist[i].c_str());
-				event_id[event_id_num] = nullptr;
+				event_id.push_back(eventlist[i]);
 			}
 
 		}
@@ -784,11 +774,7 @@ char** map_get_event(const std::string &map, int layer, int x, int y)
 
 			if (x == mapx && y == mapy)
 			{
-				event_id_num++;
-				event_id = (char**) realloc(event_id,
-						sizeof(char*) * (event_id_num + 1));
-				event_id[event_id_num - 1] = strdup(eventlist[i].c_str());
-				event_id[event_id_num] = nullptr;
+				event_id.push_back(eventlist[i]);
 			}
 
 		}
@@ -961,15 +947,14 @@ int map_delete_event(const char *map, int layer, const char *script, int x,
  return an array of character id on given map at x,y
  This array AND its content MUST be freed by caller
  ************************************************/
-char** map_get_character(const std::string &map, int x, int y)
+std::vector<std::string> map_get_character(const std::string &map, int x, int y)
 {
-	char **character_list = nullptr;
-	int character_num = 0;
+	std::vector<std::string> character_list;
 	Context *ctx = context_get_first();
 
 	if (x < 0 || y < 0)
 	{
-		return nullptr;
+		return character_list;
 	}
 
 	context_lock_list();
@@ -983,11 +968,7 @@ char** map_get_character(const std::string &map, int x, int y)
 		if ((ctx->getTileX() == x) && (ctx->getTileY() == y)
 				&& (ctx->getMap() == map))
 		{
-			character_num++;
-			character_list = (char**) realloc(character_list,
-					sizeof(char*) * (character_num + 1));
-			character_list[character_num - 1] = strdup(ctx->getId().c_str());
-			character_list[character_num] = nullptr;
+			character_list.push_back(ctx->getId());
 		}
 
 		ctx = ctx->m_next;
@@ -1001,18 +982,17 @@ char** map_get_character(const std::string &map, int x, int y)
  return an array of item id on given map at x,y
  This array AND its content MUST be freed by caller
  ************************************************/
-char** map_get_item(const char *map, int layer, int map_x, int map_y)
+std::vector<std::string> map_get_item(const char *map, int layer, int map_x, int map_y)
 {
 	std::vector<std::string> item_id;
-	char **g_itemList = nullptr;
-	int item_num = 0;
+	std::vector<std::string> g_itemList;
 	int x;
 	int y;
 	char layer_name[SMALL_BUF];
 
 	if (map_x < 0 || map_y < 0)
 	{
-		return nullptr;
+		return g_itemList;
 	}
 
 	sprintf(layer_name, "%s%d", MAP_KEY_LAYER.c_str(), layer);
@@ -1020,7 +1000,7 @@ char** map_get_item(const char *map, int layer, int map_x, int map_y)
 	if (entry_get_group_list(MAP_TABLE.c_str(), map, item_id, layer_name,
 			MAP_ENTRY_ITEM_LIST.c_str(), nullptr) == false)
 	{
-		return nullptr;
+		return g_itemList;
 	}
 
 	for (size_t i = 0; i < item_id.size(); i++)
@@ -1041,11 +1021,7 @@ char** map_get_item(const char *map, int layer, int map_x, int map_y)
 
 		if (x == map_x && y == map_y)
 		{
-			item_num++;
-			g_itemList = (char**) realloc(g_itemList,
-					sizeof(char*) * (item_num + 1));
-			g_itemList[item_num - 1] = strdup(item_id[i].c_str());
-			g_itemList[item_num] = nullptr;
+			g_itemList.push_back(item_id[i]);
 		}
 	}
 
@@ -1212,37 +1188,34 @@ int map_add_layer(const char *map_name, int layer, int w, int h, int tile_w,
 	}
 
 	int i;
-	char **tile_array = (char**) malloc(((w * h) + 1) * sizeof(char*));
+	std::vector<char *> tile_array((w * h) + 1, nullptr);
 
 	// Write default tile
 	for (i = 0; i < (w * h); i++)
 	{
-		tile_array[i] = (char*) default_tile;
+		tile_array[i] = const_cast<char *>(default_tile);
 	}
 	tile_array[i] = nullptr; // End of list
 
-	if (entry_write_list(MAP_TABLE.c_str(), map_name, tile_array, layer_name,
+	if (entry_write_list(MAP_TABLE.c_str(), map_name, tile_array.data(), layer_name,
 			MAP_KEY_SET.c_str(), nullptr) == false)
 	{
-		free(tile_array);
 		return false;
 	}
 
 	// Write default type
 	for (i = 0; i < (w * h); i++)
 	{
-		tile_array[i] = (char*) default_type;
+		tile_array[i] = const_cast<char *>(default_type);
 	}
 	tile_array[i] = nullptr; // End of list
 
-	if (entry_write_list(MAP_TABLE.c_str(), map_name, tile_array, layer_name,
+	if (entry_write_list(MAP_TABLE.c_str(), map_name, tile_array.data(), layer_name,
 			MAP_KEY_TYPE.c_str(), nullptr) == false)
 	{
-		free(tile_array);
 		return false;
 	}
 
-	free(tile_array);
 	return true;
 }
 
