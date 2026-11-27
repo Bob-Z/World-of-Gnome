@@ -133,30 +133,24 @@ void file_update(Connection *connection, const char *filename)
  ****************************************************/
 static int mkdir_all(const std::string &path_name)
 {
-	char *token = nullptr;
-	char *source = nullptr;
 	int ret = -1;
-	char *directory = nullptr;
-	char *saveptr = nullptr;
+	std::string directory;
 
-	source = strdup(path_name.c_str());
-
-	token = strtok_r(source, "/", &saveptr);
-
-	directory = strdup("");
-
-	while (token != nullptr)
+	size_t start = 0;
+	while (start < path_name.size())
 	{
-		const std::string new_directory = std::string(directory) + "/"
-				+ std::string(token);
-		free(directory);
-		directory = strdup(new_directory.c_str());
-		ret = mkdir(directory, 0775);
-		token = strtok_r(nullptr, "/", &saveptr);
+		size_t pos = path_name.find('/', start);
+		if (pos == std::string::npos)
+		{
+			pos = path_name.size();
+		}
+		if (pos > start)
+		{
+			directory += "/" + path_name.substr(start, pos - start);
+			ret = mkdir(directory.c_str(), 0775);
+		}
+		start = pos + 1;
 	}
-
-	free(directory);
-	free(source);
 
 	return ret;
 }
@@ -253,12 +247,10 @@ std::pair<bool, std::string> file_new(const std::string &table,
 
 /****************************
  filename is "table/dir/file"
- Fill contents and size with data from filename file.
- contents MUST BE FREED by caller
+ Fill contents with data from filename file.
  return false on error
  ****************************/
-int file_get_contents(const char *filename, void **contents,
-		int_fast32_t *length)
+bool file_get_contents(const char *filename, std::string &contents)
 {
 	struct stat sts;
 	int fd;
@@ -266,7 +258,7 @@ int file_get_contents(const char *filename, void **contents,
 	char error_buf[SMALL_BUF];
 	char *error_str;
 
-	*contents = nullptr;
+	contents.clear();
 
 	const std::string file_path = base_directory + "/" + std::string(filename);
 
@@ -301,16 +293,9 @@ int file_get_contents(const char *filename, void **contents,
 		return false;
 	}
 
-	void *buf;
-	buf = malloc(sts.st_size);
-	if (buf == nullptr)
-	{
-		close(fd);
-		file_unlock(filename);
-		return false;
-	}
+	std::string buf(sts.st_size, '\0');
 
-	size = read(fd, buf, sts.st_size);
+	size = read(fd, buf.data(), buf.size());
 	if (size == -1)
 	{
 #if (_POSIX_C_SOURCE >= 200112L || _XOPEN_SOURCE >= 600) && ! _GNU_SOURCE
@@ -321,7 +306,6 @@ int file_get_contents(const char *filename, void **contents,
 #endif
 		close(fd);
 		file_unlock(filename);
-		free(buf);
 		werr(LOGDESIGNER, "Error read on file %s: %s\n", file_path.c_str(),
 				error_str);
 		return false;
@@ -330,8 +314,7 @@ int file_get_contents(const char *filename, void **contents,
 	close(fd);
 	file_unlock(filename);
 
-	*contents = buf;
-	*length = size;
+	contents.assign(buf.data(), size);
 
 	return true;
 }

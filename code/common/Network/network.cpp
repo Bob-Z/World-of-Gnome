@@ -153,18 +153,13 @@ int network_send_file(Connection &connection, const char *file_name)
 	}
 
 	// Read the file
-	void *file_data = nullptr;
-	int_fast32_t file_length = 0;
-	int res = 0;
+	std::string data;
 
-	res = file_get_contents(file_name, &file_data, &file_length);
-	if (res == false)
+	if (file_get_contents(file_name, data) == false)
 	{
 		werr(LOGUSER, "send_file : Error reading file \"%s\"", file_name);
 		return -1;
 	}
-
-	const std::string data(static_cast<char*>(file_data), file_length);
 
 	network_send_file_data(connection, file_name, data);
 

@@ -33,8 +33,7 @@ void file_unlock(const char *filename);
 void file_update(Connection *connection, const char *filename);
 std::pair<bool, std::string> file_new(const std::string &table,
 		const std::string &suggested_name = NO_SUGGESTED_NAME);
-int file_get_contents(const char *filename, void **contents,
-		int_fast32_t *length);
+bool file_get_contents(const char *filename, std::string &contents);
 int file_set_contents(const char *filename, const void *contents, int length);
 bool file_copy(const std::string &src_table, const std::string &src_name,
 		const std::string &dst_table, const std::string &dst_name);
