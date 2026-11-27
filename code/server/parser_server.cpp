@@ -93,8 +93,7 @@ static void manage_start(Connection &connection, const pb::Start &start)
 	if (getDataManager().getJson(CHARACTER_TABLE + "/" + start.id()).is_object()
 			== false)
 	{
-		werr(LOGUSER, "Cannot start with character %s: character not found",
-				start.id().c_str());
+		ERR_USER("Cannot start with character " + std::string(start.id()) + ": character not found");
 		context_free(context);
 		connection.setContextId("");
 		connection.disconnect();
@@ -105,8 +104,7 @@ static void manage_start(Connection &connection, const pb::Start &start)
 	context_spread(context);
 	context_request_other_context(context);
 
-	wlog(LOGDEVELOPER, "[network] received start request for ID %s and user %s",
-			start.id().c_str(), connection.getUserName().c_str());
+	LOG("[network] received start request for ID " + std::string(start.id()) + " and user " + std::string(connection.getUserName()));
 }
 
 /*****************************************************************************/
@@ -144,16 +142,14 @@ static void manage_create(Connection &connection, const pb::Create &create)
 
 	if (file_name.first == false)
 	{
-		werr(LOGUSER, "%s already exists", create.name().c_str());
+		ERR_USER(std::string(create.name()) + " already exists");
 		return;
 	}
 
 	if (file_copy(CHARACTER_TEMPLATE_TABLE, create.id().c_str(),
 	CHARACTER_TABLE, create.name().c_str()) == false)
 	{
-		werr(LOGUSER,
-				"Error copying character template %s to character %s (maybe template doesn't exists ?)",
-				create.id().c_str(), create.name().c_str());
+		ERR_USER("Error copying character template " + std::string(create.id()) + " to character " + std::string(create.name()) + " (maybe template doesn't exists ?)");
 		file_delete(CHARACTER_TABLE, create.name());
 		return;
 	}
@@ -161,7 +157,7 @@ static void manage_create(Connection &connection, const pb::Create &create)
 	if (entry_write_string(CHARACTER_TABLE.c_str(), create.name().c_str(),
 			create.name().c_str(), { CHARACTER_KEY_NAME.c_str() }) == false)
 	{
-		werr(LOGUSER, "Error setting character name %s", create.name().c_str());
+		ERR_USER("Error setting character name " + std::string(create.name()));
 		file_delete(CHARACTER_TABLE, create.name());
 		return;
 	}
@@ -181,8 +177,7 @@ static void manage_create(Connection &connection, const pb::Create &create)
 
 	character_user_send(connection, create.name().c_str());
 
-	wlog(LOGDEVELOPER, "Successfully created: ID=%s, NAME=%s",
-			create.id().c_str(), create.name().c_str());
+	LOG("Successfully created: ID=" + std::string(create.id()) + ", NAME=" + std::string(create.name()));
 }
 
 /*****************************************************************************/
@@ -215,14 +210,13 @@ static void manage_file(Connection &connection, const pb::File &file)
 
 	if (crc.first == false)
 	{
-		werr(LOGUSER, "Required file %s doesn't exists", file_path.c_str());
+		ERR_USER("Required file " + std::string(file_path) + " doesn't exists");
 		return;
 	}
 
 	if (file.crc() == crc.second)
 	{
-		wlog(LOGDEVELOPER, "Client has already newest %s file",
-				file.name().c_str());
+		LOG("Client has already newest " + std::string(file.name()) + " file");
 		return;
 	}
 
@@ -238,75 +232,62 @@ int parse_incoming_data(Connection &connection,
 	pb::ClientMessage message;
 	if (message.ParseFromString(serialized_data) == false)
 	{
-		werr(LOGUSER, "Parsing failed");
+		ERR_USER("Parsing failed");
 	}
 	else
 	{
 		if (message.has_file())
 		{
-			wlog(LOGDEVELOPER, "[network] Received file request for %s",
-					message.file().name().c_str());
+			LOG("[network] Received file request for " + std::string(message.file().name()));
 			manage_file(connection, message.file());
 		}
 		else if (message.has_login())
 		{
-			wlog(LOGDEVELOPER, "[network] Received login request for user %s",
-					message.login().user().c_str());
+			LOG("[network] Received login request for user " + std::string(message.login().user()));
 			manage_login(connection, message.login());
 		}
 		else if (connection.isConnected() == false)
 		{
-			werr(LOGUSER,
-					"Request from not authenticated client, close connection");
+			ERR_USER("Request from not authenticated client, close connection");
 		}
 		else if (message.has_start())
 		{
-			wlog(LOGDEVELOPER, "[network] Received start");
+			LOG("[network] Received start");
 			manage_start(connection, message.start());
 		}
 		else if (message.has_stop())
 		{
-			wlog(LOGDEVELOPER,
-					"[network] Received stop request for ID %s of user %s",
-					connection.getUserName().c_str(),
-					context_find(connection.getContextId())->getId().c_str());
+			LOG("[network] Received stop request for ID " + std::string(connection.getUserName()) + " of user " + std::string(context_find(connection.getContextId())->getId()));
 			manage_stop(connection, message.stop());
 		}
 		else if (message.has_playable_character_list())
 		{
-			wlog(LOGDEVELOPER,
-					"[network] Received playable character list request");
+			LOG("[network] Received playable character list request");
 			manage_playable_character_list(connection);
 		}
 		else if (message.has_user_character_list())
 		{
-			wlog(LOGDEVELOPER,
-					"[network] Received user character list request for user %s",
-					message.user_character_list().user().c_str());
+			LOG("[network] Received user character list request for user " + std::string(message.user_character_list().user()));
 			manage_user_character_list(connection);
 		}
 		else if (message.has_create())
 		{
-			wlog(LOGDEVELOPER, "[network] Received create ID %s with name %s",
-					message.create().id().c_str(),
-					message.create().name().c_str());
+			LOG("[network] Received create ID " + std::string(message.create().id()) + " with name " + std::string(message.create().name()));
 			manage_create(connection, message.create());
 		}
 		else if (message.has_action())
 		{
-			wlog(LOGDEVELOPER, "[network] Received action %s",
-					message.action().action().c_str());
+			LOG("[network] Received action " + std::string(message.action().action()));
 			manage_action(connection, message.action());
 		}
 		else if (message.has_action_stop())
 		{
-			wlog(LOGDEVELOPER, "[network] Received action stop %s",
-					message.action_stop().action().c_str());
+			LOG("[network] Received action stop " + std::string(message.action_stop().action()));
 			manage_action_stop(connection, message.action_stop());
 		}
 		else
 		{
-			werr(LOGUSER, "Unknown message received");
+			ERR_USER("Unknown message received");
 		}
 	}
 

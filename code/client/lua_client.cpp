@@ -614,7 +614,7 @@ static int l_print_text_debug(lua_State *luaState)
 	const char *l_pString;
 
 	l_pString = luaL_checkstring(luaState, -1);
-	wlog(LOGDESIGNER, (char* ) l_pString);
+	LOG_DESIGN((char* ) l_pString);
 	return 0;  // number of results
 }
 

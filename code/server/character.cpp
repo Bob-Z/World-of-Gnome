@@ -82,7 +82,7 @@ void character_playable_send_list(Connection &connection)
 			if (entry_read_list(CHARACTER_TEMPLATE_TABLE.c_str(), ent->d_name,
 					marquee_list, { CHARACTER_KEY_MARQUEE.c_str() }) == false)
 			{
-				wlog(LOGDESIGNER, "%s has no marquee", ent->d_name);
+				LOG_DESIGN(std::string(ent->d_name) + " has no marquee");
 				continue;
 			}
 			if (marquee_list[0][0] == '\0')
@@ -154,7 +154,7 @@ int character_disconnect(const char *id)
 {
 	Context *ctx;
 
-	werr(LOGDEVELOPER, "Disconnecting %s", id);
+	ERR("Disconnecting " + std::string(id));
 
 	ctx = context_find(id);
 	ctx->setInGame(false);
@@ -179,7 +179,7 @@ int character_out_of_game(const char *id)
 {
 	Context *ctx;
 
-	werr(LOGDEVELOPER, "Kicking %s out of the game", id);
+	ERR("Kicking " + std::string(id) + " out of the game");
 
 	ctx = context_find(id);
 	ctx->setInGame(false);

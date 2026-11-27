@@ -62,7 +62,7 @@ static int manage_login_nok(Connection & connection, const pb::LoginNok & login_
 {
 	connection.setConnected(false);
 
-	werr(LOGUSER, "Check your login and password (they are case sensitive)\n");
+	ERR_USER("Check your login and password (they are case sensitive)\n");
 	exit(-1);
 
 	return true;
@@ -196,7 +196,7 @@ int parse_incoming_data(Connection & connection, const std::string & serializedD
 	pb::ServerMessage message;
 	if (message.ParseFromString(serializedData) == false)
 	{
-		werr(LOGUSER, "Parsing failed");
+		ERR_USER("Parsing failed");
 	}
 	else
 	{
@@ -233,27 +233,27 @@ int parse_incoming_data(Connection & connection, const std::string & serializedD
 		}
 		else if (message.has_text())
 		{
-			wlog(LOGDEVELOPER, "[network] Received text");
+			LOG("[network] Received text");
 			manage_text(message.text());
 		}
 		else if (message.has_entry())
 		{
-			wlog(LOGDEVELOPER, "[network] Received entry");
+			LOG("[network] Received entry");
 			manage_entry(message.entry());
 		}
 		else if (message.has_popup())
 		{
-			wlog(LOGDEVELOPER, "[network] Received pop-up");
+			LOG("[network] Received pop-up");
 			manage_popup(message.popup());
 		}
 		else if (message.has_effect())
 		{
-			wlog(LOGDEVELOPER, "[network] Received effect");
+			LOG("[network] Received effect");
 			manage_effect(connection, message.effect());
 		}
 		else
 		{
-			werr(LOGUSER, "Unknown message received");
+			ERR_USER("Unknown message received");
 		}
 	}
 

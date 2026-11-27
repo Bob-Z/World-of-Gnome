@@ -44,13 +44,13 @@ void network_send_text(const std::string & id, const std::string & text)
 	Context * context = context_find(id);
 	if (context == nullptr)
 	{
-		werr(LOGDESIGNER, "Could not find context %s", id.c_str());
+		ERR_DESIGN("Could not find context " + std::string(id));
 		return;
 	}
 
 	if (context->getConnection() == nullptr)
 	{
-		werr(LOGDEVELOPER, "No connection for context %s", id.c_str());
+		ERR("No connection for context " + std::string(id));
 		return;
 	}
 
@@ -58,7 +58,7 @@ void network_send_text(const std::string & id, const std::string & text)
 	message.mutable_text()->set_text(text);
 	std::string serialized_data = message.SerializeAsString();
 
-	wlog(LOGDEVELOPER, "[network] Send text to %s", id.c_str());
+	LOG("[network] Send text to " + std::string(id));
 	network_send_command(*(context->getConnection()), serialized_data, false);
 }
 
@@ -129,7 +129,7 @@ void network_send_user_character(Connection & connection, const std::string & id
 	message.mutable_user_character()->set_name(name);
 	std::string serialized_data = message.SerializeAsString();
 
-	wlog(LOGDEVELOPER, "[network] Send user %s character %s", connection.getUserName().c_str(), name.c_str());
+	LOG("[network] Send user " + std::string(connection.getUserName()) + " character " + std::string(name));
 	network_send_command(connection, serialized_data, false);
 }
 
@@ -157,7 +157,7 @@ void network_send_entry_int(Context * context, const char * table, const char * 
 
 	std::string serialized_data = message.SerializeAsString();
 
-	wlog(LOGDEVELOPER, "[network] Send entry %s/%s/%s = %d", table, file, path, value);
+	LOG("[network] Send entry " + std::string(table) + "/" + std::string(file) + "/" + std::string(path) + " = " + std::to_string(value));
 	network_send_command(*(context->getConnection()), serialized_data, false);
 }
 
@@ -262,7 +262,7 @@ static int new_connection(void * data)
 		}
 	}
 
-	wlog(LOGUSER, "Client disconnected");
+	LOG_USER("Client disconnected");
 
 	return 0;
 }
@@ -277,28 +277,28 @@ void network_init(void)
 
 	if (SDLNet_Init() < 0)
 	{
-		werr(LOGUSER, "Can't init SDL: %s\n", SDLNet_GetError());
+		ERR_USER("Can't init SDL: " + std::string(SDLNet_GetError()) + "\n");
 		return;
 	}
 
 	// Resolving the host using nullptr make network interface to listen
 	if (SDLNet_ResolveHost(&IP, nullptr, PORT) < 0)
 	{
-		werr(LOGUSER, "Cannot listen on port %d: %s\n", PORT, SDLNet_GetError());
+		ERR_USER("Cannot listen on port " + std::to_string(PORT) + ": " + std::string(SDLNet_GetError()) + "\n");
 		return;
 	}
 
 	// Open a connection with the IP provided (listen on the host's port)
 	if ((socket = SDLNet_TCP_Open(&IP)) == 0)
 	{
-		werr(LOGUSER, "Cannot open port %d: %s\n", PORT, SDLNet_GetError());
+		ERR_USER("Cannot open port " + std::to_string(PORT) + ": " + std::string(SDLNet_GetError()) + "\n");
 		return;
 	}
 
 	server_set = SDLNet_AllocSocketSet(1);
 	SDLNet_TCP_AddSocket(server_set, socket);
 
-	wlog(LOGUSER, "Waiting for connections on port: %i", PORT);
+	LOG_USER("Waiting for connections on port: " + std::to_string(PORT));
 
 	// Wait for a connection
 	while (true)
@@ -312,11 +312,11 @@ void network_init(void)
 			// Get the remote address
 			if ((remoteIp = SDLNet_TCP_GetPeerAddress(clientSocket)) == nullptr)
 			{
-				werr(LOGUSER, "Can't get peer address: %s", SDLNet_GetError());
+				ERR_USER("Can't get peer address: " + std::string(SDLNet_GetError()));
 			}
 
-			//wlog(LOGUSER,"Host connected: %s %d\n", SDLNet_Read32(&remote_IP->host), SDLNet_Read16(&remote_IP->port));
-			wlog(LOGUSER, "Host connected: %s:%d with socket %d\n", SDLNet_ResolveIP(remoteIp), SDLNet_Read16(&remoteIp->port), clientSocket);
+			//LOG_USER("Host connected: " + std::string(SDLNet_Read32(&remote_IP->host)) + " " + std::to_string(SDLNet_Read16(&remote_IP->port)) + "\n");
+			LOG_USER("Host connected: " + std::string(SDLNet_ResolveIP(remoteIp)) + ":" + std::to_string(SDLNet_Read16(&remoteIp->port)) + " with socket " + std::to_string(reinterpret_cast<intptr_t>(clientSocket)) + "\n");
 
 			SDL_CreateThread(new_connection, "new_connection", (void*) clientSocket);
 		}
@@ -342,7 +342,7 @@ void network_send_popup(const std::string & contextId, const std::vector<std::st
 	Context * context = context_find(contextId);
 	if (context == nullptr)
 	{
-		werr(LOGDEVELOPER, "[network] No context with ID %s", contextId.c_str());
+		ERR("[network] No context with ID " + std::string(contextId));
 		return;
 	}
 
@@ -355,7 +355,7 @@ void network_send_popup(const std::string & contextId, const std::vector<std::st
 
 	std::string serialized_data = message.SerializeAsString();
 
-	wlog(LOGDEVELOPER, "[network] Send pop-up");
+	LOG("[network] Send pop-up");
 	network_send_command(*(context->getConnection()), serialized_data, false);
 }
 
@@ -389,7 +389,7 @@ void network_broadcast_effect(EffectManager::EffectType type, const std::string 
 		target_map = targetId;
 		break;
 	default:
-		werr(LOGDESIGNER, "network_broadcast_effect: Unknown EffectType");
+		ERR_DESIGN("network_broadcast_effect: Unknown EffectType");
 		return;
 		break;
 	}
@@ -425,7 +425,7 @@ void network_broadcast_effect(EffectManager::EffectType type, const std::string 
 			continue;
 		}
 
-		wlog(LOGDEVELOPER, "[network] Send effect to %s", ctx->getId().c_str());
+		LOG("[network] Send effect to " + std::string(ctx->getId()));
 		network_send_command(*(ctx->getConnection()), serialized_data, false);
 	} while ((ctx = ctx->m_next) != nullptr);
 
@@ -440,7 +440,7 @@ void network_send_login_ok(Connection & connection)
 	message.mutable_login_ok()->Clear();
 	std::string serialized_data = message.SerializeAsString();
 
-	wlog(LOGDEVELOPER, "[network] Send LOGIN OK");
+	LOG("[network] Send LOGIN OK");
 	network_send_command(connection, serialized_data, false);
 }
 
@@ -451,7 +451,7 @@ void network_send_login_nok(Connection & connection)
 	message.mutable_login_nok()->Clear();
 	std::string serialized_data = message.SerializeAsString();
 
-	wlog(LOGDEVELOPER, "[network] Send LOGIN NOK");
+	LOG("[network] Send LOGIN NOK");
 	network_send_command(connection, serialized_data, false);
 }
 
@@ -468,7 +468,7 @@ void network_send_playable_character(Connection & connection, const std::vector<
 
 	std::string serialized_data = message.SerializeAsString();
 
-	wlog(LOGDEVELOPER, "[network] Send %d playable characters list", idArray.size());
+	LOG("[network] Send " + std::to_string(idArray.size()) + " playable characters list");
 	network_send_command(connection, serialized_data, false);
 }
 
@@ -505,6 +505,6 @@ void network_send_context_to_context(Context * dest_ctx, Context * src_ctx)
 
 	std::string serialized_data = message.SerializeAsString();
 
-	wlog(LOGDEVELOPER, "[network] Send context of %s to %s", src_ctx->getId().c_str(), dest_ctx->getId().c_str());
+	LOG("[network] Send context of " + std::string(src_ctx->getId()) + " to " + std::string(dest_ctx->getId()));
 	network_send_command(*(dest_ctx->getConnection()), serialized_data, false);
 }

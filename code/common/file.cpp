@@ -132,7 +132,6 @@ void file_update(Connection *connection, const std::string &filename)
 	if (file_data->timestamp != 0
 			&& file_data->timestamp + FILE_REQUEST_TIMEOUT_MS > current_time)
 	{
-		//wlog(LOGDEBUG,"Previous request of file  %s has been %d ms ago",filename,current_time - file_data->timestamp );
 		return;
 	}
 
@@ -197,8 +196,7 @@ std::pair<bool, std::string> file_new(const std::string &table,
 				+ std::string(suggested_name);
 		if (stat(file_path.c_str(), &sts) != -1)
 		{
-			werr(LOGDEVELOPER, "Suggested file %s already exists",
-					suggested_name.c_str());
+			ERR("Suggested file " + std::string(suggested_name) + " already exists");
 			return std::pair<bool, std::string>
 			{ false, NO_SUGGESTED_NAME };
 		}
@@ -214,7 +212,7 @@ std::pair<bool, std::string> file_new(const std::string &table,
 			dir = opendir(dir_path.c_str());
 			if (dir == nullptr)
 			{
-				werr(LOGDEVELOPER, "Cannot create path %s", dir_path.c_str());
+				ERR("Cannot create path " + std::string(dir_path));
 
 				return std::pair<bool, std::string>
 				{ false, NO_SUGGESTED_NAME };
@@ -286,8 +284,7 @@ bool file_get_contents(const std::string &filename, std::string &contents)
 		error_str = strerror_r(errno, error_buf, SMALL_BUF);
 #endif
 		file_unlock(filename);
-		werr(LOGDESIGNER, "Error stat on file %s: %s\n", file_path.c_str(),
-				error_str);
+		ERR_DESIGN("Error stat on file " + std::string(file_path) + ": " + std::string(error_str) + "\n");
 		return false;
 	}
 
@@ -301,8 +298,7 @@ bool file_get_contents(const std::string &filename, std::string &contents)
 		error_str = strerror_r(errno, error_buf, SMALL_BUF);
 #endif
 		file_unlock(filename);
-		werr(LOGDESIGNER, "Error open on file %s: %s\n", file_path.c_str(),
-				error_str);
+		ERR_DESIGN("Error open on file " + std::string(file_path) + ": " + std::string(error_str) + "\n");
 		return false;
 	}
 
@@ -319,8 +315,7 @@ bool file_get_contents(const std::string &filename, std::string &contents)
 #endif
 		close(fd);
 		file_unlock(filename);
-		werr(LOGDESIGNER, "Error read on file %s: %s\n", file_path.c_str(),
-				error_str);
+		ERR_DESIGN("Error read on file " + std::string(file_path) + ": " + std::string(error_str) + "\n");
 		return false;
 	}
 
@@ -359,8 +354,7 @@ int file_set_contents(const std::string &filename, const std::string &contents)
 		error_str = strerror_r(errno, error_buf, SMALL_BUF);
 #endif
 		file_unlock(filename);
-		werr(LOGDESIGNER, "Error open on file %s: %s\n", file_path.c_str(),
-				error_str);
+		ERR_DESIGN("Error open on file " + std::string(file_path) + ": " + std::string(error_str) + "\n");
 		return false;
 	}
 
@@ -375,8 +369,7 @@ int file_set_contents(const std::string &filename, const std::string &contents)
 #endif
 		close(fd);
 		file_unlock(filename);
-		werr(LOGDESIGNER, "Error write on file %s: %s\n", file_path.c_str(),
-				error_str);
+		ERR_DESIGN("Error write on file " + std::string(file_path) + ": " + std::string(error_str) + "\n");
 		return false;
 	}
 
@@ -402,7 +395,7 @@ bool file_copy(const std::string &src_table, const std::string &src_name,
 	src = fopen(src_full_path.c_str(), "rb");
 	if (src == nullptr)
 	{
-		werr(LOGDESIGNER, "Failed to open source file %s\n", src_full_path.c_str());
+		ERR_DESIGN("Failed to open source file " + std::string(src_full_path) + "\n");
 		return false;
 	}
 
@@ -412,8 +405,7 @@ bool file_copy(const std::string &src_table, const std::string &src_name,
 	dst = fopen(dst_full_path.c_str(), "wb");
 	if (dst == nullptr)
 	{
-		werr(LOGDESIGNER, "Failed to open destination file %s\n",
-				dst_full_path.c_str());
+		ERR_DESIGN("Failed to open destination file " + std::string(dst_full_path) + "\n");
 		fclose(src);
 		return false;
 	}

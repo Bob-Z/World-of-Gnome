@@ -37,7 +37,7 @@ int inventory_delete(const char *id, const char *item)
 	Context *context = context_find(id);
 	if (context == nullptr)
 	{
-		werr(LOGDESIGNER, "Could not find context %s", id);
+		ERR_DESIGN("Could not find context " + std::string(id));
 		return -1;
 	}
 
@@ -68,7 +68,7 @@ int inventory_add(const char *ctx_id, const char *item_id)
 
 	if (context == nullptr)
 	{
-		werr(LOGDESIGNER, "Could not find context %s", ctx_id);
+		ERR_DESIGN("Could not find context " + std::string(ctx_id));
 		return -1;
 	}
 
@@ -147,7 +147,7 @@ std::string inventory_get_by_name(const char *id, const char *item_name)
 	Context *context = context_find(id);
 	if (context == nullptr)
 	{
-		werr(LOGDESIGNER, "Could not find context %s", id);
+		ERR_DESIGN("Could not find context " + std::string(id));
 		return std::string();
 	}
 

@@ -47,7 +47,7 @@ int sfx_play(Connection & connection, const std::string & fileName, int channel,
 	if (fileDesc == nullptr)
 	{
 		std::string errorText = std::string("sfx_play: cannot open ") + fullName.c_str();
-		werr(LOGDESIGNER, errorText.c_str());
+		ERR_DESIGN(errorText.c_str());
 		file_update(&connection, tableFilename);
 		file_unlock(tableFilename);
 		return -1;
@@ -57,7 +57,7 @@ int sfx_play(Connection & connection, const std::string & fileName, int channel,
 	if (chunk == nullptr)
 	{
 		std::string l_Err = std::string("sfx_play: cannot read ") + fullName.c_str();
-		werr(LOGDESIGNER, l_Err.c_str());
+		ERR_DESIGN(l_Err.c_str());
 		file_update(&connection, tableFilename);
 		file_unlock(tableFilename);
 		return -1;

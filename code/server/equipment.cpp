@@ -33,7 +33,7 @@ int equipment_set_item(const char *id, const char *slot, const char *item)
 	Context *context = context_find(id);
 	if (context == nullptr)
 	{
-		werr(LOGDESIGNER, "Could not find context %s", id);
+		ERR_DESIGN("Could not find context " + std::string(id));
 		return -1;
 	}
 
@@ -59,7 +59,7 @@ std::string equipment_get_item(const char *id, const char *slot)
 	Context *context = context_find(id);
 	if (context == nullptr)
 	{
-		werr(LOGDESIGNER, "Could not find context %s", id);
+		ERR_DESIGN("Could not find context " + std::string(id));
 		return std::string();
 	}
 

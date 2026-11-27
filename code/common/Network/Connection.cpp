@@ -122,7 +122,7 @@ void Connection::send(const std::string m_serializedData, const bool m_isData)
 
 	if (socket == 0)
 	{
-		wlog(LOGDEVELOPER, "socket %d is disconnected", socket);
+		LOG("socket " + std::to_string(reinterpret_cast<intptr_t>(socket)) + " is disconnected");
 		return;
 	}
 
@@ -134,23 +134,23 @@ void Connection::send(const std::string m_serializedData, const bool m_isData)
 	int l_BytesWritten = SDLNet_TCP_Send(socket, &length, sizeof(length));
 	if (l_BytesWritten != sizeof(length))
 	{
-		werr(LOGUSER, "Could not send command to %s", getUserName().c_str());
+		ERR_USER("Could not send command to " + std::string(getUserName()));
 		setConnected(false);
 	}
 	else
 	{
-		//wlog(LOGDEVELOPER, "sent %u bytes on socket %d", l_BytesWritten, l_Socket);
+		//LOG("sent " + std::to_string(l_BytesWritten) + " bytes on socket " + std::to_string(l_Socket));
 
 		//send frame
 		l_BytesWritten = SDLNet_TCP_Send(socket, m_serializedData.c_str(), m_serializedData.size());
 		if (l_BytesWritten != static_cast<int>(m_serializedData.size()))
 		{
-			werr(LOGUSER, "Could not send command to %s", getUserName().c_str());
+			ERR_USER("Could not send command to " + std::string(getUserName()));
 			setConnected(false);
 		}
 	}
 
-	//wlog(LOGDEVELOPER, "sent %u bytes on socket %d", l_BytesWritten, l_Socket);
+	//LOG("sent " + std::to_string(l_BytesWritten) + " bytes on socket " + std::to_string(l_Socket));
 }
 
 /*****************************************************************************/
@@ -181,7 +181,7 @@ void Connection::closeSocket(bool isData)
 		return;
 	}
 
-	wlog(LOGDEVELOPER, "Disconnecting user %s", getUserName().c_str());
+	LOG("Disconnecting user " + std::string(getUserName()));
 
 	setConnected(false);
 	SDLNet_TCP_Close(socket);
@@ -204,6 +204,6 @@ const std::string& Connection::getContextId() const
 /*****************************************************************************/
 void Connection::setContextId(const std::string& contextId)
 {
-	wlog(LOGDEVELOPER, "User %s select ID %s", getUserName().c_str(), contextId.c_str());
+	LOG("User " + std::string(getUserName()) + " select ID " + std::string(contextId));
 	m_contextId = contextId;
 }

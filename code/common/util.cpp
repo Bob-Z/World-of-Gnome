@@ -60,7 +60,7 @@ std::pair<bool, std::string> checksum_file(const std::string & file_name)
 	result.first = true;
 	result.second = text;
 
-	//wlog(LOGDEVELOPER, "Checksum for %s is %s", file_name.c_str(), result.second.c_str());
+	//LOG("Checksum for " + std::string(file_name) + " is " + std::string(result.second));
 
 	return result;
 }

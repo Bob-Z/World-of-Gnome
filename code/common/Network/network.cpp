@@ -71,8 +71,7 @@ void network_send_command(Connection &connection,
  *********************************************************************/
 void network_send_req_file(Connection &connection, const std::string &file_name)
 {
-	wlog(LOGDEVELOPER, "[network] Send request for file : %s",
-			file_name.c_str());
+	LOG("[network] Send request for file : " + std::string(file_name));
 
 	// Compute checksum of local file
 	const std::string file_path = std::string(base_directory) + "/" + file_name;
@@ -88,8 +87,7 @@ void network_send_req_file(Connection &connection, const std::string &file_name)
 	message.mutable_file()->set_crc(crc.second);
 	std::string serialized_data = message.SerializeAsString();
 
-	wlog(LOGDEVELOPER, "[network] Send FILE request for file : %s",
-			file_name.c_str());
+	LOG("[network] Send FILE request for file : " + std::string(file_name));
 
 	network_send_command(connection, serialized_data, true);
 }
@@ -132,7 +130,7 @@ void network_send_file_data(Connection &connection, const std::string &name,
 	message.mutable_file()->set_data(data);
 	std::string serialized_data = message.SerializeAsString();
 
-	wlog(LOGDEVELOPER, "[network] Send file data for %s", name.c_str());
+	LOG("[network] Send file data for " + std::string(name));
 	network_send_command(connection, serialized_data, false);
 }
 
@@ -147,8 +145,7 @@ int network_send_file(Connection &connection, const char *file_name)
 	// Never send files with password
 	if (strstr(file_name, PASSWD_TABLE.c_str()) != nullptr)
 	{
-		werr(LOGUSER, "send_file : Do not serve personal file  \"%s\"",
-				file_name);
+		ERR_USER("send_file : Do not serve personal file  \"" + std::string(file_name) + "\"");
 		return -1;
 	}
 
@@ -157,7 +154,7 @@ int network_send_file(Connection &connection, const char *file_name)
 
 	if (file_get_contents(file_name, data) == false)
 	{
-		werr(LOGUSER, "send_file : Error reading file \"%s\"", file_name);
+		ERR_USER("send_file : Error reading file \"" + std::string(file_name) + "\"");
 		return -1;
 	}
 

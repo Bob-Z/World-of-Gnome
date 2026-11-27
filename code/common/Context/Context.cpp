@@ -251,8 +251,7 @@ void context_add_or_update_from_network_frame(const Context &receivedCtx)
 
 			if (receivedCtx.isInGame() == true)
 			{
-				wlog(LOGDEVELOPER, "Updating context %s",
-						receivedCtx.getCharacterName().c_str());
+				LOG("Updating context " + std::string(receivedCtx.getCharacterName()));
 
 				ctx->setMap(receivedCtx.getMap());
 				ctx->setTile(receivedCtx.getTileX(), receivedCtx.getTileY());
@@ -266,9 +265,7 @@ void context_add_or_update_from_network_frame(const Context &receivedCtx)
 
 			if (receivedCtx.isInGame() == false)
 			{
-				wlog(LOGDEVELOPER, "Deleting context %s / %s",
-						receivedCtx.getConnection()->getUserName().c_str(),
-						receivedCtx.getCharacterName().c_str());
+				LOG("Deleting context " + std::string(receivedCtx.getConnection()->getUserName()) + " / " + std::string(receivedCtx.getCharacterName()));
 				context_free(ctx);
 			}
 			context_unlock_list();
@@ -280,8 +277,7 @@ void context_add_or_update_from_network_frame(const Context &receivedCtx)
 
 	context_unlock_list();
 
-	wlog(LOGDEVELOPER, "Creating context %s",
-			receivedCtx.getCharacterName().c_str());
+	LOG("Creating context " + std::string(receivedCtx.getCharacterName()));
 	ctx = context_new();
 	ctx->setCharacterName(receivedCtx.getCharacterName().c_str());
 	ctx->setNpc(receivedCtx.isNpc());

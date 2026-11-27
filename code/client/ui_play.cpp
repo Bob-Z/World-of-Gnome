@@ -744,7 +744,7 @@ static void compose_equipment(Context *ctx, std::vector<SdlItem*> &itemArray)
 			// Get the equipped object name
 			if(entry_read_string(ITEM_TABLE.c_str(),equippedName,equipped_text, { ITEM_NAME.c_str() }) == false )
 			{
-				werr(LOGDESIGNER,"Can't read object %s name in equipment slot %s",equippedName,slot_list[index].c_str());
+				ERR_DESIGN("Can't read object " + std::string(equippedName) + " name in equipment slot " + std::string(slot_list[index]));
 			}
 #endif
 			// Get its icon
@@ -758,9 +758,7 @@ static void compose_equipment(Context *ctx, std::vector<SdlItem*> &itemArray)
 							ITEM_TABLE, equippedName, { ITEM_ICON });
 				} catch (...)
 				{
-					werr(LOGDESIGNER,
-							"Can't read object %s's icon in equipment slot %s",
-							equippedName.c_str(), slot_list[index].c_str());
+					ERR_DESIGN("Can't read object " + std::string(equippedName) + "'s icon in equipment slot " + std::string(slot_list[index]));
 				}
 			}
 			else
@@ -772,9 +770,7 @@ static void compose_equipment(Context *ctx, std::vector<SdlItem*> &itemArray)
 							{ ITEM_ICON });
 				} catch (...)
 				{
-					werr(LOGDESIGNER,
-							"Can't read item %s's icon in equipment slot %s",
-							equippedName.c_str(), mytemplate.c_str());
+					ERR_DESIGN("Can't read item " + std::string(equippedName) + "'s icon in equipment slot " + std::string(mytemplate));
 				}
 			}
 
@@ -849,8 +845,7 @@ static void compose_equipment(Context *ctx, std::vector<SdlItem*> &itemArray)
 						ITEM_TABLE, inventory, { ITEM_ICON });
 			} catch (...)
 			{
-				werr(LOGDESIGNER, "Can't read item %s's icon name",
-						inventory.c_str());
+				ERR_DESIGN("Can't read item " + std::string(inventory) + "'s icon name");
 			}
 		}
 		else
@@ -862,8 +857,7 @@ static void compose_equipment(Context *ctx, std::vector<SdlItem*> &itemArray)
 						{ ITEM_ICON });
 			} catch (...)
 			{
-			werr(LOGDESIGNER, "Can't read item %s's icon name (template: %s)",
-					inventory.c_str(), mytemplate.c_str());
+			ERR_DESIGN("Can't read item " + std::string(inventory) + "'s icon name (template: " + std::string(mytemplate) + ")");
 			}
 
 		}

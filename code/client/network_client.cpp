@@ -94,7 +94,7 @@ void network_request_character_creation(Connection & connection, const std::stri
 	message.mutable_create()->set_name(name);
 	std::string serialized_data = message.SerializeAsString();
 
-	wlog(LOGDEVELOPER, "[network] Send CREATE ID = %s, NAME = %s", id.c_str(), name.c_str());
+	LOG("[network] Send CREATE ID = " + std::string(id) + ", NAME = " + std::string(name));
 	network_send_command(connection, serialized_data, false);
 }
 
@@ -184,7 +184,7 @@ static int async_recv(void * data)
 		}
 	}
 
-	werr(LOGUSER, "Socket closed on server side.");
+	ERR_USER("Socket closed on server side.");
 
 	/* Close only the socket this thread reads; the other one may still be in
 	 * use by the data receive thread. */
@@ -229,7 +229,7 @@ static int async_data_recv(void * data)
 		}
 	}
 
-	werr(LOGUSER, "Socket closed on server side.");
+	ERR_USER("Socket closed on server side.");
 
 	connection->closeSocket(true);
 
@@ -250,19 +250,19 @@ int network_connect(Connection & connection, const std::string & host_name)
 
 	if (SDLNet_Init() < 0)
 	{
-		werr(LOGUSER, "Can't init SDLNet: %s\n", SDLNet_GetError());
+		ERR_USER("Can't init SDLNet: " + std::string(SDLNet_GetError()) + "\n");
 		return false;
 	}
 
 	if (SDLNet_ResolveHost(&ip, host_name.c_str(), PORT) < 0)
 	{
-		werr(LOGUSER, "Can't resolve %s:%d : %s\n", host_name.c_str(), PORT, SDLNet_GetError());
+		ERR_USER("Can't resolve " + std::string(host_name) + ":" + std::to_string(PORT) + " : " + std::string(SDLNet_GetError()) + "\n");
 		return false;
 	}
 
 	if ((socket = SDLNet_TCP_Open(&ip)) == 0)
 	{
-		werr(LOGUSER, "Can't connect to %s:%d : %s\n", host_name.c_str(), PORT, SDLNet_GetError());
+		ERR_USER("Can't connect to " + std::string(host_name) + ":" + std::to_string(PORT) + " : " + std::string(SDLNet_GetError()) + "\n");
 		return false;
 	}
 

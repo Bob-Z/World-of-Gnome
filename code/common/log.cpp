@@ -23,7 +23,6 @@
 #include "log.h"
 #include <string.h>
 #include <stdlib.h>
-#include <stdarg.h>
 #include <time.h>
 #include <SDL2/SDL.h>
 #include <string>
@@ -100,11 +99,8 @@ static int is_allowed_func(const char * func)
 }
 
 /*****************************************************************************/
-void log_print(int type, const char * file, const char * func, int line, FILE *stream, int level, const char * format, ...)
+void log_print(int type, const char * file, const char * func, int line, FILE *stream, int level, const std::string & message)
 {
-	va_list ap;
-	char buf[10000];
-
 	if (level > log_level)
 	{
 		return;
@@ -120,10 +116,6 @@ void log_print(int type, const char * file, const char * func, int line, FILE *s
 		return;
 	}
 
-	va_start(ap, format);
-	vsnprintf(buf, sizeof(buf), format, ap);
-	va_end(ap);
-
 	if (type == TYPEERR)
 	{
 		fprintf(stream, "\e[31m");
@@ -131,15 +123,15 @@ void log_print(int type, const char * file, const char * func, int line, FILE *s
 
 	if (log_level == LOGDEVELOPER)
 	{
-		fprintf(stream, "%09d|%ld|%s:%d :%s|%s", SDL_GetTicks(), SDL_ThreadID(), file, line, func, buf);
+		fprintf(stream, "%09d|%ld|%s:%d :%s|%s", SDL_GetTicks(), SDL_ThreadID(), file, line, func, message.c_str());
 	}
 	else if (log_level == LOGDESIGNER)
 	{
-		fprintf(stream, "%09d|%s", SDL_GetTicks(), buf);
+		fprintf(stream, "%09d|%s", SDL_GetTicks(), message.c_str());
 	}
 	else if (log_level == LOGUSER)
 	{
-		fprintf(stream, "%s", buf);
+		fprintf(stream, "%s", message.c_str());
 	}
 
 	if (type == TYPEERR)
@@ -148,12 +140,6 @@ void log_print(int type, const char * file, const char * func, int line, FILE *s
 	}
 
 	fprintf(stream, "\n");
-}
-
-/*****************************************************************************/
-void log_print_std(int type, const char * file, const char * func, int line, FILE *stream, int level, const std::string & format)
-{
-	log_print(type, file, func, line, stream, level, format.c_str());
 }
 
 /**************************************************

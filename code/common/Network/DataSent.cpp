@@ -33,7 +33,7 @@ void DataSent::send()
 {
 	if (m_connection == nullptr)
 	{
-		werr(LOGDEVELOPER, "null connection");
+		ERR("null connection");
 		return;
 	}
 

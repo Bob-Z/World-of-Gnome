@@ -66,7 +66,7 @@ int main(int argc, char **argv)
 
 	base_directory = std::string(getenv("HOME")) + "/.config/wog/server";
 
-	wlog(LOGUSER, "Starting server");
+	LOG_USER("Starting server");
 
 	while ((opt_ret = getopt_long(argc, argv, optstring, longopts, nullptr)) != -1)
 	{
@@ -101,7 +101,7 @@ int main(int argc, char **argv)
 	dir = opendir(base_directory.c_str());
 	if (dir == nullptr)
 	{
-		werr(LOGUSER, "Cannot find %s directory", base_directory.c_str());
+		ERR_USER("Cannot find " + std::string(base_directory) + " directory");
 		return -1;
 	}
 	closedir(dir);

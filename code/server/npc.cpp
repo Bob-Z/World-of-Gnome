@@ -47,8 +47,7 @@ static int npc_script(void *data)
 	// Do not start every NPC at the same moment
 	usleep((random() % NPC_TIMEOUT) * 1000);
 
-	wlog(LOGDESIGNER, "Start AI script for %s(%s)", context->getId().c_str(),
-			context->getCharacterName().c_str());
+	LOG_DESIGN("Start AI script for " + std::string(context->getId()) + "(" + std::string(context->getCharacterName()) + ")");
 
 	context->setInGame(true);
 
@@ -63,7 +62,7 @@ static int npc_script(void *data)
 		if (entry_read_string(CHARACTER_TABLE.c_str(), context->getId().c_str(),
 				script, { CHARACTER_KEY_AI.c_str() }) == false)
 		{
-			werr(LOGUSER, "No AI script for %s", context->getId().c_str());
+			ERR_USER("No AI script for " + std::string(context->getId()));
 			break;
 		}
 
@@ -98,8 +97,7 @@ static int npc_script(void *data)
 		}
 	}
 
-	wlog(LOGDESIGNER, "End AI script for %s(%s)", context->getId().c_str(),
-			context->getCharacterName().c_str());
+	LOG_DESIGN("End AI script for " + std::string(context->getId()) + "(" + std::string(context->getCharacterName()) + ")");
 
 	// Send connected  = FALSE to other context
 	context_spread(context);
@@ -151,8 +149,7 @@ void instantiate_npc(const std::string &id)
 		return;
 	}
 
-	wlog(LOGDESIGNER, "Creating NPC %s of type %s in map %s at %d,%d",
-			name.c_str(), type.c_str(), map.c_str(), x, y);
+	LOG_DESIGN("Creating NPC " + std::string(name) + " of type " + std::string(type) + " in map " + std::string(map) + " at " + std::to_string(x) + "," + std::to_string(y));
 	Context *ctx = context_new();
 
 	ctx->setCharacterName(name);
