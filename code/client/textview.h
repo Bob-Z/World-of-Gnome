@@ -22,14 +22,14 @@
 
 #include <SDL_stdinc.h>
 #include <string>
+#include <vector>
 
-typedef struct history_entry
+struct history_entry_t
 {
-	char * text;
+	std::string text;
 	Uint32 time;
-	struct history_entry * next;
-} history_entry_t;
+};
 
 void textview_add_line(const std::string & p_rText);
-const history_entry_t * textview_get_history();
+const std::vector<history_entry_t> & textview_get_history();
 #endif

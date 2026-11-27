@@ -51,23 +51,14 @@ void ChatHistoryBox::compose(std::vector<SdlItem *> & itemArray, const int upper
 		return;
 	}
 
-	const history_entry_t * history = nullptr;
-	history_entry_t * hist = nullptr;
-
-	history = textview_get_history();
-
-	if (history == nullptr)
-	{
-		return;
-	}
-
-	hist = (history_entry_t*) history;
+	const std::vector<history_entry_t> & history = textview_get_history();
 	Uint32 timeStamp = SDL_GetTicks();
 	int historyBoxY = lowerBorderHeight;
 
-	while (hist != nullptr)
+	// Newest entries are at the back of the vector
+	for (auto iter = history.rbegin(); iter != history.rend(); ++iter)
 	{
-		if (timeStamp > hist->time + TEXT_TIMEOUT_MS)
+		if (timeStamp > iter->time + TEXT_TIMEOUT_MS)
 		{
 			return;
 		}
@@ -76,13 +67,13 @@ void ChatHistoryBox::compose(std::vector<SdlItem *> & itemArray, const int upper
 		itemArray.push_back(item);
 
 		item->setOverlay(true);
-		item->setText(hist->text);
+		item->setText(iter->text);
 		item->setBackGroudColor(BACKGROUND_COLOR);
 		item->setFont(m_font);
 
 		int textWidth = 0;
 		int textHeight = 0;
-		sdl_get_string_size(m_font, hist->text, &textWidth, &textHeight);
+		sdl_get_string_size(m_font, iter->text, &textWidth, &textHeight);
 
 		item->setPos(0, historyBoxY - textHeight);
 		item->setShape(textWidth, textHeight);
@@ -91,7 +82,5 @@ void ChatHistoryBox::compose(std::vector<SdlItem *> & itemArray, const int upper
 		{
 			return;
 		}
-
-		hist = hist->next;
 	}
 }

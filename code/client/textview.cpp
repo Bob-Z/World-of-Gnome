@@ -20,24 +20,16 @@
 #include "sdl.h"
 #include "textview.h"
 
-history_entry_t * textHistory = nullptr;
+static std::vector<history_entry_t> textHistory;
 
 /******************************************************************************/
 void textview_add_line(const std::string & text)
 {
-	history_entry_t * newEntry = nullptr;
-
-	newEntry = (history_entry_t*) malloc(sizeof(history_entry_t));
-
-	newEntry->text = strdup(text.c_str());
-	newEntry->time = SDL_GetTicks();
-	newEntry->next = textHistory;
-
-	textHistory = newEntry;
+	textHistory.push_back({text, SDL_GetTicks()});
 }
 
 /******************************************************************************/
-const history_entry_t * textview_get_history()
+const std::vector<history_entry_t> & textview_get_history()
 {
 	return textHistory;
 }
