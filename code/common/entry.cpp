@@ -18,7 +18,6 @@
  */
 
 #include <algorithm>
-#include <cstdarg>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -35,21 +34,6 @@ Lock entryListLock;
 
 // Defined in main_server.cpp / main_client.cpp
 DataManager & getDataManager();
-
-/*****************************************************************************/
-static std::vector<std::string> getPath(va_list ap)
-{
-	std::vector<std::string> path;
-
-	char *entry = va_arg(ap, char*);
-	while (entry != nullptr)
-	{
-		path.push_back(entry);
-		entry = va_arg(ap, char*);
-	}
-
-	return path;
-}
 
 /*****************************************************************************/
 static std::vector<std::string> splitPath(const std::string &path)
@@ -128,10 +112,10 @@ static std::string __get_unused_group_on_path(const char *table, const char *fil
 }
 
 /*****************************************************************************/
-static std::string __get_unused_group(const char *table, const char *file, va_list ap)
+static std::string __get_unused_group(const char *table, const char *file,
+		const std::vector<std::string> &path)
 {
 	DataManager &dm = getDataManager();
-	std::vector<std::string> path = getPath(ap);
 
 	for (int index = 0;; index++)
 	{
@@ -157,9 +141,8 @@ static std::string __get_unused_group(const char *table, const char *file, va_li
 /*****************************************************************************/
 static std::string __copy_group(const char *src_table, const char *src_file,
 		const char *dst_table, const char *dst_file, const char *group_name,
-		va_list ap)
+		const std::vector<std::string> &path)
 {
-	std::vector<std::string> path = getPath(ap);
 	std::vector<std::string> srcPath = path;
 	srcPath.push_back(group_name);
 
@@ -199,14 +182,9 @@ void entry_remove(const std::string &filename)
 }
 
 /*****************************************************************************/
-int entry_read_int(const std::string &table, const std::string &file, int *res, ...)
+int entry_read_int(const std::string &table, const std::string &file, int *res,
+		const std::vector<std::string> &path)
 {
-	va_list ap;
-
-	va_start(ap, res);
-	std::vector<std::string> path = getPath(ap);
-	va_end(ap);
-
 	LockGuard guard(entryListLock);
 
 	int value = 0;
@@ -221,14 +199,8 @@ int entry_read_int(const std::string &table, const std::string &file, int *res, 
 
 /*****************************************************************************/
 bool entry_read_string(const std::string &table, const std::string &file,
-		std::string &res, ...)
+		std::string &res, const std::vector<std::string> &path)
 {
-	va_list ap;
-
-	va_start(ap, res);
-	std::vector<std::string> path = getPath(ap);
-	va_end(ap);
-
 	LockGuard guard(entryListLock);
 
 	res.clear();
@@ -238,13 +210,11 @@ bool entry_read_string(const std::string &table, const std::string &file,
 
 /*****************************************************************************/
 static bool __read_list_index(const std::string &table, const std::string &file,
-		std::string &res, int index, va_list ap)
+		std::string &res, int index, const std::vector<std::string> &path)
 {
 	res.clear();
 
 	LockGuard guard(entryListLock);
-
-	std::vector<std::string> path = getPath(ap);
 
 	std::vector<std::string> list;
 	if (getDataManager().tryGet<std::vector<std::string> >(table, file, path,
@@ -264,27 +234,18 @@ static bool __read_list_index(const std::string &table, const std::string &file,
 
 /*****************************************************************************/
 bool entry_read_list_index(const std::string &table, const std::string &file,
-		std::string &res, int index, ...)
+		std::string &res, int index, const std::vector<std::string> &path)
 {
-	bool ret;
-	va_list ap;
-
-	va_start(ap, index);
-	ret = __read_list_index(table, file, res, index, ap);
-	va_end(ap);
-
-	return ret;
+	return __read_list_index(table, file, res, index, path);
 }
 
 /*****************************************************************************/
 static int __read_list(const std::string &table, const std::string &file,
-		std::vector<std::string> &res, va_list ap)
+		std::vector<std::string> &res, const std::vector<std::string> &path)
 {
 	res.clear();
 
 	LockGuard guard(entryListLock);
-
-	std::vector<std::string> path = getPath(ap);
 
 	if (getDataManager().tryGet<std::vector<std::string> >(table, file, path,
 			res) == false || res.empty())
@@ -298,55 +259,30 @@ static int __read_list(const std::string &table, const std::string &file,
 
 /*****************************************************************************/
 int entry_read_list(const std::string &table, const std::string &file,
-		std::vector<std::string> &res, ...)
+		std::vector<std::string> &res, const std::vector<std::string> &path)
 {
-	int ret;
-	va_list ap;
-
-	va_start(ap, res);
-	ret = __read_list(table, file, res, ap);
-	va_end(ap);
-
-	return ret;
+	return __read_list(table, file, res, path);
 }
 
 /*****************************************************************************/
-int entry_write_int(const std::string &table, const std::string &file, int data, ...)
+int entry_write_int(const std::string &table, const std::string &file, int data,
+		const std::vector<std::string> &path)
 {
-	int ret;
-	va_list ap;
-
-	va_start(ap, data);
-	ret = getDataManager().set<int>(table, file, getPath(ap), data);
-	va_end(ap);
-
-	return ret;
+	return getDataManager().set<int>(table, file, path, data);
 }
 
 /*****************************************************************************/
 int entry_write_string(const std::string &table, const std::string &file,
-		const std::string &data, ...)
+		const std::string &data, const std::vector<std::string> &path)
 {
-	int ret;
-	va_list ap;
-
-	va_start(ap, data);
-	ret = getDataManager().set<std::string>(table, file, getPath(ap), data);
-	va_end(ap);
-
-	return ret;
+	return getDataManager().set<std::string>(table, file, path, data);
 }
 
 /*****************************************************************************/
 int entry_write_list_index(const std::string &table, const std::string &file,
-		const std::string &data, int index, ...)
+		const std::string &data, int index, const std::vector<std::string> &path)
 {
 	int ret = false;
-	va_list ap;
-
-	va_start(ap, index);
-	std::vector<std::string> path = getPath(ap);
-	va_end(ap);
 
 	if (index < 0)
 	{
@@ -374,14 +310,10 @@ int entry_write_list_index(const std::string &table, const std::string &file,
 }
 
 /*****************************************************************************/
-int entry_write_list(const char *table, const char *file, char **data, ...)
+int entry_write_list(const char *table, const char *file, char **data,
+		const std::vector<std::string> &path)
 {
 	int ret = false;
-	va_list ap;
-
-	va_start(ap, data);
-	std::vector<std::string> path = getPath(ap);
-	va_end(ap);
 
 	std::vector<std::string> list;
 	for (int i = 0; data[i] != nullptr; i++)
@@ -397,14 +329,9 @@ int entry_write_list(const char *table, const char *file, char **data, ...)
 
 /*****************************************************************************/
 int entry_add_to_list(const char *table, const char *file,
-		const char *to_be_added, ...)
+		const char *to_be_added, const std::vector<std::string> &path)
 {
 	int ret = false;
-	va_list ap;
-
-	va_start(ap, to_be_added);
-	std::vector<std::string> path = getPath(ap);
-	va_end(ap);
 
 	try
 	{
@@ -424,30 +351,21 @@ int entry_add_to_list(const char *table, const char *file,
 
 /*****************************************************************************/
 int entry_remove_group(const char *table, const char *file, const char *group,
-		...)
+		const std::vector<std::string> &parentPath)
 {
-	va_list ap;
-
-	va_start(ap, group);
-	std::vector<std::string> path = getPath(ap);
-	va_end(ap);
-
+	std::vector<std::string> path = parentPath;
 	path.push_back(group);
 
 	return getDataManager().erase(table, file, path);
 }
 
 /*****************************************************************************/
-std::string entry_get_unused_list_entry(const char *table, const char *file, ...)
+std::string entry_get_unused_list_entry(const char *table, const char *file,
+		const std::vector<std::string> &path)
 {
 	char tag[16];
 
 	DataManager &dm = getDataManager();
-
-	va_list ap;
-	va_start(ap, file);
-	std::vector<std::string> path = getPath(ap);
-	va_end(ap);
 
 	std::vector<std::string> list;
 	try
@@ -480,28 +398,17 @@ std::string entry_get_unused_list_entry(const char *table, const char *file, ...
 }
 
 /*****************************************************************************/
-std::string entry_get_unused_group(const char *table, const char *file, ...)
+std::string entry_get_unused_group(const char *table, const char *file,
+		const std::vector<std::string> &path)
 {
-	std::string ret;
-	va_list ap;
-
-	va_start(ap, file);
-	ret = __get_unused_group(table, file, ap);
-	va_end(ap);
-
-	return ret;
+	return __get_unused_group(table, file, path);
 }
 
 /*****************************************************************************/
 int entry_get_group_list(const std::string &table, const std::string &file,
-		std::vector<std::string> &res, ...)
+		std::vector<std::string> &res, const std::vector<std::string> &path)
 {
 	int ret = false;
-	va_list ap;
-
-	va_start(ap, res);
-	std::vector<std::string> path = getPath(ap);
-	va_end(ap);
 
 	res.clear();
 
@@ -519,14 +426,9 @@ int entry_get_group_list(const std::string &table, const std::string &file,
 
 /*****************************************************************************/
 int entry_remove_from_list(const char *table, const char *file,
-		const char *to_be_removed, ...)
+		const char *to_be_removed, const std::vector<std::string> &path)
 {
 	int ret = false;
-	va_list ap;
-
-	va_start(ap, to_be_removed);
-	std::vector<std::string> path = getPath(ap);
-	va_end(ap);
 
 	try
 	{
@@ -552,46 +454,27 @@ int entry_remove_from_list(const char *table, const char *file,
 }
 
 /*****************************************************************************/
-int entry_list_create(const char *table, const char *file, ...)
+int entry_list_create(const char *table, const char *file,
+		const std::vector<std::string> &path)
 {
-	int ret;
-	va_list ap;
-
-	va_start(ap, file);
-	ret = getDataManager().set<std::vector<std::string> >(table, file,
-			getPath(ap), std::vector<std::string>());
-	va_end(ap);
-
-	return ret;
+	return getDataManager().set<std::vector<std::string> >(table, file, path,
+			std::vector<std::string>());
 }
 
 /*****************************************************************************/
-int entry_group_create(const char *table, const char *file, ...)
+int entry_group_create(const char *table, const char *file,
+		const std::vector<std::string> &path)
 {
-	int ret;
-	va_list ap;
-
-	va_start(ap, file);
-	ret = getDataManager().set<json>(table, file, getPath(ap), json::object());
-	va_end(ap);
-
-	return ret;
+	return getDataManager().set<json>(table, file, path, json::object());
 }
 
 /*****************************************************************************/
 std::string entry_copy_group(const char *src_table, const char *src_file,
 		const char *dst_table, const char *dst_file, const char *group_name,
-		...)
+		const std::vector<std::string> &path)
 {
-	std::string ret;
-	va_list ap;
-
-	va_start(ap, group_name);
-	ret = __copy_group(src_table, src_file, dst_table, dst_file, group_name,
-			ap);
-	va_end(ap);
-
-	return ret;
+	return __copy_group(src_table, src_file, dst_table, dst_file, group_name,
+			path);
 }
 
 /*****************************************************************************/
@@ -626,10 +509,10 @@ int entry_destroy(const std::string &table, const std::string &file)
 }
 
 /*****************************************************************************/
-static bool __exist(const char *table, const char *file, va_list ap)
+static bool __exist(const char *table, const char *file,
+		const std::vector<std::string> &path)
 {
 	DataManager &dm = getDataManager();
-	std::vector<std::string> path = getPath(ap);
 
 	try
 	{
@@ -642,14 +525,8 @@ static bool __exist(const char *table, const char *file, va_list ap)
 }
 
 /*****************************************************************************/
-bool entry_exist(const std::string &table, const std::string &file, ...)
+bool entry_exist(const std::string &table, const std::string &file,
+		const std::vector<std::string> &path)
 {
-	bool ret;
-	va_list ap;
-
-	va_start(ap, file);
-	ret = __exist(table.c_str(), file.c_str(), ap);
-	va_end(ap);
-
-	return ret;
+	return __exist(table.c_str(), file.c_str(), path);
 }

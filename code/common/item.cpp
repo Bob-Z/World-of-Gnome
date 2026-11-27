@@ -86,15 +86,14 @@ std::pair<bool, std::string> resource_new(const std::string &my_template,
 	}
 
 	if (entry_write_string(ITEM_TABLE.c_str(), new_id.second.c_str(),
-			my_template.c_str(), ITEM_TEMPLATE.c_str(), nullptr) == false)
+			my_template.c_str(), { ITEM_TEMPLATE.c_str() }) == false)
 	{
 		entry_destroy(ITEM_TABLE.c_str(), new_id.second.c_str());
 		return std::pair<bool, std::string>
 		{ false, "" };
 	}
 
-	if (entry_write_int(ITEM_TABLE.c_str(), new_id.second.c_str(), quantity,
-			ITEM_QUANTITY.c_str(), nullptr) == false)
+	if (entry_write_int(ITEM_TABLE.c_str(), new_id.second.c_str(), quantity, { ITEM_QUANTITY.c_str() }) == false)
 	{
 		entry_destroy(ITEM_TABLE.c_str(), new_id.second.c_str());
 		return std::pair<bool, std::string>
@@ -113,8 +112,7 @@ std::string item_is_resource(const std::string &inventory_id)
 {
 	std::string my_template;
 
-	entry_read_string(ITEM_TABLE.c_str(), inventory_id.c_str(), my_template,
-			ITEM_TEMPLATE.c_str(), nullptr);
+	entry_read_string(ITEM_TABLE.c_str(), inventory_id.c_str(), my_template, { ITEM_TEMPLATE.c_str() });
 
 	return my_template;
 }
@@ -133,8 +131,7 @@ int resource_get_quantity(const std::string &item_id)
 		return 1; /* unique item */
 	}
 
-	if (entry_read_int(ITEM_TABLE.c_str(), item_id.c_str(), &quantity,
-			ITEM_QUANTITY.c_str(), nullptr) == false)
+	if (entry_read_int(ITEM_TABLE.c_str(), item_id.c_str(), &quantity, { ITEM_QUANTITY.c_str() }) == false)
 	{
 		return -1;
 	}
@@ -157,8 +154,7 @@ int resource_set_quantity(Context *context, const std::string &item_id,
 		return -1;
 	}
 
-	if (entry_write_int(ITEM_TABLE.c_str(), item_id.c_str(), quantity,
-			ITEM_QUANTITY.c_str(), nullptr) == false)
+	if (entry_write_int(ITEM_TABLE.c_str(), item_id.c_str(), quantity, { ITEM_QUANTITY.c_str() }) == false)
 	{
 		return -1;
 	}
@@ -179,16 +175,14 @@ std::string item_get_name(const std::string &item_id)
 
 	if ((my_template = item_is_resource(item_id)).empty() == false)
 	{
-		if (entry_read_string(ITEM_TEMPLATE_TABLE.c_str(), my_template, name,
-				ITEM_NAME.c_str(), nullptr) == true)
+		if (entry_read_string(ITEM_TEMPLATE_TABLE.c_str(), my_template, name, { ITEM_NAME.c_str() }) == true)
 		{
 			return name;
 		}
 	}
 	else
 	{
-		if (entry_read_string(ITEM_TABLE.c_str(), item_id.c_str(), name,
-				ITEM_NAME.c_str(), nullptr) == true)
+		if (entry_read_string(ITEM_TABLE.c_str(), item_id.c_str(), name, { ITEM_NAME.c_str() }) == true)
 		{
 			return name;
 		}

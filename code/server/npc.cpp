@@ -61,14 +61,14 @@ static int npc_script(void *data)
 		{
 		}
 		if (entry_read_string(CHARACTER_TABLE.c_str(), context->getId().c_str(),
-				script, CHARACTER_KEY_AI.c_str(), nullptr) == false)
+				script, { CHARACTER_KEY_AI.c_str() }) == false)
 		{
 			werr(LOGUSER, "No AI script for %s", context->getId().c_str());
 			break;
 		}
 
 		entry_read_list(CHARACTER_TABLE.c_str(), context->getId().c_str(),
-				parameters, CHARACTER_KEY_AI_PARAMS.c_str(), nullptr);
+				parameters, { CHARACTER_KEY_AI_PARAMS.c_str() });
 
 		if (context->getNextExecutionTick() < SDL_GetTicks())
 		{
@@ -114,8 +114,7 @@ static int npc_script(void *data)
 void instantiate_npc(const std::string &id)
 {
 	int is_npc = 0;
-	if (entry_read_int(CHARACTER_TABLE.c_str(), id.c_str(), &is_npc,
-			CHARACTER_KEY_NPC.c_str(), nullptr) == false)
+	if (entry_read_int(CHARACTER_TABLE.c_str(), id.c_str(), &is_npc, { CHARACTER_KEY_NPC.c_str() }) == false)
 	{
 		return;
 	}
@@ -126,33 +125,28 @@ void instantiate_npc(const std::string &id)
 	}
 
 	int x = 0;
-	if (entry_read_int(CHARACTER_TABLE.c_str(), id.c_str(), &x,
-			CHARACTER_KEY_TILE_X.c_str(), nullptr) == false)
+	if (entry_read_int(CHARACTER_TABLE.c_str(), id.c_str(), &x, { CHARACTER_KEY_TILE_X.c_str() }) == false)
 	{
 		return;
 	}
 
 	int y = 0;
-	if (entry_read_int(CHARACTER_TABLE.c_str(), id.c_str(), &y,
-			CHARACTER_KEY_TILE_Y.c_str(), nullptr) == false)
+	if (entry_read_int(CHARACTER_TABLE.c_str(), id.c_str(), &y, { CHARACTER_KEY_TILE_Y.c_str() }) == false)
 	{
 		return;
 	}
 
 	std::string map;
-	if (entry_read_string(CHARACTER_TABLE.c_str(), id.c_str(), map,
-			CHARACTER_KEY_MAP.c_str(), nullptr) == false)
+	if (entry_read_string(CHARACTER_TABLE.c_str(), id.c_str(), map, { CHARACTER_KEY_MAP.c_str() }) == false)
 	{
 		return;
 	}
 
 	std::string name;
-	entry_read_string(CHARACTER_TABLE.c_str(), id.c_str(), name,
-			CHARACTER_KEY_NAME.c_str(), nullptr);
+	entry_read_string(CHARACTER_TABLE.c_str(), id.c_str(), name, { CHARACTER_KEY_NAME.c_str() });
 
 	std::string type;
-	if (entry_read_string(CHARACTER_TABLE.c_str(), id.c_str(), type,
-			CHARACTER_KEY_TYPE.c_str(), nullptr) == false)
+	if (entry_read_string(CHARACTER_TABLE.c_str(), id.c_str(), type, { CHARACTER_KEY_TYPE.c_str() }) == false)
 	{
 		return;
 	}

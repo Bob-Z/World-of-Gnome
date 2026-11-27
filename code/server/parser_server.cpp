@@ -159,8 +159,7 @@ static void manage_create(Connection &connection, const pb::Create &create)
 	}
 
 	if (entry_write_string(CHARACTER_TABLE.c_str(), create.name().c_str(),
-			create.name().c_str(),
-			CHARACTER_KEY_NAME.c_str(), nullptr) == false)
+			create.name().c_str(), { CHARACTER_KEY_NAME.c_str() }) == false)
 	{
 		werr(LOGUSER, "Error setting character name %s", create.name().c_str());
 		file_delete(CHARACTER_TABLE, create.name());

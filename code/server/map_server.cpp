@@ -72,13 +72,11 @@ int map_check_tile(Context *ctx, const char *id, const std::string &map,
 	int width = 0;
 	int height = 0;
 
-	if (entry_read_int(MAP_TABLE.c_str(), map.c_str(), &width, MAP_KEY_WIDTH.c_str(),
-			nullptr) == false)
+	if (entry_read_int(MAP_TABLE.c_str(), map.c_str(), &width, { MAP_KEY_WIDTH.c_str() }) == false)
 	{
 		return false;
 	}
-	if (entry_read_int(MAP_TABLE.c_str(), map.c_str(), &height, MAP_KEY_HEIGHT.c_str(),
-			nullptr) == false)
+	if (entry_read_int(MAP_TABLE.c_str(), map.c_str(), &height, { MAP_KEY_HEIGHT.c_str() }) == false)
 	{
 		return false;
 	}
@@ -89,8 +87,7 @@ int map_check_tile(Context *ctx, const char *id, const std::string &map,
 	}
 
 	// If there is an allowed_tile_script, run it
-	if (entry_read_string(CHARACTER_TABLE.c_str(), id, script,
-			CHARACTER_KEY_ALLOWED_TILE_SCRIPT.c_str(), nullptr) == true)
+	if (entry_read_string(CHARACTER_TABLE.c_str(), id, script, { CHARACTER_KEY_ALLOWED_TILE_SCRIPT.c_str() }) == true)
 	{
 		const char *param[5];
 
@@ -108,8 +105,7 @@ int map_check_tile(Context *ctx, const char *id, const std::string &map,
 	}
 
 	// Read tile at given index on this map
-	entry_read_int(CHARACTER_TABLE.c_str(), id, &layer, CHARACTER_LAYER.c_str(),
-			nullptr);
+	entry_read_int(CHARACTER_TABLE.c_str(), id, &layer, { CHARACTER_LAYER.c_str() });
 	tile_type = get_tile_type_through_layer(map, layer, x, y);
 
 	// Allow tile if no type defined
@@ -125,8 +121,7 @@ int map_check_tile(Context *ctx, const char *id, const std::string &map,
 	}
 
 	// If there is allowed_tile list, check it
-	if (entry_read_list(CHARACTER_TABLE.c_str(), id, allowed_tile,
-			CHARACTER_KEY_ALLOWED_TILE.c_str(), nullptr) == true)
+	if (entry_read_list(CHARACTER_TABLE.c_str(), id, allowed_tile, { CHARACTER_KEY_ALLOWED_TILE.c_str() }) == true)
 	{
 		for (size_t i = 0; i < allowed_tile.size(); i++)
 		{
@@ -162,26 +157,22 @@ std::pair<bool, std::string> map_new(const char *name, int w, int h, int tile_w,
 		return map_name;
 	}
 
-	if (entry_write_int(MAP_TABLE.c_str(), map_name.second.c_str(), w,
-			MAP_KEY_HEIGHT.c_str(), nullptr) == false)
+	if (entry_write_int(MAP_TABLE.c_str(), map_name.second.c_str(), w, { MAP_KEY_HEIGHT.c_str() }) == false)
 	{
 		return std::pair<bool, std::string>
 		{ false, "" };
 	}
-	if (entry_write_int(MAP_TABLE.c_str(), map_name.second.c_str(), h,
-			MAP_KEY_WIDTH.c_str(), nullptr) == false)
+	if (entry_write_int(MAP_TABLE.c_str(), map_name.second.c_str(), h, { MAP_KEY_WIDTH.c_str() }) == false)
 	{
 		return std::pair<bool, std::string>
 		{ false, "" };
 	}
-	if (entry_write_int(MAP_TABLE.c_str(), map_name.second.c_str(), tile_w,
-			MAP_KEY_TILE_WIDTH.c_str(), nullptr) == false)
+	if (entry_write_int(MAP_TABLE.c_str(), map_name.second.c_str(), tile_w, { MAP_KEY_TILE_WIDTH.c_str() }) == false)
 	{
 		return std::pair<bool, std::string>
 		{ false, "" };
 	}
-	if (entry_write_int(MAP_TABLE.c_str(), map_name.second.c_str(), tile_h,
-			MAP_KEY_TILE_HEIGHT.c_str(), nullptr) == false)
+	if (entry_write_int(MAP_TABLE.c_str(), map_name.second.c_str(), tile_h, { MAP_KEY_TILE_HEIGHT.c_str() }) == false)
 	{
 		return std::pair<bool, std::string>
 		{ false, "" };
@@ -212,24 +203,19 @@ std::string map_delete_item(const char *map, int layer, int x, int y)
 	LockGuard guard(map_lock);
 
 	// Search the items on the specified tile
-	if (entry_get_group_list(MAP_TABLE.c_str(), map, itemlist, layer_name,
-			MAP_ENTRY_ITEM_LIST.c_str(), nullptr) == false)
+	if (entry_get_group_list(MAP_TABLE.c_str(), map, itemlist, { layer_name, MAP_ENTRY_ITEM_LIST.c_str() }) == false)
 	{
 		return std::string();
 	}
 
 	for (size_t i = 0; i < itemlist.size(); i++)
 	{
-		if (entry_read_int(MAP_TABLE.c_str(), map, &mapx, layer_name,
-				MAP_ENTRY_ITEM_LIST.c_str(), itemlist[i].c_str(), MAP_ITEM_TILE_X.c_str(),
-				nullptr) == false)
+		if (entry_read_int(MAP_TABLE.c_str(), map, &mapx, { layer_name, MAP_ENTRY_ITEM_LIST.c_str(), itemlist[i].c_str(), MAP_ITEM_TILE_X.c_str() }) == false)
 		{
 			return std::string();
 		}
 
-		if (entry_read_int(MAP_TABLE.c_str(), map, &mapy, layer_name,
-				MAP_ENTRY_ITEM_LIST.c_str(), itemlist[i].c_str(), MAP_ITEM_TILE_Y.c_str(),
-				nullptr) == false)
+		if (entry_read_int(MAP_TABLE.c_str(), map, &mapy, { layer_name, MAP_ENTRY_ITEM_LIST.c_str(), itemlist[i].c_str(), MAP_ITEM_TILE_Y.c_str() }) == false)
 		{
 			return std::string();
 		}
@@ -249,8 +235,7 @@ std::string map_delete_item(const char *map, int layer, int x, int y)
 	}
 
 	// remove the item from the item list of the map
-	if (entry_remove_group(MAP_TABLE.c_str(), map, id.c_str(), layer_name,
-			MAP_ENTRY_ITEM_LIST.c_str(), nullptr) == false)
+	if (entry_remove_group(MAP_TABLE.c_str(), map, id.c_str(), { layer_name, MAP_ENTRY_ITEM_LIST.c_str() }) == false)
 	{
 		return saved_item;
 	}
@@ -278,18 +263,14 @@ int map_add_item(const char *map, int layer, const char *id, int x, int y)
 
 	LockGuard guard(map_lock);
 
-	if (entry_write_int(MAP_TABLE.c_str(), map, x, layer_name,
-			MAP_ENTRY_ITEM_LIST.c_str(), id, MAP_ITEM_TILE_X.c_str(), nullptr) == false)
+	if (entry_write_int(MAP_TABLE.c_str(), map, x, { layer_name, MAP_ENTRY_ITEM_LIST.c_str(), id, MAP_ITEM_TILE_X.c_str() }) == false)
 	{
-		entry_remove_group(MAP_TABLE.c_str(), map, id, layer_name,
-				MAP_ENTRY_ITEM_LIST.c_str(), nullptr);
+		entry_remove_group(MAP_TABLE.c_str(), map, id, { layer_name, MAP_ENTRY_ITEM_LIST.c_str() });
 		return false;
 	}
-	if (entry_write_int(MAP_TABLE.c_str(), map, y, layer_name,
-			MAP_ENTRY_ITEM_LIST.c_str(), id, MAP_ITEM_TILE_Y.c_str(), nullptr) == false)
+	if (entry_write_int(MAP_TABLE.c_str(), map, y, { layer_name, MAP_ENTRY_ITEM_LIST.c_str(), id, MAP_ITEM_TILE_Y.c_str() }) == false)
 	{
-		entry_remove_group(MAP_TABLE.c_str(), map, id, layer_name,
-				MAP_ENTRY_ITEM_LIST.c_str(), nullptr);
+		entry_remove_group(MAP_TABLE.c_str(), map, id, { layer_name, MAP_ENTRY_ITEM_LIST.c_str() });
 		return false;
 	}
 
@@ -326,21 +307,18 @@ int map_set_tile(const char *map, int layer, const char *tile, int x, int y,
 	LockGuard guard(map_lock);
 
 	// read size of map grid
-	if (entry_read_int(MAP_TABLE.c_str(), map, &width, MAP_KEY_WIDTH.c_str(),
-			nullptr) == false)
+	if (entry_read_int(MAP_TABLE.c_str(), map, &width, { MAP_KEY_WIDTH.c_str() }) == false)
 	{
 		return false;
 	}
 
 	// read layer's specific width
-	entry_read_int(MAP_TABLE.c_str(), map, &width, layer_name, MAP_KEY_WIDTH.c_str(),
-			nullptr);
+	entry_read_int(MAP_TABLE.c_str(), map, &width, { layer_name, MAP_KEY_WIDTH.c_str() });
 
 	index = width * y + x;
 
 	// read previous map set
-	if (entry_read_list_index(MAP_TABLE.c_str(), map, previous_tile, index,
-			layer_name, MAP_KEY_SET.c_str(), nullptr) == false)
+	if (entry_read_list_index(MAP_TABLE.c_str(), map, previous_tile, index, { layer_name, MAP_KEY_SET.c_str() }) == false)
 	{
 		return false;
 	}
@@ -352,8 +330,7 @@ int map_set_tile(const char *map, int layer, const char *tile, int x, int y,
 		return false;
 	}
 
-	if (entry_write_list_index(MAP_TABLE.c_str(), map, tile, index, layer_name,
-			MAP_KEY_SET.c_str(), nullptr) == true)
+	if (entry_write_list_index(MAP_TABLE.c_str(), map, tile, index, { layer_name, MAP_KEY_SET.c_str() }) == true)
 	{
 		if (network_broadcast)
 		{
@@ -384,8 +361,7 @@ int map_set_tile_array(const char *map, int layer, const char **tile_array)
 	LockGuard guard(map_lock);
 
 	// read previous map set
-	if (entry_read_list(MAP_TABLE.c_str(), map, previous_tile, layer_name,
-			MAP_KEY_SET.c_str(), nullptr) == false)
+	if (entry_read_list(MAP_TABLE.c_str(), map, previous_tile, { layer_name, MAP_KEY_SET.c_str() }) == false)
 	{
 		return false;
 	}
@@ -411,8 +387,7 @@ int map_set_tile_array(const char *map, int layer, const char **tile_array)
 	}
 	data.push_back(nullptr);
 
-	if (entry_write_list(MAP_TABLE.c_str(), map, data.data(), layer_name,
-			MAP_KEY_SET.c_str(), nullptr) == true)
+	if (entry_write_list(MAP_TABLE.c_str(), map, data.data(), { layer_name, MAP_KEY_SET.c_str() }) == true)
 	{
 		context_broadcast_map(map);
 	}
@@ -447,8 +422,7 @@ int map_set_tile_type(const char *map, int layer, const char *type, int x,
 	LockGuard guard(map_lock);
 
 	// read size of map grid
-	if (entry_read_int(MAP_TABLE.c_str(), map, &width, MAP_KEY_WIDTH.c_str(),
-			nullptr) == false)
+	if (entry_read_int(MAP_TABLE.c_str(), map, &width, { MAP_KEY_WIDTH.c_str() }) == false)
 	{
 		return false;
 	}
@@ -456,8 +430,7 @@ int map_set_tile_type(const char *map, int layer, const char *type, int x,
 	index = width * y + x;
 
 	// read previous map type
-	if (entry_read_list_index(MAP_TABLE.c_str(), map, previous_type, index,
-			layer_name, MAP_KEY_TYPE.c_str(), nullptr) == true)
+	if (entry_read_list_index(MAP_TABLE.c_str(), map, previous_type, index, { layer_name, MAP_KEY_TYPE.c_str() }) == true)
 	{
 		/* Do not change the type if it already the requested type
 		 Avoid calling useless context_broadcast_file */
@@ -467,8 +440,7 @@ int map_set_tile_type(const char *map, int layer, const char *type, int x,
 		}
 	}
 
-	if (entry_write_list_index(MAP_TABLE.c_str(), map, type, index, layer_name,
-			MAP_KEY_TYPE.c_str(), nullptr) == true)
+	if (entry_write_list_index(MAP_TABLE.c_str(), map, type, index, { layer_name, MAP_KEY_TYPE.c_str() }) == true)
 	{
 		if (network_broadcast)
 		{
@@ -502,8 +474,7 @@ int map_set_offscreen(const char *map, const char *script)
 
 	LockGuard guard(map_lock);
 
-	res = entry_write_string(MAP_TABLE.c_str(), map, script, MAP_OFFSCREEN.c_str(),
-			nullptr);
+	res = entry_write_string(MAP_TABLE.c_str(), map, script, { MAP_OFFSCREEN.c_str() });
 
 	return res;
 }
@@ -534,24 +505,20 @@ int map_set_custom_column(const char *map, int layer, int num, int width,
 	// Map grid settings
 	if (layer == -1)
 	{
-		res = entry_write_int(MAP_TABLE.c_str(), map, width, width_name,
-				nullptr);
+		res = entry_write_int(MAP_TABLE.c_str(), map, width, { width_name });
 		if (res == true)
 		{
-			res = entry_write_int(MAP_TABLE.c_str(), map, height, height_name,
-					nullptr);
+			res = entry_write_int(MAP_TABLE.c_str(), map, height, { height_name });
 		}
 	}
 	// Layer specific setting
 	else
 	{
 		sprintf(layer_name, "%s%d", MAP_KEY_LAYER.c_str(), layer);
-		res = entry_write_int(MAP_TABLE.c_str(), map, width, layer_name,
-				width_name, nullptr);
+		res = entry_write_int(MAP_TABLE.c_str(), map, width, { layer_name, width_name });
 		if (res == true)
 		{
-			res = entry_write_int(MAP_TABLE.c_str(), map, height, layer_name,
-					height_name, nullptr);
+			res = entry_write_int(MAP_TABLE.c_str(), map, height, { layer_name, height_name });
 		}
 	}
 
@@ -591,23 +558,19 @@ int map_set_custom_row(const char *map, int layer, int num, int width,
 
 	if (layer == -1)
 	{
-		res = entry_write_int(MAP_TABLE.c_str(), map, width, width_name,
-				nullptr);
+		res = entry_write_int(MAP_TABLE.c_str(), map, width, { width_name });
 		if (res == true)
 		{
-			res = entry_write_int(MAP_TABLE.c_str(), map, height, height_name,
-					nullptr);
+			res = entry_write_int(MAP_TABLE.c_str(), map, height, { height_name });
 		}
 	}
 	else
 	{
 		sprintf(layer_name, "%s%d", MAP_KEY_LAYER.c_str(), layer);
-		res = entry_write_int(MAP_TABLE.c_str(), map, width, layer_name,
-				width_name, nullptr);
+		res = entry_write_int(MAP_TABLE.c_str(), map, width, { layer_name, width_name });
 		if (res == true)
 		{
-			res = entry_write_int(MAP_TABLE.c_str(), map, height, layer_name,
-					height_name, nullptr);
+			res = entry_write_int(MAP_TABLE.c_str(), map, height, { layer_name, height_name });
 		}
 	}
 
@@ -627,29 +590,24 @@ std::string map_get_tile(const char *map, int layer, int x, int y)
 
 	sprintf(layer_name, "%s%d", MAP_KEY_LAYER.c_str(), layer);
 
-	if (entry_read_int(MAP_TABLE.c_str(), map, &width, MAP_KEY_WIDTH.c_str(),
-			nullptr) == false)
+	if (entry_read_int(MAP_TABLE.c_str(), map, &width, { MAP_KEY_WIDTH.c_str() }) == false)
 	{
 		return std::string();
 	}
-	entry_read_int(MAP_TABLE.c_str(), map, &width, layer_name, MAP_KEY_WIDTH.c_str(),
-			nullptr);
+	entry_read_int(MAP_TABLE.c_str(), map, &width, { layer_name, MAP_KEY_WIDTH.c_str() });
 
-	if (entry_read_int(MAP_TABLE.c_str(), map, &height, MAP_KEY_HEIGHT.c_str(),
-			nullptr) == false)
+	if (entry_read_int(MAP_TABLE.c_str(), map, &height, { MAP_KEY_HEIGHT.c_str() }) == false)
 	{
 		return std::string();
 	}
-	entry_read_int(MAP_TABLE.c_str(), map, &height, layer_name, MAP_KEY_HEIGHT.c_str(),
-			nullptr);
+	entry_read_int(MAP_TABLE.c_str(), map, &height, { layer_name, MAP_KEY_HEIGHT.c_str() });
 
 	if (x < 0 || y < 0 || x >= width || y >= height)
 	{
 		return std::string();
 	}
 
-	entry_read_list_index(MAP_TABLE.c_str(), map, map_tile, (width * y) + x,
-			layer_name, MAP_KEY_SET.c_str(), nullptr);
+	entry_read_list_index(MAP_TABLE.c_str(), map, map_tile, (width * y) + x, { layer_name, MAP_KEY_SET.c_str() });
 
 	return map_tile;
 }
@@ -665,14 +623,12 @@ std::string map_get_tile_type(const std::string &map, int layer, int x, int y)
 	int height;
 	char layer_name[SMALL_BUF];
 
-	if (entry_read_int(MAP_TABLE.c_str(), map.c_str(), &width, MAP_KEY_WIDTH.c_str(),
-			nullptr) == false)
+	if (entry_read_int(MAP_TABLE.c_str(), map.c_str(), &width, { MAP_KEY_WIDTH.c_str() }) == false)
 	{
 		return std::string();
 	}
 
-	if (entry_read_int(MAP_TABLE.c_str(), map.c_str(), &height, MAP_KEY_HEIGHT.c_str(),
-			nullptr) == false)
+	if (entry_read_int(MAP_TABLE.c_str(), map.c_str(), &height, { MAP_KEY_HEIGHT.c_str() }) == false)
 	{
 		return std::string();
 	}
@@ -684,7 +640,7 @@ std::string map_get_tile_type(const std::string &map, int layer, int x, int y)
 
 	sprintf(layer_name, "%s%d", MAP_KEY_LAYER.c_str(), layer);
 	entry_read_list_index(MAP_TABLE.c_str(), map.c_str(), map_type,
-			(width * y) + x, layer_name, MAP_KEY_TYPE.c_str(), nullptr);
+			(width * y) + x, { layer_name, MAP_KEY_TYPE.c_str() });
 
 	if (!map_type.empty())
 	{
@@ -716,21 +672,16 @@ std::vector<std::string> map_get_event(const std::string &map, int layer, int x,
 	LockGuard guard(map_lock);
 
 	// Search the items on the specified tile for a specific layer
-	if (entry_get_group_list(MAP_TABLE.c_str(), map.c_str(), eventlist,
-			layer_name, MAP_ENTRY_EVENT_LIST.c_str(), nullptr) == true)
+	if (entry_get_group_list(MAP_TABLE.c_str(), map.c_str(), eventlist, { layer_name, MAP_ENTRY_EVENT_LIST.c_str() }) == true)
 	{
 		for (size_t i = 0; i < eventlist.size(); i++)
 		{
-			if (entry_read_int(MAP_TABLE.c_str(), map.c_str(), &mapx,
-					layer_name, MAP_ENTRY_EVENT_LIST.c_str(), eventlist[i].c_str(),
-					MAP_EVENT_TILE_X.c_str(), nullptr) == false)
+			if (entry_read_int(MAP_TABLE.c_str(), map.c_str(), &mapx, { layer_name, MAP_ENTRY_EVENT_LIST.c_str(), eventlist[i].c_str(), MAP_EVENT_TILE_X.c_str() }) == false)
 			{
 				continue;
 			}
 
-			if (entry_read_int(MAP_TABLE.c_str(), map.c_str(), &mapy,
-					layer_name, MAP_ENTRY_EVENT_LIST.c_str(), eventlist[i].c_str(),
-					MAP_EVENT_TILE_Y.c_str(), nullptr) == false)
+			if (entry_read_int(MAP_TABLE.c_str(), map.c_str(), &mapy, { layer_name, MAP_ENTRY_EVENT_LIST.c_str(), eventlist[i].c_str(), MAP_EVENT_TILE_Y.c_str() }) == false)
 			{
 				continue;
 			}
@@ -743,21 +694,16 @@ std::vector<std::string> map_get_event(const std::string &map, int layer, int x,
 		}
 	}
 	// Search the items on the specified tile for all layers
-	if (entry_get_group_list(MAP_TABLE.c_str(), map.c_str(), eventlist,
-			MAP_ENTRY_EVENT_LIST.c_str(), nullptr) == true)
+	if (entry_get_group_list(MAP_TABLE.c_str(), map.c_str(), eventlist, { MAP_ENTRY_EVENT_LIST.c_str() }) == true)
 	{
 		for (size_t i = 0; i < eventlist.size(); i++)
 		{
-			if (entry_read_int(MAP_TABLE.c_str(), map.c_str(), &mapx,
-					MAP_ENTRY_EVENT_LIST.c_str(), eventlist[i].c_str(), MAP_EVENT_TILE_X.c_str(),
-					nullptr) == false)
+			if (entry_read_int(MAP_TABLE.c_str(), map.c_str(), &mapx, { MAP_ENTRY_EVENT_LIST.c_str(), eventlist[i].c_str(), MAP_EVENT_TILE_X.c_str() }) == false)
 			{
 				continue;
 			}
 
-			if (entry_read_int(MAP_TABLE.c_str(), map.c_str(), &mapy,
-					MAP_ENTRY_EVENT_LIST.c_str(), eventlist[i].c_str(), MAP_EVENT_TILE_Y.c_str(),
-					nullptr) == false)
+			if (entry_read_int(MAP_TABLE.c_str(), map.c_str(), &mapy, { MAP_ENTRY_EVENT_LIST.c_str(), eventlist[i].c_str(), MAP_EVENT_TILE_Y.c_str() }) == false)
 			{
 				continue;
 			}
@@ -793,34 +739,26 @@ std::string map_add_event(const char *map, int layer, const char *script, int x,
 	sprintf(layer_name, "%s%d", MAP_KEY_LAYER.c_str(), layer);
 
 	// Make sure the MAP_ENTRY_EVENT_LIST.c_str() group exists
-	entry_group_create(MAP_TABLE.c_str(), map, layer_name, MAP_ENTRY_EVENT_LIST.c_str(),
-			nullptr);
+	entry_group_create(MAP_TABLE.c_str(), map, { layer_name, MAP_ENTRY_EVENT_LIST.c_str() });
 
-	id = entry_get_unused_group(MAP_TABLE.c_str(), map, layer_name,
-			MAP_ENTRY_EVENT_LIST.c_str(), nullptr);
+	id = entry_get_unused_group(MAP_TABLE.c_str(), map, { layer_name, MAP_ENTRY_EVENT_LIST.c_str() });
 
 	LockGuard guard(map_lock);
 
-	if (entry_write_int(MAP_TABLE.c_str(), map, x, layer_name,
-			MAP_ENTRY_EVENT_LIST.c_str(), id.c_str(), MAP_EVENT_TILE_X.c_str(), nullptr) == false)
+	if (entry_write_int(MAP_TABLE.c_str(), map, x, { layer_name, MAP_ENTRY_EVENT_LIST.c_str(), id.c_str(), MAP_EVENT_TILE_X.c_str() }) == false)
 	{
-		entry_remove_group(MAP_TABLE.c_str(), map, id.c_str(), layer_name,
-				MAP_ENTRY_EVENT_LIST.c_str(), nullptr);
+		entry_remove_group(MAP_TABLE.c_str(), map, id.c_str(), { layer_name, MAP_ENTRY_EVENT_LIST.c_str() });
 		return std::string();
 	}
-	if (entry_write_int(MAP_TABLE.c_str(), map, y, layer_name,
-			MAP_ENTRY_EVENT_LIST.c_str(), id.c_str(), MAP_EVENT_TILE_Y.c_str(), nullptr) == false)
+	if (entry_write_int(MAP_TABLE.c_str(), map, y, { layer_name, MAP_ENTRY_EVENT_LIST.c_str(), id.c_str(), MAP_EVENT_TILE_Y.c_str() }) == false)
 	{
-		entry_remove_group(MAP_TABLE.c_str(), map, id.c_str(), layer_name,
-				MAP_ENTRY_EVENT_LIST.c_str(), nullptr);
+		entry_remove_group(MAP_TABLE.c_str(), map, id.c_str(), { layer_name, MAP_ENTRY_EVENT_LIST.c_str() });
 		return std::string();
 	}
 
-	if (entry_write_string(MAP_TABLE.c_str(), map, script, layer_name,
-			MAP_ENTRY_EVENT_LIST.c_str(), id.c_str(), MAP_EVENT_SCRIPT.c_str(), nullptr) == false)
+	if (entry_write_string(MAP_TABLE.c_str(), map, script, { layer_name, MAP_ENTRY_EVENT_LIST.c_str(), id.c_str(), MAP_EVENT_SCRIPT.c_str() }) == false)
 	{
-		entry_remove_group(MAP_TABLE.c_str(), map, id.c_str(), layer_name,
-				MAP_ENTRY_EVENT_LIST.c_str(), nullptr);
+		entry_remove_group(MAP_TABLE.c_str(), map, id.c_str(), { layer_name, MAP_ENTRY_EVENT_LIST.c_str() });
 		return std::string();
 	}
 
@@ -842,11 +780,9 @@ int map_add_event_param(const char *map, int layer, const char *event_id,
 	sprintf(layer_name, "%s%d", MAP_KEY_LAYER.c_str(), layer);
 
 	// Make sure the param list exists
-	entry_list_create(MAP_TABLE.c_str(), map, layer_name, MAP_ENTRY_EVENT_LIST.c_str(),
-			event_id, MAP_EVENT_PARAM.c_str(), nullptr);
+	entry_list_create(MAP_TABLE.c_str(), map, { layer_name, MAP_ENTRY_EVENT_LIST.c_str(), event_id, MAP_EVENT_PARAM.c_str() });
 
-	return entry_add_to_list(MAP_TABLE.c_str(), map, param, layer_name,
-			MAP_ENTRY_EVENT_LIST.c_str(), event_id, MAP_EVENT_PARAM.c_str(), nullptr);
+	return entry_add_to_list(MAP_TABLE.c_str(), map, param, { layer_name, MAP_ENTRY_EVENT_LIST.c_str(), event_id, MAP_EVENT_PARAM.c_str() });
 }
 
 /**********************************************
@@ -873,29 +809,22 @@ int map_delete_event(const char *map, int layer, const char *script, int x,
 	LockGuard guard(map_lock);
 
 	// Search events on the specified tile
-	if (entry_get_group_list(MAP_TABLE.c_str(), map, eventlist, layer_name,
-			MAP_ENTRY_EVENT_LIST.c_str(), nullptr) == false)
+	if (entry_get_group_list(MAP_TABLE.c_str(), map, eventlist, { layer_name, MAP_ENTRY_EVENT_LIST.c_str() }) == false)
 	{
 		return false;
 	}
 
 	for (size_t i = 0; i < eventlist.size(); i++)
 	{
-		if (entry_read_int(MAP_TABLE.c_str(), map, &mapx, layer_name,
-				MAP_ENTRY_EVENT_LIST.c_str(), eventlist[i].c_str(), MAP_EVENT_TILE_X.c_str(),
-				nullptr) == false)
+		if (entry_read_int(MAP_TABLE.c_str(), map, &mapx, { layer_name, MAP_ENTRY_EVENT_LIST.c_str(), eventlist[i].c_str(), MAP_EVENT_TILE_X.c_str() }) == false)
 		{
 			continue;
 		}
-		if (entry_read_int(MAP_TABLE.c_str(), map, &mapy, layer_name,
-				MAP_ENTRY_EVENT_LIST.c_str(), eventlist[i].c_str(), MAP_EVENT_TILE_Y.c_str(),
-				nullptr) == false)
+		if (entry_read_int(MAP_TABLE.c_str(), map, &mapy, { layer_name, MAP_ENTRY_EVENT_LIST.c_str(), eventlist[i].c_str(), MAP_EVENT_TILE_Y.c_str() }) == false)
 		{
 			continue;
 		}
-		if (entry_read_string(MAP_TABLE.c_str(), map, map_script, layer_name,
-				MAP_ENTRY_EVENT_LIST.c_str(), eventlist[i].c_str(), MAP_EVENT_SCRIPT.c_str(),
-				nullptr) == false)
+		if (entry_read_string(MAP_TABLE.c_str(), map, map_script, { layer_name, MAP_ENTRY_EVENT_LIST.c_str(), eventlist[i].c_str(), MAP_EVENT_SCRIPT.c_str() }) == false)
 		{
 			continue;
 		}
@@ -912,8 +841,7 @@ int map_delete_event(const char *map, int layer, const char *script, int x,
 	}
 
 	// remove the event from the events list of the map
-	if (entry_remove_group(MAP_TABLE.c_str(), map, id.c_str(), layer_name,
-			MAP_ENTRY_EVENT_LIST.c_str(), nullptr) == false)
+	if (entry_remove_group(MAP_TABLE.c_str(), map, id.c_str(), { layer_name, MAP_ENTRY_EVENT_LIST.c_str() }) == false)
 	{
 		return false;
 	}
@@ -978,24 +906,19 @@ std::vector<std::string> map_get_item(const char *map, int layer, int map_x, int
 
 	sprintf(layer_name, "%s%d", MAP_KEY_LAYER.c_str(), layer);
 
-	if (entry_get_group_list(MAP_TABLE.c_str(), map, item_id, layer_name,
-			MAP_ENTRY_ITEM_LIST.c_str(), nullptr) == false)
+	if (entry_get_group_list(MAP_TABLE.c_str(), map, item_id, { layer_name, MAP_ENTRY_ITEM_LIST.c_str() }) == false)
 	{
 		return g_itemList;
 	}
 
 	for (size_t i = 0; i < item_id.size(); i++)
 	{
-		if (entry_read_int(MAP_TABLE.c_str(), map, &x, layer_name,
-				MAP_ENTRY_ITEM_LIST.c_str(), item_id[i].c_str(), MAP_ITEM_TILE_X.c_str(),
-				nullptr) == false)
+		if (entry_read_int(MAP_TABLE.c_str(), map, &x, { layer_name, MAP_ENTRY_ITEM_LIST.c_str(), item_id[i].c_str(), MAP_ITEM_TILE_X.c_str() }) == false)
 		{
 			continue;
 		}
 
-		if (entry_read_int(MAP_TABLE.c_str(), map, &y, layer_name,
-				MAP_ENTRY_ITEM_LIST.c_str(), item_id[i].c_str(), MAP_ITEM_TILE_Y.c_str(),
-				nullptr) == false)
+		if (entry_read_int(MAP_TABLE.c_str(), map, &y, { layer_name, MAP_ENTRY_ITEM_LIST.c_str(), item_id[i].c_str(), MAP_ITEM_TILE_Y.c_str() }) == false)
 		{
 			continue;
 		}
@@ -1063,33 +986,25 @@ std::string map_add_scenery(const char *map, int layer, int x, int y,
 	sprintf(layer_name, "%s%d", MAP_KEY_LAYER.c_str(), layer);
 
 	/* Make sure the MAP_KEY_SCENERY group exists */
-	entry_group_create(MAP_TABLE.c_str(), map, layer_name, MAP_KEY_SCENERY.c_str(),
-			nullptr);
+	entry_group_create(MAP_TABLE.c_str(), map, { layer_name, MAP_KEY_SCENERY.c_str() });
 
-	id = entry_get_unused_group(MAP_TABLE.c_str(), map, layer_name,
-			MAP_KEY_SCENERY.c_str(), nullptr);
+	id = entry_get_unused_group(MAP_TABLE.c_str(), map, { layer_name, MAP_KEY_SCENERY.c_str() });
 
 	LockGuard guard(map_lock);
 
-	if (entry_write_int(MAP_TABLE.c_str(), map, x, layer_name, MAP_KEY_SCENERY.c_str(),
-			id.c_str(), MAP_KEY_SCENERY_X.c_str(), nullptr) == false)
+	if (entry_write_int(MAP_TABLE.c_str(), map, x, { layer_name, MAP_KEY_SCENERY.c_str(), id.c_str(), MAP_KEY_SCENERY_X.c_str() }) == false)
 	{
-		entry_remove_group(MAP_TABLE.c_str(), map, id.c_str(), layer_name,
-				MAP_KEY_SCENERY.c_str(), nullptr);
+		entry_remove_group(MAP_TABLE.c_str(), map, id.c_str(), { layer_name, MAP_KEY_SCENERY.c_str() });
 		return std::string();
 	}
-	if (entry_write_int(MAP_TABLE.c_str(), map, y, layer_name, MAP_KEY_SCENERY.c_str(),
-			id.c_str(), MAP_KEY_SCENERY_Y.c_str(), nullptr) == false)
+	if (entry_write_int(MAP_TABLE.c_str(), map, y, { layer_name, MAP_KEY_SCENERY.c_str(), id.c_str(), MAP_KEY_SCENERY_Y.c_str() }) == false)
 	{
-		entry_remove_group(MAP_TABLE.c_str(), map, id.c_str(), layer_name,
-				MAP_KEY_SCENERY.c_str(), nullptr);
+		entry_remove_group(MAP_TABLE.c_str(), map, id.c_str(), { layer_name, MAP_KEY_SCENERY.c_str() });
 		return std::string();
 	}
-	if (entry_write_string(MAP_TABLE.c_str(), map, image_name, layer_name,
-			MAP_KEY_SCENERY.c_str(), id.c_str(), MAP_KEY_SCENERY_IMAGE.c_str(), nullptr) == false)
+	if (entry_write_string(MAP_TABLE.c_str(), map, image_name, { layer_name, MAP_KEY_SCENERY.c_str(), id.c_str(), MAP_KEY_SCENERY_IMAGE.c_str() }) == false)
 	{
-		entry_remove_group(MAP_TABLE.c_str(), map, id.c_str(), layer_name,
-				MAP_KEY_SCENERY.c_str(), nullptr);
+		entry_remove_group(MAP_TABLE.c_str(), map, id.c_str(), { layer_name, MAP_KEY_SCENERY.c_str() });
 		return std::string();
 	}
 
@@ -1112,16 +1027,14 @@ int map_add_layer(const char *map_name, int layer, int w, int h, int tile_w,
 
 	if (w > 0)
 	{
-		if (entry_write_int(MAP_TABLE.c_str(), map_name, w, layer_name,
-				MAP_KEY_WIDTH.c_str(), nullptr) == false)
+		if (entry_write_int(MAP_TABLE.c_str(), map_name, w, { layer_name, MAP_KEY_WIDTH.c_str() }) == false)
 		{
 			return false;
 		}
 	}
 	else
 	{ // No specific dimension, take the map's global one
-		if (entry_read_int(MAP_TABLE.c_str(), map_name, &w, MAP_KEY_WIDTH.c_str(),
-				nullptr) == false)
+		if (entry_read_int(MAP_TABLE.c_str(), map_name, &w, { MAP_KEY_WIDTH.c_str() }) == false)
 		{
 			return false;
 		}
@@ -1129,16 +1042,14 @@ int map_add_layer(const char *map_name, int layer, int w, int h, int tile_w,
 
 	if (h > 0)
 	{
-		if (entry_write_int(MAP_TABLE.c_str(), map_name, h, layer_name,
-				MAP_KEY_HEIGHT.c_str(), nullptr) == false)
+		if (entry_write_int(MAP_TABLE.c_str(), map_name, h, { layer_name, MAP_KEY_HEIGHT.c_str() }) == false)
 		{
 			return false;
 		}
 	}
 	else
 	{ // No specific dimension, take the map's global one
-		if (entry_read_int(MAP_TABLE.c_str(), map_name, &h, MAP_KEY_HEIGHT.c_str(),
-				nullptr) == false)
+		if (entry_read_int(MAP_TABLE.c_str(), map_name, &h, { MAP_KEY_HEIGHT.c_str() }) == false)
 		{
 			return false;
 		}
@@ -1146,16 +1057,14 @@ int map_add_layer(const char *map_name, int layer, int w, int h, int tile_w,
 
 	if (tile_w > 0)
 	{
-		if (entry_write_int(MAP_TABLE.c_str(), map_name, tile_w, layer_name,
-				MAP_KEY_TILE_WIDTH.c_str(), nullptr) == false)
+		if (entry_write_int(MAP_TABLE.c_str(), map_name, tile_w, { layer_name, MAP_KEY_TILE_WIDTH.c_str() }) == false)
 		{
 			return false;
 		}
 	}
 	if (tile_h > 0)
 	{
-		if (entry_write_int(MAP_TABLE.c_str(), map_name, tile_h, layer_name,
-				MAP_KEY_TILE_HEIGHT.c_str(), nullptr) == false)
+		if (entry_write_int(MAP_TABLE.c_str(), map_name, tile_h, { layer_name, MAP_KEY_TILE_HEIGHT.c_str() }) == false)
 		{
 			return false;
 		}
@@ -1171,8 +1080,7 @@ int map_add_layer(const char *map_name, int layer, int w, int h, int tile_w,
 	}
 	tile_array[i] = nullptr; // End of list
 
-	if (entry_write_list(MAP_TABLE.c_str(), map_name, tile_array.data(), layer_name,
-			MAP_KEY_SET.c_str(), nullptr) == false)
+	if (entry_write_list(MAP_TABLE.c_str(), map_name, tile_array.data(), { layer_name, MAP_KEY_SET.c_str() }) == false)
 	{
 		return false;
 	}
@@ -1184,8 +1092,7 @@ int map_add_layer(const char *map_name, int layer, int w, int h, int tile_w,
 	}
 	tile_array[i] = nullptr; // End of list
 
-	if (entry_write_list(MAP_TABLE.c_str(), map_name, tile_array.data(), layer_name,
-			MAP_KEY_TYPE.c_str(), nullptr) == false)
+	if (entry_write_list(MAP_TABLE.c_str(), map_name, tile_array.data(), { layer_name, MAP_KEY_TYPE.c_str() }) == false)
 	{
 		return false;
 	}
@@ -1203,8 +1110,7 @@ int map_delete_layer(const char *map_name, int layer)
 
 	sprintf(layer_name, "%s%d", MAP_KEY_LAYER.c_str(), layer);
 
-	if (entry_remove_group(MAP_TABLE.c_str(), map_name, layer_name,
-			nullptr) == false)
+	if (entry_remove_group(MAP_TABLE.c_str(), map_name, layer_name, {}) == false)
 	{
 		return false;
 	}

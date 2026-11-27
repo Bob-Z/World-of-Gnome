@@ -382,7 +382,7 @@ static int l_character_get_map_w(lua_State *L)
 	int map_w = -1;
 
 	map = luaL_checkstring(L, -1);
-	entry_read_int(MAP_TABLE.c_str(), map, &map_w, MAP_KEY_WIDTH.c_str(), nullptr);
+	entry_read_int(MAP_TABLE.c_str(), map, &map_w, { MAP_KEY_WIDTH.c_str() });
 
 	lua_pushnumber(L, map_w);
 	return 1;  // number of results
@@ -400,7 +400,7 @@ static int l_character_get_map_h(lua_State *L)
 	int map_h = -1;
 
 	map = luaL_checkstring(L, -1);
-	entry_read_int(MAP_TABLE.c_str(), map, &map_h, MAP_KEY_HEIGHT.c_str(), nullptr);
+	entry_read_int(MAP_TABLE.c_str(), map, &map_h, { MAP_KEY_HEIGHT.c_str() });
 
 	lua_pushnumber(L, map_h);
 	return 1;  // number of results

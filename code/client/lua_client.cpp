@@ -306,8 +306,7 @@ static std::vector<SiAnim*> getAnimArray(const std::string &id,
 
 	// Try single image anim
 	std::string spriteName;
-	if (entry_read_string(CHARACTER_TABLE.c_str(), id.c_str(), spriteName,
-			key.c_str(), nullptr) == true)
+	if (entry_read_string(CHARACTER_TABLE.c_str(), id.c_str(), spriteName, { key.c_str() }) == true)
 	{
 		if ((!spriteName.empty()) && (!spriteName.empty()))
 		{
@@ -320,8 +319,7 @@ static std::vector<SiAnim*> getAnimArray(const std::string &id,
 
 	// Try list of image
 	std::vector<std::string> spriteList;
-	if (entry_read_list(CHARACTER_TABLE.c_str(), id.c_str(), spriteList,
-			key.c_str(), nullptr) == true)
+	if (entry_read_list(CHARACTER_TABLE.c_str(), id.c_str(), spriteList, { key.c_str() }) == true)
 	{
 		std::vector<std::string> spriteNameArray;
 

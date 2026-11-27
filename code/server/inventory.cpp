@@ -42,8 +42,7 @@ int inventory_delete(const char *id, const char *item)
 	}
 
 	if (entry_remove_from_list(CHARACTER_TABLE.c_str(),
-			context->getId().c_str(), item, CHARACTER_KEY_INVENTORY.c_str(),
-			nullptr) == true)
+			context->getId().c_str(), item, { CHARACTER_KEY_INVENTORY.c_str() }) == true)
 	{
 		/* update client */
 		network_send_character_file(context);
@@ -79,27 +78,25 @@ int inventory_add(const char *ctx_id, const char *item_id)
 	}
 
 	// Make sure the CHARACTER_KEY_INVENTORY.c_str() list exists
-	entry_list_create(CHARACTER_TABLE.c_str(), context->getId().c_str(),
-			CHARACTER_KEY_INVENTORY.c_str(), nullptr);
+	entry_list_create(CHARACTER_TABLE.c_str(), context->getId().c_str(), { CHARACTER_KEY_INVENTORY.c_str() });
 
 	mytemplate = item_is_resource(std::string(item_id));
 	if (mytemplate.empty())
 	{
 		if (entry_add_to_list(CHARACTER_TABLE.c_str(), context->getId().c_str(),
-				item_id, CHARACTER_KEY_INVENTORY.c_str(), nullptr) == false)
+				item_id, { CHARACTER_KEY_INVENTORY.c_str() }) == false)
 		{
 			return -1;
 		}
 	}
 	else
 	{
-		if (entry_read_int(ITEM_TABLE.c_str(), item_id, &add_count,
-				ITEM_QUANTITY.c_str(), nullptr) == false)
+		if (entry_read_int(ITEM_TABLE.c_str(), item_id, &add_count, { ITEM_QUANTITY.c_str() }) == false)
 		{
 			return -1;
 		}
 		if (entry_read_list(CHARACTER_TABLE.c_str(), context->getId().c_str(),
-				name_list, CHARACTER_KEY_INVENTORY.c_str(), nullptr) == false)
+				name_list, { CHARACTER_KEY_INVENTORY.c_str() }) == false)
 		{
 			return -1;
 		}
@@ -107,12 +104,12 @@ int inventory_add(const char *ctx_id, const char *item_id)
 		for (const auto &name : name_list)
 		{
 			if (entry_read_string(ITEM_TABLE.c_str(), name.c_str(),
-					current_template, ITEM_TEMPLATE.c_str(), nullptr) == true)
+					current_template, { ITEM_TEMPLATE.c_str() }) == true)
 			{
 				if (mytemplate == current_template)
 				{
 					if (entry_read_int(ITEM_TABLE.c_str(), name.c_str(),
-							&current_count, ITEM_QUANTITY.c_str(), nullptr) == true)
+							&current_count, { ITEM_QUANTITY.c_str() }) == true)
 					{
 						add_count += current_count;
 						resource_set_quantity(context, name, add_count);
@@ -128,8 +125,7 @@ int inventory_add(const char *ctx_id, const char *item_id)
 		// No matching template in the inventory: add it
 		{
 			if (entry_add_to_list(CHARACTER_TABLE.c_str(),
-					context->getId().c_str(), item_id,
-					CHARACTER_KEY_INVENTORY.c_str(), nullptr) == false)
+					context->getId().c_str(), item_id, { CHARACTER_KEY_INVENTORY.c_str() }) == false)
 			{
 				return -1;
 			}
@@ -156,7 +152,7 @@ std::string inventory_get_by_name(const char *id, const char *item_name)
 	}
 
 	if (entry_read_list(CHARACTER_TABLE.c_str(), context->getId().c_str(),
-			name_list, CHARACTER_KEY_INVENTORY.c_str(), nullptr) == false)
+			name_list, { CHARACTER_KEY_INVENTORY.c_str() }) == false)
 	{
 		return std::string();
 	}
