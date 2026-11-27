@@ -198,16 +198,16 @@ int context_write_to_file(Context *context)
 		return false;
 	}
 
-	entry_write_string(CHARACTER_TABLE.c_str(), context->getId().c_str(),
-			context->getType().c_str(), { CHARACTER_KEY_TYPE.c_str() });
-	entry_write_string(CHARACTER_TABLE.c_str(), context->getId().c_str(),
-			context->getMap().c_str(), { CHARACTER_KEY_MAP.c_str() });
+	entry_write_string(CHARACTER_TABLE, context->getId(),
+			context->getType(), { CHARACTER_KEY_TYPE });
+	entry_write_string(CHARACTER_TABLE, context->getId(),
+			context->getMap(), { CHARACTER_KEY_MAP });
 
-	entry_write_int(CHARACTER_TABLE.c_str(), context->getId().c_str(),
-			context->getTileX(), { CHARACTER_KEY_TILE_X.c_str() });
+	entry_write_int(CHARACTER_TABLE, context->getId(),
+			context->getTileX(), { CHARACTER_KEY_TILE_X });
 
-	entry_write_int(CHARACTER_TABLE.c_str(), context->getId().c_str(),
-			context->getTileY(), { CHARACTER_KEY_TILE_Y.c_str() });
+	entry_write_int(CHARACTER_TABLE, context->getId(),
+			context->getTileY(), { CHARACTER_KEY_TILE_Y });
 
 	context_unlock_list();
 	return true;
@@ -279,7 +279,7 @@ void context_add_or_update_from_network_frame(const Context &receivedCtx)
 
 	LOG("Creating context " + std::string(receivedCtx.getCharacterName()));
 	ctx = context_new();
-	ctx->setCharacterName(receivedCtx.getCharacterName().c_str());
+	ctx->setCharacterName(receivedCtx.getCharacterName());
 	ctx->setNpc(receivedCtx.isNpc());
 	ctx->setMap(receivedCtx.getMap());
 	ctx->setType(receivedCtx.getType());
@@ -698,7 +698,7 @@ bool Context::update_from_file()
 	std::string result;
 	bool ret = false;
 
-	if (entry_read_string(CHARACTER_TABLE.c_str(), getId().c_str(), result, { CHARACTER_KEY_NAME.c_str() }) == true)
+	if (entry_read_string(CHARACTER_TABLE, getId(), result, { CHARACTER_KEY_NAME }) == true)
 	{
 		setCharacterName(std::string(result));
 	}
@@ -708,13 +708,13 @@ bool Context::update_from_file()
 	}
 
 	int npc = 0;
-	if (entry_read_int(CHARACTER_TABLE.c_str(), getId().c_str(), &npc, { CHARACTER_KEY_NPC.c_str() }) == false)
+	if (entry_read_int(CHARACTER_TABLE, getId(), &npc, { CHARACTER_KEY_NPC }) == false)
 	{
 		ret = false;
 	}
 	setNpc(npc);
 
-	if (entry_read_string(CHARACTER_TABLE.c_str(), getId().c_str(), result, { CHARACTER_KEY_TYPE.c_str() }) == true)
+	if (entry_read_string(CHARACTER_TABLE, getId(), result, { CHARACTER_KEY_TYPE }) == true)
 	{
 		setType(std::string(result));
 	}
@@ -723,7 +723,7 @@ bool Context::update_from_file()
 		ret = false;
 	}
 
-	if (entry_read_string(CHARACTER_TABLE.c_str(), getId().c_str(), result, { CHARACTER_KEY_MAP.c_str() }) == true)
+	if (entry_read_string(CHARACTER_TABLE, getId(), result, { CHARACTER_KEY_MAP }) == true)
 	{
 		setMap(std::string(result));
 	}
@@ -733,12 +733,12 @@ bool Context::update_from_file()
 	}
 
 	int pos_tx = 0;
-	if (entry_read_int(CHARACTER_TABLE.c_str(), getId().c_str(), &pos_tx, { CHARACTER_KEY_TILE_X.c_str() }) == false)
+	if (entry_read_int(CHARACTER_TABLE, getId(), &pos_tx, { CHARACTER_KEY_TILE_X }) == false)
 	{
 		ret = false;
 	}
 	int pos_ty = 0;
-	if (entry_read_int(CHARACTER_TABLE.c_str(), getId().c_str(), &pos_ty, { CHARACTER_KEY_TILE_Y.c_str() }) == false)
+	if (entry_read_int(CHARACTER_TABLE, getId(), &pos_ty, { CHARACTER_KEY_TILE_Y }) == false)
 	{
 		ret = false;
 	}

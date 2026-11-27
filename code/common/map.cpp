@@ -48,7 +48,7 @@ std::unique_ptr<layer_t> map_layer_new(const std::string &map, int layer_index,
 	if (layer_index != DEFAULT_LAYER && default_layer != nullptr)
 	{
 		sprintf(layer_name, "%s%d", MAP_KEY_LAYER.c_str(), layer_index);
-		if (entry_exist(MAP_TABLE.c_str(), map.c_str(), { layer_name, MAP_KEY_SET.c_str() }) == false)
+		if (entry_exist(MAP_TABLE, map, { layer_name, MAP_KEY_SET }) == false)
 		{
 			return nullptr;
 		}
@@ -60,19 +60,19 @@ std::unique_ptr<layer_t> map_layer_new(const std::string &map, int layer_index,
 		layer->row_height[0] = default_layer->row_height[0];
 
 		layer->map_w = default_layer->map_w;
-		entry_read_int(MAP_TABLE.c_str(), map.c_str(), &layer->map_w, { layer_name, MAP_KEY_WIDTH.c_str() });
+		entry_read_int(MAP_TABLE, map, &layer->map_w, { layer_name, MAP_KEY_WIDTH });
 
 		layer->map_h = default_layer->map_h;
-		entry_read_int(MAP_TABLE.c_str(), map.c_str(), &layer->map_h, { layer_name, MAP_KEY_HEIGHT.c_str() });
+		entry_read_int(MAP_TABLE, map, &layer->map_h, { layer_name, MAP_KEY_HEIGHT });
 
 		layer->tile_width = default_layer->tile_width;
-		if (entry_read_int(MAP_TABLE.c_str(), map.c_str(), &layer->tile_width, { layer_name, MAP_KEY_TILE_WIDTH.c_str() }) == true)
+		if (entry_read_int(MAP_TABLE, map, &layer->tile_width, { layer_name, MAP_KEY_TILE_WIDTH }) == true)
 		{
 			layer->col_width[0] = layer->tile_width;
 		}
 
 		layer->tile_height = default_layer->tile_height;
-		if (entry_read_int(MAP_TABLE.c_str(), map.c_str(), &layer->tile_height, { layer_name, MAP_KEY_TILE_HEIGHT.c_str() }) == true)
+		if (entry_read_int(MAP_TABLE, map, &layer->tile_height, { layer_name, MAP_KEY_TILE_HEIGHT }) == true)
 		{
 			layer->row_height[0] = layer->tile_height;
 		}
@@ -92,19 +92,19 @@ std::unique_ptr<layer_t> map_layer_new(const std::string &map, int layer_index,
 	}
 	else
 	{
-		if (entry_read_int(MAP_TABLE.c_str(), map.c_str(), &layer->map_w, { MAP_KEY_WIDTH.c_str() }) == false)
+		if (entry_read_int(MAP_TABLE, map, &layer->map_w, { MAP_KEY_WIDTH }) == false)
 		{
 			return nullptr;
 		}
-		if (entry_read_int(MAP_TABLE.c_str(), map.c_str(), &layer->map_h, { MAP_KEY_HEIGHT.c_str() }) == false)
+		if (entry_read_int(MAP_TABLE, map, &layer->map_h, { MAP_KEY_HEIGHT }) == false)
 		{
 			return nullptr;
 		}
-		if (entry_read_int(MAP_TABLE.c_str(), map.c_str(), &layer->tile_width, { MAP_KEY_TILE_WIDTH.c_str() }) == false)
+		if (entry_read_int(MAP_TABLE, map, &layer->tile_width, { MAP_KEY_TILE_WIDTH }) == false)
 		{
 			return nullptr;
 		}
-		if (entry_read_int(MAP_TABLE.c_str(), map.c_str(), &layer->tile_height, { MAP_KEY_TILE_HEIGHT.c_str() }) == false)
+		if (entry_read_int(MAP_TABLE, map, &layer->tile_height, { MAP_KEY_TILE_HEIGHT }) == false)
 		{
 			return nullptr;
 		}
@@ -145,13 +145,13 @@ std::unique_ptr<layer_t> map_layer_new(const std::string &map, int layer_index,
 			}
 
 			sprintf(keyword, "%s%d", MAP_KEY_COL_WIDTH.c_str(), tiling_index);
-			if (entry_read_int(MAP_TABLE.c_str(), map.c_str(),
+			if (entry_read_int(MAP_TABLE, map,
 					&layer->col_width[tiling_index], { layer_name, keyword }) == true)
 			{
 				more = true;
 			}
 			sprintf(keyword, "%s%d", MAP_KEY_COL_HEIGHT.c_str(), tiling_index);
-			if (entry_read_int(MAP_TABLE.c_str(), map.c_str(),
+			if (entry_read_int(MAP_TABLE, map,
 					&layer->col_height[tiling_index], { layer_name, keyword }) == true)
 			{
 				more = true;
@@ -166,13 +166,13 @@ std::unique_ptr<layer_t> map_layer_new(const std::string &map, int layer_index,
 			}
 
 			sprintf(keyword, "%s%d", MAP_KEY_COL_WIDTH.c_str(), tiling_index);
-			if (entry_read_int(MAP_TABLE.c_str(), map.c_str(),
+			if (entry_read_int(MAP_TABLE, map,
 					&layer->col_width[tiling_index], { keyword }) == true)
 			{
 				more = true;
 			}
 			sprintf(keyword, "%s%d", MAP_KEY_COL_HEIGHT.c_str(), tiling_index);
-			if (entry_read_int(MAP_TABLE.c_str(), map.c_str(),
+			if (entry_read_int(MAP_TABLE, map,
 					&layer->col_height[tiling_index], { keyword }) == true)
 			{
 				more = true;
@@ -202,13 +202,13 @@ std::unique_ptr<layer_t> map_layer_new(const std::string &map, int layer_index,
 			}
 
 			sprintf(keyword, "%s%d", MAP_KEY_ROW_WIDTH.c_str(), tiling_index);
-			if (entry_read_int(MAP_TABLE.c_str(), map.c_str(),
+			if (entry_read_int(MAP_TABLE, map,
 					&layer->row_width[tiling_index], { layer_name, keyword }) == true)
 			{
 				more = true;
 			}
 			sprintf(keyword, "%s%d", MAP_KEY_ROW_HEIGHT.c_str(), tiling_index);
-			if (entry_read_int(MAP_TABLE.c_str(), map.c_str(),
+			if (entry_read_int(MAP_TABLE, map,
 					&layer->row_height[tiling_index], { layer_name, keyword }) == true)
 			{
 				more = true;
@@ -223,13 +223,13 @@ std::unique_ptr<layer_t> map_layer_new(const std::string &map, int layer_index,
 			}
 
 			sprintf(keyword, "%s%d", MAP_KEY_ROW_WIDTH.c_str(), tiling_index);
-			if (entry_read_int(MAP_TABLE.c_str(), map.c_str(),
+			if (entry_read_int(MAP_TABLE, map,
 					&layer->row_width[tiling_index], { keyword }) == true)
 			{
 				more = true;
 			}
 			sprintf(keyword, "%s%d", MAP_KEY_ROW_HEIGHT.c_str(), tiling_index);
-			if (entry_read_int(MAP_TABLE.c_str(), map.c_str(),
+			if (entry_read_int(MAP_TABLE, map,
 					&layer->row_height[tiling_index], { keyword }) == true)
 			{
 				more = true;

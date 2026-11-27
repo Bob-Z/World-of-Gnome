@@ -37,8 +37,8 @@ int equipment_set_item(const char *id, const char *slot, const char *item)
 		return -1;
 	}
 
-	if (entry_write_string(CHARACTER_TABLE.c_str(), context->getId().c_str(),
-			item, { EQUIPMENT_GROUP.c_str(), slot, EQUIPMENT_EQUIPPED.c_str() }) == true)
+	if (entry_write_string(CHARACTER_TABLE, context->getId(),
+			item, { EQUIPMENT_GROUP, slot, EQUIPMENT_EQUIPPED }) == true)
 	{
 		// update client
 		network_send_character_file(context);
@@ -63,8 +63,8 @@ std::string equipment_get_item(const char *id, const char *slot)
 		return std::string();
 	}
 
-	if (entry_read_string(CHARACTER_TABLE.c_str(), context->getId().c_str(),
-			item, { EQUIPMENT_GROUP.c_str(), slot, EQUIPMENT_EQUIPPED.c_str() }) == false)
+	if (entry_read_string(CHARACTER_TABLE, context->getId(),
+			item, { EQUIPMENT_GROUP, slot, EQUIPMENT_EQUIPPED }) == false)
 	{
 		return std::string();
 	}

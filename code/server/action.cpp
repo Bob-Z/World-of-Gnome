@@ -382,7 +382,7 @@ static int l_character_get_map_w(lua_State *L)
 	int map_w = -1;
 
 	map = luaL_checkstring(L, -1);
-	entry_read_int(MAP_TABLE.c_str(), map, &map_w, { MAP_KEY_WIDTH.c_str() });
+	entry_read_int(MAP_TABLE, map, &map_w, { MAP_KEY_WIDTH });
 
 	lua_pushnumber(L, map_w);
 	return 1;  // number of results
@@ -400,7 +400,7 @@ static int l_character_get_map_h(lua_State *L)
 	int map_h = -1;
 
 	map = luaL_checkstring(L, -1);
-	entry_read_int(MAP_TABLE.c_str(), map, &map_h, { MAP_KEY_HEIGHT.c_str() });
+	entry_read_int(MAP_TABLE, map, &map_h, { MAP_KEY_HEIGHT });
 
 	lua_pushnumber(L, map_h);
 	return 1;  // number of results
@@ -544,10 +544,10 @@ static int l_character_delete(lua_State *L)
 	int res;
 
 	id = luaL_checkstring(L, -1);
-	res = entry_destroy(CHARACTER_TABLE.c_str(), id);
+	res = entry_destroy(CHARACTER_TABLE, id);
 	if (res == 0)
 	{
-		res = file_delete(CHARACTER_TABLE.c_str(), std::string(id));
+		res = file_delete(CHARACTER_TABLE, std::string(id));
 	}
 	lua_pushnumber(L, res);
 	return 1;  // number of results

@@ -418,7 +418,7 @@ static int compose_attribute(Context *ctx, std::vector<SdlItem*> &itemArray)
 	attributeText.clear();
 
 	std::vector<std::string> nameArray;
-	if (entry_get_group_list(CHARACTER_TABLE.c_str(), ctx->getId().c_str(), nameArray, { ATTRIBUTE_GROUP.c_str() }) == false)
+	if (entry_get_group_list(CHARACTER_TABLE, ctx->getId(), nameArray, { ATTRIBUTE_GROUP }) == false)
 	{
 		return 0;
 	}
@@ -429,13 +429,13 @@ static int compose_attribute(Context *ctx, std::vector<SdlItem*> &itemArray)
 	for (size_t index = 0; index < nameArray.size(); index++)
 	{
 		int value;
-		if (entry_read_int(CHARACTER_TABLE.c_str(), ctx->getId().c_str(), &value, { ATTRIBUTE_GROUP.c_str(), nameArray[index].c_str(), ATTRIBUTE_CURRENT.c_str() }) == false)
+		if (entry_read_int(CHARACTER_TABLE, ctx->getId(), &value, { ATTRIBUTE_GROUP, nameArray[index], ATTRIBUTE_CURRENT }) == false)
 		{
 			continue;
 		}
 
 		attributeText.push_back(
-				std::string(nameArray[index].c_str()) + ": " + std::to_string(value));
+				std::string(nameArray[index]) + ": " + std::to_string(value));
 
 		SdlItem *item = new SdlItem;
 		itemArray.push_back(item);
@@ -507,7 +507,7 @@ static int compose_action(Context *ctx, std::vector<SdlItem*> &itemArray)
 
 	// Read action list for current user
 	std::vector<std::string> actionArray;
-	if (entry_read_list(CHARACTER_TABLE.c_str(), ctx->getId().c_str(), actionArray, { CHARACTER_KEY_ACTION.c_str() }) == false)
+	if (entry_read_list(CHARACTER_TABLE, ctx->getId(), actionArray, { CHARACTER_KEY_ACTION }) == false)
 	{
 		return 0;
 	}
@@ -637,7 +637,7 @@ static void cb_select_slot(const std::string &id)
 	{
 		network_send_action(*(ctx->getConnection()),
 				getDataManager().get<std::string>("", CLIENT_CONF_FILE,
-				{ CLIENT_KEY_ACTION_SELECT_EQUIPMENT }), { id.c_str() });
+				{ CLIENT_KEY_ACTION_SELECT_EQUIPMENT }), { id });
 	} catch (...)
 	{
 	}
@@ -674,7 +674,7 @@ static void compose_equipment(Context *ctx, std::vector<SdlItem*> &itemArray)
 	sdl_get_output_size(&sw, &sh);
 
 	std::vector<std::string> slot_list;
-	entry_get_group_list(CHARACTER_TABLE.c_str(), ctx->getId().c_str(), slot_list, { EQUIPMENT_GROUP.c_str() });
+	entry_get_group_list(CHARACTER_TABLE, ctx->getId(), slot_list, { EQUIPMENT_GROUP });
 
 	int max_h = 0;
 	int max_w = 0;
@@ -686,7 +686,7 @@ static void compose_equipment(Context *ctx, std::vector<SdlItem*> &itemArray)
 	{
 #if 0
 		// Get the slot name
-		if(entry_read_string(CHARACTER_TABLE.c_str(),ctx->m_id,item_name, { EQUIPMENT_GROUP.c_str(), slot_list[index].c_str(), EQUIPMENT_NAME.c_str() }) == false )
+		if(entry_read_string(CHARACTER_TABLE,ctx->m_id,item_name, { EQUIPMENT_GROUP, slot_list[index], EQUIPMENT_NAME }) == false )
 		{
 			name = slot_list[index];
 		}
@@ -697,7 +697,7 @@ static void compose_equipment(Context *ctx, std::vector<SdlItem*> &itemArray)
 #endif
 		h1 = 0;
 		// Get the slot icon
-		if (entry_read_string(CHARACTER_TABLE.c_str(), ctx->getId().c_str(), iconName, { EQUIPMENT_GROUP.c_str(), slot_list[index].c_str(), EQUIPMENT_ICON.c_str() }) == false)
+		if (entry_read_string(CHARACTER_TABLE, ctx->getId(), iconName, { EQUIPMENT_GROUP, slot_list[index], EQUIPMENT_ICON }) == false)
 		{
 			continue;
 		}
@@ -715,7 +715,7 @@ static void compose_equipment(Context *ctx, std::vector<SdlItem*> &itemArray)
 			item->setPos(x, y);
 			item->setAnim(anim);
 
-			std::string slot = std::string(slot_list[index].c_str());
+			std::string slot = std::string(slot_list[index]);
 			item->setClickLeftCb([slot]()
 			{	cb_select_slot(slot);});
 
@@ -731,8 +731,8 @@ static void compose_equipment(Context *ctx, std::vector<SdlItem*> &itemArray)
 
 		// Is there an equipped object ?
 		std::string tmpEquippedName;
-		if (entry_read_string(CHARACTER_TABLE.c_str(), ctx->getId().c_str(),
-				tmpEquippedName, { EQUIPMENT_GROUP.c_str(), slot_list[index].c_str(), EQUIPMENT_EQUIPPED.c_str() }) == true)
+		if (entry_read_string(CHARACTER_TABLE, ctx->getId(),
+				tmpEquippedName, { EQUIPMENT_GROUP, slot_list[index], EQUIPMENT_EQUIPPED }) == true)
 		{
 			equippedName = std::string(tmpEquippedName);
 		}
@@ -741,7 +741,7 @@ static void compose_equipment(Context *ctx, std::vector<SdlItem*> &itemArray)
 		{
 #if 0
 			// Get the equipped object name
-			if(entry_read_string(ITEM_TABLE.c_str(),equippedName,equipped_text, { ITEM_NAME.c_str() }) == false )
+			if(entry_read_string(ITEM_TABLE,equippedName,equipped_text, { ITEM_NAME }) == false )
 			{
 				ERR_DESIGN("Can't read object " + std::string(equippedName) + " name in equipment slot " + std::string(slot_list[index]));
 			}
@@ -784,7 +784,7 @@ static void compose_equipment(Context *ctx, std::vector<SdlItem*> &itemArray)
 				item->setPos(x - anim->getWidth(), y);
 				item->setAnim(anim2);
 
-				std::string slot = std::string(slot_list[index].c_str());
+				std::string slot = std::string(slot_list[index]);
 				item->setClickLeftCb([slot]()
 				{	cb_select_slot(slot);});
 
@@ -802,7 +802,7 @@ static void compose_equipment(Context *ctx, std::vector<SdlItem*> &itemArray)
 
 		if (cursor_equipment.empty() == false)
 		{
-			if (ctx->getSelectionEquipment() == std::string(slot_list[index].c_str()))
+			if (ctx->getSelectionEquipment() == std::string(slot_list[index]))
 			{
 				anim3 = imageDB_get_anim(ctx, cursor_equipment);
 
@@ -919,11 +919,11 @@ static void cb_print_coord()
 	Context *ctx = context_get_player();
 
 	int mapWidth = 0;
-	entry_read_int(MAP_TABLE.c_str(), ctx->getMap().c_str(), &mapWidth, { MAP_KEY_WIDTH.c_str() });
+	entry_read_int(MAP_TABLE, ctx->getMap(), &mapWidth, { MAP_KEY_WIDTH });
 
 //TODO: take layer into account
 #if 0
-	entry_read_list_index(MAP_TABLE.c_str(),ctx->m_map,type,scr_play_get_current_x()+scr_play_get_current_y()*mapWidth, { layer_name, MAP_KEY_TYPE.c_str() });
+	entry_read_list_index(MAP_TABLE,ctx->m_map,type,scr_play_get_current_x()+scr_play_get_current_y()*mapWidth, { layer_name, MAP_KEY_TYPE });
 	sprintf(buf,"x=%d y=%d type=%s",scr_play_get_current_x(),scr_play_get_current_y(),type);
 #endif
 	std::string text = "x= " + std::to_string(scr_play_get_current_x()) + " y="
@@ -991,7 +991,7 @@ void cb_inventory_select(const std::string &itemId)
 	{
 		network_send_action(*(ctx->getConnection()),
 				getDataManager().get<std::string>("", CLIENT_CONF_FILE,
-				{ CLIENT_KEY_ACTION_SELECT_INVENTORY }), { itemId.c_str() });
+				{ CLIENT_KEY_ACTION_SELECT_INVENTORY }), { itemId });
 	} catch (...)
 	{
 	}
@@ -1014,7 +1014,7 @@ static void compose_inventory(Context *ctx, std::vector<SdlItem*> &itemArray)
 
 	// read data from file
 	std::vector<std::string> inventoryList;
-	if (entry_read_list(CHARACTER_TABLE.c_str(), ctx->getId().c_str(), inventoryList, { CHARACTER_KEY_INVENTORY.c_str() }) == false)
+	if (entry_read_list(CHARACTER_TABLE, ctx->getId(), inventoryList, { CHARACTER_KEY_INVENTORY }) == false)
 	{
 		return;
 	}
@@ -1036,14 +1036,14 @@ static void compose_inventory(Context *ctx, std::vector<SdlItem*> &itemArray)
 		if (mytemplate.empty())
 		{
 			// Icon is mandatory for now
-			if (entry_read_string(ITEM_TABLE.c_str(), inventoryId.c_str(), value, { ITEM_ICON.c_str() }) == false)
+			if (entry_read_string(ITEM_TABLE, inventoryId, value, { ITEM_ICON }) == false)
 			{
 				continue;
 			}
 			// load image
 			anim = imageDB_get_anim(ctx, value);
 
-			if (entry_read_string(ITEM_TABLE.c_str(), inventoryId.c_str(), value, { ITEM_NAME.c_str() }) == false)
+			if (entry_read_string(ITEM_TABLE, inventoryId, value, { ITEM_NAME }) == false)
 			{
 				label = inventoryId;
 			}
@@ -1052,7 +1052,7 @@ static void compose_inventory(Context *ctx, std::vector<SdlItem*> &itemArray)
 				label = std::string(value);
 			}
 
-			if (entry_read_string(ITEM_TABLE.c_str(), inventoryId.c_str(), value, { ITEM_DESC.c_str() }) == false)
+			if (entry_read_string(ITEM_TABLE, inventoryId, value, { ITEM_DESC }) == false)
 			{
 				description = "";
 			}
@@ -1064,14 +1064,14 @@ static void compose_inventory(Context *ctx, std::vector<SdlItem*> &itemArray)
 		else
 		{
 			// Icon is mandatory for now
-			if (entry_read_string(ITEM_TEMPLATE_TABLE.c_str(), mytemplate, value, { ITEM_ICON.c_str() }) == false)
+			if (entry_read_string(ITEM_TEMPLATE_TABLE, mytemplate, value, { ITEM_ICON }) == false)
 			{
 				continue;
 			}
 			// load image
 			anim = imageDB_get_anim(ctx, value);
 
-			if (entry_read_string(ITEM_TEMPLATE_TABLE.c_str(), mytemplate, value, { ITEM_NAME.c_str() }) == false)
+			if (entry_read_string(ITEM_TEMPLATE_TABLE, mytemplate, value, { ITEM_NAME }) == false)
 			{
 				label = inventoryId;
 			}
@@ -1080,7 +1080,7 @@ static void compose_inventory(Context *ctx, std::vector<SdlItem*> &itemArray)
 				label = std::string(value);
 			}
 
-			if (entry_read_string(ITEM_TEMPLATE_TABLE.c_str(), mytemplate, value, { ITEM_DESC.c_str() }) == false)
+			if (entry_read_string(ITEM_TEMPLATE_TABLE, mytemplate, value, { ITEM_DESC }) == false)
 			{
 				description = "";
 			}
@@ -1156,7 +1156,7 @@ static void compose_inventory_select(Context *ctx,
 
 	// read data from file
 	std::vector<std::string> inventoryList;
-	if (entry_read_list(CHARACTER_TABLE.c_str(), ctx->getId().c_str(), inventoryList, { CHARACTER_KEY_INVENTORY.c_str() }) == false)
+	if (entry_read_list(CHARACTER_TABLE, ctx->getId(), inventoryList, { CHARACTER_KEY_INVENTORY }) == false)
 	{
 		return;
 	}
@@ -1179,14 +1179,14 @@ static void compose_inventory_select(Context *ctx,
 
 		if (mytemplate.empty())
 		{
-			if (entry_read_string(ITEM_TABLE.c_str(), inventory.c_str(), icon_name, { ITEM_ICON.c_str() }) == false)
+			if (entry_read_string(ITEM_TABLE, inventory, icon_name, { ITEM_ICON }) == false)
 			{
 				ERR_DESIGN("Can't read item " + inventory + " icon name");
 			}
 		}
 		else
 		{
-			if (entry_read_string(ITEM_TEMPLATE_TABLE.c_str(), mytemplate, icon_name, { ITEM_ICON.c_str() }) == false)
+			if (entry_read_string(ITEM_TEMPLATE_TABLE, mytemplate, icon_name, { ITEM_ICON }) == false)
 			{
 				ERR_DESIGN(
 						"Can't read item " + inventory
@@ -1249,7 +1249,7 @@ void cb_popup(const ActionParam &actionParam)
 
 	cb_popup_quit();
 
-	network_send_action(*(player->getConnection()), actionParam.action.c_str(), { actionParam.param.c_str() });
+	network_send_action(*(player->getConnection()), actionParam.action, { actionParam.param });
 
 	screen_compose();
 }

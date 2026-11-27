@@ -59,15 +59,15 @@ static int npc_script(void *data)
 		if (!parameters.empty())
 		{
 		}
-		if (entry_read_string(CHARACTER_TABLE.c_str(), context->getId().c_str(),
-				script, { CHARACTER_KEY_AI.c_str() }) == false)
+		if (entry_read_string(CHARACTER_TABLE, context->getId(),
+				script, { CHARACTER_KEY_AI }) == false)
 		{
 			ERR_USER("No AI script for " + std::string(context->getId()));
 			break;
 		}
 
-		entry_read_list(CHARACTER_TABLE.c_str(), context->getId().c_str(),
-				parameters, { CHARACTER_KEY_AI_PARAMS.c_str() });
+		entry_read_list(CHARACTER_TABLE, context->getId(),
+				parameters, { CHARACTER_KEY_AI_PARAMS });
 
 		if (context->getNextExecutionTick() < SDL_GetTicks())
 		{
@@ -112,7 +112,7 @@ static int npc_script(void *data)
 void instantiate_npc(const std::string &id)
 {
 	int is_npc = 0;
-	if (entry_read_int(CHARACTER_TABLE.c_str(), id.c_str(), &is_npc, { CHARACTER_KEY_NPC.c_str() }) == false)
+	if (entry_read_int(CHARACTER_TABLE, id, &is_npc, { CHARACTER_KEY_NPC }) == false)
 	{
 		return;
 	}
@@ -123,28 +123,28 @@ void instantiate_npc(const std::string &id)
 	}
 
 	int x = 0;
-	if (entry_read_int(CHARACTER_TABLE.c_str(), id.c_str(), &x, { CHARACTER_KEY_TILE_X.c_str() }) == false)
+	if (entry_read_int(CHARACTER_TABLE, id, &x, { CHARACTER_KEY_TILE_X }) == false)
 	{
 		return;
 	}
 
 	int y = 0;
-	if (entry_read_int(CHARACTER_TABLE.c_str(), id.c_str(), &y, { CHARACTER_KEY_TILE_Y.c_str() }) == false)
+	if (entry_read_int(CHARACTER_TABLE, id, &y, { CHARACTER_KEY_TILE_Y }) == false)
 	{
 		return;
 	}
 
 	std::string map;
-	if (entry_read_string(CHARACTER_TABLE.c_str(), id.c_str(), map, { CHARACTER_KEY_MAP.c_str() }) == false)
+	if (entry_read_string(CHARACTER_TABLE, id, map, { CHARACTER_KEY_MAP }) == false)
 	{
 		return;
 	}
 
 	std::string name;
-	entry_read_string(CHARACTER_TABLE.c_str(), id.c_str(), name, { CHARACTER_KEY_NAME.c_str() });
+	entry_read_string(CHARACTER_TABLE, id, name, { CHARACTER_KEY_NAME });
 
 	std::string type;
-	if (entry_read_string(CHARACTER_TABLE.c_str(), id.c_str(), type, { CHARACTER_KEY_TYPE.c_str() }) == false)
+	if (entry_read_string(CHARACTER_TABLE, id, type, { CHARACTER_KEY_TYPE }) == false)
 	{
 		return;
 	}
@@ -179,7 +179,7 @@ void init_npc(void)
 
 	// Read all files in NPC directory
 	const std::string file_path = base_directory + "/"
-			+ std::string(CHARACTER_TABLE.c_str());
+			+ std::string(CHARACTER_TABLE);
 
 	dir = opendir(file_path.c_str());
 	if (dir == nullptr)

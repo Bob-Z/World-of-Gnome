@@ -46,8 +46,8 @@ int sfx_play(Connection & connection, const std::string & fileName, int channel,
 	SDL_RWops * fileDesc = SDL_RWFromFile(fullName.c_str(), "r");
 	if (fileDesc == nullptr)
 	{
-		std::string errorText = std::string("sfx_play: cannot open ") + fullName.c_str();
-		ERR_DESIGN(errorText.c_str());
+		std::string errorText = std::string("sfx_play: cannot open ") + fullName;
+		ERR_DESIGN(errorText);
 		file_update(&connection, tableFilename);
 		file_unlock(tableFilename);
 		return -1;
@@ -56,8 +56,8 @@ int sfx_play(Connection & connection, const std::string & fileName, int channel,
 	Mix_Chunk * chunk = Mix_LoadWAV_RW(fileDesc, 1);
 	if (chunk == nullptr)
 	{
-		std::string l_Err = std::string("sfx_play: cannot read ") + fullName.c_str();
-		ERR_DESIGN(l_Err.c_str());
+		std::string l_Err = std::string("sfx_play: cannot read ") + fullName;
+		ERR_DESIGN(l_Err);
 		file_update(&connection, tableFilename);
 		file_unlock(tableFilename);
 		return -1;

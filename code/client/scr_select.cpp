@@ -263,7 +263,7 @@ void scr_select_compose(Context * context, std::vector<SdlItem *> & itemArray)
 		{
 			// Compute the marquee file name
 			std::string marqueeName;
-			if (entry_read_string(CHARACTER_TABLE.c_str(), characterMarquee.getId().c_str(), marqueeName, { CHARACTER_KEY_MARQUEE.c_str() }) == true)
+			if (entry_read_string(CHARACTER_TABLE, characterMarquee.getId(), marqueeName, { CHARACTER_KEY_MARQUEE }) == true)
 			{
 				std::vector<std::string> nameArray;
 				nameArray.push_back(std::string(marqueeName));
@@ -273,7 +273,7 @@ void scr_select_compose(Context * context, std::vector<SdlItem *> & itemArray)
 			else
 			{
 				std::vector<std::string> marqueeArray;
-				if (entry_read_list(CHARACTER_TABLE.c_str(), characterMarquee.getId().c_str(), marqueeArray, { CHARACTER_KEY_MARQUEE.c_str() }) == false)
+				if (entry_read_list(CHARACTER_TABLE, characterMarquee.getId(), marqueeArray, { CHARACTER_KEY_MARQUEE }) == false)
 				{
 					LOG_DESIGN(characterMarquee.getId() + " has no marquee");
 					continue;

@@ -34,7 +34,7 @@
  ********************************************/
 std::pair<bool, std::string> item_create_empty()
 {
-	return file_new(std::string(ITEM_TABLE.c_str()));
+	return file_new(std::string(ITEM_TABLE));
 }
 
 /**************************************************
@@ -45,14 +45,14 @@ std::pair<bool, std::string> item_create_empty()
 std::pair<bool, std::string> item_create_from_template(
 		const std::string &my_template)
 {
-	const std::pair<bool, std::string> new_name = file_new(ITEM_TABLE.c_str());
+	const std::pair<bool, std::string> new_name = file_new(ITEM_TABLE);
 
 	if (new_name.first == true)
 	{
-		if (file_copy(ITEM_TEMPLATE_TABLE.c_str(), my_template.c_str(),
-				ITEM_TABLE.c_str(), new_name.second.c_str()) == false)
+		if (file_copy(ITEM_TEMPLATE_TABLE, my_template,
+				ITEM_TABLE, new_name.second) == false)
 		{
-			file_delete(ITEM_TABLE.c_str(), new_name.second);
+			file_delete(ITEM_TABLE, new_name.second);
 			return std::pair<bool, std::string>
 			{ false, "" };
 		}
@@ -67,7 +67,7 @@ std::pair<bool, std::string> item_create_from_template(
  *****************************/
 int item_destroy(const std::string &item_id)
 {
-	return entry_destroy(ITEM_TABLE.c_str(), item_id.c_str());
+	return entry_destroy(ITEM_TABLE, item_id);
 }
 
 /***********************************************************
@@ -85,17 +85,17 @@ std::pair<bool, std::string> resource_new(const std::string &my_template,
 		return new_id;
 	}
 
-	if (entry_write_string(ITEM_TABLE.c_str(), new_id.second.c_str(),
-			my_template.c_str(), { ITEM_TEMPLATE.c_str() }) == false)
+	if (entry_write_string(ITEM_TABLE, new_id.second,
+			my_template, { ITEM_TEMPLATE }) == false)
 	{
-		entry_destroy(ITEM_TABLE.c_str(), new_id.second.c_str());
+		entry_destroy(ITEM_TABLE, new_id.second);
 		return std::pair<bool, std::string>
 		{ false, "" };
 	}
 
-	if (entry_write_int(ITEM_TABLE.c_str(), new_id.second.c_str(), quantity, { ITEM_QUANTITY.c_str() }) == false)
+	if (entry_write_int(ITEM_TABLE, new_id.second, quantity, { ITEM_QUANTITY }) == false)
 	{
-		entry_destroy(ITEM_TABLE.c_str(), new_id.second.c_str());
+		entry_destroy(ITEM_TABLE, new_id.second);
 		return std::pair<bool, std::string>
 		{ false, "" };
 	}
@@ -112,7 +112,7 @@ std::string item_is_resource(const std::string &inventory_id)
 {
 	std::string my_template;
 
-	entry_read_string(ITEM_TABLE.c_str(), inventory_id.c_str(), my_template, { ITEM_TEMPLATE.c_str() });
+	entry_read_string(ITEM_TABLE, inventory_id, my_template, { ITEM_TEMPLATE });
 
 	return my_template;
 }
@@ -131,7 +131,7 @@ int resource_get_quantity(const std::string &item_id)
 		return 1; /* unique item */
 	}
 
-	if (entry_read_int(ITEM_TABLE.c_str(), item_id.c_str(), &quantity, { ITEM_QUANTITY.c_str() }) == false)
+	if (entry_read_int(ITEM_TABLE, item_id, &quantity, { ITEM_QUANTITY }) == false)
 	{
 		return -1;
 	}
@@ -154,7 +154,7 @@ int resource_set_quantity(Context *context, const std::string &item_id,
 		return -1;
 	}
 
-	if (entry_write_int(ITEM_TABLE.c_str(), item_id.c_str(), quantity, { ITEM_QUANTITY.c_str() }) == false)
+	if (entry_write_int(ITEM_TABLE, item_id, quantity, { ITEM_QUANTITY }) == false)
 	{
 		return -1;
 	}
@@ -175,14 +175,14 @@ std::string item_get_name(const std::string &item_id)
 
 	if ((my_template = item_is_resource(item_id)).empty() == false)
 	{
-		if (entry_read_string(ITEM_TEMPLATE_TABLE.c_str(), my_template, name, { ITEM_NAME.c_str() }) == true)
+		if (entry_read_string(ITEM_TEMPLATE_TABLE, my_template, name, { ITEM_NAME }) == true)
 		{
 			return name;
 		}
 	}
 	else
 	{
-		if (entry_read_string(ITEM_TABLE.c_str(), item_id.c_str(), name, { ITEM_NAME.c_str() }) == true)
+		if (entry_read_string(ITEM_TABLE, item_id, name, { ITEM_NAME }) == true)
 		{
 			return name;
 		}

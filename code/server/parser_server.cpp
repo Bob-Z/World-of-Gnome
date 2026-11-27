@@ -146,16 +146,16 @@ static void manage_create(Connection &connection, const pb::Create &create)
 		return;
 	}
 
-	if (file_copy(CHARACTER_TEMPLATE_TABLE, create.id().c_str(),
-	CHARACTER_TABLE, create.name().c_str()) == false)
+	if (file_copy(CHARACTER_TEMPLATE_TABLE, create.id(),
+	CHARACTER_TABLE, create.name()) == false)
 	{
 		ERR_USER("Error copying character template " + std::string(create.id()) + " to character " + std::string(create.name()) + " (maybe template doesn't exists ?)");
 		file_delete(CHARACTER_TABLE, create.name());
 		return;
 	}
 
-	if (entry_write_string(CHARACTER_TABLE.c_str(), create.name().c_str(),
-			create.name().c_str(), { CHARACTER_KEY_NAME.c_str() }) == false)
+	if (entry_write_string(CHARACTER_TABLE, create.name(),
+			create.name(), { CHARACTER_KEY_NAME }) == false)
 	{
 		ERR_USER("Error setting character name " + std::string(create.name()));
 		file_delete(CHARACTER_TABLE, create.name());
@@ -175,7 +175,7 @@ static void manage_create(Connection &connection, const pb::Create &create)
 		return;
 	}
 
-	character_user_send(connection, create.name().c_str());
+	character_user_send(connection, create.name());
 
 	LOG("Successfully created: ID=" + std::string(create.id()) + ", NAME=" + std::string(create.name()));
 }
