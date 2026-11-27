@@ -18,30 +18,30 @@
  */
 
 #include "const.h"
+#include "DataManager.h"
 #include "entry.h"
 #include "map.h"
 #include "mutex.h"
 #include "syntax.h"
-#include <stdlib.h>
 #include <cstdio>
+
+// Defined in main_server.cpp / main_client.cpp
+DataManager & getDataManager();
 
 /************************************************
  create a layer_t struct to be used by t2p_x and t2p_y
  if layer_index == DEFAULT_LAYER or default_layer is nullptr, default value are filled in filled_layer
  return nullptr on error
- return a layer_t struct which needs to be freed by a call to map_layer_delete
+ returns an owning unique_ptr (nullptr on error)
  ************************************************/
-layer_t* map_layer_new(const std::string &map, int layer_index,
-		layer_t *default_layer)
+std::unique_ptr<layer_t> map_layer_new(const std::string &map, int layer_index,
+		const layer_t *default_layer)
 {
 	char layer_name[SMALL_BUF];
 	char keyword[SMALL_BUF];
 	int tiling_index = 0;
-	char *zoom_str;
 	int more;
-	layer_t *layer = nullptr;
-
-	layer = (layer_t*) malloc(sizeof(layer_t));
+	auto layer = std::make_unique<layer_t>();
 
 	layer->active = false;
 
@@ -51,7 +51,6 @@ layer_t* map_layer_new(const std::string &map, int layer_index,
 		if (entry_exist(MAP_TABLE.c_str(), map.c_str(), layer_name, MAP_KEY_SET.c_str(),
 				nullptr) == false)
 		{
-			free(layer);
 			return nullptr;
 		}
 
@@ -84,11 +83,13 @@ layer_t* map_layer_new(const std::string &map, int layer_index,
 		}
 
 		layer->map_zoom = default_layer->map_zoom;
-		if (entry_read_string(MAP_TABLE.c_str(), map.c_str(), &zoom_str,
-				layer_name, MAP_KEY_SPRITE_ZOOM.c_str(), nullptr) == true)
 		{
-			layer->map_zoom = atof(zoom_str);
-			free(zoom_str);
+			std::string zoom;
+			if (getDataManager().tryGet<std::string>(MAP_TABLE, map,
+					{ layer_name, MAP_KEY_SPRITE_ZOOM }, zoom))
+			{
+				layer->map_zoom = atof(zoom.c_str());
+			}
 		}
 
 		layer->row_num = default_layer->row_num;
@@ -99,25 +100,21 @@ layer_t* map_layer_new(const std::string &map, int layer_index,
 		if (entry_read_int(MAP_TABLE.c_str(), map.c_str(), &layer->map_w,
 				MAP_KEY_WIDTH.c_str(), nullptr) == false)
 		{
-			free(layer);
 			return nullptr;
 		}
 		if (entry_read_int(MAP_TABLE.c_str(), map.c_str(), &layer->map_h,
 				MAP_KEY_HEIGHT.c_str(), nullptr) == false)
 		{
-			free(layer);
 			return nullptr;
 		}
 		if (entry_read_int(MAP_TABLE.c_str(), map.c_str(), &layer->tile_width,
 				MAP_KEY_TILE_WIDTH.c_str(), nullptr) == false)
 		{
-			free(layer);
 			return nullptr;
 		}
 		if (entry_read_int(MAP_TABLE.c_str(), map.c_str(), &layer->tile_height,
 				MAP_KEY_TILE_HEIGHT.c_str(), nullptr) == false)
 		{
-			free(layer);
 			return nullptr;
 		}
 
@@ -128,11 +125,13 @@ layer_t* map_layer_new(const std::string &map, int layer_index,
 		layer->row_height[0] = layer->tile_height;
 
 		layer->map_zoom = 1.0;
-		if (entry_read_string(MAP_TABLE.c_str(), map.c_str(), &zoom_str,
-				MAP_KEY_SPRITE_ZOOM.c_str(), nullptr) == true)
 		{
-			layer->map_zoom = atof(zoom_str);
-			free(zoom_str);
+			std::string zoom;
+			if (getDataManager().tryGet<std::string>(MAP_TABLE, map,
+					{ MAP_KEY_SPRITE_ZOOM }, zoom))
+			{
+				layer->map_zoom = atof(zoom.c_str());
+			}
 		}
 
 		layer->row_num = 1;
@@ -287,11 +286,6 @@ layer_t* map_layer_new(const std::string &map, int layer_index,
 /************************************************
  Delete a layer_t struct created by map_layer_new
  ************************************************/
-void map_layer_delete(layer_t *layer)
-{
-	free(layer);
-}
-
 /******************************************************************************
  Convert tiles coordinates into pixels coordinates
  *****************************************************************************/

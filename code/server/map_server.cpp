@@ -1061,28 +1061,27 @@ char** map_get_item(const char *map, int layer, int map_x, int map_y)
 int map_get_tile_coord(const char *map, int layer, int x, int y, int *tx,
 		int *ty)
 {
-	layer_t *default_layer;
 
 	if (map == nullptr)
 	{
 		return false;
 	}
 
-	if ((default_layer = map_layer_new(map, DEFAULT_LAYER, nullptr)) == nullptr)
+	auto default_layer = map_layer_new(map, DEFAULT_LAYER, nullptr);
+	if (default_layer == nullptr)
 	{
 		return false;
 	}
 
 	if (tx)
 	{
-		*tx = map_t2p_x(x, y, default_layer);
+		*tx = map_t2p_x(x, y, default_layer.get());
 	}
 	if (ty)
 	{
-		*ty = map_t2p_y(x, y, default_layer);
+		*ty = map_t2p_y(x, y, default_layer.get());
 	}
 
-	map_layer_delete(default_layer);
 
 	return true;
 }

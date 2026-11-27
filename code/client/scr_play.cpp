@@ -59,7 +59,7 @@ enum class Align
 static bool isMapChanged = false;
 static int currentMapX = -1;
 static int currentMapY = -1;
-static layer_t *defaultLayer = nullptr;
+static std::unique_ptr<layer_t> defaultLayer;
 static char *sfx = nullptr;
 static bool isMusicPlaying = false;
 
@@ -324,8 +324,8 @@ static void set_up_sprite(Context *ctx, std::vector<SdlItem*> &itemArray)
 	}
 
 	// Get position in pixel
-	int px = map_t2p_x(ctx->getTileX(), ctx->getTileY(), defaultLayer);
-	int py = map_t2p_y(ctx->getTileX(), ctx->getTileY(), defaultLayer);
+	int px = map_t2p_x(ctx->getTileX(), ctx->getTileY(), defaultLayer.get());
+	int py = map_t2p_y(ctx->getTileX(), ctx->getTileY(), defaultLayer.get());
 
 	// Get per sprite zoom
 	char *zoomStr = nullptr;
@@ -605,8 +605,8 @@ static void compose_item(int layerIndex, std::vector<SdlItem*> &itemArray)
 
 		SiAnim *anim = imageDB_get_anim(ctx, spriteName);
 
-		int tempX = map_t2p_x(x, y, defaultLayer);
-		int tempY = map_t2p_y(x, y, defaultLayer);
+		int tempX = map_t2p_x(x, y, defaultLayer.get());
+		int tempY = map_t2p_y(x, y, defaultLayer.get());
 		x = tempX;
 		y = tempY;
 		// Align on tile
@@ -706,8 +706,8 @@ static void compose_map_button(std::vector<SdlItem*> &itemArray)
 			SdlItem *item = new SdlItem;
 			itemArray.push_back(item);
 
-			item->setPos(map_t2p_x(x, y, defaultLayer),
-					map_t2p_y(x, y, defaultLayer));
+			item->setPos(map_t2p_x(x, y, defaultLayer.get()),
+					map_t2p_y(x, y, defaultLayer.get()));
 			item->setShape(defaultLayer->tile_width, defaultLayer->tile_height);
 			item->setUser1(x);
 			item->setUser2(y);
@@ -736,7 +736,7 @@ static void compose_map_set(int layerIndex, std::vector<SdlItem*> &itemArray)
 		return;
 	}
 
-	layer_t *layer = map_layer_new(ctx->getMap(), layerIndex, defaultLayer);
+	auto layer = map_layer_new(ctx->getMap(), layerIndex, defaultLayer.get());
 	if (layer == nullptr)
 	{
 		return;
@@ -752,7 +752,7 @@ static void compose_map_set(int layerIndex, std::vector<SdlItem*> &itemArray)
 			SdlItem *item = new SdlItem;
 			itemArray.push_back(item);
 
-			item->setPos(map_t2p_x(x, y, layer), map_t2p_y(x, y, layer));
+			item->setPos(map_t2p_x(x, y, layer.get()), map_t2p_y(x, y, layer.get()));
 
 			item->setAnim(imageDB_get_anim(ctx, tileSet[i]));
 		}
@@ -765,7 +765,6 @@ static void compose_map_set(int layerIndex, std::vector<SdlItem*> &itemArray)
 		}
 	}
 
-	map_layer_delete(layer);
 }
 
 /*****************************************************************************/
@@ -872,8 +871,8 @@ static void compose_type(int layerIndex, std::vector<SdlItem*> &itemArray)
 			int w = 0;
 			int h = 0;
 			sdl_get_string_size(item->getFont(), item->getText(), &w, &h);
-			item->setPos(map_t2p_x(x, y, defaultLayer),
-					map_t2p_y(x, y, defaultLayer));
+			item->setPos(map_t2p_x(x, y, defaultLayer.get()),
+					map_t2p_y(x, y, defaultLayer.get()));
 			item->setShape(w, h);
 		}
 	}
@@ -906,8 +905,8 @@ static void compose_select(std::vector<SdlItem*> &itemArray)
 				item->setAnim(imageDB_get_anim(ctx, cursor_tile));
 
 				// get pixel coordinate from tile coordinate
-				int x = map_t2p_x(pos_tx, pos_ty, defaultLayer);
-				int y = map_t2p_y(pos_tx, pos_ty, defaultLayer);
+				int x = map_t2p_x(pos_tx, pos_ty, defaultLayer.get());
+				int y = map_t2p_y(pos_tx, pos_ty, defaultLayer.get());
 				item->setPos(x, y);
 			}
 		}
@@ -974,10 +973,6 @@ void scr_play_compose(Context *context, std::vector<SdlItem*> &itemArray)
 				+ context->getMap();
 		network_send_req_file(*(context->getConnection()), map_file_path);
 
-		if (defaultLayer != nullptr)
-		{
-			map_layer_delete(defaultLayer);
-		}
 		defaultLayer = map_layer_new(context->getMap(), DEFAULT_LAYER, nullptr);
 	}
 

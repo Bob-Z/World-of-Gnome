@@ -20,6 +20,7 @@
 #ifndef MAP_H
 #define MAP_H
 
+#include <memory>
 #include <string>
 
 #define DEFAULT_LAYER      (-1)
@@ -48,8 +49,7 @@ typedef struct layer
 	int row_height_total;
 } layer_t;
 
-layer_t * map_layer_new(const std::string & map, int layer_index, layer_t * default_layer);
-void map_layer_delete(layer_t * default_layer);
+std::unique_ptr<layer_t> map_layer_new(const std::string & map, int layer_index, const layer_t * default_layer);
 int map_t2p_x(int x, int y, const layer_t * layer);
 int map_t2p_y(int x, int y, const layer_t * layer);
 #endif
