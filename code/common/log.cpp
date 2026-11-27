@@ -27,6 +27,7 @@
 #include <time.h>
 #include <SDL2/SDL.h>
 #include <string>
+#include <vector>
 
 #ifdef __cplusplus
 extern "C"
@@ -35,11 +36,8 @@ extern "C"
 
 static int log_level = 0;
 
-char ** file_filter = nullptr;
-int file_filter_num = 0;
-
-char ** func_filter = nullptr;
-int func_filter_num = 0;
+static std::vector<std::string> file_filter;
+static std::vector<std::string> func_filter;
 
 static const std::string LEVEL_USER("user");
 static const std::string LEVEL_DESIGNER("designer");
@@ -49,18 +47,14 @@ static const std::string LEVEL_DEVELOPER("developer");
  **************************************************/
 void log_add_file_filter(const char * file)
 {
-	file_filter_num++;
-	file_filter = (char **) realloc(file_filter, sizeof(char*) * file_filter_num);
-	file_filter[file_filter_num - 1] = strdup(file);
+	file_filter.push_back(file);
 }
 
 /**************************************************
  **************************************************/
 void log_add_func_filter(const char * func)
 {
-	func_filter_num++;
-	func_filter = (char **) realloc(func_filter, sizeof(char*) * func_filter_num);
-	func_filter[func_filter_num - 1] = strdup(func);
+	func_filter.push_back(func);
 }
 
 /**************************************************
@@ -68,16 +62,14 @@ void log_add_func_filter(const char * func)
  **************************************************/
 static int is_allowed_file(const char * file)
 {
-	int i;
-
-	if (file_filter == nullptr)
+	if (file_filter.empty())
 	{
 		return 1;
 	}
 
-	for (i = 0; i < file_filter_num; i++)
+	for (const auto &filter : file_filter)
 	{
-		if (!strcmp(file_filter[i], file))
+		if (filter == file)
 		{
 			return 1;
 		}
@@ -91,16 +83,14 @@ static int is_allowed_file(const char * file)
  **************************************************/
 static int is_allowed_func(const char * func)
 {
-	int i;
-
-	if (func_filter == nullptr)
+	if (func_filter.empty())
 	{
 		return 1;
 	}
 
-	for (i = 0; i < func_filter_num; i++)
+	for (const auto &filter : func_filter)
 	{
-		if (!strcmp(func_filter[i], func))
+		if (filter == func)
 		{
 			return 1;
 		}
