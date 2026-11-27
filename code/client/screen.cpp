@@ -263,23 +263,24 @@ void screen_display(Context * ctx)
 			{
 				Context * ctx_drawn = (Context *) item->getUserPtr();
 
-				char * draw_script = nullptr;
+				std::string draw_script;
 
 				// Drawing script not directly attached to context (i.e. for cursor)
 				if (item->getUserString().empty() == false)
 				{
-					draw_script = strdup(item->getUserString().c_str());
+					draw_script = item->getUserString();
 				}
 				else
 				{
-					entry_read_string(CHARACTER_TABLE.c_str(), ctx_drawn->getId().c_str(), &draw_script, CHARACTER_KEY_DRAW_SCRIPT.c_str(), nullptr);
+					getDataManager().tryGet<std::string>(CHARACTER_TABLE,
+							ctx_drawn->getId(), { CHARACTER_KEY_DRAW_SCRIPT },
+							draw_script);
 				}
 
-				if (draw_script != nullptr)
+				if (draw_script.empty() == false)
 				{
-					execute_draw_script(ctx, std::string(draw_script), ctx_drawn, *item);
+					execute_draw_script(ctx, draw_script, ctx_drawn, *item);
 
-					free(draw_script);
 					continue;
 				}
 			}
