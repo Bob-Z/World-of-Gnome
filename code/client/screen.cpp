@@ -60,6 +60,19 @@ void screen_compose()
 }
 
 /******************************************************************************
+ Drop all items. Must be called before freeing contexts: items may hold
+ a user pointer or a callback capturing a Context.
+ *****************************************************************************/
+void screen_clear_items()
+{
+	for (auto item : itemArray)
+	{
+		delete (item);
+	}
+	itemArray.clear();
+}
+
+/******************************************************************************
  Called at start of each frame
  *****************************************************************************/
 static void frame_start(Context * context)
@@ -86,11 +99,7 @@ static void frame_start(Context * context)
  *****************************************************************************/
 static bool compose_scr(Context * context)
 {
-	for (auto item : itemArray)
-	{
-		delete (item);
-	}
-	itemArray.clear();
+	screen_clear_items();
 
 	sdl_set_background_color(0, 0, 0, 255);
 

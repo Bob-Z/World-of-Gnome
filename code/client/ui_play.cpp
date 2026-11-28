@@ -130,6 +130,11 @@ static void cb_main_quit()
 	{
 		context_get_player()->setInGame(false);
 		network_request_stop(*(context_get_player()->getConnection()));
+
+		// Items can hold a pointer to (or a callback capturing) a Context.
+		// Drop them before the contexts below are freed.
+		screen_clear_items();
+
 		Context *currentCtx = context_get_first();
 		while (currentCtx != nullptr)
 		{
@@ -144,20 +149,6 @@ static void cb_main_quit()
 				LOG(currentCtx->getId() + " exited");
 
 				context_free(currentCtx);
-
-				//TODO do this smarter
-#if 0
-				// Remove selection
-				while (item != nullptr)
-				{
-					if (item->user_ptr != nullptr)
-					{
-						item->user_ptr = nullptr;
-					}
-
-					item = item->next;
-				}
-#endif
 			}
 			currentCtx = nextCtx;
 		}
