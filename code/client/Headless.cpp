@@ -10,7 +10,10 @@
 
 #include "Headless.h"
 #include <SDL.h>
+#include <chrono>
+#include <ctime>
 #include <deque>
+#include <iomanip>
 #include <fstream>
 #include <iostream>
 #include <memory>
@@ -219,8 +222,21 @@ void headless_init(bool isEnabled, const std::string &logFile,
 
 void headless_log(const std::string &message)
 {
+	const auto now = std::chrono::system_clock::now();
+	const std::time_t time = std::chrono::system_clock::to_time_t(now);
+	const auto milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(
+			now.time_since_epoch()).count() % 1000;
+
+	std::tm localTime = {};
+	localtime_r(&time, &localTime);
+
+	std::ostringstream timestamp;
+	timestamp << std::put_time(&localTime, "%Y-%m-%d %H:%M:%S")
+			<< '.' << std::setfill('0') << std::setw(3) << milliseconds;
+
 	std::lock_guard<std::mutex> guard(logMutex);
-	*logStream << "[headless] " << message << std::endl;
+	*logStream << '[' << timestamp.str() << "] [headless] " << message
+			<< std::endl;
 }
 
 int headless_poll_event(void *voidEvent)
