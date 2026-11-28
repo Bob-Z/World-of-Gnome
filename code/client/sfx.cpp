@@ -22,15 +22,21 @@
 #include "log.h"
 #include "syntax.h"
 #include <map>
+#include <mutex>
 #include <SDL_mixer.h>
 #include <SDL_rwops.h>
 #include <string>
 
 static std::map<std::string, Mix_Chunk*> g_SoundList;
+// sfx_play can be reached from the render thread and from effect scripts
+// running on the network receive thread.
+static std::mutex g_SoundListMutex;
 
 /*****************************************************************************/
 int sfx_play(Connection & connection, const std::string & fileName, int channel, int loops)
 {
+	std::lock_guard<std::mutex> guard(g_SoundListMutex);
+
 	auto iter = g_SoundList.find(fileName);
 
 	if (iter != g_SoundList.end())
