@@ -37,5 +37,7 @@ void network_send_action(Connection & connection, const std::string & actionFile
 void network_send_action_stop(Connection & connection, const std::string & actionFile);
 int network_connect(Connection & connection, const std::string & host_name);
 int network_open_data_connection(Connection & connection);
+// Join the receive threads so no thread touches global state during shutdown.
+void network_wait_threads();
 
 #endif

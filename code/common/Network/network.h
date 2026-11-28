@@ -26,6 +26,8 @@
 #include <string>
 
 bool network_read_bytes(TCPsocket socket, char * data, int size);
+// Makes blocking reads return false so receive threads can exit at shutdown.
+void network_request_shutdown();
 void network_send_command(Connection & connection, const std::string & serialized_data, const bool p_IsData);
 int network_send_file(Connection & connection, const std::string & filename);
 void network_send_file_data(Connection & connection, const std::string & name, const std::string & data);

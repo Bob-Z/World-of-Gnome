@@ -29,11 +29,22 @@
 #include <cstdint>
 #include <netinet/in.h>
 #include <SDL_net.h>
+#include <atomic>
 #include <memory>
 #include <string>
 #include <thread>
 #include <utility>
 #include <wog.pb.h>
+
+namespace
+{
+std::atomic<bool> networkShutdown { false };
+}
+
+void network_request_shutdown()
+{
+	networkShutdown = true;
+}
 
 /*******************************************************************************
  ******************************************************************************/
@@ -94,20 +105,46 @@ bool network_read_bytes(TCPsocket socket, char *data, int size)
 	int read = 0;
 	int total = 0;
 
-	while (total != size && read != -1)
+	SDLNet_SocketSet socketSet = SDLNet_AllocSocketSet(1);
+	if (socketSet == nullptr)
 	{
+		return false;
+	}
+	if (SDLNet_TCP_AddSocket(socketSet, socket) == -1)
+	{
+		SDLNet_FreeSocketSet(socketSet);
+		return false;
+	}
+
+	while (total != size)
+	{
+		if (networkShutdown == true)
+		{
+			break;
+		}
+
+		// Poll with a short timeout so shutdown does not have to wait for
+		// traffic that may never arrive.
+		const int ready = SDLNet_CheckSockets(socketSet, 50);
+		if (ready <= 0)
+		{
+			continue;
+		}
+
 		read = SDLNet_TCP_Recv(socket, data + total, 1);
 		if (read < 1)
 		{
 			ERR(
 					"Read error " + std::to_string(read) + " on socket "
 							+ std::to_string(reinterpret_cast<intptr_t>(socket)));
+			SDLNet_FreeSocketSet(socketSet);
 			return false;
 		}
 		total += read;
 	}
 
-	return true;
+	SDLNet_FreeSocketSet(socketSet);
+	return (total == size);
 }
 
 /*****************************************************************************/

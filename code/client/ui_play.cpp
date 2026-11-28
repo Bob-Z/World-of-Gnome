@@ -87,11 +87,7 @@ static int numAction = 0;
 /*****************************************************************************/
 static void draw_background(Context *ctx, ItemArray &itemArray)
 {
-	static SiAnim *bgAnim = nullptr;
-	if (bgAnim != nullptr)
-	{
-		delete bgAnim;
-	}
+	static std::unique_ptr<SiAnim> bgAnim;
 
 	int sw = 0;
 	int sh = 0;
@@ -103,7 +99,7 @@ static void draw_background(Context *ctx, ItemArray &itemArray)
 	itemArray.push_back(std::move(itemOwner));
 
 	item->setPos(0, 0);
-	item->setAnim(bgAnim);
+	item->setAnim(bgAnim.get());
 	item->setOverlay(true);
 }
 
@@ -666,7 +662,7 @@ static void compose_equipment(Context *ctx, ItemArray &itemArray)
 #endif
 	std::string equippedIconName;
 	std::string inventoryIconName;
-	SiAnim *inventoryIconAnim = nullptr;
+	static std::unique_ptr<SiAnim> inventoryIconAnim;
 
 	int sw = 0;
 	int sh = 0;
@@ -901,7 +897,7 @@ static void compose_equipment(Context *ctx, ItemArray &itemArray)
 
 		item->setOverlay(true);
 		item->setPos(sw - inventoryIconAnim->getWidth(), y);
-		item->setAnim(inventoryIconAnim);
+		item->setAnim(inventoryIconAnim.get());
 
 		item->setClickLeftCb([]()
 		{	show_inventory();});

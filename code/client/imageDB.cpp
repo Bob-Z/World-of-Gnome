@@ -31,29 +31,26 @@
 #include "reader.h"
 #include "sdl.h"
 #include "syntax.h"
+#include <memory>
 #include <string>
 
 static Lock imageDbLock;
 
-static std::map<std::string, SiAnim*> imageArray;
+static std::map<std::string, std::unique_ptr<SiAnim>> imageArray;
 
-static SiAnim *def_anim = sdl_get_minimal_anim();
+static std::unique_ptr<SiAnim> def_anim = sdl_get_minimal_anim();
 
 /*****************************************************************************/
-static SiAnim* image_load(const std::string &fileName)
+static std::unique_ptr<SiAnim> image_load(const std::string &fileName)
 {
 	const std::string filePath = base_directory + "/" + fileName;
 
-	SiAnim *anim = anim_load(filePath);
-
-	return anim;
+	return anim_load(filePath);
 }
 
 /*****************************************************************************/
 SiAnim* imageDB_get_anim(Context *context, const std::string &imageName)
 {
-	SiAnim *anim = nullptr;
-
 	const std::string fileName = IMAGE_TABLE + "/" + imageName;
 
 	LockGuard guard(imageDbLock);
@@ -62,19 +59,20 @@ SiAnim* imageDB_get_anim(Context *context, const std::string &imageName)
 	auto iter = imageArray.find(fileName);
 	if (iter != imageArray.end())
 	{
-		return iter->second;
+		return iter->second.get();
 	}
 
 	// Try to load from a file
 	file_lock(fileName);
 
-	anim = image_load(fileName);
+	auto anim = image_load(fileName);
 
 	if (anim != nullptr)
 	{
-		imageArray[fileName] = anim;
+		SiAnim *result = anim.get();
+		imageArray[fileName] = std::move(anim);
 		file_unlock(fileName);
-		return anim;
+		return result;
 	}
 
 	// Request an update to the server
@@ -82,7 +80,7 @@ SiAnim* imageDB_get_anim(Context *context, const std::string &imageName)
 
 	file_unlock(fileName);
 
-	return def_anim;
+	return def_anim.get();
 }
 
 /*****************************************************************************/

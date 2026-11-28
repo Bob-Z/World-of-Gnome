@@ -146,9 +146,9 @@ Context* context_new(void)
 {
 	auto owner = std::make_unique<Context>();
 	Context *newContext = owner.get();
-	contextOwners.push_back(std::move(owner));
 
 	context_lock_list();
+	contextOwners.push_back(std::move(owner));
 	if (context_list_start == nullptr)
 	{
 		context_list_start = newContext;
@@ -228,8 +228,6 @@ void context_free(Context *context)
 		}
 	}
 
-	context_unlock_list();
-
 	for (auto it = contextOwners.begin(); it != contextOwners.end(); ++it)
 	{
 		if (it->get() == context)
@@ -238,6 +236,8 @@ void context_free(Context *context)
 			break;
 		}
 	}
+
+	context_unlock_list();
 }
 
 /*****************************************************************************/

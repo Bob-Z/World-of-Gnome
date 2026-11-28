@@ -249,6 +249,13 @@ void screen_display(Context * ctx)
 
 		while (SDL_PollEvent(&event) == 1)
 		{
+			// Let main() shut down cleanly instead of exit() inside sdl_item.
+			if (event.type == SDL_QUIT)
+			{
+				screen_quit();
+				continue;
+			}
+
 			compose |= sdl_screen_manager(&event);
 			compose |= sdl_mouse_manager(&event, itemArray);
 			compose |= sdl_keyboard_manager(&event);

@@ -25,6 +25,25 @@
 #include <arpa/inet.h>
 #include <thread>
 
+namespace
+{
+std::thread recvThread;
+std::thread dataRecvThread;
+}
+
+/*****************************************************************************/
+void network_wait_threads()
+{
+	if (recvThread.joinable() == true)
+	{
+		recvThread.join();
+	}
+	if (dataRecvThread.joinable() == true)
+	{
+		dataRecvThread.join();
+	}
+}
+
 /*********************************************************************
  sends a login request, the answer is asynchronously read by async_recv
  **********************************************************************/
@@ -260,9 +279,8 @@ int network_connect(Connection & connection, const std::string & host_name)
 	connection.setSocket(socket);
 	connection.setConnected(true);
 
-	std::thread receiver(async_recv, &connection);
-	connection.setSocketReader(false, receiver.get_id());
-	receiver.detach();
+	recvThread = std::thread(async_recv, &connection);
+	connection.setSocketReader(false, recvThread.get_id());
 
 	return true;
 }
@@ -287,9 +305,8 @@ int network_open_data_connection(Connection & connection)
 
 	connection.setSocketData(socket);
 
-	std::thread receiver(async_data_recv, &connection);
-	connection.setSocketReader(true, receiver.get_id());
-	receiver.detach();
+	dataRecvThread = std::thread(async_data_recv, &connection);
+	connection.setSocketReader(true, dataRecvThread.get_id());
 
 	return true;
 }

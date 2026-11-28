@@ -29,6 +29,7 @@
 #include "log.h"
 #include "lua_client.h"
 #include "mutex.h"
+#include "network.h"
 #include "network_client.h"
 #include "screen.h"
 #include "sdl.h"
@@ -212,6 +213,15 @@ int main(int argc, char **argv)
 
 	//Run the main loop
 	screen_display(context);
+
+	// Ask the server to close the connection so the receive threads can end,
+	// then join them before any global state is destroyed.
+	if (context->isInGame() == true)
+	{
+		network_request_stop(connection);
+	}
+	network_request_shutdown();
+	network_wait_threads();
 
 	SDLNet_Quit();
 
