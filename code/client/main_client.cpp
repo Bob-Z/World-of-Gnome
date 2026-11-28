@@ -214,7 +214,7 @@ int main(int argc, char **argv)
 	//Run the main loop
 	screen_display(context);
 
-	// Ask the server to close the connection so the receive threads can end,
+	// Stop the game on the server and make the local receive threads exit,
 	// then join them before any global state is destroyed.
 	if (context->isInGame() == true)
 	{
