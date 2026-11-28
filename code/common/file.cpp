@@ -37,6 +37,7 @@
 #include <SDL_stdinc.h>
 #include <SDL_timer.h>
 #include <stdlib.h>
+#include <memory>
 #include <string>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -49,7 +50,7 @@ typedef struct file_tag
 	Lock lock;
 } file_t;
 
-std::unordered_map<std::string, file_t *> file_list;
+std::unordered_map<std::string, std::unique_ptr<file_t>> file_list;
 
 static file_t * find_file(const std::string &filename)
 {
@@ -59,7 +60,7 @@ static file_t * find_file(const std::string &filename)
 		return nullptr;
 	}
 
-	return iter->second;
+	return iter->second.get();
 }
 
 Lock file_list_lock;
@@ -75,10 +76,9 @@ void file_lock(const std::string &filename)
 	file_data = find_file(filename);
 	if (file_data == nullptr)
 	{
-		file_data = new file_t;
+		file_list[filename] = std::make_unique<file_t>();
+		file_data = file_list[filename].get();
 		file_data->timestamp = 0;
-
-		file_list[filename] = file_data;
 	}
 
 	file_data->lock.lock();

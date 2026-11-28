@@ -18,12 +18,13 @@
  */
 
 #include <string>
+#include "sdl.h"
 #include <vector>
 
 class Context;
 class SdlItem;
 
-void scr_create_compose(Context * context, std::vector<SdlItem *> & itemArray);
+void scr_create_compose(Context * context, ItemArray &itemArray);
 void scr_create_frame_start(Context * context);
 void scr_create_init();
 void scr_create_add_playable_character(const std::vector<std::string> & id_list);

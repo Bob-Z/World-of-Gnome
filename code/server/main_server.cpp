@@ -46,8 +46,8 @@ static DataManager dataManager;
 /*****************************************************************************/
 void sigint_handler(int sig)
 {
-	printf("Exiting\n");
-	exit(0);
+	// Keep the handler async-signal-safe: just request the accept loop to stop.
+	network_server_stop();
 }
 
 /*****************************************************************************/
@@ -116,6 +116,9 @@ int main(int argc, char **argv)
 
 	//init network server
 	network_init();
+
+	// Stop NPC threads before the global context list is destroyed.
+	context_shutdown();
 
 	return 0;
 }

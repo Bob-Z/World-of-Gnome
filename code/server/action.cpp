@@ -39,8 +39,10 @@
 #include "syntax.h"
 #include "util.h"
 #include <cstring>
+#include <memory>
 #include <stdlib.h>
 #include <string>
+#include <thread>
 #include <unistd.h>
 #include <vector>
 
@@ -2203,9 +2205,8 @@ int action_execute(Context *context, const std::string &actionName,
 }
 
 /*****************************************************************************/
-static int async_action(void *data)
+static void async_action(RunningAction *runningAction)
 {
-	RunningAction *runningAction = static_cast<RunningAction*>(data);
 
 	while (true)
 	{
@@ -2217,29 +2218,29 @@ static int async_action(void *data)
 		}
 		else
 		{
-			delete (runningAction);
-			return 0;
+			return;
 		}
 
 		runningAction->endAction();
 
 		usleep(runningAction->getCoolDownMs() * 1000);
 	}
-
-	return 0;
 }
 
 /*****************************************************************************/
 void action_run(Context *context, const std::string &actionName,
 		const std::vector<std::string> &parameters, int coolDownMs)
 {
-// The thread using this RunningAction will free it when it ends
-	RunningAction *runningAction = new RunningAction(context, actionName,
+	auto runningAction = std::make_unique<RunningAction>(context, actionName,
 			parameters, coolDownMs);
 
-	context->addRunningAction(actionName, runningAction);
+	context->addRunningAction(actionName, runningAction.get());
 
-	SDL_CreateThread(async_action, actionName.c_str(), (void*) runningAction);
+	// The thread owns the RunningAction and frees it when it ends.
+	std::thread([action = std::move(runningAction)]()
+	{
+		async_action(action.get());
+	}).detach();
 }
 
 /*****************************************************************************/

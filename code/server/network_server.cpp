@@ -17,6 +17,7 @@
  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
 
+#include <atomic>
 #include <bits/stdint-uintn.h>
 #include <const.h>
 #include "Context.h"
@@ -26,7 +27,7 @@
 #include <network.h>
 #include <protocol.h>
 #include <SDL_net.h>
-#include <SDL_thread.h>
+#include <thread>
 #include <stdlib.h>
 #include <string>
 #include <syntax.h>
@@ -214,9 +215,8 @@ void network_broadcast_entry_int(const char * table, const char * file, const ch
 
 /*******************************************************************************
  ******************************************************************************/
-static int new_connection(void * data)
+static void new_connection(TCPsocket socket)
 {
-	TCPsocket socket = (TCPsocket) data;
 
 	Connection connection;
 
@@ -263,8 +263,17 @@ static int new_connection(void * data)
 	}
 
 	LOG_USER("Client disconnected");
+}
 
-	return 0;
+namespace
+{
+std::atomic<bool> serverStopRequested { false };
+}
+
+/*****************************************************************************/
+void network_server_stop()
+{
+	serverStopRequested = true;
 }
 
 /*****************************************************************************/
@@ -300,10 +309,10 @@ void network_init(void)
 
 	LOG_USER("Waiting for connections on port: " + std::to_string(PORT));
 
-	// Wait for a connection
-	while (true)
+	// Wait for a connection. Use a finite timeout so a SIGINT can be noticed.
+	while (serverStopRequested == false)
 	{
-		SDLNet_CheckSockets(server_set, -1);
+		SDLNet_CheckSockets(server_set, 100);
 		/* check for pending connection.
 		 * If there is one, accept that, and open a new socket for communicating */
 		TCPsocket clientSocket = 0;
@@ -318,12 +327,15 @@ void network_init(void)
 			//LOG_USER("Host connected: " + std::string(SDLNet_Read32(&remote_IP->host)) + " " + std::to_string(SDLNet_Read16(&remote_IP->port)) + "\n");
 			LOG_USER("Host connected: " + std::string(SDLNet_ResolveIP(remoteIp)) + ":" + std::to_string(SDLNet_Read16(&remoteIp->port)) + " with socket " + std::to_string(reinterpret_cast<intptr_t>(clientSocket)) + "\n");
 
-			SDL_CreateThread(new_connection, "new_connection", (void*) clientSocket);
+			std::thread(new_connection, clientSocket).detach();
 		}
 	}
 
+	SDLNet_FreeSocketSet(server_set);
 	SDLNet_TCP_Close(socket);
 	SDLNet_Quit();
+
+	LOG_USER("Server stopped");
 
 	return;
 }

@@ -23,6 +23,7 @@
 #include "screen.h"
 #include "wog.pb.h"
 #include <arpa/inet.h>
+#include <thread>
 
 /*********************************************************************
  sends a login request, the answer is asynchronously read by async_recv
@@ -148,10 +149,8 @@ void network_send_action_stop(Connection & connection, const std::string & actio
  Callback from client listening to server in its own thread
  only used for game information transfer
  *********************************************************************/
-static int async_recv(void * data)
+static void async_recv(Connection * connection)
 {
-	Connection * connection = (Connection *) data;
-
 	while (true)
 	{
 		uint32_t frame_size = 0U;
@@ -185,17 +184,14 @@ static int async_recv(void * data)
 	connection->closeSocket(false);
 
 	screen_quit();
-
-	return 0;
 }
 
 /*********************************************************************
  Callback from client listening to server in its own thread
  Only used for data transfers
  *********************************************************************/
-static int async_data_recv(void * data)
+static void async_data_recv(Connection * connection)
 {
-	Connection * connection = (Connection *) data;
 
 	while (true)
 	{
@@ -228,8 +224,6 @@ static int async_data_recv(void * data)
 	connection->closeSocket(true);
 
 	screen_quit();
-
-	return 0;
 }
 
 /*********************************************************************
@@ -266,8 +260,9 @@ int network_connect(Connection & connection, const std::string & host_name)
 	connection.setSocket(socket);
 	connection.setConnected(true);
 
-	SDL_Thread *thread = SDL_CreateThread(async_recv, "async_recv", (void*) &connection);
-	connection.setSocketReader(false, SDL_GetThreadID(thread));
+	std::thread receiver(async_recv, &connection);
+	connection.setSocketReader(false, receiver.get_id());
+	receiver.detach();
 
 	return true;
 }
@@ -292,8 +287,9 @@ int network_open_data_connection(Connection & connection)
 
 	connection.setSocketData(socket);
 
-	SDL_Thread *thread = SDL_CreateThread(async_data_recv, "async_data_recv", (void*) &connection);
-	connection.setSocketReader(true, SDL_GetThreadID(thread));
+	std::thread receiver(async_data_recv, &connection);
+	connection.setSocketReader(true, receiver.get_id());
+	receiver.detach();
 
 	return true;
 }

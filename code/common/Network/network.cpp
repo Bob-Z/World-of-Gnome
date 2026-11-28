@@ -29,38 +29,28 @@
 #include <cstdint>
 #include <netinet/in.h>
 #include <SDL_net.h>
-#include <SDL_thread.h>
+#include <memory>
 #include <string>
+#include <thread>
 #include <utility>
 #include <wog.pb.h>
-
-/*********************************************************************
- return -1 on error
- return 0 on success
- *********************************************************************/
-static int async_frame_send(void *user_data)
-{
-	DataSent *data = static_cast<DataSent*>(user_data);
-
-	data->send();
-
-	delete data;
-
-	return true;
-}
 
 /*******************************************************************************
  ******************************************************************************/
 void network_send_command(Connection &connection,
 		const std::string &serialized_data, const bool is_data)
 {
-	DataSent *data = new (DataSent);
+	auto data = std::make_unique<DataSent>();
 
 	data->setConnection(&connection);
 	data->setSerializedData(serialized_data);
 	data->setIsData(is_data);
 
-	SDL_CreateThread(async_frame_send, "async_frame_send", (void*) data);
+	// The thread owns the DataSent object and frees it when it finishes.
+	std::thread([sent = std::move(data)]()
+	{
+		sent->send();
+	}).detach();
 }
 
 /*********************************************************************

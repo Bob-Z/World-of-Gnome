@@ -18,6 +18,7 @@
  */
 
 #include "ChatHistoryBox.h"
+#include <memory>
 
 #include "SdlItemCore.h"
 #include "textview.h"
@@ -44,7 +45,7 @@ void ChatHistoryBox::setFont(TTF_Font * font)
 }
 
 /*****************************************************************************/
-void ChatHistoryBox::compose(std::vector<SdlItem *> & itemArray, const int upperBorderHeight, const int lowerBorderHeight)
+void ChatHistoryBox::compose(ItemArray &itemArray, const int upperBorderHeight, const int lowerBorderHeight)
 {
 	if (m_font == nullptr)
 	{
@@ -63,8 +64,9 @@ void ChatHistoryBox::compose(std::vector<SdlItem *> & itemArray, const int upper
 			return;
 		}
 
-		SdlItem * item = new SdlItem;
-		itemArray.push_back(item);
+		auto itemOwner = std::make_unique<SdlItem>();
+		SdlItem *item = itemOwner.get();
+		itemArray.push_back(std::move(itemOwner));
 
 		item->setOverlay(true);
 		item->setText(iter->text);

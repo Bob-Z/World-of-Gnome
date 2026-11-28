@@ -23,9 +23,11 @@
 #include "Connection.h"
 #include "RunningAction.h"
 #include "Selection.h"
+#include <atomic>
 #include <map>
 #include <memory>
 #include <string>
+#include <thread>
 #include <vector>
 
 #include <lua.hpp>
@@ -83,8 +85,8 @@ public:
 	Connection* getConnection() const;
 	void setConnection(Connection* connection);
 
-	SDL_Thread* getNpcThread() const;
-	void setNpcThread(SDL_Thread* npcThread);
+	std::thread& getNpcThread();
+	void setNpcThread(std::thread npcThread);
 
 	bool update_from_file();
 
@@ -127,7 +129,7 @@ private:
 
 	Connection * m_connection;
 
-	SDL_Thread * m_npcThread;
+	std::thread m_npcThread;
 
 	std::map<std::string, RunningAction *> m_actionRunning;
 
@@ -135,6 +137,12 @@ public:
 	Context * m_previous;
 	Context * m_next;
 };
+
+// Graceful shutdown: stop every NPC loop and wait for its thread to finish.
+void context_shutdown();
+bool context_is_shutting_down();
+void context_npc_thread_started();
+void context_npc_thread_finished();
 
 Context * context_get_list_start();
 Context * context_new(void);

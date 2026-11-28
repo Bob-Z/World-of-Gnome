@@ -26,6 +26,7 @@
 #include <time.h>
 #include <SDL2/SDL.h>
 #include <string>
+#include <thread>
 #include <vector>
 
 #ifdef __cplusplus
@@ -123,7 +124,9 @@ void log_print(int type, const char * file, const char * func, int line, FILE *s
 
 	if (log_level == LOGDEVELOPER)
 	{
-		fprintf(stream, "%09d|%ld|%s:%d :%s|%s", SDL_GetTicks(), SDL_ThreadID(), file, line, func, message.c_str());
+		const auto threadId = std::hash<std::thread::id>{}(std::this_thread::get_id());
+		fprintf(stream, "%09d|%zu|%s:%d :%s|%s", SDL_GetTicks(), threadId,
+				file, line, func, message.c_str());
 	}
 	else if (log_level == LOGDESIGNER)
 	{

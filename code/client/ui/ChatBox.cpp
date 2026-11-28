@@ -38,7 +38,7 @@ void ChatBox::setFont(TTF_Font * font)
 }
 
 /*****************************************************************************/
-void ChatBox::compose(std::vector<SdlItem *> & itemArray, const int upperBorderHeight, const int lowerBorderHeight)
+void ChatBox::compose(ItemArray &itemArray, const int upperBorderHeight, const int lowerBorderHeight)
 {
 	int chatEditBoxHeight = m_chatEditBox.compose(itemArray, upperBorderHeight, lowerBorderHeight);
 	m_chatHistoryBox.compose(itemArray, upperBorderHeight, lowerBorderHeight + chatEditBoxHeight);

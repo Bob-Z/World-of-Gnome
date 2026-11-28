@@ -18,11 +18,12 @@
  */
 
 #include <vector>
+#include "sdl.h"
 
 class Context;
 class SdlItem;
 
-void scr_play_compose(Context * context, std::vector<SdlItem *> & itemArray);
+void scr_play_compose(Context * context, ItemArray &itemArray);
 void scr_play_frame_start(Context * context);
 void scr_play_init();
 int scr_play_get_current_x();

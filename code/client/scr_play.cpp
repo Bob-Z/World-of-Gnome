@@ -18,6 +18,7 @@
  */
 
 #include "Camera.h"
+#include <memory>
 #include "client_conf.h"
 #include "const.h"
 #include "entry.h"
@@ -220,7 +221,7 @@ static std::vector<SiAnim*> select_sprite(Context *ctx)
  Draw a single sprite
  if image_file_name is not nullptr, this file is used as an image rather than the normal sprite image
  *****************************************************************************/
-static void set_up_sprite(Context *ctx, std::vector<SdlItem*> &itemArray)
+static void set_up_sprite(Context *ctx, ItemArray &itemArray)
 {
 	if (ctx->getMap().size() == 0)
 	{
@@ -346,8 +347,9 @@ static void set_up_sprite(Context *ctx, std::vector<SdlItem*> &itemArray)
 	py += spriteOffsetY;
 
 	// Set sprite to item
-	SdlItem *item = new SdlItem;
-	itemArray.push_back(item);
+	auto itemOwner = std::make_unique<SdlItem>();
+	SdlItem *item = itemOwner.get();
+	itemArray.push_back(std::move(itemOwner));
 
 	item->setPos(px, py);
 	item->setAnimStartTick(ctx->getAnimationTick());
@@ -456,7 +458,7 @@ static void set_up_sprite(Context *ctx, std::vector<SdlItem*> &itemArray)
 }
 
 /*****************************************************************************/
-static void compose_sprite(int layerIndex, std::vector<SdlItem*> &itemArray)
+static void compose_sprite(int layerIndex, ItemArray &itemArray)
 {
 	Context *ctx = context_get_player();
 
@@ -478,7 +480,7 @@ static void compose_sprite(int layerIndex, std::vector<SdlItem*> &itemArray)
 }
 
 /*****************************************************************************/
-static void compose_item(int layerIndex, std::vector<SdlItem*> &itemArray)
+static void compose_item(int layerIndex, ItemArray &itemArray)
 {
 	static TTF_Font *font = nullptr;
 
@@ -561,8 +563,9 @@ static void compose_item(int layerIndex, std::vector<SdlItem*> &itemArray)
 					{ ITEM_OFFSET_Y }, 0);
 		}
 
-		SdlItem *item = new SdlItem;
-		itemArray.push_back(item);
+		auto itemOwner = std::make_unique<SdlItem>();
+		SdlItem *item = itemOwner.get();
+		itemArray.push_back(std::move(itemOwner));
 
 		SiAnim *anim = imageDB_get_anim(ctx, spriteName);
 
@@ -642,7 +645,7 @@ static void cb_over(SdlItem *item)
 }
 
 /*****************************************************************************/
-static void compose_map_button(std::vector<SdlItem*> &itemArray)
+static void compose_map_button(ItemArray &itemArray)
 {
 	Context *ctx = context_get_player();
 
@@ -663,8 +666,9 @@ static void compose_map_button(std::vector<SdlItem*> &itemArray)
 	{
 		for (x = 0; x < defaultLayer->map_w; x++)
 		{
-			SdlItem *item = new SdlItem;
-			itemArray.push_back(item);
+			auto itemOwner = std::make_unique<SdlItem>();
+			SdlItem *item = itemOwner.get();
+			itemArray.push_back(std::move(itemOwner));
 
 			item->setPos(map_t2p_x(x, y, defaultLayer.get()),
 					map_t2p_y(x, y, defaultLayer.get()));
@@ -683,7 +687,7 @@ static void compose_map_button(std::vector<SdlItem*> &itemArray)
 }
 
 /*****************************************************************************/
-static void compose_map_set(int layerIndex, std::vector<SdlItem*> &itemArray)
+static void compose_map_set(int layerIndex, ItemArray &itemArray)
 {
 	Context *ctx = context_get_player();
 
@@ -708,8 +712,9 @@ static void compose_map_set(int layerIndex, std::vector<SdlItem*> &itemArray)
 		// Skip empty tile
 		if (tileSet[i][0] != 0)
 		{
-			SdlItem *item = new SdlItem;
-			itemArray.push_back(item);
+			auto itemOwner = std::make_unique<SdlItem>();
+			SdlItem *item = itemOwner.get();
+			itemArray.push_back(std::move(itemOwner));
 
 			item->setPos(map_t2p_x(x, y, layer.get()), map_t2p_y(x, y, layer.get()));
 
@@ -728,7 +733,7 @@ static void compose_map_set(int layerIndex, std::vector<SdlItem*> &itemArray)
 
 /*****************************************************************************/
 static void compose_map_scenery(int layerIndex,
-		std::vector<SdlItem*> &itemArray)
+		ItemArray &itemArray)
 {
 	Context *ctx = context_get_player();
 
@@ -759,8 +764,9 @@ static void compose_map_scenery(int layerIndex,
 			continue;
 		}
 
-		SdlItem *item = new SdlItem;
-		itemArray.push_back(item);
+		auto itemOwner = std::make_unique<SdlItem>();
+		SdlItem *item = itemOwner.get();
+		itemArray.push_back(std::move(itemOwner));
 
 		item->setPos(x, y);
 		item->setAnim(imageDB_get_anim(ctx, imageName));
@@ -769,7 +775,7 @@ static void compose_map_scenery(int layerIndex,
 }
 
 /*****************************************************************************/
-static void compose_type(int layerIndex, std::vector<SdlItem*> &itemArray)
+static void compose_type(int layerIndex, ItemArray &itemArray)
 {
 	static TTF_Font *font = nullptr;
 
@@ -811,8 +817,9 @@ static void compose_type(int layerIndex, std::vector<SdlItem*> &itemArray)
 				continue;
 			}
 
-			SdlItem *item = new SdlItem;
-			itemArray.push_back(item);
+			auto itemOwner = std::make_unique<SdlItem>();
+			SdlItem *item = itemOwner.get();
+			itemArray.push_back(std::move(itemOwner));
 			item->setText(type);
 			item->setFont(font);
 
@@ -829,7 +836,7 @@ static void compose_type(int layerIndex, std::vector<SdlItem*> &itemArray)
 /******************************************************************************
  Compose select cursor
  *****************************************************************************/
-static void compose_select(std::vector<SdlItem*> &itemArray)
+static void compose_select(ItemArray &itemArray)
 {
 	Context *ctx = context_get_player();
 
@@ -847,8 +854,9 @@ static void compose_select(std::vector<SdlItem*> &itemArray)
 
 			if (pos_tx != -1 && pos_ty != -1)
 			{
-				SdlItem *item = new SdlItem;
-				itemArray.push_back(item);
+				auto itemOwner = std::make_unique<SdlItem>();
+				SdlItem *item = itemOwner.get();
+				itemArray.push_back(std::move(itemOwner));
 
 				item->setAnim(imageDB_get_anim(ctx, cursor_tile));
 
@@ -875,8 +883,9 @@ static void compose_select(std::vector<SdlItem*> &itemArray)
 			return;
 		}
 
-		SdlItem *item = new SdlItem;
-		itemArray.push_back(item);
+		auto itemOwner = std::make_unique<SdlItem>();
+		SdlItem *item = itemOwner.get();
+		itemArray.push_back(std::move(itemOwner));
 
 		item->setUserPtr(selected_context);
 		item->setUserString(cursorCharacterDrawScript);
@@ -898,7 +907,7 @@ void scr_play_init()
 }
 
 /*****************************************************************************/
-void scr_play_compose(Context *context, std::vector<SdlItem*> &itemArray)
+void scr_play_compose(Context *context, ItemArray &itemArray)
 {
 	if (context->getMap() == "")
 	{

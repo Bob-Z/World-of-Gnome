@@ -21,6 +21,7 @@
 #define CLIENT_UI_CHATBOX_H_
 
 #include "ChatEditBox.h"
+#include "sdl.h"
 #include "ChatHistoryBox.h"
 
 class SdlItem;
@@ -33,7 +34,7 @@ public:
 
 	void setFont(TTF_Font * font);
 
-	void compose(std::vector<SdlItem *> & itemArray, const int upperBorderHeight, const int lowerBorderHeight);
+	void compose(ItemArray &itemArray, const int upperBorderHeight, const int lowerBorderHeight);
 
 private:
 	ChatEditBox m_chatEditBox;

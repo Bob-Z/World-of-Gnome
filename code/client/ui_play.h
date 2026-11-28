@@ -21,6 +21,7 @@
 #define UI_PLAY_H
 
 #include <string>
+#include "sdl.h"
 #include <vector>
 
 class Context;
@@ -35,7 +36,7 @@ void ui_play_set(const UiType type);
 UiType ui_play_get();
 const std::string & ui_play_get_last_action();
 void ui_play_cb_action(const std::string & action);
-void ui_play_compose(Context * ctx, std::vector<SdlItem*> & itemArray);
+void ui_play_compose(Context * ctx, ItemArray &itemArray);
 void ui_play_init();
 void ui_play_popup_add(const std::vector<std::string> & data);
 

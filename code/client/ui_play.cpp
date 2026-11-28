@@ -18,6 +18,7 @@
  */
 
 #include "ChatBox.h"
+#include <memory>
 #include "client_conf.h"
 #include "const.h"
 #include "entry.h"
@@ -37,6 +38,7 @@
 #include "util.h"
 #include <stack>
 #include <string>
+#include <thread>
 #include <vector>
 
 static const std::string FONT = "Ubuntu-C.ttf";
@@ -83,7 +85,7 @@ static int firstAction = 0;
 static int numAction = 0;
 
 /*****************************************************************************/
-static void draw_background(Context *ctx, std::vector<SdlItem*> &itemArray)
+static void draw_background(Context *ctx, ItemArray &itemArray)
 {
 	static SiAnim *bgAnim = nullptr;
 	if (bgAnim != nullptr)
@@ -96,8 +98,9 @@ static void draw_background(Context *ctx, std::vector<SdlItem*> &itemArray)
 	sdl_get_output_size(&sw, &sh);
 	bgAnim = anim_create_color(sw, sh, BACKGROUND_COLOR);
 
-	SdlItem *item = new SdlItem;
-	itemArray.push_back(item);
+	auto itemOwner = std::make_unique<SdlItem>();
+	SdlItem *item = itemOwner.get();
+	itemArray.push_back(std::move(itemOwner));
 
 	item->setPos(0, 0);
 	item->setAnim(bgAnim);
@@ -144,8 +147,11 @@ static void cb_main_quit()
 				currentCtx->setInGame(false);
 
 				LOG("Waiting for " + currentCtx->getId());
-				int threadStatus = 0;
-				SDL_WaitThread(currentCtx->getNpcThread(), &threadStatus);
+				std::thread &npcThread = currentCtx->getNpcThread();
+				if (npcThread.joinable() == true)
+				{
+					npcThread.join();
+				}
 				LOG(currentCtx->getId() + " exited");
 
 				context_free(currentCtx);
@@ -398,7 +404,7 @@ static void key_down_right_released()
 }
 
 /*****************************************************************************/
-static int compose_attribute(Context *ctx, std::vector<SdlItem*> &itemArray)
+static int compose_attribute(Context *ctx, ItemArray &itemArray)
 {
 	static TTF_Font *font = nullptr;
 	if (font == nullptr)
@@ -428,8 +434,9 @@ static int compose_attribute(Context *ctx, std::vector<SdlItem*> &itemArray)
 		attributeText.push_back(
 				nameArray[index] + ": " + std::to_string(value));
 
-		SdlItem *item = new SdlItem;
-		itemArray.push_back(item);
+		auto itemOwner = std::make_unique<SdlItem>();
+		SdlItem *item = itemOwner.get();
+		itemArray.push_back(std::move(itemOwner));
 
 		item->setOverlay(true);
 		item->setText(attributeText.back());
@@ -488,7 +495,7 @@ static void cb_wheel_down_action()
 }
 
 /*****************************************************************************/
-static int compose_action(Context *ctx, std::vector<SdlItem*> &itemArray)
+static int compose_action(Context *ctx, ItemArray &itemArray)
 {
 	int action_bar_height = 0;
 
@@ -544,7 +551,8 @@ static int compose_action(Context *ctx, std::vector<SdlItem*> &itemArray)
 			continue;
 		}
 
-		SdlItem *item = new SdlItem;
+		auto itemOwner = std::make_unique<SdlItem>();
+		SdlItem *item = itemOwner.get();
 
 		// icon_layout is optional; default to TOP_LEFT
 		SdlItem::Layout layout = SdlItem::Layout::TOP_LEFT;
@@ -610,7 +618,7 @@ static int compose_action(Context *ctx, std::vector<SdlItem*> &itemArray)
 			item->setAnimClick(animArray);
 		}
 
-		itemArray.push_back(item);
+		itemArray.push_back(std::move(itemOwner));
 
 	}
 
@@ -641,7 +649,7 @@ static void show_inventory()
 }
 
 /*****************************************************************************/
-static void compose_equipment(Context *ctx, std::vector<SdlItem*> &itemArray)
+static void compose_equipment(Context *ctx, ItemArray &itemArray)
 {
 	SiAnim *anim;
 	SiAnim *anim2;
@@ -697,8 +705,9 @@ static void compose_equipment(Context *ctx, std::vector<SdlItem*> &itemArray)
 			// load image
 			anim = imageDB_get_anim(ctx, iconName);
 
-			SdlItem *item = new SdlItem;
-			itemArray.push_back(item);
+			auto itemOwner = std::make_unique<SdlItem>();
+			SdlItem *item = itemOwner.get();
+			itemArray.push_back(std::move(itemOwner));
 
 			x = sw - anim->getWidth();
 			h1 = anim->getHeight();
@@ -766,8 +775,9 @@ static void compose_equipment(Context *ctx, std::vector<SdlItem*> &itemArray)
 
 			if (equippedIconName.empty() == false)
 			{
-				SdlItem *item = new SdlItem;
-				itemArray.push_back(item);
+				auto itemOwner = std::make_unique<SdlItem>();
+				SdlItem *item = itemOwner.get();
+				itemArray.push_back(std::move(itemOwner));
 
 				anim2 = imageDB_get_anim(ctx, equippedIconName);
 
@@ -797,8 +807,9 @@ static void compose_equipment(Context *ctx, std::vector<SdlItem*> &itemArray)
 			{
 				anim3 = imageDB_get_anim(ctx, cursor_equipment);
 
-				SdlItem *item = new SdlItem;
-				itemArray.push_back(item);
+				auto itemOwner = std::make_unique<SdlItem>();
+				SdlItem *item = itemOwner.get();
+				itemArray.push_back(std::move(itemOwner));
 
 				// Center on icon
 				item->setOverlay(true);
@@ -854,8 +865,9 @@ static void compose_equipment(Context *ctx, std::vector<SdlItem*> &itemArray)
 
 		if (!inventoryIconName.empty())
 		{
-			SdlItem *item = new SdlItem;
-			itemArray.push_back(item);
+			auto itemOwner = std::make_unique<SdlItem>();
+			SdlItem *item = itemOwner.get();
+			itemArray.push_back(std::move(itemOwner));
 
 			anim = imageDB_get_anim(ctx, inventoryIconName);
 
@@ -883,8 +895,9 @@ static void compose_equipment(Context *ctx, std::vector<SdlItem*> &itemArray)
 			inventoryIconAnim = anim_create_color(max_w, max_h, 0x7f7f7f7f);
 		}
 
-		SdlItem *item = new SdlItem;
-		itemArray.push_back(item);
+		auto itemOwner = std::make_unique<SdlItem>();
+		SdlItem *item = itemOwner.get();
+		itemArray.push_back(std::move(itemOwner));
 
 		item->setOverlay(true);
 		item->setPos(sw - inventoryIconAnim->getWidth(), y);
@@ -925,7 +938,7 @@ static void cb_print_coord()
 }
 
 /*****************************************************************************/
-static void main_compose(Context *ctx, std::vector<SdlItem*> &itemArray)
+static void main_compose(Context *ctx, ItemArray &itemArray)
 {
 	static ChatBox chatBox(nullptr, keyboard_text);
 	// The font file may still be downloading when the PLAY screen opens
@@ -989,7 +1002,7 @@ void cb_inventory_select(const std::string &itemId)
 }
 
 /*****************************************************************************/
-static void compose_inventory(Context *ctx, std::vector<SdlItem*> &itemArray)
+static void compose_inventory(Context *ctx, ItemArray &itemArray)
 {
 	std::string description;
 	static TTF_Font *font = nullptr;
@@ -1089,8 +1102,9 @@ static void compose_inventory(Context *ctx, std::vector<SdlItem*> &itemArray)
 			int w = 0;
 			int h = 0;
 
-			SdlItem *item = new SdlItem;
-			itemArray.push_back(item);
+			auto itemOwner = std::make_unique<SdlItem>();
+			SdlItem *item = itemOwner.get();
+			itemArray.push_back(std::move(itemOwner));
 
 			item->setPos(x, 0);
 			item->setAnim(anim);
@@ -1123,7 +1137,7 @@ static void compose_inventory(Context *ctx, std::vector<SdlItem*> &itemArray)
 
 /*****************************************************************************/
 static void compose_inventory_select(Context *ctx,
-		std::vector<SdlItem*> &itemArray)
+		ItemArray &itemArray)
 {
 	const std::string &inventorySelected = ctx->getSelectionInventory();
 
@@ -1200,8 +1214,9 @@ static void compose_inventory_select(Context *ctx,
 
 	if (isItemFound == true)
 	{
-		SdlItem *item = new SdlItem;
-		itemArray.push_back(item);
+		auto itemOwner = std::make_unique<SdlItem>();
+		SdlItem *item = itemOwner.get();
+		itemArray.push_back(std::move(itemOwner));
 
 		item->setPos(x, 0);
 		item->setAnim(animCursor);
@@ -1210,7 +1225,7 @@ static void compose_inventory_select(Context *ctx,
 }
 
 /*****************************************************************************/
-static void inventory_compose(Context *ctx, std::vector<SdlItem*> &itemArray)
+static void inventory_compose(Context *ctx, ItemArray &itemArray)
 {
 	compose_inventory(ctx, itemArray);
 	compose_inventory_select(ctx, itemArray);
@@ -1264,7 +1279,7 @@ static void cb_wheel_down()
 }
 
 /*****************************************************************************/
-static void compose_popup(Context *ctx, std::vector<SdlItem*> &itemArray)
+static void compose_popup(Context *ctx, ItemArray &itemArray)
 {
 	if (popupFifo.size() == 0)
 	{
@@ -1286,7 +1301,7 @@ static void compose_popup(Context *ctx, std::vector<SdlItem*> &itemArray)
 	int width = 0;
 	int height = 0;
 	int maxHeight = 0;
-	ActionParam *actionParams = nullptr;
+	std::unique_ptr<ActionParam> actionParams;
 
 	for (auto iter = popupData.cbegin(); iter != popupData.cend(); ++iter)
 	{
@@ -1295,8 +1310,9 @@ static void compose_popup(Context *ctx, std::vector<SdlItem*> &itemArray)
 			++iter;
 			SiAnim *anim = imageDB_get_anim(ctx, *iter);
 
-			SdlItem *item = new SdlItem;
-			itemArray.push_back(item);
+			auto itemOwner = std::make_unique<SdlItem>();
+			SdlItem *item = itemOwner.get();
+			itemArray.push_back(std::move(itemOwner));
 
 			item->setPos(x, y - popupOffset);
 			item->setAnim(anim);
@@ -1307,10 +1323,7 @@ static void compose_popup(Context *ctx, std::vector<SdlItem*> &itemArray)
 				ActionParam params = *actionParams;
 				item->setClickLeftCb([params]()
 				{	cb_popup(params);});
-				delete actionParams;
-				actionParams = nullptr;
-
-				actionParams = nullptr;
+				actionParams.reset();
 			}
 			x += anim->getWidth();
 			if (maxHeight < anim->getHeight())
@@ -1323,8 +1336,9 @@ static void compose_popup(Context *ctx, std::vector<SdlItem*> &itemArray)
 		{
 			++iter;
 
-			SdlItem *item = new SdlItem;
-			itemArray.push_back(item);
+			auto itemOwner = std::make_unique<SdlItem>();
+			SdlItem *item = itemOwner.get();
+			itemArray.push_back(std::move(itemOwner));
 
 			item->setText(*iter);
 			item->setFont(font);
@@ -1339,8 +1353,7 @@ static void compose_popup(Context *ctx, std::vector<SdlItem*> &itemArray)
 				ActionParam params = *actionParams;
 				item->setClickLeftCb([params]()
 				{	cb_popup(params);});
-				delete actionParams;
-				actionParams = nullptr;
+				actionParams.reset();
 			}
 			x += width;
 			if (maxHeight < height)
@@ -1351,7 +1364,7 @@ static void compose_popup(Context *ctx, std::vector<SdlItem*> &itemArray)
 		}
 		if (*iter == POPUP_TAG_ACTION)
 		{
-			actionParams = new ActionParam;
+			actionParams = std::make_unique<ActionParam>();
 			// get action
 			++iter;
 			actionParams->action = *iter;
@@ -1384,7 +1397,7 @@ void ui_play_popup_add(const std::vector<std::string> &data)
 }
 
 /*****************************************************************************/
-static void popup_compose(Context *ctx, std::vector<SdlItem*> &itemArray)
+static void popup_compose(Context *ctx, ItemArray &itemArray)
 {
 	compose_popup(ctx, itemArray);
 
@@ -1393,7 +1406,7 @@ static void popup_compose(Context *ctx, std::vector<SdlItem*> &itemArray)
 }
 
 /*****************************************************************************/
-void ui_play_compose(Context *ctx, std::vector<SdlItem*> &itemArray)
+void ui_play_compose(Context *ctx, ItemArray &itemArray)
 {
 	switch (currentUi)
 	{

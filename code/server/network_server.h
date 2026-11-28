@@ -31,6 +31,8 @@ void network_send_user_character(Connection & connection, const std::string & id
 void network_send_character_file(Context * context);
 void network_broadcast_entry_int(const char * table, const char * file, const char * path, int value, bool same_map_only);
 void network_init(void);
+// Called by the SIGINT handler: requests a clean exit from the accept loop.
+void network_server_stop();
 void network_send_popup(const std::string & p_rCtxId, const std::vector<std::string> & p_rPopupData);
 void network_broadcast_effect(EffectManager::EffectType p_Type, const std::string & p_TargetId, const std::vector<std::string> & p_Param);
 void network_send_login_ok(Connection & connection);

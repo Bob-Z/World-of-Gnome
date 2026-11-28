@@ -21,6 +21,7 @@
 #define CLIENT_UI_CHATEDITBOX_H_
 
 #include "SdlItemCore.h"
+#include "sdl.h"
 #include <functional>
 #include <SDL_ttf.h>
 #include <vector>
@@ -35,7 +36,7 @@ public:
 
 	void setFont(TTF_Font * font);
 
-	int compose(std::vector<SdlItem *> & itemArray, const int upperBorderHeight, const int lowerBorderHeight);
+	int compose(ItemArray &itemArray, const int upperBorderHeight, const int lowerBorderHeight);
 
 private:
 	TTF_Font * m_font;

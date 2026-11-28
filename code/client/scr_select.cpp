@@ -18,6 +18,7 @@
  */
 
 #include "Camera.h"
+#include <memory>
 #include "CharacterMarquee.h"
 #include "entry.h"
 #include "file_client.h"
@@ -200,15 +201,15 @@ static void init_sfx(Connection & connection)
 }
 
 /*****************************************************************************/
-static void compose_add_icon(Context * context, std::vector<SdlItem *> &itemArray)
+static void compose_add_icon(Context * context, ItemArray &itemArray)
 {
 	try
 	{
 		SiAnim *anim = imageDB_get_anim(context, getDataManager().get<std::string>("", CLIENT_CONF_FILE,
 		{ CLIENT_KEY_SELECT_CHARACTER_ADD_ICON }));
 
-		SdlItem * item;
-		item = new SdlItem;
+		auto itemOwner = std::make_unique<SdlItem>();
+		SdlItem *item = itemOwner.get();
 		item->setAnim(anim);
 
 		int sw = 0;
@@ -226,14 +227,14 @@ static void compose_add_icon(Context * context, std::vector<SdlItem *> &itemArra
 		item->setClickRightCb([]()
 		{	cb_icon_add_clicked();});
 
-		itemArray.push_back(item);
+		itemArray.push_back(std::move(itemOwner));
 	} catch (...)
 	{
 	}
 }
 
 /*****************************************************************************/
-void scr_select_compose(Context * context, std::vector<SdlItem *> & itemArray)
+void scr_select_compose(Context * context, ItemArray &itemArray)
 {
 	static TTF_Font * fontName = nullptr;
 	static TTF_Font * fontType = nullptr;
@@ -329,8 +330,9 @@ void scr_select_compose(Context * context, std::vector<SdlItem *> & itemArray)
 			}
 
 			// Character picture
-			SdlItem * item = new SdlItem;
-			itemArray.push_back(item);
+			auto itemOwner = std::make_unique<SdlItem>();
+			SdlItem *item = itemOwner.get();
+			itemArray.push_back(std::move(itemOwner));
 
 			characterMarquee.setItem(item);
 
@@ -361,9 +363,9 @@ void scr_select_compose(Context * context, std::vector<SdlItem *> & itemArray)
 			// character name
 			if (fontName != nullptr)
 			{
-				SdlItem * itemCharacterName;
-				itemCharacterName = new SdlItem;
-				itemArray.push_back(itemCharacterName);
+				auto itemCharacterNameOwner = std::make_unique<SdlItem>();
+				SdlItem *itemCharacterName = itemCharacterNameOwner.get();
+				itemArray.push_back(std::move(itemCharacterNameOwner));
 
 				itemCharacterName->setText(characterMarquee.getName());
 				itemCharacterName->setFont(fontName);
@@ -397,9 +399,9 @@ void scr_select_compose(Context * context, std::vector<SdlItem *> & itemArray)
 			// character type
 			if (fontType != nullptr)
 			{
-				SdlItem * itemCharacterType;
-				itemCharacterType = new SdlItem;
-				itemArray.push_back(itemCharacterType);
+				auto itemCharacterTypeOwner = std::make_unique<SdlItem>();
+				SdlItem *itemCharacterType = itemCharacterTypeOwner.get();
+				itemArray.push_back(std::move(itemCharacterTypeOwner));
 
 				itemCharacterType->setText(characterMarquee.getType());
 				itemCharacterType->setFont(fontType);

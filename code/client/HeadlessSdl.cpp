@@ -19,11 +19,11 @@
 #include <SDL_ttf.h>
 #include <cstdint>
 #include <dlfcn.h>
+#include <memory>
 #include <mutex>
 #include <sstream>
 #include <string>
 #include <unordered_map>
-#include <unordered_set>
 #include <vector>
 
 namespace
@@ -49,32 +49,59 @@ extern "C" const SDL_version* TTF_Linked_Version(void);
 	reinterpret_cast<const void*>(&TTF_Linked_Version)
 };
 
+struct FakeSurface
+{
+	std::unique_ptr<SDL_Surface> surface;
+	std::unique_ptr<Uint8[]> pixels;
+};
+
 std::mutex fakeMutex;
-std::unordered_map<SDL_Texture*, FakeTexture> textures;
-std::unordered_map<TTF_Font*, FakeFont> fonts;
-std::unordered_set<SDL_Surface*> surfaces;
+std::unordered_map<SDL_Texture*, std::unique_ptr<FakeTexture>> textures;
+std::unordered_map<TTF_Font*, std::unique_ptr<FakeFont>> fonts;
+std::unordered_map<SDL_Surface*, std::unique_ptr<FakeSurface>> surfaces;
 
 SDL_Texture* fakeTexture(int w, int h)
 {
-	auto *texture = reinterpret_cast<SDL_Texture*>(new FakeTexture{w, h});
+	auto texture = std::make_unique<FakeTexture>();
+	texture->w = w;
+	texture->h = h;
+	auto *handle = reinterpret_cast<SDL_Texture*>(texture.get());
 	std::lock_guard<std::mutex> guard(fakeMutex);
-	textures[texture] = FakeTexture{w, h};
-	return texture;
+	textures.emplace(handle, std::move(texture));
+	return handle;
 }
 
 TTF_Font* fakeFont(int size)
 {
-	auto *font = reinterpret_cast<TTF_Font*>(new FakeFont{size});
+	auto font = std::make_unique<FakeFont>();
+	font->size = size;
+	auto *handle = reinterpret_cast<TTF_Font*>(font.get());
 	std::lock_guard<std::mutex> guard(fakeMutex);
-	fonts[font] = FakeFont{size};
-	return font;
+	fonts.emplace(handle, std::move(font));
+	return handle;
+}
+
+SDL_Surface* fakeSurface(int w, int h, int depth)
+{
+	auto fake = std::make_unique<FakeSurface>();
+	fake->surface = std::make_unique<SDL_Surface>();
+	fake->surface->w = w;
+	fake->surface->h = h;
+	fake->surface->pitch = w * ((depth + 7) / 8);
+	fake->pixels = std::make_unique<Uint8[]>(fake->surface->pitch * h);
+	fake->surface->pixels = fake->pixels.get();
+
+	auto *handle = fake->surface.get();
+	std::lock_guard<std::mutex> guard(fakeMutex);
+	surfaces.emplace(handle, std::move(fake));
+	return handle;
 }
 
 int fontHeight(TTF_Font *font)
 {
 	std::lock_guard<std::mutex> guard(fakeMutex);
 	auto it = fonts.find(font);
-	return (it == fonts.end()) ? 12 : static_cast<int>(it->second.size * 1.25);
+	return (it == fonts.end()) ? 12 : static_cast<int>(it->second->size * 1.25);
 }
 
 std::string pointerString(const void *pointer)
@@ -303,8 +330,8 @@ extern "C" int SDL_QueryTexture(SDL_Texture *texture, Uint32 *format,
 	}
 	std::lock_guard<std::mutex> guard(fakeMutex);
 	auto it = textures.find(texture);
-	int tw = (it == textures.end()) ? 1 : it->second.w;
-	int th = (it == textures.end()) ? 1 : it->second.h;
+	int tw = (it == textures.end()) ? 1 : it->second->w;
+	int th = (it == textures.end()) ? 1 : it->second->h;
 	if (format != nullptr)
 	{
 		*format = 0;
@@ -338,7 +365,6 @@ extern "C" void SDL_DestroyTexture(SDL_Texture *texture)
 		std::lock_guard<std::mutex> guard(fakeMutex);
 		textures.erase(texture);
 	}
-	delete reinterpret_cast<FakeTexture*>(texture);
 	HEADLESS_LOG("SDL_DestroyTexture(texture=" << pointerString(texture) << ")");
 }
 
@@ -356,16 +382,7 @@ extern "C" SDL_Surface* SDL_CreateRGBSurface(Uint32 flags, int width,
 			<< ", depth=" << depth << ", masks=" << Rmask << "/" << Gmask
 			<< "/" << Bmask << "/" << Amask << ")");
 
-	auto *surface = new SDL_Surface{};
-	surface->w = width;
-	surface->h = height;
-	surface->pitch = width * ((depth + 7) / 8);
-	surface->pixels = new Uint8[surface->pitch * height]();
-	{
-		std::lock_guard<std::mutex> guard(fakeMutex);
-		surfaces.insert(surface);
-	}
-	return surface;
+	return fakeSurface(width, height, depth);
 }
 
 extern "C" void SDL_FreeSurface(SDL_Surface *surface)
@@ -376,17 +393,11 @@ extern "C" void SDL_FreeSurface(SDL_Surface *surface)
 		real_SDL_FreeSurface(surface);
 		return;
 	}
-	bool known = false;
 	{
 		std::lock_guard<std::mutex> guard(fakeMutex);
-		known = (surfaces.erase(surface) != 0);
+		surfaces.erase(surface);
 	}
 	HEADLESS_LOG("SDL_FreeSurface(surface=" << pointerString(surface) << ")");
-	if (known == true)
-	{
-		delete[] static_cast<Uint8*>(surface->pixels);
-		delete surface;
-	}
 }
 
 /******************************************************************************
@@ -553,16 +564,7 @@ extern "C" SDL_Surface* TTF_RenderText_Blended(TTF_Font *font,
 	HEADLESS_LOG("TTF_RenderText_Blended(text=" << content << ") -> "
 			<< width << "x" << height);
 
-	auto *surface = new SDL_Surface{};
-	surface->w = width;
-	surface->h = height;
-	surface->pitch = width * 4;
-	surface->pixels = new Uint8[surface->pitch * height]();
-	{
-		std::lock_guard<std::mutex> guard(fakeMutex);
-		surfaces.insert(surface);
-	}
-	return surface;
+	return fakeSurface(width, height, 32);
 }
 
 /******************************************************************************

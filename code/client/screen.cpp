@@ -34,15 +34,16 @@
 #include "sdl.h"
 #include "syntax.h"
 #include <limits.h>
+#include <memory>
 
 static bool screenRunning = true;
-static std::vector<SdlItem*> itemArray;
+static ItemArray itemArray;
 static bool compose = true;
 
 #define ITEM_FONT "Ubuntu-C.ttf"
 #define ITEM_FONT_SIZE 15
 
-static SdlItem * frameRateItem = nullptr;
+static std::unique_ptr<SdlItem> frameRateItem;
 static constexpr int FPS_DISPLAY_PERIOD = 1000;
 static Camera camera;
 
@@ -65,10 +66,6 @@ void screen_compose()
  *****************************************************************************/
 void screen_clear_items()
 {
-	for (auto item : itemArray)
-	{
-		delete (item);
-	}
 	itemArray.clear();
 }
 
@@ -173,12 +170,7 @@ static void display_fps(Context * ctx)
 			frameQty = 0;
 			timer = new_timer;
 
-			if (frameRateItem != nullptr)
-			{
-				delete frameRateItem;
-			}
-
-			frameRateItem = new SdlItem;
+			frameRateItem = std::make_unique<SdlItem>();
 			frameRateItem->setFont(font);
 			frameRateItem->setPos(100, 50);
 			frameRateItem->setShape(20, 20);

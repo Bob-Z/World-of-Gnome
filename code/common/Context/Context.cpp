@@ -27,8 +27,53 @@
 #include "syntax.h"
 
 #include "lua.hpp"
+#include <atomic>
+#include <list>
+#include <memory>
 
 Context *context_list_start = nullptr;
+// Owns every Context in the list. context_list_start and m_next/m_previous
+// remain non-owning navigation pointers.
+static std::list<std::unique_ptr<Context>> contextOwners;
+
+namespace
+{
+std::atomic<bool> shuttingDown { false };
+std::atomic<int> activeNpcThreads { 0 };
+}
+
+bool context_is_shutting_down()
+{
+	return shuttingDown;
+}
+
+void context_npc_thread_started()
+{
+	++activeNpcThreads;
+}
+
+void context_npc_thread_finished()
+{
+	--activeNpcThreads;
+}
+
+/*****************************************************************************/
+void context_shutdown()
+{
+	shuttingDown = true;
+
+	context_lock_list();
+	for (auto &context : contextOwners)
+	{
+		context->setInGame(false);
+	}
+	context_unlock_list();
+
+	while (activeNpcThreads > 0)
+	{
+		SDL_Delay(10);
+	}
+}
 
 /*****************************************************************************/
 Context::Context() :
@@ -37,7 +82,7 @@ Context::Context() :
 				0), m_positionChanged(false), m_orientation(0), m_direction(0), m_animationTick(
 				0), m_type(), m_id(), m_selection(), m_nextExecutionTick(0), m_luaVm(
 				nullptr), m_luaVmLock(), m_condition(SDL_CreateCond()), m_conditionLock(), m_connection(
-				nullptr), m_npcThread(nullptr), m_actionRunning(), m_previous(
+				nullptr), m_npcThread(), m_actionRunning(), m_previous(
 				nullptr), m_next(nullptr)
 {
 }
@@ -45,6 +90,20 @@ Context::Context() :
 /*****************************************************************************/
 Context::~Context()
 {
+	if (m_npcThread.joinable() == true)
+	{
+		// The NPC script frees its own Context; detaching from inside that
+		// thread is the only safe way to destroy the std::thread object.
+		if (m_npcThread.get_id() == std::this_thread::get_id())
+		{
+			m_npcThread.detach();
+		}
+		else
+		{
+			m_npcThread.join();
+		}
+	}
+
 	if (m_luaVm != nullptr)
 	{
 		lua_close(m_luaVm);
@@ -85,28 +144,30 @@ static void context_init(Context *context)
  **************************************/
 Context* context_new(void)
 {
-	Context *ctx;
+	auto owner = std::make_unique<Context>();
+	Context *newContext = owner.get();
+	contextOwners.push_back(std::move(owner));
 
 	context_lock_list();
 	if (context_list_start == nullptr)
 	{
-		context_list_start = new Context;
-		context_init(context_list_start);
+		context_list_start = newContext;
+		context_init(newContext);
 		context_unlock_list();
-		return context_list_start;
+		return newContext;
 	}
 
-	ctx = context_list_start;
+	Context *ctx = context_list_start;
 	while (ctx->m_next != nullptr)
 	{
 		ctx = ctx->m_next;
 	}
 
-	ctx->m_next = new Context;
-	context_init(ctx->m_next);
-	ctx->m_next->m_previous = ctx;
+	ctx->m_next = newContext;
+	context_init(newContext);
+	newContext->m_previous = ctx;
 	context_unlock_list();
-	return ctx->m_next;
+	return newContext;
 }
 
 /*************************************
@@ -169,7 +230,14 @@ void context_free(Context *context)
 
 	context_unlock_list();
 
-	delete (context);
+	for (auto it = contextOwners.begin(); it != contextOwners.end(); ++it)
+	{
+		if (it->get() == context)
+		{
+			contextOwners.erase(it);
+			break;
+		}
+	}
 }
 
 /*****************************************************************************/
@@ -762,15 +830,15 @@ void Context::setConnection(Connection *connection)
 }
 
 /*****************************************************************************/
-SDL_Thread* Context::getNpcThread() const
+std::thread& Context::getNpcThread()
 {
 	return m_npcThread;
 }
 
 /*****************************************************************************/
-void Context::setNpcThread(SDL_Thread *npcThread)
+void Context::setNpcThread(std::thread npcThread)
 {
-	m_npcThread = npcThread;
+	m_npcThread = std::move(npcThread);
 }
 
 /*****************************************************************************/

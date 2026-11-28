@@ -18,6 +18,7 @@
  */
 
 #include "Camera.h"
+#include <memory>
 #include "CharacterMarquee.h"
 #include "entry.h"
 #include "file.h"
@@ -287,7 +288,7 @@ static void sort_characterMarqueeArray()
 }
 
 /*****************************************************************************/
-static void fill_itemArray(std::vector<SdlItem *> & itemArray, const int maxHeight, TTF_Font * fontName, TTF_Font * fontType)
+static void fill_itemArray(ItemArray &itemArray, const int maxHeight, TTF_Font * fontName, TTF_Font * fontType)
 {
 	// Create item list
 	int currentX = 0;
@@ -303,8 +304,9 @@ static void fill_itemArray(std::vector<SdlItem *> & itemArray, const int maxHeig
 		}
 
 		// Character picture
-		SdlItem * itemAnim = new SdlItem;
-		itemArray.push_back(itemAnim);
+		auto itemAnimOwner = std::make_unique<SdlItem>();
+		SdlItem *itemAnim = itemAnimOwner.get();
+		itemArray.push_back(std::move(itemAnimOwner));
 
 		characterMarquee.setItem(itemAnim);
 
@@ -342,8 +344,9 @@ static void fill_itemArray(std::vector<SdlItem *> & itemArray, const int maxHeig
 		{
 			if (characterMarquee.getName().size() != 0)
 			{
-				SdlItem * itemName = new SdlItem;
-				itemArray.push_back(itemName);
+				auto itemNameOwner = std::make_unique<SdlItem>();
+				SdlItem *itemName = itemNameOwner.get();
+				itemArray.push_back(std::move(itemNameOwner));
 
 				itemName->setText(characterMarquee.getName());
 				itemName->setFont(fontName);
@@ -378,8 +381,9 @@ static void fill_itemArray(std::vector<SdlItem *> & itemArray, const int maxHeig
 		}
 		else
 		{
-			SdlItem * itemType = new SdlItem;
-			itemArray.push_back(itemType);
+			auto itemTypeOwner = std::make_unique<SdlItem>();
+			SdlItem *itemType = itemTypeOwner.get();
+			itemArray.push_back(std::move(itemTypeOwner));
 
 			itemType->setText(characterMarquee.getType());
 			itemType->setFont(fontType);
@@ -409,7 +413,7 @@ static void fill_itemArray(std::vector<SdlItem *> & itemArray, const int maxHeig
 }
 
 /*****************************************************************************/
-void scr_create_compose(Context * context, std::vector<SdlItem *> & itemArray)
+void scr_create_compose(Context * context, ItemArray &itemArray)
 {
 	static TTF_Font * fontName = nullptr;
 	static TTF_Font * fontType = nullptr;
@@ -447,8 +451,9 @@ void scr_create_compose(Context * context, std::vector<SdlItem *> & itemArray)
 	int sh = 0;
 	sdl_get_output_size(&sw, &sh);
 
-	SdlItem * itemNameBox = new SdlItem;
-	itemArray.push_back(itemNameBox);
+	auto itemNameBoxOwner = std::make_unique<SdlItem>();
+	SdlItem *itemNameBox = itemNameBoxOwner.get();
+	itemArray.push_back(std::move(itemNameBoxOwner));
 
 	itemNameBox->setOverlay(true);
 	itemNameBox->setBackGroudColor(BACKGROUND_COLOR);

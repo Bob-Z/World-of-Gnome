@@ -30,6 +30,7 @@
 #include <dirent.h>
 #include <stdlib.h>
 #include <sys/types.h>
+#include <thread>
 #include <unistd.h>
 
 #define NPC_TIMEOUT	(2000)
@@ -37,9 +38,8 @@
 /**********************************
  npc_script
  *********************************/
-static int npc_script(void *data)
+static void npc_script(Context *context)
 {
-	Context *context = (Context*) data;
 	Uint32 timeOutMs = 0U;
 	std::string script;
 	std::vector<std::string> parameters;
@@ -102,9 +102,14 @@ static int npc_script(void *data)
 	// Send connected  = FALSE to other context
 	context_spread(context);
 
-	context_free(context);
+	// During shutdown the main thread owns the contexts; leave them alone so
+	// they are not destroyed twice.
+	if (context_is_shutting_down() == false)
+	{
+		context_free(context);
+	}
 
-	return 0;
+	context_npc_thread_finished();
 }
 
 /***************************
@@ -165,9 +170,8 @@ void instantiate_npc(const std::string &id)
 
 	context_spread(ctx);
 
-	std::string threadName = "NPC: " + id;
-	ctx->setNpcThread(
-			SDL_CreateThread(npc_script, threadName.c_str(), (void*) ctx));
+	context_npc_thread_started();
+	ctx->setNpcThread(std::thread(npc_script, ctx));
 }
 /**************************
  init non playing character

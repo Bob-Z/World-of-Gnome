@@ -18,6 +18,7 @@
  */
 
 #include "ChatEditBox.h"
+#include <memory>
 #include "SdlItemCore.h"
 
 static constexpr Uint32 BACKGROUND_COLOR = 0xFFFFFF40;
@@ -42,15 +43,16 @@ void ChatEditBox::setFont(TTF_Font * font)
 }
 
 /*****************************************************************************/
-int ChatEditBox::compose(std::vector<SdlItem *> & itemArray, const int upperBorderHeight, const int lowerBorderHeight)
+int ChatEditBox::compose(ItemArray &itemArray, const int upperBorderHeight, const int lowerBorderHeight)
 {
 	if (m_font == nullptr)
 	{
 		return 0;
 	}
 
-	SdlItem * item = new SdlItem;
-	itemArray.push_back(item);
+	auto itemOwner = std::make_unique<SdlItem>();
+	SdlItem *item = itemOwner.get();
+	itemArray.push_back(std::move(itemOwner));
 
 	item->setOverlay(true);
 	item->setBackGroudColor(BACKGROUND_COLOR);
