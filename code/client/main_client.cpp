@@ -24,6 +24,7 @@
 #include "DataManager/DataManagerClient.h"
 #include "file_client.h"
 #include "file.h"
+#include "Headless.h"
 #include "imageDB.h"
 #include "log.h"
 #include "lua_client.h"
@@ -39,7 +40,7 @@
 #include <string>
 #include <unistd.h>
 
-const char optstring[] = "?i:u:p:l:f:F:tPmc:";
+const char optstring[] = "?i:u:p:l:f:F:tPmc:HO:E:";
 const struct option longopts[] =
 {
 { "ip", required_argument, nullptr, 'i' },
@@ -52,6 +53,9 @@ const struct option longopts[] =
 { "fps", no_argument, nullptr, 'P' },
 { "maxfps", no_argument, nullptr, 'm' },
 { "character", required_argument, nullptr, 'c' },
+{ "headless", no_argument, nullptr, 'H' },
+{ "headless-log", required_argument, nullptr, 'O' },
+{ "events", required_argument, nullptr, 'E' },
 { nullptr, 0, nullptr, 0 } };
 
 ContextContainer contextContainer;
@@ -84,6 +88,9 @@ int main(int argc, char **argv)
 	std::string user;
 	std::string pass;
 	std::string character;
+	bool headless = false;
+	std::string headlessLog;
+	std::string eventsFile;
 	int opt_ret = 0;
 	while ((opt_ret = getopt_long(argc, argv, optstring, longopts, nullptr))
 			!= -1)
@@ -120,6 +127,15 @@ int main(int argc, char **argv)
 		case 'c':
 			character = std::string(optarg);
 			break;
+		case 'H':
+			headless = true;
+			break;
+		case 'O':
+			headlessLog = std::string(optarg);
+			break;
+		case 'E':
+			eventsFile = std::string(optarg);
+			break;
 		default:
 			printf("HELP:\n\n");
 			printf("-i --ip : Set a server IP\n");
@@ -132,11 +148,19 @@ int main(int argc, char **argv)
 			printf("-P --fps: Show FPS\n");
 			printf("-m --maxfps: Display at maximum FPS\n");
 			printf("-c --character: Start directly with this character ID\n");
+			printf("-H --headless: Log SDL media calls instead of using display/audio\n");
+			printf("-O --headless-log <file>: Write the headless log to a file (default stdout)\n");
+			printf("-E --events <file>: Read synthetic SDL events from a file (default stdin)\n");
+			printf("   Event format: mouse_move X Y | mouse_down|up BUTTON X Y | key_down|up CODE | wait MS | quit\n");
 			exit(0);
 		}
 	}
 
-	sdl_init(TITLE_NAME, !maxfps);
+	headless_init(headless, headlessLog, eventsFile);
+	if (headless_enabled() == false)
+	{
+		sdl_init(TITLE_NAME, !maxfps);
+	}
 
 	int Mix_flags = MIX_INIT_FLAC | MIX_INIT_MP3 | MIX_INIT_OGG;
 	int result;

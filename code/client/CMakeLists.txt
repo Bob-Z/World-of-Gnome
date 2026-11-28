@@ -52,6 +52,8 @@ add_executable(
 	DataManager/FileStatus.cpp
 	EffectManager.cpp
 	file_client.cpp
+	Headless.cpp
+	HeadlessSdl.cpp
 	imageDB.cpp
 	lua_client.cpp
 	main_client.cpp
