@@ -921,11 +921,6 @@ static void cb_print_coord()
 	int mapWidth = 0;
 	entry_read_int(MAP_TABLE, ctx->getMap(), &mapWidth, { MAP_KEY_WIDTH });
 
-//TODO: take layer into account
-#if 0
-	entry_read_list_index(MAP_TABLE,ctx->m_map,type,scr_play_get_current_x()+scr_play_get_current_y()*mapWidth, { layer_name, MAP_KEY_TYPE });
-	sprintf(buf,"x=%d y=%d type=%s",scr_play_get_current_x(),scr_play_get_current_y(),type);
-#endif
 	std::string text = "x= " + std::to_string(scr_play_get_current_x()) + " y="
 			+ std::to_string(scr_play_get_current_y());
 	textview_add_line(text);
