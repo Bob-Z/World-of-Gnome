@@ -96,7 +96,7 @@ void Connection::setUserName(const std::string& userName)
 }
 
 /*****************************************************************************/
-void Connection::send(const std::string m_serializedData, const bool m_isData)
+void Connection::send(const std::string &m_serializedData, const bool m_isData)
 {
 	if (isConnected() == false)
 	{

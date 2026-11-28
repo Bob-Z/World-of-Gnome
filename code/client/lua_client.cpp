@@ -308,7 +308,7 @@ static std::vector<SiAnim*> getAnimArray(const std::string &id,
 	std::string spriteName;
 	if (entry_read_string(CHARACTER_TABLE, id, spriteName, { key }) == true)
 	{
-		if ((!spriteName.empty()) && (!spriteName.empty()))
+		if (!spriteName.empty())
 		{
 			SiAnim *anim = imageDB_get_anim(context_get_player(), spriteName);
 			animArray.push_back(anim);

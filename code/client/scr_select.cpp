@@ -435,9 +435,15 @@ void scr_select_compose(Context * context, ItemArray &itemArray)
 			currentX += characterMarquee.getWidth() + BORDER;
 		}
 
-		if ((centeredCharacter == -1) && (characterMarqueeArray.size() > 0))
+		// Marquee sizes may change as images/fonts arrive, so re-center on
+		// every compose using the currently selected character.
+		if (characterMarqueeArray.size() > 0)
 		{
-			centeredCharacter = 0;
+			if ((centeredCharacter < 0)
+					|| (centeredCharacter >= static_cast<long>(characterMarqueeArray.size())))
+			{
+				centeredCharacter = 0;
+			}
 
 			center_item();
 		}

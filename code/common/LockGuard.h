@@ -25,7 +25,7 @@
 class LockGuard
 {
 public:
-	LockGuard(Lock & lock);
+	explicit LockGuard(Lock & lock);
 	virtual ~LockGuard();
 
 private:

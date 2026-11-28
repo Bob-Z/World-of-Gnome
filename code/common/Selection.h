@@ -29,13 +29,13 @@ public:
 	virtual ~Selection();
 
 	const std::string & getEquipment() const;
-	void setEquipment(std::string equipment);
+	void setEquipment(const std::string &equipment);
 	const std::string & getContextId() const;
-	void setContextId(std::string id);
+	void setContextId(const std::string &id);
 	const std::string & getInventory() const;
-	void setInventory(std::string inventory);
+	void setInventory(const std::string &inventory);
 	const std::string & getMap() const;
-	void setMap(std::string map);
+	void setMap(const std::string &map);
 	int getMapTx() const;
 	void setMapTx(int mapCoordTx);
 	int getMapTy() const;

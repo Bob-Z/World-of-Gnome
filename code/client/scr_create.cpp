@@ -459,7 +459,7 @@ void scr_create_compose(Context * context, ItemArray &itemArray)
 	itemNameBox->setBackGroudColor(BACKGROUND_COLOR);
 	itemNameBox->setFont(font);
 	itemNameBox->setEditable(true);
-	itemNameBox->setEditCb([](std::string text)
+	itemNameBox->setEditCb([](const std::string &text)
 	{	cb_keyboard_text(text);});
 
 	int w = 0;

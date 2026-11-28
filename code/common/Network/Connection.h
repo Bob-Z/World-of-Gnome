@@ -31,7 +31,7 @@ public:
 	Connection();
 	virtual ~Connection();
 
-	void send(const std::string m_serializedData, const bool m_isData);
+	void send(const std::string &m_serializedData, const bool m_isData);
 	void disconnect();
 
 	/* Close a single socket. Only the thread that reads a socket may close it:

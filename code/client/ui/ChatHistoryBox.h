@@ -28,7 +28,7 @@
 class ChatHistoryBox
 {
 public:
-	ChatHistoryBox(TTF_Font * const font);
+	explicit ChatHistoryBox(TTF_Font * const font);
 	virtual ~ChatHistoryBox();
 
 	void setFont(TTF_Font * font);

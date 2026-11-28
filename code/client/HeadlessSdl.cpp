@@ -123,7 +123,8 @@ std::string safeText(const char *text)
 	}
 	if (result.size() > 80)
 	{
-		result = result.substr(0, 80) + "...";
+		result.resize(80);
+		result += "...";
 	}
 	return result;
 }

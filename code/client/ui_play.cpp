@@ -1298,7 +1298,10 @@ static void compose_popup(Context *ctx, ItemArray &itemArray)
 	{
 		if (*iter == POPUP_TAG_IMAGE)
 		{
-			++iter;
+			if (++iter == popupData.cend())
+			{
+				break;
+			}
 			SiAnim *anim = imageDB_get_anim(ctx, *iter);
 
 			auto itemOwner = std::make_unique<SdlItem>();
@@ -1325,7 +1328,10 @@ static void compose_popup(Context *ctx, ItemArray &itemArray)
 		}
 		if (*iter == POPUP_TAG_TEXT)
 		{
-			++iter;
+			if (++iter == popupData.cend())
+			{
+				break;
+			}
 
 			auto itemOwner = std::make_unique<SdlItem>();
 			SdlItem *item = itemOwner.get();
@@ -1357,10 +1363,16 @@ static void compose_popup(Context *ctx, ItemArray &itemArray)
 		{
 			actionParams = std::make_unique<ActionParam>();
 			// get action
-			++iter;
+			if (++iter == popupData.cend())
+			{
+				break;
+			}
 			actionParams->action = *iter;
 			// get param
-			++iter;
+			if (++iter == popupData.cend())
+			{
+				break;
+			}
 			actionParams->param = *iter;
 			continue;
 		}

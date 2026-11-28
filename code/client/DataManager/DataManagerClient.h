@@ -32,7 +32,7 @@ class DataManagerClient: public DataManager, FileReceivedObserver
 {
 public:
 	DataManagerClient();
-	virtual ~DataManagerClient();
+	~DataManagerClient() override;
 
 	/*************************************************************************/
 	template<typename T>

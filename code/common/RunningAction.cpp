@@ -21,7 +21,7 @@
 #include "RunningAction.h"
 
 /*****************************************************************************/
-RunningAction::RunningAction(Context * context, const std::string & action, const std::vector<std::string> params, int coolDownMs) :
+RunningAction::RunningAction(Context * context, const std::string & action, const std::vector<std::string> & params, int coolDownMs) :
 		m_lock(), m_running(true), m_context(context), m_action(action), m_params(params), m_coolDownMs(coolDownMs)
 {
 }

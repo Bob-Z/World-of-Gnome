@@ -38,7 +38,7 @@ const std::string & Selection::getEquipment() const
 }
 
 /******************************************************************************/
-void Selection::setEquipment(std::string equipment)
+void Selection::setEquipment(const std::string &equipment)
 {
 	m_equipment = equipment;
 }
@@ -50,7 +50,7 @@ const std::string & Selection::getContextId() const
 }
 
 /******************************************************************************/
-void Selection::setContextId(std::string id)
+void Selection::setContextId(const std::string &id)
 {
 	m_contextId = id;
 }
@@ -62,7 +62,7 @@ const std::string & Selection::getInventory() const
 }
 
 /******************************************************************************/
-void Selection::setInventory(std::string inventory)
+void Selection::setInventory(const std::string &inventory)
 {
 	m_inventory = inventory;
 }
@@ -74,7 +74,7 @@ const std::string & Selection::getMap() const
 }
 
 /******************************************************************************/
-void Selection::setMap(std::string map)
+void Selection::setMap(const std::string &map)
 {
 	m_map = map;
 }

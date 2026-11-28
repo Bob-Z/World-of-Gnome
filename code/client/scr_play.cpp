@@ -148,12 +148,9 @@ static std::vector<SiAnim*> select_sprite(Context *ctx)
 
 	if (!spriteName.empty())
 	{
-		if (!spriteName.empty())
-		{
-			std::vector<std::string> spriteNameArray;
-			spriteNameArray.push_back(spriteName);
-			return imageDB_get_anim_array(playerContext, spriteNameArray);
-		}
+		std::vector<std::string> spriteNameArray;
+		spriteNameArray.push_back(spriteName);
+		return imageDB_get_anim_array(playerContext, spriteNameArray);
 	}
 
 	// Try sprite lists
@@ -190,12 +187,9 @@ static std::vector<SiAnim*> select_sprite(Context *ctx)
 	{
 		if (!spriteName.empty())
 		{
-			if (!spriteName.empty())
-			{
-				std::vector<std::string> spriteNameArray;
-				spriteNameArray.push_back(spriteName);
-				return imageDB_get_anim_array(playerContext, spriteNameArray);
-			}
+			std::vector<std::string> spriteNameArray;
+			spriteNameArray.push_back(spriteName);
+			return imageDB_get_anim_array(playerContext, spriteNameArray);
 		}
 	}
 

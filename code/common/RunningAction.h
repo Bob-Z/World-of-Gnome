@@ -28,7 +28,7 @@ class Context;
 class RunningAction
 {
 public:
-	RunningAction(Context * context, const std::string & action, const std::vector<std::string> params, int coolDownMs);
+	RunningAction(Context * context, const std::string & action, const std::vector<std::string> & params, int coolDownMs);
 	~RunningAction();
 
 	void beginAction();

@@ -27,7 +27,7 @@
 class ContextGetter
 {
 public:
-	ContextGetter(ContextContainer & container);
+	explicit ContextGetter(ContextContainer & container);
 	virtual ~ContextGetter();
 //	Context & get(const std::string & contextId);
 
